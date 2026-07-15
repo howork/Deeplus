@@ -63,8 +63,11 @@ def invalid_gate(root: Path) -> None:
                 return
 
 
-def missing_candidate_state(root: Path) -> None:
-    (root / "release/candidate-state.json").unlink()
+def missing_release_state(root: Path) -> None:
+    candidate = root / "release/candidate-state.json"
+    pointer = root / "current/current-pointer.json"
+    active = candidate if candidate.is_file() else pointer
+    active.unlink()
 
 
 def legacy_current_pointer(root: Path) -> None:
@@ -80,13 +83,17 @@ def run(write_receipt: bool) -> int:
     revision = tomllib.loads(
         (ROOT / "current/language-version.toml").read_text(encoding="utf-8")
     )["spec_revision"]
+    candidate_mode = (
+        (ROOT / "release/candidate-state.json").is_file()
+        and not (ROOT / "current/current-pointer.json").exists()
+    )
     mutations: list[tuple[str, Callable[[Path], None]]] = [
         ("same_count_alias_duplicate", alias_duplicate),
         ("unlisted_root_oversize_shard", oversize_shard),
         ("broken_local_schema_ref", broken_schema_ref),
         ("authority_file_drift", authority_drift),
         ("invalid_gate_activation", invalid_gate),
-        ("missing_candidate_state", missing_candidate_state),
+        ("missing_release_state", missing_release_state),
         ("legacy_basename_in_current_owner", legacy_current_pointer),
     ]
     results = []
@@ -96,8 +103,11 @@ def run(write_receipt: bool) -> int:
             target = base / name
             shutil.copytree(ROOT, target)
             mutate(target)
+            command = ["python3", str(VALIDATOR), "--root", str(target), "--no-receipt"]
+            if candidate_mode:
+                command.append("--candidate")
             result = subprocess.run(
-                ["python3", str(VALIDATOR), "--root", str(target), "--candidate", "--no-receipt"],
+                command,
                 text=True,
                 capture_output=True,
                 check=False,
@@ -118,8 +128,13 @@ def run(write_receipt: bool) -> int:
         "cases": results,
     }
     if write_receipt:
+        receipt_name = (
+            "repository-bootstrap-m1.2-validator-mutation-receipt.json"
+            if candidate_mode
+            else "current-publication-m1.3-validator-mutation-receipt.json"
+        )
         write_json(
-            ROOT / "release/evidence/repository-bootstrap-m1.2-validator-mutation-receipt.json",
+            ROOT / "release/evidence" / receipt_name,
             receipt,
         )
     print(json.dumps(receipt, ensure_ascii=False, indent=2))
