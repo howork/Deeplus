@@ -1,0 +1,1776 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/mir-responsibility.schema.json",
+  "title": "Deeplus R51f3 MIR responsibility record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "law_id",
+    "source_order",
+    "evaluation_events",
+    "temporary_stack",
+    "ownership_events",
+    "commit_point",
+    "cleanup_stack",
+    "rollback_stack",
+    "primary_failure",
+    "suppressed_failures",
+    "cancellation_state",
+    "task_scope",
+    "actor_isolation",
+    "control_events",
+    "callable_events",
+    "evidence_events",
+    "effect_row",
+    "authority",
+    "source_span"
+  ],
+  "properties": {
+    "law_id": {
+      "type": "string",
+      "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+    },
+    "source_order": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evaluation_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evaluateEvent"
+      }
+    },
+    "temporary_stack": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/temporary_acquireEvent"
+      }
+    },
+    "ownership_events": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ownership_borrowEvent"
+          },
+          {
+            "$ref": "#/$defs/ownership_moveEvent"
+          },
+          {
+            "$ref": "#/$defs/ownership_commitEvent"
+          }
+        ]
+      }
+    },
+    "commit_point": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "cleanup_stack": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cleanupEvent"
+      }
+    },
+    "rollback_stack": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rollbackEvent"
+      }
+    },
+    "primary_failure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/failureEvent"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "suppressed_failures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/suppressed_failureEvent"
+      }
+    },
+    "cancellation_state": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/cancellation_requestEvent"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "task_scope": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/task_spawnEvent"
+          },
+          {
+            "$ref": "#/$defs/task_joinEvent"
+          }
+        ]
+      }
+    },
+    "actor_isolation": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/actor_enqueueEvent"
+          },
+          {
+            "$ref": "#/$defs/actor_dequeueEvent"
+          }
+        ]
+      }
+    },
+    "control_events": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/guardEvent"
+          },
+          {
+            "$ref": "#/$defs/payloadEvent"
+          },
+          {
+            "$ref": "#/$defs/loop_handlerEvent"
+          }
+        ]
+      }
+    },
+    "callable_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/callable_invokeEvent"
+      }
+    },
+    "evidence_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_selectEvent"
+      }
+    },
+    "effect_row": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "authority": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "source_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "evaluateEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "expression_id",
+        "value_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "evaluate"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "expression_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "temporary_acquireEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "owner_id",
+        "stack_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "temporary_acquire"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stack_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "ownership_borrowEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "owner_id",
+        "region_id",
+        "borrow_kind"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ownership_borrow"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "borrow_kind": {
+          "enum": [
+            "shared",
+            "mutable"
+          ]
+        }
+      }
+    },
+    "ownership_moveEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "from_owner_id",
+        "to_owner_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ownership_move"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "from_owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to_owner_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ownership_commitEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "owner_id",
+        "commit_point_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ownership_commit"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_point_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "cleanupEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "owner_id",
+        "stack_index",
+        "cleanup_reason",
+        "outcome"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cleanup"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stack_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cleanup_reason": {
+          "enum": [
+            "scope_exit",
+            "rollback",
+            "unwind",
+            "cancellation"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "completed",
+            "failed"
+          ]
+        }
+      }
+    },
+    "rollbackEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "value_id",
+        "owner_id",
+        "stack_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rollback"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "value_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stack_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "failureEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "failure_id",
+        "failure_class"
+      ],
+      "properties": {
+        "kind": {
+          "const": "failure"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "failure_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failure_class": {
+          "enum": [
+            "Error",
+            "Defect",
+            "Cancellation"
+          ]
+        }
+      }
+    },
+    "suppressed_failureEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "failure_id",
+        "primary_failure_id",
+        "suppression_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "suppressed_failure"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "failure_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primary_failure_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suppression_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "cancellation_requestEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "task_id",
+        "cancellation_target_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "cancellation_request"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cancellation_target_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "task_spawnEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "task_id",
+        "owner_id",
+        "spawn_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "task_spawn"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spawn_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "task_joinEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "task_id",
+        "join_index",
+        "outcome"
+      ],
+      "properties": {
+        "kind": {
+          "const": "task_join"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "join_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outcome": {
+          "enum": [
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        }
+      }
+    },
+    "actor_enqueueEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "actor_id",
+        "sender_id",
+        "message_id",
+        "enqueue_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "actor_enqueue"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sender_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enqueue_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "actor_dequeueEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "actor_id",
+        "sender_id",
+        "message_id",
+        "dequeue_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "actor_dequeue"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sender_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dequeue_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "guardEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "guard_id",
+        "result",
+        "evaluation_index"
+      ],
+      "properties": {
+        "kind": {
+          "const": "guard"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "guard_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "boolean"
+        },
+        "evaluation_index": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "payloadEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "payload_id",
+        "guard_id",
+        "commit_point_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "payload"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "payload_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "guard_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_point_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "loop_handlerEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "loop_id",
+        "handler_id",
+        "outcome"
+      ],
+      "properties": {
+        "kind": {
+          "const": "loop_handler"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "loop_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handler_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "enum": [
+            "break",
+            "exhausted"
+          ]
+        }
+      }
+    },
+    "callable_invokeEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "callable_id",
+        "profile",
+        "call_right_before",
+        "call_right_after"
+      ],
+      "properties": {
+        "kind": {
+          "const": "callable_invoke"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "callable_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "enum": [
+            "ordinary",
+            "#scoped",
+            "#once",
+            "#mut",
+            "#pure",
+            "#guard",
+            "#scoped#once",
+            "#scoped#mut",
+            "#scoped#pure",
+            "#scoped#guard",
+            "#once#pure",
+            "#once#guard",
+            "#scoped#once#pure",
+            "#scoped#once#guard"
+          ]
+        },
+        "call_right_before": {
+          "enum": [
+            "repeatable",
+            "once"
+          ]
+        },
+        "call_right_after": {
+          "enum": [
+            "repeatable",
+            "consumed"
+          ]
+        }
+      }
+    },
+    "evidence_selectEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "evidence_id",
+        "type_id",
+        "trait_id",
+        "candidate_count"
+      ],
+      "properties": {
+        "kind": {
+          "const": "evidence_select"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
+          "properties": {
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trait_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_count": {
+          "const": 1
+        }
+      }
+    },
+    "event": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/evaluateEvent"
+        },
+        {
+          "$ref": "#/$defs/temporary_acquireEvent"
+        },
+        {
+          "$ref": "#/$defs/ownership_borrowEvent"
+        },
+        {
+          "$ref": "#/$defs/ownership_moveEvent"
+        },
+        {
+          "$ref": "#/$defs/ownership_commitEvent"
+        },
+        {
+          "$ref": "#/$defs/cleanupEvent"
+        },
+        {
+          "$ref": "#/$defs/rollbackEvent"
+        },
+        {
+          "$ref": "#/$defs/failureEvent"
+        },
+        {
+          "$ref": "#/$defs/suppressed_failureEvent"
+        },
+        {
+          "$ref": "#/$defs/cancellation_requestEvent"
+        },
+        {
+          "$ref": "#/$defs/task_spawnEvent"
+        },
+        {
+          "$ref": "#/$defs/task_joinEvent"
+        },
+        {
+          "$ref": "#/$defs/actor_enqueueEvent"
+        },
+        {
+          "$ref": "#/$defs/actor_dequeueEvent"
+        },
+        {
+          "$ref": "#/$defs/guardEvent"
+        },
+        {
+          "$ref": "#/$defs/payloadEvent"
+        },
+        {
+          "$ref": "#/$defs/loop_handlerEvent"
+        },
+        {
+          "$ref": "#/$defs/callable_invokeEvent"
+        },
+        {
+          "$ref": "#/$defs/evidence_selectEvent"
+        }
+      ]
+    }
+  },
+  "x-deeplus-event-kind-contracts": {
+    "evaluate": {
+      "required_payload_fields": [
+        "expression_id",
+        "value_id"
+      ]
+    },
+    "temporary_acquire": {
+      "required_payload_fields": [
+        "value_id",
+        "owner_id",
+        "stack_index"
+      ]
+    },
+    "ownership_borrow": {
+      "required_payload_fields": [
+        "value_id",
+        "owner_id",
+        "region_id",
+        "borrow_kind"
+      ]
+    },
+    "ownership_move": {
+      "required_payload_fields": [
+        "value_id",
+        "from_owner_id",
+        "to_owner_id"
+      ]
+    },
+    "ownership_commit": {
+      "required_payload_fields": [
+        "value_id",
+        "owner_id",
+        "commit_point_id"
+      ]
+    },
+    "cleanup": {
+      "required_payload_fields": [
+        "value_id",
+        "owner_id",
+        "stack_index",
+        "cleanup_reason",
+        "outcome"
+      ]
+    },
+    "rollback": {
+      "required_payload_fields": [
+        "value_id",
+        "owner_id",
+        "stack_index"
+      ]
+    },
+    "failure": {
+      "required_payload_fields": [
+        "failure_id",
+        "failure_class"
+      ]
+    },
+    "suppressed_failure": {
+      "required_payload_fields": [
+        "failure_id",
+        "primary_failure_id",
+        "suppression_index"
+      ]
+    },
+    "cancellation_request": {
+      "required_payload_fields": [
+        "task_id",
+        "cancellation_target_id"
+      ]
+    },
+    "task_spawn": {
+      "required_payload_fields": [
+        "task_id",
+        "owner_id",
+        "spawn_index"
+      ]
+    },
+    "task_join": {
+      "required_payload_fields": [
+        "task_id",
+        "join_index",
+        "outcome"
+      ]
+    },
+    "actor_enqueue": {
+      "required_payload_fields": [
+        "actor_id",
+        "sender_id",
+        "message_id",
+        "enqueue_index"
+      ]
+    },
+    "actor_dequeue": {
+      "required_payload_fields": [
+        "actor_id",
+        "sender_id",
+        "message_id",
+        "dequeue_index"
+      ]
+    },
+    "guard": {
+      "required_payload_fields": [
+        "guard_id",
+        "result",
+        "evaluation_index"
+      ]
+    },
+    "payload": {
+      "required_payload_fields": [
+        "payload_id",
+        "guard_id",
+        "commit_point_id"
+      ]
+    },
+    "loop_handler": {
+      "required_payload_fields": [
+        "loop_id",
+        "handler_id",
+        "outcome"
+      ]
+    },
+    "callable_invoke": {
+      "required_payload_fields": [
+        "callable_id",
+        "profile",
+        "call_right_before",
+        "call_right_after"
+      ]
+    },
+    "evidence_select": {
+      "required_payload_fields": [
+        "evidence_id",
+        "type_id",
+        "trait_id",
+        "candidate_count"
+      ]
+    }
+  },
+  "x-deeplus-stack-kind-contracts": {
+    "evaluation_events": [
+      "evaluate"
+    ],
+    "temporary_stack": [
+      "temporary_acquire"
+    ],
+    "ownership_events": [
+      "ownership_borrow",
+      "ownership_move",
+      "ownership_commit"
+    ],
+    "cleanup_stack": [
+      "cleanup"
+    ],
+    "rollback_stack": [
+      "rollback"
+    ],
+    "primary_failure": [
+      "failure"
+    ],
+    "suppressed_failures": [
+      "suppressed_failure"
+    ],
+    "cancellation_state": [
+      "cancellation_request"
+    ],
+    "task_scope": [
+      "task_spawn",
+      "task_join"
+    ],
+    "actor_isolation": [
+      "actor_enqueue",
+      "actor_dequeue"
+    ],
+    "control_events": [
+      "guard",
+      "payload",
+      "loop_handler"
+    ],
+    "callable_events": [
+      "callable_invoke"
+    ],
+    "evidence_events": [
+      "evidence_select"
+    ]
+  },
+  "x-deeplus-semantic-contract": {
+    "event_identity": "event_id is pairwise unique across every event-bearing field",
+    "sequence": "sequence is pairwise unique and source_order equals event_id values sorted by ascending sequence",
+    "law_identity": "every event law_id equals the enclosing record law_id",
+    "source_span": "start is less than or equal to end for the record and every event",
+    "commit_point": "null or the event_id of an ownership_commit event in ownership_events",
+    "stack_projection": "each event-bearing field admits exactly the kinds named by x-deeplus-stack-kind-contracts",
+    "event_payload": "each discriminated event contains every and only the common fields plus its kind-specific required payload"
+  },
+  "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
+  "x-product-runtime": "NOT_RUN"
+}

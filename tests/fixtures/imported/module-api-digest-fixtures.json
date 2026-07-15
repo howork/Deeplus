@@ -1,0 +1,757 @@
+{
+  "schema": "deeplus.module-api-digest-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "canonical_byte_algorithm": {
+    "hash_algorithm": "SHA-256",
+    "excluded_top_level_fields": [
+      "canonical_sha256"
+    ],
+    "precondition": "validate the closed schema, kind-field contracts, pairwise symbol_id uniqueness, strict symbol order, and sorted unique set-like rows before hashing",
+    "symbol_order": "strict ascending Unicode scalar sequence by symbol_id",
+    "set_like_fields": [
+      "authority",
+      "effect_row",
+      "error_set",
+      "evidence_ids"
+    ],
+    "set_order": "strict ascending Unicode scalar sequence with no duplicates",
+    "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
+    "string_encoding": "emit JSON mandatory escapes for quotation mark, reverse solidus, and U+0000..U+001F; emit every other Unicode scalar directly as UTF-8 without normalization",
+    "whitespace": "none outside string values",
+    "terminal_newline": false,
+    "steps": [
+      "deep-copy the validated digest object",
+      "remove exactly the top-level canonical_sha256 member",
+      "sort symbols by symbol_id and each declared set-like row by Unicode scalar sequence",
+      "serialize object members in Unicode-scalar key order using comma and colon separators without spaces",
+      "encode the resulting JSON text as UTF-8 and SHA-256 those bytes"
+    ]
+  },
+  "positive_fixture_count": 1,
+  "negative_fixture_count": 6,
+  "positive_fixtures": [
+    {
+      "fixture_id": "MODULE-API-POS-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b"
+      },
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b",
+      "expected": "admitted"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "fixture_id": "MODULE-API-NEG-DUPLICATE-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Int) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "fc105247d3b682dab938bbd74242bd12e00d91eb9b571a1de9a1ac7c33328281"
+      },
+      "expected_errors": [
+        "MODULE_API_SYMBOL_ID_DUPLICATE"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Int) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "fc105247d3b682dab938bbd74242bd12e00d91eb9b571a1de9a1ac7c33328281"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-ORDER-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "e9f0768105ba416c2144f22a597a073ab8e766656818af5c24b7c1d572f6610f"
+      },
+      "expected_errors": [
+        "MODULE_API_SYMBOL_ID_ORDER"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "e9f0768105ba416c2144f22a597a073ab8e766656818af5c24b7c1d572f6610f"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-KIND-REQUIRED-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "72aa27b4a6de8b833a3d3ce82e5ba9c99e97697736ecdc7354c8559b42f54706"
+      },
+      "expected_errors": [
+        "MODULE_API_SYMBOL_KIND_FIELD_REQUIRED"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "72aa27b4a6de8b833a3d3ce82e5ba9c99e97697736ecdc7354c8559b42f54706"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-KIND-FORBIDDEN-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null,
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            }
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "528029ba3c8b3362f21b7eb19cf262991eed8d3be2540966b3f9b9f4acd92780"
+      },
+      "expected_errors": [
+        "MODULE_API_SYMBOL_KIND_FIELD_FORBIDDEN"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "528029ba3c8b3362f21b7eb19cf262991eed8d3be2540966b3f9b9f4acd92780"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-SET-ORDER-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "state",
+              "io"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "cf651ac8ccacf151486cafe2dddd98f56fc145b49f004620798e99fec30dfaed"
+      },
+      "expected_errors": [
+        "MODULE_API_SET_ROW_ORDER"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"state\",\"io\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "cf651ac8ccacf151486cafe2dddd98f56fc145b49f004620798e99fec30dfaed"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-HASH-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "shared",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ]
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ]
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "error_set": [],
+            "effect_row": [],
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": []
+          }
+        ],
+        "canonical_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected_errors": [
+        "MODULE_API_CANONICAL_SHA256_MISMATCH"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b"
+    }
+  ],
+  "product_compiler_execution": "NOT_RUN"
+}

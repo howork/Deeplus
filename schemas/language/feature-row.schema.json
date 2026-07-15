@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.example/schema/schemas/language/feature-row.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "feature_id",
+    "baseline",
+    "status_enum",
+    "status_display",
+    "language_status",
+    "feature_kind",
+    "authority_set",
+    "source_activation",
+    "depends_on",
+    "notes",
+    "primary_source",
+    "product_support",
+    "production_lexer",
+    "production_parser",
+    "integrated_checker",
+    "formatter_lsp",
+    "runtime_xvm",
+    "stdlib_provider_runner",
+    "uml_exporter_provider_runner",
+    "actual_user_team_study",
+    "independent_conformance"
+  ],
+  "properties": {
+    "feature_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "status_enum": {
+      "enum": [
+        "ABSORBED_ALIAS",
+        "CONFORMANCE_ONLY",
+        "INTERNAL_DESIGN",
+        "OFFICIAL_TOOLING",
+        "PREVIEW",
+        "PREVIEW_DESIGN",
+        "STABLE_DESIGN",
+        "STABLE_GROUP",
+        "STDLIB_PROFILE",
+        "SUPERSEDED",
+        "TOOLING_ONLY"
+      ]
+    },
+    "status_display": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feature_kind": {
+      "enum": [
+        "absorbed_alias",
+        "canonical_feature",
+        "conformance_seed",
+        "design_proposal",
+        "family",
+        "grammar_projection_feature",
+        "internal_design",
+        "official_tooling",
+        "projection_artifact",
+        "publication_closure",
+        "recognized_unsupported",
+        "schema_artifact",
+        "semantic_law",
+        "stable_group",
+        "tooling_feature"
+      ]
+    },
+    "source_activation": {
+      "enum": [
+        "checker_internal",
+        "documentation",
+        "evidence",
+        "explicit_feature_gate",
+        "governance",
+        "nonactivatable",
+        "none",
+        "stdlib",
+        "tooling"
+      ]
+    },
+    "authority_set": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "AGENT",
+          "CHECKER",
+          "CONFORMANCE",
+          "DIAGNOSTICS",
+          "DOCUMENTATION",
+          "EVIDENCE",
+          "FORMATTER",
+          "GOVERNANCE",
+          "INTERNAL",
+          "LANGUAGE",
+          "LEXER",
+          "LSP",
+          "MIGRATION",
+          "OFFICIAL_TOOLING",
+          "PARSER",
+          "PRELUDE",
+          "PROFILE",
+          "PROVIDER",
+          "PUBLICATION",
+          "RUNTIME",
+          "STDLIB",
+          "TESTER",
+          "TOOLING",
+          "TYPE_SYSTEM",
+          "VERIFIER"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "provenance_dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "replaced_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "downgrade_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "notes": {
+      "type": "string"
+    },
+    "primary_source": {
+      "const": "spec/language.md"
+    },
+    "row_schema_version": {
+      "const": "deeplus.feature-row/r51f3"
+    },
+    "trace_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normative_trace_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "diagnostics",
+        "predicates",
+        "examples",
+        "productions",
+        "semantic_reference_productions"
+      ],
+      "properties": {
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "productions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "semantic_reference_productions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "artifact_trace_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "production_lexer": {
+      "const": "NOT_RUN"
+    },
+    "production_parser": {
+      "const": "NOT_RUN"
+    },
+    "integrated_checker": {
+      "const": "NOT_RUN"
+    },
+    "formatter_lsp": {
+      "const": "NOT_RUN"
+    },
+    "runtime_xvm": {
+      "const": "NOT_RUN"
+    },
+    "stdlib_provider_runner": {
+      "const": "NOT_RUN"
+    },
+    "actual_user_team_study": {
+      "const": "NOT_RUN"
+    },
+    "uml_exporter_provider_runner": {
+      "const": "NOT_RUN"
+    },
+    "independent_conformance": {
+      "const": "NOT_RUN"
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    },
+    "not_applicable_reason": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status_enum": {
+            "enum": [
+              "STABLE_DESIGN",
+              "STABLE_GROUP"
+            ]
+          }
+        },
+        "required": [
+          "status_enum"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_activation": {
+            "const": "none"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status_enum": {
+            "const": "PREVIEW"
+          }
+        },
+        "required": [
+          "status_enum"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_activation": {
+            "const": "explicit_feature_gate"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status_enum": {
+            "const": "PREVIEW_DESIGN"
+          }
+        },
+        "required": [
+          "status_enum"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_activation": {
+            "const": "nonactivatable"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status_enum": {
+            "const": "ABSORBED_ALIAS"
+          }
+        },
+        "required": [
+          "status_enum"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_activation": {
+            "const": "nonactivatable"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status_enum": {
+            "const": "SUPERSEDED"
+          }
+        },
+        "required": [
+          "status_enum"
+        ]
+      },
+      "then": {
+        "properties": {
+          "source_activation": {
+            "const": "nonactivatable"
+          }
+        }
+      }
+    }
+  ]
+}

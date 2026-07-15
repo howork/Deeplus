@@ -1,0 +1,110 @@
+{
+  "schema": "deeplus.tooling-and-profile-contracts/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "evidence_tier": "E2_STATIC_DESIGN_CONTRACT",
+  "product_execution": "NOT_RUN",
+  "contracts": [
+    {
+      "feature_id": "xvm_agent_framework",
+      "status": "OFFICIAL_TOOLING",
+      "source_syntax": "none",
+      "inputs": [
+        "Deeplus MIR digest or xVM bytecode digest",
+        "declared host capabilities",
+        "deterministic execution budget"
+      ],
+      "outputs": [
+        "ordered event receipt",
+        "diagnostic receipt",
+        "output digest"
+      ],
+      "laws": [
+        "cannot forge MIR, bytecode or authority",
+        "availability never changes language semantics",
+        "all product execution remains NOT_RUN without a target receipt"
+      ],
+      "positive_fixture": "bounded agent run records input and capability digests without altering the program",
+      "negative_fixtures": [
+        "undeclared host capability",
+        "input digest mismatch",
+        "budget or receipt order mismatch"
+      ]
+    },
+    {
+      "feature_id": "tail_call_analysis_tooling",
+      "status": "OFFICIAL_TOOLING",
+      "source_syntax": "none",
+      "inputs": [
+        "Deeplus MIR control-flow graph",
+        "cleanup, effect, suspension and actor boundaries"
+      ],
+      "outputs": [
+        "tail-position classification",
+        "backend-specific optimization receipt or explicit refusal reason"
+      ],
+      "laws": [
+        "ordinary call semantics are unchanged",
+        "optimization absence is not a program error",
+        "self and mutual recursion are distinguished",
+        "xVM/AOT/ORC observations must remain equal"
+      ],
+      "positive_fixture": "tail-position call with no pending cleanup is reported eligible",
+      "negative_fixtures": [
+        "pending cleanup",
+        "suspension boundary",
+        "actor delivery boundary"
+      ]
+    },
+    {
+      "feature_id": "pattern_engine_library_profile",
+      "status": "STDLIB_PROFILE",
+      "source_syntax": "ordinary library calls over String or Bytes",
+      "inputs": [
+        "pattern text or bytes",
+        "engine and version identity",
+        "flags and Unicode mode",
+        "resource budget"
+      ],
+      "outputs": [
+        "Result<Pattern, error PatternCompileError>",
+        "ordinary match result"
+      ],
+      "laws": [
+        "compile failure differs from no match",
+        "engine identity and budget are explicit",
+        "cache key includes engine, version, flags and input digest",
+        "no literal or scanner mode is introduced"
+      ],
+      "positive_fixture": "Pattern.compile(raw\"[A-Z]+\", engine: PatternEngine.default, budget: PatternBudget.standard)",
+      "negative_fixtures": [
+        "unknown engine",
+        "invalid flags",
+        "resource budget exceeded"
+      ]
+    },
+    {
+      "feature_id": "uml_state_machine_provider",
+      "status": "OFFICIAL_TOOLING",
+      "source_syntax": "none",
+      "inputs": [
+        "typed state/transition metadata",
+        "source symbol trace IDs"
+      ],
+      "outputs": [
+        "ordinary generated Deeplus source or tests",
+        "content-addressed sidecar"
+      ],
+      "laws": [
+        "generated source is rechecked by the Rust frontend",
+        "cannot inject runtime or MIR semantics",
+        "every state and transition retains source traceability"
+      ],
+      "positive_fixture": "finite traced state graph emits ordinary actor/typestate source",
+      "negative_fixtures": [
+        "dangling transition endpoint",
+        "duplicate state identity",
+        "untraced generated declaration"
+      ]
+    }
+  ]
+}

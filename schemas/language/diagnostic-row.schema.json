@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/diagnostic-row.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "diagnostic_id",
+    "baseline",
+    "diagnostic_status",
+    "diagnostic_maturity",
+    "diagnostic_class",
+    "message",
+    "feature_refs",
+    "related_feature_refs",
+    "stage",
+    "severity",
+    "primary_source",
+    "product_support",
+    "emission_domain"
+  ],
+  "properties": {
+    "diagnostic_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "diagnostic_status": {
+      "enum": [
+        "active",
+        "deprecated",
+        "retired",
+        "seed"
+      ]
+    },
+    "diagnostic_maturity": {
+      "enum": [
+        "active",
+        "deprecated",
+        "design_seed",
+        "retired",
+        "seed"
+      ]
+    },
+    "diagnostic_class": {
+      "enum": [
+        "audit_assertion_or_superseded",
+        "current_source",
+        "design_seed",
+        "historical_or_design",
+        "release_verifier",
+        "tooling"
+      ]
+    },
+    "stage": {
+      "enum": [
+        "checker",
+        "design_static",
+        "lexer",
+        "parser",
+        "provider",
+        "runtime"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "error",
+        "info",
+        "lint",
+        "note",
+        "warning"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feature_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "related_feature_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "fixit_kind": {
+      "enum": [
+        "delete",
+        "deterministic_rewrite",
+        "machine_applicable",
+        "manual_review",
+        "none",
+        "rename",
+        "replace",
+        "rewrite_or_remove",
+        "suggestion"
+      ]
+    },
+    "fixit_hint": {
+      "type": "string"
+    },
+    "fixit_policy": {
+      "type": "string"
+    },
+    "authority_set": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "AGENT",
+          "CHECKER",
+          "CONFORMANCE",
+          "DIAGNOSTICS",
+          "DOCUMENTATION",
+          "EVIDENCE",
+          "GOVERNANCE",
+          "LANGUAGE",
+          "LEXER",
+          "OFFICIAL_TOOLING",
+          "PARSER",
+          "PROVIDER",
+          "PUBLICATION",
+          "TYPE_SYSTEM",
+          "VERIFIER"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "primary_source": {
+      "const": "spec/language.md"
+    },
+    "row_schema_version": {
+      "const": "deeplus.diagnostic-row/r51f3"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "replaced_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    },
+    "emission_domain": {
+      "enum": [
+        "design_only",
+        "historical",
+        "release_verifier",
+        "source",
+        "tooling"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "diagnostic_status": {
+            "const": "retired"
+          }
+        },
+        "required": [
+          "diagnostic_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "diagnostic_maturity": {
+            "const": "retired"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "diagnostic_class": {
+            "const": "current_source"
+          }
+        },
+        "required": [
+          "diagnostic_class"
+        ]
+      },
+      "then": {
+        "properties": {
+          "stage": {
+            "enum": [
+              "checker",
+              "lexer",
+              "parser",
+              "runtime"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/deterministic-suite-profile.schema.json",
+  "title": "Deeplus R51f3 deterministic suite profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline",
+    "profile_id",
+    "seed",
+    "ordering",
+    "environment",
+    "path_normalization",
+    "output_canonicalization",
+    "product_runner"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.deterministic-suite-profile/r51f3"
+    },
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value",
+        "width_bits"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "SplitMix64"
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "width_bits": {
+          "const": 64
+        }
+      }
+    },
+    "ordering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_identity",
+        "comparison",
+        "direction",
+        "duplicate_case_id"
+      ],
+      "properties": {
+        "case_identity": {
+          "const": "case_id"
+        },
+        "comparison": {
+          "const": "unicode_scalar"
+        },
+        "direction": {
+          "const": "ascending"
+        },
+        "duplicate_case_id": {
+          "const": "reject"
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locale",
+        "timezone"
+      ],
+      "properties": {
+        "locale": {
+          "const": "C"
+        },
+        "timezone": {
+          "const": "UTC"
+        }
+      }
+    },
+    "path_normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "separator",
+        "backslash",
+        "dot_segments",
+        "parent_segments",
+        "absolute_paths",
+        "unicode_normalization",
+        "case_folding",
+        "symlink_policy"
+      ],
+      "properties": {
+        "separator": {
+          "const": "/"
+        },
+        "backslash": {
+          "const": "convert_to_separator"
+        },
+        "dot_segments": {
+          "const": "remove"
+        },
+        "parent_segments": {
+          "const": "resolve_and_reject_above_root"
+        },
+        "absolute_paths": {
+          "const": "reject"
+        },
+        "unicode_normalization": {
+          "const": "none"
+        },
+        "case_folding": {
+          "const": "none"
+        },
+        "symlink_policy": {
+          "const": "resolve_before_suite_and_record_canonical_root"
+        }
+      }
+    },
+    "output_canonicalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "encoding",
+        "object_member_order",
+        "array_order",
+        "whitespace",
+        "line_ending",
+        "terminal_newline",
+        "forbidden_fields",
+        "digest"
+      ],
+      "properties": {
+        "format": {
+          "const": "JSON"
+        },
+        "encoding": {
+          "const": "UTF-8"
+        },
+        "object_member_order": {
+          "const": "unicode_scalar"
+        },
+        "array_order": {
+          "const": "preserve_semantic_order"
+        },
+        "whitespace": {
+          "const": "none"
+        },
+        "line_ending": {
+          "const": "LF"
+        },
+        "terminal_newline": {
+          "const": false
+        },
+        "forbidden_fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "absolute_host_path",
+              "hostname",
+              "process_id",
+              "wall_clock_time"
+            ]
+          }
+        },
+        "digest": {
+          "const": "SHA-256"
+        }
+      }
+    },
+    "product_runner": {
+      "const": "NOT_RUN"
+    }
+  },
+  "x-deeplus-canonical-profile": {
+    "schema": "deeplus.deterministic-suite-profile/r51f3",
+    "baseline": "0.1.2-baseline.r51f3",
+    "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+    "seed": {
+      "algorithm": "SplitMix64",
+      "value": 0,
+      "width_bits": 64
+    },
+    "ordering": {
+      "case_identity": "case_id",
+      "comparison": "unicode_scalar",
+      "direction": "ascending",
+      "duplicate_case_id": "reject"
+    },
+    "environment": {
+      "locale": "C",
+      "timezone": "UTC"
+    },
+    "path_normalization": {
+      "separator": "/",
+      "backslash": "convert_to_separator",
+      "dot_segments": "remove",
+      "parent_segments": "resolve_and_reject_above_root",
+      "absolute_paths": "reject",
+      "unicode_normalization": "none",
+      "case_folding": "none",
+      "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+    },
+    "output_canonicalization": {
+      "format": "JSON",
+      "encoding": "UTF-8",
+      "object_member_order": "unicode_scalar",
+      "array_order": "preserve_semantic_order",
+      "whitespace": "none",
+      "line_ending": "LF",
+      "terminal_newline": false,
+      "forbidden_fields": [
+        "absolute_host_path",
+        "hostname",
+        "process_id",
+        "wall_clock_time"
+      ],
+      "digest": "SHA-256"
+    },
+    "product_runner": "NOT_RUN"
+  },
+  "x-deeplus-normalization-order": [
+    "seed",
+    "case_order",
+    "locale",
+    "timezone",
+    "path",
+    "output"
+  ],
+  "x-deeplus-fixture-registry": "tests/fixtures/imported/deterministic-suite-fixtures.json",
+  "x-product-runner": "NOT_RUN"
+}

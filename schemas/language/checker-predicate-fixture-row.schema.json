@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/checker-predicate-fixture-row.schema.json",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "descriptor",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "admitted_condition": {},
+        "descriptor": {},
+        "diagnostic_disposition": {},
+        "execution_status": {},
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "expected_lints": {},
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixture_kind": {
+          "const": "concrete_positive"
+        },
+        "predicate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_seed": {},
+        "descriptor_v5": {
+          "$ref": "./rcts-v5-descriptor.schema.json",
+          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "descriptor": {},
+        "diagnostic_disposition": {},
+        "execution_status": {},
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "expected_primary_diagnostic": {},
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixture_kind": {
+          "const": "concrete_negative"
+        },
+        "predicate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_seed": {},
+        "violated_condition": {},
+        "descriptor_v5": {
+          "$ref": "./rcts-v5-descriptor.schema.json",
+          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "descriptor_mutation": {},
+        "diagnostic_disposition": {},
+        "execution_status": {},
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "expected_primary_diagnostic": {},
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixture_kind": {
+          "const": "mutation_recipe"
+        },
+        "predicate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descriptor_v5": {
+          "$ref": "./rcts-v5-descriptor.schema.json",
+          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
+    }
+  ]
+}

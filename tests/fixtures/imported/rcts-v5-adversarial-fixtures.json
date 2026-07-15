@@ -1,0 +1,713 @@
+{
+  "schema": "deeplus.rcts-v5-adversarial-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "fixture_count": 25,
+  "fixtures": [
+    {
+      "fixture_id": "RCTS5-ADV-GENERIC-UNION-SUBTYPE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "union",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "ADV-UNION"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "alternatives": [
+          "Vehicle",
+          "Car"
+        ],
+        "injection_policy": "fixed_expected_unique_exact"
+      },
+      "expected_primary_diagnostic": "UNION_MEMBER_SUBSUMED"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-RESOURCE-WITHOUT-DROP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "nominal",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "ADV-RESOURCE"
+        },
+        "responsibility": {
+          "ownership": "resource",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      },
+      "expected_primary_diagnostic": "RCTS_RESOURCE_REQUIRES_DROP_CLEANUP"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-BORROW-WITH-DROP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "nominal",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "ADV-BORROW-DROP"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "drop_exactly_once",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      },
+      "expected_primary_diagnostic": "RCTS_BORROW_REQUIRES_VIEW_RELEASE_CLEANUP"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-GUARD-INOUT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "ADV-GUARD"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#guard",
+        "parameter_modes": [
+          "inout"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_GUARD_CALLABLE_INOUT_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-PURE-EFFECT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "ADV-PURE"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [
+            "IO"
+          ],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#pure",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_PURE_CALLABLE_EFFECTS_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-FLAGS-WIDTH",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "ADV-FLAGS-WIDTH"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "flag",
+            "name": "tag",
+            "width": 2,
+            "offset": 0,
+            "mask": "0x0F"
+          },
+          {
+            "kind": "reserved_zero",
+            "name": null,
+            "width": 4,
+            "offset": 4,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "ADV-FLAGS-WIDTH"
+      },
+      "expected_primary_diagnostic": "RCTS_FLAGS_SLOT_WIDTH_MUST_BE_ONE"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-DUPLICATE-SLOT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "ADV-DUP-SLOT"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "named",
+            "name": "mode",
+            "width": 4,
+            "offset": 0,
+            "mask": "0x0F"
+          },
+          {
+            "kind": "named",
+            "name": "mode",
+            "width": 4,
+            "offset": 4,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "ADV-DUP-SLOT"
+      },
+      "expected_primary_diagnostic": "RCTS_BITFIELD_DUPLICATE_SLOT_NAME"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-CONCRETE-CONTRACT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "intersection",
+        "semantic_type": {
+          "kind": "intersection",
+          "type_id": "ADV-INTERSECTION"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "concrete_base": null,
+        "contracts": [
+          "Car"
+        ],
+        "distribution": "forbidden"
+      },
+      "expected_primary_diagnostic": "RCTS_INTERSECTION_CONTRACT_MUST_BE_TRAIT"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-FACET-EXISTENTIAL",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "ADV-FACET-SAFE"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": "r1",
+        "existential_safe": false,
+        "concrete_payload_visible": false
+      },
+      "expected_primary_diagnostic": "RCTS_FACET_EXISTENTIAL_SAFETY_REQUIRED"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-FACET-REGION",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "ADV-FACET-REGION"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": null,
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      },
+      "expected_primary_diagnostic": "RCTS_FACET_BORROW_REGION_REQUIRED"
+    },
+    {
+      "fixture_id": "RCTS5-ADV-FACET-CLEANUP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "ADV-FACET-CLEANUP"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": "r1",
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      },
+      "expected_primary_diagnostic": "RCTS_FACET_BORROW_REQUIRES_VIEW_RELEASE"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-GUARD-RESULT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-GUARD-RESULT"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#guard",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_GUARD_CALLABLE_RESULT_MUST_BE_BOOL"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-GUARD-ERROR",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-GUARD-ERROR"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [
+            "E"
+          ],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#guard",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "Bool"
+      },
+      "expected_primary_diagnostic": "RCTS_GUARD_CALLABLE_ERROR_SET_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-GUARD-SUSPEND",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-GUARD-SUSPEND"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": true,
+          "isolation": "local"
+        },
+        "call_shape": "#guard",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "Bool"
+      },
+      "expected_primary_diagnostic": "RCTS_GUARD_CALLABLE_SUSPENSION_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-GUARD-AUTHORITY",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-GUARD-AUTHORITY"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [
+            "clock"
+          ],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#guard",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "Bool"
+      },
+      "expected_primary_diagnostic": "RCTS_GUARD_CALLABLE_AUTHORITY_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-PURE-ERROR",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-PURE-ERROR"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [
+            "E"
+          ],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#pure",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_PURE_CALLABLE_ERROR_SET_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-PURE-SUSPEND",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-PURE-SUSPEND"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": true,
+          "isolation": "local"
+        },
+        "call_shape": "#pure",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_PURE_CALLABLE_SUSPENSION_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-PURE-INOUT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "RCTS5-R51d-PURE-INOUT"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "#pure",
+        "parameter_modes": [
+          "inout"
+        ],
+        "result_type": "String"
+      },
+      "expected_primary_diagnostic": "RCTS_PURE_CALLABLE_INOUT_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-FACET-CONCRETE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "RCTS5-R51d-FACET-CONCRETE"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Car",
+        "region": "r1",
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      },
+      "expected_primary_diagnostic": "RCTS_FACET_CONTRACT_MUST_BE_TRAIT"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-FACET-ACTOR",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "RCTS5-R51d-FACET-ACTOR"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "actor"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": "r1",
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      },
+      "expected_primary_diagnostic": "RCTS_FACET_ACTOR_ISOLATION_CROSSING_FORBIDDEN"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-UNION-TRAIT",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "union",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "RCTS5-R51d-UNION-TRAIT"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "alternatives": [
+          "Int",
+          "Printable"
+        ],
+        "injection_policy": "fixed_expected_unique_exact"
+      },
+      "expected_primary_diagnostic": "RCTS_UNION_MEMBER_KIND_NOT_ADMITTED"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-UNION-ERRORROW",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "union",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "RCTS5-R51d-UNION-ERRORROW"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "alternatives": [
+          "Int",
+          "ErrorRow"
+        ],
+        "injection_policy": "fixed_expected_unique_exact"
+      },
+      "expected_primary_diagnostic": "RCTS_UNION_MEMBER_KIND_NOT_ADMITTED"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-INTERSECTION-TRAIT-BASE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "intersection",
+        "semantic_type": {
+          "kind": "intersection",
+          "type_id": "RCTS5-R51d-INTERSECTION-TRAIT-BASE"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "concrete_base": "Printable",
+        "contracts": [
+          "Printable",
+          "Auditable"
+        ],
+        "distribution": "forbidden"
+      },
+      "expected_primary_diagnostic": "RCTS_INTERSECTION_CONCRETE_BASE_MUST_BE_NOMINAL"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-BITFIELD-MASK",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "RCTS5-R51d-BITFIELD-MASK"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "named",
+            "name": "tag",
+            "width": 4,
+            "offset": 0,
+            "mask": "0xF0"
+          },
+          {
+            "kind": "reserved_zero",
+            "name": null,
+            "width": 4,
+            "offset": 4,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "positive-bitfield"
+      },
+      "expected_primary_diagnostic": "RCTS_BITFIELD_MASK_MISMATCH"
+    },
+    {
+      "fixture_id": "RCTS5-R51d-BITFIELD-OVERLAP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "RCTS5-R51d-BITFIELD-OVERLAP"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "named",
+            "name": "tag",
+            "width": 4,
+            "offset": 0,
+            "mask": "0x0F"
+          },
+          {
+            "kind": "reserved_zero",
+            "name": null,
+            "width": 4,
+            "offset": 2,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "positive-bitfield"
+      },
+      "expected_primary_diagnostic": "RCTS_BITFIELD_SLOT_OVERLAP"
+    }
+  ],
+  "product_checker": "NOT_RUN"
+}

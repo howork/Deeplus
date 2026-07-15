@@ -1,0 +1,860 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/rcts-v5-descriptor.schema.json",
+  "title": "Deeplus RCTS-V5 discriminated descriptor",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "responsibility_core"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "nominal"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility",
+        "alternatives",
+        "injection_policy"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "union"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        },
+        "alternatives": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "injection_policy": {
+          "const": "fixed_expected_unique_exact"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility",
+        "contracts",
+        "distribution"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "intersection"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        },
+        "concrete_base": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contracts": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "distribution": {
+          "const": "forbidden"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility",
+        "mode",
+        "contract",
+        "region",
+        "existential_safe",
+        "concrete_payload_visible"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "facet"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "const": "borrow"
+            },
+            "cleanup": {
+              "const": "view_release"
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        },
+        "mode": {
+          "const": "borrow"
+        },
+        "contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region": {
+          "type": "string",
+          "minLength": 1
+        },
+        "existential_safe": {
+          "const": true
+        },
+        "concrete_payload_visible": {
+          "const": false
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility",
+        "call_shape",
+        "parameter_modes",
+        "result_type"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "callable"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        },
+        "call_shape": {
+          "type": "string"
+        },
+        "parameter_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "result_type": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "variant",
+        "semantic_type",
+        "responsibility",
+        "backing",
+        "bit_order",
+        "slots",
+        "layout_digest"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.rcts-v5/descriptor"
+        },
+        "variant": {
+          "const": "bitfield"
+        },
+        "semantic_type": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responsibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership",
+            "cleanup",
+            "effects",
+            "errors",
+            "authorities",
+            "suspends",
+            "isolation"
+          ],
+          "properties": {
+            "ownership": {
+              "enum": [
+                "reusable",
+                "borrow",
+                "inout",
+                "move",
+                "resource"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "none",
+                "view_release",
+                "drop_exactly_once"
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "authorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "suspends": {
+              "type": "boolean"
+            },
+            "isolation": {
+              "enum": [
+                "local",
+                "task",
+                "actor",
+                "global"
+              ]
+            }
+          }
+        },
+        "api_digest": {
+          "type": "string"
+        },
+        "backing": {
+          "enum": [
+            "UInt8",
+            "UInt16",
+            "UInt32",
+            "UInt64",
+            "UInt128"
+          ]
+        },
+        "bit_order": {
+          "const": "lsb0"
+        },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "width",
+              "offset"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "named",
+                  "reserved_zero",
+                  "flag"
+                ]
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "mask": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "layout_digest": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.example/schemas/release-manifest-v1.json",
+  "title": "Deeplus Release Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "release",
+    "source",
+    "compatibility",
+    "authority",
+    "product_lanes",
+    "primary_reviews",
+    "extra_auditors",
+    "artifacts"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.release-manifest/v1"},
+    "release": {
+      "type": "object",
+      "required": ["version", "channel", "published_at"],
+      "properties": {
+        "version": {"type": "string"},
+        "channel": {"enum": ["internal", "preview", "stable", "security"]},
+        "published_at": {"type": ["string", "null"], "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["revision", "tree_sha256"],
+      "properties": {
+        "revision": {"type": "string"},
+        "tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "rust_toolchain": {"type": "string"},
+        "llvm_version": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "required": ["language", "spec", "mir", "xbc", "stdlib", "conformance"],
+      "properties": {
+        "language": {"type": "string"},
+        "spec": {"type": "string"},
+        "mir": {"type": "string"},
+        "xbc": {"type": "string"},
+        "stdlib": {"type": "string"},
+        "conformance": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["domain", "path", "sha256"],
+        "properties": {
+          "domain": {"type": "string"},
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "product_lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "evidence_level", "receipt"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {
+            "enum": [
+              "NOT_RUN",
+              "BLOCKED",
+              "FAILED",
+              "PASSED_FOCUSED",
+              "PASSED_INTEGRATED",
+              "PASSED_INDEPENDENT"
+            ]
+          },
+          "evidence_level": {"enum": ["E0", "E1", "E2", "E3", "E4", "E5"]},
+          "receipt": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "primary_reviews": {
+      "type": "object",
+      "required": ["Design_", "Spec_", "Impl_", "Test_", "Devel_"],
+      "properties": {
+        "Design_": {"type": "string"},
+        "Spec_": {"type": "string"},
+        "Impl_": {"type": "string"},
+        "Test_": {"type": "string"},
+        "Devel_": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "extra_auditors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "trigger", "report_required", "disposition"],
+        "properties": {
+          "role": {"type": "string"},
+          "trigger": {"type": "string"},
+          "report_required": {"type": "boolean"},
+          "disposition": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "filename", "sha256"],
+        "properties": {
+          "kind": {"enum": ["source", "binary", "documentation", "evidence"]},
+          "filename": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "known_issues": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "provenance": {"type": ["string", "null"]},
+    "sbom": {"type": ["string", "null"]}
+  }
+}
+

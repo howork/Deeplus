@@ -1,0 +1,92 @@
+{
+  "schema": "deeplus.source-role-contract/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "registry_kind": "source_role_contract",
+  "roles": {
+    "library": {
+      "root": "LibrarySourceFile",
+      "top_level_statements": false,
+      "entry_count": 0,
+      "top_level_binding_predicate": "LibraryStaticBindingInitializerAdmitted",
+      "top_level_binding_exact_conjunction": {
+        "source_kind": "Binding",
+        "source_role": "library",
+        "binding_kind": "let",
+        "dependency_cycle": false,
+        "commit_count": 1,
+        "error_set": [],
+        "effect_row": [],
+        "suspension": "none",
+        "authority": [],
+        "acquires_resource": false,
+        "escapes_resource": false,
+        "initializer_task_count": 0,
+        "initializer_actor_count": 0,
+        "isolation": "local"
+      },
+      "annotation_targets": "imports and library top-level declarations only; never entry"
+    },
+    "executable": {
+      "root": "ExecutableSourceFile",
+      "top_level_statements": false,
+      "entry_count": 1,
+      "entry_target_predicate": "EntryTargetUnique",
+      "entry_count_diagnostics": {
+        "0": "NO_EXECUTABLE_ENTRY",
+        ">1": "ENTRY_DECL_DUPLICATE"
+      },
+      "top_level_binding": "forbidden; initialize state inside the selected entry",
+      "annotation_targets": "imports, nonbinding declarations, and entry"
+    },
+    "script": {
+      "root": "ScriptSourceFile",
+      "top_level_statements": true,
+      "explicit_entry_count": 0,
+      "execution_order": "source order in selected root",
+      "annotation_targets": "imports and nonbinding declarations only; entry is not a ScriptSourceFile production"
+    }
+  },
+  "preview_role_roots": {
+    "library": "PreviewLibrarySourceFile",
+    "executable": "PreviewExecutableSourceFile",
+    "script": "PreviewScriptSourceFile"
+  },
+  "entry_signatures": [
+    "() -> Unit",
+    "(Sequence<String>) -> Unit",
+    "() -> ExitCode",
+    "(Sequence<String>) -> ExitCode"
+  ],
+  "entry_signature_predicate": "EntrySignatureAdmitted",
+  "entry_excluded_parameter_forms": [
+    "generic",
+    "receiver",
+    "context",
+    "witness",
+    "rest",
+    "default"
+  ],
+  "generic_entry_neutral_parse_route": "No neutral current AST route exists. A generic def#entry is recognized only by RecoveryGenericEntryFunctionDecl, emits ENTRY_SIGNATURE_NOT_ADMITTED, and creates no current entry AST.",
+  "entry_error_set": [],
+  "async_entry": "same parameter/result shapes; launcher drives task to completion",
+  "module_static_block": "PREVIEW_DESIGN/nonactivatable",
+  "script_and_explicit_entry": "forbidden_in_script_root; choose ExecutableSourceFile before parsing an explicit-entry file",
+  "root_selection": {
+    "selector": "source_role",
+    "timing": "required before parsing",
+    "inference_by_trying_roots": "forbidden",
+    "exactly_one_role": true,
+    "preview_selection": "source_activation=explicit_feature_gate maps the same role to Preview{Role}SourceFile"
+  },
+  "shebang_semantics": "script first physical line only",
+  "portable_host_profile": {
+    "Unit_success": 0,
+    "ExitCode": "exact contained 0..255 value",
+    "uncaught_Error": 1,
+    "uncaught_Defect": 101,
+    "uncaught_Cancellation": 130,
+    "cleanup_before_status_projection": true
+  },
+  "product_support": "NOT_RUN",
+  "generic_entry_current_profile": "recovery_only"
+}

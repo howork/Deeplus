@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+  "title": "Deeplus R51f3 UML class/package export",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline",
+    "profile_id",
+    "packages",
+    "classifiers",
+    "relationships",
+    "product_runner"
+  ],
+  "properties": {
+    "schema": {
+      "const": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile"
+    },
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "profile_id": {
+      "const": "deeplus-r51f3-uml-class-package-v1"
+    },
+    "packages": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "package_id",
+          "qualified_name",
+          "parent_package_id",
+          "visibility"
+        ],
+        "properties": {
+          "package_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "qualified_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_package_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility": {
+            "enum": [
+              "public",
+              "module",
+              "private"
+            ]
+          }
+        }
+      }
+    },
+    "classifiers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "classifier_id",
+          "package_id",
+          "name",
+          "kind",
+          "visibility",
+          "abstract",
+          "sealed"
+        ],
+        "properties": {
+          "classifier_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "package_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "actor",
+              "class",
+              "data",
+              "enum",
+              "error",
+              "trait"
+            ]
+          },
+          "visibility": {
+            "enum": [
+              "public",
+              "module",
+              "private"
+            ]
+          },
+          "abstract": {
+            "type": "boolean"
+          },
+          "sealed": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relationship_id",
+          "kind",
+          "source_classifier_id",
+          "target_classifier_id",
+          "source_role",
+          "target_role",
+          "source_multiplicity",
+          "target_multiplicity",
+          "navigability",
+          "aggregation"
+        ],
+        "properties": {
+          "relationship_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "association",
+              "dependency",
+              "generalization",
+              "realization"
+            ]
+          },
+          "source_classifier_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_classifier_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "target_role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "source_multiplicity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_type_form",
+              "lower",
+              "upper",
+              "ordered",
+              "unique"
+            ],
+            "properties": {
+              "source_type_form": {
+                "enum": [
+                  "T",
+                  "Option<T>",
+                  "Sequence<T>",
+                  "NonEmptySequence<T>"
+                ]
+              },
+              "lower": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "upper": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "const": "*"
+                  }
+                ]
+              },
+              "ordered": {
+                "type": "boolean"
+              },
+              "unique": {
+                "type": "boolean"
+              }
+            }
+          },
+          "target_multiplicity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_type_form",
+              "lower",
+              "upper",
+              "ordered",
+              "unique"
+            ],
+            "properties": {
+              "source_type_form": {
+                "enum": [
+                  "T",
+                  "Option<T>",
+                  "Sequence<T>",
+                  "NonEmptySequence<T>"
+                ]
+              },
+              "lower": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "upper": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "const": "*"
+                  }
+                ]
+              },
+              "ordered": {
+                "type": "boolean"
+              },
+              "unique": {
+                "type": "boolean"
+              }
+            }
+          },
+          "navigability": {
+            "enum": [
+              "none",
+              "source_to_target",
+              "target_to_source",
+              "both"
+            ]
+          },
+          "aggregation": {
+            "enum": [
+              "none",
+              "shared",
+              "composite"
+            ]
+          }
+        }
+      }
+    },
+    "product_runner": {
+      "const": "NOT_RUN"
+    }
+  },
+  "x-deeplus-canonical-profile": {
+    "profile_id": "deeplus-r51f3-uml-class-package-v1",
+    "package_order": "strict_ascending_package_id_unicode_scalar",
+    "classifier_order": "strict_ascending_classifier_id_unicode_scalar",
+    "relationship_order": "strict_ascending_relationship_id_unicode_scalar",
+    "classifier_kinds": [
+      "actor",
+      "class",
+      "data",
+      "enum",
+      "error",
+      "trait"
+    ],
+    "relationship_kinds": [
+      "association",
+      "dependency",
+      "generalization",
+      "realization"
+    ],
+    "multiplicity_rules": [
+      {
+        "source_type_form": "T",
+        "lower": 1,
+        "upper": 1
+      },
+      {
+        "source_type_form": "Option<T>",
+        "lower": 0,
+        "upper": 1
+      },
+      {
+        "source_type_form": "Sequence<T>",
+        "lower": 0,
+        "upper": "*"
+      },
+      {
+        "source_type_form": "NonEmptySequence<T>",
+        "lower": 1,
+        "upper": "*"
+      }
+    ],
+    "unknown_type_form": "reject",
+    "product_runner": "NOT_RUN"
+  },
+  "x-deeplus-id-contract": "package_id, classifier_id, and relationship_id are each pairwise unique and strictly sorted in their own arrays; every reference resolves inside the export",
+  "x-deeplus-multiplicity-contract": "lower <= finite upper; '*' is unbounded; source_type_form maps exactly through canonical multiplicity_rules",
+  "x-deeplus-fixture-registry": "tests/fixtures/imported/uml-export-fixtures.json",
+  "x-product-runner": "NOT_RUN"
+}

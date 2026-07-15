@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RCTS-V5 public API contract digest row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "symbol_id",
+    "semantic_type_digest",
+    "responsibility_digest",
+    "layout_digest",
+    "evidence_digest",
+    "canonical_sha256"
+  ],
+  "properties": {
+    "symbol_id": {
+      "type": "string"
+    },
+    "semantic_type_digest": {
+      "type": "string"
+    },
+    "responsibility_digest": {
+      "type": "string"
+    },
+    "layout_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

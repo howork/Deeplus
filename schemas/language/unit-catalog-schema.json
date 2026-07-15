@@ -1,0 +1,40 @@
+{
+  "baseline": "0.1.2-baseline.r51f3",
+  "current_and_preview_features": [
+    "user_unit_catalog_msp",
+    "exact_ratio_unit_conversion_msp",
+    "unit_operation_policy_msp"
+  ],
+  "fields": {
+    "catalog_id": "stable identifier for unit catalog authority",
+    "conversion_edges": "static exact or approximate conversion edges",
+    "dimensions": "dimension identifiers and canonical unit",
+    "policies": "optional provider/approximation/calendar policy declarations",
+    "symbols": "alias map for exposed unit symbols",
+    "units": "map of UnitSymbol to unit descriptor"
+  },
+  "product_support": "NOT_RUN",
+  "registry_kind": "unit_catalog_schema",
+  "required_fields": [
+    "catalog_id",
+    "conversion_edges",
+    "dimensions",
+    "units"
+  ],
+  "rules": [
+    "one canonical unit per dimension",
+    "active use required for unqualified lookup",
+    "conversion graph must be deterministic for static exact conversions"
+  ],
+  "schema": "deeplus.unit-catalog/r51f3",
+  "schema_notes": "R49 unit catalog schema uses canonical required_fields and Stable Unit feature status; product support remains NOT_RUN.",
+  "schema_version": "deeplus.unit-catalog/r51f3",
+  "status_projection": "R51f3 current Stable/Preview lifecycle",
+  "predecessor_details": {
+    "baseline": "0.1.2-baseline.r51f",
+    "source_schema": "deeplus.unit-catalog/r50",
+    "source_status_projection": "R50 current Stable/Preview lifecycle",
+    "source_payload_sha256": "04a22fc95d9ec180f2d5ff3925894e6bd1552c6ad38069b3a293689f9b22ea68",
+    "authority": "provenance_only_noncurrent"
+  }
+}

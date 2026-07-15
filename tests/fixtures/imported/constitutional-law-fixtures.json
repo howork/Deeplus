@@ -1,0 +1,339 @@
+{
+  "schema": "deeplus.constitutional-law-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "positive_fixture_count": 23,
+  "reversal_mutation_count": 23,
+  "coordinated_same_wrong_mutation": {
+    "mutation_id": "constitutional_coordinated_same_wrong",
+    "operation": "change obligation, fixture oracle, row fingerprint, and internal digest together while retaining the trusted verifier and detached digest",
+    "expected_check_id": "OP-005-constitutional-detached-trust-anchor",
+    "expected": "static_verifier_rejects"
+  },
+  "positive_fixtures": [
+    {
+      "fixture_id": "CF-OP-EVAL-001-POS",
+      "law_id": "OP-EVAL-001",
+      "oracle": "Evaluate subexpressions exactly once in source order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-TEMP-002-POS",
+      "law_id": "OP-TEMP-002",
+      "oracle": "Drop full-expression temporaries in reverse completion order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-ASSIGN-003-POS",
+      "law_id": "OP-ASSIGN-003",
+      "oracle": "Complete RHS before dropping and replacing the old place value.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-CONSTRUCT-004-POS",
+      "law_id": "OP-CONSTRUCT-004",
+      "oracle": "Initialize construction fields in row/source order and roll back completed fields in reverse order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-PROJECT-005-POS",
+      "law_id": "OP-PROJECT-005",
+      "oracle": "Evaluate a projection source once and project in target-row order under declared ownership.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-OPTION-006-POS",
+      "law_id": "OP-OPTION-006",
+      "oracle": "Evaluate Option coalescing lhs once and rhs only for none.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-LOCAL-OPTION-007-POS",
+      "law_id": "OP-LOCAL-OPTION-007",
+      "oracle": "Insert at most one outer some only for an independently fixed local target.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-UNIT-008-POS",
+      "law_id": "OP-UNIT-008",
+      "oracle": "Normalize unit dimensions and rational scale exactly before equality or conversion.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-INIT-009-POS",
+      "law_id": "OP-INIT-009",
+      "oracle": "Evaluate library static lets in deterministic dependency order and commit each once.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-ENTRY-010-POS",
+      "law_id": "OP-ENTRY-010",
+      "oracle": "Select exactly one admitted entry and project host status only after cleanup.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-FAIL-011-POS",
+      "law_id": "OP-FAIL-011",
+      "oracle": "Retain the first escaping failure and append cleanup failures in execution order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-CANCEL-012-POS",
+      "law_id": "OP-CANCEL-012",
+      "oracle": "Cancellation is cooperative and never bypasses lexical cleanup.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-TASK-013-POS",
+      "law_id": "OP-TASK-013",
+      "oracle": "A task scope joins or cancels all owned children before exit.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-ACTOR-014-POS",
+      "law_id": "OP-ACTOR-014",
+      "oracle": "Actor mailboxes preserve sender-to-receiver FIFO without promising global sender order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-NUMERIC-015-POS",
+      "law_id": "OP-NUMERIC-015",
+      "oracle": "Numeric operations follow their declared checked/static responsibility without hidden widening.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-NUMARR-016-POS",
+      "law_id": "OP-NUMARR-016",
+      "oracle": "NumericArray operations preserve source evaluation order, shape checks, and explicit allocation/authority effects.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-GUARD-017-POS",
+      "law_id": "OP-GUARD-017",
+      "oracle": "Evaluate every guard left-to-right once before ownership commit or payload evaluation; a false guard evaluates no payload.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-LOCAL-VALUE-018-POS",
+      "law_id": "OP-LOCAL-VALUE-018",
+      "oracle": "A multi-statement local value body produces a value with local ret on every reachable normal path.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-LOOP-019-POS",
+      "law_id": "OP-LOOP-019",
+      "oracle": "Only the final loop transfer target executes and observes its outcome handler after intermediate cleanup.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-CALLABLE-020-POS",
+      "law_id": "OP-CALLABLE-020",
+      "oracle": "Preserve callable lifetime, call-right, environment, and behavior responsibility across type checking, API digest, and lowering.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-CLEANUP-021-POS",
+      "law_id": "OP-CLEANUP-021",
+      "oracle": "Invoke def#cleanup exactly once for initialized non-moved state, never by direct call, while preserving primary and suppressed failure order.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-EVIDENCE-022-POS",
+      "law_id": "OP-EVIDENCE-022",
+      "oracle": "Resolve a root conformance evidence selector to exactly one visible coherent nominal conformance without constructing a first-class witness value.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CF-OP-NAMED-REST-023-POS",
+      "law_id": "OP-NAMED-REST-023",
+      "oracle": "Keep declaration-side *** collection distinct from call-side ** named unfolding in parsing, typing, and API residue.",
+      "expected": "admitted",
+      "execution_status": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "reversal_mutations": [
+    {
+      "mutation_id": "constitutional_reversal_00",
+      "law_id": "OP-EVAL-001",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_01",
+      "law_id": "OP-TEMP-002",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_02",
+      "law_id": "OP-ASSIGN-003",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_03",
+      "law_id": "OP-CONSTRUCT-004",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_04",
+      "law_id": "OP-PROJECT-005",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_05",
+      "law_id": "OP-OPTION-006",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_06",
+      "law_id": "OP-LOCAL-OPTION-007",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_07",
+      "law_id": "OP-UNIT-008",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_08",
+      "law_id": "OP-INIT-009",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_09",
+      "law_id": "OP-ENTRY-010",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_10",
+      "law_id": "OP-FAIL-011",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_11",
+      "law_id": "OP-CANCEL-012",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_12",
+      "law_id": "OP-TASK-013",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_13",
+      "law_id": "OP-ACTOR-014",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_14",
+      "law_id": "OP-NUMERIC-015",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_15",
+      "law_id": "OP-NUMARR-016",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_16",
+      "law_id": "OP-GUARD-017",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_17",
+      "law_id": "OP-LOCAL-VALUE-018",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_18",
+      "law_id": "OP-LOOP-019",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_19",
+      "law_id": "OP-CALLABLE-020",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_20",
+      "law_id": "OP-CLEANUP-021",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_21",
+      "law_id": "OP-EVIDENCE-022",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    },
+    {
+      "mutation_id": "constitutional_reversal_22",
+      "law_id": "OP-NAMED-REST-023",
+      "operation": "prefix the catalog obligation with REVERSED while retaining the sealed fingerprint",
+      "expected_check_id": "OP-004-constitutional-law-fingerprints",
+      "expected": "static_verifier_rejects"
+    }
+  ],
+  "evidence_boundary": "coordinated static oracle/fingerprint fixtures; target runtime execution NOT_RUN"
+}

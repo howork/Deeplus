@@ -1,0 +1,38 @@
+name: Canonical integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: canonical-integrity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile repository Python tools
+        run: python3 -m compileall -q tools
+      - name: Validate current or candidate workspace
+        run: python3 tools/validators/validate_workspace.py
+      - name: Run validator mutation suite
+        run: python3 tools/validators/run_repository_bootstrap_mutation_tests.py
+      - name: Rebuild deterministic source archive
+        run: |
+          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-a.zip
+          git diff --exit-code -- release/source-tree-manifest.json
+          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-b.zip
+          cmp /tmp/deeplus-source-a.zip /tmp/deeplus-source-b.zip
+          sha256sum /tmp/deeplus-source-a.zip
+      - name: Reject committed release archives
+        run: |
+          test -z "$(find . -path ./.git -prune -o -type f \( -name '*.zip' -o -name '*.tar' -o -name '*.gz' -o -name '*.zst' \) -print)"

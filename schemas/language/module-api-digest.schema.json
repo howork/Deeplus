@@ -1,0 +1,448 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-api-digest.schema.json",
+  "title": "Deeplus R51f3 normalized module API digest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline",
+    "module_id",
+    "source_role",
+    "symbols",
+    "canonical_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-api-digest/r51f3"
+    },
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_role": {
+      "enum": [
+        "library",
+        "executable"
+      ]
+    },
+    "symbols": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "symbol_id",
+          "kind",
+          "normalized_signature",
+          "error_set",
+          "effect_row",
+          "authority",
+          "isolation",
+          "evidence_ids"
+        ],
+        "properties": {
+          "symbol_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "type",
+              "function",
+              "method",
+              "conformance",
+              "static_binding"
+            ]
+          },
+          "normalized_signature": {
+            "type": "string",
+            "minLength": 1
+          },
+          "callable_profile": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "lifetime",
+              "call_right",
+              "environment_receiver",
+              "behavior"
+            ],
+            "properties": {
+              "lifetime": {
+                "enum": [
+                  "escaping",
+                  "scoped"
+                ]
+              },
+              "call_right": {
+                "enum": [
+                  "repeatable",
+                  "once"
+                ]
+              },
+              "environment_receiver": {
+                "enum": [
+                  "shared",
+                  "mutable"
+                ]
+              },
+              "behavior": {
+                "enum": [
+                  "ordinary",
+                  "pure",
+                  "guard"
+                ]
+              }
+            }
+          },
+          "named_rest_residue": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "const": "Record***"
+              }
+            ]
+          },
+          "error_set": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "effect_row": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "authority": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "isolation": {
+            "enum": [
+              "local",
+              "task",
+              "actor",
+              "shared"
+            ]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "construction_row_sha256": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "projection_row_sha256": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "type"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "construction_row_sha256",
+                "projection_row_sha256"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "callable_profile"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "named_rest_residue"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "function"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "callable_profile",
+                "named_rest_residue"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "construction_row_sha256"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "projection_row_sha256"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "method"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [
+                "callable_profile",
+                "named_rest_residue"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "construction_row_sha256"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "projection_row_sha256"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "conformance"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "callable_profile"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "named_rest_residue"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "construction_row_sha256"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "projection_row_sha256"
+                    ]
+                  }
+                ]
+              },
+              "properties": {
+                "evidence_ids": {
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "static_binding"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            "then": {
+              "required": [],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "callable_profile"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "named_rest_residue"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "construction_row_sha256"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "projection_row_sha256"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "canonical_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "x-deeplus-symbol-id-contract": {
+    "identity_key": "symbol_id",
+    "uniqueness": "all symbol_id values are pairwise distinct; duplicate IDs are rejected even when the remaining symbol payload differs",
+    "ordering": "strict ascending Unicode scalar sequence order by symbol_id",
+    "duplicate_error": "MODULE_API_SYMBOL_ID_DUPLICATE",
+    "order_error": "MODULE_API_SYMBOL_ID_ORDER"
+  },
+  "x-deeplus-kind-field-contracts": {
+    "type": {
+      "required": [
+        "construction_row_sha256",
+        "projection_row_sha256"
+      ],
+      "forbidden": [
+        "callable_profile",
+        "named_rest_residue"
+      ]
+    },
+    "function": {
+      "required": [
+        "callable_profile",
+        "named_rest_residue"
+      ],
+      "forbidden": [
+        "construction_row_sha256",
+        "projection_row_sha256"
+      ]
+    },
+    "method": {
+      "required": [
+        "callable_profile",
+        "named_rest_residue"
+      ],
+      "forbidden": [
+        "construction_row_sha256",
+        "projection_row_sha256"
+      ]
+    },
+    "conformance": {
+      "required": [],
+      "forbidden": [
+        "callable_profile",
+        "named_rest_residue",
+        "construction_row_sha256",
+        "projection_row_sha256"
+      ],
+      "nonempty": [
+        "evidence_ids"
+      ]
+    },
+    "static_binding": {
+      "required": [],
+      "forbidden": [
+        "callable_profile",
+        "named_rest_residue",
+        "construction_row_sha256",
+        "projection_row_sha256"
+      ]
+    }
+  },
+  "x-deeplus-canonical-byte-algorithm": {
+    "hash_algorithm": "SHA-256",
+    "excluded_top_level_fields": [
+      "canonical_sha256"
+    ],
+    "precondition": "validate the closed schema, kind-field contracts, pairwise symbol_id uniqueness, strict symbol order, and sorted unique set-like rows before hashing",
+    "symbol_order": "strict ascending Unicode scalar sequence by symbol_id",
+    "set_like_fields": [
+      "authority",
+      "effect_row",
+      "error_set",
+      "evidence_ids"
+    ],
+    "set_order": "strict ascending Unicode scalar sequence with no duplicates",
+    "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
+    "string_encoding": "emit JSON mandatory escapes for quotation mark, reverse solidus, and U+0000..U+001F; emit every other Unicode scalar directly as UTF-8 without normalization",
+    "whitespace": "none outside string values",
+    "terminal_newline": false,
+    "steps": [
+      "deep-copy the validated digest object",
+      "remove exactly the top-level canonical_sha256 member",
+      "sort symbols by symbol_id and each declared set-like row by Unicode scalar sequence",
+      "serialize object members in Unicode-scalar key order using comma and colon separators without spaces",
+      "encode the resulting JSON text as UTF-8 and SHA-256 those bytes"
+    ]
+  },
+  "x-deeplus-fixture-registry": "tests/fixtures/imported/module-api-digest-fixtures.json",
+  "x-product-compiler": "NOT_RUN"
+}

@@ -1,0 +1,404 @@
+{
+  "schema": "deeplus.deterministic-suite-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "profile_schema": "schemas/language/deterministic-suite-profile.schema.json",
+  "positive_fixture_count": 1,
+  "negative_fixture_count": 6,
+  "positive_fixtures": [
+    {
+      "fixture_id": "DET-SUITE-POS-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "normalization_input": {
+        "case_ids": [
+          "case.zeta",
+          "case.alpha"
+        ],
+        "paths": [
+          "src\\z.dp",
+          "src/./a.dp"
+        ]
+      },
+      "expected_projection": {
+        "case_ids": [
+          "case.alpha",
+          "case.zeta"
+        ],
+        "normalized_paths": [
+          "src/a.dp",
+          "src/z.dp"
+        ],
+        "seed": 0
+      },
+      "canonical_output_utf8": "{\"case_ids\":[\"case.alpha\",\"case.zeta\"],\"normalized_paths\":[\"src/a.dp\",\"src/z.dp\"],\"seed\":0}",
+      "canonical_output_sha256": "1dcd08d9dd46f9b45cba7e220c90f1cd68957691269585b8ca40eef746cea160",
+      "expected": "admitted"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "fixture_id": "DET-SUITE-NEG-SEED-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 1,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_SEED_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "DET-SUITE-NEG-ORDER-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "input",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_ORDER_PROFILE_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "DET-SUITE-NEG-LOCALE-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "en_US.UTF-8",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_LOCALE_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "DET-SUITE-NEG-TIMEZONE-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "Asia/Seoul"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_TIMEZONE_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "DET-SUITE-NEG-PATH-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "allow",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "none",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_PATH_POLICY_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "DET-SUITE-NEG-OUTPUT-001",
+      "profile": {
+        "schema": "deeplus.deterministic-suite-profile/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-portable-deterministic-suite-v1",
+        "seed": {
+          "algorithm": "SplitMix64",
+          "value": 0,
+          "width_bits": 64
+        },
+        "ordering": {
+          "case_identity": "case_id",
+          "comparison": "unicode_scalar",
+          "direction": "ascending",
+          "duplicate_case_id": "reject"
+        },
+        "environment": {
+          "locale": "C",
+          "timezone": "UTC"
+        },
+        "path_normalization": {
+          "separator": "/",
+          "backslash": "convert_to_separator",
+          "dot_segments": "remove",
+          "parent_segments": "resolve_and_reject_above_root",
+          "absolute_paths": "reject",
+          "unicode_normalization": "none",
+          "case_folding": "none",
+          "symlink_policy": "resolve_before_suite_and_record_canonical_root"
+        },
+        "output_canonicalization": {
+          "format": "JSON",
+          "encoding": "UTF-8",
+          "object_member_order": "unicode_scalar",
+          "array_order": "preserve_semantic_order",
+          "whitespace": "pretty",
+          "line_ending": "LF",
+          "terminal_newline": false,
+          "forbidden_fields": [
+            "absolute_host_path",
+            "hostname",
+            "process_id",
+            "wall_clock_time"
+          ],
+          "digest": "SHA-256"
+        },
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "DETERMINISTIC_SUITE_OUTPUT_POLICY_MISMATCH"
+      ]
+    }
+  ],
+  "product_runner_execution": "NOT_RUN"
+}

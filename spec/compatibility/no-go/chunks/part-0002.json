@@ -1,0 +1,1295 @@
+[
+  {
+    "rejection_id": "NG-MODULE-STATIC",
+    "feature_ids": [
+      "module_static_entrance"
+    ],
+    "surface_family": "module-level static initializer",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "MODULE_STATIC_INITIALIZER_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R49C-STATIC-001"
+    ],
+    "replacement_or_no_fix": "use an explicit entry or lazy declaration",
+    "feature_gate_policy": "PREVIEW_DESIGN is nonactivatable",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-MULTIPLE-UNLABELED-TRAILING-CLOSURES",
+    "feature_ids": [
+      "trailing_closure_argument_msp"
+    ],
+    "surface_family": "more than one unlabeled trailing closure",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-005"
+    ],
+    "replacement_or_no_fix": "move every callback into ordinary named arguments",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-NAMED-REST-DOUBLE-STAR",
+    "feature_ids": [
+      "named_rest_parameter_record_msp"
+    ],
+    "surface_family": "named-rest parameter/type residue written with `**`",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+    "negative_fixture_ids": [
+      "EX-R51c1-004",
+      "EX-R51c1-005"
+    ],
+    "replacement_or_no_fix": "use attached ***; ** remains only named unfold in this family",
+    "feature_gate_policy": "no gate, recovery, or compatibility mode admits parameter/type **",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "emit the primary diagnostic without admitting the program"
+  },
+  {
+    "rejection_id": "NG-NAMED-UNFOLD-TRIPLE-STAR",
+    "feature_ids": [
+      "named_rest_parameter_record_msp",
+      "record_named_argument_spread_msp"
+    ],
+    "surface_family": "call/materialization named unfold written with prefix `***`",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+    "negative_fixture_ids": [
+      "EX-R51c1-006"
+    ],
+    "replacement_or_no_fix": "use prefix **expr for named unfold",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "owner-sensitive recovery rejects before lowering"
+  },
+  {
+    "rejection_id": "NG-NESTED-DEF-FORWARD",
+    "feature_ids": [
+      "nested_function_local_def_msp"
+    ],
+    "surface_family": "local function reference before declaration",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NESTED_DEF_FORWARD_REFERENCE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-034"
+    ],
+    "replacement_or_no_fix": "move the declaration before its first use",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-NESTED-DEF-IMPLICIT-CAPTURE",
+    "feature_ids": [
+      "nested_function_local_def_msp"
+    ],
+    "surface_family": "implicit outer capture by a local function",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NESTED_DEF_CAPTURE_LIST_REQUIRED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-033"
+    ],
+    "replacement_or_no_fix": "add an explicit capture list or parameter",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-NESTED-DEF-VISIBILITY",
+    "feature_ids": [
+      "nested_function_local_def_msp"
+    ],
+    "surface_family": "top-level visibility modifier on a local function",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NESTED_DEF_VISIBILITY_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-032"
+    ],
+    "replacement_or_no_fix": "remove public/private/common from the local function",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-NULLARY-INFERENCE-NOT-CURRENT",
+    "feature_ids": [
+      "nullary_lambda_arrow_elision_msp"
+    ],
+    "surface_family": "context-free `{ expr }` nullary lambda inference",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "CONTEXTUAL_LAMBDA_EXPECTED_CALLABLE_REQUIRED",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-003"
+    ],
+    "replacement_or_no_fix": "use explicit `{ => expr }` or provide one expected callable type",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-NUMARR-STATIC-RADIX",
+    "feature_ids": [
+      "numeric_array_sharp_shape_literal_msp"
+    ],
+    "surface_family": "radix-prefixed NumericArray static dimension",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NUMARR_DIMENSION_STATIC_INT_REQUIRED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-036"
+    ],
+    "replacement_or_no_fix": "use an unsuffixed radix-10 DecimalIntegerToken dimension",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-NUMARR-STATIC-SUFFIX",
+    "feature_ids": [
+      "numeric_array_sharp_shape_literal_msp"
+    ],
+    "surface_family": "suffixed NumericArray static dimension",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NUMARR_DIMENSION_STATIC_INT_REQUIRED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-037"
+    ],
+    "replacement_or_no_fix": "remove the numeric suffix from the static dimension",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-NUMERIC-RADIX-MISSING-DIGITS",
+    "feature_ids": [
+      "numeric_literal_lexical_contract"
+    ],
+    "surface_family": "numeric radix prefix without a digit",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "MALFORMED_NUMERIC_RADIX_PREFIX",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-038"
+    ],
+    "replacement_or_no_fix": "add a digit valid for the radix or remove the prefix",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "lexer",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-OLD-DOTTED-BITWISE",
+    "feature_ids": [
+      "double_glyph_bitwise_operator_family_msp",
+      "old_dotted_bitwise_operator_removed"
+    ],
+    "surface_family": "old dotted bitwise operator",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "OLD_DOTTED_BITWISE_OPERATOR_REMOVED",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-033"
+    ],
+    "replacement_or_no_fix": "use the current double-glyph bitwise operator",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-OPTIONAL-CALL",
+    "feature_ids": [
+      "optional_callable_invocation_not_current_law"
+    ],
+    "surface_family": "optional callable invocation",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "OPTIONAL_CALLABLE_INVOCATION_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-002"
+    ],
+    "replacement_or_no_fix": "match the Option<Callable> first",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-OPTIONAL-CHAIN",
+    "feature_ids": [
+      "optional_chaining_not_current_law"
+    ],
+    "surface_family": "optional chaining",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "OPTIONAL_CHAINING_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-001"
+    ],
+    "replacement_or_no_fix": "match or coalesce Option explicitly",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-OWNERSHIP-CROSS-SUSPENSION",
+    "feature_ids": [
+      "inout_borrow_move_modes"
+    ],
+    "surface_family": "live inout borrow crossing await without proof",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-072"
+    ],
+    "replacement_or_no_fix": "end the loan before await or establish a separately admitted proof",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-PREFIX-FUNCTION-PROFILE",
+    "feature_ids": [
+      "function_profile_introducer_family"
+    ],
+    "surface_family": "async/guard/entry prefix declaration introducer",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREFIX_FUNCTION_PROFILE_REMOVED_USE_DEF_HASH",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-007"
+    ],
+    "replacement_or_no_fix": "use the owner-appropriate admitted def# form",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-DYNAMIC-UNIT-UNGATED",
+    "feature_ids": [
+      "dynamic_unit_conversion_provider_msp"
+    ],
+    "surface_family": "dynamic unit provider conversion without its Preview gate",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "DYNAMIC_UNIT_CONVERSION_PROFILE_NOT_ACTIVE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-024"
+    ],
+    "replacement_or_no_fix": "add `#preview(dynamic_unit_conversion_provider_msp)` at the selected Preview source root",
+    "feature_gate_policy": "stdlib/provider profile activation; no source gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-FFI-C-BLOCK-UNGATED",
+    "feature_ids": [
+      "ffi_c_extern_unsafe_surface_msp"
+    ],
+    "surface_family": "extern c block without its Preview gate",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "FFI_C_EXTERN_UNSAFE_SURFACE_MSP_REQUIRES_FEATURE_GATE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-023"
+    ],
+    "replacement_or_no_fix": "add `#preview(ffi_c_extern_unsafe_surface_msp)` at the selected Preview source root",
+    "feature_gate_policy": "requires #preview(ffi_c_extern_unsafe_surface_msp) on the selected Preview root",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-FFI-MINIMUM-UNGATED",
+    "feature_ids": [
+      "ffi_minimum_sound_profile"
+    ],
+    "surface_family": "extern#C def#unsafe without its Preview gate",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "FFI_MINIMUM_SOUND_PROFILE_REQUIRES_FEATURE_GATE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-022"
+    ],
+    "replacement_or_no_fix": "add `#preview(ffi_minimum_sound_profile)` at the selected Preview source root",
+    "feature_gate_policy": "requires #preview(ffi_minimum_sound_profile) on the selected Preview root",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-GATE-DEPENDENCY",
+    "feature_ids": [
+      "preview_profile_root_contract"
+    ],
+    "surface_family": "missing explicit Preview dependency",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREVIEW_GATE_DEPENDENCY_MISSING",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-030"
+    ],
+    "replacement_or_no_fix": "add every transitive Preview dependency explicitly",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-GATE-DUPLICATE",
+    "feature_ids": [
+      "preview_profile_root_contract"
+    ],
+    "surface_family": "duplicate feature id in #preview",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREVIEW_GATE_DUPLICATE_FEATURE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-029"
+    ],
+    "replacement_or_no_fix": "list each feature id once",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-GATE-NONACTIVATABLE",
+    "feature_ids": [
+      "preview_profile_root_contract"
+    ],
+    "surface_family": "PREVIEW_DESIGN id in #preview",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-028"
+    ],
+    "replacement_or_no_fix": "remove the nonactivatable feature id",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-GATE-PLACEMENT",
+    "feature_ids": [
+      "preview_profile_root_contract"
+    ],
+    "surface_family": "#preview after ModuleDecl or a source item",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREVIEW_GATE_PLACEMENT_INVALID",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-031"
+    ],
+    "replacement_or_no_fix": "move the gate before ModuleDecl and source items",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PREVIEW-GATE-UNKNOWN",
+    "feature_ids": [
+      "preview_profile_root_contract"
+    ],
+    "surface_family": "unknown feature id in #preview",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PREVIEW_GATE_UNKNOWN_FEATURE",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-027"
+    ],
+    "replacement_or_no_fix": "use an exact current PREVIEW feature id",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-PROTOTYPE-DEEP-RESPONSIBILITY",
+    "feature_ids": [
+      "nominal_prototype_derivation"
+    ],
+    "surface_family": "deep prototype derivation without deep-clone responsibility",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-075"
+    ],
+    "replacement_or_no_fix": "provide deep-clone admission or use shallow derivation/constructor",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-PURE-CALLABLE-MUTABLE-CAPTURE",
+    "feature_ids": [
+      "pure_callable_profile"
+    ],
+    "surface_family": "mutable capture in a #pure callable",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-017"
+    ],
+    "replacement_or_no_fix": "remove the mutable capture or remove the #pure promise",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-R51B-ASYNC-FOR-OUTCOME",
+    "feature_ids": [
+      "async_iteration",
+      "loop_outcome_match_statement_msp"
+    ],
+    "surface_family": "subjectless match attached to for await",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-011"
+    ],
+    "replacement_or_no_fix": "use explicit async completion handling",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51B-AT-LINEBREAK",
+    "feature_ids": [
+      "r51c_integrated_frontend_grammar_current_canonical"
+    ],
+    "surface_family": "@ followed by physical line break before exact introducer",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "AT_EXACT_INTRODUCER_LINE_BREAK_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-015"
+    ],
+    "replacement_or_no_fix": "use an attached exact @ introducer",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51B-CAST-SPACING",
+    "feature_ids": [
+      "r51c_integrated_frontend_grammar_current_canonical"
+    ],
+    "surface_family": "as ? / as !",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "CAST_MODIFIER_MUST_BE_ADJACENT",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-012"
+    ],
+    "replacement_or_no_fix": "write as? or as!",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51B-LAZY-AT",
+    "feature_ids": [
+      "lazy_let_call_by_need_msp"
+    ],
+    "surface_family": "let@lazy",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "LAZY_BINDING_USE_HASH",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-002"
+    ],
+    "replacement_or_no_fix": "write let#lazy",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51B-NEGATED-RELATION-SPACING",
+    "feature_ids": [
+      "r51c_integrated_frontend_grammar_current_canonical"
+    ],
+    "surface_family": "! in / ! is / ! if",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "NEGATED_RELATION_MUST_BE_ADJACENT",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-013"
+    ],
+    "replacement_or_no_fix": "write !in, !is, or !if",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51B-UNIT-MIDDLE-DOT",
+    "feature_ids": [
+      "unit_operation_policy_msp"
+    ],
+    "surface_family": "unit middle-dot multiplication",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "UNIT_MULTIPLICATION_USE_STAR",
+    "negative_fixture_ids": [
+      "EX-R51b-GRAM-NG-004"
+    ],
+    "replacement_or_no_fix": "write *",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-R51F-HETEROGENEOUS-LIST-INFERENCE",
+    "feature_ids": [
+      "r51f_removed_surface_boundary_law",
+      "ordinary_list_literal_surface",
+      "closed_anonymous_union_type_msp"
+    ],
+    "surface_family": "automatic heterogeneous List Union inference",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
+    "negative_fixture_ids": [
+      "EX-R51f-010"
+    ],
+    "replacement_or_no_fix": "write an explicit expected List<A | B> type",
+    "feature_gate_policy": "no gate admits this removed form",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "emit the current primary diagnostic without constructing a special removed-surface semantic node"
+  },
+  {
+    "rejection_id": "NG-R51F-INCDEC",
+    "feature_ids": [
+      "r51f_removed_surface_boundary_law",
+      "numeric_operator_core"
+    ],
+    "surface_family": "prefix/postfix increment or decrement expression",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "POSTFIX_MUTATION_OPERATOR_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51f-004"
+    ],
+    "replacement_or_no_fix": "use explicit assignment",
+    "feature_gate_policy": "no gate admits this removed form",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "emit the current primary diagnostic without constructing a special removed-surface semantic node"
+  },
+  {
+    "rejection_id": "NG-R51F-MAP-DOT-KEY",
+    "feature_ids": [
+      "r51f_removed_surface_boundary_law",
+      "map_prefixed_literal"
+    ],
+    "surface_family": "Map String-key dot projection",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "MEMBER_NOT_FOUND",
+    "negative_fixture_ids": [
+      "EX-R51f-002"
+    ],
+    "replacement_or_no_fix": "use map[index] or an explicit Map API",
+    "feature_gate_policy": "no gate admits this removed form",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "emit the current primary diagnostic without constructing a special removed-surface semantic node"
+  },
+  {
+    "rejection_id": "NG-R51F-REGEX-LITERAL",
+    "feature_ids": [
+      "r51f_removed_surface_boundary_law",
+      "raw_string_prefixed_literal"
+    ],
+    "surface_family": "regex literal",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "UNKNOWN_PREFIXED_LITERAL",
+    "negative_fixture_ids": [
+      "EX-R51f-008"
+    ],
+    "replacement_or_no_fix": "pass String or Bytes to an explicit library constructor",
+    "feature_gate_policy": "no gate admits this removed form",
+    "recognition_stage": "lexer_parser",
+    "current_ast_created": false,
+    "recognition_contract": "emit the current primary diagnostic without constructing a special removed-surface semantic node"
+  },
+  {
+    "rejection_id": "NG-R51F-TAILREC-KIND",
+    "feature_ids": [
+      "r51f_removed_surface_boundary_law",
+      "function_profile_introducer_family"
+    ],
+    "surface_family": "tail-recursion callable kind",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51f-006"
+    ],
+    "replacement_or_no_fix": "use an ordinary recursive def",
+    "feature_gate_policy": "no gate admits this removed form",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "emit the current primary diagnostic without constructing a special removed-surface semantic node"
+  },
+  {
+    "rejection_id": "NG-RAW-ALT-DELIMITER",
+    "feature_ids": [
+      "raw_string_prefixed_literal"
+    ],
+    "surface_family": "raw String delimiter family other than raw double quote",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "RAW_STRING_DELIMITER_INVALID",
+    "negative_fixture_ids": [
+      "EX-R51d-002"
+    ],
+    "replacement_or_no_fix": "use raw\"...\"",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "lexer",
+    "current_ast_created": false,
+    "recognition_contract": "reject before StringLiteral AST construction"
+  },
+  {
+    "rejection_id": "NG-RAW-EVIDENCE-VALUE",
+    "feature_ids": [
+      "static_evidence_selector_msp"
+    ],
+    "surface_family": "raw evidence value",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EVIDENCE_SELECTOR_NOT_A_VALUE",
+    "negative_fixture_ids": [
+      "EX-R51a1-EVIDENCE-NG-002"
+    ],
+    "replacement_or_no_fix": "use the R51c canonical surface",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
+  },
+  {
+    "rejection_id": "NG-RAW-WITNESS",
+    "feature_ids": [
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "raw first-class Witness value",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "RAW_WITNESS_VALUE_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-007"
+    ],
+    "replacement_or_no_fix": "use an explicit witness parameter only",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-REFINEMENT-R0-EFFECT",
+    "feature_ids": [
+      "r0_guard_predicate_calculus",
+      "refinement_type_phase_a"
+    ],
+    "surface_family": "effectful or authority-bearing R0 refinement predicate",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "REFINEMENT_R0_PREDICATE_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-069"
+    ],
+    "replacement_or_no_fix": "use only the closed pure total R0 predicate calculus",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-RESULT-COALESCE",
+    "feature_ids": [
+      "option_coalescing_unwrap_or_default"
+    ],
+    "surface_family": "Result lhs for Option coalescing",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "OPTION_COALESCE_DOES_NOT_APPLY_TO_RESULT",
+    "negative_fixture_ids": [
+      "EX-R49C-COALESCE-004"
+    ],
+    "replacement_or_no_fix": "match Result explicitly",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-RESULT-THROWS-OVERLAP",
+    "feature_ids": [
+      "result_error_set_model",
+      "result_throws_overlap_forbidden_law"
+    ],
+    "surface_family": "one recoverable error family exposed through both Result and throws",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "RESULT_THROWS_CHANNEL_OVERLAP",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-068"
+    ],
+    "replacement_or_no_fix": "choose exactly one recoverable-error channel for the overlapping family",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-SCOPED-CALLABLE-ESCAPE",
+    "feature_ids": [
+      "scoped_callable_lifetime_profile"
+    ],
+    "surface_family": "storage, return, or retention of a #scoped callable",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "SCOPED_CALLABLE_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-020"
+    ],
+    "replacement_or_no_fix": "use the callable only during the receiving invocation",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-SCRIPT-EXPLICIT-ENTRY",
+    "feature_ids": [
+      "entry_target_uniqueness_law",
+      "source_role_contract"
+    ],
+    "surface_family": "explicit entry declaration inside a script source",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-026"
+    ],
+    "replacement_or_no_fix": "remove the entry or select an executable source root without script statements",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-SEALED-HASH",
+    "feature_ids": [
+      "sealed_class_module_scope"
+    ],
+    "surface_family": "class#sealed",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "CLASS_HASH_SEALED_SPELLING_REMOVED",
+    "negative_fixture_ids": [
+      "EX-R49C-SEALED-002"
+    ],
+    "replacement_or_no_fix": "use `sealed class`",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-SHAPED-SEPARATOR-RANK",
+    "feature_ids": [
+      "shaped_literal_separator_rank_law",
+      "shaped_semicolon_literal_body_msp"
+    ],
+    "surface_family": "semicolon run that does not match the exact-shape NumericArray rank boundary",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "SHAPED_LITERAL_SEPARATOR_RANK_MISMATCH",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-018"
+    ],
+    "replacement_or_no_fix": "use commas within an inner axis and exactly k semicolons to close k completed inner axes",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-STANDALONE-ANNOTATION",
+    "feature_ids": [
+      "annotation_structural_attachment"
+    ],
+    "surface_family": "standalone annotation statement",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "ANNOTATION_TARGET_REQUIRED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-012"
+    ],
+    "replacement_or_no_fix": "attach it to a declaration",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-STANDALONE-BANG",
+    "feature_ids": [
+      "standalone_bang_not_current_not_word_law"
+    ],
+    "surface_family": "standalone !expr",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "STANDALONE_BANG_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-009"
+    ],
+    "replacement_or_no_fix": "use `not`, constructor `!`, or derivation suffix intentionally",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-STATIC-CALL-SHAPE",
+    "feature_ids": [
+      "data_shaping_callshape_model",
+      "static_labelrow_argpack_callshape_model"
+    ],
+    "surface_family": "duplicate or unknown named call shape",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-070"
+    ],
+    "replacement_or_no_fix": "use unique exact labels and an unambiguous argument order",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-STATIC-CLASS",
+    "feature_ids": [
+      "class_static_activation"
+    ],
+    "surface_family": "top-level static class declaration",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "STATIC_CLASS_DECLARATION_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-065"
+    ],
+    "replacement_or_no_fix": "use an ordinary class declaration",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-STATIC-FUNCTION",
+    "feature_ids": [
+      "function_static_activation"
+    ],
+    "surface_family": "top-level static def declaration",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "STATIC_FUNCTION_DECLARATION_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-066"
+    ],
+    "replacement_or_no_fix": "use an ordinary module function or an owned type-side def:: member",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-STRUCTURAL-CONFORMANCE",
+    "feature_ids": [
+      "r51a1_parser_current_normal_form"
+    ],
+    "surface_family": "structural conformance",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "STRUCTURAL_CONFORMANCE_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-005"
+    ],
+    "replacement_or_no_fix": "declare explicit conformance",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-SYNC-CALLABLE-LITERAL",
+    "feature_ids": [
+      "callable_responsibility_profile_core"
+    ],
+    "surface_family": "#sync callable literal marker",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "SYNC_CALLABLE_LITERAL_MARKER_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-AUD-NG-022"
+    ],
+    "replacement_or_no_fix": "omit the redundant marker; ordinary lambdas are synchronous",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-TUPLE-ORDINAL-ZERO",
+    "feature_ids": [
+      "tuple_ordinal_projection_1_based"
+    ],
+    "surface_family": "tuple ordinal zero",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "TUPLE_ORDINAL_ZERO_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-TUPLE-NG-001"
+    ],
+    "replacement_or_no_fix": "use the R51c canonical surface",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
+  },
+  {
+    "rejection_id": "NG-TYPE-TOKEN-RUNTIME",
+    "feature_ids": [
+      "type_token_authority_law"
+    ],
+    "surface_family": "type token used as a runtime reflective value",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "TYPE_TOKEN_RUNTIME_AUTHORITY_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-071"
+    ],
+    "replacement_or_no_fix": "use an explicit runtime value/API rather than a type token",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-UNIT-DYNAMIC-EXPONENT",
+    "feature_ids": [
+      "numeric_literal_lexical_contract",
+      "unit_canonicalization"
+    ],
+    "surface_family": "dynamic unit exponent in the exact canonical core",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "UNIT_EXPONENT_REQUIRES_STATIC_INT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-073"
+    ],
+    "replacement_or_no_fix": "use a signed unsuffixed decimal StaticInt exponent inside the unit expression",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-UNIT-MIDDLE-DOT",
+    "feature_ids": [
+      "measure_semantic_core"
+    ],
+    "surface_family": "unit multiplication written with middle dot",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "UNIT_MIDDLE_DOT_RECOVERY_ONLY",
+    "negative_fixture_ids": [],
+    "replacement_or_no_fix": "replace · with *",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser_recovery",
+    "current_ast_created": false,
+    "recognition_contract": "diagnose and recover to current unit * without preserving a semantic middle-dot node"
+  },
+  {
+    "rejection_id": "NG-UNNAMED-CONSTRUCTOR",
+    "feature_ids": [
+      "named_constructor_surface_msp"
+    ],
+    "surface_family": "unnamed def!(...) constructor",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "CONSTRUCTOR_REQUIRES_NAME",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-010"
+    ],
+    "replacement_or_no_fix": "write `def! new(...)` or a named constructor",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-WHERE-COLON",
+    "feature_ids": [
+      "r51a1_parser_current_normal_form"
+    ],
+    "surface_family": "where T : Trait",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "WHERE_COLON_TRAIT_CONSTRAINT_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-004"
+    ],
+    "replacement_or_no_fix": "use `where T conforms Trait`",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-WITNESS-BINDING-STORE",
+    "feature_ids": [
+      "explicit_witness_argument_msp",
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "explicit witness parameter stored in a local binding",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-047"
+    ],
+    "replacement_or_no_fix": "do not bind or store witness evidence",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-CAPTURE",
+    "feature_ids": [
+      "explicit_witness_argument_msp",
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "explicit witness parameter captured by a closure",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-048"
+    ],
+    "replacement_or_no_fix": "do not capture witness evidence",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-COMPUTED",
+    "feature_ids": [
+      "conformance_evidence_origin_bridge_msp",
+      "explicit_witness_argument_keyword_spelling",
+      "explicit_witness_argument_msp"
+    ],
+    "surface_family": "computed expression after the using keyword",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_ARGUMENT_REQUIRES_IDENTIFIER",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-019"
+    ],
+    "replacement_or_no_fix": "at a root call write `using conformance(Type conforms Trait)`, or forward an explicit witness parameter with `using identifier`",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-WITNESS-CONTAINER",
+    "feature_ids": [
+      "explicit_witness_argument_msp",
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "explicit witness parameter inserted into a container",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-057"
+    ],
+    "replacement_or_no_fix": "do not materialize witness evidence as a container element",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-FIELD-STORE",
+    "feature_ids": [
+      "explicit_witness_argument_msp",
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "explicit witness parameter assigned into a field",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-056"
+    ],
+    "replacement_or_no_fix": "keep witness evidence in the explicit parameter/call channel",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-FORGED",
+    "feature_ids": [
+      "conformance_evidence_origin_bridge_msp",
+      "explicit_witness_argument_keyword_spelling",
+      "explicit_witness_argument_msp"
+    ],
+    "surface_family": "ordinary forged value supplied as explicit witness evidence",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_ARGUMENT_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-050"
+    ],
+    "replacement_or_no_fix": "pass the unique coherent evidence Identifier",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-MISMATCH",
+    "feature_ids": [
+      "conformance_evidence_origin_bridge_msp",
+      "explicit_witness_argument_keyword_spelling",
+      "explicit_witness_argument_msp"
+    ],
+    "surface_family": "incoherent witness identity whose resolved trait does not match the explicit witness parameter",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_ARGUMENT_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-014"
+    ],
+    "replacement_or_no_fix": "pass the unique coherent evidence Identifier for the parameter trait",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-ORDINARY-ARGUMENT",
+    "feature_ids": [
+      "conformance_evidence_origin_bridge_msp",
+      "explicit_witness_argument_keyword_spelling",
+      "explicit_witness_argument_msp"
+    ],
+    "surface_family": "explicit witness parameter passed through an ordinary argument channel",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_ARGUMENT_NOT_ADMITTED",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-049"
+    ],
+    "replacement_or_no_fix": "use the matching `using Identifier` channel only",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-WITNESS-RETURN-ESCAPE",
+    "feature_ids": [
+      "explicit_witness_argument_msp",
+      "explicit_witness_parameter_msp",
+      "explicit_witness_parameter_narrow_stable_law"
+    ],
+    "surface_family": "explicit witness parameter returned as an ordinary value",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R51a1-NG-046"
+    ],
+    "replacement_or_no_fix": "keep witness evidence in its explicit parameter/call channel",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+  },
+  {
+    "rejection_id": "NG-ZERO-BASED-SEQUENCE-INDEX",
+    "feature_ids": [
+      "one_based_sequence_logical_indexing"
+    ],
+    "surface_family": "zero based sequence index",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "ZERO_BASED_INDEX_NOT_CURRENT",
+    "negative_fixture_ids": [
+      "EX-R51a1-INDEX-NG-001"
+    ],
+    "replacement_or_no_fix": "use the R51c canonical surface",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
+  }
+]

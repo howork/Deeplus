@@ -1,0 +1,1973 @@
+{
+  "schema": "deeplus.frontend-model/r51f3",
+  "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
+  "date": "2026-07-15",
+  "authority_bundle": {
+    "human_language_and_semantics": "spec/language.md",
+    "exact_syntax": "spec/grammar/deeplus.ebnf",
+    "contextual_ownership_and_lowering": "spec/frontend/frontend-model.json",
+    "conflict_policy": "domain owner wins; contradictory generated projection is defective",
+    "package_is_self_contained": true,
+    "single_spec_contains_everything": false
+  },
+  "implementation": {
+    "language": "Rust",
+    "parser": "handwritten recursive descent + Pratt",
+    "cst": "lossless immutable green tree",
+    "mir": "Deeplus MIR",
+    "early_execution": "xVM bytecode interpreter",
+    "native_backend": "LLVM AOT",
+    "later_jit": "LLVM ORC JIT"
+  },
+  "evidence": {
+    "rust_lexer": "NOT_RUN",
+    "rust_parser": "NOT_RUN",
+    "checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "incremental_parser": "NOT_RUN",
+    "xvm": "NOT_RUN",
+    "llvm_aot": "NOT_RUN",
+    "llvm_orc_jit": "NOT_RUN"
+  },
+  "keyword_model": {
+    "hard_reserved": [
+      "and",
+      "as",
+      "catch",
+      "class",
+      "def",
+      "defer",
+      "else",
+      "enum",
+      "false",
+      "finally",
+      "for",
+      "if",
+      "import",
+      "in",
+      "let",
+      "match",
+      "module",
+      "not",
+      "null",
+      "or",
+      "repeat",
+      "return",
+      "throw",
+      "trait",
+      "true",
+      "try",
+      "type",
+      "use",
+      "var",
+      "while"
+    ],
+    "contextual": [
+      "C",
+      "abstract",
+      "actor",
+      "any",
+      "async",
+      "await",
+      "backing",
+      "bitfield",
+      "borrow",
+      "borrowed",
+      "break",
+      "budget",
+      "c",
+      "cancellable",
+      "capability",
+      "capacity",
+      "catalog",
+      "cleanup",
+      "clone",
+      "common",
+      "conformance",
+      "conforms",
+      "consume",
+      "context",
+      "continue",
+      "copy",
+      "data",
+      "deep",
+      "delegate",
+      "effects",
+      "ensures",
+      "entry",
+      "equalsRatio",
+      "error",
+      "errors",
+      "export",
+      "extension",
+      "extern",
+      "facet",
+      "final",
+      "flags",
+      "forward",
+      "generate",
+      "get",
+      "group",
+      "guard",
+      "inout",
+      "is",
+      "isolated",
+      "law",
+      "lazy",
+      "lsb0",
+      "mailbox",
+      "map",
+      "move",
+      "mut",
+      "on",
+      "once",
+      "opaque",
+      "open",
+      "order",
+      "otherwise",
+      "out",
+      "owned",
+      "pack",
+      "preview",
+      "private",
+      "protocol",
+      "public",
+      "pure",
+      "raw",
+      "request",
+      "requires",
+      "resource",
+      "ret",
+      "schema",
+      "scope",
+      "scoped",
+      "sealed",
+      "send",
+      "set",
+      "shielded",
+      "signature",
+      "some",
+      "spawn",
+      "static",
+      "super",
+      "task",
+      "then",
+      "throws",
+      "to",
+      "typeof",
+      "typestate",
+      "unit",
+      "unsafe",
+      "using",
+      "value",
+      "via",
+      "where",
+      "witness",
+      "yield"
+    ],
+    "sigil_role_subset": [
+      "C",
+      "async",
+      "cleanup",
+      "consume",
+      "entry",
+      "flags",
+      "guard",
+      "lazy",
+      "mailbox",
+      "map",
+      "mut",
+      "once",
+      "preview",
+      "pure",
+      "raw",
+      "scoped",
+      "set",
+      "unsafe"
+    ],
+    "ordinary_or_prelude_identifiers": [
+      "EffectRow",
+      "ErrorSet",
+      "ExitCode",
+      "Facet",
+      "Never",
+      "Record",
+      "Sequence",
+      "StaticInt",
+      "String",
+      "Unit",
+      "array",
+      "case"
+    ],
+    "wildcard": {
+      "surface": "_",
+      "lexer": "WILDCARD",
+      "keyword": false
+    },
+    "one_lexeme_one_identity": true,
+    "quoted_word_terminal": "Exact lexeme match; lexer may emit a hard token or IDENTIFIER with contextual role metadata."
+  },
+  "current_surface_decisions": {
+    "named_repeated_parameter": "***",
+    "named_repeated_function_type": "***",
+    "named_unfold": "**",
+    "positional_repeated": "...",
+    "lazy_binding": "let#lazy",
+    "interpolation_shorthand": "$root.member[index]",
+    "unit_infix": [
+      "*",
+      "/"
+    ],
+    "at_exact_introducers": [
+      "@if",
+      "@match",
+      "@try",
+      "@scope",
+      "@for",
+      "@while",
+      "@repeat"
+    ],
+    "hash_role_trivia": "allowed by parser; formatter canonicalizes to attached #word",
+    "removed_without_recovery": [
+      "source compiler-tree quotation families",
+      "attached logic-variable token family",
+      "obsolete prefixed collection spelling"
+    ],
+    "recovery_only": [
+      "let@lazy",
+      "unit middle dot",
+      "named-rest parameter/type written with **"
+    ],
+    "no_generic_at_role": true,
+    "named_rest_disambiguation": "grammar owner: attached suffix *** in parameter/type; attached prefix ** only in call/materialization unfold",
+    "class_instance_method_marker": "mandatory one of . + *. *+",
+    "stored_field_dispatch_marker": "forbidden",
+    "trait_associated_non_method_marker": "forbidden",
+    "member_visibility_hash": "hierarchy-protected: declaring type and nominal subclasses only",
+    "message_spawn": "ordinary MessageSuffix selector reserved semantically by HIR",
+    "single_guard_clause": "at most one if/!if GuardClause per guard owner; GuardChain removed",
+    "pattern_binding_controls": [
+      "if let pattern = expr",
+      "while let pattern = expr",
+      "for let pattern in expr"
+    ],
+    "r51f_removed_surface_boundary": {
+      "status": "CURRENT",
+      "removed_surface_names": [
+        "Map String-key dot projection",
+        "increment/decrement expression",
+        "tail-recursion callable kind",
+        "regex literal",
+        "automatic heterogeneous List Union inference"
+      ],
+      "no_compatibility_gate": true
+    }
+  },
+  "stage_names": [
+    {
+      "surface": "*.",
+      "lexer": "STAR_DOT",
+      "cst": "DispatchMarker",
+      "ast": "OverrideFinal"
+    },
+    {
+      "surface": "*+",
+      "lexer": "STAR_PLUS",
+      "cst": "DispatchMarker",
+      "ast": "OverrideOpen"
+    },
+    {
+      "surface": ".",
+      "lexer": "DOT",
+      "cst_roles": [
+        "DispatchMarker",
+        "MemberSeparator",
+        "TupleOrdinalMarker"
+      ],
+      "ast_roles": [
+        "Final",
+        "MemberAccess",
+        "TupleOrdinalAccess"
+      ]
+    },
+    {
+      "surface": "+",
+      "lexer": "PLUS",
+      "cst_roles": [
+        "DispatchMarker",
+        "PrefixOperator",
+        "InfixOperator"
+      ],
+      "ast_roles": [
+        "Open",
+        "UnaryPlus",
+        "Add"
+      ]
+    },
+    {
+      "surface": "...",
+      "lexer": "ELLIPSIS",
+      "cst": "RepeatedPositionalMarker",
+      "ast": "RepeatedPositional"
+    },
+    {
+      "surface": "***",
+      "lexer": "TRIPLE_STAR",
+      "cst_roles": [
+        "NamedRestParameterMarker",
+        "FunctionTypeNamedRestResidueMarker"
+      ],
+      "ast_roles": [
+        "NamedRestParameter",
+        "FunctionTypeNamedRestResidue"
+      ],
+      "profile": "STABLE"
+    },
+    {
+      "surface": "**",
+      "lexer": "DOUBLE_STAR",
+      "cst_roles": [
+        "NamedUnfoldMarker",
+        "InfixOperator"
+      ],
+      "ast_roles": [
+        "NamedUnfold",
+        "LinearProduct"
+      ]
+    },
+    {
+      "surface": "::",
+      "lexer": "PATH_SEP",
+      "cst_roles": [
+        "QualifiedPathSeparator",
+        "VariantQualifier",
+        "TypeSideMarker"
+      ],
+      "ast_roles": [
+        "QualifiedName",
+        "VariantReference",
+        "TypeSideDeclaration"
+      ]
+    },
+    {
+      "surface": "?",
+      "lexer": "QUESTION",
+      "cst_roles": [
+        "OptionalTypeSuffix",
+        "TernaryMarker",
+        "CheckedCastModifier"
+      ],
+      "ast_roles": [
+        "OptionalType",
+        "ConditionalExpr",
+        "CheckedCast"
+      ]
+    },
+    {
+      "surface": "!",
+      "lexer": "BANG",
+      "cst_roles": [
+        "ConstructorMarker",
+        "ForcedCastModifier",
+        "NegatedRelationPrefix"
+      ],
+      "ast_roles": [
+        "ConstructorCall",
+        "ForcedCast",
+        "NegatedRelation"
+      ]
+    },
+    {
+      "surface": "?:",
+      "lexer": "QUESTION_COLON",
+      "cst": "OptionCoalesceOperator",
+      "ast": "OptionCoalesceExpr"
+    },
+    {
+      "surface": "->",
+      "lexer": "ARROW",
+      "cst_roles": [
+        "ReturnTypeArrow",
+        "FlowBindingArrow",
+        "TypestateTransitionArrow"
+      ],
+      "ast_roles": [
+        "ReturnType",
+        "FlowBinding",
+        "TypestateTransition"
+      ]
+    },
+    {
+      "surface": "=>",
+      "lexer": "FAT_ARROW",
+      "cst_roles": [
+        "MatchArmSeparator",
+        "LambdaArrow",
+        "FunctionClauseSeparator"
+      ],
+      "ast_roles": [
+        "MatchArm",
+        "LambdaExpr",
+        "FunctionClause"
+      ]
+    },
+    {
+      "surface": "#",
+      "lexer": "HASH",
+      "cst_roles": [
+        "HashTag",
+        "PrefixedCollectionIntroducer",
+        "NumericArrayIntroducer"
+      ],
+      "ast_roles": [
+        "ModifierOrProfile",
+        "CollectionKind",
+        "NumericArrayLiteral"
+      ]
+    },
+    {
+      "surface": "@",
+      "lexer": "AT",
+      "cst_roles": [
+        "AnnotationIntroducer",
+        "AtIfExpr",
+        "AtMatchExpr",
+        "AtTryExpr",
+        "AtScopeExpr",
+        "GeneratorExpr"
+      ],
+      "ast_roles": [
+        "Annotation",
+        "ValueControlExpr",
+        "Generator"
+      ]
+    },
+    {
+      "surface": "as?",
+      "lexer_sequence": [
+        "AS",
+        "QUESTION"
+      ],
+      "cst": "CheckedCastSuffix",
+      "ast": "CheckedCast"
+    },
+    {
+      "surface": "as!",
+      "lexer_sequence": [
+        "AS",
+        "BANG"
+      ],
+      "cst": "ForcedCastSuffix",
+      "ast": "ForcedCast"
+    },
+    {
+      "surface": "!in",
+      "lexer_sequence": [
+        "BANG",
+        "IN"
+      ],
+      "cst": "NegatedMembershipOperator",
+      "ast": "MembershipTest(negated=true)"
+    },
+    {
+      "surface": "!is",
+      "lexer_sequence": [
+        "BANG",
+        "IDENT(is, contextual)"
+      ],
+      "cst": "NegatedTypeTestOperator",
+      "ast": "TypeTest(negated=true)"
+    },
+    {
+      "surface": "!if",
+      "lexer_sequence": [
+        "BANG",
+        "IF"
+      ],
+      "cst": "NegativeGuardClause",
+      "ast": "GuardCondition(negated=true)"
+    }
+  ],
+  "boundary_policies": [
+    {
+      "id": "CAST_MODIFIER",
+      "surface_sequences": [
+        [
+          "as",
+          "?"
+        ],
+        [
+          "as",
+          "!"
+        ]
+      ],
+      "trivia": "NO_TRIVIA_BETWEEN_SEQUENCE_TOKENS",
+      "lexer_fused_token": false,
+      "formatter": [
+        "as?",
+        "as!"
+      ]
+    },
+    {
+      "id": "NEGATED_RELATIONS",
+      "surface_sequences": [
+        [
+          "!",
+          "in"
+        ],
+        [
+          "!",
+          "is"
+        ],
+        [
+          "!",
+          "if"
+        ]
+      ],
+      "trivia": "NO_TRIVIA_BETWEEN_SEQUENCE_TOKENS",
+      "lexer_fused_token": false
+    },
+    {
+      "id": "POSITIONAL_REPEAT",
+      "surface": "...",
+      "trivia": "ATTACHED_SUFFIX",
+      "contexts": [
+        "parameter",
+        "function_type"
+      ],
+      "formatter": "attached"
+    },
+    {
+      "id": "TYPE_OPTIONAL_SUFFIX",
+      "surface": "?",
+      "trivia": "ATTACHED_SUFFIX",
+      "formatter": "T?"
+    },
+    {
+      "id": "TUPLE_ORDINAL",
+      "surface": [
+        ".",
+        "DECIMAL_INTEGER"
+      ],
+      "trivia": "NO_TRIVIA",
+      "formatter": "value.1"
+    },
+    {
+      "id": "MEASURE_UNIT",
+      "surface": [
+        "NUMERIC_LITERAL",
+        "["
+      ],
+      "trivia": "NO_TRIVIA",
+      "formatter": "13[cm]"
+    },
+    {
+      "id": "NUMERIC_ARRAY_PREFIX",
+      "surface": [
+        "#",
+        "["
+      ],
+      "trivia": "NO_TRIVIA",
+      "formatter": "#[...]"
+    },
+    {
+      "id": "TYPE_SIDE_AND_CONSTRUCTOR_MARKERS",
+      "surfaces": [
+        "def!",
+        "def::",
+        "let::",
+        "super!"
+      ],
+      "trivia": "NO_TRIVIA_AT_SEMANTIC_ATTACHMENT",
+      "lexer_fused_token": false
+    },
+    {
+      "id": "STATEMENT_ROOT",
+      "allows": [
+        "semicolon",
+        "line_break_in_trivia",
+        "EOF"
+      ]
+    },
+    {
+      "id": "STATEMENT_NESTED",
+      "allows": [
+        "semicolon",
+        "line_break_in_trivia"
+      ],
+      "forbids": [
+        "EOF"
+      ]
+    },
+    {
+      "id": "LOOP_MATCH_ATTACHMENT",
+      "allows": [
+        "space",
+        "comments",
+        "line_break"
+      ],
+      "breakers": [
+        "semicolon",
+        "intervening_item"
+      ],
+      "commit": "match followed immediately in grammar by {, subject supplied by preceding loop"
+    },
+    {
+      "id": "NAMED_MARKER_BY_OWNER",
+      "surfaces": [
+        "***",
+        "**"
+      ],
+      "trivia": "NO_TRIVIA",
+      "owners": {
+        "parameter_or_function_type": "attached_suffix_***_named_rest",
+        "call_or_materialization": "attached_prefix_**_named_unfold",
+        "linear_product_expression": "spaced_infix_**"
+      },
+      "recovery": {
+        "parameter_or_function_type_**": "reject and replace with ***",
+        "call_or_materialization_***": "reject and replace with **"
+      }
+    },
+    {
+      "id": "INTERPOLATION_SHORTHAND",
+      "surface": "$root.member[index]",
+      "trivia": "CONTIGUOUS_INSIDE_STRING_MODE",
+      "explicit_boundary": "`",
+      "forbidden_continuation": "(",
+      "diagnostic": "INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES"
+    },
+    {
+      "id": "CARET_ATTACHMENT",
+      "postfix": "A^ with no trivia before caret and no RHS",
+      "infix": "a ^ b with trivia on both sides",
+      "mixed": "reject CARET_ATTACHMENT_AMBIGUOUS",
+      "comments_and_newlines": "do not establish attachment"
+    },
+    {
+      "id": "HASH_LITERAL_SIGILS",
+      "trivia": "NO_TRIVIA",
+      "owners": [
+        "#map{",
+        "#set{",
+        "#mut[",
+        "#[",
+        "#dims[",
+        "#bytes\""
+      ]
+    },
+    {
+      "id": "HASH_ROLE_WORD",
+      "trivia": "ALLOW_HORIZONTAL_SPACE_AND_COMMENTS_SAME_PHYSICAL_LINE",
+      "grammar_adjacency": false,
+      "formatter": "#word",
+      "note": "This is a Frontend/formatter boundary policy, not a Grammar semantic production. Comments are rehomed before compaction.",
+      "forbid": [
+        "physical_line_break"
+      ]
+    }
+  ],
+  "input_supply_policy": {
+    "supply_kinds": [
+      "ExplicitSyntax",
+      "ImplicitParent",
+      "ImplicitPreviousConstruct",
+      "ImplicitExpectedType",
+      "ImplicitPrattLeft",
+      "ImplicitControlTarget",
+      "SynthesizedLowering",
+      "AbsentByDefinition"
+    ],
+    "entries": [
+      {
+        "id": "MATCH_EXPLICIT",
+        "owner": "MatchCore",
+        "supply": "ExplicitSyntax(Expr)",
+        "contexts": [
+          "ordinary match statement",
+          "@match value expression"
+        ]
+      },
+      {
+        "id": "MATCH_LOOP_OUTCOME",
+        "owner": "MatchCore",
+        "supply": "ImplicitPreviousConstruct(loop_id)",
+        "contexts": [
+          "attached after for",
+          "attached after while",
+          "attached after repeat"
+        ]
+      },
+      {
+        "id": "CLAUSE_FUNCTION_SUBJECT",
+        "owner": "MatchArmSequence",
+        "supply": "ImplicitParent(function parameter subject)"
+      },
+      {
+        "id": "VARIANT_QUALIFIED",
+        "owner": "VariantPattern",
+        "supply": "ExplicitSyntax(TypeRef)"
+      },
+      {
+        "id": "VARIANT_EXPECTED",
+        "owner": "VariantPattern",
+        "supply": "ImplicitExpectedType"
+      },
+      {
+        "id": "POSTFIX_BASE",
+        "owner": "Pratt postfix parselets",
+        "supply": "ImplicitPrattLeft(expr_id)"
+      },
+      {
+        "id": "CONTROL_TARGET",
+        "owner": "ControlTransfer",
+        "supply": "ImplicitControlTarget"
+      },
+      {
+        "id": "STORED_PARAMETER_EXPANSION",
+        "owner": "StoredParameter",
+        "supply": "SynthesizedLowering(field + input + initialization)"
+      }
+    ],
+    "forbidden": "Do not model omission as a global optional; only the owning context may supply an implicit input.",
+    "named_rest": {
+      "marker": "***"
+    }
+  },
+  "admission_policies": {
+    "parameter": [
+      {
+        "id": "FUNCTION",
+        "forms": [
+          "VALUE",
+          "CONTEXT",
+          "WITNESS",
+          "REPEATED_POSITIONAL",
+          "NAMED_REST"
+        ],
+        "separators": [
+          "COMMA"
+        ]
+      },
+      {
+        "id": "ENTRY",
+        "forms": [
+          "VALUE"
+        ],
+        "separators": [
+          "COMMA"
+        ]
+      },
+      {
+        "id": "PRIMARY_CONSTRUCTOR",
+        "forms": [
+          "VALUE",
+          "CONTEXT",
+          "WITNESS",
+          "REPEATED_POSITIONAL",
+          "NAMED_REST",
+          "STORED_LET",
+          "STORED_VAR"
+        ],
+        "separators": [
+          "COMMA",
+          "LAYOUT"
+        ],
+        "layout_minimum": 1,
+        "layout_filter": [
+          "STORED_LET",
+          "STORED_VAR"
+        ]
+      },
+      {
+        "id": "LAMBDA",
+        "forms": [
+          "VALUE"
+        ],
+        "separators": [
+          "COMMA"
+        ],
+        "type_annotation": "OPTIONAL"
+      },
+      {
+        "id": "FUNCTION_TYPE",
+        "forms": [
+          "TYPE",
+          "REPEATED_POSITIONAL_TYPE",
+          "REPEATED_NAMED_TYPE"
+        ],
+        "separators": [
+          "COMMA"
+        ]
+      }
+    ],
+    "named_rest": {
+      "marker": "***",
+      "position": "FINAL",
+      "phase_a_carrier": "canonical Prelude Record identity",
+      "grammar": "TypeAnnotation/TypeRef",
+      "checker_owned": true,
+      "function_type_residue_marker": "***",
+      "named_unfold_marker": "**",
+      "double_star_parameter_or_type": "RECOVERY_REJECT"
+    },
+    "class": {
+      "ordinary_body": "REQUIRED",
+      "data_body": "OPTIONAL",
+      "modifier_sequences": [
+        [],
+        [
+          "final"
+        ],
+        [
+          "open"
+        ],
+        [
+          "abstract"
+        ],
+        [
+          "sealed"
+        ],
+        [
+          "abstract",
+          "sealed"
+        ]
+      ],
+      "flavors": [
+        "ordinary",
+        "value",
+        "resource",
+        "data"
+      ]
+    },
+    "body": {
+      "general_block_final": [
+        "return",
+        "throw",
+        "break",
+        "continue",
+        "yield",
+        "binding",
+        "expression"
+      ],
+      "ret": "ONLY_VALUE_BODY_LAMBDA_AND_VALUE_MATCH",
+      "guarded_let_exit": [
+        "return",
+        "throw",
+        "break",
+        "continue"
+      ],
+      "guarded_let_forbids": [
+        "ret",
+        "yield",
+        "guarded_exit"
+      ],
+      "law_body": "DECLARATIVE_TOOLING_METADATA_NEVER_EXECUTABLE_MIR"
+    },
+    "match": [
+      {
+        "id": "STATEMENT_MATCH",
+        "subject": "MATCH_EXPLICIT",
+        "body": "StmtOrBlock"
+      },
+      {
+        "id": "VALUE_MATCH",
+        "subject": "MATCH_EXPLICIT",
+        "body": "ValueBodyOrExpr"
+      },
+      {
+        "id": "LOOP_OUTCOME_MATCH",
+        "subject": "MATCH_LOOP_OUTCOME",
+        "owners": [
+          "for",
+          "while",
+          "repeat"
+        ],
+        "variants": [
+          "completed",
+          "break"
+        ],
+        "async_for": false
+      },
+      {
+        "id": "CLAUSE_FUNCTION",
+        "subject": "CLAUSE_FUNCTION_SUBJECT",
+        "body": "ValueBodyOrExpr"
+      }
+    ],
+    "control_transfer": {
+      "break": "one or more break words + optional value + optional single GuardClause",
+      "continue": "zero or more break words + continue + optional single GuardClause",
+      "structured_break_chain_node": false,
+      "checker": [
+        "target depth",
+        "payload type",
+        "cleanup order"
+      ]
+    },
+    "defer": {
+      "invocation_count": 1,
+      "allowed": [
+        "direct call",
+        "member call",
+        "type-side call",
+        "message call"
+      ],
+      "forbidden": [
+        "trailing closure",
+        "inline callable",
+        "await",
+        "spawn",
+        "guard",
+        "block"
+      ]
+    },
+    "type_parameter_kinds": [
+      "type",
+      "StaticInt",
+      "EffectRow",
+      "ErrorSet"
+    ],
+    "typed_pattern": "Identifier : TypeRef; parameter context excludes typed-pattern colon capture via ParameterPatternSlot",
+    "field_dispatch_marker": "FORBIDDEN_CURRENT",
+    "trait_associated_dispatch_marker": "FORBIDDEN_CURRENT"
+  },
+  "modifier_admission": {
+    "def_domains": [
+      {
+        "owner": "module_function",
+        "sequences": [
+          [],
+          [
+            "async"
+          ],
+          [
+            "pure"
+          ],
+          [
+            "guard"
+          ]
+        ]
+      },
+      {
+        "owner": "entry_function",
+        "sequences": [
+          [
+            "entry"
+          ],
+          [
+            "entry",
+            "async"
+          ]
+        ]
+      },
+      {
+        "owner": "extension_function",
+        "sequences": [
+          [],
+          [
+            "async"
+          ]
+        ]
+      },
+      {
+        "owner": "instance_method",
+        "sequences": [
+          [],
+          [
+            "mut"
+          ],
+          [
+            "consume"
+          ],
+          [
+            "async"
+          ],
+          [
+            "pure"
+          ]
+        ]
+      },
+      {
+        "owner": "local_function",
+        "sequences": [
+          [],
+          [
+            "pure"
+          ],
+          [
+            "async"
+          ],
+          [
+            "guard"
+          ]
+        ]
+      },
+      {
+        "owner": "trait_method",
+        "sequences": [
+          [],
+          [
+            "pure"
+          ],
+          [
+            "async"
+          ]
+        ]
+      },
+      {
+        "owner": "conformance_method",
+        "sequences": [
+          [],
+          [
+            "async"
+          ],
+          [
+            "mut"
+          ],
+          [
+            "consume"
+          ],
+          [
+            "pure"
+          ]
+        ]
+      },
+      {
+        "owner": "cleanup",
+        "sequences": [
+          [
+            "cleanup"
+          ]
+        ]
+      },
+      {
+        "owner": "type_side_or_exported_function",
+        "sequences": [
+          []
+        ]
+      },
+      {
+        "owner": "preview_ffi_function",
+        "sequences": [
+          [
+            "unsafe"
+          ]
+        ],
+        "feature": "ffi_c_extern_unsafe_surface_msp"
+      }
+    ],
+    "callable_profiles": {
+      "sequences": [
+        [],
+        [
+          "scoped"
+        ],
+        [
+          "once"
+        ],
+        [
+          "mut"
+        ],
+        [
+          "pure"
+        ],
+        [
+          "guard"
+        ],
+        [
+          "scoped",
+          "once"
+        ],
+        [
+          "scoped",
+          "mut"
+        ],
+        [
+          "scoped",
+          "pure"
+        ],
+        [
+          "scoped",
+          "guard"
+        ],
+        [
+          "once",
+          "pure"
+        ],
+        [
+          "once",
+          "guard"
+        ],
+        [
+          "scoped",
+          "once",
+          "pure"
+        ],
+        [
+          "scoped",
+          "once",
+          "guard"
+        ]
+      ],
+      "duplicates": "FORBIDDEN",
+      "order": "EXACT"
+    },
+    "lazy_binding": {
+      "sequences": [
+        [
+          "lazy"
+        ]
+      ]
+    },
+    "bitfield": {
+      "sequences": [
+        [],
+        [
+          "flags"
+        ]
+      ]
+    },
+    "mailbox": {
+      "sequences": [
+        [
+          "mailbox"
+        ]
+      ]
+    }
+  },
+  "pratt": {
+    "expression": {
+      "grammar_precedence_ladder": false,
+      "operators": [
+        {
+          "id": "assignment",
+          "tokens": [
+            [
+              "="
+            ],
+            [
+              "+",
+              "="
+            ],
+            [
+              "-",
+              "="
+            ],
+            [
+              "*",
+              "="
+            ],
+            [
+              "/",
+              "="
+            ],
+            [
+              "%",
+              "="
+            ]
+          ],
+          "lbp": 10,
+          "rbp": 9,
+          "assoc": "right",
+          "parselet": "assignment"
+        },
+        {
+          "id": "ternary",
+          "tokens": [
+            [
+              "?"
+            ],
+            [
+              ":"
+            ]
+          ],
+          "lbp": 20,
+          "rbp": 19,
+          "assoc": "right",
+          "parselet": "conditional"
+        },
+        {
+          "id": "otherwise",
+          "tokens": [
+            [
+              "otherwise"
+            ]
+          ],
+          "lbp": 30,
+          "rbp": 31,
+          "assoc": "left",
+          "parselet": "short_circuit"
+        },
+        {
+          "id": "or",
+          "tokens": [
+            [
+              "or"
+            ]
+          ],
+          "lbp": 40,
+          "rbp": 41,
+          "assoc": "left",
+          "parselet": "binary"
+        },
+        {
+          "id": "and_then",
+          "tokens": [
+            [
+              "and",
+              "then"
+            ]
+          ],
+          "lbp": 50,
+          "rbp": 51,
+          "assoc": "left",
+          "parselet": "short_circuit"
+        },
+        {
+          "id": "and",
+          "tokens": [
+            [
+              "and"
+            ]
+          ],
+          "lbp": 60,
+          "rbp": 61,
+          "assoc": "left",
+          "parselet": "binary"
+        },
+        {
+          "id": "comparison",
+          "tokens": [
+            [
+              "=="
+            ],
+            [
+              "!="
+            ],
+            [
+              "<"
+            ],
+            [
+              "<="
+            ],
+            [
+              ">"
+            ],
+            [
+              ">="
+            ],
+            [
+              "in"
+            ],
+            [
+              "!",
+              "in"
+            ],
+            [
+              "is"
+            ],
+            [
+              "!",
+              "is"
+            ]
+          ],
+          "lbp": 70,
+          "rbp": 71,
+          "assoc": "checker_bounded_chain",
+          "parselet": "comparison_chain"
+        },
+        {
+          "id": "option_coalesce",
+          "tokens": [
+            [
+              "?:"
+            ]
+          ],
+          "lbp": 80,
+          "rbp": 79,
+          "assoc": "right",
+          "parselet": "option_coalesce",
+          "evaluation": "lhs_once_rhs_lazy"
+        },
+        {
+          "id": "bitwise_or",
+          "tokens": [
+            [
+              "||"
+            ]
+          ],
+          "lbp": 90,
+          "rbp": 91,
+          "assoc": "left"
+        },
+        {
+          "id": "bitwise_xor",
+          "tokens": [
+            [
+              "^^"
+            ]
+          ],
+          "lbp": 100,
+          "rbp": 101,
+          "assoc": "left"
+        },
+        {
+          "id": "bitwise_and",
+          "tokens": [
+            [
+              "&&"
+            ]
+          ],
+          "lbp": 110,
+          "rbp": 111,
+          "assoc": "left"
+        },
+        {
+          "id": "range",
+          "tokens": [
+            [
+              ".."
+            ],
+            [
+              "..<"
+            ],
+            [
+              "..>"
+            ],
+            [
+              "..."
+            ]
+          ],
+          "lbp": 120,
+          "rbp": 121,
+          "assoc": "nonassociative"
+        },
+        {
+          "id": "additive",
+          "tokens": [
+            [
+              "+"
+            ],
+            [
+              "-"
+            ]
+          ],
+          "lbp": 130,
+          "rbp": 131,
+          "assoc": "left"
+        },
+        {
+          "id": "multiplicative",
+          "tokens": [
+            [
+              "*"
+            ],
+            [
+              "/"
+            ],
+            [
+              "%"
+            ]
+          ],
+          "lbp": 140,
+          "rbp": 141,
+          "assoc": "left"
+        },
+        {
+          "id": "linear_product",
+          "tokens": [
+            [
+              "**"
+            ],
+            [
+              "*+"
+            ]
+          ],
+          "lbp": 150,
+          "rbp": 151,
+          "assoc": "left"
+        },
+        {
+          "id": "power",
+          "tokens": [
+            [
+              "^"
+            ]
+          ],
+          "lbp": 160,
+          "rbp": 159,
+          "assoc": "right",
+          "attachment_policy": "CARET_ATTACHMENT"
+        },
+        {
+          "id": "prefix",
+          "tokens": [
+            [
+              "+"
+            ],
+            [
+              "-"
+            ],
+            [
+              "not"
+            ],
+            [
+              "~~"
+            ],
+            [
+              "move"
+            ],
+            [
+              "borrow"
+            ],
+            [
+              "&"
+            ],
+            [
+              "await"
+            ]
+          ],
+          "rbp": 170,
+          "assoc": "right"
+        },
+        {
+          "id": "cast",
+          "tokens": [
+            [
+              "as",
+              "?"
+            ],
+            [
+              "as",
+              "!"
+            ]
+          ],
+          "lbp": 180,
+          "assoc": "nonassociative",
+          "parselet": "cast"
+        },
+        {
+          "id": "postfix",
+          "structured": [
+            "call",
+            "tuple_ordinal",
+            "index",
+            "member",
+            "message",
+            "transpose",
+            "constructor",
+            "derivation",
+            "trailing_closure"
+          ],
+          "lbp": 190,
+          "assoc": "left"
+        }
+      ]
+    },
+    "type": {
+      "operators": [
+        {
+          "id": "union",
+          "tokens": [
+            [
+              "|"
+            ]
+          ],
+          "lbp": 10,
+          "rbp": 11
+        },
+        {
+          "id": "intersection",
+          "tokens": [
+            [
+              "&"
+            ]
+          ],
+          "lbp": 20,
+          "rbp": 21
+        },
+        {
+          "id": "ownership",
+          "tokens": [
+            [
+              "owned"
+            ],
+            [
+              "borrowed"
+            ],
+            [
+              "mut"
+            ],
+            [
+              "inout"
+            ]
+          ],
+          "rbp": 30
+        },
+        {
+          "id": "optional",
+          "tokens": [
+            [
+              "?"
+            ]
+          ],
+          "lbp": 40
+        }
+      ],
+      "paren_owner": "ParenTypeSyntax"
+    },
+    "unit": {
+      "operators": [
+        {
+          "id": "product",
+          "tokens": [
+            [
+              "*"
+            ]
+          ],
+          "lbp": 20,
+          "rbp": 21
+        },
+        {
+          "id": "division",
+          "tokens": [
+            [
+              "/"
+            ]
+          ],
+          "lbp": 20,
+          "rbp": 21
+        },
+        {
+          "id": "power",
+          "tokens": [
+            [
+              "^"
+            ]
+          ],
+          "lbp": 30,
+          "operand": "SignedStaticInt"
+        }
+      ],
+      "current_middle_dot": false
+    },
+    "external_ebnf_entry_productions": [
+      "ExpressionPrefixParselet",
+      "ExpressionPostfixParselet",
+      "PrimaryExpr",
+      "TypePrefixParselet",
+      "TypePostfixParselet",
+      "TypeInfixOperator",
+      "TypePrimary",
+      "UnitPostfixParselet",
+      "UnitInfixOperator",
+      "UnitPrimary"
+    ]
+  },
+  "scanner": {
+    "unicode_version": "15.1.0",
+    "normalization": "NONE",
+    "newline": "TRIVIA_ONLY",
+    "nested_block_comment": "positive dash-run closes innermost comment; opener/closer dash counts need not match",
+    "modes": [
+      "NORMAL",
+      "STRING",
+      "MULTILINE_STRING",
+      "INTERPOLATION_CODE",
+      "RAW_STRING",
+      "BYTES"
+    ],
+    "interpolation_owner": "scanner owns mode boundary; parser owns InterpolationPath CST",
+    "raw_string_phase_a": {
+      "surface": "raw\"...\"",
+      "delimiter_family_count": 1,
+      "escape_interpretation": false,
+      "interpolation": false,
+      "result_type": "String",
+      "mode": "dedicated_raw_string_scanner",
+      "cst_body": "exact source scalar sequence between delimiters",
+      "ast": "StringLiteral(raw=true)",
+      "mir": "ConstString"
+    },
+    "multiline_string_phase_a": {
+      "delimiter": "\"\"\"",
+      "opener_followed_by_newline": true,
+      "closer_on_own_line": true,
+      "indentation": "strip longest exact common indentation prefix; tab and space are distinct",
+      "escape_and_interpolation": "same as ordinary String",
+      "raw_multiline": "not_current"
+    },
+    "external_terminals": {
+      "ScannerMultilineStringLiteral": {
+        "token": "MULTILINE_STRING_LITERAL",
+        "mode": "MULTILINE_STRING",
+        "cst": "MultilineStringLiteralCst",
+        "opener": "\"\"\" followed by a physical newline",
+        "closer": "\"\"\" on its own physical line",
+        "indent": "strip the longest exact common indentation prefix; tab and space are distinct",
+        "parts": [
+          "text",
+          "escape",
+          "interpolation_path",
+          "interpolation_expr"
+        ],
+        "recovery": [
+          "missing opener newline",
+          "off-line closer",
+          "indent mismatch",
+          "unterminated at EOF"
+        ],
+        "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
+        "mir": "ConstString for plain content; ordered RenderParts for interpolation"
+      }
+    }
+  },
+  "lowering_and_semantic_responsibility": {
+    "grammar": "structure only",
+    "cst": "all tokens/trivia, missing/unexpected tokens, source form, supply-policy IDs",
+    "ast": "normalized syntax meaning and stage-specific semantic enums",
+    "hir": "generated declarations, property/forwarding/comprehension/loop normalization, and reserved `~ spawn` message recognition",
+    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, failure, evidence, xVM/LLVM lowering",
+    "checker": "owner admission, type/effect/ownership/coherence/exhaustiveness/layout checks",
+    "formatter": "canonical spacing and comments; # role compacting is convention",
+    "rightward_local_binding": {
+      "cst": "RightwardLocalBindingCst preserves arrow, sigil, annotation and trivia",
+      "ast_hir": "normalize before checking to ordinary immutable/mutable local binding",
+      "mir": "no flow-binding node; ordinary local initialization and commit only",
+      "evaluation": "initializer exactly once; name not in scope until successful commit",
+      "ownership_effect_cleanup": "identical to ordinary let/var",
+      "yield_response_boundary": "yield remains a suspension/resume event; resumed response binding then uses ordinary local binding"
+    }
+  },
+  "feature_profiles": {
+    "stable": "current admitted successor syntax",
+    "preview": {
+      "ffi_feature": "ffi_c_extern_unsafe_surface_msp",
+      "depends_on": [
+        "ffi_minimum_sound_profile"
+      ]
+    },
+    "recovery": "diagnostic-only; never admitted"
+  },
+  "diagnostics": [
+    {
+      "id": "MODIFIER_NOT_ADMITTED_FOR_OWNER",
+      "stage": "PARSER"
+    },
+    {
+      "id": "INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES",
+      "stage": "PARSER",
+      "fix": "${...}"
+    },
+    {
+      "id": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+      "stage": "PARSER",
+      "fix": "***"
+    },
+    {
+      "id": "LAZY_BINDING_USE_HASH",
+      "stage": "PARSER",
+      "fix": "let#lazy"
+    },
+    {
+      "id": "UNIT_MULTIPLICATION_USE_STAR",
+      "stage": "PARSER",
+      "fix": "*"
+    },
+    {
+      "id": "LOOP_OUTCOME_MATCH_MUST_FOLLOW_LOOP",
+      "stage": "CHECKER"
+    },
+    {
+      "id": "LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE",
+      "stage": "CHECKER"
+    },
+    {
+      "id": "CARET_ATTACHMENT_AMBIGUOUS",
+      "stage": "PARSER"
+    },
+    {
+      "id": "SOURCE_TRAILING_TOKENS",
+      "stage": "PARSER"
+    },
+    {
+      "id": "CLASS_INSTANCE_METHOD_REQUIRES_DISPATCH_MARKER",
+      "stage": "PARSER"
+    },
+    {
+      "id": "FIELD_DISPATCH_MARKER_FORBIDDEN",
+      "stage": "PARSER"
+    }
+  ],
+  "syntax_owners": [
+    "QualifiedPath",
+    "ParameterList",
+    "CallableDecl components",
+    "Pattern",
+    "VariantPattern",
+    "MatchCore",
+    "MatchArm",
+    "ControlTransfer",
+    "ParenExprSyntax",
+    "ParenTypeSyntax",
+    "Block/ValueBody engine",
+    "DelimitedSequence engine"
+  ],
+  "baseline": "0.1.2-baseline.r51f3",
+  "grammar_profile_counts": {
+    "LEXICAL": 89,
+    "STABLE": 439,
+    "PREVIEW": 13,
+    "RECOVERY": 11
+  },
+  "numeric_lexical_policy": {
+    "sign_is_prefix_operator": true,
+    "radices": [
+      2,
+      8,
+      10,
+      16
+    ],
+    "integer_suffixes": [
+      "i8",
+      "i16",
+      "i32",
+      "i64",
+      "i128",
+      "isize",
+      "u8",
+      "u16",
+      "u32",
+      "u64",
+      "u128",
+      "usize"
+    ],
+    "float_suffixes": [
+      "f32",
+      "f64"
+    ],
+    "underscore_rule": "exactly_between_two_digits_of_the_same_component",
+    "decimal_point_requires_digits_on_both_sides": true,
+    "exponent": "decimal_only_with_required_digits",
+    "radix_floats": "not_current",
+    "unsuffixed_integer_default": "Int",
+    "unsuffixed_float_default": "Float64",
+    "nonfinite_policy": "not lexical literals; use Float32/Float64 static nan and positiveInfinity members",
+    "candidate_scanner": {
+      "trigger": "an ASCII decimal digit in CODE mode",
+      "maximal_munch_before_token_split": true,
+      "ordered_decision": [
+        "1 consume a radix prefix when present, then consume the maximal adjacent ASCII alphanumeric/underscore digit-suffix candidate rather than stopping at the last valid radix digit",
+        "2 for decimal candidates consume a dot only when followed by a decimal digit; then consume the decimal fraction, optional e/E exponent marker, optional exponent sign, exponent candidate, and adjacent suffix candidate",
+        "3 for radix candidates include an adjacent dotted p/P-exponent spelling in the same candidate only when lookahead finds the p/P marker; otherwise dot begins ordinary member syntax",
+        "4 validate radix digits, underscore positions, required fraction/exponent digits, suffix kind, and the radix-float prohibition against the whole candidate",
+        "5 on failure emit exactly one mapped lexer diagnostic spanning the whole candidate and emit no valid numeric prefix tokens",
+        "6 only after successful validation emit exactly one most-specific token kind according to successful_token_emission; parser terminals may match its declared lexical supertypes, but no second co-spanning token is emitted; an immediately attached [ is then reclassified by the measure-opener rule"
+      ],
+      "successful_token_emission": {
+        "one_physical_token_per_candidate": true,
+        "lexical_supercategory_matching": true,
+        "cases": [
+          {
+            "predicate": "unsuffixed radix-10 integer candidate",
+            "emitted_kind": "DecimalIntegerToken",
+            "matches_parser_terminals": [
+              "DecimalIntegerToken",
+              "IntegerLiteralToken",
+              "NumericLiteralToken"
+            ]
+          },
+          {
+            "predicate": "any other valid integer candidate",
+            "emitted_kind": "IntegerLiteralToken",
+            "matches_parser_terminals": [
+              "IntegerLiteralToken",
+              "NumericLiteralToken"
+            ]
+          },
+          {
+            "predicate": "valid decimal fraction, exponent, or float-suffixed candidate",
+            "emitted_kind": "FloatLiteralToken",
+            "matches_parser_terminals": [
+              "FloatLiteralToken",
+              "NumericLiteralToken"
+            ]
+          }
+        ],
+        "static_int_terminal_law": "StaticIntLiteral matches only the DecimalIntegerToken concrete kind; radix prefix, integer suffix, decimal point, exponent, or float suffix prevents that kind"
+      },
+      "member_dot_disambiguation": "1.foo is NumericLiteralToken(1) plus MemberSuffix; 0x1.fp3 is one rejected radix-float candidate because p3 lookahead closes the radix-float signature",
+      "error_map": {
+        "missing_radix_digits": "MALFORMED_NUMERIC_RADIX_PREFIX",
+        "digit_outside_radix": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
+        "underscore_not_exactly_between_digits": "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
+        "missing_exponent_digits": "MALFORMED_NUMERIC_EXPONENT",
+        "suffix_kind_mismatch": "NUMERIC_SUFFIX_KIND_MISMATCH",
+        "radix_float_signature": "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
+        "unknown_suffix": "UNKNOWN_NUMERIC_LITERAL_SUFFIX"
+      }
+    }
+  },
+  "source_roots": {
+    "LibrarySourceFile": {
+      "role": "library",
+      "must_consume": "EOF"
+    },
+    "ExecutableSourceFile": {
+      "role": "executable",
+      "must_consume": "EOF"
+    },
+    "ScriptSourceFile": {
+      "role": "script",
+      "must_consume": "EOF"
+    },
+    "PreviewLibrarySourceFile": {
+      "role": "preview_library",
+      "must_consume": "EOF",
+      "gate_required": true
+    },
+    "PreviewExecutableSourceFile": {
+      "role": "preview_executable",
+      "must_consume": "EOF",
+      "gate_required": true
+    },
+    "PreviewScriptSourceFile": {
+      "role": "preview_script",
+      "must_consume": "EOF",
+      "gate_required": true
+    }
+  },
+  "class_modifier_compatibility": {
+    "ordinary": [
+      "final",
+      "open",
+      "abstract",
+      "sealed",
+      "abstract sealed"
+    ],
+    "value": [
+      "final",
+      "sealed"
+    ],
+    "resource": [
+      "final",
+      "sealed"
+    ],
+    "data": [
+      "final"
+    ],
+    "forbidden_pairs": [
+      "final open",
+      "final abstract",
+      "final sealed",
+      "open sealed",
+      "value open",
+      "resource open"
+    ]
+  },
+  "parser_commitments": [
+    {
+      "id": "PAREN_EXPR",
+      "owner": "ParenExprSyntax",
+      "lookahead": "closing paren plus comma shape"
+    },
+    {
+      "id": "PAREN_TYPE",
+      "owner": "ParenTypeSyntax",
+      "lookahead": "closing paren plus optional arrow"
+    },
+    {
+      "id": "HASH_LITERAL",
+      "owner": "literal-prefix dispatcher",
+      "lookahead": "attached map/set/mut/NumericArray/bytes payload; obsolete-prefixed-collection is never a current owner"
+    },
+    {
+      "id": "TILDE_MESSAGE",
+      "owner": "MessageSuffix",
+      "lookahead": "selector; HIR reserves spawn"
+    },
+    {
+      "id": "CARET_ATTACHMENT",
+      "owner": "Pratt expression parser",
+      "lookahead": "token attachment and RHS availability"
+    },
+    {
+      "id": "SOURCE_ROOT",
+      "owner": "role-selected source parser",
+      "lookahead": "must reach EOF"
+    },
+    {
+      "id": "NAMED_FUNCTION_BODY",
+      "owner": [
+        "FunctionBody",
+        "TraitFunctionTail",
+        "EntryFunctionRest"
+      ],
+      "accepted": [
+        "= { ... }",
+        "= return Expr",
+        "= {{ clauses }}"
+      ],
+      "rejected": [
+        "= Expr"
+      ],
+      "canonical_valueless_terminal_return": "omit final return with no value"
+    },
+    {
+      "id": "RIGHTWARD_LOCAL_BINDING",
+      "owner": "RightwardLocalBindingSurface",
+      "surface": [
+        "Expr -> $name[: T]",
+        "Expr -> $$name[: T]"
+      ],
+      "statement_only": true,
+      "target": "fresh Identifier only",
+      "chaining": false,
+      "patterns_places_members_indexes": false
+    }
+  ],
+  "preview_design_nonactivatable": {
+    "dynamic_unsafe_quarantine_scope_msp": {
+      "recognized_only_in": "RECOVERY",
+      "source_activation": "nonactivatable",
+      "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open"
+    }
+  },
+  "accepted_surface_families_current": {
+    "field_punning": "${ id, name } and source!{ id, name } expand to same-name labeled entries",
+    "grouped_forwarding": "+forward { name, age, city } to profile",
+    "scoped_activation": "import/use comma-separated paths in { block }",
+    "multiline_unicode_string": "triple-quoted, newline-delimited, common-indent-stripped String",
+    "enum_case_commas": "same-line enum case list separated by commas",
+    "guards": "one GuardClause only",
+    "pattern_controls": "if let / while let / for let transactional bindings"
+  },
+  "removed_surface_contracts_current": [
+    {
+      "surface": "Map<String,V> dot-key projection",
+      "current_replacement": "map[index] or an explicit Map API",
+      "stage": "checker"
+    },
+    {
+      "surface": "prefix/postfix increment or decrement expression",
+      "current_replacement": "explicit assignment",
+      "stage": "parser"
+    },
+    {
+      "surface": "tailrec callable kind",
+      "current_replacement": "ordinary recursive def; optimization is backend-only",
+      "stage": "parser"
+    },
+    {
+      "surface": "regex literal",
+      "current_replacement": "String/Bytes plus explicit library construction",
+      "stage": "lexer/parser"
+    },
+    {
+      "surface": "heterogeneous List automatic Union inference",
+      "current_replacement": "explicit expected List<A | B>",
+      "stage": "checker"
+    }
+  ]
+}

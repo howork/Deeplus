@@ -1,0 +1,309 @@
+{
+  "schema": "deeplus.design-gallery-manifest/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "source_file": "docs/guide/design-gallery.md",
+  "entry_count": 18,
+  "entries": [
+    {
+      "entry_id": "G-R51f-001",
+      "title": "Map String key uses explicit indexing",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "map_prefixed_literal",
+        "basic_index_operator"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51f-001",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "e5156bb9693676947e4826c929d8de3d41e1ee3ba3c2d2b5d4c2cb84f43f6fa2",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-002",
+      "title": "Map dot-key projection is not member lookup",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "map_prefixed_literal",
+        "static_runtime_member_boundary_law"
+      ],
+      "diagnostic_refs": [
+        "MEMBER_NOT_FOUND"
+      ],
+      "diagnostic_disposition": "primary",
+      "source_example_id": "EX-R51f-002",
+      "product_support": "NOT_RUN",
+      "entry_kind": "negative",
+      "expected_outcome": "reject",
+      "code_sha256": "8f35bea81beb673b6e5599e63d7263f5b0ac4bd5f482ecc279d0c53495554339",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-003",
+      "title": "Explicit assignment replaces increment",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "numeric_operator_core"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51f-003",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "24e60cb3735b870b21af97b9025527de42314de17955a13a5cac09109c8bb0b7",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-004",
+      "title": "Postfix increment is not current",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "numeric_operator_core"
+      ],
+      "diagnostic_refs": [
+        "POSTFIX_MUTATION_OPERATOR_NOT_CURRENT"
+      ],
+      "diagnostic_disposition": "primary",
+      "source_example_id": "EX-R51f-004",
+      "product_support": "NOT_RUN",
+      "entry_kind": "negative",
+      "expected_outcome": "reject",
+      "code_sha256": "50b9e6db40526853e5aba1462bdf2b3e5981716df91547c2c83a7772a6063871",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-005",
+      "title": "Ordinary recursive function",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "function_profile_introducer_family"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51f-005",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "11d070dca461e0668a67947a6f193c13c74c9baa0a4402ade1c977f9ac7c5afb",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-006",
+      "title": "Tail-recursion callable kind is not current",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "function_profile_introducer_family"
+      ],
+      "diagnostic_refs": [
+        "CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED"
+      ],
+      "diagnostic_disposition": "primary",
+      "source_example_id": "EX-R51f-006",
+      "product_support": "NOT_RUN",
+      "entry_kind": "negative",
+      "expected_outcome": "reject",
+      "code_sha256": "bed7d0fbf45f2c73e59f13802392a24c8e07bfd12998439f1c44f3f299d1ca28",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-007",
+      "title": "Raw String can carry pattern text",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "raw_string_prefixed_literal"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51f-007",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "f1cc6a600f5139e428e387b9f0e3d3a62d4c1ce77a6a75beb9fbace09eab6d6f",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-008",
+      "title": "Regex literal prefix is not current",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "set_prefixed_literal"
+      ],
+      "diagnostic_refs": [
+        "UNKNOWN_PREFIXED_LITERAL"
+      ],
+      "diagnostic_disposition": "primary",
+      "source_example_id": "EX-R51f-008",
+      "product_support": "NOT_RUN",
+      "entry_kind": "negative",
+      "expected_outcome": "reject",
+      "code_sha256": "089e09b2620278edc972d53178b4c103a25e7642c985835fa3132f640cab12fa",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-009",
+      "title": "Explicit expected List union",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "ordinary_list_literal_surface",
+        "closed_anonymous_union_type_msp"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51f-009",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "d69661e5ccd22115e7e64f0cbe3c6f8780936a617d204a5e5948d8fe0eb1879c",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f-010",
+      "title": "Automatic heterogeneous List union is absent",
+      "feature_ids": [
+        "r51f_removed_surface_boundary_law",
+        "ordinary_list_literal_surface",
+        "closed_anonymous_union_type_msp"
+      ],
+      "diagnostic_refs": [
+        "LIST_LITERAL_ELEMENT_JOIN_FAILED"
+      ],
+      "diagnostic_disposition": "primary",
+      "source_example_id": "EX-R51f-010",
+      "product_support": "NOT_RUN",
+      "entry_kind": "negative",
+      "expected_outcome": "reject",
+      "code_sha256": "1a70076717ba879a0a38098cabb2d5ced3e75fb31f1bc2ea3799d89a85864664",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-011",
+      "title": "Named-rest and named unfold remain different channels",
+      "feature_ids": [
+        "named_rest_parameter_record_msp",
+        "data_shaping_callshape_model"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51a1-NEW-003",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "76d253cd921e470df851b0e7c5700e60a64c91e05f3dcc49bba25c0da7752425",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-012",
+      "title": "Sealed hierarchy is module-closed",
+      "feature_ids": [
+        "sealed_class_module_scope"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R49B-SEALED-001",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "de9b9fd7356aee4a849804146651cebb5c021101bb5aa6a6353d23319061468b",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-013",
+      "title": "Conformance creates explicit witness evidence",
+      "feature_ids": [
+        "conformance_declaration_surface",
+        "trait_witness_formal_judgment_core",
+        "trait_witness_resolution_phase_a"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R48C-083",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "42d7e15b67825e531b1221516983c24efa88437ef6c844a0dca1252e55ed1ba1",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-014",
+      "title": "Borrow Facet preserves object identity",
+      "feature_ids": [
+        "facet_borrow_pack_msp"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51a1-FACET-P-001",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "d3a4d36d5be9d90ae916e5141e3d4408ae11be6c0bdff4d1340957b9bb45e492",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-015",
+      "title": "Typed labeled materialization preserves construction authority",
+      "feature_ids": [
+        "typed_labeled_materialization_family"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51a1-015",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "3ff055d46ba629fe1ea1b8de3454b96091e3d21fbda02905289367338f7b59c0",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-016",
+      "title": "Pure call-by-need binding",
+      "feature_ids": [
+        "lazy_let_call_by_need_msp"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51a1-LAZY-P-001",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "868706015b4f95385c7502abdc8c0ef317e1c2f812faadabf41e3fe1310e6914",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-017",
+      "title": "Async task and actor minimum core",
+      "feature_ids": [
+        "async_function_declaration_surface",
+        "await_expression_surface",
+        "structured_task_scope",
+        "actor_declaration_grammar_closed"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R48E1-030",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "8fbeef279db42392603c8699b4aec1de8decd47c274ce628788b308828fee350",
+      "predecessor_gallery_ids": []
+    },
+    {
+      "entry_id": "G-R51f3-018",
+      "title": "Bitfield checked raw conversion",
+      "feature_ids": [
+        "bitfield_checked_raw_codec_msp"
+      ],
+      "diagnostic_refs": [],
+      "diagnostic_disposition": "related_boundary_none",
+      "source_example_id": "EX-R51a1-BITFIELD-P-003",
+      "product_support": "NOT_RUN",
+      "entry_kind": "positive",
+      "expected_outcome": "accept",
+      "code_sha256": "4be6a5861b1e0cae4ccd5865f5c592ae7a207cfcccc87048a1629ea94ec65e6b",
+      "predecessor_gallery_ids": []
+    }
+  ],
+  "selection_policy": "R51f replacement/removal examples; complete examples remain in the corpus"
+}

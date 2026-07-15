@@ -1,28 +1,13 @@
-# Contributing to Deeplus
+# Contributing
 
-Thank you for helping shape Deeplus. The project is at an early stage, so clear
-problem statements and small, reviewable changes are especially valuable.
+1. `current/current-pointer.json`과 `current/authority-map.yaml`을 먼저 읽는다.
+2. 하나의 branch/change set은 하나의 RFC, ADR 또는 change request만 다룬다.
+3. source shard를 편집하고 generated projection은 generator로 만든다.
+4. 문법·frontend·type·MIR·diagnostic·example 중 영향을 받는 항목을 같은 change set에서 닫는다.
+5. `python tools/validators/validate_workspace.py`, `cargo check --workspace`, 관련 test를 실행한다.
+6. 실행하지 않은 product lane은 `NOT_RUN`으로 남긴다.
+7. 보고서는 영문 파일명과 역할 prefix를 사용하고, 상세 분석·대안·acceptance test·handoff를 포함한다.
 
-## Before making a change
+GitHub 변경은 관련 Issue와 변경 ID를 먼저 만들고 short-lived branch에서 Draft PR로 제출한다. 5개 주요 Work 역할의 검토 보고서는 Library에 보관하며, Git에는 current decision, compact receipt, handoff와 재현 가능한 source만 유지한다.
 
-1. Search the existing issues and pull requests for related work.
-2. Open an issue for a new language feature, architectural decision, or other
-   substantial change before starting implementation.
-3. Keep each pull request focused on one issue or one coherent improvement.
-
-## Pull requests
-
-- Create a descriptive branch from the default branch.
-- Reference the related issue in the pull request description.
-- Explain what changed, why it changed, and how it was validated.
-- Include tests when behavior is added or changed after a test system exists.
-- Update relevant documentation when a design or user-facing behavior changes.
-- Do not present an unapproved proposal as finalized language behavior.
-
-## Validation
-
-The repository does not have an automated build or test system yet. Until one
-is introduced, review documentation changes for accurate links, readable
-Markdown, and consistency with the current project status. Future build and
-test commands will be documented here when the implementation toolchain is
-selected.
+Commit 예: `spec(DP-RFC-0042): define named-rest HIR channel`.
