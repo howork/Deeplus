@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-repository-bootstrap-m1.2"
+REVISION = "r51f3-current-publication-m1.3"
 EXCLUDED_TREE_PARTS = {".git", "target", "dist", "__pycache__"}
 EXPECTED = {
     "features": 681, "diagnostics": 1251, "predicates": 245,
