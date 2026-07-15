@@ -28,7 +28,6 @@ EXPECTED_POINTER_KEYS = {
     "previous_pointer",
 }
 EXPECTED_NEXT_REVIEWS = [
-    "M13-A001: Archive_ + Design_",
     "M13-A002: Impl_ + Spec_ + Test_",
     "M13-A003: Design_ + Legal_",
     "M13-A004: Build_",
@@ -322,7 +321,7 @@ def main() -> int:
         actions = pointer.get("open_actions", [])
         action_keys = {"id", "priority", "summary", "owner", "tracking_ref", "acceptance_test", "target"}
         check(
-            len(actions) == 5 and len({row.get("id") for row in actions}) == 5
+            len(actions) == 4 and len({row.get("id") for row in actions}) == 4
             and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
             "POINTER_ACTION_BINDING", str([row.get("id") for row in actions]),
         )
