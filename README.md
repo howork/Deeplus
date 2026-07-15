@@ -1,11 +1,12 @@
 # Deeplus Canonical Workspace
 
-이 저장소는 Deeplus의 일상 작업 정본이다. `0.1.2-baseline.r51f3`의 언어 설계를 Development Management System R1.1로 이관했으며, 기존 버전명 반복 파일 대신 안정 경로를 사용한다. 현재 브랜치는 GitHub 정본 도입을 검토하는 `r51f3-repository-bootstrap-m1.2` 후보 상태다.
+이 저장소는 Deeplus의 일상 작업 정본이다. `0.1.2-baseline.r51f3`의 언어 설계를 Development Management System R1.1로 이관했으며, 기존 버전명 반복 파일 대신 안정 경로를 사용한다. 현재 publication revision은 `r51f3-current-publication-m1.3`이다.
 
 ## 현재 사실
 
 - 언어 설계 기준선: `0.1.2-baseline.r51f3`
-- 작업 revision: `r51f3-repository-bootstrap-m1.2`
+- 작업 revision: `r51f3-current-publication-m1.3`
+- source revision: Git merge commit `b6ff1f6e53ea8a21cfb706864478baa02545d3dd`
 - 구현 언어: Rust
 - 고유 의미론 정본: Deeplus MIR
 - 초기 실행: xVM bytecode interpreter
@@ -17,7 +18,7 @@ Cargo crate는 책임 경계를 고정하는 골격일 뿐 lexer, parser, checke
 
 ## 정본 읽기 순서
 
-1. 발행 후에는 `current/current-pointer.json`; 검토 중에는 `release/candidate-state.json`
+1. `current/current-pointer.json`
 2. `current/authority-map.yaml`
 3. `spec/language.md`
 4. 필요한 domain의 exact source (`spec/grammar`, `spec/frontend`, `spec/types`, `spec/mir`)
@@ -46,6 +47,6 @@ cargo test --workspace
 자세한 규칙은 `governance/`에 있다.
 
 
-## M1.2 repository bootstrap 상태
+## M1.3 current publication 상태
 
-후보 검토 중에는 candidate state와 current pointer가 동시에 존재하지 않는다. 모든 필수 역할 gate와 GitHub CI가 닫힌 뒤 별도 pointer-only 변경에서 schema-valid current pointer를 생성하고 candidate state를 제거한다. 이 bootstrap은 언어 의미를 변경하지 않으며 제품 lane은 모두 `NOT_RUN`이다.
+M1.2 repository bootstrap의 source tree와 GitHub merge commit을 current pointer가 결속한다. `release/candidate-state.json`은 제거되었고 schema-valid `current/current-pointer.json`이 source revision, authority digest, Library source snapshot과 open action을 기록한다. 이 publication은 언어 의미를 변경하지 않으며 제품 lane은 모두 `NOT_RUN`이다.
