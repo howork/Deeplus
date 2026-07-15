@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/checker-predicate-row.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "predicate_id",
+    "formal_judgment_id",
+    "algorithm_owner",
+    "input_descriptor",
+    "input_descriptor_schema",
+    "preconditions",
+    "normalization",
+    "decision_procedure",
+    "requires",
+    "termination_metric",
+    "success_result",
+    "active_primary_diagnostic",
+    "secondary_diagnostics",
+    "positive_fixture_ids",
+    "negative_fixture_ids",
+    "evaluation_order",
+    "dependency_predicates",
+    "execution_receipt",
+    "product_support",
+    "predecessor_contract",
+    "predicate_maturity",
+    "emission_eligible"
+  ],
+  "properties": {
+    "baseline": {
+      "const": "0.1.2-baseline.r51f3"
+    },
+    "row_schema_version": {
+      "const": "deeplus.checker-predicate/r51f3"
+    },
+    "predicate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string"
+    },
+    "formal_judgment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "algorithm_owner": {
+      "enum": [
+        "integrated_checker",
+        "parser_then_integrated_checker",
+        "source_frontend_then_parser",
+        "source_frontend_then_parser_then_integrated_checker"
+      ]
+    },
+    "input_descriptor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_adapter": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "input_descriptor_schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "descriptor_axes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "rule_facets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "feature_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "diagnostic_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "design_seed_diagnostic_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "output": {
+      "type": "string",
+      "minLength": 1
+    },
+    "preconditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "normalization": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_procedure": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "termination_metric": {
+      "type": "string",
+      "minLength": 1
+    },
+    "success_result": {
+      "type": "string",
+      "minLength": 1
+    },
+    "active_primary_diagnostic": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "secondary_diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "positive_fixture_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "negative_fixture_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evaluation_order": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dependency_predicates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependency_input_projections": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "diagnostic_dispatch": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "diagnostic_emission_owners": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "execution_receipt": {
+      "type": "null"
+    },
+    "evidence_status": {
+      "enum": [
+        "DESIGN_STATIC_NOT_RUN",
+        "DESIGN_ALGORITHM_STATIC_NOT_RUN"
+      ]
+    },
+    "diagnostic_disposition": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    },
+    "predecessor_contract": {
+      "type": "null"
+    },
+    "predicate_maturity": {
+      "enum": [
+        "design_algorithm",
+        "positive_assertion",
+        "design_seed"
+      ]
+    },
+    "emission_eligible": {
+      "type": "boolean"
+    },
+    "predecessor_identity": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "baseline",
+                    "sha256",
+                    "disposition"
+                  ],
+                  "properties": {
+                    "baseline": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "disposition": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

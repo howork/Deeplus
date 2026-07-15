@@ -1,0 +1,1716 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "PRELUDE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "PRELUDE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Prelude facade naming phase a",
+    "feature_id": "prelude_facade_naming_phase_a",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Canonical Prelude exports, aliases, collision policy, and removed-name diagnostics are recorded by the signature catalog; runtime/provider support remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "DOCUMENTATION / STDLIB / TYPE_SYSTEM",
+    "authority_set": [
+      "DOCUMENTATION",
+      "STDLIB",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Prelude signature catalog seed",
+    "feature_id": "prelude_signature_catalog",
+    "feature_kind": "schema_artifact",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Tooling only",
+    "notes": "Machine-readable stdlib/prelude signature catalog obligation.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "documentation",
+    "status_display": "Tooling only",
+    "status_enum": "TOOLING_ONLY",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "library",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Rooted Preview grammar profile",
+    "feature_id": "preview_profile_root_contract",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "The rooted opt-in profile validation mechanism is itself a current Stable contract with no source activation; exactly three registry-listed opt-in features use explicit activation.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PREVIEW_GATE_DEPENDENCY_MISSING",
+        "PREVIEW_GATE_DUPLICATE_FEATURE",
+        "PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE",
+        "PREVIEW_GATE_PLACEMENT_INVALID",
+        "PREVIEW_GATE_UNKNOWN_FEATURE"
+      ],
+      "predicates": [
+        "PreviewFeatureGateAdmitted"
+      ],
+      "examples": [
+        "EX-R51a1-NG-027",
+        "EX-R51a1-NG-028",
+        "EX-R51a1-NG-029",
+        "EX-R51a1-NG-030",
+        "EX-R51a1-NG-031"
+      ],
+      "productions": [],
+      "semantic_reference_productions": [
+        "DeeplusPreview",
+        "PreviewExecutableSourceFile",
+        "PreviewFeatureList",
+        "PreviewGate",
+        "PreviewLibrarySourceFile",
+        "PreviewScriptSourceFile"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Primary constructor let/var promotion only",
+    "feature_id": "primary_constructor_let_var_promotion_only",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Primary constructor let/var promotion only. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PRIMARY_CONSTRUCTOR_BARE_PARAM_NOT_MEMBER",
+        "PRIMARY_CTOR_DOLLAR_PROMOTION_REMOVED_USE_LET_VAR"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R51a1-029",
+        "EX-R51a1-033"
+      ],
+      "productions": [
+        "ConstructorDecl",
+        "ConstructorDelegationClause"
+      ],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "syntax",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "named_constructor_surface_msp",
+      "primary_constructor_let_var_promotion_only"
+    ],
+    "display_name": "Primary constructor root new law",
+    "feature_id": "primary_constructor_root_new_law",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "A primary constructor generates the root new; otherwise each class has one root new in Phase A.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "CONSTRUCTOR_CHAIN_TERMINAL_MUST_BE_NEW",
+        "CONSTRUCTOR_DELEGATION_GRAPH_NOT_ADMITTED",
+        "MULTIPLE_ROOT_NEW_CONSTRUCTORS",
+        "PRIMARY_GENERATED_NEW_CONSTRUCTOR_COLLISION"
+      ],
+      "predicates": [
+        "ConstructorDelegationGraphAdmitted"
+      ],
+      "examples": [
+        "EX-R48-046",
+        "EX-R48B-051"
+      ],
+      "productions": [
+        "ConstructorDecl",
+        "ConstructorDelegationClause"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / CHECKER / FORMATTER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "CHECKER",
+      "FORMATTER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "labeled_aggregate_layout_separator"
+    ],
+    "display_name": "Primary constructor promoted-field layout separator MSP",
+    "feature_id": "primary_ctor_layout_promoted_field_separator_msp",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Primary constructor promoted-field layout separator remains Stable design. Current contract additionally permits +let/-let/#let and +var/-var/#var as generated-member visibility sigils.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PRIMARY_CTOR_LAYOUT_REQUIRES_PROMOTED_FIELD"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R51a1-011"
+      ],
+      "productions": [
+        "DataClassDecl",
+        "ParameterList",
+        "StoredParameter"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Promoted field visibility applies to generated member only",
+    "feature_id": "primary_ctor_promoted_field_visibility_member_only_law",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "A public constructor may require an input for a field whose generated member is private/protected; construction input responsibility and post-construction member access responsibility are separate.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [
+        "EX-R49-PRIMARY-001",
+        "EX-R49-PRIMARY-002"
+      ],
+      "productions": [
+        "DataClassDecl",
+        "ParameterList",
+        "StoredParameter"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Primary constructor promoted field visibility sigils",
+    "feature_id": "primary_ctor_promoted_field_visibility_sigil_msp",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current contract closes grammar reachability: PrimaryCtor now routes through PrimaryConstructorParamList, so +let/-let/#let promoted fields are ordinary stable source.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE"
+      ],
+      "predicates": [
+        "PrimaryCtorPromotedFieldReachable",
+        "PrimaryCtorPromotedFieldVisibilityMemberOnly"
+      ],
+      "examples": [
+        "EX-R49-001",
+        "EX-R49-PRIMARY-001",
+        "EX-R49-PRIMARY-003"
+      ],
+      "productions": [
+        "DataClassDecl",
+        "ParameterList",
+        "StoredParameter"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Private error set inference",
+    "feature_id": "private_error_set_inference",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Private error set inference. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [
+      "spec/language.md"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "not_applicable_reason": "companion/profile identity is owned by the cited exact artifact rather than a direct source production"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "CONFORMANCE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "CONFORMANCE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Production grammar capsule seed",
+    "feature_id": "production_grammar_capsule",
+    "feature_kind": "publication_closure",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Conformance only",
+    "notes": "Self-contained parser-acceptable subset capsule remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Conformance only",
+    "status_enum": "CONFORMANCE_ONLY",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [
+        "StableOnlyGrammarProfileClosed"
+      ],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "CONFORMANCE / PARSER / EVIDENCE",
+    "authority_set": [
+      "CONFORMANCE",
+      "PARSER",
+      "EVIDENCE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "production_receipt_spine",
+      "surface_smoke_corpus"
+    ],
+    "display_name": "Production parser receipt seed gate",
+    "feature_id": "production_parser_receipt_seed",
+    "feature_kind": "conformance_seed",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Conformance only",
+    "notes": "Design seed for parser receipt promotion. Product parser remains NOT_RUN until actual parser execution receipt exists.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Conformance only",
+    "status_enum": "CONFORMANCE_ONLY",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING / CONFORMANCE",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "CONFORMANCE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Production parser/checker/xVM receipt spine",
+    "feature_id": "production_receipt_spine",
+    "feature_kind": "publication_closure",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Receipt template obligation; all product lanes remain NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "MODULE_SIGNATURE_NOT_IMPLEMENTATION_RECEIPT"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM",
+    "authority_set": [
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Refinement proof profile R0",
+    "feature_id": "proof_profile_r0",
+    "feature_kind": "internal_design",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Internal design",
+    "notes": "Checker-internal proof bookkeeping for the finite R0 evaluator. It is not a source feature, gate, runtime proof object, or product-support claim.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "checker_internal",
+    "status_display": "Internal design",
+    "status_enum": "INTERNAL_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM",
+    "authority_set": [
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Refinement proof profile R1 intrinsic pure",
+    "feature_id": "proof_profile_r1_intrinsic_pure",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Refinement proof profile R1 intrinsic pure. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "R1_PROOF_PROFILE_OUTSIDE_INTRINSIC_SUBSET"
+      ],
+      "predicates": [
+        "StableStaticContractProofAdmitted"
+      ],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING / TYPE_SYSTEM",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "R2 solver proof certificate tooling",
+    "feature_id": "proof_profile_r2_solver_agent",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Solver output is evidence, never source semantics. A result binds provider identity/version, obligation hash and certificate hash. Timeout/unknown is not success. The checker validates the certificate or reduces the obligation to R0/R1; nondeterministic output never enters API or MIR identity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "productions": [],
+      "semantic_reference_productions": [],
+      "diagnostics": [],
+      "predicates": [],
+      "examples": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/proof-r2-tooling.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Property default accessor",
+    "feature_id": "property_default_accessor",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Property default accessor. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "ACCESSOR_PROPERTY_HEADER_VISIBILITY_FORBIDDEN",
+        "ACCESSOR_PROPERTY_MULTIPLE_ACCESSORS_REQUIRE_BLOCK",
+        "ACCESSOR_PROPERTY_SEPARATOR_REQUIRED",
+        "ACCESSOR_PROPERTY_VISIBILITY_ON_ACCESSOR_REQUIRED",
+        "PROPERTY_VALUE_REQUIRES_REUSABLE_NODROP"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [
+        "AccessorPropertyDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TOOLING",
+    "authority_set": [
+      "TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Property test generation profile",
+    "feature_id": "property_test_generation_profile",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Current tooling/evidence profile for property-test generation. Generated cases are design seeds until target parser/checker/runtime receipts exist.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "AccessorPropertyDecl"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM",
+    "authority_set": [
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "PropertyValue admissibility law",
+    "feature_id": "property_value_admissibility",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for PropertyValue admissibility law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [
+        "AccessorPropertyDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Prototype delta",
+    "feature_id": "prototype_delta",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "Prototype delta has no current rooted syntax and ownership/rollback contract; retained as a nonactivatable design proposal.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "downgrade_reason": "exact current source contract deliberately deferred",
+    "trace_class": "design_only",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PROTOTYPE_DELTA_REQUIRES_FEATURE_GATE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Prototype derivation without dollar",
+    "feature_id": "prototype_derivation_without_dollar",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Prototype derivation without dollar. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PROTOTYPE_DEEP_DERIVATION_REQUIRES_DEEP_CLONE_LAW",
+        "PROTOTYPE_DERIVATION_BRACE_FORM_REQUIRED",
+        "PROTOTYPE_DERIVATION_DOLLAR_REMOVED",
+        "PROTOTYPE_DERIVATION_NO_WHITESPACE_BEFORE_DELTA"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48-011",
+        "EX-R51a1-016"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "PUBLICATION / EVIDENCE",
+    "authority_set": [
+      "PUBLICATION",
+      "EVIDENCE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Prototype Evidence Corridor",
+    "feature_id": "prototype_evidence_corridor",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Tooling only",
+    "notes": "Current contract: Prototype Evidence Corridor. This row grants no hidden source activation, authority, or product implementation claim beyond the stated status and companion rules.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Tooling only",
+    "status_enum": "TOOLING_ONLY",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING / PROVIDER",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "PROVIDER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Provider derive-via source generator",
+    "feature_id": "provider_derive_via",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Consumes typed AST/RCTS with provider identity/version and deterministic sidecar hash; emits ordinary Deeplus source that the Rust frontend rechecks. It cannot inject witness, authority, MIR or backend state.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "productions": [],
+      "semantic_reference_productions": [],
+      "diagnostics": [],
+      "predicates": [],
+      "examples": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/provider-derive-via.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING / PROVIDER / CONFORMANCE",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "PROVIDER",
+      "CONFORMANCE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "typed_annotation_processing"
+    ],
+    "display_name": "Provider-generated sidecar hygiene core",
+    "feature_id": "provider_generated_sidecar_hygiene_core",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Generated sidecar is ordinary Deeplus source and must be rechecked.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "library",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "#pure callable behavior profile",
+    "feature_id": "pure_callable_profile",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "#pure implies throws Never, effects {}, no suspension, no unsafe authority, and no mutable/authority/resource capture. Literal capture acquisition is checked separately from behavior at invocation; pure does not imply total, deterministic, CTFE, or allocation-free.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN",
+        "PURE_CALLABLE_PROFILE_VIOLATION"
+      ],
+      "predicates": [
+        "PureCallableAdmitted"
+      ],
+      "examples": [
+        "EX-R51a1-AUD-NG-016",
+        "EX-R51a1-AUD-NG-017",
+        "EX-R51a1-NEW-013",
+        "EX-R51a1-NEW-030"
+      ],
+      "productions": [
+        "ClosureExpr",
+        "ParenTypeSyntax"
+      ],
+      "semantic_reference_productions": []
+    }
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "one_line_return_body",
+      "pure_function_profile_def_hash_pure"
+    ],
+    "display_name": "Pure elision return body MSP",
+    "feature_id": "pure_elision_return_body_msp",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "..) = return expr may elide #pure only after the body proves throws Never/effects {}.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "IMPLICIT_PURE_FUNCTION_HAS_EFFECTS"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48E-012",
+        "EX-R48E-013"
+      ],
+      "productions": [
+        "FunctionBody",
+        "ReturnTransfer"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "named_effect_capability_profile"
+    ],
+    "display_name": "def#pure function profile",
+    "feature_id": "pure_function_profile_def_hash_pure",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Stable: def#pure is exactly throws Never + effects {} + no suspension/unsafe authority; it is not termination, memoization, or CTFE.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PURE_FUNCTION_EFFECT_VIOLATION",
+        "PURE_FUNCTION_THROWS_VIOLATION"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48B-060",
+        "EX-R48E-012"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "method_extension_resolution_policy",
+      "named_extension_set_block_msp"
+    ],
+    "display_name": "Qualified extension selector call MSP",
+    "feature_id": "qualified_extension_selector_call_msp",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current contract: qualified extension selectors use `::`, e.g. `Int::metric::m`.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "RECEIVER_MODE_MISMATCH"
+      ],
+      "predicates": [
+        "QualifiedExtensionSelectorAdmitted",
+        "QualifiedExtensionSelectorAdmitted_R48_60"
+      ],
+      "examples": [
+        "EX-R48-016"
+      ],
+      "productions": [
+        "ExtensionFunctionDecl",
+        "ExtensionSetDecl",
+        "QualifiedExtensionSelector"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "qualified_extension_selector_colon_colon_surface",
+    "display_name": "Qualified extension selector uses `::`",
+    "status_enum": "STABLE_DESIGN",
+    "source_activation": "none",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "depends_on": [],
+    "baseline": "0.1.2-baseline.r51f3",
+    "primary_source": "spec/language.md",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "notes": "Qualified extension selector path is static and uses `::`, e.g. `Int::metric::m`.",
+    "language_status": "Stable design",
+    "status_display": "Stable design",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "DOT_NOT_ALLOWED_IN_QUALIFIED_EXTENSION_SELECTOR"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48L-005"
+      ],
+      "productions": [
+        "ExtensionFunctionDecl",
+        "ExtensionSetDecl",
+        "QualifiedExtensionSelector"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "unit_catalog_resolution_msp"
+    ],
+    "display_name": "Qualified unit symbol MSP",
+    "feature_id": "qualified_unit_symbol_msp",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Qualified unit symbol MSP. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [
+        "EX-R48-009"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "refinement_type_phase_a"
+    ],
+    "display_name": "R0 guard-safe predicate calculus",
+    "feature_id": "r0_guard_predicate_calculus",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Closed pure predicate subset used by declarative function clauses and match/contract refinement.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "DECL_CLAUSE_GUARD_NOT_GUARD_SAFE",
+        "R0_GUARD_NOT_GUARD_SAFE",
+        "R0_GUARD_USES_WORD_BOOLEAN_OPERATORS",
+        "REFINEMENT_R0_PREDICATE_NOT_ADMITTED"
+      ],
+      "predicates": [
+        "DeclarativeClauseDisjointnessProven",
+        "R0GuardSafe",
+        "RefinementR0PredicateAdmitted"
+      ],
+      "examples": [
+        "EX-R48E1-023",
+        "EX-R51a1-061",
+        "EX-R51a1-NG-069"
+      ],
+      "productions": [
+        "ModuleFunctionDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING",
+    "authority_set": [
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "R45g full-density example restoration pack",
+    "feature_id": "r45g_full_density_example_restoration",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "The current example corpus preserves the selected r45g-origin review cases as normalized design seeds with exact manifest/hash metadata; they are not product receipts.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING",
+    "authority_set": [
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "R45h NumericArray/Measure example restoration pack",
+    "feature_id": "r45h_numeric_measure_example_restoration",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "The current example corpus preserves the selected r45h NumericArray, Measure, generic, context, and extension cases as normalized design seeds with exact metadata.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "evidence",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "MeasureLiteralExpr",
+        "UnitCatalogDecl"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "DOCUMENTATION / VERIFIER",
+    "authority_set": [
+      "DOCUMENTATION",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "r48_current_canonical_artifact_profile"
+    ],
+    "display_name": "clean projection closure",
+    "feature_id": "r48_clean_projection_closure",
+    "feature_kind": "projection_artifact",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Feature, support, grammar, diagnostic, example, and gallery projections are generated from current machine sources and contain no intermediate change log or review-history payload.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "ASSOCIATED_PROJECTION_REQUIRES_BOUND",
+        "ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ClosureExpr",
+        "LambdaBody",
+        "LambdaParameterList"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "DOCUMENTATION / VERIFIER",
+    "authority_set": [
+      "DOCUMENTATION",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "current-canonical artifact profile",
+    "feature_id": "r48_current_canonical_artifact_profile",
+    "feature_kind": "publication_closure",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "The Current package contains one fully merged language/design authority. discussion and process ledgers are outside the clean package.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "documentation",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "PUBLICATION / OFFICIAL_TOOLING / VERIFIER",
+    "authority_set": [
+      "PUBLICATION",
+      "OFFICIAL_TOOLING",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "source_truth_projection_unification"
+    ],
+    "display_name": "machine truth count alignment",
+    "feature_id": "r48_machine_truth_count_alignment",
+    "feature_kind": "projection_artifact",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Tester promotion applied: canonical Markdown, completeness, sanity, receipt, grammar profile, registry, and archive counts are treated as a single source-truth obligation.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority_set": [
+      "PARSER",
+      "FORMATTER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "all-named argument layout ArgList closure",
+    "feature_id": "r49_all_named_argument_layout_arglist_closure",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "notes": "ArgList admits AllNamedArgumentList only for all-named multiline argument contexts; positional/mixed argument lists remain comma-required.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "authority": "PARSER / FORMATTER / OFFICIAL_TOOLING",
+    "status_display": "Official tooling",
+    "language_status": "Official tooling",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "ALL_NAMED_ARGUMENT_LAYOUT_ROUTE_UNREACHABLE"
+      ],
+      "predicates": [
+        "AllNamedArgumentLayoutOnlyAllNamed"
+      ],
+      "examples": [
+        "EX-R49-002",
+        "EX-R49-003"
+      ],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ArgumentList",
+        "ClosureExpr",
+        "LambdaBody",
+        "LambdaParameterList",
+        "LayoutArgumentSequence"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "call-shape and primary-field responsibility repair",
+    "feature_id": "r49_call_shape_and_primary_field_repair",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "The current call-shape and promoted-field contracts cover rest parameters, call-side unfolding, enum-pattern closure, and primary promoted-field visibility.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "governance",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "r49_corpus_truth_pipeline_closure",
+    "display_name": "corpus truth pipeline closure",
+    "status_enum": "OFFICIAL_TOOLING",
+    "source_activation": "evidence",
+    "feature_kind": "official_tooling",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "EVIDENCE"
+    ],
+    "authority": "OFFICIAL_TOOLING / EVIDENCE",
+    "depends_on": [],
+    "baseline": "0.1.2-baseline.r51f3",
+    "primary_source": "spec/language.md",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "notes": "Example corpus Markdown drives manifest, blocks, smoke, parser seed, negative fixtures.",
+    "language_status": "Official tooling",
+    "status_display": "Official tooling",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ClosureExpr",
+        "LambdaBody",
+        "LambdaParameterList"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "r49_double_colon_namespace_closure",
+    "display_name": "double-colon namespace closure",
+    "status_enum": "OFFICIAL_TOOLING",
+    "source_activation": "documentation",
+    "feature_kind": "official_tooling",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "DOCUMENTATION"
+    ],
+    "authority": "OFFICIAL_TOOLING / DOCUMENTATION",
+    "depends_on": [],
+    "baseline": "0.1.2-baseline.r51f3",
+    "primary_source": "spec/language.md",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "notes": "Documentation/projection closure for `::` policy.",
+    "language_status": "Official tooling",
+    "status_display": "Official tooling",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ClosureExpr",
+        "LambdaBody",
+        "LambdaParameterList"
+      ]
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  }
+]

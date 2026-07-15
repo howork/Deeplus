@@ -1,0 +1,53 @@
+schema: deeplus.authority-map/v1
+revision: r51f3-repository-bootstrap-m1.2
+domains:
+  human_language:
+    path: spec/language.md
+    owner: "Spec_"
+    sha256: 5842aaa664b6da3949b2d52c87c291be6328951f74f702d7717f9732309ac068
+  exact_grammar:
+    path: spec/grammar/deeplus.ebnf
+    owner: "Spec_"
+    sha256: c844f1422b17001d279e7eeb897ad320dd780513de0b93297c986cec69916c72
+  frontend_admission:
+    path: spec/frontend/frontend-model.json
+    owner: "Spec_ + Impl_"
+    sha256: 2932c1a7c6f1f933ad1a51d8043f4c583833484a8123c6e0e71782a15d0ce1a9
+  type_system:
+    path: spec/types/type-system.md
+    owner: "Spec_"
+    sha256: 17ac6b139b0ffc422b091ef97ba900fe9f028400034f3e73534bb5d6c1fdae4a
+  mir_observable_semantics:
+    path: spec/mir/semantics.md
+    owner: "Spec_ + Impl_"
+    sha256: faf3a364a0ba7d3ba483b366e5549eb400cb672522d492f7946dfc77b90a22e1
+  prelude:
+    path: library/prelude/prelude.md
+    owner: "Devel_ + Spec_"
+    sha256: 71182fc438f64dcae39570824ee479a3f2b402a207f12712593cda108bb63cba
+  examples:
+    path: examples/guide/review-corpus.md
+    owner: "Devel_ + Test_"
+    sha256: 28718c2362e96d9c29e672fa13592ffebebfcfdf764fcaab96d047736483e09a
+  current_decisions:
+    path: decisions/language/current-decisions.json
+    owner: "Design_ + Spec_"
+    sha256: 131a949cf323a76c87a744be5b79b91f0890b53359e1a30133a6828aab68c25c
+  features:
+    path: spec/features/catalog
+    owner: "Spec_"
+    sha256: a28d45c827bdbae567934d8c1bb452262d483c7768bd8d7a73f4b8663fbc7976
+  diagnostics:
+    path: spec/diagnostics/catalog
+    owner: "Test_ + Spec_"
+    sha256: 686edba6ceda62bc89d782bf21faddbd1656bd546115d853c9763e463717aaed
+  checker_predicates:
+    path: spec/types/predicates
+    owner: "Spec_ + Impl_"
+    sha256: 9490604ed674942c5a9958fbf85515b4aa6c8c9e1d9804adab355775865add4f
+conflict_resolution:
+  - approved_current_decision
+  - domain_edit_authority
+  - generated_projection
+  - execution_receipt_for_implementation_claim_only
+authority_digest: 62490fcd2ae1ba2ebd41b7a1c58343c2c13766b6b1e59a67b057731c9bb4b8a0

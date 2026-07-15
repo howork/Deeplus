@@ -1,0 +1,1614 @@
+[
+  {
+    "authority": "DIAGNOSTICS",
+    "authority_set": [
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_COALESCE_LHS_TYPE_UNRESOLVED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_coalescing_unwrap_or_default"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "The left Option payload type cannot be inferred; provide an expected type or full Option value.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "DIAGNOSTICS",
+    "authority_set": [
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_COALESCE_REQUIRES_OPTION_LEFT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_coalescing_unwrap_or_default"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "The left operand of `?:` must have type Option<T> or T?.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "DIAGNOSTICS",
+    "authority_set": [
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_COALESCE_TOKEN_MUST_BE_ADJACENT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_coalescing_unwrap_or_default"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Option coalescing uses the adjacent compound token `?:`; separated `? :` belongs to ternary syntax.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "lexer",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_COLLECTION_ELEMENT_IMPLICIT_LIFT_NOT_ALLOWED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_visible_some_elision_msp"
+    ],
+    "fixit_hint": "write ::some for each element",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "write ::some for each element",
+    "message": "Collection elements are not implicitly lifted to Option<T>.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_IMPLICIT_LIFT_NOT_ALLOWED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_visible_some_elision_msp"
+    ],
+    "fixit_hint": "write `::some(value)` explicitly outside the one fixed local-target case",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "write `::some(value)` explicitly outside the one fixed local-target case",
+    "message": "T is not a subtype of Option<T>. Exactly one top-level `some` insertion is admitted only after an explicit local Option target is fixed; call arguments, returns, lambda results, collection elements, generic-driving inference, and nested lifts never insert it.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_NONE_REQUIRES_EXPECTED_TYPE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_result_double_colon_case_surface"
+    ],
+    "fixit_hint": "add a type annotation",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "add a type annotation",
+    "message": "`::none` requires an expected Option<T> / T? type; otherwise use `Option<T>::none`.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_SOME_PAYLOAD_TYPE_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "option_result_double_colon_case_surface"
+    ],
+    "fixit_hint": "fix the payload type",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "fix the payload type",
+    "message": "`::some` payload does not match the expected Option element type.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_VISIBLE_SOME_ELISION_MSP_REQUIRES_FEATURE_GATE",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
+    "feature_refs": [
+      "option_visible_some_elision_msp"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "stage": "design_static",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "historical"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPTION_VISIBLE_SOME_ELISION_REQUIRES_PREVIEW_GATE",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
+    "feature_refs": [
+      "option_visible_some_elision_msp"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "stage": "design_static",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "historical"
+  },
+  {
+    "authority": "PUBLICATION",
+    "authority_set": [
+      "PUBLICATION"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ORDINARY_DEF_EXPRESSION_BODY_NOT_CURRENT",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
+    "feature_refs": [
+      "r51e_frontend_grammar_current_canonical"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "design_static",
+    "diagnostic_class": "audit_assertion_or_superseded",
+    "emission_domain": "historical"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OR_PATTERN_BINDINGS_INCONSISTENT",
+    "diagnostic_maturity": "seed",
+    "diagnostic_status": "seed",
+    "feature_refs": [
+      "pattern_match_ownership_split"
+    ],
+    "fixit_hint": "make bindings consistent across alternatives",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "make bindings consistent across alternatives",
+    "message": "All alternatives of an or-pattern must bind the same names with compatible ownership modes.",
+    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "design_only"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OTHERWISE_DUPLICATE_CLAUSE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "match_otherwise_default_arm"
+    ],
+    "fixit_hint": "remove the duplicate `otherwise` arm",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove the duplicate `otherwise` arm",
+    "message": "A clause block or match may contain at most one `otherwise` arm.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OTHERWISE_MUST_BE_LAST",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "match_otherwise_default_arm"
+    ],
+    "fixit_hint": "move `otherwise` to the end",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "move `otherwise` to the end",
+    "message": "`otherwise` must be the last clause or match arm.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OTHERWISE_UNREACHABLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "match_otherwise_default_arm"
+    ],
+    "fixit_hint": "remove the unreachable otherwise arm",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove the unreachable otherwise arm",
+    "message": "The `otherwise` arm is unreachable because previous clauses already cover all cases.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OVERRIDE_VISIBILITY_CANNOT_NARROW",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "member_visibility_sigils_only"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Overriding/fulfilling member cannot reduce base slot visibility.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OWNED_DOWNCAST_OWNER_NOT_PRESERVED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "owned_downcast_result"
+    ],
+    "fixit_hint": "use OwnedDowncast<Target, Source> without discarding the unmatched owner",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "use OwnedDowncast<Target, Source> without discarding the unmatched owner",
+    "message": "An owned downcast must return either the matched target owner or the original unmatched source owner.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "inout_borrow_move_modes"
+    ],
+    "fixit_hint": "shorten the borrow, remove overlap/escape, or perform an explicit admitted ownership transfer",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "shorten the borrow, remove overlap/escape, or perform an explicit admitted ownership transfer",
+    "message": "The borrow/inout/move mode violates exclusivity, lifetime, escape, suspension, or transfer responsibility.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OWN_CAST_REQUIRES_REUSABLE_SOURCE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "pattern_match_ownership_split"
+    ],
+    "fixit_hint": "use downcast<>() with matched/unmatched owner result",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "use downcast<>() with matched/unmatched owner result",
+    "message": "Owning downcast via as? cannot duplicate affine ownership. Use owner-preserving consuming downcast.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "OFFICIAL_TOOLING / PUBLICATION",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "PUBLICATION"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PACKAGE_ARCHIVE_SHA_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "package_archive_verifier_scope"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "PACKAGE_ARCHIVE_SHA_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree.",
+    "notes": "Static publication/tooling assertion; never emitted for Deeplus source. Product tooling support remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "design_static",
+    "diagnostic_class": "audit_assertion_or_superseded",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PACKAGE_DECLARATION_RENAMED_TO_MODULE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "module_keyword_source_header"
+    ],
+    "fixit_hint": "see current canonical spelling",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "emit deterministic diagnostic and offer explicit rewrite only when responsibility is preserved",
+    "message": "`package` is not a Deeplus source namespace declaration; use `module`.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+    "diagnostic_maturity": "seed",
+    "diagnostic_status": "seed",
+    "feature_refs": [
+      "pattern_match_ownership_split"
+    ],
+    "fixit_hint": "use match move subject or bind by borrow",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "use match move subject or bind by borrow",
+    "message": "Borrowed match arm cannot move a payload out of the borrowed subject.",
+    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "design_only"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "pattern_binding_control_family"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "offer only a deterministic responsibility-preserving rewrite",
+    "message": "Pattern-control failure must commit no partial binding or move.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "pattern_binding_control_family"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "offer only a deterministic responsibility-preserving rewrite",
+    "message": "A pattern-binding control requires a refutable pattern.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_DUPLICATE_BINDING",
+    "diagnostic_maturity": "seed",
+    "diagnostic_status": "seed",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "rename one binding or use an alias pattern intentionally",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "rename one binding or use an alias pattern intentionally",
+    "message": "Pattern introduces the same binding name more than once in a single binding scope.",
+    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "design_only"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_FIELD_NOT_FOUND",
+    "diagnostic_maturity": "seed",
+    "diagnostic_status": "seed",
+    "feature_refs": [
+      "map_record_field_colon_surface"
+    ],
+    "fixit_hint": "correct the field name or match a different type",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "correct the field name or match a different type",
+    "message": "Record/schema pattern references a field that is not present in the matched type.",
+    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "design_only"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY",
+    "diagnostic_maturity": "seed",
+    "diagnostic_status": "seed",
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
+    "fixit_hint": "write an explicit move/consume match boundary",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "write an explicit move/consume match boundary",
+    "message": "Pattern decomposition cannot implicitly move a lifecycle token or resource owner.",
+    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "lexer",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "design_only"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLACE_REPLACE_NOT_ADMITTED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "place_replace"
+    ],
+    "fixit_hint": "remove aliases/borrows and use one evaluable place",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove aliases/borrows and use one evaluable place",
+    "message": "replace requires one stable place, exclusive access, and a transaction that preserves exactly one old and one new owner.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_HETEROGENEOUS_TOP_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_boundary_value_cookbook"
+    ],
+    "fixit_hint": "replace heterogeneous Plain collection with JsonValue, Dyn, or an explicit union",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "replace heterogeneous Plain collection with JsonValue, Dyn, or an explicit union",
+    "message": "`Plain` is not a heterogeneous dynamic top. Use an explicit union, JsonValue, Dyn, or a typed boundary wrapper.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_NOT_DERIVED_BY_ANNOTATION",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_plainvalue_boundary_law"
+    ],
+    "fixit_hint": "remove annotation and satisfy checker law",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove annotation and satisfy checker law",
+    "message": "Annotation cannot create Plain admissibility. Use Plain boundary type or satisfies Plain candidate.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_NOT_DYNAMIC",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_boundary_value_cookbook"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Plain is not a dynamic invocation boundary; use Dyn for dynamic inspection.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_NOT_JSONVALUE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_boundary_value_cookbook"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Plain is not external JSON; use JsonValue for JSON data.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_NOT_LAYOUT_SAFE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "ffi_minimum_sound_profile"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Plain does not imply FFI-safe layout or byte-copy safety.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_NOT_RAW_LAYOUT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Plain is not a raw-layout, FFI-layout, byte-copy, or all-bit-pattern type.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_IS_PLAINVALUE_ALIAS",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_public_alias_of_plainvalue"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Plain is a true alias of PlainValue.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_OR_SHARED_REJECTS_LIFECYCLE_OWNER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "shared_owner_handle_minimum_profile"
+    ],
+    "fixit_hint": "move owner explicitly or use future SharedResource profile",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "move owner explicitly or use future SharedResource profile",
+    "message": "Plain/Shared minimum profiles reject lifecycle owners.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_CALLABLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Callable values cannot be erased into Plain.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_LIFECYCLE_OWNER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Lifecycle owner cannot be erased into Plain.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_META_AUTHORITY",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_public_alias_of_plainvalue"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Reflection/meta authority values cannot be erased into PlainValue/Plain.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_RAW_POINTER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "raw_pointer_provenance"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Raw pointer/provenance values cannot be erased into Plain.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_RESOURCE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "plain_public_alias_of_plainvalue"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Lifecycle/resource owners cannot be erased into PlainValue/Plain.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_SHARED_HANDLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "shared_owner_handle_minimum_profile"
+    ],
+    "fixit_hint": "use Shared<T> boundary or extract Plain snapshot",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "use Shared<T> boundary or extract Plain snapshot",
+    "message": "Shared<T> is a shared owner/handle, not Plain data.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLAIN_REJECTS_VIEW_OWNER_REGION",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "place_view_owner_algebra"
+    ],
+    "fixit_hint": "copy view to owned array first",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "copy view to owned array first",
+    "message": "Plain rejects borrowed view owner-region values.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "POSITIONAL_UNFOLD_REQUIRES_SEQUENCE_OR_TUPLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "call_side_positional_unfold_star_msp"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "",
+    "message": "`*expr` in an argument list requires a Sequence, tuple, or fixed-arity array evidence.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "POSTFIX_MUTATION_OPERATOR_NOT_CURRENT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "r51f_removed_surface_boundary_law",
+      "numeric_operator_core"
+    ],
+    "fixit_hint": "rewrite the place update as an explicit assignment such as value = value + 1",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "only offer after proving a single-evaluation place-preserving rewrite",
+    "message": "Prefix/postfix increment and decrement expressions are not current Deeplus; write an explicit assignment.",
+    "notes": "No increment/decrement AST, HIR, MIR, xVM, or LLVM operation is defined.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "POSTFIX_TRANSPOSE_MUST_BE_ATTACHED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "numeric_array_postfix_transpose_caret_msp"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "NumericArray postfix transpose is written attached as `A^`.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "DIAGNOSTICS",
+    "authority_set": [
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "POSTFIX_TRANSPOSE_NOT_CURRENT",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
+    "feature_refs": [
+      "numeric_array_postfix_transpose_caret_msp"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "related_feature_refs": [],
+    "stage": "design_static",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "historical"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREFER_AT_IF_FOR_MULTILINE_TERNARY",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "ternary_short_expression_stable_profile"
+    ],
+    "fixit_hint": "rewrite to @if",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "rewrite to @if",
+    "message": "Long or multiline ternary is clearer as @if.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "warning",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREFIXED_LITERAL_NO_WHITESPACE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "prefixed_literal_opener_family"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "No whitespace is allowed between #, prefix, and literal opener.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREFIXED_LITERAL_PREFIX_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "Current prefixed literal families are map, set, mut and bytes; raw String uses raw\"...\"; pattern construction is an explicit library call.",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "use `#map{...}`, `#set{...}`, `#mut[...]`, or `#bytes\"...\"`; `#raw` and `#regex` are nonactivatable design surfaces",
+    "message": "Stable prefixed literal families require their exact `#` prefix; the current prefix set is `#map`, `#set`, `#mut`, and `#bytes`.",
+    "notes": "R51b: canonical active spelling; old mixed-case typo may exist only as alias/history.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREFIX_FUNCTION_PROFILE_REMOVED_USE_DEF_HASH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "function_profile_introducer_family"
+    ],
+    "fixit_hint": "rewrite to def#async, def#guard, def#entry, or def#entry#async",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "rewrite to the owner-appropriate admitted def# form",
+    "message": "Prefix async/guard/entry def spelling is not current; use the owner-appropriate closed def# introducer.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREFIX_UNARY_POWER_BASE_REQUIRES_PARENTHESES",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_truth_projection_unification"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "Unary-prefixed power base requires explicit parentheses.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "OFFICIAL_TOOLING / PUBLICATION",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "PUBLICATION"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PRELUDE_SIGNATURE_CATALOG_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "prelude_signature_catalog"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "PRELUDE_SIGNATURE_CATALOG_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree.",
+    "notes": "Static publication/tooling assertion; never emitted for Deeplus source. Product tooling support remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "design_static",
+    "diagnostic_class": "audit_assertion_or_superseded",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_ALTERNATIVE_LEAKS_THROUGH_STABLE_PARENT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "grammar_alternative_activation_fence"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "A stable/ordinary grammar parent includes a gated alternative without alternative-level metadata.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_GATE_DEPENDENCY_MISSING",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "preview_profile_root_contract"
+    ],
+    "fixit_hint": "add every missing explicit Preview dependency before its dependent feature",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "add every missing explicit Preview dependency before its dependent feature",
+    "message": "A #preview list must explicitly contain the transitive closure of every PREVIEW dependency.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_GATE_DUPLICATE_FEATURE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "preview_profile_root_contract"
+    ],
+    "fixit_hint": "remove the duplicate feature id",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove the duplicate feature id",
+    "message": "A #preview feature list must contain each feature id exactly once.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "preview_profile_root_contract"
+    ],
+    "fixit_hint": "remove the nonactivatable id",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove the nonactivatable id",
+    "message": "A #preview entry may name only a PREVIEW feature whose source_activation is explicit_feature_gate; PREVIEW_DESIGN is nonactivatable.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_GATE_PLACEMENT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "preview_profile_root_contract"
+    ],
+    "fixit_hint": "move #preview(...) before the module declaration and all source items",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "move #preview(...) before the module declaration and all source items",
+    "message": "The Preview gate must be the first token of a library/executable source or the first non-shebang token of a script, before ModuleDecl and source items.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PREVIEW_GATE_UNKNOWN_FEATURE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "preview_profile_root_contract"
+    ],
+    "fixit_hint": "remove the unknown id or use a current PREVIEW feature id",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove the unknown id or use a current PREVIEW feature id",
+    "message": "Every #preview entry must name a feature present in the current feature registry.",
+    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PRIMARY_CONSTRUCTOR_BARE_PARAM_NOT_MEMBER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "primary_constructor_let_var_promotion_only"
+    ],
+    "fixit_hint": "prefix parameter with let or var if a field is intended",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "prefix parameter with let or var if a field is intended",
+    "message": "Bare primary constructor parameter is not a promoted member.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PRIMARY_CONSTRUCTOR_PROMOTED_VISIBILITY_SIGIL_FORBIDDEN",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
+    "feature_refs": [
+      "primary_constructor_let_var_promotion_only"
+    ],
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "note",
+    "stage": "design_static",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "historical"
+  }
+]

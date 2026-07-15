@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.example/schemas/role-memory-capsule-v1.json",
+  "title": "Deeplus Role Memory Capsule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "role",
+    "updated_at",
+    "current_facts",
+    "open_actions",
+    "watch_items",
+    "recent_releases"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.role-memory-capsule/v1"},
+    "role": {
+      "type": "object",
+      "required": ["id", "prefix"],
+      "properties": {
+        "id": {"type": "string"},
+        "prefix": {"enum": ["Design_", "Spec_", "Impl_", "Test_", "Devel_"]}
+      },
+      "additionalProperties": false
+    },
+    "updated_at": {"type": "string", "format": "date-time"},
+    "source_revision": {"type": "string"},
+    "current_facts": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {"$ref": "#/$defs/fact"}
+    },
+    "open_actions": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {"$ref": "#/$defs/action"}
+    },
+    "watch_items": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/fact"}
+    },
+    "recent_releases": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["release", "verdict", "report"],
+        "properties": {
+          "release": {"type": "string"},
+          "verdict": {"type": "string"},
+          "report": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "fact": {
+      "type": "object",
+      "required": ["id", "statement", "authority", "source", "status"],
+      "properties": {
+        "id": {"type": "string"},
+        "statement": {"type": "string"},
+        "authority": {"type": "string"},
+        "source": {"type": "string"},
+        "introduced": {"type": "string"},
+        "review_after": {"type": ["string", "null"]},
+        "status": {"enum": ["current", "provisional", "watch"]}
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": ["id", "priority", "summary", "owner", "acceptance_test"],
+      "properties": {
+        "id": {"type": "string"},
+        "priority": {"enum": ["P0", "P1", "P2"]},
+        "summary": {"type": "string"},
+        "owner": {"type": "string"},
+        "acceptance_test": {"type": "string"},
+        "target": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  }
+}
+

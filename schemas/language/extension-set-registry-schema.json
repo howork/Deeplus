@@ -1,0 +1,38 @@
+{
+  "artifact_status": "design_seed",
+  "baseline": "0.1.2-baseline.r51f3",
+  "feature_id": "extension_set_registry_api_digest",
+  "integrated_checker": "NOT_RUN",
+  "law_notes": [
+    "extension set does not modify target type",
+    "semantic identity includes extension set id",
+    "import does not activate extension lookup",
+    "use order and return type are not tie-breakers"
+  ],
+  "product_parser": "NOT_RUN",
+  "registry_kind": "extension_set_registry_schema",
+  "schema": {
+    "ExtensionActivationEntry": [
+      "activation_source",
+      "origin",
+      "target_type",
+      "extension_set_name",
+      "exported_members",
+      "reexport"
+    ],
+    "ExtensionMemberId": [
+      "declaring_package",
+      "declaring_module",
+      "target_type",
+      "extension_set_name",
+      "selector",
+      "signature_digest"
+    ],
+    "ExtensionSetId": [
+      "declaring_package",
+      "declaring_module",
+      "target_type",
+      "set_name"
+    ]
+  }
+}

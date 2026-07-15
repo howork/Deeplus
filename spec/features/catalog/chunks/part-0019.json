@@ -1,0 +1,378 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "generic_parameter_model_phase_a"
+    ],
+    "display_name": "Where-clause constraint core",
+    "feature_id": "where_clause_constraint_core",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Minimum where-clause trait/capability constraint law.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [
+        "GenericConstraintSatisfied",
+        "WherePredicateAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "ClauseFunctionBody",
+        "MatchArm"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "generic_parameter_model_phase_a",
+      "trait_witness_coherence_phase_a"
+    ],
+    "display_name": "Where conforms constraint core",
+    "feature_id": "where_conforms_constraint_core",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Stable trait/capability/witness constraint spelling is `where T conforms Trait`.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD"
+      ],
+      "predicates": [
+        "SatisfiesConformance"
+      ],
+      "examples": [
+        "EX-R48-018",
+        "EX-R48E1-028"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "where_conforms_constraint_core"
+    ],
+    "display_name": "Where relation taxonomy",
+    "feature_id": "where_relation_taxonomy",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Separates conformance, equality, associated projection equality, static predicates, and row constraints. `where T : U` is not trait shorthand.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "WHERE_COLON_RELATION_AMBIGUOUS"
+      ],
+      "predicates": [
+        "WhereRelationTaxonomyAdmitted"
+      ],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "CHECKER",
+    "authority_set": [
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Witness responsibility compatibility law",
+    "feature_id": "witness_responsibility_compatibility_law",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Witness methods must not widen requirement responsibility over error, effect, authority, suspension, isolation, ownership, borrow, and cleanup axes.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+        "TRAIT_METHOD_EFFECT_TOO_WIDE",
+        "TRAIT_METHOD_ERRORSET_TOO_WIDE",
+        "TRAIT_METHOD_ISOLATION_MISMATCH",
+        "TRAIT_METHOD_RECEIVER_MODE_MISMATCH",
+        "TRAIT_METHOD_SUSPENSION_MISMATCH",
+        "TRAIT_METHOD_VIEW_ESCAPES_OWNER"
+      ],
+      "predicates": [
+        "WitnessResponsibilityCompatibility"
+      ],
+      "examples": [],
+      "productions": [
+        "ConformanceDecl",
+        "QualifiedTypeReference",
+        "TraitDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / FORMATTER / LEXER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "FORMATTER",
+      "LEXER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Backtick Word Comment lossless trivia",
+    "feature_id": "word_comment_lossless_trivia",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current Stable law: a backtick-attached nonempty word comment is lossless trivia. It ends before whitespace or structural punctuation, including colon, and has no effect on labels, lookup, type checking, overload resolution, or execution.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "WORD_COMMENT_EXPECTED_TEXT",
+        "WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED",
+        "WORD_COMMENT_NOT_CALL_LABEL",
+        "WORD_COMMENT_WHITESPACE_FORBIDDEN_AFTER_BACKTICK"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48L-COMMENT-005",
+        "EX-R48L-COMMENT-006"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / LEXER / PARSER / FORMATTER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "LEXER",
+      "PARSER",
+      "FORMATTER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "word_comment_lossless_trivia"
+    ],
+    "display_name": "Backtick Word Comment tokenization and attachment law",
+    "feature_id": "word_comment_tokenization_law",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Stable lexical law for backtick word-comment attachment. Word comments are lossless trivia; they are not labels, not annotations, not overload keys, and not executable source. Formatter/LSP must preserve them without feeding them into semantic call shape.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "WORD_COMMENT_AMBIGUOUS_ATTACHMENT"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48L-COMMENT-005"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "OFFICIAL_TOOLING / EVIDENCE / RUNTIME",
+    "authority_set": [
+      "OFFICIAL_TOOLING",
+      "EVIDENCE",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Xvm agent framework",
+    "feature_id": "xvm_agent_framework",
+    "feature_kind": "official_tooling",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Official tooling",
+    "notes": "Official bounded agent protocol over immutable MIR/bytecode digests; it emits evidence only and never changes language semantics. Product execution is NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "tooling",
+    "status_display": "Official tooling",
+    "status_enum": "OFFICIAL_TOOLING",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/tooling-and-profiles.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Yield guard clause current",
+    "feature_id": "yield_guard_clause_preview",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current design: language-design Stable; ordinary source activation is none; product lanes remain NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "YIELD_RESPONSE_BINDING_NOT_ALLOWED_IN_GENERATOR"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R48C-091",
+        "EX-R48E1-034",
+        "EX-R48F-029"
+      ],
+      "productions": [
+        "ClauseFunctionBody",
+        "MatchArm",
+        "ModuleFunctionDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  }
+]

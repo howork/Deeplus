@@ -1,0 +1,1064 @@
+(*
+ Deeplus Integrated Grammar R51f3
+ Status: CURRENT_CANONICAL_LANGUAGE_DESIGN
+ Date: 2026-07-15
+
+ This is the single human-maintained grammar file for the Rust handwritten frontend.
+ It is a projection of the complete syntax contract:
+
+   integrated EBNF
+ + spec/frontend/frontend-model.json
+ + Rust handwritten parser algorithms
+
+ EBNF responsibilities:
+   - token order and structural nesting
+   - stable/preview/recovery surface inventories
+
+ External model responsibilities:
+   - Pratt binding powers and parselet registration
+   - contextual/sigil word admission
+   - input supply and owner admission
+   - token/trivia boundary rules
+   - CST to AST/HIR/MIR responsibility
+   - formatter convention
+
+ Quoted punctuation and words show source spelling. Lexer enum names are not exposed in
+ structural EBNF. Juxtaposition means token order only; it never implies no-trivia.
+*)
+
+(* ==================================================================
+   LEXICAL GRAMMAR
+   PROFILE: LEXICAL
+   ================================================================== *)
+(* Deeplus successor lexical grammar for the Rust handwritten frontend.
+   Unicode data version: 15.1.0. Source spelling is preserved; no implicit NFC/NFD normalization.
+   Human-readable structural EBNF uses quoted punctuation. Lexer token-kind names are an implementation registry concern. *)
+(* CamelCase names are lexical helper rules. UPPER_SNAKE_CASE names are emitted token kinds. *)
+(* Scanner modes and lexical-goal commitment are specified in policy sidecars. *)
+
+SourceCharacter ::= UnicodeScalar ;
+LineTerminator ::= "\r\n" | "\n" ;
+HorizontalSpace ::= " " | "\t" ;
+
+(* A lone underscore is always WILDCARD, never IDENTIFIER. *)
+IDENTIFIER ::= UnicodeXIDStart IdentifierContinue*
+             | "_" IdentifierContinue+ ;
+IdentifierContinue ::= UnicodeXIDContinue ;
+WILDCARD ::= "_" ;
+
+(* Aggregate scanner category generated from keyword-role-registry.json. *)
+HARD_KEYWORD ::= ScannerHardKeywordToken ;
+
+Shebang ::= "#!" ShebangScalar* LineTerminator ;
+LineComment ::= "//" LineCommentScalar* ;
+DocLineComment ::= "//!" DocLineCommentScalar* ;
+NestedBlockComment ::= BlockCommentOpen BlockCommentItem* BlockCommentClose ;
+(* The scanner maintains a nesting stack. Any positive dash-run closer closes the innermost
+   comment; opener/closer dash counts need not match. A mismatch may produce a style warning. *)
+BlockCommentOpen ::= "//" DashRun ;
+BlockCommentClose ::= DashRun "//" ;
+DashRun ::= "-" "-"* ;
+BlockCommentItem ::= NestedBlockComment | BlockCommentScalar ;
+DocBlockComment ::= "//!!" DocBlockCommentScalar* "!!//" ;
+WordComment ::= "`" WordCommentScalar+ ;
+
+NUMERIC_LITERAL ::= FLOAT_LITERAL | INTEGER_LITERAL ;
+INTEGER_LITERAL ::= BinaryInteger IntegerSuffix?
+                  | OctalInteger IntegerSuffix?
+                  | HexInteger IntegerSuffix?
+                  | DECIMAL_INTEGER IntegerSuffix? ;
+(* Non-finite values are not lexical literals. Use Float32/Float64::nan or ::positiveInfinity. *)
+FLOAT_LITERAL ::= DecimalFraction ExponentPart? FloatSuffix?
+                | DECIMAL_INTEGER ExponentPart FloatSuffix?
+                | DECIMAL_INTEGER FloatSuffix ;
+BinaryInteger ::= ("0b" | "0B") BinaryDigits ;
+OctalInteger ::= ("0o" | "0O") OctalDigits ;
+HexInteger ::= ("0x" | "0X") HexDigits ;
+DECIMAL_INTEGER ::= DecimalDigits ;
+DecimalFraction ::= DecimalDigits "." DecimalDigits ;
+ExponentPart ::= ("e" | "E") ("+" | "-")? DecimalDigits ;
+IntegerSuffix ::= "i8" | "i16" | "i32" | "i64" | "i128" | "isize"
+                | "u8" | "u16" | "u32" | "u64" | "u128" | "usize" ;
+FloatSuffix ::= "f32" | "f64" ;
+BinaryDigits ::= BinaryDigit ("_"? BinaryDigit)* ;
+OctalDigits ::= OctalDigit ("_"? OctalDigit)* ;
+DecimalDigits ::= DecimalDigit ("_"? DecimalDigit)* ;
+HexDigits ::= HexDigit ("_"? HexDigit)* ;
+BinaryDigit ::= "0" | "1" ;
+OctalDigit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" ;
+DecimalDigit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+HexDigit ::= DecimalDigit | "a" | "b" | "c" | "d" | "e" | "f"
+           | "A" | "B" | "C" | "D" | "E" | "F" ;
+
+CHAR_LITERAL ::= "'" CharScalar "'" ;
+CharScalar ::= DirectCharScalar | SimpleCharEscape | UnicodeScalarEscape | NamedUnicodeEscape ;
+SimpleCharEscape ::= "\\0" | "\\n" | "\\r" | "\\t" | "\\'" | "\\\\" ;
+UnicodeScalarEscape ::= "\\u{" HexScalarDigits "}" ;
+NamedUnicodeEscape ::= "\\N{" UnicodeName "}" ;
+HexScalarDigits ::= HexDigit HexDigit? HexDigit? HexDigit? HexDigit? HexDigit? ;
+
+(* Scanner outcomes. Plain and interpolated strings are disjoint outcomes. *)
+PLAIN_STRING_LITERAL ::= ScannerPlainStringLiteral ;
+STRING_START ::= ScannerInterpolatedStringStart ;
+STRING_TEXT ::= ScannerInterpolatedStringText ;
+STRING_ESCAPE ::= ScannerStringEscape ;
+INTERPOLATION_BOUNDARY ::= ScannerInterpolationBoundary ;
+INTERPOLATION_OPEN ::= ScannerInterpolationOpen ;
+INTERPOLATION_CLOSE ::= ScannerInterpolationClose ;
+INTERPOLATION_FORMAT_TEXT ::= ScannerInterpolationFormatText ;
+STRING_END ::= ScannerInterpolatedStringEnd ;
+
+(* True lexical mode openers; these are not parser compounds. *)
+RAW_STRING_LITERAL ::= ScannerRawStringLiteral ;
+MULTILINE_STRING_LITERAL ::= ScannerMultilineStringLiteral ;
+BYTES_LITERAL ::= ScannerBytesLiteral ;
+
+(* Longest-match multi-character token kinds. *)
+PATH_SEP ::= "::" ;
+FAT_ARROW ::= "=>" ;
+ARROW ::= "->" ;
+DOT_DOT ::= ".." ;
+DOT_DOT_LT ::= "..<" ;
+DOT_DOT_GT ::= "..>" ;
+ELLIPSIS ::= "..." ;
+TRIPLE_STAR ::= "***" ;
+DOUBLE_STAR ::= "**" ;
+STAR_PLUS ::= "*+" ;
+STAR_DOT ::= "*." ;
+AMP_AMP ::= "&&" ;
+PIPE_PIPE ::= "||" ;
+CARET_CARET ::= "^^" ;
+QUESTION_COLON ::= "?:" ;
+DOUBLE_DOLLAR ::= "$$" ;
+EQ_EQ ::= "==" ;
+BANG_EQ ::= "!=" ;
+LT_EQ ::= "<=" ;
+GT_EQ ::= ">=" ;
+PLUS_EQ ::= "+=" ;
+MINUS_EQ ::= "-=" ;
+STAR_EQ ::= "*=" ;
+SLASH_EQ ::= "/=" ;
+PERCENT_EQ ::= "%=" ;
+TILDE_TILDE ::= "~~" ;
+COLON_EQ ::= ":=" ;
+BANG_BANG ::= "!!" ;
+DOUBLE_L_BRACE ::= "{{" ;
+DOUBLE_R_BRACE ::= "}}" ;
+DOLLAR_L_BRACE ::= "${" ;
+
+(* Single-character punctuation is emitted as implementation token kinds, but the
+   specification writes its exact spelling directly, for example "(", ",", "#", and "+". *)
+
+Trivia ::= HorizontalSpace | LineTerminator | LineComment | NestedBlockComment
+         | DocLineComment | DocBlockComment | WordComment ;
+(* Physical line terminators are represented once, as lossless trivia. *)
+EOF_TOKEN ::= EOF ;
+
+NAME_TOKEN ::= ScannerEscapedNameToken ;
+EOF ::= ScannerEndOfInput ;
+
+(* ==================================================================
+   COMMON STRUCTURAL SYNTAX
+   PROFILE: STABLE
+   ================================================================== *)
+(* Common syntax components. *)
+
+Identifier ::= IDENTIFIER ;
+QualifiedPath ::= Identifier ("::" Identifier)* ;
+
+TopLevelVisibility ::= "public" | "private" | "common" ;
+MemberVisibility ::= "+" | "-" | "#" ;
+ClassDispatchMarker ::= "." | "+" | "*." | "*+" ;
+TraitWitnessMarker ::= "." | "+" | "*." | "*+" ;
+VarianceMarker ::= "out" | "in" ;
+
+AnnotationAttachment ::= Annotation+ ;
+Annotation ::= "@" Identifier ArgumentList? LineBreakBoundary ;
+(* RoleWord is an inline parser token union, never a lexer reclassification or AST node. *)
+(* The parent AdmissionPolicy checks the lexeme and the complete tag sequence. *)
+(* Inline token category, not a lexical reclassification and not an AST node.
+   The owner AdmissionPolicy restricts the accepted lexeme set. *)
+RoleWord ::= Identifier | HARD_KEYWORD ;
+HashTag ::= "#" RoleWord ;
+
+(* Generic sequence parser is shared; owner policies restrict variance and kinds. *)
+TypeParameterList ::= "<" TypeParameter ("," TypeParameter)* ","? ">" ;
+TypeParameter ::= VarianceMarker? Identifier TypeParameterKindAnnotation? ;
+TypeParameterKindAnnotation ::= ":" TypeParameterKind ;
+TypeParameterKind ::= "type" | "StaticInt" | "EffectRow" | "ErrorSet" ;
+
+TypeArgumentList ::= "<" TypeArgument ("," TypeArgument)* ","? ">" ;
+TypeArgument ::= TypeRef | StaticIntLiteral | ErrorTypeArgument ;
+ErrorTypeArgument ::= "error" TypeRef ;
+
+TraitReferenceList ::= QualifiedTypeReference ("," QualifiedTypeReference)* ;
+AssociatedTypeConstraintList ::= "where" AssociatedTypeConstraint ("," AssociatedTypeConstraint)* ;
+AssociatedTypeConstraint ::= Identifier "==" TypeRef
+                           | Identifier "conforms" QualifiedTypeReference ;
+
+WhereClause ::= "where" WherePredicate ("," WherePredicate)* ;
+WherePredicate ::= TypeRef "conforms" QualifiedTypeReference
+                 | TypeRef "==" TypeRef
+                 | RowPredicate ;
+RowPredicate ::= Identifier "<=" EffectRow ;
+
+EffectRow ::= EffectRowTerm ("|" EffectRowTerm)* ;
+EffectRowTerm ::= Identifier | QualifiedTypeReference | EffectSetLiteral ;
+ErrorSet ::= ErrorSetTerm ("|" ErrorSetTerm)* ;
+ErrorSetTerm ::= Identifier | QualifiedTypeReference ;
+EffectSetLiteral ::= "{" IdentifierList? "}" ;
+
+TypeAnnotation ::= ":" TypeRef RefinementClause? ;
+RefinementClause ::= "where" PredicateExpr ;
+Initializer ::= "=" Expr ;
+NameAliasClause ::= "as" Identifier ;
+
+(* Function return types are deliberately non-function unless parenthesized by TypePolicy. *)
+ReturnClause ::= "->" NonFunctionTypeRef ;
+ThrowsClause ::= "throws" ErrorSet ;
+EffectsClause ::= "effects" EffectRow ;
+ContractClause ::= RequiresClause | EnsuresClause ;
+RequiresClause ::= "requires" PredicateExpr ;
+EnsuresClause ::= "ensures" PredicateExpr ;
+
+
+(* These are parser metanodes over lossless trivia, not lexer tokens.
+   StatementBoundary delegates newline/semicolon/root-EOF admission to BoundaryContext. *)
+LineBreakBoundary ::= LINE_BREAK_IN_TRIVIA ;
+StatementBoundary ::= STATEMENT_BOUNDARY_BY_CONTEXT ;
+
+IdentifierList ::= Identifier ("," Identifier)* ","? ;
+ExpressionList ::= Expr ("," Expr)* ","? ;
+PatternList ::= Pattern ("," Pattern)* ","? ;
+
+StaticIntLiteral ::= DECIMAL_INTEGER ;
+
+(* One concrete unit surface owner. Pattern/expression meaning is supplied by parent context. *)
+UnitSyntax ::= "(" ")" ;
+SignedStaticInt ::= ("+" | "-")? StaticIntLiteral ;
+
+LawDecl ::= "law" Identifier LawBody? StatementBoundary ;
+(* Law bodies preserve statement-shaped source for current compatibility, but are declarative
+   tooling metadata. They never lower to executable MIR. LawAdmission validates allowed items. *)
+LawBody ::= "{" LawBodyItem* "}" ;
+LawBodyItem ::= LawAssertion StatementBoundary ;
+LawAssertion ::= ("requires" | "ensures" | "invariant")? PredicateExpr ;
+
+(* ==================================================================
+   SOURCE-ROLE ROOTS
+   PROFILE: STABLE
+   ================================================================== *)
+(* Source-role roots. Concrete productions preserve current source-role admission boundaries. *)
+
+Deeplus ::= LibrarySourceFile | ExecutableSourceFile | ScriptSourceFile ;
+
+LibrarySourceFile ::= ModuleDecl? LibrarySourceItem* ;
+ExecutableSourceFile ::= ModuleDecl? ExecutableSourceItem* ;
+ScriptSourceFile ::= Shebang? ModuleDecl? ScriptSourceItem* ;
+
+LibrarySourceItem ::= AnnotationAttachment LibraryAnnotatableDecl
+                    | ImportOrUseDecl
+                    | TopLevelDecl ;
+ExecutableSourceItem ::= AnnotationAttachment ExecutableAnnotatableDecl
+                       | ImportOrUseDecl
+                       | NonBindingTopLevelDecl
+                       | EntryFunctionDecl ;
+ScriptSourceItem ::= AnnotationAttachment ScriptAnnotatableDecl
+                   | ImportOrUseDecl
+                   | NonBindingTopLevelDecl
+                   | Stmt ;
+
+LibraryAnnotatableDecl ::= ImportOrUseDecl | TopLevelDecl ;
+ExecutableAnnotatableDecl ::= ImportOrUseDecl | NonBindingTopLevelDecl | EntryFunctionDecl ;
+ScriptAnnotatableDecl ::= ImportOrUseDecl | NonBindingTopLevelDecl ;
+
+ModuleDecl ::= "module" QualifiedPath StatementBoundary ;
+
+ImportOrUseDecl ::= ImportDecl | UseDecl | UseExportDecl ;
+ImportDecl ::= "import" QualifiedPath ImportTail? StatementBoundary ;
+ImportTail ::= ImportAlias | ImportSelection ;
+ImportAlias ::= NameAliasClause ;
+ImportSelection ::= "::" "{" IdentifierList "}" ;
+UseDecl ::= "use" QualifiedPath StatementBoundary ;
+UseExportDecl ::= "use" "export" QualifiedPath StatementBoundary ;
+
+(* Export uses the shared callable parser with an exact plain-module-function policy. *)
+ExportDecl ::= "export" ExportItem StatementBoundary? ;
+ExportItem ::= ExportableModuleFunctionDecl | TypeDecl | Identifier ;
+ExportableModuleFunctionDecl ::= TopLevelVisibility? "def" Identifier FunctionRest ;
+
+(* ==================================================================
+   DECLARATIONS
+   PROFILE: STABLE
+   ================================================================== *)
+(* Declaration grammar. Common parser components are constrained by owner policies. *)
+
+TopLevelDecl ::= NonBindingTopLevelDecl | TopLevelBindingDecl ;
+NonBindingTopLevelDecl ::= TypeDecl
+                         | ModuleFunctionDecl
+                         | ExtensionFunctionDecl
+                         | ActorDecl
+                         | ActorProtocolDecl
+                         | TypestateResourceDecl
+                         | NamedEffectCapabilityDecl
+                         | ExtensionSetDecl
+                         | ExtensionPackDecl
+                         | UnitCatalogDecl
+                         | ModuleInterfaceDecl
+                         | ConformanceDecl
+                         | SchemaDecl
+                         | BitfieldDecl ;
+
+TypeDecl ::= ClassDecl | TraitDecl | EnumDecl | TypeAliasDecl ;
+
+(* ---------- Callable declarations ---------- *)
+
+DefIntroducer ::= "def" HashTag* ;
+
+ModuleFunctionDecl ::= TopLevelVisibility? DefIntroducer Identifier FunctionRest ;
+EntryFunctionDecl ::= DefIntroducer Identifier EntryFunctionRest ;
+ExtensionFunctionDecl ::= TopLevelVisibility? DefIntroducer TypeRef ExtensionFunctionTarget Identifier FunctionRest ;
+ExtensionFunctionTarget ::= "~" | "::" ;
+LocalFunctionDecl ::= CaptureList? DefIntroducer Identifier FunctionRest ;
+
+FunctionRest ::= TypeParameterList? ParameterList FunctionTail ;
+EntryFunctionRest ::= ParameterList ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody ;
+FunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* WhereClause? FunctionBody ;
+TraitFunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* WhereClause? (FunctionBody | StatementBoundary) ;
+
+FunctionBody ::= "=" FunctionBodyContent ;
+FunctionBodyContent ::= Block | ReturnShorthand | ClauseFunctionBody ;
+ReturnShorthand ::= "return" Expr StatementBoundary ;
+ClauseFunctionBody ::= "{{" LineBreakBoundary? MatchArmSequence "}}" ;
+
+MemberFunctionDecl ::= MemberVisibility? DefIntroducer Identifier ClassDispatchMarker FunctionRest ;
+TypeSideMemberFunctionDecl ::= MemberVisibility? "def" "::" Identifier FunctionRest ;
+
+ConstructorDecl ::= MemberVisibility? "def" "!" Identifier ParameterList
+                    ConstructorSignatureTail? ConstructorDelegationClause? "=" Block ;
+ConstructorSignatureTail ::= ThrowsClause EffectsClause? ContractClause* WhereClause?
+                           | EffectsClause ContractClause* WhereClause?
+                           | ContractClause+ WhereClause?
+                           | WhereClause ;
+ConstructorDelegationClause ::= ":" ConstructorDelegationArm+ ;
+ConstructorDelegationArm ::= ConstructorDelegationTarget PositiveGuard? ;
+ConstructorDelegationTarget ::= Identifier ArgumentList
+                              | "super" "!" Identifier? ArgumentList ;
+
+CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody ;
+
+(* ---------- Parameters ---------- *)
+
+ParameterList ::= "(" ParameterSequence? ")" ;
+ParameterSequence ::= CommaParameterSequence | LayoutParameterSequence ;
+CommaParameterSequence ::= Parameter ("," Parameter)* ","? ;
+LayoutParameterSequence ::= LineBreakBoundary Parameter (LineBreakBoundary Parameter)* LineBreakBoundary? ;
+
+Parameter ::= StoredParameter
+            | ContextParameter
+            | WitnessParameter
+            | RepeatedParameter
+            | NamedRestParameter
+            | ValueParameter ;
+ValueParameter ::= ParameterMode? ParameterPatternSlot TypeAnnotation ;
+ParameterPatternSlot ::= PARAMETER_PATTERN_BY_ADMISSION_POLICY ;
+ParameterMode ::= "borrow" | "mut" | "move" | "inout" ;
+ContextParameter ::= "context" Identifier ":" TypeRef ;
+WitnessParameter ::= "using" Identifier ":" "witness" TypeRef ;
+RepeatedParameter ::= Identifier "..." TypeAnnotation ;
+NamedRestParameter ::= Identifier "***" TypeAnnotation ;
+(* `***` is the attached suffix for a named-rest parameter or function-type residue.
+   `**` is the attached prefix for call/materialization unfold and an independent
+   infix linear-product operator. The collector is canonical Record and must be final. *)
+StoredParameter ::= MemberVisibility? ("let" | "var") Identifier TypeAnnotation? ;
+
+(* ---------- Classes and members ---------- *)
+
+ClassDecl ::= OrdinaryClassDecl | DataClassDecl ;
+OrdinaryClassDecl ::= TopLevelVisibility? ClassFlavor? ClassModifierSequence? "class" Identifier
+                      TypeParameterList? ParameterList? InheritanceClause? WhereClause?
+                      CleanupBudgetClause? ClassBody ;
+DataClassDecl ::= TopLevelVisibility? "data" "class" Identifier TypeParameterList? ParameterList?
+                  InheritanceClause? WhereClause? CleanupBudgetClause? ClassBody? ;
+ClassFlavor ::= "value" | "resource" ;
+ClassModifierSequence ::= "final" | "open" | "abstract" | "sealed" | "abstract" "sealed" ;
+InheritanceClause ::= ":" TypeRef ;
+ClassBody ::= "{" MemberDecl* "}" ;
+
+MemberDecl ::= FieldDecl
+             | MemberFunctionDecl
+             | ConstructorDecl
+             | CleanupDecl
+             | TypeSideFieldDecl
+             | TypeSideMemberFunctionDecl
+             | AccessorPropertyDecl
+             | ForwardDecl ;
+
+FieldDecl ::= MemberVisibility? ("let" | "var") Identifier
+              TypeAnnotation? Initializer? StatementBoundary ;
+TypeSideFieldDecl ::= MemberVisibility? "let" "::" Identifier TypeAnnotation? Initializer? StatementBoundary ;
+
+AccessorPropertyDecl ::= MemberVisibility? ("let" | "var") Identifier TypeAnnotation ":=" AccessorSpec ;
+AccessorSpec ::= AccessorDecl | "{" AccessorDecl+ "}" ;
+AccessorDecl ::= MemberVisibility? "get" Block
+               | MemberVisibility? "set" "(" Identifier ")" Block ;
+ForwardDecl ::= MemberVisibility? "forward" ForwardMemberSpec "to" Expr StatementBoundary ;
+ForwardMemberSpec ::= Identifier | "{" Identifier ("," Identifier)* ","? "}" ;
+
+(* ---------- Traits and conformances ---------- *)
+
+TraitDecl ::= TopLevelVisibility? "trait" Identifier TypeParameterList? SuperTraitClause? TraitBody? ;
+SuperTraitClause ::= "requires" TraitReferenceList ;
+TraitBody ::= "{" TraitItem* "}" ;
+TraitItem ::= TraitMethodDecl | AssociatedRequirementDecl | LawDecl ;
+
+TraitMethodDecl ::= MemberVisibility? DefIntroducer Identifier TraitWitnessMarker TypeParameterList?
+                    ParameterList TraitFunctionTail ;
+AssociatedRequirementDecl ::= AssociatedTypeRequirementDecl
+                            | AssociatedValueRequirementDecl
+                            | AssociatedFunctionRequirementDecl ;
+AssociatedTypeRequirementDecl ::= "type" Identifier AssociatedTypeConstraintList? StatementBoundary ;
+AssociatedValueRequirementDecl ::= "let" "::" Identifier TypeAnnotation StatementBoundary ;
+AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
+                                      ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+
+ConformanceDecl ::= TopLevelVisibility? "conformance" TypeRef "conforms" QualifiedTypeReference
+                    NameAliasClause? ConformanceViaClause? WhereClause? ConformanceBody ;
+ConformanceViaClause ::= "via" QualifiedPath ;
+ConformanceBody ::= "{" ConformanceItem* "}" ;
+ConformanceMethodDecl ::= MemberVisibility? DefIntroducer Identifier TraitWitnessMarker FunctionRest ;
+ConformanceItem ::= ConformanceMethodDecl
+                  | TypeSideMemberFunctionDecl
+                  | AssociatedRequirementBinding
+                  | ExtensionDelegationDecl
+                  | LawDecl ;
+AssociatedRequirementBinding ::= "type" Identifier "=" TypeRef StatementBoundary
+                               | "let" "::" Identifier "=" Expr StatementBoundary ;
+ExtensionDelegationDecl ::= "delegate" Identifier "to" QualifiedExtensionSelector StatementBoundary ;
+
+(* ---------- Extensions ---------- *)
+
+ExtensionSetDecl ::= TopLevelVisibility? "extension" TypeRef "as" Identifier ExtensionSetBody ;
+ExtensionSetBody ::= "{" ExtensionSetItem* "}" ;
+ExtensionSetItem ::= ExtensionSetFunctionDecl | TypeSideMemberFunctionDecl ;
+ExtensionSetFunctionDecl ::= MemberVisibility? "def" Identifier ParameterList?
+                             ReturnClause? ThrowsClause? EffectsClause? WhereClause? FunctionBody ;
+ExtensionPackDecl ::= "extension" "pack" QualifiedPath ExtensionPackBody ;
+ExtensionPackBody ::= "{" UseExportDecl* "}" ;
+
+(* ---------- Enums ---------- *)
+
+EnumDecl ::= TopLevelVisibility? "enum" Identifier TypeParameterList? EnumBody ;
+EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}" ;
+EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","? ;
+EnumLayoutBody ::= EnumCaseDecl* EnumMemberDecl* ;
+EnumCaseDecl ::= EnumCaseCore StatementBoundary? ;
+EnumCaseCore ::= Identifier EnumCasePayload? ;
+EnumCasePayload ::= "(" EnumCaseFieldList? ")" ;
+EnumCaseFieldList ::= EnumCaseField ("," EnumCaseField)* ","? ;
+EnumCaseField ::= Identifier TypeAnnotation | TypeRef ;
+EnumMemberDecl ::= MemberFunctionDecl
+                 | TypeSideFieldDecl
+                 | TypeSideMemberFunctionDecl
+                 | AccessorPropertyDecl ;
+
+(* ---------- Schema, aliases, bindings and effects ---------- *)
+
+SchemaDecl ::= TopLevelVisibility? "schema" Identifier TypeParameterList? SchemaBody ;
+SchemaBody ::= "{" SchemaFieldSequence? "}" ;
+SchemaFieldSequence ::= CommaSchemaFields | LayoutSchemaFields ;
+CommaSchemaFields ::= SchemaFieldDecl ("," SchemaFieldDecl)* ","? ;
+LayoutSchemaFields ::= LineBreakBoundary LayoutSchemaFieldDecl (LineBreakBoundary LayoutSchemaFieldDecl)* LineBreakBoundary? ;
+SchemaFieldDecl ::= Identifier TypeAnnotation Initializer? SchemaConstraint* StatementBoundary? ;
+LayoutSchemaFieldDecl ::= Identifier TypeAnnotation Initializer? SchemaConstraint* ;
+SchemaConstraint ::= "where" Expr ;
+
+TypeAliasDecl ::= TopLevelVisibility? "type" Identifier TypeParameterList? "=" TypeAliasRhs StatementBoundary ;
+TypeAliasRhs ::= TypeRef RefinementClause? | StaticRangeType ;
+StaticRangeType ::= StaticIntLiteral ".." StaticIntLiteral ;
+
+TopLevelBindingDecl ::= TopLevelVisibility? ("let" | "var") Identifier TypeAnnotation? "=" Expr StatementBoundary ;
+NamedEffectCapabilityDecl ::= TopLevelVisibility? "capability" Identifier "for" EffectRow ;
+
+(* ---------- Actors and actor protocols ---------- *)
+
+ActorDecl ::= TopLevelVisibility? "actor" MailboxClause? Identifier ActorBody ;
+MailboxClause ::= HashTag "(" "capacity" ":" StaticIntLiteral ")" ;
+ActorBody ::= "{" ActorItem* "}" ;
+ActorItem ::= ActorOnDecl | ActorRequestDecl | MemberDecl ;
+ActorOnDecl ::= MemberVisibility? "on" Identifier ParameterList? ThrowsClause? EffectsClause? FunctionBody ;
+ActorRequestDecl ::= MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause? EffectsClause? FunctionBody ;
+
+ActorProtocolDecl ::= TopLevelVisibility? "protocol" Identifier ActorProtocolBody ;
+ActorProtocolBody ::= "{" ActorProtocolItem* "}" ;
+ActorProtocolItem ::= ActorProtocolSendRequirement | ActorProtocolRequestRequirement ;
+ActorProtocolSendRequirement ::= "send" Identifier ParameterList? ThrowsClause? EffectsClause? StatementBoundary ;
+ActorProtocolRequestRequirement ::= "request" Identifier ParameterList? ReturnClause ThrowsClause? EffectsClause? StatementBoundary ;
+
+(* ---------- Typestate, units and module interfaces ---------- *)
+
+TypestateResourceDecl ::= TopLevelVisibility? "typestate" Identifier TypeParameterList? TypestateBody ;
+TypestateBody ::= "{" TypestateTransitionDecl* "}" ;
+TypestateTransitionDecl ::= Identifier "->" Identifier FunctionBody? ;
+
+UnitCatalogDecl ::= TopLevelVisibility? "unit" "catalog" Identifier UnitCatalogBody ;
+UnitCatalogBody ::= "{" UnitCatalogEntry* "}" ;
+UnitCatalogEntry ::= ExactRatioUnitConversionDecl | Identifier "=" UnitExpr StatementBoundary ;
+ExactRatioUnitConversionDecl ::= "unit" Identifier "equalsRatio" MeasureLiteralExpr "/" StaticIntLiteral StatementBoundary ;
+
+ModuleInterfaceDecl ::= ModuleSignatureDecl | OpaqueModuleFacadeDecl ;
+ModuleSignatureDecl ::= TopLevelVisibility? "module" "signature" QualifiedPath ModuleInterfaceBody ;
+OpaqueModuleFacadeDecl ::= TopLevelVisibility? "opaque" "module" QualifiedPath ModuleInterfaceBody ;
+ModuleInterfaceBody ::= "{" ModuleInterfaceItem* "}" ;
+ModuleInterfaceItem ::= ExportDecl | UseExportDecl | OpaqueModuleFacadeDecl ;
+
+(* ---------- Cleanup metadata ---------- *)
+
+CleanupBudgetClause ::= "cleanup" "budget" "{" CleanupBudgetItem* "}" ;
+CleanupBudgetItem ::= EffectsBudget | ErrorsBudget ;
+EffectsBudget ::= "effects" "{" IdentifierList? "}" ;
+ErrorsBudget ::= "errors" TypeRef ;
+
+(* ---------- Bitfields ---------- *)
+
+BitfieldDecl ::= TopLevelVisibility? BitfieldIntroducer Identifier
+                 BitfieldBackingClause BitfieldOrderClause BitfieldBody ;
+BitfieldIntroducer ::= "bitfield" HashTag? ;
+BitfieldBackingClause ::= "backing" TypeRef ;
+BitfieldOrderClause ::= "order" "::" "lsb0" ;
+BitfieldBody ::= "{" BitfieldLayoutSection BitfieldMemberDecl* "}" ;
+BitfieldLayoutSection ::= BitfieldSlotDecl+ | FlagSlotDecl+ ;
+BitfieldSlotDecl ::= BitfieldNamedSlot StatementBoundary | BitfieldReservedSlot StatementBoundary ;
+FlagSlotDecl ::= FlagNamedSlot StatementBoundary | BitfieldReservedSlot StatementBoundary ;
+BitfieldNamedSlot ::= MemberVisibility? Identifier ":" StaticIntLiteral BitfieldDefault? ;
+BitfieldReservedSlot ::= "_" ":" StaticIntLiteral ;
+FlagNamedSlot ::= MemberVisibility? Identifier ;
+BitfieldDefault ::= "=" Literal ;
+BitfieldMemberDecl ::= MemberFunctionDecl
+                     | TypeSideFieldDecl
+                     | TypeSideMemberFunctionDecl
+                     | AccessorPropertyDecl
+                     | LawDecl ;
+
+(* ==================================================================
+   TYPES
+   PROFILE: STABLE
+   ================================================================== *)
+(* Type syntax. Binding power is external to EBNF. *)
+
+TypeRef ::= PrattType ;
+NonFunctionTypeRef ::= PrattNonFunctionType ;
+
+(* Handwritten Pratt parser parselet inventory. *)
+TypePrimary ::= QualifiedTypeReference
+              | FacetType
+              | ParenTypeSyntax
+              | SharpShapeType
+              | ExistentialType
+              | OpaqueType
+              | TypeofType
+              | AssociatedProjection ;
+TypePrefixParselet ::= OwnershipQualifier ;
+TypePostfixParselet ::= "?" ;
+TypeInfixOperator ::= "&" | "|" ;
+
+QualifiedTypeReference ::= QualifiedPath TypeArgumentList? ;
+(* Facet is a dedicated ownership-qualified existential surface, not an ordinary generic alias. *)
+FacetType ::= "Facet" "<" "borrow" "any" QualifiedTypeReference AssociatedTypeConstraintList? ">" ;
+OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;
+
+(* One parser owner consumes the shared `(` prefix exactly once. AST normalization
+   selects FunctionType, TupleType or ParenthesizedType after `)` and optional `->`. *)
+ParenTypeSyntax ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail? ;
+ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","? ;
+ParenTypeItem ::= TypeRef | TypeRef "..." | TypeRef "***" ;
+FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause? EffectsClause? ;
+
+SharpShapeType ::= "#" StaticDimensionList "[" TypeRef "]" ;
+StaticDimensionList ::= StaticIntLiteral ("," StaticIntLiteral)* ;
+
+ExistentialType ::= "any" QualifiedTypeReference AssociatedTypeConstraintList? ;
+OpaqueType ::= "some" QualifiedTypeReference AssociatedTypeConstraintList? ;
+TypeofType ::= "typeof" TypeofStaticSampleOperand ;
+AssociatedProjection ::= "<" TypeRef "as" QualifiedTypeReference ">" "::" Identifier ;
+
+(* Static-sample syntax is intentionally narrower than the general expression grammar. *)
+TypeofStaticSampleOperand ::= Literal
+                            | ListLiteral
+                            | StaticPrefixedCollectionSample
+                            | NumericArrayLiteral
+                            | MeasureLiteralExpr ;
+StaticPrefixedCollectionSample ::= MapLiteral | SetLiteral | MutListLiteral ;
+
+(* Specification metanodes implemented by Pratt entry functions, not CFG expansion. *)
+PrattType ::= TYPE_PRATT_ENTRY ;
+PrattNonFunctionType ::= NON_FUNCTION_TYPE_PRATT_ENTRY ;
+
+(* ==================================================================
+   PATTERNS
+   PROFILE: STABLE
+   ================================================================== *)
+(* One structural pattern parser; PatternPolicy controls owner-specific admission. *)
+
+Pattern ::= OrPattern ;
+OrPattern ::= AliasPattern ("|" AliasPattern)* ;
+AliasPattern ::= MovePattern ("as" Identifier)? ;
+MovePattern ::= "move"? PatternPrimary ;
+
+PatternPrimary ::= TypedBindingPattern
+                 | Identifier
+                 | RecordPattern
+                 | ListPattern
+                 | VariantPattern
+                 | "_"
+                 | UnitSyntax
+                 | Literal
+                 | ParenthesizedPattern ;
+
+TypedBindingPattern ::= Identifier ":" TypeRef ;
+ParenthesizedPattern ::= "(" Pattern ")" ;
+
+RecordPattern ::= "${" PatternFieldList? "}" ;
+PatternFieldList ::= PatternField ("," PatternField)* ","? ;
+PatternField ::= Identifier | Identifier ":" Pattern ;
+
+ListPattern ::= "[" ListPatternItems? "]" ;
+ListPatternItems ::= ListPatternItem ("," ListPatternItem)* ","? ;
+ListPatternItem ::= Pattern | ".." Pattern ;
+
+VariantPattern ::= VariantQualifier Identifier VariantPatternPayload? ;
+VariantQualifier ::= TypeRef "::" | "::" ;
+VariantPatternPayload ::= "(" PatternList? ")" ;
+
+(* ==================================================================
+   STATEMENTS AND MATCH/LOOP CONTROL
+   PROFILE: STABLE
+   ================================================================== *)
+(* Statements, blocks, control transfer and common match syntax. *)
+
+Stmt ::= ForLoop
+       | WhileLoop
+       | RepeatLoop
+       | AsyncForLoop
+       | TaskGroupStmt
+       | MatchStatement
+       | IfStmt
+       | LocalBindingStmt
+       | ControlTransferStmt
+       | TryStmt
+       | DeferStmt
+       | ScopedUseStmt
+       | ExprStmt
+       | ScopedImportStmt ;
+
+ExprStmt ::= Expr StatementBoundary ;
+
+Block ::= "{" BlockPrologue? BlockSequence "}" ;
+BlockPrologue ::= (UseDecl | ImportDecl)+ ;
+BlockSequence ::= BlockItem* BlockFinalItem? ;
+BlockItem ::= LocalFunctionDecl | Stmt ;
+(* BodyAdmissionPolicy decides which tail forms each owner admits. ret is deliberately absent
+   from the general block tail and appears only in local value/lambda bodies. *)
+BlockFinalItem ::= ControlTransfer | BindingCore | Expr ;
+
+(* Value-producing local bodies require an expression-only body or explicit final ret. *)
+ValueBody ::= SingleExpressionValueBody | ExplicitRetValueBody ;
+SingleExpressionValueBody ::= "{" Expr "}" ;
+ExplicitRetValueBody ::= "{" BlockItem* RetTransfer "}" ;
+RetTransfer ::= "ret" Expr? GuardClause? ;
+
+BindingCore ::= ("let" | "var") Pattern TypeAnnotation? "=" Expr ;
+LocalBindingStmt ::= BindingCore StatementBoundary | RightwardLocalBindingSurface | LazyBindingStmt | GuardedBindingStmt ;
+LazyBindingStmt ::= "let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary ;
+GuardedBindingStmt ::= "let" Pattern TypeAnnotation? "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
+(* Failure exits are structurally unconditional. yield, ret and guarded transfers are not admitted. *)
+GuardedBindingFailure ::= GuardedBindingExit | Pattern "=>" GuardedBindingExit ;
+GuardedBindingExit ::= GuardedReturnExit | GuardedThrowExit | GuardedBreakExit | GuardedContinueExit ;
+GuardedReturnExit ::= "return" Expr? ;
+GuardedThrowExit ::= "throw" Expr ;
+GuardedBreakExit ::= ("break")+ Expr? ;
+GuardedContinueExit ::= ("break")* "continue" ;
+
+(* One control-transfer parser. Target supply and owner admissibility are policy-driven. *)
+ControlTransferStmt ::= ControlTransfer StatementBoundary ;
+ControlTransfer ::= ReturnTransfer | ThrowTransfer | BreakTransfer | ContinueTransfer | YieldTransfer ;
+ReturnTransfer ::= "return" Expr? GuardClause? ;
+ThrowTransfer ::= "throw" Expr GuardClause? ;
+BreakTransfer ::= ("break")+ Expr? GuardClause? ;
+ContinueTransfer ::= ("break")* "continue" GuardClause? ;
+YieldTransfer ::= "yield" Expr? (GuardClause | YieldResponseBinding)? ;
+YieldResponseBinding ::= "->" DollarLocalBinding ;
+DollarLocalBinding ::= "$" Identifier TypeAnnotation? | "$$" Identifier TypeAnnotation? ;
+
+GuardClause ::= PositiveGuard | NegativeGuard ;
+PositiveGuard ::= "if" Expr ;
+NegativeGuard ::= "!" "if" Expr ;
+
+IfStmt ::= "if" PatternControlCondition Block ("else" (IfStmt | Block))? ;
+PatternControlCondition ::= Expr | "let" Pattern "=" Expr ;
+
+(* The same MatchStatement parser handles an explicit subject and an attached implicit loop outcome. *)
+(* InputSupplyPolicy decides whether MatchSubjectSlot consumes Expr or injects the preceding loop. *)
+ForLoop ::= "for" ("let" Pattern | Pattern) "in" Expr GuardClause? Block MatchStatement? ;
+WhileLoop ::= "while" PatternControlCondition Block MatchStatement? ;
+RepeatLoop ::= "repeat" Block "while" Expr MatchStatement? ;
+AsyncForLoop ::= "for" "await" ("let" Pattern | Pattern) "in" Expr GuardClause? Block ;
+
+MatchStatement ::= "match" MatchCore ;
+MatchCore ::= MatchSubjectSlot MatchBody ;
+MatchSubjectSlot ::= MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY ;
+MatchBody ::= "{" LineBreakBoundary? MatchArmSequence "}" ;
+MatchArmSequence ::= MatchArm (MatchArmSeparator MatchArm)* MatchArmSeparator? ;
+MatchArm ::= MatchHead GuardClause? "=>" MatchArmBodySlot ;
+MatchHead ::= Pattern | "otherwise" ;
+MatchArmSeparator ::= MATCH_ARM_SEPARATOR_BY_CONTEXT ;
+MatchArmBodySlot ::= MATCH_ARM_BODY_BY_CONTEXT ;
+
+TryStmt ::= "try" Block CatchClause* FinallyClause?
+          | "try" Expr StatementBoundary ;
+CatchClause ::= "catch" Pattern? Block ;
+ValueCatchClause ::= "catch" Pattern? ValueBody ;
+FinallyClause ::= "finally" Block ;
+
+DeferStmt ::= "defer" DeferredCleanupInvocation StatementBoundary ;
+(* Exactly one direct, member, type-side or message cleanup invocation. No trailing closure,
+   inline callable, await, spawn, guard or block is admitted. *)
+DeferredCleanupInvocation ::= DeferredDirectCall | DeferredMessageCall ;
+DeferredDirectCall ::= DeferredReceiver ArgumentList ;
+DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessageArguments? ;
+DeferredReceiver ::= DeferredPrimary DeferTargetSuffix* ;
+DeferredPrimary ::= Identifier | QualifiedStaticExpr ;
+DeferTargetSuffix ::= IndexSuffix | MemberSuffix ;
+
+(* A rightward local surface is CST-preserved sugar for ordinary BindingCore.
+   It is never a separate semantic AST/HIR/MIR statement. *)
+RightwardLocalBindingSurface ::= Expr "->" DollarLocalBinding StatementBoundary ;
+ScopedUseStmt ::= "use" ScopedPathList "in" Block ;
+ScopedImportStmt ::= "import" ScopedPathList "in" Block ;
+ScopedPathList ::= QualifiedPath ("," QualifiedPath)* ;
+TaskGroupStmt ::= "task" "group" Identifier? Block ;
+
+(* ==================================================================
+   EXPRESSIONS AND PRATT ENTRY POINTS
+   PROFILE: STABLE
+   ================================================================== *)
+(* Expression grammar. Precedence and associativity are owned by the Pratt registry. *)
+
+Expr ::= PrattExpr ;
+PredicateExpr ::= PrattPredicateExpr ;
+SliceIndexExpr ::= PrattSliceIndexExpr ;
+
+ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
+                           | "move" | "borrow" | "&" | "await" ;
+ExpressionPostfixParselet ::= CallSuffix
+                            | TupleOrdinalSuffix
+                            | IndexSuffix
+                            | MemberSuffix
+                            | MessageSuffix
+                            | NumericArrayTransposeSuffix
+                            | ConstructorCallSuffix
+                            | NamedConstructorCallSuffix
+                            | PrototypeDerivationSuffix
+                            | CastSuffix ;
+
+PrimaryExpr ::= Literal
+              | Identifier
+              | ImplicitAtExpr
+              | ParenExprSyntax
+              | ListLiteral
+              | BoundedListLiteral
+              | ComprehensionExpr
+              | MaterializationBody
+              | TypedMaterializationExpr
+              | MapLiteral
+              | SetLiteral
+              | MutListLiteral
+              | MapComprehensionExpr
+              | SetComprehensionExpr
+              | NumericArrayLiteral
+              | MeasureLiteralExpr
+              | QualifiedStaticExpr
+              | ExpectedVariantExpr
+              | AtControlExpr
+              | MatchExpr
+              | ClosureExpr
+              | GeneratorExpr
+              | SpawnExpr
+              | StructuredTaskScope
+              | UnsafeBlockExpr
+              | FacetExpr ;
+
+(* One parser owner consumes unit, parenthesized and tuple expression prefixes exactly once. *)
+ParenExprSyntax ::= "(" ParenExprContent? ")" ;
+ParenExprContent ::= Expr ParenExprTail? ;
+ParenExprTail ::= "," | "," Expr ("," Expr)* ","? ;
+ImplicitAtExpr ::= "@" ;
+ExpectedVariantExpr ::= "::" Identifier ;
+
+(* ---------- Invocation and postfix syntax ---------- *)
+
+CallSuffix ::= ArgumentList ClosureExpr?
+             | AtomicCallArgument ClosureExpr ;
+
+ArgumentList ::= "(" ")"
+               | "(" CommaArgumentSequence ")"
+               | "(" LayoutArgumentSequence ")" ;
+CommaArgumentSequence ::= Argument ("," Argument)* ","? ;
+(* Current R51f layout form requires at least two all-named rows. *)
+LayoutArgumentSequence ::= LineBreakBoundary NamedLayoutArgument LineBreakBoundary NamedLayoutArgument
+                           (LineBreakBoundary NamedLayoutArgument)* LineBreakBoundary? ;
+NamedLayoutArgument ::= NamedArgument | NamedUnfoldArgument ;
+Argument ::= ContextArgument
+           | WitnessArgument
+           | NamedArgument
+           | PositionalUnfoldArgument
+           | NamedUnfoldArgument
+           | Expr ;
+ContextArgument ::= "context" Expr ;
+WitnessArgument ::= "using" WitnessArgumentValue ;
+WitnessArgumentValue ::= Identifier | ConformanceEvidenceSelector | NamedConformanceEvidenceSelector ;
+NamedArgument ::= Identifier ":" Expr ;
+PositionalUnfoldArgument ::= "*" Expr ;
+NamedUnfoldArgument ::= "**" Expr ;
+AtomicCallArgument ::= Literal | Identifier | QualifiedStaticExpr | ExpectedVariantExpr ;
+
+IndexSuffix ::= "[" SliceAxisList? "]" ;
+SliceAxisList ::= SliceAxis (";" SliceAxis)* ;
+SliceAxis ::= SliceRange | SliceIndexExpr | AxisWildcard ;
+SliceRange ::= SliceBound? (".." | "..<") SliceBound? ;
+SliceBound ::= SliceIndexExpr | "^" | "$" | "^" OffsetExpr | "$" OffsetExpr ;
+OffsetExpr ::= ("+" | "-") NumericLiteral ;
+AxisWildcard ::= "*" ;
+
+TupleOrdinalSuffix ::= "." StaticIntLiteral ;
+MemberSuffix ::= "." Identifier | "." "\\" NAME_TOKEN ;
+MessageSuffix ::= "~" MessageSelector MessageArguments? ClosureExpr? ;
+MessageSelector ::= Identifier | QualifiedExtensionSelector ;
+QualifiedExtensionSelector ::= TypeRef "::" Identifier "::" Identifier ;
+MessageArguments ::= ArgumentList | AtomicCallArgument ;
+
+NumericArrayTransposeSuffix ::= "^" ;
+ConstructorCallSuffix ::= "!" ArgumentList ;
+NamedConstructorCallSuffix ::= "!" Identifier ArgumentList ;
+PrototypeDerivationSuffix ::= ("!" | "!!") DerivationBody ;
+DerivationBody ::= "{" MaterializationEntryList? "}" ;
+(* "as" and the modifier are separate lexer tokens but form an attached parser operator. *)
+CastSuffix ::= "as" "?" TypeRef | "as" "!" TypeRef ;
+
+QualifiedStaticExpr ::= StaticQualifier "::" Identifier ;
+StaticQualifier ::= QualifiedTypeReference | AssociatedProjection ;
+
+(* ---------- Value control and value match ---------- *)
+
+(* `@` forms below are exact expression/generator introducers. They do not use RoleWord or a generic AtTag. *)
+AtControlExpr ::= AtIfExpr | AtTryExpr | AtScopeExpr ;
+AtIfExpr ::= "@" "if" Expr ValueBody ("else" ValueBody)? ;
+AtTryExpr ::= "@" "try" ValueBody ValueCatchClause* FinallyClause? ;
+AtScopeExpr ::= "@" "scope" ScopeModifier* ValueBody ;
+ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
+
+MatchExpr ::= "@" "match" MatchCore ;
+
+(* ---------- Closures and captures ---------- *)
+
+ClosureExpr ::= CaptureList? HashTag* "{" ClosureContent "}" ;
+ClosureContent ::= ExplicitLambdaContent | LambdaBody? ;
+ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody ;
+LambdaParameterList ::= LambdaParameter ("," LambdaParameter)* ","? ;
+LambdaParameter ::= ParameterMode? Identifier TypeAnnotation? ;
+LambdaBody ::= Expr | LineBreakBoundary LambdaBlockContent ;
+LambdaBlockContent ::= BlockItem* LambdaFinalItem? ;
+LambdaFinalItem ::= RetTransfer | Expr ;
+
+CaptureList ::= "[" CaptureItemList? "]" ;
+CaptureItemList ::= CaptureItem ("," CaptureItem)* ","? ;
+CaptureItem ::= ("let" | "var") Identifier "=" Expr
+              | CaptureMode Identifier
+              | Identifier ;
+CaptureMode ::= "borrow" | "inout" | "move" | "clone" | "deep" | "copy" | "once" ;
+
+(* ---------- Quotes, generators, tasks and Facet ---------- *)
+
+
+GeneratorExpr ::= CaptureList? GeneratorCore ;
+GeneratorCore ::= "@" "for" Pattern "in" Expr Block
+                | "@" "while" Expr Block
+                | "@" "repeat" Block "while" Expr ;
+
+SpawnExpr ::= "spawn" TaskBody ;
+TaskBody ::= "{" "=>" TaskBodySequence "}"
+           | "async" "{" "=>" TaskBodySequence "}" ;
+TaskBodySequence ::= LineBreakBoundary? BlockSequence ;
+StructuredTaskScope ::= "task" "scope" Block ;
+UnsafeBlockExpr ::= "unsafe" Block ;
+
+(* Stable R51f admits borrow Facet packing only. *)
+FacetExpr ::= "facet" "[" "borrow" Expr "as" QualifiedTypeReference AssociatedTypeConstraintList? "]" ;
+
+ConformanceEvidenceSelector ::= "conformance" "(" TypeRef "conforms" QualifiedTypeReference ")" ;
+NamedConformanceEvidenceSelector ::= ConformanceEvidenceSelector "::" Identifier ;
+
+(* Specification metanodes implemented by Pratt entry functions. *)
+PrattExpr ::= EXPRESSION_PRATT_ENTRY ;
+PrattPredicateExpr ::= PREDICATE_PRATT_ENTRY ;
+PrattSliceIndexExpr ::= SLICE_INDEX_PRATT_ENTRY ;
+
+(* ==================================================================
+   LITERALS, COLLECTIONS AND UNITS
+   PROFILE: STABLE
+   ================================================================== *)
+(* Literal and collection syntax. *)
+
+Literal ::= BoolLiteral | NullLiteral | NumericLiteral | StringLiteralExpr | CharLiteralExpr | BytesLiteral ;
+BoolLiteral ::= "true" | "false" ;
+NullLiteral ::= "null" ;
+NumericLiteral ::= NUMERIC_LITERAL ;
+CharLiteralExpr ::= CHAR_LITERAL ;
+BytesLiteral ::= BYTES_LITERAL ;
+
+(* Plain and interpolated strings are distinct scanner outcomes. *)
+StringLiteralExpr ::= PLAIN_STRING_LITERAL | RAW_STRING_LITERAL | MULTILINE_STRING_LITERAL | InterpolatedString ;
+InterpolatedString ::= STRING_START InterpolatedStringPart* STRING_END ;
+InterpolatedStringPart ::= STRING_TEXT
+                         | STRING_ESCAPE
+                         | InterpolationExpr
+                         | InterpolationPath ;
+InterpolationExpr ::= INTERPOLATION_OPEN Expr InterpolationFormat? INTERPOLATION_CLOSE ;
+InterpolationFormat ::= ":" INTERPOLATION_FORMAT_TEXT ;
+
+(* User decision A: full contiguous shorthand path. One syntax owner only. *)
+(* The scanner emits ordinary path-shaped tokens with mode origin; the parser owns root/selector CST structure.
+   Space/comment/newline characters inside the string terminate shorthand and remain string text. *)
+InterpolationPath ::= "$" InterpolationPathRoot InterpolationPathSelector* INTERPOLATION_BOUNDARY? ;
+InterpolationPathRoot ::= Identifier | "@" ;
+InterpolationPathSelector ::= "." Identifier
+                            | "." StaticIntLiteral
+                            | "[" InterpolationIndex "]" ;
+InterpolationIndex ::= StaticIntLiteral | Identifier ;
+(* A call-like `(` immediately following a shorthand path is a forbidden continuation and
+   diagnoses use of `${...}`. A terminal unescaped backtick explicitly ends shorthand output. *)
+
+(* Ordinary list, bounded list and comprehension share the '[' commitment point. *)
+ListLiteral ::= "[" ExpressionList? "]" ;
+BoundedListLiteral ::= "[" StaticIntLiteral ("..." | ".." StaticIntLiteral)
+                       ":" ExpressionList? "]" ;
+ComprehensionExpr ::= "[" Expr ComprehensionClause+ "]" ;
+
+(* Record/materialization. *)
+TypedMaterializationExpr ::= TypeRef MaterializationBody ;
+MaterializationBody ::= "${" MaterializationEntryList? "}" ;
+MaterializationEntryList ::= MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator? ;
+MaterializationEntry ::= Identifier
+                       | Identifier ":" Expr
+                       | StringLiteralExpr ":" Expr
+                       | NamedUnfoldArgument ;
+MaterializationSeparator ::= "," LineBreakBoundary? | LineBreakBoundary ;
+
+(* Prefix and body are coupled structurally; no cross-kind body combinations. *)
+MapLiteral ::= "#" "map" "{" MapEntryList? "}" ;
+MapEntryList ::= MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator? ;
+MapEntry ::= Expr ":" Expr | NamedUnfoldArgument ;
+SetLiteral ::= "#" "set" "{" ExpressionList? "}" ;
+MutListLiteral ::= "#" "mut" "[" ExpressionList? "]" ;
+MapComprehensionExpr ::= "#" "map" "{" MapEntry ComprehensionClause+ "}" ;
+SetComprehensionExpr ::= "#" "set" "{" Expr ComprehensionClause+ "}" ;
+
+ComprehensionClause ::= ForClause | PositiveGuard | IfLetClause | UnfoldClause ;
+ForClause ::= "for" Pattern "in" Expr ;
+IfLetClause ::= "if" "let" Pattern "=" Expr ;
+UnfoldClause ::= "for" "..." Pattern "in" Expr ;
+
+(* Numeric arrays. *)
+NumericArrayLiteral ::= ShapeInferredArrayLiteral
+                      | ShapeInferredColumnVectorLiteral
+                      | ExactShapeArrayLiteral ;
+ShapeInferredArrayLiteral ::= "#" "[" ExpressionList? "]" ;
+ShapeInferredColumnVectorLiteral ::= "#" "[" Expr (";" Expr)+ "]" ;
+ExactShapeArrayLiteral ::= "#" StaticDimensionList "[" ArrayInitializer? "]" ;
+ArrayInitializer ::= ShapedRepeatInitializer
+                   | ShapedGeneratorInitializer
+                   | ShapedElementSequence ;
+ShapedRepeatInitializer ::= "repeat" ":" Expr ;
+ShapedGeneratorInitializer ::= "generate" ":" Expr ;
+ShapedElementSequence ::= Expr (ShapedElementSeparator Expr)* ShapedElementSeparator? ;
+ShapedElementSeparator ::= "," | ShapedAxisBoundary ;
+ShapedAxisBoundary ::= ";" ";"* ;
+
+(* Measures and units. Unit binding is owned by unit-operator-registry.json. *)
+MeasureLiteralExpr ::= NumericLiteral "[" UnitExpr "]" ;
+UnitExpr ::= PrattUnitExpr ;
+UnitPrimary ::= Identifier | QualifiedPath | "(" UnitExpr ")" ;
+UnitPostfixParselet ::= "^" SignedStaticInt ;
+UnitInfixOperator ::= "*" | "/" ;
+PrattUnitExpr ::= UNIT_PRATT_ENTRY ;
+
+(* ==================================================================
+   PREVIEW OVERLAY
+   PROFILE: PREVIEW
+   ================================================================== *)
+(* Activatable Preview syntax only. Nonactivatable design probes live in recovery overlay. *)
+
+DeeplusPreview ::= PreviewLibrarySourceFile | PreviewExecutableSourceFile | PreviewScriptSourceFile ;
+PreviewLibrarySourceFile ::= PreviewGate ModuleDecl? PreviewLibraryItem* ;
+PreviewExecutableSourceFile ::= PreviewGate ModuleDecl? PreviewExecutableItem* ;
+PreviewScriptSourceFile ::= Shebang? PreviewGate ModuleDecl? PreviewScriptItem* ;
+
+PreviewLibraryItem ::= LibrarySourceItem | PreviewFfiDecl ;
+PreviewExecutableItem ::= ExecutableSourceItem | PreviewFfiDecl ;
+PreviewScriptItem ::= ScriptSourceItem | PreviewFfiDecl ;
+
+PreviewGate ::= "#" "preview" "(" PreviewFeatureList ")" LineBreakBoundary ;
+PreviewFeatureList ::= Identifier ("," Identifier)* ;
+
+(* Current gated spelling: extern#C def#unsafe. Token adjacency is not required by grammar. *)
+PreviewFfiDecl ::= PreviewFfiFunctionDecl | PreviewFfiBlockDecl ;
+PreviewFfiFunctionDecl ::= "extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList
+                           ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+PreviewFfiBlockDecl ::= "extern" "c" "(" PLAIN_STRING_LITERAL ")"
+                        "{" PreviewFfiBlockMember* "}" ;
+PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
+                          ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+
+(* ==================================================================
+   RECOVERY-ONLY OVERLAY
+   PROFILE: RECOVERY
+   ================================================================== *)
+(* Recognized-only historical/nonactivatable surfaces. Never part of admitted Stable/Preview language. *)
+
+RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
+                 | RecoveryFacetPackExpr
+                 | RecoveryFacetType
+                 | RecoveryNamedRestDoubleStar
+                 | RecoveryFunctionTypeNamedRestDoubleStar
+                 | RecoveryLazyBindingAt
+                 | RecoveryUnitMiddleDot
+                 | RecoveryQuarantineScope ;
+
+(* Generic entry is recognized only to emit the current dedicated rejection. *)
+RecoveryGenericEntryFunctionDecl ::= "def" "#" "entry" Identifier TypeParameterList ParameterList
+                                     ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody
+                                   | "def" "#" "entry" "#" "async" Identifier TypeParameterList ParameterList
+                                     ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody ;
+
+(* R51e parser-cover probes; feature registry marks them nonactivatable. *)
+RecoveryFacetPackExpr ::= "facet" "[" ("inout" | "move") Expr "as" QualifiedTypeReference
+                          AssociatedTypeConstraintList? "]" ;
+RecoveryFacetType ::= "Facet" "<" ("inout" | "move") "any" QualifiedTypeReference
+                      AssociatedTypeConstraintList? ">" ;
+
+(* Old named-rest spelling is contextually recognized for a migration diagnostic only.
+   "**" remains a current token for call-side unfold and operator roles. *)
+RecoveryNamedRestDoubleStar ::= Identifier "**" TypeAnnotation ;
+RecoveryFunctionTypeNamedRestDoubleStar ::= TypeRef "**" ;
+
+(* Historical lazy-binding sigil. Current successor spelling is let#lazy. *)
+RecoveryLazyBindingAt ::= "let" "@" "lazy" Identifier TypeAnnotation? "=" Expr StatementBoundary ;
+
+(* Historical unit multiplication display; current unit multiplication uses `*`. *)
+RecoveryUnitMiddleDot ::= UnitPrimary "·" UnitPrimary ;
+
+(* Nonactivatable design probe only; no current AST/HIR/MIR node is created. *)
+RecoveryQuarantineScope ::= "@" "scope" "#" ("dynamic" | "unsafe") Block QuarantineExport? ;
+QuarantineExport ::= "->" "$" Identifier TypeAnnotation
+                   | "->" "$" "(" QuarantineExportField ("," QuarantineExportField)* ")" ;
+QuarantineExportField ::= Identifier TypeAnnotation ;

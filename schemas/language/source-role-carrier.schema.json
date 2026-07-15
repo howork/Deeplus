@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/source-role-carrier.schema.json",
+  "title": "Deeplus project source-role carrier",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_files"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.project/r51f3"
+    },
+    "source_files": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "source_role"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_role": {
+            "enum": [
+              "library",
+              "executable",
+              "script"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-deeplus-identity": "path is unique after project-root-relative lexical normalization; symlink resolution is a host policy and must occur before lookup",
+  "x-deeplus-normalized-path-uniqueness": {
+    "algorithm": "normalize each path to a project-root-relative lexical path, then insert into a map before parsing; a second row with the same normalized key is rejected even when its source_role differs",
+    "comparison": "Unicode scalar exact after slash normalization and removal of dot segments; case folding is a host policy performed before this contract",
+    "duplicate_same_role": "SOURCE_ROLE_CARRIER_CONFLICT",
+    "duplicate_different_role": "SOURCE_ROLE_CARRIER_CONFLICT"
+  },
+  "x-deeplus-conflict-fixtures": [
+    {
+      "fixture_id": "SRCROLE-CARRIER-POS-001",
+      "source_files": [
+        {
+          "path": "src/lib.dp",
+          "source_role": "library"
+        },
+        {
+          "path": "src/main.dp",
+          "source_role": "executable"
+        }
+      ],
+      "expected": "admitted"
+    },
+    {
+      "fixture_id": "SRCROLE-CARRIER-NEG-001",
+      "source_files": [
+        {
+          "path": "src/./main.dp",
+          "source_role": "executable"
+        },
+        {
+          "path": "src/main.dp",
+          "source_role": "script"
+        }
+      ],
+      "expected": "SOURCE_ROLE_CARRIER_CONFLICT"
+    }
+  ],
+  "x-deeplus-feature-id": "source_role_contract",
+  "x-deeplus-predicate-id": "SourceRoleAdmitted",
+  "x-deeplus-precedence": "the project manifest is authoritative for project builds; --source-role is permitted only for a single file absent from a manifest; IDEs expose the manifest value and may not silently override it",
+  "x-deeplus-conflict-diagnostic": "SOURCE_ROLE_CARRIER_CONFLICT"
+}

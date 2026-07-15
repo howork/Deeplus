@@ -1,0 +1,454 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "WherePredicateAdmitted",
+    "source_name": "WherePredicateAdmitted",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "associated_requirement_phase_a",
+      "where_clause_constraint_core"
+    ],
+    "diagnostic_refs": [
+      "RCTS_V5_VARIANT_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "associated requirement origin is coherent",
+      "witness/conformance environment is deterministic"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-WherePredicateAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "associated requirement origin is coherent",
+      "witness/conformance environment is deterministic"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record WherePredicateAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-WherePredicateAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-WherePredicateAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "68bc0db6560a753ec286a50d8a64822d95e1d6f43318595106e02fcd1b67bb57",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "WhereRelationTaxonomyAdmitted",
+    "source_name": "WhereRelationTaxonomyAdmitted",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "where_relation_taxonomy"
+    ],
+    "diagnostic_refs": [
+      "WHERE_COLON_RELATION_AMBIGUOUS"
+    ],
+    "design_seed_diagnostic_refs": [
+      "WHERE_COLON_RELATION_AMBIGUOUS"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "conforms keyword for trait relation",
+      "colon not trait shorthand"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-WhereRelationTaxonomyAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "conforms keyword for trait relation",
+      "colon not trait shorthand"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record WhereRelationTaxonomyAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "WHERE_COLON_RELATION_AMBIGUOUS",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-WhereRelationTaxonomyAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-WhereRelationTaxonomyAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "845037ccc21a65673256a78ba9e9d30c9c570efba0d1f3a60a349a650731074a",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "WitnessCoherent",
+    "source_name": "WitnessCoherent",
+    "summary": "ordered branch 1: a missing witness_id, implementation_id, coherence_key, or empty candidate_implementation_ids emits WITNESS_COHERENCE_EVIDENCE_MISSING; ordered branch 2: coherence_key unequal to witness_id, or candidate_implementation_ids has exactly one element and that sole candidate is unequal to implementation_id, emits WITNESS_IMPLEMENTATION_SELECTION_MISMATCH; ordered branch 3: more than one candidate implementation emits WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN; ordered branch 4: orphan_rule_admitted is false or declaring_package equals neither type_owner nor trait_owner emits WITNESS_ORPHAN_RULE_VIOLATION; only after all four branches pass is the witness/implementation pair coherent",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "call_shape",
+      "witness_id",
+      "implementation_id",
+      "product_evidence"
+    ],
+    "feature_refs": [
+      "trait_witness_coherence_phase_a",
+      "explicit_witness_argument_msp"
+    ],
+    "diagnostic_refs": [
+      "WITNESS_COHERENCE_EVIDENCE_MISSING",
+      "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+      "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+      "WITNESS_ORPHAN_RULE_VIOLATION"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "ordered branch 1: a missing witness_id, implementation_id, coherence_key, or empty candidate_implementation_ids emits WITNESS_COHERENCE_EVIDENCE_MISSING",
+      "ordered branch 2: coherence_key unequal to witness_id, or candidate_implementation_ids has exactly one element and that sole candidate is unequal to implementation_id, emits WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+      "ordered branch 3: more than one candidate implementation emits WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+      "ordered branch 4: orphan_rule_admitted is false or declaring_package equals neither type_owner nor trait_owner emits WITNESS_ORPHAN_RULE_VIOLATION",
+      "only after all four branches pass is the witness/implementation pair coherent"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "call_shape",
+      "witness_id",
+      "implementation_id",
+      "product_evidence"
+    ],
+    "formal_judgment_id": "J-WitnessCoherent",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "ordered branch 1: a missing witness_id, implementation_id, coherence_key, or empty candidate_implementation_ids emits WITNESS_COHERENCE_EVIDENCE_MISSING",
+      "ordered branch 2: coherence_key unequal to witness_id, or candidate_implementation_ids has exactly one element and that sole candidate is unequal to implementation_id, emits WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+      "ordered branch 3: more than one candidate implementation emits WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+      "ordered branch 4: orphan_rule_admitted is false or declaring_package equals neither type_owner nor trait_owner emits WITNESS_ORPHAN_RULE_VIOLATION",
+      "only after all four branches pass is the witness/implementation pair coherent"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTS-V5 descriptor",
+      "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
+      "evaluate WitnessCoherent diagnostic_dispatch conditions once in their declared deterministic order",
+      "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+    "secondary_diagnostics": [
+      "WITNESS_COHERENCE_EVIDENCE_MISSING",
+      "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+      "WITNESS_ORPHAN_RULE_VIOLATION"
+    ],
+    "positive_fixture_ids": [
+      "PF-WitnessCoherent-POS",
+      "PF-WitnessCoherent-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-WitnessCoherent-NEG",
+      "PF-WitnessCoherent-NEG-MISSING",
+      "PF-WitnessCoherent-NEG-ZERO",
+      "PF-WitnessCoherent-NEG-KEY",
+      "PF-WitnessCoherent-NEG-SELECTION",
+      "PF-WitnessCoherent-NEG-ORPHAN-FLAG",
+      "PF-WitnessCoherent-NEG-ORPHAN-OWNER"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_dispatch": {
+      "1_missing_pair_key_or_zero_candidates": "WITNESS_COHERENCE_EVIDENCE_MISSING",
+      "2_key_or_single_candidate_selection_mismatch": "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+      "3_multiple_candidates": "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+      "4_orphan_flag_false_or_declaring_package_owns_neither_side": "WITNESS_ORPHAN_RULE_VIOLATION"
+    },
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "94d560e13fb80b8960a89734538006ad0fb8e83488fbde66f8459c47f6f6a976",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "WitnessResolution",
+    "source_name": "WitnessResolution",
+    "summary": "resolve conformance obligations deterministically without structural or extension auto-witness",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "error_set",
+      "effect_row",
+      "isolation",
+      "authority",
+      "call_shape",
+      "lookup_domain",
+      "extension_member_id",
+      "witness_id",
+      "implementation_id",
+      "product_evidence",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "trait_witness_resolution_phase_a"
+    ],
+    "diagnostic_refs": [
+      "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+      "TRAIT_MISSING_WITNESS",
+      "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "resolve conformance obligations deterministically without structural or extension auto-witness"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "error_set",
+      "effect_row",
+      "isolation",
+      "authority",
+      "call_shape",
+      "lookup_domain",
+      "extension_member_id",
+      "witness_id",
+      "implementation_id",
+      "product_evidence",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-WitnessResolution",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "resolve conformance obligations deterministically without structural or extension auto-witness"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
+      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
+      "enumerate visible nominal conformance candidates by canonical coherence key",
+      "exclude extension, structural, local runtime, and named nonautomatic candidates",
+      "filter orphan/visibility/conditional obligations",
+      "zero emits TRAIT_MISSING_WITNESS; more than one emits TRAIT_AMBIGUOUS_IMPORTED_WITNESS; one returns sealed evidence",
+      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+    ],
+    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+    "secondary_diagnostics": [
+      "TRAIT_MISSING_WITNESS",
+      "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN"
+    ],
+    "positive_fixture_ids": [
+      "PF-WitnessResolution-POS",
+      "PF-WitnessResolution-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-WitnessResolution-NEG"
+    ],
+    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "bfe562c4ff461b1482d007444466e4b9ddfac6bcfe11d10acd684bdc29f2f7b4",
+      "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "branch_01": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+      "branch_02": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+      "branch_03": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+      "branch_04": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "WitnessResponsibilityCompatibility",
+    "source_name": "WitnessResponsibilityCompatibility",
+    "summary": "witness method responsibility must not be wider than requirement",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "error_set",
+      "effect_row",
+      "suspension",
+      "isolation",
+      "authority",
+      "call_shape",
+      "witness_id",
+      "implementation_id",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "witness_responsibility_compatibility_law"
+    ],
+    "diagnostic_refs": [
+      "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+      "TRAIT_METHOD_EFFECT_TOO_WIDE",
+      "TRAIT_METHOD_ERRORSET_TOO_WIDE",
+      "TRAIT_METHOD_ISOLATION_MISMATCH",
+      "TRAIT_METHOD_SUSPENSION_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "witness method responsibility must not be wider than requirement"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "error_set",
+      "effect_row",
+      "suspension",
+      "isolation",
+      "authority",
+      "call_shape",
+      "witness_id",
+      "implementation_id",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-WitnessResponsibilityCompatibility",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "witness method responsibility must not be wider than requirement"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
+      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
+      "normalize requirement and implementation receiver/ownership/error/effect/authority/isolation rows",
+      "reject every widening beyond the requirement in fixed ownership,error,effect,authority,isolation order",
+      "return the exact compatible evidence signature",
+      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+    ],
+    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+    "secondary_diagnostics": [
+      "TRAIT_METHOD_EFFECT_TOO_WIDE",
+      "TRAIT_METHOD_ERRORSET_TOO_WIDE",
+      "TRAIT_METHOD_ISOLATION_MISMATCH",
+      "TRAIT_METHOD_SUSPENSION_MISMATCH"
+    ],
+    "positive_fixture_ids": [
+      "PF-WitnessResponsibilityCompatibility-POS",
+      "PF-WitnessResponsibilityCompatibility-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-WitnessResponsibilityCompatibility-NEG"
+    ],
+    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "147c4165114592a1194457de4b07495dddd2e598c6125f060a63266580ab9a71",
+      "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "branch_01": "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+      "branch_02": "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+      "branch_03": "TRAIT_METHOD_AUTHORITY_TOO_WIDE"
+    }
+  }
+]

@@ -1,0 +1,1491 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NamedEvidenceExcludedFromAutomaticResolution",
+    "source_name": "NamedEvidenceExcludedFromAutomaticResolution",
+    "summary": "Keep named evidence out of the automatic WitnessResolution candidate set.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "named_conformance_selector_msp"
+    ],
+    "diagnostic_refs": [
+      "NAMED_CONFORMANCE_AUTOMATIC_SEARCH_FORBIDDEN",
+      "NAMED_CONFORMANCE_NOT_AUTOMATIC"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "enumerate ordinary witnesses",
+      "exclude named identities",
+      "resolve automatic coherence",
+      "admit named evidence only through an explicit selector",
+      "record the using channel"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-NamedEvidenceExcludedFromAutomaticResolution",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "enumerate ordinary witnesses",
+      "exclude named identities"
+    ],
+    "normalization": "enumerate ordinary witnesses",
+    "decision_procedure": [
+      "enumerate ordinary witnesses",
+      "exclude named identities",
+      "resolve automatic coherence",
+      "admit named evidence only through an explicit selector",
+      "record the using channel"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "NAMED_CONFORMANCE_AUTOMATIC_SEARCH_FORBIDDEN",
+    "secondary_diagnostics": [
+      "NAMED_CONFORMANCE_NOT_AUTOMATIC"
+    ],
+    "positive_fixture_ids": [
+      "PF-NamedEvidenceExcludedFromAutomaticResolution-POS",
+      "PF-NamedEvidenceExcludedFromAutomaticResolution-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NamedEvidenceExcludedFromAutomaticResolution-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NamedExtensionSetAdmitted",
+    "source_name": "named extension set identity",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "authority",
+      "call_shape",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "extension_set_member_identity_law",
+      "named_extension_set_block_msp"
+    ],
+    "diagnostic_refs": [
+      "AMBIGUOUS_EXTENSION_SELECTOR",
+      "EXTENSION_SET_MEMBER_ID_REQUIRES_EXTENSION_SET_ID"
+    ],
+    "design_seed_diagnostic_refs": [
+      "AMBIGUOUS_EXTENSION_SELECTOR",
+      "EXTENSION_SET_MEMBER_ID_REQUIRES_EXTENSION_SET_ID"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "ExtensionSetId includes package/module/type/set/selector origin",
+      "does not modify target type",
+      "activation is lexical and explicit"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "authority",
+      "call_shape",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NamedExtensionSetAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "ExtensionSetId includes package/module/type/set/selector origin",
+      "does not modify target type",
+      "activation is lexical and explicit"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NamedExtensionSetAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "AMBIGUOUS_EXTENSION_SELECTOR",
+    "secondary_diagnostics": [
+      "EXTENSION_SET_MEMBER_ID_REQUIRES_EXTENSION_SET_ID"
+    ],
+    "positive_fixture_ids": [
+      "PF-NamedExtensionSetAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NamedExtensionSetAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "83ce4241d9142dc8e1b9e74eadf18459a5fbf06ce9255739d8a162e54137fb95",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NamedExtensionSetAdmitted_R48_48",
+    "source_name": "NamedExtensionSetCurrentAdmitted",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "named_extension_set_block_msp"
+    ],
+    "diagnostic_refs": [
+      "EXTENSION_SET_PATH_AMBIGUOUS"
+    ],
+    "design_seed_diagnostic_refs": [
+      "EXTENSION_SET_PATH_AMBIGUOUS"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "ExtensionSetId includes package/module/type/set/selector origin",
+      "does not modify target type",
+      "activation is lexical and explicit"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NamedExtensionSetAdmitted_R48_48",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "ExtensionSetId includes package/module/type/set/selector origin",
+      "does not modify target type",
+      "activation is lexical and explicit"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NamedExtensionSetAdmitted_R48_48 requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "EXTENSION_SET_PATH_AMBIGUOUS",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NamedExtensionSetAdmitted_R48_48-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NamedExtensionSetAdmitted_R48_48-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "f5c0d1efcdaf05924cd8d25beb729319a8e0ca9629c8ec4c8c216d48a485f2b0",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NamedRestCollectorAdmitted",
+    "source_name": "NamedRestCollectorAdmitted",
+    "summary": "Named-rest parameter and function-type residue use `***`; call/materialization named unfold uses `**`. Product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "normalized_type",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "named_rest_parameter_record_msp",
+      "data_shaping_callshape_model"
+    ],
+    "diagnostic_refs": [
+      "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+      "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "declaration named rest is attached suffix ***",
+      "function-type named-rest residue is attached suffix ***",
+      "call/materialization named unfold is attached prefix **",
+      "parameter/type ** and unfold-prefix *** are rejected"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "normalized_type",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-NamedRestCollectorAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "grammar owner is known",
+      "no trivia splits either glyph"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "classify the owner as parameter, function-type item, call argument, or materialization entry",
+      "for parameter/type owners admit attached suffix *** and reject ** with NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+      "for call/materialization owners admit attached prefix ** and reject *** with TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+      "defer Record/finality/cardinality checks to NamedRestParameterRecordAndLastPosition"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "NamedRestCollectorAdmitted",
+    "active_primary_diagnostic": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+    "secondary_diagnostics": [
+      "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    ],
+    "positive_fixture_ids": [
+      "PF-NamedRestCollectorAdmitted-POS",
+      "PF-NamedRestCollectorAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NamedRestCollectorAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NamedRestParameterRecordAndLastPosition",
+    "source_name": "NamedRestParameterRecordAndLastPosition",
+    "summary": "named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "normalized_type",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "named_rest_parameter_record_msp",
+      "call_shape_rest_type_residue_law",
+      "data_shaping_callshape_model"
+    ],
+    "diagnostic_refs": [
+      "MULTIPLE_NAMED_REST_PARAMETERS",
+      "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
+      "NAMED_REST_PARAMETER_MUST_BE_LAST"
+    ],
+    "design_seed_diagnostic_refs": [
+      "MULTIPLE_NAMED_REST_PARAMETERS",
+      "NAMED_REST_PARAMETER_MUST_BE_LAST"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "named_rest_parameter_count is exactly one",
+      "named_rest_parameter_type is exactly Record",
+      "named_rest_parameter_index equals parameter_count - 1",
+      "dispatch multiple-count before non-Record type before nonfinal position"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "normalized_type",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-NamedRestParameterRecordAndLastPosition",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "named_rest_parameter_count is exactly one",
+      "named_rest_parameter_type is exactly Record",
+      "named_rest_parameter_index equals parameter_count - 1",
+      "dispatch multiple-count before non-Record type before nonfinal position"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTS-V5 descriptor",
+      "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
+      "evaluate NamedRestParameterRecordAndLastPosition diagnostic_dispatch conditions once in their declared deterministic order",
+      "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "MULTIPLE_NAMED_REST_PARAMETERS",
+    "secondary_diagnostics": [
+      "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
+      "NAMED_REST_PARAMETER_MUST_BE_LAST"
+    ],
+    "positive_fixture_ids": [
+      "PF-NamedRestParameterRecordAndLastPosition-POS",
+      "PF-NamedRestParameterRecordAndLastPosition-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NamedRestParameterRecordAndLastPosition-NEG",
+      "PF-NamedRestParameterRecordAndLastPosition-NEG-TYPE",
+      "PF-NamedRestParameterRecordAndLastPosition-NEG-LAST"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_named_rest_parameter_count_not_one": "MULTIPLE_NAMED_REST_PARAMETERS",
+      "2_named_rest_parameter_type_not_exact_Record": "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
+      "3_named_rest_parameter_index_not_final": "NAMED_REST_PARAMETER_MUST_BE_LAST"
+    },
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "e4477c1f224740a72c85f0987ed2fcc9131cdc06695428e478c8bb2aa85531b4",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NarrowUnionByPattern",
+    "source_name": "NarrowUnionByPattern",
+    "summary": "Refine Phi by the alternatives selected by a pattern without changing the declared semantic type.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "closed_anonymous_union_type_msp",
+      "guarded_let_destructured_exit_msp"
+    ],
+    "diagnostic_refs": [
+      "UNION_VALUE_REQUIRES_NARROWING"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "read current alternatives from Phi",
+      "normalize the pattern type",
+      "intersect the alternative set",
+      "reject empty coverage",
+      "record arm-local flow type"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-NarrowUnionByPattern",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "read current alternatives from Phi",
+      "normalize the pattern type"
+    ],
+    "normalization": "read current alternatives from Phi",
+    "decision_procedure": [
+      "read current alternatives from Phi",
+      "normalize the pattern type",
+      "intersect the alternative set",
+      "reject empty coverage",
+      "record arm-local flow type"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "UNION_VALUE_REQUIRES_NARROWING",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NarrowUnionByPattern-POS",
+      "PF-NarrowUnionByPattern-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NarrowUnionByPattern-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NominalPrototypeDerivationAdmitted",
+    "source_name": "NominalPrototypeDerivationAdmitted",
+    "summary": "the result normalized_type is exactly the base nominal type; construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once; derivation mode is shallow or deep and never changes conformance or nominal identity; shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field; resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "construction_domain",
+      "call_shape",
+      "source_role",
+      "construction_row",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "nominal_prototype_derivation",
+      "construction_derivation_surface_responsibility_closure"
+    ],
+    "diagnostic_refs": [
+      "PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "the result normalized_type is exactly the base nominal type",
+      "construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once",
+      "derivation mode is shallow or deep and never changes conformance or nominal identity",
+      "shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field",
+      "resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "construction_domain",
+      "call_shape",
+      "construction_row"
+    ],
+    "formal_judgment_id": "J-NominalPrototypeDerivationAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the result normalized_type is exactly the base nominal type",
+      "construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once",
+      "derivation mode is shallow or deep and never changes conformance or nominal identity",
+      "shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field",
+      "resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTS-V5 descriptor",
+      "evaluate dependency predicates left-to-right in listed order",
+      "apply NominalPrototypeDerivationAdmitted local rule: the result normalized_type is exactly the base nominal type; construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once; derivation mode is shallow or deep and never changes conformance or nominal identity; shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field; resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed",
+      "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NominalPrototypeDerivationAdmitted-POS",
+      "PF-NominalPrototypeDerivationAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NominalPrototypeDerivationAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "f327c8d11b58685a2935913fa91e61deee03fb0d747b1837ad82f51627116634",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NormalizeContractIntersection",
+    "source_name": "NormalizeContractIntersection",
+    "summary": "Normalize one optional concrete base plus coherent Trait contracts.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "closed_contract_intersection_type_msp"
+    ],
+    "diagnostic_refs": [
+      "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "flatten intersections",
+      "classify concrete and Trait members",
+      "require at most one concrete base",
+      "deduplicate exact contracts",
+      "forbid union distribution and structural merge"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-NormalizeContractIntersection",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "flatten intersections",
+      "classify concrete and Trait members"
+    ],
+    "normalization": "flatten intersections",
+    "decision_procedure": [
+      "flatten intersections",
+      "classify concrete and Trait members",
+      "require at most one concrete base",
+      "deduplicate exact contracts",
+      "forbid union distribution and structural merge"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NormalizeContractIntersection-POS",
+      "PF-NormalizeContractIntersection-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NormalizeContractIntersection-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NormalizeSemanticType",
+    "source_name": "NormalizeSemanticType",
+    "summary": "Normalize source spelling into one closed RCTS-V5 semantic variant without dropping responsibility axes.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "rcts_v5_discriminated_descriptor_family"
+    ],
+    "diagnostic_refs": [
+      "RCTS_V5_VARIANT_MISMATCH",
+      "RCTS_RESPONSIBILITY_AXIS_DROPPED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "resolve aliases and kinds",
+      "normalize type constructors recursively",
+      "separate flow state into Phi",
+      "canonicalize evidence identities",
+      "emit one discriminated semantic descriptor"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-NormalizeSemanticType",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "resolve aliases and kinds",
+      "normalize type constructors recursively"
+    ],
+    "normalization": "resolve aliases and kinds",
+    "decision_procedure": [
+      "resolve aliases and kinds",
+      "normalize type constructors recursively",
+      "separate flow state into Phi",
+      "canonicalize evidence identities",
+      "emit one discriminated semantic descriptor"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "secondary_diagnostics": [
+      "RCTS_RESPONSIBILITY_AXIS_DROPPED"
+    ],
+    "positive_fixture_ids": [
+      "PF-NormalizeSemanticType-POS",
+      "PF-NormalizeSemanticType-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NormalizeSemanticType-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NormalizeUnion",
+    "source_name": "NormalizeUnion",
+    "summary": "Flatten, sort, and validate a finite pairwise-disjoint closed union.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "diagnostic_refs": [
+      "UNION_MEMBER_SUBSUMED",
+      "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "require an explicit expected union context",
+      "flatten nested unions",
+      "remove exact duplicates",
+      "reject subtype overlap and forbidden kinds",
+      "sort by canonical type identity"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-NormalizeUnion",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "require an explicit expected union context",
+      "flatten nested unions"
+    ],
+    "normalization": "require an explicit expected union context",
+    "decision_procedure": [
+      "require an explicit expected union context",
+      "flatten nested unions",
+      "remove exact duplicates",
+      "reject subtype overlap and forbidden kinds",
+      "sort by canonical type identity"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "UNION_MEMBER_SUBSUMED",
+    "secondary_diagnostics": [
+      "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+    ],
+    "positive_fixture_ids": [
+      "PF-NormalizeUnion-POS",
+      "PF-NormalizeUnion-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NormalizeUnion-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NullaryLambdaExpectedContextAdmitted",
+    "source_name": "NullaryLambdaExpectedContextAdmitted",
+    "summary": "an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type; empty body is admitted only when the expected result is Unit; a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through; without expected callable context the surface is rejected or uses the separately gated nullary inference route",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "normalized_type",
+      "ownership",
+      "effect_row",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "nullary_lambda_arrow_elision_msp"
+    ],
+    "diagnostic_refs": [
+      "EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE",
+      "NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_CONTEXT"
+    ],
+    "design_seed_diagnostic_refs": [
+      "EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE",
+      "NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_CONTEXT"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type",
+      "empty body is admitted only when the expected result is Unit",
+      "a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through",
+      "without expected callable context the surface is rejected or uses the separately gated nullary inference route"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "normalized_type",
+      "ownership",
+      "effect_row",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-NullaryLambdaExpectedContextAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type",
+      "empty body is admitted only when the expected result is Unit",
+      "a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through",
+      "without expected callable context the surface is rejected or uses the separately gated nullary inference route"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NullaryLambdaExpectedContextAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE",
+    "secondary_diagnostics": [
+      "NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_CONTEXT"
+    ],
+    "positive_fixture_ids": [
+      "PF-NullaryLambdaExpectedContextAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NullaryLambdaExpectedContextAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_incomplete_dispatch",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "e0b513ba1f2a03be9e63c40d42770619582255965dc99516cf0021be378246a7",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayContextAnchorAdmitted",
+    "source_name": "NumericArray context anchor",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "call_shape",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_context_anchor_msp",
+      "numeric_array_context_anchor_polarity_law"
+    ],
+    "diagnostic_refs": [
+      "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+      "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
+      "CONTEXT_ANCHOR_NOT_A_VALUE"
+    ],
+    "design_seed_diagnostic_refs": [
+      "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+      "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
+      "CONTEXT_ANCHOR_NOT_A_VALUE"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "one anchor per eligible operation",
+      "anchor marks context provider",
+      "no first-class anchor value"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "call_shape",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayContextAnchorAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "one anchor per eligible operation",
+      "anchor marks context provider",
+      "no first-class anchor value"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayContextAnchorAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+    "secondary_diagnostics": [
+      "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
+      "CONTEXT_ANCHOR_NOT_A_VALUE"
+    ],
+    "positive_fixture_ids": [
+      "PF-NumericArrayContextAnchorAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayContextAnchorAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "098b1e831a107f06a878182268b958dc8434a2918b28511d344296e27fb8af6c",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "source_name": "NumericArrayElement",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "authority",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_lsp_responsibility_card",
+      "numeric_array_sharp_shape_literal_msp"
+    ],
+    "diagnostic_refs": [
+      "RCTS_V5_VARIANT_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "builtin numeric initial slice",
+      "PlainValue-admissible",
+      "no lifecycle or backend authority"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "authority",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayElementAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "builtin numeric initial slice",
+      "PlainValue-admissible",
+      "no lifecycle or backend authority"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayElementAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NumericArrayElementAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayElementAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "60ed6b924fbc91f7dbaa3ac0bf4277484d78dad042861e6d1344fe5f51df893a",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayElementwiseSameShapeAdmitted",
+    "source_name": "NumericArrayElementwiseSameShapeAdmitted",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_elementwise_arithmetic_msp"
+    ],
+    "diagnostic_refs": [
+      "NUMERIC_ARRAY_ELEMENTWISE_REQUIRES_SAME_SHAPE"
+    ],
+    "design_seed_diagnostic_refs": [
+      "NUMERIC_ARRAY_ELEMENTWISE_REQUIRES_SAME_SHAPE"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayElementwiseSameShapeAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayElementwiseSameShapeAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "NUMERIC_ARRAY_ELEMENTWISE_REQUIRES_SAME_SHAPE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NumericArrayElementwiseSameShapeAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayElementwiseSameShapeAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "5f1c97f30e0d517291d00eef0aec1dab3264bc93fe0f0004d64257ea6199f4e7",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayInfixPowerRequiresPreview",
+    "source_name": "NumericArrayInfixPowerRequiresPreview",
+    "summary": "NumericArray infix `^` requires Preview gate.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_elementwise_power_msp"
+    ],
+    "diagnostic_refs": [
+      "NUMARR_INFIX_POWER_REQUIRES_PREVIEW_GATE"
+    ],
+    "design_seed_diagnostic_refs": [
+      "NUMARR_INFIX_POWER_REQUIRES_PREVIEW_GATE"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayInfixPowerRequiresPreview",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayInfixPowerRequiresPreview requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "NUMARR_INFIX_POWER_REQUIRES_PREVIEW_GATE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NumericArrayInfixPowerRequiresPreview-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayInfixPowerRequiresPreview-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "663190f7fafcb736354a6bb72a3ada58de007307300090c9d4c88472ffa3dff6",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayPostfixTransposeAdmitted",
+    "source_name": "NumericArray postfix transpose",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_postfix_transpose_caret_msp",
+      "numeric_array_vector_orientation_witness_msp"
+    ],
+    "diagnostic_refs": [
+      "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "design_seed_diagnostic_refs": [
+      "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "rank2 matrix or oriented rank1 vector",
+      "view does not outlive owner",
+      "not adjoint"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayPostfixTransposeAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "rank2 matrix or oriented rank1 vector",
+      "view does not outlive owner",
+      "not adjoint"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayPostfixTransposeAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+    "secondary_diagnostics": [
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "positive_fixture_ids": [
+      "PF-NumericArrayPostfixTransposeAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayPostfixTransposeAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "69ea1060a243628ee2a90a0d8ad69a26c738e92e45831be2fdcb7bdc0b3369b0",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericArrayPostfixTransposeStable",
+    "source_name": "NumericArrayPostfixTransposeStable",
+    "summary": "Attached `A^` is Stable NumericArray transpose.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "numeric_array_postfix_transpose_caret_msp"
+    ],
+    "diagnostic_refs": [
+      "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "design_seed_diagnostic_refs": [
+      "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericArrayPostfixTransposeStable",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericArrayPostfixTransposeStable requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+    "secondary_diagnostics": [
+      "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION"
+    ],
+    "positive_fixture_ids": [
+      "PF-NumericArrayPostfixTransposeStable-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericArrayPostfixTransposeStable-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "dac9b3ffc1552a52e3d939a4aa7d5055326bed54043cb2f5c523f6899e400f11",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "source_name": "NumericFillSliceIndexAdmitted",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "fill_repeat_admissibility_law",
+      "index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "shaped_fill_initializer_msp"
+    ],
+    "diagnostic_refs": [
+      "SOURCE_TRUTH_PROJECTION_CONFLICT"
+    ],
+    "design_seed_diagnostic_refs": [
+      "SOURCE_TRUTH_PROJECTION_CONFLICT"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "current source rule required",
+      "readonly views cannot outlive owner"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericFillSliceIndexAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "current source rule required",
+      "readonly views cannot outlive owner"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record NumericFillSliceIndexAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-NumericFillSliceIndexAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericFillSliceIndexAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "451762aa0190643330acdda2c5c827f0f799b03034e7706caa7dbe4e4e3bfa65",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  }
+]

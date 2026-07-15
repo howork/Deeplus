@@ -1,0 +1,381 @@
+{
+  "schema": "deeplus.rcts-v5-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "positive": [
+    {
+      "fixture_id": "RCTS5-POS-RESPONSIBILITY_CORE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "positive-responsibility_core"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-NOMINAL",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "nominal",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "positive-nominal"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-UNION",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "union",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "positive-union"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "alternatives": [
+          "Int",
+          "String"
+        ],
+        "injection_policy": "fixed_expected_unique_exact"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-INTERSECTION",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "intersection",
+        "semantic_type": {
+          "kind": "intersection",
+          "type_id": "positive-intersection"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "concrete_base": null,
+        "contracts": [
+          "Printable",
+          "Auditable"
+        ],
+        "distribution": "forbidden"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-FACET",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "positive-facet"
+        },
+        "responsibility": {
+          "ownership": "borrow",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": "r1",
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-CALLABLE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "callable",
+          "type_id": "positive-callable"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "(value: T) -> String",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-BITFIELD",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "positive-bitfield"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "named",
+            "name": "tag",
+            "width": 4,
+            "offset": 0,
+            "mask": "0x0F"
+          },
+          {
+            "kind": "reserved_zero",
+            "name": null,
+            "width": 4,
+            "offset": 4,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "positive-bitfield"
+      }
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "RCTS5-NEG-RESPONSIBILITY_CORE",
+      "expected_error": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "negative-responsibility_core"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-NOMINAL",
+      "expected_error": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "nominal",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "negative-nominal"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-UNION",
+      "expected_error": "UNION_MEMBER_SUBSUMED",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "union",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "negative-union"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "alternatives": [
+          "Animal",
+          "Dog"
+        ],
+        "injection_policy": "fixed_expected_unique_exact"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-INTERSECTION",
+      "expected_error": "RCTS_VARIANT_SEMANTIC_KIND_MISMATCH",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "intersection",
+        "semantic_type": {
+          "kind": "union",
+          "type_id": "negative-intersection"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "concrete_base": null,
+        "contracts": [
+          "Printable",
+          "Auditable"
+        ],
+        "distribution": "forbidden"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-FACET",
+      "expected_error": "RCTS_FACET_MODE_OWNERSHIP_MISMATCH",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "facet",
+        "semantic_type": {
+          "kind": "facet",
+          "type_id": "negative-facet"
+        },
+        "responsibility": {
+          "ownership": "move",
+          "cleanup": "view_release",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "mode": "borrow",
+        "contract": "Printable",
+        "region": "r1",
+        "existential_safe": true,
+        "concrete_payload_visible": false
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-CALLABLE",
+      "expected_error": "RCTS_VARIANT_SEMANTIC_KIND_MISMATCH",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "callable",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "negative-callable"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "call_shape": "(value: T) -> String",
+        "parameter_modes": [
+          "borrow"
+        ],
+        "result_type": "String"
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-BITFIELD",
+      "expected_error": "RCTS_BITFIELD_SLOT_OVERLAP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "bitfield",
+        "semantic_type": {
+          "kind": "bitfield",
+          "type_id": "negative-bitfield"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": false,
+          "isolation": "local"
+        },
+        "backing": "UInt8",
+        "bit_order": "lsb0",
+        "slots": [
+          {
+            "kind": "named",
+            "name": "tag",
+            "width": 4,
+            "offset": 0,
+            "mask": "0x0F"
+          },
+          {
+            "kind": "reserved_zero",
+            "name": null,
+            "width": 4,
+            "offset": 2,
+            "mask": "0xF0"
+          }
+        ],
+        "layout_digest": "negative-bitfield"
+      }
+    }
+  ],
+  "coverage": {
+    "variant_count": 7,
+    "positive_per_variant": true,
+    "negative_per_variant": true
+  },
+  "product_checker": "NOT_RUN"
+}

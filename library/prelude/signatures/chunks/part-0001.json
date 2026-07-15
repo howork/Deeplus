@@ -1,0 +1,1543 @@
+[
+  {
+    "entry_id": "actor_core",
+    "symbol": "Actor",
+    "kind": "protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic Actor"
+    ],
+    "responsibility": "isolated mailbox execution root",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Actor",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "19b2005ab83706d37a5a488fa969003a1e6e0a752b43ce19fb32974049e83d4b"
+  },
+  {
+    "entry_id": "bitfield_codec",
+    "symbol": "BitfieldCodec",
+    "kind": "trait",
+    "status": "stdlib",
+    "feature_refs": [
+      "bitfield_checked_raw_codec_msp"
+    ],
+    "signatures": [
+      "public trait BitfieldCodec { def#pure encode(self,endian: Endian)->Bytes; def::decode(bytes: Bytes,endian: Endian)->Result<Self,error BitfieldDecodeError> }"
+    ],
+    "responsibility": "explicit endian codec",
+    "notes": "R51c current contract; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait BitfieldCodec { def#pure encode(self,endian: Endian)->Bytes; def::decode(bytes: Bytes,endian: Endian)->Result<Self,error BitfieldDecodeError> }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "bad6119e78b7e924ec4c08d5e8160cb30aa574685bc10b9d3ed4cf1106406245"
+  },
+  {
+    "entry_id": "bitfield_raw",
+    "symbol": "BitfieldRaw<Backing>",
+    "kind": "trait",
+    "status": "stdlib",
+    "feature_refs": [
+      "bitfield_checked_raw_codec_msp"
+    ],
+    "signatures": [
+      "public trait BitfieldRaw<Backing> { let raw: Backing; def::fromRaw(raw: Backing) -> Result<Self,error BitfieldRawError> }"
+    ],
+    "responsibility": "checked raw carrier contract",
+    "notes": "R51c current contract; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait BitfieldRaw<Backing> { let raw: Backing; def::fromRaw(raw: Backing) -> Result<Self,error BitfieldRawError> }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "8a71633d6659126c437f05c8bee47a0d6dae35f13fdf8ddafb25fb02f6528597"
+  },
+  {
+    "entry_id": "bitwise",
+    "symbol": "Bitwise",
+    "kind": "internal_or_stdlib_trait_seed",
+    "status": "stable_design",
+    "feature_refs": [
+      "double_glyph_bitwise_operator_family_msp",
+      "trait_witness_resolution_phase_a"
+    ],
+    "signatures": [
+      "public trait Bitwise<Self>"
+    ],
+    "responsibility": "bitwise operator admission uses checker-visible witness/admissibility",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Bitwise<Self>",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "9f0eeaa482c70cae5237718f6121e095d6c307125977fb5b8e1abbe576b108a5"
+  },
+  {
+    "entry_id": "box_t",
+    "symbol": "Box<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "box_ownership",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public resource type Box<T>",
+      "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects {allocate}"
+    ],
+    "responsibility": "unique owning indirection whose canonical constructor is Box!(value), with exactly-once payload cleanup",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public resource type Box<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects {allocate}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "0534b54c4bd1cdb8d07d5789fd2b5dd8f93f54bafea230bbd6b3c7ac72fd9596"
+  },
+  {
+    "entry_id": "byte_view",
+    "symbol": "ByteView",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "byte_view",
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "readonly_view"
+    ],
+    "signatures": [
+      "public borrowed type ByteView : ReadonlyView<UInt8>",
+      "prelude intrinsic def Bytes::view(borrow self: Bytes) -> ByteView throws Never effects {}"
+    ],
+    "responsibility": "contiguous byte-addressable readonly bytes acquired by borrowing Bytes::view; the result retains owner provenance and assumes neither text encoding nor String semantics",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public borrowed type ByteView : ReadonlyView<UInt8>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic def Bytes::view(borrow self: Bytes) -> ByteView throws Never effects {}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "60ac3d86d47a662eae9290e70b07f99b50687ffb96dff1c9b1dbdd6f267fb763"
+  },
+  {
+    "entry_id": "bytes",
+    "symbol": "Bytes",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public def Bytes::fromHex(text: String) -> Result<Bytes, error ParseError>",
+      "public type Bytes"
+    ],
+    "responsibility": "raw byte sequence; no implicit String conversion",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def Bytes::fromHex(text: String) -> Result<Bytes, error ParseError>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "public type Bytes",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "bd159a867765216b34cb395168d13971000c0ee84213aff1288f3c06cf4e3892"
+  },
+  {
+    "entry_id": "char",
+    "symbol": "Char",
+    "kind": "scalar",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public def Char::fromScalar(value: UInt32) -> Option<Char>",
+      "public scalar Char"
+    ],
+    "responsibility": "exactly one Unicode scalar value; surrogates excluded",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def Char::fromScalar(value: UInt32) -> Option<Char>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "public scalar Char",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "656d0dac971952523b8ad384115fec7c6ef5e86d25a75002b3ea2e2672ee9692"
+  },
+  {
+    "entry_id": "collect_policy",
+    "symbol": "CollectPolicy",
+    "kind": "enum",
+    "status": "preview",
+    "feature_refs": [
+      "policy_visible_async_collector_msp"
+    ],
+    "signatures": [
+      "public enum CollectPolicy { ordered; completion; bounded(limit: Int) }"
+    ],
+    "responsibility": "explicit async ordering and back-pressure policy",
+    "notes": "R51b integrated current-canonical declaration; product support is not implied",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum CollectPolicy { ordered; completion; bounded(limit: Int) }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "6bf06aab2f0ea5c840282916efd23b2652cd5371c72c3132ecd4bba338e00a96"
+  },
+  {
+    "entry_id": "contextparameterrole",
+    "symbol": "ContextParameterRole",
+    "kind": "function_signature_descriptor",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "checker descriptor ContextParameterRole"
+    ],
+    "responsibility": "function parameter role preserved in signature identity under the Stable design explicit context parameter law",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "checker descriptor ContextParameterRole",
+        "dialect": "checker_meta",
+        "grammar_root": null,
+        "schema": "deeplus.checker-meta-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "68c3c025b68b6abdf4aac5b9b7ae120e24f7ee23b3fafcfb8f5ceea57cc51aa3"
+  },
+  {
+    "entry_id": "display",
+    "symbol": "Display",
+    "kind": "trait/profile",
+    "status": "stable_design",
+    "feature_refs": [
+      "trait_witness_formal_judgment_core"
+    ],
+    "signatures": [
+      "public trait Display { +def display.() -> String; }"
+    ],
+    "responsibility": "string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Display { +def display.() -> String; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "absorbed_entry_ids": [
+      "display_025"
+    ],
+    "normalized_contract_sha256": "30ae7d6310f7a1bc95613696a09b6a9f67ae3e0ec74f009c445d77268b1de55a"
+  },
+  {
+    "entry_id": "exit_code",
+    "symbol": "ExitCode",
+    "kind": "entry_result",
+    "status": "stable_design",
+    "feature_refs": [
+      "entry_signature_contract",
+      "explicit_entry_function_surface"
+    ],
+    "signatures": [
+      "ExitCode::failure(code: UInt8) -> ExitCode",
+      "ExitCode::success: ExitCode"
+    ],
+    "responsibility": "Launcher-facing result; ordinary calls do not map it to process termination.",
+    "notes": "Prelude injects no implicit args, process handle, environment map, or async runtime.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "ExitCode::failure(code: UInt8) -> ExitCode",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "ExitCode::success: ExitCode",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "a8d2eb59fc23829bd4dc49760a9fabc2649c923258a30d71107394f7eb24b513"
+  },
+  {
+    "entry_id": "extensionsetid",
+    "symbol": "ExtensionSetId",
+    "kind": "tooling_schema",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "compiler identity ExtensionSetId"
+    ],
+    "responsibility": "semantic identity seed for named extension set D-MAD; not current source",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "compiler identity ExtensionSetId",
+        "dialect": "compiler_meta",
+        "grammar_root": null,
+        "schema": "deeplus.compiler-meta-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "501719d14c3185080a5ca5561247b4798edd1c4534453f29eecf94c3d1ded32e"
+  },
+  {
+    "entry_id": "facet_rcts_v5",
+    "symbol": "Facet<Mode,Contract>",
+    "kind": "compiler_intrinsic_type",
+    "status": "stable",
+    "feature_refs": [
+      "facet_borrow_pack_msp"
+    ],
+    "signatures": [
+      "public opaque type Facet<Mode, Contract>"
+    ],
+    "responsibility": "RCTS-V5 ownership-qualified existential carrier; borrow mode Stable, inout/move nonactivatable",
+    "notes": "R51c current contract; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public opaque type Facet<Mode, Contract>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "a5712fb23f153ee613afb3358e199e6ffc458b0da8ea0b7e7724eacbb0c9c74f"
+  },
+  {
+    "entry_id": "fillrepeatadmissibilityprofile",
+    "symbol": "FillRepeatAdmissibilityProfile",
+    "kind": "checker_known_protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "fill_repeat_admissibility_law"
+    ],
+    "signatures": [
+      "FillRepeatAdmissible(target_shape, element) -> Bool"
+    ],
+    "responsibility": "Stable checker law for shaped fill/repeat/generator initializer admissibility.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "FillRepeatAdmissible(target_shape, element) -> Bool",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "43f0769c051227c919a642944cf25ad9b96a4f8d8bebd9a8002de9c9ab86e1db"
+  },
+  {
+    "entry_id": "float32_nonfinite_constants",
+    "symbol": "Float32",
+    "kind": "numeric_type_side_constants",
+    "status": "stable_design",
+    "feature_refs": [
+      "numeric_literal_lexical_contract"
+    ],
+    "signatures": [
+      "Float32::nan: Float32",
+      "Float32::positiveInfinity: Float32"
+    ],
+    "responsibility": "Non-finite Float32 values are type-side constants rather than lexical numeric literals.",
+    "notes": "Negative infinity is unary minus applied to positiveInfinity.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "Float32::nan: Float32",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "Float32::positiveInfinity: Float32",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "70f436a6b5de19e2229c661d677a102b84f98adf007f39dd429614d743488818"
+  },
+  {
+    "entry_id": "float64_nonfinite_constants",
+    "symbol": "Float64",
+    "kind": "numeric_type_side_constants",
+    "status": "stable_design",
+    "feature_refs": [
+      "numeric_literal_lexical_contract"
+    ],
+    "signatures": [
+      "Float64::nan: Float64",
+      "Float64::positiveInfinity: Float64"
+    ],
+    "responsibility": "Non-finite Float64 values are type-side constants rather than lexical numeric literals.",
+    "notes": "NaN payload literals are not current source; Float is not Keyable by default.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "Float64::nan: Float64",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "Float64::positiveInfinity: Float64",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "cab21e75ece56f78aec25c58dd8f1c17b6a71a6952fbb62f6b443e2b88c3ebdd"
+  },
+  {
+    "entry_id": "frozen_list_t",
+    "symbol": "FrozenList<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "collection_freeze_transition_profile",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public immutable type FrozenList<T>"
+    ],
+    "responsibility": "declared immutable/shareable result of an exclusive freeze transition",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public immutable type FrozenList<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "9c216b5aba2c6f5bf2ac35867f0fdc9679e2eb1858d7d92faf1e3116770fbf6b"
+  },
+  {
+    "entry_id": "grapheme",
+    "symbol": "Grapheme",
+    "kind": "stdlib_value_or_view",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public value class Grapheme"
+    ],
+    "responsibility": "extended grapheme cluster produced by named segmentation API",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public value class Grapheme",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "07b0e8b88e6d1fcb2d6db497d82eaaf192c1272e350e97a0f7a16c57b2399434"
+  },
+  {
+    "entry_id": "implementationid",
+    "symbol": "ImplementationId",
+    "kind": "compiler_identity",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "compiler identity ImplementationId"
+    ],
+    "responsibility": "implementation symbol reusable without merging extension and witness identity",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "compiler identity ImplementationId",
+        "dialect": "compiler_meta",
+        "grammar_root": null,
+        "schema": "deeplus.compiler-meta-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "deaba351c54618994230adb1365c4a2ebbd035e9b0752426815b62114af3cdd8"
+  },
+  {
+    "entry_id": "indexable",
+    "symbol": "Indexable",
+    "kind": "checker_known_protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "basic_index_operator"
+    ],
+    "signatures": [
+      "index(receiver, index) -> Element throws IndexError effects {}"
+    ],
+    "responsibility": "Stable basic indexing law; advanced slicing/custom indexing are separate.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "index(receiver, index) -> Element throws IndexError effects {}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "63d725b7d5cdb62b2017e7af45d3ca1570fa34831261f560af6c8c68f828ad53"
+  },
+  {
+    "entry_id": "iterator",
+    "symbol": "Iterator",
+    "kind": "trait_profile",
+    "status": "stable_design",
+    "feature_refs": [
+      "array_comprehension",
+      "comprehension_unfold",
+      "iterator_protocol_core",
+      "trait_associated_projection_explicit_context"
+    ],
+    "signatures": [
+      "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects {state}; }"
+    ],
+    "responsibility": "for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects {state}; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "absorbed_entry_ids": [
+      "iterator_026",
+      "iterator_t",
+      "iteratorprotocolstablecore"
+    ],
+    "normalized_contract_sha256": "0900c5002380dee291ecf4124162f5ee89a2b3439c4d1df26f97b98e54add59e"
+  },
+  {
+    "entry_id": "jsonvalue",
+    "symbol": "JsonValue",
+    "kind": "boundary_value",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public enum JsonValue { nullValue; boolean(value: Bool); number(value: Float64); string(value: String); array(value: List<JsonValue>); object(value: Map<String, JsonValue>); }"
+    ],
+    "responsibility": "external JSON model distinct from Plain and Dyn",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum JsonValue { nullValue; boolean(value: Bool); number(value: Float64); string(value: String); array(value: List<JsonValue>); object(value: Map<String, JsonValue>); }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "ab1107d4b141b5a07d50738b29bdd19bd63e4dedf6c73c23698e09103d438401"
+  },
+  {
+    "entry_id": "list_snapshot_t",
+    "symbol": "ListSnapshot<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "collection_snapshot_value_profile",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public immutable type ListSnapshot<T>"
+    ],
+    "responsibility": "independent point-in-time list value with declared copy/COW cost",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public immutable type ListSnapshot<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "5d22a66fb0221c3baa26f11bc15f39f6744096463fbb2d7fb5b1eaf2c993833f"
+  },
+  {
+    "entry_id": "list_t",
+    "symbol": "List<T>",
+    "kind": "collection",
+    "status": "stable_design",
+    "feature_refs": [
+      "ordinary_list_literal_surface",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "appending(value: consume T) -> List<T>",
+      "iterator() -> some Iterator where Item == T"
+    ],
+    "responsibility": "ordered owned collection",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "appending(value: consume T) -> List<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "iterator() -> some Iterator where Item == T",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "71dbf5b4e9be388ad4819dbc8669b24281d9ca039174d818714e766dac78589f"
+  },
+  {
+    "entry_id": "logical_index_domain",
+    "symbol": "LogicalIndexDomain<Index>",
+    "kind": "trait",
+    "status": "stable_design",
+    "feature_refs": [
+      "one_based_sequence_logical_indexing"
+    ],
+    "signatures": [
+      "public trait LogicalIndexDomain<Index> { def contains(self, index: Index) -> Bool; def storageOffset(self, index: Index) -> Int }"
+    ],
+    "responsibility": "one-based logical-domain to storage-offset contract",
+    "notes": "R51b integrated current-canonical declaration; product support is not implied",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait LogicalIndexDomain<Index> { def contains(self, index: Index) -> Bool; def storageOffset(self, index: Index) -> Int }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "0465fb79d1844f32740b85e6b449cc7870b61e583cbdfed8f542184329edbc55"
+  },
+  {
+    "entry_id": "map_k_v",
+    "symbol": "Map<K,V>",
+    "kind": "collection",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public def Map::empty<K,V>() -> Map<K,V>",
+      "public type Map<K,V>"
+    ],
+    "responsibility": "key admissibility without public Copyable",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def Map::empty<K,V>() -> Map<K,V>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "public type Map<K,V>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "8a2e3fc2410e15470097558266a738c4008b10596011e028765b20e9722304e8"
+  },
+  {
+    "entry_id": "measure_rep_dim",
+    "symbol": "Measure<Rep, Dim>",
+    "kind": "stdlib_profile",
+    "status": "stdlib_profile",
+    "feature_refs": [
+      "measure_stdlib_conversion_profile",
+      "measure_semantic_core"
+    ],
+    "signatures": [
+      "x ~ asUnit 1[unit] -> Measure<Rep, Dim>",
+      "x ~ measuredAs 1[unit] -> Measure<Rep, Dim>",
+      "x ~ ratioTo 1[unit] -> Rep",
+      "x ~ scalarIn 1[unit] -> Rep"
+    ],
+    "responsibility": "Measure conversion APIs are explicit and use unit witness carriers.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "x ~ asUnit 1[unit] -> Measure<Rep, Dim>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "x ~ measuredAs 1[unit] -> Measure<Rep, Dim>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "x ~ ratioTo 1[unit] -> Rep",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "x ~ scalarIn 1[unit] -> Rep",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c4a442d2472075f5b156b506bd2771f34fc9982bceb7379d6232c0b365f12a7f"
+  },
+  {
+    "entry_id": "membershipprotocol",
+    "symbol": "MembershipProtocol",
+    "kind": "checker_known_protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "membership_in_operator_candidate"
+    ],
+    "signatures": [
+      "contains(container, item) -> Bool throws Never effects {}"
+    ],
+    "responsibility": "Current Prelude design vocabulary; product support NOT_RUN.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "contains(container, item) -> Bool throws Never effects {}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "60dded1edc4021c6a30c3e5fdfdd66086caaab3323ebf8f92458bcade71c912b"
+  },
+  {
+    "entry_id": "modulesignature",
+    "symbol": "ModuleSignature",
+    "kind": "language_surface",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public type ModuleSignature"
+    ],
+    "responsibility": "public API boundary surface; stable design; not separate compilation receipt",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public type ModuleSignature",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "dbf75b4cb5d0d03680765984ced09de2ddab5e271b62dc1a1fa9074140b77be6"
+  },
+  {
+    "entry_id": "mutable_list_t",
+    "symbol": "MutableList<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "collection_freeze_transition_profile",
+      "collection_snapshot_value_profile",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic mutable resource type MutableList<T>",
+      "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
+      "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}"
+    ],
+    "responsibility": "exclusive mutable list owner; snapshot borrows without invalidating the source, while freeze consumes the receiver and completes its ownership transition",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic mutable resource type MutableList<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "821815ff6c1ad653c5e09ee7916b63d9fabfd9f158d664a52e011af092c37f41"
+  },
+  {
+    "entry_id": "numeric_array",
+    "symbol": "NumericArray<T, rank R>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic NumericArray<T, rank R>"
+    ],
+    "responsibility": "ranked numeric storage with visible allocation/backend responsibility",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic NumericArray<T, rank R>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "963a27cb0c13fef4ee2cd192aff1c03ca4dd949785ec7196241ea639103d3172"
+  },
+  {
+    "entry_id": "option_t",
+    "symbol": "Option<T>",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public enum Option<T> { some(value: T); none; }"
+    ],
+    "responsibility": "recoverable absence as value, not Error",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum Option<T> { some(value: T); none; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "b330c5102a24369ee4e5b46037cf64a2adfc27052862e58b6b35815d88958d98"
+  },
+  {
+    "entry_id": "option_unwrap_or_else",
+    "symbol": "Option<T>::unwrapOrElse",
+    "kind": "stdlib_operation",
+    "status": "stable_design",
+    "feature_refs": [
+      "option_coalescing_unwrap_or_default",
+      "option_coalescing_ownership_law"
+    ],
+    "signatures": [
+      "unwrapOrElse(fallback: #once () -> T throws E effects ε) -> T throws E effects ε"
+    ],
+    "responsibility": "Named lazy equivalent of one-layer Option coalescing; fallback executes only for none and preserves conditional ownership/error/effect/cleanup.",
+    "notes": "An eager fallback is not semantically interchangeable when evaluation has responsibility.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "unwrapOrElse(fallback: #once () -> T throws E effects ε) -> T throws E effects ε",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "97445be1094efdb7889a86b07a502bc7926e177804c899a0fc14f604b85d8739"
+  },
+  {
+    "entry_id": "ord_t",
+    "symbol": "Ord<T>",
+    "kind": "trait",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public trait Ord<T> { +def compare.(lhs: T, rhs: T) -> Int; }"
+    ],
+    "responsibility": "nominal ordering evidence for T",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Ord<T> { +def compare.(lhs: T, rhs: T) -> Int; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "823583e3b110d4e9f2c60601ffa3acd4d0479d518d54c77150829fbdacd53c0b"
+  },
+  {
+    "entry_id": "owned_downcast_op",
+    "symbol": "downcastOwned<Target,Source>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "owned_downcast_result",
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "type_token_authority_law"
+    ],
+    "signatures": [
+      "prelude intrinsic def downcastOwned<Target, Source>(move source: Source) -> OwnedDowncast<Target, Source> throws Never effects {}"
+    ],
+    "responsibility": "generic target is selected from the exact expected OwnedDowncast result type; no runtime type-token argument is accepted",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic def downcastOwned<Target, Source>(move source: Source) -> OwnedDowncast<Target, Source> throws Never effects {}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "8d2da9919cf0f3c4c1b22d55e8fb83d588e124517e5a35f4819264dff9a28408"
+  },
+  {
+    "entry_id": "owned_downcast_t",
+    "symbol": "OwnedDowncast<Target,Source>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "owned_downcast_result",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public enum OwnedDowncast<Target, Source> { matched(value: Target); unmatched(original: Source); }"
+    ],
+    "responsibility": "sum channel that preserves exactly one owner on both downcast outcomes",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum OwnedDowncast<Target, Source> { matched(value: Target); unmatched(original: Source); }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "3fe7ad2e0e4daed1dd5931b26738f9fa45ed897a2ab6970d4464949b604883c1"
+  },
+  {
+    "entry_id": "rawast",
+    "symbol": "RawAst",
+    "kind": "immutable_ast",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public immutable type RawAst"
+    ],
+    "responsibility": "unresolved syntax with spelling/trivia; non-executable",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public immutable type RawAst",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "88d668c06b73eb8b557e2d62f689690cb850c1d2631d80b2eff0ea3b104925a8"
+  },
+  {
+    "entry_id": "readonly_view_t",
+    "symbol": "ReadonlyView<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "readonly_view"
+    ],
+    "signatures": [
+      "public borrowed type ReadonlyView<T>"
+    ],
+    "responsibility": "nonowning nonmutating owner-bounded view",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public borrowed type ReadonlyView<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c421b3174b8cbd4a760250546be18ba71a417a99c9dbf0f79cb61158a3d8b77c"
+  },
+  {
+    "entry_id": "replace_t",
+    "symbol": "replace<T>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "place_replace",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public def replace<T>(inout place: T, move newValue: T) -> T"
+    ],
+    "responsibility": "one-evaluation exclusive place transaction returning the old owner",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def replace<T>(inout place: T, move newValue: T) -> T",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "3c90d10b87232bbaf060fd074147233c80dbefa13a92f1e2f5147f3a086383ab"
+  },
+  {
+    "entry_id": "resolvedast",
+    "symbol": "ResolvedAst",
+    "kind": "immutable_ast",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public immutable type ResolvedAst"
+    ],
+    "responsibility": "resolved symbols and source identity; non-executable",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public immutable type ResolvedAst",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "b3d44afeea33f987efe73a84e2c1ea8e020d359c564608727cbfda3d28db1bbb"
+  },
+  {
+    "entry_id": "result_t_error_e",
+    "symbol": "Result<T, error E>",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public enum Result<T, E: ErrorSet> { ok(value: T); err(cause: E); }"
+    ],
+    "responsibility": "value-level error channel distinct from throws",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum Result<T, E: ErrorSet> { ok(value: T); err(cause: E); }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "c4b14a2360f7f1fb7f9b25aad9ea019744e836e8614549fb6b17d715e12992a5"
+  },
+  {
+    "entry_id": "sequence_t",
+    "symbol": "Sequence<T>",
+    "kind": "protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public trait Sequence<T> { +def iterator.() -> some Iterator where Item == T; }"
+    ],
+    "responsibility": "ordered finite or lazy sequence contract with an exact associated Item binding",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Sequence<T> { +def iterator.() -> some Iterator where Item == T; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "36cee8db876a2cd854a594102fa3186d583cb47725574b4dac4525f2286dc1c0"
+  },
+  {
+    "entry_id": "shared_t",
+    "symbol": "Shared<T>",
+    "kind": "shared_handle",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public opaque type Shared<T>"
+    ],
+    "responsibility": "shared observation handle, not mutable alias permission",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public opaque type Shared<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "36df078cd7977be6c112a547b1f72d7d12599acfcdbbd9828b6400f5a1ad9b09"
+  },
+  {
+    "entry_id": "sharedmutex_t",
+    "symbol": "SharedMutex<T>",
+    "kind": "synchronization",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state}"
+    ],
+    "responsibility": "mutation via scoped lock and effect propagation",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "fa5af851f79df8da30086a0049259efd8953da5523965b5a5215b1ba61d4510a"
+  },
+  {
+    "entry_id": "string",
+    "symbol": "String",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic String: immutable Unicode scalar sequence"
+    ],
+    "responsibility": "immutable Unicode scalar sequence",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic String: immutable Unicode scalar sequence",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "6206a52c81791c02cb67431cef35480d303db2f3dcaa3b86ad3ea20878021004"
+  },
+  {
+    "entry_id": "string_render",
+    "symbol": "String::render<T>",
+    "kind": "static_function",
+    "status": "stdlib",
+    "feature_refs": [
+      "string_render_structured_value_profile"
+    ],
+    "signatures": [
+      "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }"
+    ],
+    "responsibility": "single-evaluation nonescaping structured-value renderer",
+    "notes": "R51c current contract; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "7e9477c9c436f9f32b83e138a3462711e64c6ef251912c5ed2f4d4c4e184b59c"
+  },
+  {
+    "entry_id": "task_t",
+    "symbol": "Task<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic Task<T>"
+    ],
+    "responsibility": "structured asynchronous task handle",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Task<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "1f105612a015a975d174c323e812ed390a927281298ff6f1dcc833ec5a00cde2"
+  },
+  {
+    "entry_id": "typedast_t_r",
+    "symbol": "TypedAst<T,R>",
+    "kind": "immutable_ast",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public immutable type TypedAst<T,R>"
+    ],
+    "responsibility": "typed AST carrying result type and responsibility descriptor; non-executable",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public immutable type TypedAst<T,R>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c9c36743e91d920c88e70e64039268ee26f616d4ade83825906b17426b8cb5c7"
+  },
+  {
+    "entry_id": "unitcatalog",
+    "symbol": "UnitCatalog",
+    "kind": "stdlib_profile",
+    "status": "stable_design",
+    "feature_refs": [
+      "user_unit_catalog_msp",
+      "exact_ratio_unit_conversion_msp",
+      "unit_operation_policy_msp"
+    ],
+    "signatures": [
+      "unit catalog CatalogName { ... }",
+      "unit in equalsRatio 1[ft] / 12"
+    ],
+    "responsibility": "Stable design user unit catalog profile; product support NOT_RUN. Dynamic/provider conversion is outside this stable core.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "unit catalog CatalogName { ... }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "unit in equalsRatio 1[ft] / 12",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "3f129a2de193dc3ab5535369fb83806508422ceaf3bab5eeb0a3b845cac3654f"
+  },
+  {
+    "entry_id": "with_borrowed_t",
+    "symbol": "withBorrowed<T,R>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "pure_callable_profile",
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "scoped_callable_lifetime_profile"
+    ],
+    "signatures": [
+      "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R"
+    ],
+    "responsibility": "invocation-bounded borrowed callback helper",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "4f4c95485aa00913b01c912dd91bbc4200f9d9ba76fdc09a8f8b7f54bb716172"
+  },
+  {
+    "entry_id": "witnessid",
+    "symbol": "WitnessId",
+    "kind": "checker_identity",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "checker identity WitnessId"
+    ],
+    "responsibility": "explicit conformance evidence identity; never synthesized from extension presence",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "checker identity WitnessId",
+        "dialect": "checker_meta",
+        "grammar_root": null,
+        "schema": "deeplus.checker-meta-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "7de47492a86bf94c55a135328705a161142602f01976a9aeaa0b7d3706a57099"
+  }
+]

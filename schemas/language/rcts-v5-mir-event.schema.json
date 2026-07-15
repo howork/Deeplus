@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R51f3 RCTS-V5 MIR event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "kind",
+    "source_order",
+    "commit_group",
+    "responsibility_before",
+    "responsibility_after"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "union_inject",
+        "union_test_tag",
+        "union_project_borrow",
+        "union_project_move",
+        "union_drop_active",
+        "intersection_prove",
+        "intersection_project_contract",
+        "facet_pack_begin",
+        "facet_view_acquired",
+        "facet_dispatch_sealed",
+        "facet_pack_commit",
+        "facet_pack_rollback",
+        "facet_dispatch_call",
+        "facet_view_release",
+        "bitfield_materialize_begin",
+        "bitfield_field_eval",
+        "bitfield_range_check",
+        "bitfield_insert",
+        "bitfield_materialize_commit",
+        "bitfield_raw_decode_begin",
+        "bitfield_reserved_mask_check",
+        "bitfield_derive_begin",
+        "bitfield_flags_op",
+        "lazy_force_begin",
+        "lazy_force_commit",
+        "guarded_binding_commit",
+        "evaluate_initializer",
+        "local_binding_commit",
+        "const_string"
+      ]
+    },
+    "source_order": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "commit_group": {
+      "type": "string"
+    },
+    "responsibility_before": {
+      "type": "string"
+    },
+    "responsibility_after": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "nested_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$id": "urn:deeplus:0.1.2-baseline.r51f3:rcts-v5-mir-event"
+}

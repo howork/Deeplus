@@ -1,0 +1,1891 @@
+[
+  {
+    "fixture_id": "PF-NominalPrototypeDerivationAdmitted-BOUNDARY",
+    "predicate_id": "NominalPrototypeDerivationAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "nominal",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NominalPrototypeDerivationAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 NominalPrototypeDerivationAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NominalPrototypeDerivationAdmitted-NEG",
+    "predicate_id": "NominalPrototypeDerivationAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "OtherConfig",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": "nominal_derivation",
+      "call_shape": {
+        "derivation_mode": "deep",
+        "base_nominal_type": "Config",
+        "result_nominal_type": "OtherConfig",
+        "deep_clone_all_fields_admitted": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": {
+        "labels": [
+          "timeout"
+        ],
+        "defaults": [],
+        "visibility_scope": "module",
+        "ownership_modes": [
+          "borrowed"
+        ],
+        "invariants": []
+      },
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the result changes nominal type and deep clone is not admitted for every field",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "nominal",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NominalPrototypeDerivationAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NominalPrototypeDerivationAdmitted-POS",
+    "predicate_id": "NominalPrototypeDerivationAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "Config",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": "nominal_derivation",
+      "call_shape": {
+        "derivation_mode": "shallow",
+        "base_nominal_type": "Config",
+        "result_nominal_type": "Config",
+        "deep_clone_all_fields_admitted": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": {
+        "labels": [
+          "timeout"
+        ],
+        "defaults": [],
+        "visibility_scope": "module",
+        "ownership_modes": [
+          "copy"
+        ],
+        "invariants": []
+      },
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "the result normalized_type is exactly the base nominal type; construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once; derivation mode is shallow or deep and never changes conformance or nominal identity; shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field; resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "nominal",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NominalPrototypeDerivationAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeContractIntersection-BOUNDARY",
+    "predicate_id": "NormalizeContractIntersection",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "intersection",
+      "semantic_type": {
+        "kind": "intersection",
+        "type_id": "PF-NormalizeContractIntersection-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "concrete_base": null,
+      "contracts": [
+        "Printable",
+        "Auditable"
+      ],
+      "distribution": "forbidden"
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 NormalizeContractIntersection boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeContractIntersection-NEG",
+    "predicate_id": "NormalizeContractIntersection",
+    "expected": "rejected",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "intersection",
+      "semantic_type": {
+        "kind": "intersection",
+        "type_id": "PF-NormalizeContractIntersection-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "concrete_base": null,
+      "contracts": [
+        "Printable",
+        "Auditable"
+      ],
+      "distribution": "forbidden"
+    },
+    "rule_seed": "R51a1 NormalizeContractIntersection discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN",
+    "violated_condition": "local rule of NormalizeContractIntersection",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeContractIntersection-POS",
+    "predicate_id": "NormalizeContractIntersection",
+    "expected": "admitted",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "intersection",
+      "semantic_type": {
+        "kind": "intersection",
+        "type_id": "PF-NormalizeContractIntersection-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "concrete_base": null,
+      "contracts": [
+        "Printable",
+        "Auditable"
+      ],
+      "distribution": "forbidden"
+    },
+    "rule_seed": "R51a1 NormalizeContractIntersection discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeSemanticType-BOUNDARY",
+    "predicate_id": "NormalizeSemanticType",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NormalizeSemanticType-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 NormalizeSemanticType boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeSemanticType-NEG",
+    "predicate_id": "NormalizeSemanticType",
+    "expected": "rejected",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NormalizeSemanticType-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "R51a1 NormalizeSemanticType discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "violated_condition": "local rule of NormalizeSemanticType",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeSemanticType-POS",
+    "predicate_id": "NormalizeSemanticType",
+    "expected": "admitted",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NormalizeSemanticType-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "R51a1 NormalizeSemanticType discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeUnion-BOUNDARY",
+    "predicate_id": "NormalizeUnion",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "union",
+      "semantic_type": {
+        "kind": "union",
+        "type_id": "PF-NormalizeUnion-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "alternatives": [
+        "Int",
+        "String"
+      ],
+      "injection_policy": "fixed_expected_unique_exact"
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 NormalizeUnion boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeUnion-NEG",
+    "predicate_id": "NormalizeUnion",
+    "expected": "rejected",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "union",
+      "semantic_type": {
+        "kind": "union",
+        "type_id": "PF-NormalizeUnion-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "alternatives": [
+        "Int",
+        "String"
+      ],
+      "injection_policy": "fixed_expected_unique_exact"
+    },
+    "rule_seed": "R51a1 NormalizeUnion discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "UNION_MEMBER_SUBSUMED",
+    "violated_condition": "local rule of NormalizeUnion",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NormalizeUnion-POS",
+    "predicate_id": "NormalizeUnion",
+    "expected": "admitted",
+    "descriptor": {},
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "union",
+      "semantic_type": {
+        "kind": "union",
+        "type_id": "PF-NormalizeUnion-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "alternatives": [
+        "Int",
+        "String"
+      ],
+      "injection_policy": "fixed_expected_unique_exact"
+    },
+    "rule_seed": "R51a1 NormalizeUnion discriminating design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NullaryLambdaExpectedContextAdmitted-NEG",
+    "predicate_id": "NullaryLambdaExpectedContextAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": null,
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": [],
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "parameters": [],
+        "result": "Unit",
+        "lambda_body_kind": "empty",
+        "has_terminal_ret": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "empty arrow-elided lambda has no independently fixed expected function type",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "callable",
+      "semantic_type": {
+        "kind": "callable",
+        "type_id": "PF-NullaryLambdaExpectedContextAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "call_shape": "(value: T) -> String",
+      "parameter_modes": [
+        "borrow"
+      ],
+      "result_type": "String"
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NullaryLambdaExpectedContextAdmitted-POS",
+    "predicate_id": "NullaryLambdaExpectedContextAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "() -> Unit",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": [],
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "parameters": [],
+        "result": "Unit",
+        "lambda_body_kind": "empty",
+        "has_terminal_ret": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type; empty body is admitted only when the expected result is Unit; a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through; without expected callable context the surface is rejected or uses the separately gated nullary inference route",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "callable",
+      "semantic_type": {
+        "kind": "callable",
+        "type_id": "PF-NullaryLambdaExpectedContextAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "call_shape": "(value: T) -> String",
+      "parameter_modes": [
+        "borrow"
+      ],
+      "result_type": "String"
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayContextAnchorAdmitted-NEG",
+    "predicate_id": "NumericArrayContextAnchorAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayContextAnchorAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayContextAnchorAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayContextAnchorAdmitted-POS",
+    "predicate_id": "NumericArrayContextAnchorAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayContextAnchorAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayElementAdmitted-NEG",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayElementAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayElementAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayElementAdmitted-POS",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayElementAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayElementwiseSameShapeAdmitted-NEG",
+    "predicate_id": "NumericArrayElementwiseSameShapeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMERIC_ARRAY_ELEMENTWISE_REQUIRES_SAME_SHAPE",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayElementwiseSameShapeAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayElementwiseSameShapeAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayElementwiseSameShapeAdmitted-POS",
+    "predicate_id": "NumericArrayElementwiseSameShapeAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayElementwiseSameShapeAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayInfixPowerRequiresPreview-NEG",
+    "predicate_id": "NumericArrayInfixPowerRequiresPreview",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMARR_INFIX_POWER_REQUIRES_PREVIEW_GATE",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayInfixPowerRequiresPreview"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayInfixPowerRequiresPreview-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayInfixPowerRequiresPreview-POS",
+    "predicate_id": "NumericArrayInfixPowerRequiresPreview",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "NumericArray infix `^` requires Preview gate.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayInfixPowerRequiresPreview-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayPostfixTransposeAdmitted-NEG",
+    "predicate_id": "NumericArrayPostfixTransposeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayPostfixTransposeAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayPostfixTransposeAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayPostfixTransposeAdmitted-POS",
+    "predicate_id": "NumericArrayPostfixTransposeAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayPostfixTransposeAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayPostfixTransposeStable-NEG",
+    "predicate_id": "NumericArrayPostfixTransposeStable",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericArrayPostfixTransposeStable"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayPostfixTransposeStable-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericArrayPostfixTransposeStable-POS",
+    "predicate_id": "NumericArrayPostfixTransposeStable",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "Attached `A^` is Stable NumericArray transpose.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericArrayPostfixTransposeStable-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericFillSliceIndexAdmitted-NEG",
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericFillSliceIndexAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericFillSliceIndexAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericFillSliceIndexAdmitted-POS",
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericFillSliceIndexAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericLiteralAdmitted-NEG",
+    "predicate_id": "NumericLiteralAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "StaticInt",
+      "normalized_type": null,
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "numeric_radix": 2,
+        "numeric_digits_valid": false,
+        "numeric_separators_valid": true,
+        "numeric_exponent_valid": true,
+        "numeric_suffix_kind_valid": true,
+        "numeric_target_range_valid": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": "integer",
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the binary literal contains an invalid digit and cannot fit a target type",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericLiteralAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericLiteralAdmitted-POS",
+    "predicate_id": "NumericLiteralAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "StaticInt",
+      "normalized_type": "Int32",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "numeric_radix": 16,
+        "numeric_digits_valid": true,
+        "numeric_separators_valid": true,
+        "numeric_exponent_valid": true,
+        "numeric_suffix_kind_valid": true,
+        "numeric_target_range_valid": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": "integer",
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "radix, digit, underscore, suffix, exponent, and target-range rules all admit the token",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericLiteralAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericOperatorCoreAdmitted-NEG",
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMERIC_OPERATOR_CORE_REQUIRED",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "NumericOperatorCoreAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericOperatorCoreAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericOperatorCoreAdmitted-POS",
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericOperatorCoreAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OnceCallableAdmitted-BOUNDARY",
+    "predicate_id": "OnceCallableAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "callable",
+      "semantic_type": {
+        "kind": "callable",
+        "type_id": "PF-OnceCallableAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "call_shape": "(value: T) -> String",
+      "parameter_modes": [
+        "borrow"
+      ],
+      "result_type": "String"
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 OnceCallableAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OnceCallableAdmitted-NEG",
+    "predicate_id": "OnceCallableAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "CLOSURE_ONCE_USED_AFTER_CALL",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "#once () -> Unit",
+      "ownership": "move",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "kind": "callable_profile",
+        "callable_lifetime": "escaping",
+        "call_right": "once",
+        "environment_receiver": "shared",
+        "behavior_profile": "ordinary",
+        "profile_cluster": [
+          "once"
+        ],
+        "profile_order_valid": true,
+        "profile_combination_admitted": true,
+        "profile_only_overload": false,
+        "capture_kinds": [
+          "move"
+        ],
+        "result_type": "Unit",
+        "throws_never": false,
+        "effects_empty": false,
+        "suspends": false,
+        "unsafe_authority_present": false,
+        "consumes_parameter_or_capture": false,
+        "mutates_external_state": false,
+        "escapes": false,
+        "invocation_attempt_count": 2,
+        "once_right_consumed_before_attempt": true,
+        "profile_duplicate_present": false,
+        "borrowed_capture_escapes": false,
+        "external_control_transfer": false,
+        "spawned_or_resource_obligation": false,
+        "mutable_environment_access_exclusive": false,
+        "mutable_environment_access_overlaps": false,
+        "reentrant_invocation": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "a second invocation occurs after the once call right was consumed",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "callable",
+      "semantic_type": {
+        "kind": "callable",
+        "type_id": "PF-OnceCallableAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "call_shape": "(value: T) -> String",
+      "parameter_modes": [
+        "borrow"
+      ],
+      "result_type": "String"
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OnceCallableAdmitted-POS",
+    "predicate_id": "OnceCallableAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "#once () -> Unit",
+      "ownership": "move",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "kind": "callable_profile",
+        "callable_lifetime": "escaping",
+        "call_right": "once",
+        "environment_receiver": "shared",
+        "behavior_profile": "ordinary",
+        "profile_cluster": [
+          "once"
+        ],
+        "profile_order_valid": true,
+        "profile_combination_admitted": true,
+        "profile_only_overload": false,
+        "capture_kinds": [
+          "move"
+        ],
+        "result_type": "Unit",
+        "throws_never": false,
+        "effects_empty": false,
+        "suspends": false,
+        "unsafe_authority_present": false,
+        "consumes_parameter_or_capture": false,
+        "mutates_external_state": false,
+        "escapes": false,
+        "invocation_attempt_count": 1,
+        "once_right_consumed_before_attempt": false,
+        "profile_duplicate_present": false,
+        "borrowed_capture_escapes": false,
+        "external_control_transfer": false,
+        "spawned_or_resource_obligation": false,
+        "mutable_environment_access_exclusive": false,
+        "mutable_environment_access_overlaps": false,
+        "reentrant_invocation": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "require call_right=once; consume the call right atomically at the first invocation; reject invocation_attempt_count greater than one or an attempt after once_right_consumed_before_attempt",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "callable",
+      "semantic_type": {
+        "kind": "callable",
+        "type_id": "PF-OnceCallableAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "call_shape": "(value: T) -> String",
+      "parameter_modes": [
+        "borrow"
+      ],
+      "result_type": "String"
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OperatorPrecedenceTablePhaseAAdmitted-NEG",
+    "predicate_id": "OperatorPrecedenceTablePhaseAAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "OperatorPrecedenceTablePhaseAAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-OperatorPrecedenceTablePhaseAAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

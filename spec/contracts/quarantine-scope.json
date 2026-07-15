@@ -1,0 +1,38 @@
+{
+  "schema": "deeplus.quarantine-scope-design-contract/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "status": "PREVIEW_DESIGN",
+  "source_activation": "nonactivatable",
+  "grammar_profile": "RECOVERY",
+  "surface_probe": [
+    "@scope#dynamic",
+    "@scope#unsafe"
+  ],
+  "export": [
+    "-> $name: T",
+    "-> $(name: T, other: U)"
+  ],
+  "required": [
+    "lexical scope",
+    "typed immutable export",
+    "no outer mutation",
+    "no suspension",
+    "same MIR semantics across xVM and LLVM"
+  ],
+  "forbidden_escape": [
+    "pointer",
+    "authority",
+    "borrow",
+    "resource",
+    "closure",
+    "task",
+    "actor"
+  ],
+  "open_gates": [
+    "raw-memory provenance proof",
+    "authority accounting",
+    "escape proof",
+    "xVM/LLVM differential execution"
+  ],
+  "product_support": "NOT_RUN"
+}

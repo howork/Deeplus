@@ -1,0 +1,150 @@
+{
+  "schema": "deeplus.rcts-v5-mir-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "product_runtime": "NOT_RUN",
+  "positive": [
+    {
+      "fixture_id": "MIR-RCTS5-UNION-001",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "union_inject",
+          "source_order": 0,
+          "commit_group": "g1",
+          "responsibility_before": "value live",
+          "responsibility_after": "union owns active alternative",
+          "payload": {
+            "alternative": "Int"
+          },
+          "nested_event_ids": []
+        }
+      ]
+    },
+    {
+      "fixture_id": "MIR-RCTS5-BITFIELD-001",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "bitfield_materialize_begin",
+          "source_order": 0,
+          "commit_group": "g1",
+          "responsibility_before": "fields uncommitted",
+          "responsibility_after": "materialization open",
+          "payload": {},
+          "nested_event_ids": [
+            "e2"
+          ]
+        },
+        {
+          "event_id": "e2",
+          "kind": "bitfield_materialize_commit",
+          "source_order": 1,
+          "commit_group": "g1",
+          "responsibility_before": "validated raw",
+          "responsibility_after": "nominal value live",
+          "payload": {},
+          "nested_event_ids": []
+        }
+      ]
+    },
+    {
+      "fixture_id": "MIR-R51d-RIGHTWARD-NORMALIZED-001",
+      "surface": "load() -> $value: T",
+      "normalized_hir": "let value: T = load()",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "evaluate_initializer",
+          "source_order": 0,
+          "commit_group": "bind-1",
+          "responsibility_before": "target absent",
+          "responsibility_after": "value temporary",
+          "payload": {
+            "count": 1
+          },
+          "nested_event_ids": []
+        },
+        {
+          "event_id": "e2",
+          "kind": "local_binding_commit",
+          "source_order": 1,
+          "commit_group": "bind-1",
+          "responsibility_before": "value temporary",
+          "responsibility_after": "immutable local live",
+          "payload": {
+            "binding_kind": "let"
+          },
+          "nested_event_ids": []
+        }
+      ],
+      "forbidden_event_kinds": [
+        "flow_binding",
+        "rightward_binding"
+      ]
+    },
+    {
+      "fixture_id": "MIR-R51d-RAW-CONST-001",
+      "surface": "raw\"C:\\temp\\$name\"",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "const_string",
+          "source_order": 0,
+          "commit_group": "const-1",
+          "responsibility_before": "source scalars",
+          "responsibility_after": "immutable String",
+          "payload": {
+            "raw": true,
+            "escape_decoded": false,
+            "interpolated": false
+          },
+          "nested_event_ids": []
+        }
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "MIR-RCTS5-NG-COMMIT-001",
+      "expected_error": "multiple_commit_points",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "facet_pack_commit",
+          "source_order": 0,
+          "commit_group": "g1",
+          "responsibility_before": "view",
+          "responsibility_after": "facet",
+          "payload": {},
+          "nested_event_ids": []
+        },
+        {
+          "event_id": "e2",
+          "kind": "facet_pack_commit",
+          "source_order": 1,
+          "commit_group": "g1",
+          "responsibility_before": "facet",
+          "responsibility_after": "facet",
+          "payload": {},
+          "nested_event_ids": []
+        }
+      ]
+    },
+    {
+      "fixture_id": "MIR-R51d-NG-RIGHTWARD-RESIDUE-001",
+      "expected_error": "rightward_semantic_residue_forbidden",
+      "events": [
+        {
+          "event_id": "e1",
+          "kind": "flow_binding",
+          "source_order": 0,
+          "commit_group": "bind-1",
+          "responsibility_before": "target absent",
+          "responsibility_after": "target live",
+          "payload": {},
+          "nested_event_ids": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2062 @@
+{
+  "schema": "deeplus.mir-responsibility-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "event_kind_count": 19,
+  "stack_kind_contracts": {
+    "evaluation_events": [
+      "evaluate"
+    ],
+    "temporary_stack": [
+      "temporary_acquire"
+    ],
+    "ownership_events": [
+      "ownership_borrow",
+      "ownership_move",
+      "ownership_commit"
+    ],
+    "cleanup_stack": [
+      "cleanup"
+    ],
+    "rollback_stack": [
+      "rollback"
+    ],
+    "primary_failure": [
+      "failure"
+    ],
+    "suppressed_failures": [
+      "suppressed_failure"
+    ],
+    "cancellation_state": [
+      "cancellation_request"
+    ],
+    "task_scope": [
+      "task_spawn",
+      "task_join"
+    ],
+    "actor_isolation": [
+      "actor_enqueue",
+      "actor_dequeue"
+    ],
+    "control_events": [
+      "guard",
+      "payload",
+      "loop_handler"
+    ],
+    "callable_events": [
+      "callable_invoke"
+    ],
+    "evidence_events": [
+      "evidence_select"
+    ]
+  },
+  "positive_fixture_count": 1,
+  "negative_fixture_count": 5,
+  "positive_fixtures": [
+    {
+      "fixture_id": "MIR-POS-ALL-KINDS-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-00",
+          "ev-01",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-04",
+        "cleanup_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected": "admitted"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "fixture_id": "MIR-NEG-STACK-KIND-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-00",
+          "ev-01",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-04",
+        "cleanup_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected_errors": [
+        "MIR_STACK_KIND_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "MIR-NEG-LAW-IDENTITY-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-00",
+          "ev-01",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-TEMP-002",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-04",
+        "cleanup_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected_errors": [
+        "MIR_EVENT_LAW_ID_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "MIR-NEG-SOURCE-ORDER-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-01",
+          "ev-00",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-04",
+        "cleanup_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected_errors": [
+        "MIR_SOURCE_ORDER_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "MIR-NEG-COMMIT-POINT-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-00",
+          "ev-01",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-00",
+        "cleanup_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected_errors": [
+        "MIR_COMMIT_POINT_NOT_OWNERSHIP_COMMIT"
+      ]
+    },
+    {
+      "fixture_id": "MIR-NEG-PAYLOAD-SHAPE-001",
+      "record": {
+        "law_id": "OP-EVAL-001",
+        "source_order": [
+          "ev-00",
+          "ev-01",
+          "ev-02",
+          "ev-03",
+          "ev-04",
+          "ev-05",
+          "ev-06",
+          "ev-07",
+          "ev-08",
+          "ev-09",
+          "ev-10",
+          "ev-11",
+          "ev-12",
+          "ev-13",
+          "ev-14",
+          "ev-15",
+          "ev-16",
+          "ev-17",
+          "ev-18"
+        ],
+        "evaluation_events": [
+          {
+            "kind": "evaluate",
+            "event_id": "ev-00",
+            "sequence": 0,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 0,
+              "end": 1
+            },
+            "expression_id": "expr-0",
+            "value_id": "value-0",
+            "owner_id": "forbidden-owner"
+          }
+        ],
+        "temporary_stack": [
+          {
+            "kind": "temporary_acquire",
+            "event_id": "ev-01",
+            "sequence": 1,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 1,
+              "end": 2
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0
+          }
+        ],
+        "ownership_events": [
+          {
+            "kind": "ownership_borrow",
+            "event_id": "ev-02",
+            "sequence": 2,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 2,
+              "end": 3
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-0",
+            "region_id": "region-0",
+            "borrow_kind": "shared"
+          },
+          {
+            "kind": "ownership_move",
+            "event_id": "ev-03",
+            "sequence": 3,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 3,
+              "end": 4
+            },
+            "value_id": "value-0",
+            "from_owner_id": "scope-0",
+            "to_owner_id": "scope-1"
+          },
+          {
+            "kind": "ownership_commit",
+            "event_id": "ev-04",
+            "sequence": 4,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 4,
+              "end": 5
+            },
+            "value_id": "value-0",
+            "owner_id": "scope-1",
+            "commit_point_id": "commit-1"
+          }
+        ],
+        "commit_point": "ev-04",
+        "cleanup_stack": [
+          {
+            "kind": "cleanup",
+            "event_id": "ev-05",
+            "sequence": 5,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 5,
+              "end": 6
+            },
+            "value_id": "temp-0",
+            "owner_id": "scope-0",
+            "stack_index": 0,
+            "cleanup_reason": "scope_exit",
+            "outcome": "completed"
+          }
+        ],
+        "rollback_stack": [
+          {
+            "kind": "rollback",
+            "event_id": "ev-06",
+            "sequence": 6,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 6,
+              "end": 7
+            },
+            "value_id": "field-0",
+            "owner_id": "construction-0",
+            "stack_index": 0
+          }
+        ],
+        "primary_failure": {
+          "kind": "failure",
+          "event_id": "ev-07",
+          "sequence": 7,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 7,
+            "end": 8
+          },
+          "failure_id": "failure-primary",
+          "failure_class": "Error"
+        },
+        "suppressed_failures": [
+          {
+            "kind": "suppressed_failure",
+            "event_id": "ev-08",
+            "sequence": 8,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 8,
+              "end": 9
+            },
+            "failure_id": "failure-suppressed",
+            "primary_failure_id": "failure-primary",
+            "suppression_index": 0
+          }
+        ],
+        "cancellation_state": {
+          "kind": "cancellation_request",
+          "event_id": "ev-09",
+          "sequence": 9,
+          "law_id": "OP-EVAL-001",
+          "source_span": {
+            "file": "fixture.dp",
+            "start": 9,
+            "end": 10
+          },
+          "task_id": "task-0",
+          "cancellation_target_id": "task-0"
+        },
+        "task_scope": [
+          {
+            "kind": "task_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "task_id": "task-0",
+            "owner_id": "task-scope-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "task_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "task_id": "task-0",
+            "join_index": 0,
+            "outcome": "completed"
+          }
+        ],
+        "actor_isolation": [
+          {
+            "kind": "actor_enqueue",
+            "event_id": "ev-12",
+            "sequence": 12,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 12,
+              "end": 13
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "enqueue_index": 0
+          },
+          {
+            "kind": "actor_dequeue",
+            "event_id": "ev-13",
+            "sequence": 13,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 13,
+              "end": 14
+            },
+            "actor_id": "actor-0",
+            "sender_id": "sender-0",
+            "message_id": "message-0",
+            "dequeue_index": 0
+          }
+        ],
+        "control_events": [
+          {
+            "kind": "guard",
+            "event_id": "ev-14",
+            "sequence": 14,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 14,
+              "end": 15
+            },
+            "guard_id": "guard-1",
+            "result": true,
+            "evaluation_index": 0
+          },
+          {
+            "kind": "payload",
+            "event_id": "ev-15",
+            "sequence": 15,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 15,
+              "end": 16
+            },
+            "payload_id": "payload-1",
+            "guard_id": "guard-1",
+            "commit_point_id": "commit-1"
+          },
+          {
+            "kind": "loop_handler",
+            "event_id": "ev-16",
+            "sequence": 16,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 16,
+              "end": 17
+            },
+            "loop_id": "loop-0",
+            "handler_id": "handler-0",
+            "outcome": "break"
+          }
+        ],
+        "callable_events": [
+          {
+            "kind": "callable_invoke",
+            "event_id": "ev-17",
+            "sequence": 17,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 17,
+              "end": 18
+            },
+            "callable_id": "callable-0",
+            "profile": "#scoped#once#pure",
+            "call_right_before": "once",
+            "call_right_after": "consumed"
+          }
+        ],
+        "evidence_events": [
+          {
+            "kind": "evidence_select",
+            "event_id": "ev-18",
+            "sequence": 18,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 18,
+              "end": 19
+            },
+            "evidence_id": "conf::Type::Trait",
+            "type_id": "Type",
+            "trait_id": "Trait",
+            "candidate_count": 1
+          }
+        ],
+        "effect_row": [
+          "io"
+        ],
+        "authority": [
+          "clock"
+        ],
+        "source_span": {
+          "file": "fixture.dp",
+          "start": 0,
+          "end": 19
+        }
+      },
+      "expected_errors": [
+        "MIR_EVENT_PAYLOAD_SHAPE"
+      ]
+    }
+  ],
+  "product_runtime_execution": "NOT_RUN"
+}

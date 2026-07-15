@@ -1,0 +1,78 @@
+policy_schema: deeplus.management-policy/v1
+policy_id: deeplus-management-r1.1
+effective_date: "2026-07-15"
+reference_baseline: 0.1.2-baseline.r51f3
+
+architecture:
+  implementation_language: Rust
+  semantic_authority: Deeplus MIR
+  initial_execution: xVM bytecode interpreter
+  initial_native_backend: LLVM AOT
+  later_native_backend: LLVM ORC JIT
+  self_hosting: deferred_pending_post_0_3_rfc
+
+primary_roles:
+  - prefix: Design_
+    id: design_release_steward
+    mode: work
+  - prefix: Spec_
+    id: language_type_architect
+    mode: work
+  - prefix: Impl_
+    id: compiler_runtime_lead
+    mode: work
+  - prefix: Test_
+    id: conformance_quality_lead
+    mode: work
+  - prefix: Devel_
+    id: developer_experience_ecosystem_lead
+    mode: work
+
+release_review:
+  primary_reports_required: true
+  alternatives_required: true
+  acceptance_tests_required_for_p0_p1: true
+  extra_auditor_assignment_required: true
+  role_specific_review_request_pack_required: true
+  separate_artifacts:
+    - source
+    - binary
+    - documentation
+    - evidence
+
+lane_status:
+  - NOT_RUN
+  - BLOCKED
+  - FAILED
+  - PASSED_FOCUSED
+  - PASSED_INTEGRATED
+  - PASSED_INDEPENDENT
+
+configuration:
+  source_authority: git
+  collaboration_archive: chatgpt_library
+  repository_model: cargo_monorepo
+  branching: trunk_based_short_lived
+  generated_files_editable: false
+  old_bundle_nesting_allowed: false
+
+memory:
+  role_capsule_max_bytes: 102400
+  current_facts_max: 50
+  open_actions_max: 30
+  watch_items_max: 20
+  recent_release_summaries_max: 3
+
+project_instructions:
+  max_characters_including_whitespace: 8000
+  detail_location:
+    - governance_reports
+    - role_prompts
+    - operational_templates
+
+size_review_triggers:
+  source_shard_bytes: 65536
+  review_pack_bytes: 5242880
+  source_release_bytes: 26214400
+  evidence_bundle_bytes: 104857600
+  markdown_report_bytes: 2097152

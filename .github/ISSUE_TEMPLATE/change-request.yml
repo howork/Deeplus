@@ -1,0 +1,51 @@
+name: Deeplus change request
+description: Propose a bounded language, implementation, governance, or tooling change.
+title: "[Change]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue should own one coherent change. Product claims require executable evidence.
+  - type: input
+    id: identity
+    attributes:
+      label: Proposed change ID
+      description: Use an existing ID or request assignment by Design_.
+      placeholder: DP-RFC-0001, DP-ADR-0001, or DP-CHG-0001
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and scope
+      description: State the problem, affected authorities, and explicit non-goals.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Give at least one practical alternative and its trade-offs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance tests
+      description: List mechanically checkable closure conditions.
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence
+    attributes:
+      label: Highest current evidence
+      options:
+        - E0 — absent or unreadable
+        - E1 — narrative design intent
+        - E2 — static closure
+        - E3 — focused executable slice
+        - E4 — integrated product
+        - E5 — independent or field evidence
+    validations:
+      required: true

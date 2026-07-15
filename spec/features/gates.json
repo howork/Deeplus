@@ -1,0 +1,208 @@
+{
+  "schema": "deeplus.feature-gate-map/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "registry_kind": "feature_gate_map",
+  "entries": [
+    {
+      "feature_id": "ffi_c_extern_unsafe_surface_msp",
+      "source_activation": "explicit_feature_gate",
+      "required_gate_feature_ids": [
+        "ffi_c_extern_unsafe_surface_msp",
+        "ffi_minimum_sound_profile"
+      ],
+      "gate": "#preview(ffi_c_extern_unsafe_surface_msp,ffi_minimum_sound_profile)",
+      "grammar_routes": [
+        "PreviewFfiBlockDecl",
+        "PreviewFfiFunctionDecl"
+      ],
+      "semantic_reference_routes": [],
+      "root_paths": [
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ],
+      "gated_fixture_ids": [
+        "EX-R48-026"
+      ],
+      "ungated_negative_fixture_ids": [
+        "EX-R51a1-NG-023",
+        "EX-R51a1-NG-030"
+      ],
+      "gate_diagnostic_id": "FFI_C_EXTERN_UNSAFE_SURFACE_MSP_REQUIRES_FEATURE_GATE",
+      "syntax_gate_diagnostic_id": "FFI_C_EXTERN_UNSAFE_SURFACE_MSP_REQUIRES_FEATURE_GATE",
+      "semantic_admission_diagnostic_id": null,
+      "owner_stage": "parser",
+      "ungated_rejection_stage": "parser",
+      "checker_gate_required_after_parse": true
+    },
+    {
+      "feature_id": "ffi_minimum_sound_profile",
+      "source_activation": "explicit_feature_gate",
+      "required_gate_feature_ids": [
+        "ffi_minimum_sound_profile"
+      ],
+      "gate": "#preview(ffi_minimum_sound_profile)",
+      "grammar_routes": [
+        "PreviewFfiFunctionDecl"
+      ],
+      "semantic_reference_routes": [],
+      "root_paths": [
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ],
+      "gated_fixture_ids": [
+        "EX-R48-026"
+      ],
+      "ungated_negative_fixture_ids": [
+        "EX-R51a1-NG-022"
+      ],
+      "gate_diagnostic_id": "FFI_MINIMUM_SOUND_PROFILE_REQUIRES_FEATURE_GATE",
+      "syntax_gate_diagnostic_id": "FFI_MINIMUM_SOUND_PROFILE_REQUIRES_FEATURE_GATE",
+      "semantic_admission_diagnostic_id": "FFI_C_EXTERN_REQUIRES_PREVIEW_GATE",
+      "owner_stage": "parser",
+      "ungated_rejection_stage": "parser",
+      "checker_gate_required_after_parse": true
+    },
+    {
+      "feature_id": "numeric_array_elementwise_power_msp",
+      "source_activation": "explicit_feature_gate",
+      "required_gate_feature_ids": [
+        "numeric_array_elementwise_power_msp"
+      ],
+      "gate": "#preview(numeric_array_elementwise_power_msp)",
+      "grammar_routes": [],
+      "semantic_reference_routes": [
+        "PrattExpr"
+      ],
+      "root_paths": [
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ],
+      "gated_fixture_ids": [
+        "EX-R48L-010"
+      ],
+      "ungated_negative_fixture_ids": [
+        "EX-R48G-006",
+        "EX-R48L-009",
+        "EX-R51a1-AUD-NG-028"
+      ],
+      "gate_diagnostic_id": "NUMARR_INFIX_POWER_NOT_ADMITTED",
+      "syntax_gate_diagnostic_id": null,
+      "semantic_admission_diagnostic_id": "NUMARR_INFIX_POWER_NOT_ADMITTED",
+      "owner_stage": "checker",
+      "ungated_rejection_stage": "checker",
+      "checker_gate_required_after_parse": false
+    }
+  ],
+  "gate_count": 3,
+  "nonactivatable": [
+    "array_comprehension",
+    "async_callable_literal_profile",
+    "async_comprehension",
+    "automatic_observation_tracking",
+    "c_aggregate",
+    "c_stored_callback",
+    "c_variadic",
+    "caller_bounded_implicit_borrow_capture",
+    "caller_callback_borrow_profile",
+    "caller_isolated_callback",
+    "char_public_alias_of_grapheme",
+    "choice_hard_value_union_preview",
+    "class_static_activation",
+    "closure_call_modes_caller_once_mut",
+    "collection_freeze_snapshot",
+    "collection_traversal_split_law",
+    "conformance_law_proof_block_preview_design",
+    "construction_derivation_transaction_restoration",
+    "contextual_operation_anchor_dmad",
+    "custom_operator",
+    "data_shaping_callshape_restoration",
+    "declaration_surface_retained_current_law",
+    "dependent_refinement_value_capture",
+    "deterministic_primary_suppressed_order_core_law",
+    "deterministic_primary_suppressed_order_stable_law_companion",
+    "directed_coroutine_group",
+    "dollar_quarantine_policy",
+    "drop_def_hash_drop",
+    "dyn_inspection",
+    "dyn_rcts_family",
+    "dynamic_trait_attach_detach_stateless_preview_design",
+    "dynamic_unsafe_quarantine_scope_msp",
+    "effectful_static_activation",
+    "explicit_broadcast_marker_msp",
+    "explicit_context_argument_ampersand_spelling",
+    "explicit_context_parameter_role_core",
+    "extension_dot_call_sugar",
+    "facet_inout_pack_preview_design",
+    "facet_owned_pack_preview_design",
+    "first_class_witness_value_not_current",
+    "fixed_operator_conformance_overloading",
+    "flow_binding_let_var_target",
+    "function_static_activation",
+    "generic_named_extension_set_target",
+    "interpolation_path_boundary_preview",
+    "local_witness_preview_design",
+    "logical_index_domain",
+    "module_static_entrance",
+    "named_conformance_preview_design",
+    "negative_impl_preview_design",
+    "nominal_schema_construction_removed",
+    "nullsafe_control",
+    "numeric_array_infix_power_preview_gate_law",
+    "operator_extension",
+    "option_dot_case_canonical",
+    "option_none_case_only",
+    "parser_normal_form_r49c",
+    "postfix_transpose_operator_msp",
+    "prototype_delta",
+    "r49b_fully_merged_single_source_truth",
+    "r49c_fully_merged_single_source_truth",
+    "r51a1_fully_merged_current_canonical_single_source_truth",
+    "r51a1_parser_current_normal_form",
+    "r51b_fully_merged_current_canonical_single_source_truth",
+    "r51b_integrated_frontend_grammar_current_canonical",
+    "r51c1_fully_merged_current_canonical_single_source_truth",
+    "r51c1_integrated_frontend_grammar_current_canonical",
+    "r51c_fully_merged_current_canonical_single_source_truth",
+    "r51c_integrated_frontend_grammar_current_canonical",
+    "r51d_frontend_grammar_current_canonical",
+    "r51d_package_current_canonical_authority",
+    "receiver_result",
+    "refinement_phase_a_r0",
+    "refinement_range_checked_boundary_retained_law",
+    "responsibility_type_system_retained_law",
+    "rightward_flow_binding",
+    "sealed_multimethod_family",
+    "separated_declarative_function_clauses",
+    "session_protocol_lite_provider",
+    "solver_backed_general_refinement",
+    "specialization_preview_design",
+    "state_machine_source_syntax",
+    "static_once_value",
+    "static_type_query",
+    "string_interpolation_shorthand_identifier_msp",
+    "structural_break_chain",
+    "structural_prototype_extension",
+    "trait_associated_item_markers_preview",
+    "trusted_derive_via",
+    "type_responsibility_descriptor_v2",
+    "type_responsibility_descriptor_v3",
+    "type_system_rcts_v5_ts_r41_current_canonical_companion",
+    "type_system_rcts_v5_ts_r42_current_canonical_companion",
+    "type_system_rcts_v5_ts_r43_current_canonical_companion",
+    "type_system_ts_r35_current_canonical_companion",
+    "type_system_ts_r37_current_canonical_companion",
+    "type_system_ts_r38_current_canonical_companion",
+    "type_system_ts_r39_current_canonical_companion",
+    "type_token_authority_boundary",
+    "typed_reflection",
+    "uml_association_metadata",
+    "uml_traceability_id",
+    "unannotated_nullary_lambda_inference_msp",
+    "use_site_projection_dmad",
+    "weak_atomic_ordering"
+  ],
+  "policy": "Only PREVIEW with explicit_feature_gate is source-gated; Preview-design is nonactivatable; stdlib/tooling use their own activation lanes."
+}

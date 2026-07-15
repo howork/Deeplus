@@ -1,0 +1,1846 @@
+[
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#app",
+          "Int:Ord#stdlib"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the coherence domain contains more than one candidate implementation",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-KEY",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Eq<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#stdlib"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the coherence key differs from witness_id",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-KEY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-MISSING",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_COHERENCE_EVIDENCE_MISSING",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the witness/implementation pair and candidate selection are absent",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-MISSING"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-ORPHAN-FLAG",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_ORPHAN_RULE_VIOLATION",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#stdlib"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": false
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the orphan admission flag is false even though the package identity is otherwise an owner",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-ORPHAN-FLAG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-ORPHAN-OWNER",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_ORPHAN_RULE_VIOLATION",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#app",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#app"
+        ],
+        "type_owner": "stdlib-types",
+        "trait_owner": "stdlib-traits",
+        "declaring_package": "app",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the declaring package owns neither the type nor the trait",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-ORPHAN-OWNER"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-SELECTION",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#app"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the sole candidate differs from implementation_id",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-SELECTION"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-NEG-ZERO",
+    "predicate_id": "WitnessCoherent",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "WITNESS_COHERENCE_EVIDENCE_MISSING",
+    "diagnostic_disposition": "active_dispatched",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the coherence domain has zero candidate implementations",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-NEG-ZERO"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessCoherent-POS",
+    "predicate_id": "WitnessCoherent",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "WitnessArgument",
+      "normalized_type": "FixtureType",
+      "ownership": "borrowed",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "formal_parameter_surface": "using order: witness Ord<Int>",
+        "formal_parameter_identity": "order",
+        "formal_parameter_trait": "Ord<Int>",
+        "argument_surface": "using intOrder",
+        "argument_identifier": "intOrder",
+        "evidence_binding_surface": "using intOrder: witness Ord<Int>",
+        "evidence_binding_identity": "intOrder",
+        "evidence_declared_trait": "Ord<Int>",
+        "parameter_kind": "explicit_witness",
+        "resolved_evidence_trait": "Ord<Int>",
+        "witness_use_context": "using_argument",
+        "evidence_origin": "forwarded_parameter",
+        "escapes": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Ord<Int>#canonical",
+      "implementation_id": "Int:Ord#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Ord<Int>#canonical",
+        "candidate_implementation_ids": [
+          "Int:Ord#stdlib"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "ordered branch 1: a missing witness_id, implementation_id, coherence_key, or empty candidate_implementation_ids emits WITNESS_COHERENCE_EVIDENCE_MISSING; ordered branch 2: coherence_key unequal to witness_id, or candidate_implementation_ids has exactly one element and that sole candidate is unequal to implementation_id, emits WITNESS_IMPLEMENTATION_SELECTION_MISMATCH; ordered branch 3: more than one candidate implementation emits WITNESS_DUPLICATE_IN_COHERENCE_DOMAIN; ordered branch 4: orphan_rule_admitted is false or declaring_package equals neither type_owner nor trait_owner emits WITNESS_ORPHAN_RULE_VIOLATION; only after all four branches pass is the witness/implementation pair coherent",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessCoherent-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResolution-BOUNDARY",
+    "predicate_id": "WitnessResolution",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResolution-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 WitnessResolution boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResolution-NEG",
+    "predicate_id": "WitnessResolution",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
+    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "List<Int>",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "projection_candidate_count": 2
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Iterable<Int>#canonical",
+      "implementation_id": "List<Int>:Iterable#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Iterable<Int>#canonical",
+        "candidate_implementation_ids": [
+          "List<Int>:Iterable#stdlib",
+          "List<Int>:Iterable#app"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "two imported conformance candidates inhabit one coherence domain",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResolution-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResolution-POS",
+    "predicate_id": "WitnessResolution",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "List<Int>",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "projection_candidate_count": 1
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": "Iterable<Int>#canonical",
+      "implementation_id": "List<Int>:Iterable#stdlib",
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true,
+        "coherence_key": "Iterable<Int>#canonical",
+        "candidate_implementation_ids": [
+          "List<Int>:Iterable#stdlib"
+        ],
+        "type_owner": "stdlib",
+        "trait_owner": "stdlib",
+        "declaring_package": "stdlib",
+        "orphan_rule_admitted": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "resolve conformance obligations deterministically without structural or extension auto-witness",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResolution-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResponsibilityCompatibility-BOUNDARY",
+    "predicate_id": "WitnessResponsibilityCompatibility",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResponsibilityCompatibility-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 WitnessResponsibilityCompatibility boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResponsibilityCompatibility-NEG",
+    "predicate_id": "WitnessResponsibilityCompatibility",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
+    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "() -> Unit",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": [
+        "NetworkError"
+      ],
+      "effect_row": [
+        "network"
+      ],
+      "suspension": "may_suspend",
+      "cancellation": null,
+      "isolation": "actor",
+      "authority": [
+        "network"
+      ],
+      "construction_domain": null,
+      "call_shape": {
+        "required_error_families": [
+          "IOError"
+        ],
+        "implementation_error_families": [
+          "NetworkError"
+        ],
+        "required_effects": [
+          "io"
+        ],
+        "implementation_effects": [
+          "network"
+        ],
+        "required_authorities": [
+          "filesystem"
+        ],
+        "implementation_authorities": [
+          "network"
+        ],
+        "required_isolation": "local",
+        "implementation_isolation": "actor",
+        "required_suspension": "none",
+        "implementation_suspension": "may_suspend"
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the implementation widens error, effect, authority, isolation, and suspension responsibilities",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResponsibilityCompatibility-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-WitnessResponsibilityCompatibility-POS",
+    "predicate_id": "WitnessResponsibilityCompatibility",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "() -> Unit",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": [
+        "IOError"
+      ],
+      "effect_row": [
+        "io"
+      ],
+      "suspension": "none",
+      "cancellation": null,
+      "isolation": "local",
+      "authority": [
+        "filesystem"
+      ],
+      "construction_domain": null,
+      "call_shape": {
+        "required_error_families": [
+          "IOError",
+          "ParseError"
+        ],
+        "implementation_error_families": [
+          "IOError"
+        ],
+        "required_effects": [
+          "io",
+          "log"
+        ],
+        "implementation_effects": [
+          "io"
+        ],
+        "required_authorities": [
+          "filesystem",
+          "clock"
+        ],
+        "implementation_authorities": [
+          "filesystem"
+        ],
+        "required_isolation": "local",
+        "implementation_isolation": "local",
+        "required_suspension": "none",
+        "implementation_suspension": "none"
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "witness method responsibility must not be wider than requirement",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-WitnessResponsibilityCompatibility-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-BOUNDARY",
+    "predicate_id": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51d design-static fixture for RightwardLocalBindingNormalizesToOrdinaryBinding; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-NEG",
+    "predicate_id": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": false,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "a distinct flow-binding semantic node survived normalization",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51d design-static fixture for RightwardLocalBindingNormalizesToOrdinaryBinding; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-POS",
+    "predicate_id": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": true,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51d design-static fixture for RightwardLocalBindingNormalizesToOrdinaryBinding; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OrdinaryLocalBindingAdmitted-BOUNDARY",
+    "predicate_id": "OrdinaryLocalBindingAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-OrdinaryLocalBindingAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51d design-static fixture for OrdinaryLocalBindingAdmitted; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OrdinaryLocalBindingAdmitted-NEG",
+    "predicate_id": "OrdinaryLocalBindingAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "FLOW_BINDING_TARGET_MUST_BE_NEW_LOCAL",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": false,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "target is not fresh before commit",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51d design-static fixture for OrdinaryLocalBindingAdmitted; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-OrdinaryLocalBindingAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OrdinaryLocalBindingAdmitted-POS",
+    "predicate_id": "OrdinaryLocalBindingAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": true,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51d design-static fixture for OrdinaryLocalBindingAdmitted; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-OrdinaryLocalBindingAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DynamicUnitConversionProfileAdmitted-BOUNDARY",
+    "predicate_id": "DynamicUnitConversionProfileAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DynamicUnitConversionProfileAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51d design-static fixture for DynamicUnitConversionProfileAdmitted; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DynamicUnitConversionProfileAdmitted-NEG",
+    "predicate_id": "DynamicUnitConversionProfileAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "DYNAMIC_UNIT_CONVERSION_PROFILE_NOT_ACTIVE",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": false,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "stdlib/provider profile inactive",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51d design-static fixture for DynamicUnitConversionProfileAdmitted; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DynamicUnitConversionProfileAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DynamicUnitConversionProfileAdmitted-POS",
+    "predicate_id": "DynamicUnitConversionProfileAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Binding",
+      "normalized_type": "Int",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "target_is_fresh_local": true,
+        "flow_binding_mutable": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51d design-static fixture for DynamicUnitConversionProfileAdmitted; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DynamicUnitConversionProfileAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DedentedMultilineStringAdmitted-POS",
+    "predicate_id": "DedentedMultilineStringAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "none",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DedentedMultilineStringAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DedentedMultilineStringAdmitted-BOUNDARY",
+    "predicate_id": "DedentedMultilineStringAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "none",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DedentedMultilineStringAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DedentedMultilineStringAdmitted-NEG",
+    "predicate_id": "DedentedMultilineStringAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "ActorProtocolGateAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-DedentedMultilineStringAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "schema": "deeplus.role-memory-capsule/v1",
+  "role": {
+    "id": "compiler_runtime_lead",
+    "prefix": "Impl_"
+  },
+  "updated_at": "2026-07-15T00:00:00+09:00",
+  "source_revision": "r51f3-migration-m1",
+  "current_facts": [
+    {
+      "id": "ARCH-001",
+      "statement": "Rust implements the frontend, HIR, MIR and xVM; Deeplus MIR is semantic authority; LLVM AOT precedes ORC JIT.",
+      "authority": "current architecture decision",
+      "source": "current/authority-map.yaml",
+      "introduced": "r51f3-migration-m1",
+      "review_after": null,
+      "status": "current"
+    },
+    {
+      "id": "EVID-001",
+      "statement": "All product lanes remain NOT_RUN; scaffold and static validation are not product evidence.",
+      "authority": "current implementation status",
+      "source": "current/implementation-status.yaml",
+      "introduced": "r51f3-migration-m1",
+      "review_after": null,
+      "status": "current"
+    }
+  ],
+  "open_actions": [
+    {
+      "id": "MIG-M1-IMPL-001",
+      "priority": "P1",
+      "summary": "Review crate boundaries and implement the first Rust lexer/parser vertical slice.",
+      "owner": "Impl_",
+      "acceptance_test": "Role report contains lane verdicts, evidence, an alternative, executable acceptance tests, and handoff.",
+      "target": "migration M1 review window"
+    }
+  ],
+  "watch_items": [
+    {
+      "id": "RISK-001",
+      "statement": "Legacy filenames inside imported row provenance must resolve through migration/path-aliases.json and must not become new edit authorities.",
+      "authority": "migration contract",
+      "source": "migration/README.md",
+      "introduced": "r51f3-migration-m1",
+      "review_after": "first post-migration release",
+      "status": "watch"
+    }
+  ],
+  "recent_releases": [
+    {
+      "release": "r51f3-migration-m1",
+      "verdict": "identity/path/configuration migration; product lanes NOT_RUN",
+      "report": "Design_Deeplus_R51f3_to_Canonical_Workspace_Migration_Report_M1.md"
+    }
+  ]
+}

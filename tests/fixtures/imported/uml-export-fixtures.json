@@ -1,0 +1,523 @@
+{
+  "schema": "deeplus.uml-export-fixtures/r51f3",
+  "baseline": "0.1.2-baseline.r51f3",
+  "profile_schema": "schemas/language/uml-export-profile.schema.json",
+  "positive_fixture_count": 1,
+  "negative_fixture_count": 6,
+  "positive_fixtures": [
+    {
+      "fixture_id": "UML-POS-CLASS-PACKAGE-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected": "admitted"
+    }
+  ],
+  "negative_fixtures": [
+    {
+      "fixture_id": "UML-NEG-DUPLICATE-ID-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "DuplicateUser",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_EXPORT_ID_DUPLICATE"
+      ]
+    },
+    {
+      "fixture_id": "UML-NEG-PACKAGE-REF-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.missing",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_EXPORT_PACKAGE_REFERENCE_UNKNOWN"
+      ]
+    },
+    {
+      "fixture_id": "UML-NEG-ENDPOINT-REF-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Missing",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_EXPORT_CLASSIFIER_REFERENCE_UNKNOWN"
+      ]
+    },
+    {
+      "fixture_id": "UML-NEG-MULTIPLICITY-RANGE-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 2,
+              "upper": 1,
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_MULTIPLICITY_RANGE_INVALID"
+      ]
+    },
+    {
+      "fixture_id": "UML-NEG-MULTIPLICITY-MAPPING-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "Option<T>",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_MULTIPLICITY_MAPPING_MISMATCH"
+      ]
+    },
+    {
+      "fixture_id": "UML-NEG-ORDER-001",
+      "export": {
+        "schema": "urn:deeplus:0.1.2-baseline.r51f3:uml-export-profile",
+        "baseline": "0.1.2-baseline.r51f3",
+        "profile_id": "deeplus-r51f3-uml-class-package-v1",
+        "packages": [
+          {
+            "package_id": "pkg.core",
+            "qualified_name": "example",
+            "parent_package_id": null,
+            "visibility": "public"
+          },
+          {
+            "package_id": "pkg.model",
+            "qualified_name": "example.model",
+            "parent_package_id": "pkg.core",
+            "visibility": "public"
+          }
+        ],
+        "classifiers": [
+          {
+            "classifier_id": "model::User",
+            "package_id": "pkg.model",
+            "name": "User",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          },
+          {
+            "classifier_id": "model::Order",
+            "package_id": "pkg.model",
+            "name": "Order",
+            "kind": "class",
+            "visibility": "public",
+            "abstract": false,
+            "sealed": false
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "rel::user-orders",
+            "kind": "association",
+            "source_classifier_id": "model::User",
+            "target_classifier_id": "model::Order",
+            "source_role": "owner",
+            "target_role": "orders",
+            "source_multiplicity": {
+              "source_type_form": "T",
+              "lower": 1,
+              "upper": 1,
+              "ordered": false,
+              "unique": true
+            },
+            "target_multiplicity": {
+              "source_type_form": "Sequence<T>",
+              "lower": 0,
+              "upper": "*",
+              "ordered": true,
+              "unique": false
+            },
+            "navigability": "source_to_target",
+            "aggregation": "composite"
+          }
+        ],
+        "product_runner": "NOT_RUN"
+      },
+      "expected_errors": [
+        "UML_EXPORT_CANONICAL_ORDER_INVALID"
+      ]
+    }
+  ],
+  "product_runner_execution": "NOT_RUN"
+}
