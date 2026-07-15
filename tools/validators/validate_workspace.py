@@ -33,6 +33,7 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A004: Build_",
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
+EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
 
 
 def canonical_sha(value: Any) -> str:
@@ -320,10 +321,12 @@ def main() -> int:
         check(pointer.get("product_lanes") == lane_status, "POINTER_LANE_PARITY", f"pointer={len(pointer.get('product_lanes', {}))} registry={len(lane_status)}")
         actions = pointer.get("open_actions", [])
         action_keys = {"id", "priority", "summary", "owner", "tracking_ref", "acceptance_test", "target"}
+        action_ids = [row.get("id") for row in actions]
+        next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         check(
-            len(actions) == 4 and len({row.get("id") for row in actions}) == 4
+            action_ids == EXPECTED_ACTION_IDS and next_review_ids == action_ids
             and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
-            "POINTER_ACTION_BINDING", str([row.get("id") for row in actions]),
+            "POINTER_ACTION_BINDING", str(action_ids),
         )
         check(pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS, "POINTER_NEXT_REVIEW_BINDING", str(pointer.get("required_next_reviews")))
         review_index = parsed.get(root / "release/evidence/current-publication-m1.3-role-review-index.json", {})
