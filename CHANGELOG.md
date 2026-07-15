@@ -7,6 +7,7 @@
 - 언어 의미, feature status, grammar, type system 및 MIR observable semantics는 변경하지 않았다.
 - 15개 제품 lane은 실제 target-baseline 실행 receipt가 없으므로 모두 `NOT_RUN`으로 유지했다.
 - archive-only provenance, 첫 Rust lexer/parser E3 slice, 공개 라이선스와 Actions SHA pinning을 open action으로 승계했다.
+- 7개 역할 검토 후 pointer 필수 키·source/snapshot/predecessor receipt·15-lane exact-set·YAML parity·action tracking·role-memory continuity를 보강하고 mutation suite를 expected-diagnostic 18/18로 강화했다.
 
 ## r51f3-repository-bootstrap-m1.2 — 2026-07-15
 

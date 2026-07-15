@@ -21,6 +21,19 @@ EXPECTED = {
     "predicate_fixtures": 763, "examples": 656, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
+EXPECTED_POINTER_KEYS = {
+    "schema", "updated_at", "language_version", "spec_revision",
+    "source_revision", "authority_digest", "source_snapshot",
+    "product_lanes", "open_actions", "required_next_reviews",
+    "previous_pointer",
+}
+EXPECTED_NEXT_REVIEWS = [
+    "M13-A001: Archive_ + Design_",
+    "M13-A002: Impl_ + Spec_ + Test_",
+    "M13-A003: Design_ + Legal_",
+    "M13-A004: Build_",
+    "M13-A005: Design_ + Spec_ + Devel_",
+]
 
 
 def canonical_sha(value: Any) -> str:
@@ -96,6 +109,10 @@ def main() -> int:
         "migration/catalog-reassembly.json", "migration/path-aliases.json",
         "migration/m1.1-repair-manifest.json", "release/source-tree-manifest.json",
         "governance/policies/management-policy.yaml",
+        "release/evidence/current-publication-m1.3-source-snapshot-receipt.json",
+        "release/evidence/current-publication-m1.3-predecessor-receipt.json",
+        "release/evidence/current-publication-m1.3-git-binding-receipt.json",
+        "release/evidence/current-publication-m1.3-role-review-index.json",
     ]
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
@@ -260,21 +277,71 @@ def main() -> int:
     check(len(domains) == 11 and bool(declared_match) and declared_match.group(1) == computed_authority, "AUTHORITY_AGGREGATE", computed_authority)
 
     lanes = parsed.get(root / "current/product-lanes.json", {}).get("lanes", [])
-    check(len(lanes) == 15 and all(row.get("status") == "NOT_RUN" for row in lanes), "PRODUCT_EVIDENCE_HONESTY", str(len(lanes)))
+    lane_ids = [row.get("lane_id") for row in lanes]
+    lane_status = {row.get("lane_id"): row.get("status") for row in lanes}
+    check(len(lanes) == 15 and len(set(lane_ids)) == 15 and all(lane_status.get(lane_id) == "NOT_RUN" for lane_id in lane_ids), "PRODUCT_EVIDENCE_HONESTY", str(len(lanes)))
+    implementation_text = (root / "current/implementation-status.yaml").read_text(encoding="utf-8")
+    implementation_rows = dict(re.findall(r"^  ([a-z0-9_]+): (NOT_RUN|BLOCKED|FAILED|PASSED_FOCUSED|PASSED_INTEGRATED|PASSED_INDEPENDENT)$", implementation_text, re.MULTILINE))
+    check(set(implementation_rows) == set(lane_ids) and implementation_rows == lane_status, "IMPLEMENTATION_STATUS_PARITY", f"registry={len(lane_ids)} yaml={len(implementation_rows)}")
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
         check(state.get("candidate_revision") == REVISION and state.get("authority_digest") == computed_authority and state.get("current_pointer_published") is False, "CANDIDATE_STATE", str(state.get("candidate_revision")))
     else:
         pointer = parsed.get(root / "current/current-pointer.json", {})
-        allowed = {"schema", "updated_at", "language_version", "spec_revision", "source_revision", "authority_digest", "source_snapshot", "product_lanes", "open_actions", "required_next_reviews", "previous_pointer"}
-        check(set(pointer) <= allowed and pointer.get("schema") == "deeplus.current-pointer/v1", "POINTER_CLOSED_SHAPE", str(sorted(set(pointer) - allowed)))
+        check(set(pointer) == EXPECTED_POINTER_KEYS, "POINTER_REQUIRED_KEYS", f"missing={sorted(EXPECTED_POINTER_KEYS - set(pointer))} extra={sorted(set(pointer) - EXPECTED_POINTER_KEYS)}")
+        check(pointer.get("schema") == "deeplus.current-pointer/v1", "POINTER_CLOSED_SHAPE", str(pointer.get("schema")))
         source_revision = pointer.get("source_revision", {})
         check(source_revision.get("kind") in {"git-commit", "git-tag", "legacy-import"} and bool(source_revision.get("value")), "POINTER_SOURCE_REVISION", str(source_revision))
         snapshot = pointer.get("source_snapshot")
         check(snapshot is None or (set(snapshot) == {"library_file_id", "sha256"} and bool(re.fullmatch(r"[0-9a-f]{64}", snapshot.get("sha256", "")))), "POINTER_SOURCE_SNAPSHOT", str(snapshot))
-        check(pointer.get("previous_pointer") is None or isinstance(pointer.get("previous_pointer"), str), "POINTER_PREVIOUS", str(pointer.get("previous_pointer")))
+        git_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-git-binding-receipt.json", {})
+        check(
+            git_receipt.get("result") == "PASS_REVIEWED_HEAD"
+            and source_revision.get("kind") == "git-commit"
+            and source_revision.get("repository") == git_receipt.get("repository")
+            and source_revision.get("value") == git_receipt.get("source_authority_commit"),
+            "POINTER_SOURCE_BINDING", str(source_revision),
+        )
+        snapshot_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json", {})
+        snapshot_object = snapshot_receipt.get("object", {})
+        check(bool(snapshot and snapshot.get("library_file_id")), "POINTER_SNAPSHOT_ID", str(snapshot))
+        check(
+            snapshot_receipt.get("result") == "PASS_DIRECT_BYTES"
+            and snapshot == {"library_file_id": snapshot_object.get("library_file_id"), "sha256": snapshot_object.get("sha256")},
+            "POINTER_SNAPSHOT_BINDING", str(snapshot),
+        )
+        predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
+        check(
+            predecessor_receipt.get("result") == "PASS_DIRECT_BYTES"
+            and pointer.get("previous_pointer") == predecessor_receipt.get("predecessor_revision")
+            and bool(re.fullmatch(r"[0-9a-f]{64}", predecessor_receipt.get("pointer_object", {}).get("sha256", ""))),
+            "POINTER_PREDECESSOR_BINDING", str(pointer.get("previous_pointer")),
+        )
         check(pointer.get("spec_revision") == REVISION and pointer.get("authority_digest") == computed_authority, "POINTER_AUTHORITY", str(pointer.get("spec_revision")))
-        check(all(value == "NOT_RUN" for value in pointer.get("product_lanes", {}).values()), "POINTER_PRODUCT_EVIDENCE", str(pointer.get("product_lanes")))
+        check(pointer.get("product_lanes") == lane_status, "POINTER_LANE_PARITY", f"pointer={len(pointer.get('product_lanes', {}))} registry={len(lane_status)}")
+        actions = pointer.get("open_actions", [])
+        action_keys = {"id", "priority", "summary", "owner", "tracking_ref", "acceptance_test", "target"}
+        check(
+            len(actions) == 5 and len({row.get("id") for row in actions}) == 5
+            and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
+            "POINTER_ACTION_BINDING", str([row.get("id") for row in actions]),
+        )
+        check(pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS, "POINTER_NEXT_REVIEW_BINDING", str(pointer.get("required_next_reviews")))
+        review_index = parsed.get(root / "release/evidence/current-publication-m1.3-role-review-index.json", {})
+        review_roles = [row.get("role") for row in review_index.get("reports", [])]
+        check(
+            review_roles == ["Design_", "Spec_", "Impl_", "Test_", "Devel_", "Archive_", "Build_"]
+            and all(bool(re.fullmatch(r"[0-9a-f]{64}", row.get("sha256", ""))) for row in review_index.get("reports", []))
+            and review_index.get("reviewed_head") == git_receipt.get("reviewed_head")
+            and review_index.get("integrated_gate") == "HOLD",
+            "ROLE_REVIEW_INDEX", str(review_roles),
+        )
+        check(
+            review_index.get("static_corpus", {}).get("status") == "PASS_STATIC_ONLY"
+            and review_index.get("executable_conformance", {}).get("status") == "NOT_RUN"
+            and review_index.get("product_execution") == "NOT_RUN",
+            "STATIC_EXECUTABLE_EVIDENCE_SPLIT", str(review_index.get("executable_conformance")),
+        )
 
     language = (root / "spec/language.md").read_text(encoding="utf-8")
     grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
@@ -292,6 +359,7 @@ def main() -> int:
     for path in memories:
         capsule = parsed.get(path, {})
         check(len(capsule.get("current_facts", [])) <= 50 and len(capsule.get("open_actions", [])) <= 30 and len(capsule.get("watch_items", [])) <= 20 and path.stat().st_size <= 102400, "ROLE_MEMORY_CAP", path.name)
+        check(capsule.get("source_revision") == REVISION and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
 
     crates = sorted(path for path in (root / "crates").iterdir() if path.is_dir())
     check(len(crates) == 15, "CRATE_BOUNDARY_COUNT", str(len(crates)))

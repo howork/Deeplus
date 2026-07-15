@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.current-pointer/v1",
-  "updated_at": "2026-07-15T14:58:12+09:00",
+  "updated_at": "2026-07-15T17:25:20+09:00",
   "language_version": "0.1.2-internal",
   "spec_revision": "r51f3-current-publication-m1.3",
   "source_revision": {
@@ -35,35 +35,54 @@
       "id": "M13-A001",
       "priority": "P1",
       "summary": "Bind the immutable R51f3 archive-only provenance authority to a Library identity, digest, access policy, and custodian.",
-      "owner": "Archive_"
+      "owner": "Archive_ + Design_",
+      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A001",
+      "acceptance_test": "Archive_ receipt binds immutable Library ID, SHA-256, access policy, custodian, 19 ARCHIVE_ONLY rows, and a successful restore test.",
+      "target": "M1.3 closeout or M1.4 before historical independent-audit promotion"
     },
     {
       "id": "M13-A002",
       "priority": "P1",
       "summary": "Implement and execute the first focused Rust source-to-lexer-to-parser vertical slice with positive and negative receipts.",
-      "owner": "Impl_ + Test_"
+      "owner": "Impl_ + Spec_ + Test_",
+      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A002",
+      "acceptance_test": "A target-bound receipt covers a representative programmer-intent surface such as the named-rest declaration/type/call triplet, including positive, negative, span, parse-node, and diagnostic-order evidence.",
+      "target": "first E3 implementation milestone"
     },
     {
       "id": "M13-A003",
       "priority": "P2",
       "summary": "Approve a public license or usage notice before the first public Deeplus release.",
-      "owner": "Design_ + Legal_"
+      "owner": "Design_ + Legal_",
+      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A003",
+      "acceptance_test": "Explicit public terms are approved and published; internal current publication remains clearly distinct from a public release or license grant.",
+      "target": "before first public Deeplus release"
     },
     {
       "id": "M13-A004",
       "priority": "P2",
       "summary": "Harden GitHub Actions references with reviewed commit-SHA pins and a controlled update policy.",
-      "owner": "Build_"
+      "owner": "Build_",
+      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A004",
+      "acceptance_test": "Workflows use reviewed full-SHA action pins with an update policy and fresh Canonical integrity and Rust workspace receipts.",
+      "target": "M1.4 or before first public release"
+    },
+    {
+      "id": "M13-A005",
+      "priority": "P1",
+      "summary": "Codify Expressiveness First as easy, consistent, and responsible translation of programmer intent across role charters and review templates.",
+      "owner": "Design_ + Spec_ + Devel_",
+      "tracking_ref": "https://github.com/howork/Deeplus/issues/8",
+      "acceptance_test": "The shared charter, five primary role prompts, and review templates use the same Expressiveness definition and require an expression-preserving alternative for restrictions.",
+      "target": "before the next semantic PR"
     }
   ],
   "required_next_reviews": [
-    "Design_",
-    "Spec_",
-    "Impl_",
-    "Test_",
-    "Devel_",
-    "Archive_",
-    "Build_"
+    "M13-A001: Archive_ + Design_",
+    "M13-A002: Impl_ + Spec_ + Test_",
+    "M13-A003: Design_ + Legal_",
+    "M13-A004: Build_",
+    "M13-A005: Design_ + Spec_ + Devel_"
   ],
   "previous_pointer": "r51f3-migration-m1.1"
 }
