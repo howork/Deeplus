@@ -4,8 +4,8 @@
     "id": "developer_experience_ecosystem_lead",
     "prefix": "Devel_"
   },
-  "updated_at": "2026-07-15T00:00:00+09:00",
-  "source_revision": "r51f3-migration-m1",
+  "updated_at": "2026-07-15T17:25:20+09:00",
+  "source_revision": "r51f3-current-publication-m1.3",
   "current_facts": [
     {
       "id": "ARCH-001",
@@ -18,40 +18,81 @@
     },
     {
       "id": "EVID-001",
-      "statement": "All product lanes remain NOT_RUN; scaffold and static validation are not product evidence.",
+      "statement": "All 15 product lanes remain NOT_RUN; static publication closure and Rust scaffold buildability are not product evidence.",
       "authority": "current implementation status",
       "source": "current/implementation-status.yaml",
-      "introduced": "r51f3-migration-m1",
+      "introduced": "r51f3-current-publication-m1.3",
+      "review_after": "first target-bound product receipt",
+      "status": "current"
+    },
+    {
+      "id": "PUB-001",
+      "statement": "M1.3 is an internal publication revision over the M1.2 authority source snapshot; merge, tag, GitHub Release, public terms, and product promotion are separate gates.",
+      "authority": "current publication pointer",
+      "source": "current/current-pointer.json",
+      "introduced": "r51f3-current-publication-m1.3",
       "review_after": null,
+      "status": "current"
+    },
+    {
+      "id": "EXPR-001",
+      "statement": "Expressiveness means translating programmer intent easily, consistently, and responsibly; restrictions require an expression-preserving alternative or an explicit impossibility case.",
+      "authority": "current user direction pending governance codification",
+      "source": "https://github.com/howork/Deeplus/issues/8",
+      "introduced": "r51f3-current-publication-m1.3",
+      "review_after": "before next semantic PR",
       "status": "current"
     }
   ],
   "open_actions": [
     {
-      "id": "MIG-M1-DEVEL-001",
+      "id": "M13-DEVEL-001",
       "priority": "P1",
-      "summary": "Review human navigation, examples, diagnostics, and Prelude usability.",
-      "owner": "Devel_",
-      "acceptance_test": "Role report contains lane verdicts, evidence, an alternative, executable acceptance tests, and handoff.",
-      "target": "migration M1 review window"
+      "summary": "Keep publication, source snapshot, public release, license, planned architecture, and product evidence boundaries understandable.",
+      "owner": "Devel_ + Design_",
+      "acceptance_test": "README navigation and link/path checks pass with no product or license overclaim.",
+      "target": "M1.3 closeout"
+    },
+    {
+      "id": "M13-A005",
+      "priority": "P1",
+      "summary": "Carry Expressiveness First into contributor-facing role and review guidance.",
+      "owner": "Devel_ + Design_ + Spec_",
+      "acceptance_test": "Progressive disclosure and expression-preserving alternatives are required by the updated templates.",
+      "target": "before next semantic PR"
     }
   ],
   "watch_items": [
     {
       "id": "RISK-001",
-      "statement": "Legacy filenames inside imported row provenance must resolve through migration/path-aliases.json and must not become new edit authorities.",
+      "statement": "Legacy filenames inside imported row provenance resolve through migration/path-aliases.json and never become new edit authorities.",
       "authority": "migration contract",
       "source": "migration/README.md",
       "introduced": "r51f3-migration-m1",
       "review_after": "first post-migration release",
       "status": "watch"
+    },
+    {
+      "id": "RISK-002",
+      "statement": "A reviewed PR head, a synthetic merge SHA, an authority source commit, and a preserved Library object are distinct identity types.",
+      "authority": "M1.3 role-review consensus",
+      "source": "release/evidence/current-publication-m1.3-git-binding-receipt.json",
+      "introduced": "r51f3-current-publication-m1.3",
+      "review_after": "each release gate",
+      "status": "watch"
     }
   ],
   "recent_releases": [
     {
-      "release": "r51f3-migration-m1",
-      "verdict": "identity/path/configuration migration; product lanes NOT_RUN",
-      "report": "Design_Deeplus_R51f3_to_Canonical_Workspace_Migration_Report_M1.md"
+      "release": "r51f3-repository-bootstrap-m1.2",
+      "verdict": "canonical repository bootstrap; all product lanes NOT_RUN",
+      "report": "roles/handoffs/repository-bootstrap-m1.2/README.md"
+    },
+    {
+      "release": "r51f3-current-publication-m1.3",
+      "verdict": "ACCEPT_WITH_REPAIR at reviewed head; merge remains HOLD pending recorded gates",
+      "report": "release/evidence/current-publication-m1.3-role-review-index.json"
     }
   ]
 }
+
