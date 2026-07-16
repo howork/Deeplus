@@ -144,6 +144,20 @@ def pointer_action_binding_missing(root: Path) -> None:
     write_json(path, value)
 
 
+def pointer_action_id_substitution(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["open_actions"][0]["id"] = "M13-A001"
+    write_json(path, value)
+
+
+def pointer_review_route_mismatch(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["required_next_reviews"][0] = "M13-A999: Impl_ + Spec_ + Test_"
+    write_json(path, value)
+
+
 def stale_role_memory(root: Path) -> None:
     path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -199,6 +213,8 @@ def run(write_receipt: bool) -> int:
         ("pointer_snapshot_sha_wrong", pointer_snapshot_sha_wrong, "POINTER_SNAPSHOT_BINDING"),
         ("pointer_predecessor_wrong", pointer_predecessor_wrong, "POINTER_PREDECESSOR_BINDING"),
         ("pointer_action_binding_missing", pointer_action_binding_missing, "POINTER_ACTION_BINDING"),
+        ("pointer_action_id_substitution", pointer_action_id_substitution, "POINTER_ACTION_BINDING"),
+        ("pointer_review_route_mismatch", pointer_review_route_mismatch, "POINTER_ACTION_BINDING"),
         ("stale_role_memory", stale_role_memory, "ROLE_MEMORY_CURRENT"),
     ]
     results = []
