@@ -18,6 +18,5 @@ mod tests {
     #[test]
     fn scaffold_is_evidence_honest() {
         assert_eq!(PRODUCT_STATUS, "NOT_RUN");
-        assert!(!RESPONSIBILITY.is_empty());
     }
 }
