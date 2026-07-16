@@ -24,7 +24,7 @@ CRATES = {
 
 def write(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    path.write_text(text, encoding="utf-8", newline="\n")
 
 
 for name, responsibility in CRATES.items():
@@ -36,7 +36,7 @@ for name, responsibility in CRATES.items():
     const_name = name.replace("-", "_").upper()
     write(
         crate / "src/lib.rs",
-        f'''//! Deeplus responsibility-boundary scaffold: {responsibility}.\n//!\n//! This crate has no product execution receipt at migration M1.\n\n#![forbid(unsafe_code)]\n\n/// The architecture responsibility assigned by Management System R1.1.\npub const RESPONSIBILITY: &str = "{responsibility}";\n/// A compiled scaffold must not be confused with language support.\npub const PRODUCT_STATUS: &str = "NOT_RUN";\n/// Stable marker used by repository-structure tests only.\npub struct {''.join(part.title() for part in name.split('-'))}Scaffold;\n\n#[cfg(test)]\nmod tests {{\n    use super::*;\n\n    #[test]\n    fn scaffold_is_evidence_honest() {{\n        assert_eq!(PRODUCT_STATUS, "NOT_RUN");\n        assert!(!RESPONSIBILITY.is_empty());\n    }}\n}}\n''',
+        f'''//! Deeplus responsibility-boundary scaffold: {responsibility}.\n//!\n//! This crate has no product execution receipt at migration M1.\n\n#![forbid(unsafe_code)]\n\n/// The architecture responsibility assigned by Management System R1.1.\npub const RESPONSIBILITY: &str = "{responsibility}";\n/// A compiled scaffold must not be confused with language support.\npub const PRODUCT_STATUS: &str = "NOT_RUN";\n/// Stable marker used by repository-structure tests only.\npub struct {''.join(part.title() for part in name.split('-'))}Scaffold;\n\n#[cfg(test)]\nmod tests {{\n    use super::*;\n\n    #[test]\n    fn scaffold_is_evidence_honest() {{\n        assert_eq!(PRODUCT_STATUS, "NOT_RUN");\n    }}\n}}\n''',
     )
 
 cli = ROOT / "crates/deeplusc"
