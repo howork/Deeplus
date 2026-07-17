@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import tomllib
 from collections import Counter
@@ -108,6 +109,9 @@ def main() -> int:
         "examples/guide/review-corpus.md", "migration/import-manifest.json",
         "migration/catalog-reassembly.json", "migration/path-aliases.json",
         "migration/m1.1-repair-manifest.json", "release/source-tree-manifest.json",
+        "tools/generators/generate_example_projections.py",
+        "tools/generators/example-projections.contract.json",
+        "tools/validators/run_example_projection_generator_tests.py",
         "governance/policies/management-policy.yaml",
         "release/evidence/current-publication-m1.3-source-snapshot-receipt.json",
         "release/evidence/current-publication-m1.3-predecessor-receipt.json",
@@ -119,6 +123,22 @@ def main() -> int:
         check((root / rel).is_file(), "REQUIRED_PATH", rel)
     check(not (root / ("current/current-pointer.json" if args.candidate else "release/candidate-state.json")).exists(),
           "RELEASE_STATE_EXCLUSIVE", "candidate and published current states are mutually exclusive")
+
+    generator = root / "tools/generators/generate_example_projections.py"
+    if generator.is_file():
+        process = subprocess.run(
+            [sys.executable, str(generator), "--root", str(root), "--check"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else process.stderr.strip()
+        check(
+            process.returncode == 0,
+            "EXAMPLE_PROJECTION_GENERATOR_CHECK",
+            detail[-2000:],
+        )
 
     parsed: dict[Path, Any] = {}
     json_files = sorted(root.rglob("*.json"))

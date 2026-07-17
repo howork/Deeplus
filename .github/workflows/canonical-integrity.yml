@@ -22,6 +22,10 @@ jobs:
           python-version: "3.12"
       - name: Compile repository Python tools
         run: python3 -m compileall -q tools
+      - name: Validate deterministic example projections
+        run: |
+          python3 tools/validators/run_example_projection_generator_tests.py
+          python3 tools/generators/generate_example_projections.py --root . --check
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Run validator mutation suite
