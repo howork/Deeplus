@@ -3,6 +3,16 @@ policy_id: deeplus-management-r1.1
 effective_date: "2026-07-15"
 reference_baseline: 0.1.2-baseline.r51f3
 
+expressiveness_governance:
+  clause_id: EXPR-001
+  normative: true
+  authority: governance/policies/management-policy.yaml#EXPR-001
+  statement: "Expressiveness means translating programmer intent easily, consistently, and responsibly."
+  restriction_rule: "A restriction must provide an expression-preserving alternative or state an explicit impossibility case."
+  visibility_rule: "Responsibility, ownership, effects, failure, cleanup, suspension, authority, provider lookup, call domain, and public API residue remain visible."
+  digest_algorithm: sha256-canonical-json-v1
+  clause_digest: 42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39
+
 architecture:
   implementation_language: Rust
   semantic_authority: Deeplus MIR

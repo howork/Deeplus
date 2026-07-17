@@ -1,12 +1,26 @@
 {
-  "schema": "deeplus.current-pointer/v1",
-  "updated_at": "2026-07-16T05:46:09+09:00",
+  "schema": "deeplus.current-pointer/v2",
+  "updated_at": "2026-07-17T21:46:54+09:00",
   "language_version": "0.1.2-internal",
   "spec_revision": "r51f3-current-publication-m1.3",
-  "source_revision": {
+  "publication_authority_source": {
     "kind": "git-commit",
-    "value": "b6ff1f6e53ea8a21cfb706864478baa02545d3dd",
+    "commit": "b6ff1f6e53ea8a21cfb706864478baa02545d3dd",
+    "role": "publication_authority_source",
     "repository": "https://github.com/howork/Deeplus.git"
+  },
+  "audited_implementation_baseline": {
+    "kind": "git-commit",
+    "commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+    "repository": "https://github.com/howork/Deeplus.git",
+    "branch": "main",
+    "role": "document_consistency_repair_base"
+  },
+  "candidate_binding": {
+    "mode": "external_post_commit_receipt_required",
+    "receipt_location": "external_result_pack",
+    "current_binding": false,
+    "self_binding_forbidden": true
   },
   "authority_digest": "62490fcd2ae1ba2ebd41b7a1c58343c2c13766b6b1e59a67b057731c9bb4b8a0",
   "source_snapshot": {
@@ -36,7 +50,7 @@
       "priority": "P1",
       "summary": "Implement and execute the first focused Rust source-to-lexer-to-parser vertical slice with positive and negative receipts.",
       "owner": "Impl_ + Spec_ + Test_",
-      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A002",
+      "tracking_ref": "deeplus-action:M13-A002",
       "acceptance_test": "A target-bound receipt covers a representative programmer-intent surface such as the named-rest declaration/type/call triplet, including positive, negative, span, parse-node, and diagnostic-order evidence.",
       "target": "first E3 implementation milestone"
     },
@@ -45,7 +59,7 @@
       "priority": "P2",
       "summary": "Approve a public license or usage notice before the first public Deeplus release.",
       "owner": "Design_ + Legal_",
-      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A003",
+      "tracking_ref": "deeplus-action:M13-A003",
       "acceptance_test": "Explicit public terms are approved and published; internal current publication remains clearly distinct from a public release or license grant.",
       "target": "before first public Deeplus release"
     },
@@ -54,7 +68,7 @@
       "priority": "P2",
       "summary": "Harden GitHub Actions references with reviewed commit-SHA pins and a controlled update policy.",
       "owner": "Build_",
-      "tracking_ref": "https://github.com/howork/Deeplus/issues/6#M13-A004",
+      "tracking_ref": "deeplus-action:M13-A004",
       "acceptance_test": "Workflows use reviewed full-SHA action pins with an update policy and fresh Canonical integrity and Rust workspace receipts.",
       "target": "M1.4 or before first public release"
     },
@@ -63,7 +77,7 @@
       "priority": "P1",
       "summary": "Codify Expressiveness First as easy, consistent, and responsible translation of programmer intent across role charters and review templates.",
       "owner": "Design_ + Spec_ + Devel_",
-      "tracking_ref": "https://github.com/howork/Deeplus/issues/8",
+      "tracking_ref": "deeplus-action:M13-A005",
       "acceptance_test": "The shared charter, five primary role prompts, and review templates use the same Expressiveness definition and require an expression-preserving alternative for restrictions.",
       "target": "before the next semantic PR"
     }

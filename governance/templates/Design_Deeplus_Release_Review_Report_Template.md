@@ -71,3 +71,8 @@ ALREADY_APPLIED, or NOT_AUDITABLE.
 State exactly which results are static, focused executable, integrated,
 independent, or NOT_RUN. Do not imply unsupported product status.
 
+[EXPR-001_BINDING]
+clause_id: EXPR-001
+authority: governance/policies/management-policy.yaml#EXPR-001
+clause_digest: 42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39
+classification: non-authoritative projection

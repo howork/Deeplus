@@ -36,9 +36,10 @@
     },
     {
       "id": "EXPR-001",
-      "statement": "Expressiveness means translating programmer intent easily, consistently, and responsibly; restrictions require an expression-preserving alternative or an explicit impossibility case.",
-      "authority": "current user direction pending governance codification",
-      "source": "https://github.com/howork/Deeplus/issues/8",
+      "statement": "Non-authoritative projection; resolve the normative clause by authority path and digest.",
+      "authority": "governance/policies/management-policy.yaml#EXPR-001",
+      "clause_digest": "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39",
+      "source": "governance/policies/management-policy.yaml#EXPR-001",
       "introduced": "r51f3-current-publication-m1.3",
       "review_after": "before next semantic PR",
       "status": "current"
@@ -46,19 +47,11 @@
   ],
   "open_actions": [
     {
-      "id": "M13-DESIGN-001",
-      "priority": "P1",
-      "summary": "Close M1.3 review repairs, obtain the active main ruleset receipt, and keep PR #7 Draft until all merge gates pass.",
-      "owner": "Design_",
-      "acceptance_test": "Latest head passes canonical and mutation checks; seven role reports, ruleset receipt, archive disposition, and integrated release decision are bound.",
-      "target": "M1.3 merge gate"
-    },
-    {
       "id": "M13-A005",
       "priority": "P1",
       "summary": "Codify Expressiveness First across role governance.",
       "owner": "Design_ + Spec_ + Devel_",
-      "acceptance_test": "Issue #8 charter, prompts, and templates use the easy/consistent/responsible intent definition.",
+      "acceptance_test": "EXPR-001 consumers bind the management-policy authority and exact clause digest.",
       "target": "before next semantic PR"
     }
   ],
@@ -92,7 +85,11 @@
       "release": "r51f3-current-publication-m1.3",
       "verdict": "ACCEPT_WITH_REPAIR at reviewed head; merge remains HOLD pending recorded gates",
       "report": "release/evidence/current-publication-m1.3-role-review-index.json"
+    },
+    {
+      "release": "github-pr-7-historical-merge",
+      "verdict": "merged=true; draft=false; merge commit cec72e38d3de716344b64f049fb7a6fc9c1dd01e; tag, GitHub Release, Issue closure, public license, and product promotion are separate and not inferred",
+      "report": "release/evidence/current-publication-m1.3-git-binding-receipt.json"
     }
   ]
 }
-

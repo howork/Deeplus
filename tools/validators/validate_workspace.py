@@ -24,7 +24,8 @@ EXPECTED = {
 }
 EXPECTED_POINTER_KEYS = {
     "schema", "updated_at", "language_version", "spec_revision",
-    "source_revision", "authority_digest", "source_snapshot",
+    "publication_authority_source", "audited_implementation_baseline",
+    "candidate_binding", "authority_digest", "source_snapshot",
     "product_lanes", "open_actions", "required_next_reviews",
     "previous_pointer",
 }
@@ -35,6 +36,24 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
 EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
+EXPR_AUTHORITY = "governance/policies/management-policy.yaml#EXPR-001"
+EXPR_DIGEST = "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39"
+EXPR_FIELDS = {
+    "clause_id": "EXPR-001",
+    "statement": "Expressiveness means translating programmer intent easily, consistently, and responsibly.",
+    "restriction_rule": "A restriction must provide an expression-preserving alternative or state an explicit impossibility case.",
+    "visibility_rule": "Responsibility, ownership, effects, failure, cleanup, suspension, authority, provider lookup, call domain, and public API residue remain visible.",
+}
+EXPR_TEXT_CONSUMERS = [
+    "roles/prompts/Deeplus_Shared_Work_Role_Charter_Prompt.txt",
+    "roles/prompts/Design_Deeplus_Design_and_Release_Steward_Prompt.txt",
+    "roles/prompts/Spec_Deeplus_Language_and_Type_System_Architect_Prompt.txt",
+    "roles/prompts/Impl_Deeplus_Compiler_and_Runtime_Lead_Prompt.txt",
+    "roles/prompts/Test_Deeplus_Conformance_and_Quality_Lead_Prompt.txt",
+    "roles/prompts/Devel_Deeplus_Developer_Experience_and_Ecosystem_Lead_Prompt.txt",
+    "governance/templates/Design_Deeplus_RFC_Template.md",
+    "governance/templates/Design_Deeplus_ADR_Template.md",
+]
 
 
 def canonical_sha(value: Any) -> str:
@@ -303,24 +322,100 @@ def main() -> int:
     implementation_text = (root / "current/implementation-status.yaml").read_text(encoding="utf-8")
     implementation_rows = dict(re.findall(r"^  ([a-z0-9_]+): (NOT_RUN|BLOCKED|FAILED|PASSED_FOCUSED|PASSED_INTEGRATED|PASSED_INDEPENDENT)$", implementation_text, re.MULTILINE))
     check(set(implementation_rows) == set(lane_ids) and implementation_rows == lane_status, "IMPLEMENTATION_STATUS_PARITY", f"registry={len(lane_ids)} yaml={len(implementation_rows)}")
+
+    management_text = (root / "governance/policies/management-policy.yaml").read_text(encoding="utf-8")
+    policy_values: dict[str, str] = {}
+    clause_match = re.search(r"^  clause_id: (\S+)$", management_text, re.MULTILINE)
+    if clause_match:
+        policy_values["clause_id"] = clause_match.group(1)
+    for key in ("statement", "restriction_rule", "visibility_rule"):
+        match = re.search(rf'^  {key}: "([^"]+)"$', management_text, re.MULTILINE)
+        if match:
+            policy_values[key] = match.group(1)
+    digest_match = re.search(r"^  clause_digest: ([0-9a-f]{64})$", management_text, re.MULTILINE)
+    computed_expr_digest = canonical_sha(policy_values) if set(policy_values) == set(EXPR_FIELDS) else ""
+    check(
+        management_text.count("clause_id: EXPR-001") == 1
+        and policy_values == EXPR_FIELDS
+        and bool(digest_match)
+        and digest_match.group(1) == computed_expr_digest == EXPR_DIGEST,
+        "EXPR_NORMATIVE_AUTHORITY",
+        f"count={management_text.count('clause_id: EXPR-001')} digest={computed_expr_digest}",
+    )
+    binding = (
+        "[EXPR-001_BINDING]\n"
+        "clause_id: EXPR-001\n"
+        f"authority: {EXPR_AUTHORITY}\n"
+        f"clause_digest: {EXPR_DIGEST}\n"
+        "classification: non-authoritative projection"
+    )
+    review_consumers = sorted(
+        path for path in (root / "governance/templates").glob("*Review*")
+        if path.is_file()
+    )
+    text_consumers = [root / rel for rel in EXPR_TEXT_CONSUMERS] + review_consumers
+    for path in text_consumers:
+        text = path.read_text(encoding="utf-8")
+        duplicate_normative = any(value in text for key, value in EXPR_FIELDS.items() if key != "clause_id")
+        check(
+            text.count(binding) == 1 and not duplicate_normative,
+            "EXPR_CONSUMER_BINDING",
+            path.relative_to(root).as_posix(),
+        )
+    check(len(review_consumers) == 7, "EXPR_REVIEW_TEMPLATE_DISCOVERY", str(len(review_consumers)))
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
         check(state.get("candidate_revision") == REVISION and state.get("authority_digest") == computed_authority and state.get("current_pointer_published") is False, "CANDIDATE_STATE", str(state.get("candidate_revision")))
     else:
         pointer = parsed.get(root / "current/current-pointer.json", {})
         check(set(pointer) == EXPECTED_POINTER_KEYS, "POINTER_REQUIRED_KEYS", f"missing={sorted(EXPECTED_POINTER_KEYS - set(pointer))} extra={sorted(set(pointer) - EXPECTED_POINTER_KEYS)}")
-        check(pointer.get("schema") == "deeplus.current-pointer/v1", "POINTER_CLOSED_SHAPE", str(pointer.get("schema")))
-        source_revision = pointer.get("source_revision", {})
-        check(source_revision.get("kind") in {"git-commit", "git-tag", "legacy-import"} and bool(source_revision.get("value")), "POINTER_SOURCE_REVISION", str(source_revision))
+        check(pointer.get("schema") == "deeplus.current-pointer/v2", "POINTER_CLOSED_SHAPE", str(pointer.get("schema")))
+        publication_source = pointer.get("publication_authority_source", {})
+        audited_baseline = pointer.get("audited_implementation_baseline", {})
+        candidate_binding = pointer.get("candidate_binding", {})
+        check(
+            publication_source == {
+                "kind": "git-commit",
+                "commit": "b6ff1f6e53ea8a21cfb706864478baa02545d3dd",
+                "role": "publication_authority_source",
+                "repository": "https://github.com/howork/Deeplus.git",
+            },
+            "POINTER_PUBLICATION_SOURCE",
+            str(publication_source),
+        )
+        check(
+            audited_baseline == {
+                "kind": "git-commit",
+                "commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+                "repository": "https://github.com/howork/Deeplus.git",
+                "branch": "main",
+                "role": "document_consistency_repair_base",
+            },
+            "POINTER_AUDITED_BASELINE",
+            str(audited_baseline),
+        )
+        check(
+            candidate_binding == {
+                "mode": "external_post_commit_receipt_required",
+                "receipt_location": "external_result_pack",
+                "current_binding": False,
+                "self_binding_forbidden": True,
+            },
+            "POINTER_EXTERNAL_BINDING",
+            str(candidate_binding),
+        )
         snapshot = pointer.get("source_snapshot")
         check(snapshot is None or (set(snapshot) == {"library_file_id", "sha256"} and bool(re.fullmatch(r"[0-9a-f]{64}", snapshot.get("sha256", "")))), "POINTER_SOURCE_SNAPSHOT", str(snapshot))
         git_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-git-binding-receipt.json", {})
         check(
             git_receipt.get("result") == "PASS_REVIEWED_HEAD"
-            and source_revision.get("kind") == "git-commit"
-            and source_revision.get("repository") == git_receipt.get("repository")
-            and source_revision.get("value") == git_receipt.get("source_authority_commit"),
-            "POINTER_SOURCE_BINDING", str(source_revision),
+            and git_receipt.get("scope") == "historical_reviewed_head"
+            and git_receipt.get("current_binding") is False
+            and git_receipt.get("reviewed_head") == "989bef9da472348971e56fafb2c9abc550100226"
+            and git_receipt.get("pull_request") == 7
+            and publication_source.get("repository") == git_receipt.get("repository")
+            and publication_source.get("commit") == git_receipt.get("source_authority_commit"),
+            "POINTER_SOURCE_BINDING", str(publication_source),
         )
         snapshot_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json", {})
         snapshot_object = snapshot_receipt.get("object", {})
@@ -345,8 +440,15 @@ def main() -> int:
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         check(
             action_ids == EXPECTED_ACTION_IDS and next_review_ids == action_ids
+            and len(action_ids) == len(set(action_ids))
             and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
             "POINTER_ACTION_BINDING", str(action_ids),
+        )
+        check(
+            all(row.get("tracking_ref") == f"deeplus-action:{row.get('id')}" for row in actions)
+            and all("issues/6" not in row.get("tracking_ref", "") for row in actions),
+            "POINTER_INTERNAL_TRACKING",
+            str([row.get("tracking_ref") for row in actions]),
         )
         check(pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS, "POINTER_NEXT_REVIEW_BINDING", str(pointer.get("required_next_reviews")))
         review_index = parsed.get(root / "release/evidence/current-publication-m1.3-role-review-index.json", {})
@@ -382,6 +484,32 @@ def main() -> int:
         capsule = parsed.get(path, {})
         check(len(capsule.get("current_facts", [])) <= 50 and len(capsule.get("open_actions", [])) <= 30 and len(capsule.get("watch_items", [])) <= 20 and path.stat().st_size <= 102400, "ROLE_MEMORY_CAP", path.name)
         check(capsule.get("source_revision") == REVISION and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
+        expr_rows = [row for row in capsule.get("current_facts", []) if row.get("id") == "EXPR-001"]
+        check(
+            len(expr_rows) == 1
+            and expr_rows[0].get("statement") == "Non-authoritative projection; resolve the normative clause by authority path and digest."
+            and expr_rows[0].get("authority") == EXPR_AUTHORITY
+            and expr_rows[0].get("source") == EXPR_AUTHORITY
+            and expr_rows[0].get("clause_digest") == EXPR_DIGEST
+            and "github.com/howork/Deeplus/issues/8" not in json.dumps(capsule, ensure_ascii=False),
+            "EXPR_MEMORY_BINDING",
+            path.name,
+        )
+    design_memory = parsed.get(root / "roles/current-memory/Design_Deeplus_Current_Memory.json", {})
+    design_actions = design_memory.get("open_actions", [])
+    design_history = design_memory.get("recent_releases", [])
+    pr7_history = [row for row in design_history if row.get("release") == "github-pr-7-historical-merge"]
+    check(
+        all(row.get("id") != "M13-DESIGN-001" for row in design_actions)
+        and all("PR #7" not in json.dumps(row, ensure_ascii=False) and "Draft" not in json.dumps(row, ensure_ascii=False) for row in design_actions)
+        and len(pr7_history) == 1
+        and "merged=true" in pr7_history[0].get("verdict", "")
+        and "draft=false" in pr7_history[0].get("verdict", "")
+        and "cec72e38d3de716344b64f049fb7a6fc9c1dd01e" in pr7_history[0].get("verdict", "")
+        and all(term in pr7_history[0].get("verdict", "") for term in ("tag", "GitHub Release", "Issue closure", "public license", "product promotion", "not inferred")),
+        "DESIGN_PR7_HISTORICAL",
+        str(pr7_history),
+    )
 
     crates = sorted(path for path in (root / "crates").iterdir() if path.is_dir())
     check(len(crates) == 15, "CRATE_BOUNDARY_COUNT", str(len(crates)))

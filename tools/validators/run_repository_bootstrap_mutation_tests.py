@@ -7,6 +7,7 @@ import argparse
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
 import tomllib
 from pathlib import Path
@@ -112,7 +113,30 @@ def implementation_status_mismatch(root: Path) -> None:
 def pointer_source_revision_wrong(root: Path) -> None:
     path = root / "current/current-pointer.json"
     value = json.loads(path.read_text(encoding="utf-8"))
-    value["source_revision"]["value"] = "0" * 40
+    value["publication_authority_source"]["commit"] = "0" * 40
+    write_json(path, value)
+
+
+def pointer_tracking_ref_external(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["open_actions"][0]["tracking_ref"] = "https://github.com/howork/Deeplus/issues/6"
+    write_json(path, value)
+
+
+def expr_consumer_digest_wrong(root: Path) -> None:
+    path = root / "roles/prompts/Deeplus_Shared_Work_Role_Charter_Prompt.txt"
+    value = path.read_text(encoding="utf-8").replace(
+        "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39",
+        "0" * 64,
+    )
+    path.write_text(value, encoding="utf-8")
+
+
+def historical_binding_claims_current(root: Path) -> None:
+    path = root / "release/evidence/current-publication-m1.3-git-binding-receipt.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["current_binding"] = True
     write_json(path, value)
 
 
@@ -168,7 +192,7 @@ def stale_role_memory(root: Path) -> None:
 def refresh_manifest(root: Path, name: str) -> tuple[bool, str]:
     output = root.parent / f"{name}.zip"
     result = subprocess.run(
-        ["python3", str(BUILDER), "--root", str(root), "--output", str(output)],
+        [sys.executable, str(BUILDER), "--root", str(root), "--output", str(output)],
         text=True,
         capture_output=True,
         check=False,
@@ -209,6 +233,9 @@ def run(write_receipt: bool) -> int:
         ("pointer_lane_extra", pointer_lane_extra, "POINTER_LANE_PARITY"),
         ("implementation_status_mismatch", implementation_status_mismatch, "IMPLEMENTATION_STATUS_PARITY"),
         ("pointer_source_revision_wrong", pointer_source_revision_wrong, "POINTER_SOURCE_BINDING"),
+        ("pointer_tracking_ref_external", pointer_tracking_ref_external, "POINTER_INTERNAL_TRACKING"),
+        ("expr_consumer_digest_wrong", expr_consumer_digest_wrong, "EXPR_CONSUMER_BINDING"),
+        ("historical_binding_claims_current", historical_binding_claims_current, "POINTER_SOURCE_BINDING"),
         ("pointer_snapshot_id_empty", pointer_snapshot_id_empty, "POINTER_SNAPSHOT_ID"),
         ("pointer_snapshot_sha_wrong", pointer_snapshot_sha_wrong, "POINTER_SNAPSHOT_BINDING"),
         ("pointer_predecessor_wrong", pointer_predecessor_wrong, "POINTER_PREDECESSOR_BINDING"),
@@ -235,7 +262,7 @@ def run(write_receipt: bool) -> int:
                     "harness_error": refresh_output,
                 })
                 continue
-            command = ["python3", str(VALIDATOR), "--root", str(target), "--no-receipt"]
+            command = [sys.executable, str(VALIDATOR), "--root", str(target), "--no-receipt"]
             if candidate_mode:
                 command.append("--candidate")
             result = subprocess.run(
