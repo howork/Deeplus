@@ -189,6 +189,38 @@ def stale_role_memory(root: Path) -> None:
     write_json(path, value)
 
 
+def match_guard_annotation_fixit(root: Path) -> None:
+    for path in sorted((root / "spec/diagnostics/catalog/chunks").glob("part-*.json")):
+        rows = json.loads(path.read_text(encoding="utf-8"))
+        for row in rows:
+            if row.get("diagnostic_id") == "MATCH_ARM_SINGLE_GUARD_ONLY":
+                row["fixit_policy"] = "place the annotation immediately before its target declaration"
+                write_json(path, rows)
+                return
+    raise RuntimeError("MATCH_ARM_SINGLE_GUARD_ONLY not found")
+
+
+def current_integrity_delta_hash(root: Path) -> None:
+    path = root / "migration/current-document-consistency-repair-r2.3-manifest.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["transitions"][0]["approved_current_sha256"] = "0" * 64
+    write_json(path, value)
+
+
+def current_integrity_missing_transition(root: Path) -> None:
+    path = root / "tools/generators/current-integrity.contract.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["historical_transitions"].pop()
+    write_json(path, value)
+
+
+def current_integrity_nonowned_reassembly(root: Path) -> None:
+    path = root / "migration/catalog-reassembly.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["contracts"][2]["partition_key"] = "mutation"
+    write_json(path, value)
+
+
 def refresh_manifest(root: Path, name: str) -> tuple[bool, str]:
     output = root.parent / f"{name}.zip"
     result = subprocess.run(
@@ -243,6 +275,10 @@ def run(write_receipt: bool) -> int:
         ("pointer_action_id_substitution", pointer_action_id_substitution, "POINTER_ACTION_BINDING"),
         ("pointer_review_route_mismatch", pointer_review_route_mismatch, "POINTER_ACTION_BINDING"),
         ("stale_role_memory", stale_role_memory, "ROLE_MEMORY_CURRENT"),
+        ("match_guard_annotation_fixit", match_guard_annotation_fixit, "MATCH_GUARD_FIXIT"),
+        ("current_integrity_delta_hash", current_integrity_delta_hash, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
+        ("current_integrity_missing_transition", current_integrity_missing_transition, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
+        ("current_integrity_nonowned_reassembly", current_integrity_nonowned_reassembly, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
     ]
     results = []
     with tempfile.TemporaryDirectory(prefix="deeplus-workspace-mutations-") as temp:

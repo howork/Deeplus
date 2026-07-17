@@ -1,0 +1,456 @@
+{
+  "schema": "deeplus.design-current-integrity-generator-contract/v1",
+  "producer": "Design_",
+  "revision": "R2.3",
+  "created_on": "2026-07-17",
+  "repository": "howork/Deeplus",
+  "authority_decision": "OPTION_A_ADD_BOUNDED_DETERMINISTIC_CURRENT_INTEGRITY_GENERATOR",
+  "evidence_boundary": "Static repository integrity only; all product lanes remain NOT_RUN.",
+  "frozen_base": {
+    "branch": "main",
+    "commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+    "tree": "8c1699b554903b174e1d39918fac91197dbf254a",
+    "rust": "1.85.0"
+  },
+  "stopped_state": {
+    "branch": "codex/document-consistency-repair-r2",
+    "head": "5918a7e618243c25b1d0315d9c3cabe74c320d36",
+    "tree": "c80f39b794de2dfd489ffbc158d3c2f2110895a8",
+    "candidate_g": "8a8e50ee14ed689bca1cb9eb6fd18541f8a937b5",
+    "candidate_a": "5918a7e618243c25b1d0315d9c3cabe74c320d36",
+    "candidate_b_state": "UNCOMMITTED_PRESERVED",
+    "candidate_b_changed_path_count": 34,
+    "candidate_b_patch_sha256": "641c8e43330c061afc42e8e7e832c659151b01633f058c8b21d8069bc39618f8",
+    "example_projection_write_ordinal": 1,
+    "example_projection_strict_check": "PASS"
+  },
+  "repository_implementation": {
+    "generator": "tools/generators/generate_current_integrity.py",
+    "contract": "tools/generators/current-integrity.contract.json",
+    "test_runner": "tools/validators/run_current_integrity_generator_tests.py",
+    "workflow": ".github/workflows/canonical-integrity.yml",
+    "validator": "tools/validators/validate_workspace.py",
+    "mutation_harness": "tools/validators/run_repository_bootstrap_mutation_tests.py",
+    "language": "Python",
+    "classification": "NON_PRODUCT_REPOSITORY_TOOLING"
+  },
+  "cli": {
+    "common": "python3 tools/generators/generate_current_integrity.py --root .",
+    "modes": [
+      "--check",
+      "--write"
+    ],
+    "check_policy": "READ_ONLY_STRICT_BYTE_EQUALITY",
+    "write_policy": "ONE_BOUNDED_ATOMIC_RENDER_AFTER_ALL_AUTHORITY_AND_EXAMPLE_OUTPUTS_ARE_FINAL",
+    "receipt_schema": "deeplus.current-integrity-generator-receipt/v1"
+  },
+  "input_authorities": {
+    "authority_map": "current/authority-map.yaml",
+    "pointer": "current/current-pointer.json",
+    "catalog_reassembly": "migration/catalog-reassembly.json",
+    "historical_import_receipt": "migration/import-manifest.json",
+    "historical_repair_receipt": "migration/m1.1-repair-manifest.json",
+    "domain_order": [
+      "human_language",
+      "exact_grammar",
+      "frontend_admission",
+      "type_system",
+      "mir_observable_semantics",
+      "prelude",
+      "examples",
+      "current_decisions",
+      "features",
+      "diagnostics",
+      "checker_predicates"
+    ],
+    "domain_path_and_owner_source": "current/authority-map.yaml",
+    "domain_path_and_owner_mutation": "FORBIDDEN"
+  },
+  "digest_algorithm": {
+    "file_domain": "sha256(raw_file_bytes)",
+    "directory_domain_file_filter": "recursive files with suffix .json only",
+    "directory_domain_sort_key": "POSIX relative path from the domain root, ascending bytewise",
+    "directory_domain_row": "relative_path + U+0000 + sha256(raw_file_bytes)",
+    "directory_domain_bytes": "UTF-8 encoding of rows joined by U+000A with no trailing U+000A",
+    "directory_domain_digest": "sha256(directory_domain_bytes)",
+    "aggregate_rows": "Use the existing validate_workspace.py digest_rows construction with actual domain digests in authority-map domain order.",
+    "aggregate_serialization": {
+      "encoding": "UTF-8",
+      "ensure_ascii": false,
+      "sort_keys": true,
+      "separators": [
+        ",",
+        ":"
+      ]
+    },
+    "aggregate_digest": "sha256(canonical_json(digest_rows))",
+    "parity_gate": "Generator and validator must independently compute identical domain and aggregate digests in isolated tests."
+  },
+  "output_ownership": [
+    {
+      "path": "current/authority-map.yaml",
+      "owned_fields": [
+        "domains[*].sha256",
+        "authority_digest"
+      ],
+      "preserve": "schema, revision, domain order, domain IDs, paths, owners, conflict-resolution rules, formatting-compatible non-owned values"
+    },
+    {
+      "path": "current/current-pointer.json",
+      "owned_fields": [
+        "authority_digest"
+      ],
+      "preserve": "all Candidate A identity, action, source, status, receipt, and non-owned fields"
+    },
+    {
+      "path": "migration/catalog-reassembly.json",
+      "owned_contracts": [
+        "deeplus-0.1.2-baseline-r51f3-feature-registry.json",
+        "deeplus-0.1.2-baseline-r51f3-diagnostic-registry.json"
+      ],
+      "owned_fields_per_contract": [
+        "row_count",
+        "ordered_shard_paths",
+        "canonical_object_sha256"
+      ],
+      "preserve": "all provenance/historical fields, every other field in the two contracts, and all ten other contracts"
+    },
+    {
+      "path": "migration/current-document-consistency-repair-r2.3-manifest.json",
+      "owned_fields": [
+        "ENTIRE_FILE"
+      ],
+      "self_hash_policy": "EXCLUDED",
+      "excluded_dependency": "release/source-tree-manifest.json"
+    }
+  ],
+  "reassembly_algorithm": {
+    "object_order": "ordered_shard_paths in deterministic repository path order",
+    "row_count": "sum of rows reconstructed from the ordered shards",
+    "canonical_object_sha256": "the same reconstructed-object canonical JSON hash used by validate_workspace.py",
+    "other_contract_policy": "VALUE_IDENTICAL",
+    "example_contract_owner": "tools/generators/generate_example_projections.py"
+  },
+  "historical_receipt_policy": {
+    "immutable_paths": [
+      "migration/import-manifest.json",
+      "migration/m1.1-repair-manifest.json"
+    ],
+    "validator_exception_policy": "An old identity mismatch is accepted only through one exact transition entry that matches path, named receipt, old receipt output hash, frozen hash, approved current hash, authority class, and Design decision. No wildcard, prefix, or hash-only acceptance is allowed.",
+    "transition_count": 26,
+    "unknown_transition_policy": "FAIL"
+  },
+  "historical_transitions": [
+    {
+      "path": "examples/manifests/by-outcome/catalog-metadata.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "e0dc8b73326cd5f2e47980e89bbcef140317e88839c100e1aa18670240369dc6",
+      "approved_current_sha256": "2f25187b8715d588a85ab14bc428ac7cec4c839b8bf2064ed7f69d340a4c1827",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0001.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "6d915e20f17ab8cb08d8e8b3ae82f910c05be9eb9e298ad2ae53ff5c3dc8970e",
+      "approved_current_sha256": "33f5a540f2275199dfeacb176aad4ec717044d378f5bfb5933223dd1749ca6c1",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0002.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "1a52219d720a910dcc3890b11afa93c4c364756704a210bc1c040809d9fe1690",
+      "approved_current_sha256": "6098f710be47ddadf004c9db727fa6c09c2973efd05100d86f19b259ba35c3bd",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0003.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "ec7af1ae96ccff77f87e1b9af7881bdbab72f0594e6486c3e6346207886d6f1a",
+      "approved_current_sha256": "5ffa8356f91e0fe7dd67a0d1b13857d2f40ceb69394976f57d22454e094c7995",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0004.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "d3485cc312469e9e4bcc25c4803f13c614ebf83670eec282ab2a07f36394929f",
+      "approved_current_sha256": "58c8e8852614a76ba40b93cef7c99cf5399f70623517c62110f45eec43925e7f",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0005.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "1b426ce136e78e3673dbe51eff94c084c8cbfae3b4bfc5f407d0ade4bdc93eef",
+      "approved_current_sha256": "bc8cd94e6b534d152852d732b80ef4a92792dd8bcd69accd4870ad618acf419d",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0006.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "c50fc017cb433a7bf409b9dd85c5a6854b407970975495027f59c9933eb14593",
+      "approved_current_sha256": "f1399db531a8b4f5b0f0f902e337a65aa782f7832dc35d9ced9f9d923121eecd",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0007.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "4386df1193d9feb0a94df5de33ebcc8958027ef1a650c73a6ef645bb4a664cc1",
+      "approved_current_sha256": "2be3f145e96febd93869fe9833944e6b3f61d143f00d012aaae69e088f5d3a98",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0008.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "da73d4d0eb5952919b4f1df47c32bf365ec15b40639affd51c530e50fce3b4b9",
+      "approved_current_sha256": "6c347a4372896a498b44ff61461ca0bd98cb0130d2b681fbd0a9a9b7cfe373da",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0009.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "fecd834e1368328316697ded8ad57ff3cf08e4f38e59d2d8c87c8327be9c9e2c",
+      "approved_current_sha256": "723191017baa6783abb7f682a9bf3055fc691dc0850114cc0beed744cea19507",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "8ec68fdd694259f8e8c1fb8f2d21012101ae7cfcd4238a00d7ac46908f97cfe7",
+      "approved_current_sha256": "68dbb51c4f3be0729fbf0339a061a8898f6bc868091a1f10807d467d79416d35",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0011.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "3d189d16bfd40a7f7496734e1ad38b32eb53809946d00d73900066dccf96b1ac",
+      "approved_current_sha256": "33ff6836f58b2394e72a192261d09318837d06ee7e5544db6bccbd5101437e1c",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0012.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "e176add4122e297297e9900994fead2aed0c7495ba2b95d9dc1fd162aac51b63",
+      "approved_current_sha256": "fbb2ab5db98ba718e7a0debaec2db2c2d22ca0ed33c0e6a71d430167d3bd5b68",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0013.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "ee02fc8c5fbab349893f75e800ad7bd04e271cc5cd5d2bf54f3b02b132a479f5",
+      "approved_current_sha256": "aa954a0cc734f6fb4d797fe97347292e9a7183058dd9f5dd5035360873f53b7c",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0014.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "7b12fc3bdc4aeac465db2b1329ced254cb5b3d8fe5c2508ecd9e7b5b7d014471",
+      "approved_current_sha256": "803f27f61f5bccc161626219c05a4965276cf45b52f9aecfc847b7a035982656",
+      "decision_ids": ["R22-A003"]
+    },
+    {
+      "path": "schemas/language/feature-row.schema.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "authority_schema",
+      "frozen_sha256": "106da3390907bccda540bfd500f6aa196eae2a91074783fc4a8be9f1daaa40aa",
+      "approved_current_sha256": "ca6fe0a3ba96c8bce081e1949ffa3f3d973b8d0fb3ad21e2655e0230d21d41b7",
+      "decision_ids": ["DCR-P1-004"]
+    },
+    {
+      "path": "spec/diagnostics/catalog/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "diagnostic_authority_source",
+      "frozen_sha256": "51b2733e7107b7f84d45371dbaa79e0c6d52fb0b11c248857fc25fedd9ef6978",
+      "approved_current_sha256": "8c6cafc6719b96bdb2fded3738f564249a79930acda7f21e4e4f80b1771aa862",
+      "decision_ids": ["DCR-P1-009"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0001.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "48b63dad67eef19036f18777b44a3dd37ee5f75f692b528080fd5b804193483d",
+      "approved_current_sha256": "4358ea8e469c1e662673f846637dafb3625775fdc259442182d82d6d23e2ef1d",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0002.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "c882650f3ac55f1ca099f298891556ee63cbfbf13b91aa9233b940e0816220ed",
+      "approved_current_sha256": "13d74560e7e1c16b76bf695466daab0223f8c127174b8558a4a49bd7f282a869",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0009.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "d1b3853fef86abdf77dcad1fbeb6d87c0bf094be007c5a11e50c4d133d5b34f8",
+      "approved_current_sha256": "d9b5cb9b2614817db91051bd4d9c60bb541469be3ab27781e91772b7b0f8d626",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "30b211b661c02f34d5da0692298892e83e429cdd5ba599b7abb84e29ca2dc18d",
+      "approved_current_sha256": "ad7c152024f212e66db203341f3e43b51d5c5a0d61d0da538f490b2d8a6a49cb",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0011.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "cdb9ad2f3d6d241ed9c9c2eb826b38a0f6bc896c38b03fd3b7b95dcb55fe2bf8",
+      "approved_current_sha256": "ada88579fc720e0b635d87c784c2e791fced5f7effd3599274b1426d02bd81d5",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0014.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "8d29f559aab9ba3fccab5dc1c88f60854f872ad3e4446bcfa365cb809667b8cd",
+      "approved_current_sha256": "4b1a13c1ca147b0e5dbe5f6d0192e8d4f245c499601e7becaf8f66732badd54d",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0015.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "e020b9ed6d00655ecf0f2f28ed3dbdf904a6e9cfc83092b7fc7ab8bab4244196",
+      "approved_current_sha256": "1d40d4544169f5bcef5696234c66a8090d096f94f299331aaeaf841292ee9155",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004", "DCR-P1-005", "R22-A002"]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0016.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "8e0a53838a45f566325a2c015b9e8285e1080dc61eb7dd68e7d85a95977fbc05",
+      "approved_current_sha256": "2c33dc080b8f39974a73a191917c57a2b819c51c074ad02f8a8e6f34d9566c88",
+      "decision_ids": ["DCR-P1-003", "DCR-P1-004"]
+    },
+    {
+      "path": "spec/mir/semantics.md",
+      "historical_receipt": "migration/import-manifest.json",
+      "classification": "mir_authority_source",
+      "frozen_sha256": "faf3a364a0ba7d3ba483b366e5549eb400cb672522d492f7946dfc77b90a22e1",
+      "approved_current_sha256": "5b672127c0c4665d037d89708986746dd152e094f302b58d7efd4ba859698005",
+      "decision_ids": ["DCR-P1-008"]
+    }
+  ],
+  "render_order": [
+    "validate base, stopped state, exact 26 candidate hashes, immutable historical receipts, domain paths, ownership, cycles, and output allowlist",
+    "render feature and diagnostic reassembly owned fields in memory",
+    "compute 11 authority domain hashes from current authority sources",
+    "compute aggregate authority_digest",
+    "render pointer authority_digest only",
+    "render current R2.3 delta manifest from finalized in-memory output hashes",
+    "strict compare for --check or atomic replace the four owned paths for --write"
+  ],
+  "cycle_exclusions": [
+    "current/authority-map.yaml",
+    "current/current-pointer.json",
+    "migration/current-document-consistency-repair-r2.3-manifest.json",
+    "release/source-tree-manifest.json"
+  ],
+  "source_archive": {
+    "generator": "tools/release/build_source_archive.py",
+    "repository_output": "release/source-tree-manifest.json",
+    "run_after_current_integrity_write": true,
+    "run_integrity_check_after_archive": true,
+    "external_archive_count": 2,
+    "external_archives_must_be_byte_identical": true,
+    "archive_in_repository": false
+  },
+  "candidate_i": {
+    "parent": "5918a7e618243c25b1d0315d9c3cabe74c320d36",
+    "message": "build(tools): add deterministic current integrity generator",
+    "exact_paths": [
+      "tools/generators/generate_current_integrity.py",
+      "tools/generators/current-integrity.contract.json",
+      "tools/validators/run_current_integrity_generator_tests.py",
+      ".github/workflows/canonical-integrity.yml",
+      "tools/validators/validate_workspace.py",
+      "tools/validators/run_repository_bootstrap_mutation_tests.py"
+    ],
+    "authority_or_generated_output_allowed": false,
+    "test_scope": "isolated temporary copies only; repository --write is forbidden before Candidate I"
+  },
+  "candidate_b": {
+    "parent": "Candidate_I",
+    "message": "docs(spec): close trace corpus and MIR handoff gaps",
+    "includes": "all remaining approved R2/R2.2 source and projection changes plus current-integrity outputs and source-tree manifest",
+    "example_projection_write": "DO_NOT_REPEAT; ordinal one already completed and bound",
+    "current_integrity_write_count": 1,
+    "source_archive_generation": "AFTER_CURRENT_INTEGRITY_WRITE",
+    "final_chain": "4c85d5b9 -> G -> A -> I -> B",
+    "fifth_commit": "FORBIDDEN"
+  },
+  "required_mutations": [
+    "domain source byte change",
+    "domain order change",
+    "pointer digest change",
+    "pointer included in a domain cycle",
+    "authority map included in a domain cycle",
+    "wrong reassembly row count",
+    "wrong shard order",
+    "wrong canonical object hash",
+    "change in any non-owned reassembly field or contract",
+    "historical receipt byte change",
+    "missing historical transition",
+    "extra historical transition",
+    "wrong historical receipt",
+    "wrong old hash",
+    "wrong approved current hash",
+    "unauthorized delta path",
+    "delta manifest self entry",
+    "source-tree manifest delta entry",
+    "output path escape",
+    "check-mode write",
+    "product lane transition from NOT_RUN"
+  ],
+  "stop_codes": [
+    "R2_3_BOUND_STATE_DRIFT",
+    "R2_3_CANDIDATE_B_PATCH_DRIFT",
+    "R2_3_HISTORICAL_RECEIPT_DRIFT",
+    "R2_3_HISTORICAL_CHAIN_MISMATCH",
+    "R2_3_DELTA_PATH_SET_MISMATCH",
+    "R2_3_CURRENT_INTEGRITY_CYCLE",
+    "R2_3_OUTPUT_ESCAPE",
+    "R2_3_OUTPUT_OWNERSHIP_VIOLATION",
+    "R2_3_NON_OWNED_FIELD_DRIFT",
+    "R2_3_EXAMPLE_WRITE_REPEATED",
+    "R2_3_CURRENT_INTEGRITY_CHECK_MISMATCH",
+    "R2_3_SOURCE_ARCHIVE_NONDETERMINISTIC",
+    "R2_3_FULL_VALIDATION_FAILED",
+    "R2_3_COMMIT_CHAIN_DRIFT",
+    "R2_3_REMOTE_ACTION_ATTEMPTED",
+    "R2_3_PRODUCT_LANE_TRANSITION"
+  ],
+  "prohibited": [
+    "manual editing of generated digest, registry, reassembly, crosswalk, matrix, or manifest fields",
+    "use of tools/migration/import_r51f3.py as the current generator",
+    "use of R1 or R1.1 untracked generators or dirty worktrees",
+    "second example projection --write",
+    "editing migration/import-manifest.json",
+    "editing migration/m1.1-repair-manifest.json",
+    "amending or rebasing Candidate G or Candidate A",
+    "push, PR, Issue, workflow dispatch, CI rerun, merge, tag, release, publication, license, or promotion action"
+  ],
+  "product_lanes": {
+    "count": 15,
+    "required_state": "NOT_RUN"
+  }
+}

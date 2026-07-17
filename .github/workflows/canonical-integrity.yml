@@ -26,6 +26,10 @@ jobs:
         run: |
           python3 tools/validators/run_example_projection_generator_tests.py
           python3 tools/generators/generate_example_projections.py --root . --check
+      - name: Validate deterministic current integrity
+        run: |
+          python3 tools/validators/run_current_integrity_generator_tests.py
+          python3 tools/generators/generate_current_integrity.py --root . --check
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Run validator mutation suite
