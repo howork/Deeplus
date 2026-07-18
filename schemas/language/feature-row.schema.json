@@ -254,6 +254,84 @@
     "product_support": {
       "const": "NOT_RUN"
     },
+    "evidence_coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "feature_id",
+          "coverage_kind",
+          "missing_outcome",
+          "reason",
+          "owner"
+        ],
+        "properties": {
+          "feature_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "coverage_kind": {
+            "enum": [
+              "N/A_REJECTION_ONLY_LAW",
+              "N/A_DELEGATED_UMBRELLA",
+              "N/A_WARNING_PROFILE"
+            ]
+          },
+          "missing_outcome": {
+            "enum": [
+              "accept",
+              "reject"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delegated_feature_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delegated_rule": {
+            "type": "string",
+            "minLength": 1
+          },
+          "substitute_boundary_diagnostic": {
+            "type": "string",
+            "minLength": 1
+          },
+          "substitute_evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "delegated_feature_id",
+              "delegated_rule",
+              "substitute_evidence"
+            ]
+          },
+          {
+            "required": [
+              "substitute_boundary_diagnostic",
+              "substitute_evidence"
+            ]
+          }
+        ]
+      },
+      "uniqueItems": true
+    },
     "not_applicable_reason": {
       "type": "string",
       "minLength": 1

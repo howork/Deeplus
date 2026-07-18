@@ -674,6 +674,7 @@ def main() -> int:
     active_navigation_text = "\n".join(
         (root / rel).read_text(encoding="utf-8", errors="replace")
         for rel in ("README.md", "GOVERNANCE.md", "CONTRIBUTING.md", "current/current-pointer.json")
+        if (root / rel).is_file()
     )
     check("EP1" not in active_navigation_text, "EP1_CURRENT_NAVIGATION_ZERO", "README/GOVERNANCE/CONTRIBUTING/pointer")
     check(
