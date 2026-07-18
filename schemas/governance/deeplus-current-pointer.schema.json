@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus.example/schemas/current-pointer-v1.json",
+  "$id": "https://deeplus.example/schemas/current-pointer-v2.json",
   "title": "Deeplus Current Pointer",
   "type": "object",
   "additionalProperties": false,
@@ -9,24 +9,50 @@
     "updated_at",
     "language_version",
     "spec_revision",
-    "source_revision",
+    "publication_authority_source",
+    "audited_implementation_baseline",
+    "candidate_binding",
     "authority_digest",
     "product_lanes",
     "open_actions"
   ],
   "properties": {
-    "schema": {"const": "deeplus.current-pointer/v1"},
+    "schema": {"const": "deeplus.current-pointer/v2"},
     "updated_at": {"type": "string", "format": "date-time"},
     "language_version": {"type": "string"},
     "spec_revision": {"type": "string"},
-    "source_revision": {
+    "publication_authority_source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "value"],
+      "required": ["kind", "commit", "role", "repository"],
       "properties": {
-        "kind": {"enum": ["git-commit", "git-tag", "legacy-import"]},
-        "value": {"type": "string", "minLength": 1},
-        "repository": {"type": ["string", "null"]}
+        "kind": {"const": "git-commit"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "role": {"const": "publication_authority_source"},
+        "repository": {"type": "string", "minLength": 1}
+      }
+    },
+    "audited_implementation_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "commit", "repository", "branch", "role"],
+      "properties": {
+        "kind": {"const": "git-commit"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "repository": {"type": "string", "minLength": 1},
+        "branch": {"const": "main"},
+        "role": {"const": "document_consistency_repair_base"}
+      }
+    },
+    "candidate_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "receipt_location", "current_binding", "self_binding_forbidden"],
+      "properties": {
+        "mode": {"const": "external_post_commit_receipt_required"},
+        "receipt_location": {"const": "external_result_pack"},
+        "current_binding": {"const": false},
+        "self_binding_forbidden": {"const": true}
       }
     },
     "authority_digest": {"type": "string", "minLength": 1},
@@ -62,7 +88,7 @@
           "priority": {"enum": ["P0", "P1", "P2"]},
           "summary": {"type": "string"},
           "owner": {"type": "string"},
-          "tracking_ref": {"type": "string", "minLength": 1},
+          "tracking_ref": {"type": "string", "pattern": "^deeplus-action:[A-Za-z0-9._-]+$"},
           "acceptance_test": {"type": "string", "minLength": 1},
           "target": {"type": "string", "minLength": 1}
         },

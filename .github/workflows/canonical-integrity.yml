@@ -17,11 +17,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Compile repository Python tools
         run: python3 -m compileall -q tools
+      - name: Validate deterministic example projections
+        run: |
+          python3 tools/validators/run_example_projection_generator_tests.py
+          python3 tools/generators/generate_example_projections.py --root . --check
+      - name: Validate deterministic current integrity
+        run: |
+          python3 tools/validators/run_current_integrity_generator_tests.py
+          python3 tools/generators/generate_current_integrity.py --root . --check
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Run validator mutation suite

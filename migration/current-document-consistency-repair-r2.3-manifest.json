@@ -1,0 +1,413 @@
+{
+  "schema": "deeplus.current-document-consistency-repair-delta/v1",
+  "revision": "R2.3",
+  "result": "STATIC_CURRENT_INTEGRITY_CLOSURE",
+  "evidence_boundary": "Static repository integrity only; all product lanes remain NOT_RUN.",
+  "authority_decision": "OPTION_A_ADD_BOUNDED_DETERMINISTIC_CURRENT_INTEGRITY_GENERATOR",
+  "frozen_base": {
+    "branch": "main",
+    "commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+    "tree": "8c1699b554903b174e1d39918fac91197dbf254a",
+    "rust": "1.85.0"
+  },
+  "candidate_chain_input": {
+    "candidate_g": "8a8e50ee14ed689bca1cb9eb6fd18541f8a937b5",
+    "candidate_a": "5918a7e618243c25b1d0315d9c3cabe74c320d36",
+    "candidate_b_state": "APPROVED_CURRENT_BYTES"
+  },
+  "generator": {
+    "path": "tools/generators/generate_current_integrity.py",
+    "sha256": "62776df4d43130110448ecadfda50720b0097b58921fcac33ece0f4ffec18488",
+    "contract": "tools/generators/current-integrity.contract.json",
+    "contract_sha256": "0e2b80df3147e17d3e2b02465be525a2755e2e7c5da0170707005d258c20d9cb"
+  },
+  "non_self_reference_policy": {
+    "manifest_self_hash": "EXCLUDED",
+    "source_tree_manifest": "EXCLUDED_AND_GENERATED_AFTER_CURRENT_INTEGRITY",
+    "excluded_paths": [
+      "migration/current-document-consistency-repair-r2.3-manifest.json",
+      "release/source-tree-manifest.json"
+    ]
+  },
+  "immutable_historical_receipts": [
+    {
+      "path": "migration/import-manifest.json",
+      "sha256": "bbd95f215797a602b17e34888d6c6f90241ed36625fec104708c96f3feee8903"
+    },
+    {
+      "path": "migration/m1.1-repair-manifest.json",
+      "sha256": "dab1aa035a1839e359365661b8d1fc3ea0f3faafcea6735a7354b0ff6d28b165"
+    }
+  ],
+  "transition_count": 26,
+  "transitions": [
+    {
+      "path": "examples/manifests/by-outcome/catalog-metadata.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "e0dc8b73326cd5f2e47980e89bbcef140317e88839c100e1aa18670240369dc6",
+      "approved_current_sha256": "2f25187b8715d588a85ab14bc428ac7cec4c839b8bf2064ed7f69d340a4c1827",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0001.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "6d915e20f17ab8cb08d8e8b3ae82f910c05be9eb9e298ad2ae53ff5c3dc8970e",
+      "approved_current_sha256": "33f5a540f2275199dfeacb176aad4ec717044d378f5bfb5933223dd1749ca6c1",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0002.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "1a52219d720a910dcc3890b11afa93c4c364756704a210bc1c040809d9fe1690",
+      "approved_current_sha256": "6098f710be47ddadf004c9db727fa6c09c2973efd05100d86f19b259ba35c3bd",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0003.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "ec7af1ae96ccff77f87e1b9af7881bdbab72f0594e6486c3e6346207886d6f1a",
+      "approved_current_sha256": "5ffa8356f91e0fe7dd67a0d1b13857d2f40ceb69394976f57d22454e094c7995",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0004.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "d3485cc312469e9e4bcc25c4803f13c614ebf83670eec282ab2a07f36394929f",
+      "approved_current_sha256": "58c8e8852614a76ba40b93cef7c99cf5399f70623517c62110f45eec43925e7f",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0005.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "1b426ce136e78e3673dbe51eff94c084c8cbfae3b4bfc5f407d0ade4bdc93eef",
+      "approved_current_sha256": "bc8cd94e6b534d152852d732b80ef4a92792dd8bcd69accd4870ad618acf419d",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0006.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "c50fc017cb433a7bf409b9dd85c5a6854b407970975495027f59c9933eb14593",
+      "approved_current_sha256": "f1399db531a8b4f5b0f0f902e337a65aa782f7832dc35d9ced9f9d923121eecd",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0007.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "4386df1193d9feb0a94df5de33ebcc8958027ef1a650c73a6ef645bb4a664cc1",
+      "approved_current_sha256": "2be3f145e96febd93869fe9833944e6b3f61d143f00d012aaae69e088f5d3a98",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0008.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "da73d4d0eb5952919b4f1df47c32bf365ec15b40639affd51c530e50fce3b4b9",
+      "approved_current_sha256": "6c347a4372896a498b44ff61461ca0bd98cb0130d2b681fbd0a9a9b7cfe373da",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0009.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "fecd834e1368328316697ded8ad57ff3cf08e4f38e59d2d8c87c8327be9c9e2c",
+      "approved_current_sha256": "723191017baa6783abb7f682a9bf3055fc691dc0850114cc0beed744cea19507",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "8ec68fdd694259f8e8c1fb8f2d21012101ae7cfcd4238a00d7ac46908f97cfe7",
+      "approved_current_sha256": "68dbb51c4f3be0729fbf0339a061a8898f6bc868091a1f10807d467d79416d35",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0011.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "3d189d16bfd40a7f7496734e1ad38b32eb53809946d00d73900066dccf96b1ac",
+      "approved_current_sha256": "33ff6836f58b2394e72a192261d09318837d06ee7e5544db6bccbd5101437e1c",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0012.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "e176add4122e297297e9900994fead2aed0c7495ba2b95d9dc1fd162aac51b63",
+      "approved_current_sha256": "fbb2ab5db98ba718e7a0debaec2db2c2d22ca0ed33c0e6a71d430167d3bd5b68",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0013.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "ee02fc8c5fbab349893f75e800ad7bd04e271cc5cd5d2bf54f3b02b132a479f5",
+      "approved_current_sha256": "aa954a0cc734f6fb4d797fe97347292e9a7183058dd9f5dd5035360873f53b7c",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "examples/manifests/by-outcome/chunks/part-0014.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "generated_projection",
+      "frozen_sha256": "7b12fc3bdc4aeac465db2b1329ced254cb5b3d8fe5c2508ecd9e7b5b7d014471",
+      "approved_current_sha256": "803f27f61f5bccc161626219c05a4965276cf45b52f9aecfc847b7a035982656",
+      "decision_ids": [
+        "R22-A003"
+      ]
+    },
+    {
+      "path": "schemas/language/feature-row.schema.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "authority_schema",
+      "frozen_sha256": "106da3390907bccda540bfd500f6aa196eae2a91074783fc4a8be9f1daaa40aa",
+      "approved_current_sha256": "ca6fe0a3ba96c8bce081e1949ffa3f3d973b8d0fb3ad21e2655e0230d21d41b7",
+      "decision_ids": [
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/diagnostics/catalog/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "diagnostic_authority_source",
+      "frozen_sha256": "51b2733e7107b7f84d45371dbaa79e0c6d52fb0b11c248857fc25fedd9ef6978",
+      "approved_current_sha256": "8c6cafc6719b96bdb2fded3738f564249a79930acda7f21e4e4f80b1771aa862",
+      "decision_ids": [
+        "DCR-P1-009"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0001.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "48b63dad67eef19036f18777b44a3dd37ee5f75f692b528080fd5b804193483d",
+      "approved_current_sha256": "4358ea8e469c1e662673f846637dafb3625775fdc259442182d82d6d23e2ef1d",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0002.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "c882650f3ac55f1ca099f298891556ee63cbfbf13b91aa9233b940e0816220ed",
+      "approved_current_sha256": "13d74560e7e1c16b76bf695466daab0223f8c127174b8558a4a49bd7f282a869",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0009.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "d1b3853fef86abdf77dcad1fbeb6d87c0bf094be007c5a11e50c4d133d5b34f8",
+      "approved_current_sha256": "d9b5cb9b2614817db91051bd4d9c60bb541469be3ab27781e91772b7b0f8d626",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0010.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "30b211b661c02f34d5da0692298892e83e429cdd5ba599b7abb84e29ca2dc18d",
+      "approved_current_sha256": "ad7c152024f212e66db203341f3e43b51d5c5a0d61d0da538f490b2d8a6a49cb",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0011.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "cdb9ad2f3d6d241ed9c9c2eb826b38a0f6bc896c38b03fd3b7b95dcb55fe2bf8",
+      "approved_current_sha256": "ada88579fc720e0b635d87c784c2e791fced5f7effd3599274b1426d02bd81d5",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0014.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "8d29f559aab9ba3fccab5dc1c88f60854f872ad3e4446bcfa365cb809667b8cd",
+      "approved_current_sha256": "4b1a13c1ca147b0e5dbe5f6d0192e8d4f245c499601e7becaf8f66732badd54d",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0015.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "e020b9ed6d00655ecf0f2f28ed3dbdf904a6e9cfc83092b7fc7ab8bab4244196",
+      "approved_current_sha256": "1d40d4544169f5bcef5696234c66a8090d096f94f299331aaeaf841292ee9155",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004",
+        "DCR-P1-005",
+        "R22-A002"
+      ]
+    },
+    {
+      "path": "spec/features/catalog/chunks/part-0016.json",
+      "historical_receipt": "migration/m1.1-repair-manifest.json",
+      "classification": "feature_authority_source",
+      "frozen_sha256": "8e0a53838a45f566325a2c015b9e8285e1080dc61eb7dd68e7d85a95977fbc05",
+      "approved_current_sha256": "2c33dc080b8f39974a73a191917c57a2b819c51c074ad02f8a8e6f34d9566c88",
+      "decision_ids": [
+        "DCR-P1-003",
+        "DCR-P1-004"
+      ]
+    },
+    {
+      "path": "spec/mir/semantics.md",
+      "historical_receipt": "migration/import-manifest.json",
+      "classification": "mir_authority_source",
+      "frozen_sha256": "faf3a364a0ba7d3ba483b366e5549eb400cb672522d492f7946dfc77b90a22e1",
+      "approved_current_sha256": "5b672127c0c4665d037d89708986746dd152e094f302b58d7efd4ba859698005",
+      "decision_ids": [
+        "DCR-P1-008"
+      ]
+    }
+  ],
+  "authority_domains": [
+    {
+      "domain": "human_language",
+      "path": "spec/language.md",
+      "sha256": "5842aaa664b6da3949b2d52c87c291be6328951f74f702d7717f9732309ac068",
+      "owner": "Spec_"
+    },
+    {
+      "domain": "exact_grammar",
+      "path": "spec/grammar/deeplus.ebnf",
+      "sha256": "c844f1422b17001d279e7eeb897ad320dd780513de0b93297c986cec69916c72",
+      "owner": "Spec_"
+    },
+    {
+      "domain": "frontend_admission",
+      "path": "spec/frontend/frontend-model.json",
+      "sha256": "2932c1a7c6f1f933ad1a51d8043f4c583833484a8123c6e0e71782a15d0ce1a9",
+      "owner": "Spec_ + Impl_"
+    },
+    {
+      "domain": "type_system",
+      "path": "spec/types/type-system.md",
+      "sha256": "17ac6b139b0ffc422b091ef97ba900fe9f028400034f3e73534bb5d6c1fdae4a",
+      "owner": "Spec_"
+    },
+    {
+      "domain": "mir_observable_semantics",
+      "path": "spec/mir/semantics.md",
+      "sha256": "5b672127c0c4665d037d89708986746dd152e094f302b58d7efd4ba859698005",
+      "owner": "Spec_ + Impl_"
+    },
+    {
+      "domain": "prelude",
+      "path": "library/prelude/prelude.md",
+      "sha256": "71182fc438f64dcae39570824ee479a3f2b402a207f12712593cda108bb63cba",
+      "owner": "Devel_ + Spec_"
+    },
+    {
+      "domain": "examples",
+      "path": "examples/guide/review-corpus.md",
+      "sha256": "5c772e85364b8f5309cf456ca4dea85f5d41a9a32b1131169b6b29b69a10490f",
+      "owner": "Devel_ + Test_"
+    },
+    {
+      "domain": "current_decisions",
+      "path": "decisions/language/current-decisions.json",
+      "sha256": "131a949cf323a76c87a744be5b79b91f0890b53359e1a30133a6828aab68c25c",
+      "owner": "Design_ + Spec_"
+    },
+    {
+      "domain": "features",
+      "path": "spec/features/catalog",
+      "sha256": "5bcade3b156720efb0830f90dce8af5cb9ca0be9982c678c28325640ed886f24",
+      "owner": "Spec_"
+    },
+    {
+      "domain": "diagnostics",
+      "path": "spec/diagnostics/catalog",
+      "sha256": "81b30b084c00753630b8e0c030fd760806bae475ee54f8dd4c0bd76fb2535829",
+      "owner": "Test_ + Spec_"
+    },
+    {
+      "domain": "checker_predicates",
+      "path": "spec/types/predicates",
+      "sha256": "9490604ed674942c5a9958fbf85515b4aa6c8c9e1d9804adab355775865add4f",
+      "owner": "Spec_ + Impl_"
+    }
+  ],
+  "authority_digest": "b4b1ca8569b4f166ede747f3b2f6bd4f175ce1a649a5290c28b8daf2341221e4",
+  "generated_outputs_excluding_self": [
+    {
+      "path": "current/authority-map.yaml",
+      "sha256": "dcac6845cbb82b0eeed3eb92a88ea3209bf838c1d62af8db28b9f47940467f3c",
+      "ownership": "domains[*].sha256 and authority_digest"
+    },
+    {
+      "path": "current/current-pointer.json",
+      "sha256": "d360d594a6368d2d84716b3388b6aad8f992ee4f80419d4176f3605acf4583f9",
+      "ownership": "authority_digest only"
+    },
+    {
+      "path": "migration/catalog-reassembly.json",
+      "sha256": "3f7d39ca5c6a47959cd4f934315e14b3c850d484664f8ee1c908625c5490e052",
+      "ownership": "feature/diagnostic reassembly owned fields only"
+    }
+  ],
+  "product_lanes": {
+    "count": 15,
+    "required_state": "NOT_RUN"
+  },
+  "remote_actions": {
+    "push": false,
+    "pull_request": false,
+    "issue": false,
+    "ci": false,
+    "merge": false,
+    "publication": false
+  }
+}

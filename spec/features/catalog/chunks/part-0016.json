@@ -416,7 +416,8 @@
       "examples": [
         "EX-R48C-072",
         "EX-R48E1-001",
-        "EX-R48E1-023"
+        "EX-R48E1-023",
+        "EX-R51f3-R2-001"
       ],
       "productions": [],
       "semantic_reference_productions": []
@@ -462,7 +463,8 @@
         "StringCharBytesBoundaryAdmitted"
       ],
       "examples": [
-        "EX-R48B-067"
+        "EX-R48B-067",
+        "EX-R51b-GRAM-NG-014"
       ],
       "productions": [
         "BytesLiteral",
@@ -516,7 +518,8 @@
         "EX-R48E-007",
         "EX-R48E1-009",
         "EX-R48F-025",
-        "EX-R49C-STRING-001"
+        "EX-R49C-STRING-001",
+        "EX-R51f3-R2-006"
       ],
       "productions": [
         "BytesLiteral",
@@ -570,7 +573,8 @@
         "EX-R48E1-009",
         "EX-R48E1-010",
         "EX-R48F-025",
-        "EX-R51a1-008"
+        "EX-R51a1-008",
+        "EX-R51b-GRAM-NG-014"
       ],
       "productions": [
         "InterpolationPath",
@@ -1275,14 +1279,16 @@
         "NESTED_TERNARY_REQUIRES_PARENTHESES_OR_AT_IF",
         "TERNARY_BRANCH_TYPE_MISMATCH",
         "TERNARY_CONDITION_NOT_BOOL",
-        "TERNARY_MISSING_COLON"
+        "TERNARY_MISSING_COLON",
+        "TERNARY_QUESTION_REQUIRES_SPACING"
       ],
       "predicates": [
         "TernarySpacingAndArmJoinAdmitted"
       ],
       "examples": [
         "EX-R48E1-021",
-        "EX-R48F-018"
+        "EX-R48F-018",
+        "EX-R51f3-R2-003"
       ],
       "productions": [],
       "semantic_reference_productions": []
@@ -1326,12 +1332,27 @@
         "PREFER_AT_IF_FOR_MULTILINE_TERNARY"
       ],
       "predicates": [],
-      "examples": [],
+      "examples": [
+        "EX-R51f3-R2-004"
+      ],
       "productions": [
         "PrattExpr"
       ],
       "semantic_reference_productions": []
     },
+    "evidence_coverage": [
+      {
+        "feature_id": "ternary_short_expression_stable_profile",
+        "coverage_kind": "N/A_WARNING_PROFILE",
+        "missing_outcome": "reject",
+        "reason": "This stable profile admits short single-line ternary expressions and defines a warning boundary for long or multiline forms rather than a hard rejection.",
+        "owner": "Spec_ + Test_",
+        "substitute_boundary_diagnostic": "PREFER_AT_IF_FOR_MULTILINE_TERNARY",
+        "substitute_evidence": [
+          "EX-R51f3-R2-004"
+        ]
+      }
+    ],
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

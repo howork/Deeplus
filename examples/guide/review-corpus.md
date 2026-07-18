@@ -10082,7 +10082,7 @@ let text = "user=$user.profile.names[1] id=$pair.1"
 ```
 ## EX-R51b-GRAM-NG-014 — Interpolation shorthand call requires braces
 
-- **source_feature_ids:** `interpolation_path_shorthand`, `r51e_frontend_grammar_current_canonical`
+- **source_feature_ids:** `interpolation_path_shorthand`, `r51e_frontend_grammar_current_canonical`, `string_interpolation_braced_expr_core`, `string_interpolation_shorthand_factor_msp`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11188,3 +11188,102 @@ let values: List<Int | String> = [1, "two"]
 let values = [1, "two"]
 ```
 
+## EX-R51f3-R2-001 — Strict Boolean operands must be Bool
+
+- **source_feature_ids:** `strict_boolean_word_operators_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `STRICT_BOOLEAN_OPERAND_NOT_BOOL`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = true and 1
+// STRICT_BOOLEAN_OPERAND_NOT_BOOL
+```
+
+## EX-R51f3-R2-002 — Sequential Boolean operands must be Bool
+
+- **source_feature_ids:** `sequential_boolean_control_words_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `SEQUENTIAL_BOOLEAN_OPERAND_NOT_BOOL`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = true and then 1
+// SEQUENTIAL_BOOLEAN_OPERAND_NOT_BOOL
+```
+
+## EX-R51f3-R2-003 — Ternary question mark requires spacing
+
+- **source_feature_ids:** `ternary_conditional_expression`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `TERNARY_QUESTION_REQUIRES_SPACING`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let label = ready? "yes" : "no"
+// TERNARY_QUESTION_REQUIRES_SPACING
+```
+
+## EX-R51f3-R2-004 — Short single-line ternary is current
+
+- **source_feature_ids:** `ternary_short_expression_stable_profile`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let label = ready ? "yes" : "no"
+```
+
+## EX-R51f3-R2-005 — Bytes literal hex escape requires two hex digits
+
+- **source_feature_ids:** `bytes_literal_hash_bytes_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `BYTES_LITERAL_INVALID_HEX_ESCAPE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = #bytes"\xG1"
+// BYTES_LITERAL_INVALID_HEX_ESCAPE
+```
+
+## EX-R51f3-R2-006 — Interpolation format requires braced form
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let text = "name=$name:<12"
+// INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM
+```

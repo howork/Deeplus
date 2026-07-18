@@ -1,0 +1,147 @@
+{
+  "schema": "deeplus.example-projections-generator-contract/v1",
+  "revision": "R2.2",
+  "known_baseline_drift": {
+    "fixture": "tools/validators/fixtures/example-projection-known-baseline-drift-r2_2.json",
+    "classification": "frozen_historical_repair_evidence_not_source_or_projection_authority",
+    "consumer": "tools/validators/run_example_projection_generator_tests.py only",
+    "normal_generator_modes_must_not_read_fixture": true,
+    "frozen_commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+    "frozen_tree": "8c1699b554903b174e1d39918fac91197dbf254a",
+    "frozen_corpus_sha256": "28718c2362e96d9c29e672fa13592ffebebfcfdf764fcaab96d047736483e09a"
+  },
+  "authority_inputs": {
+    "corpus": "examples/guide/review-corpus.md",
+    "language_version": "current/language-version.toml"
+  },
+  "manifest": {
+    "root": "examples/manifests/by-outcome",
+    "metadata": "catalog-metadata.json",
+    "array_key": "examples",
+    "id_key": "example_id",
+    "schema_prefix": "deeplus.examples-active-profile-manifest/",
+    "registry_kind": "current_and_explicit_profile_examples",
+    "source_file": "examples/guide/review-corpus.md",
+    "outcomes": [
+      "accept",
+      "accept_with_gate",
+      "reject"
+    ],
+    "row_field_order": [
+      "example_id",
+      "title",
+      "feature_ids",
+      "source_feature_ids",
+      "checker_trace_ids",
+      "provenance_ids",
+      "expected_outcome",
+      "corpus_partition",
+      "source_activation",
+      "certification_status",
+      "primary_diagnostic",
+      "expected_warnings",
+      "source_role",
+      "source_root",
+      "parser_status",
+      "checker_status",
+      "code_block_id",
+      "code_language",
+      "code_sha256",
+      "source_file",
+      "line_range_scope",
+      "code_hash_policy",
+      "card_line_start",
+      "card_line_end"
+    ]
+  },
+  "surfaces": [
+    {
+      "root": "tests/conformance/surface/positive",
+      "metadata": "catalog-metadata.json",
+      "array_key": "cases",
+      "id_key": "example_id",
+      "outcome": "accept",
+      "schema_prefix": "deeplus.surface-smoke-corpus-positive/"
+    },
+    {
+      "root": "tests/conformance/surface/rejected",
+      "metadata": "catalog-metadata.json",
+      "array_key": "cases",
+      "id_key": "example_id",
+      "outcome": "reject",
+      "schema_prefix": "deeplus.surface-smoke-corpus-rejected/"
+    },
+    {
+      "root": "tests/conformance/surface/gated",
+      "metadata": "catalog-metadata.json",
+      "array_key": "cases",
+      "id_key": "example_id",
+      "outcome": "accept_with_gate",
+      "schema_prefix": "deeplus.surface-smoke-corpus-gated/"
+    }
+  ],
+  "surface_row_field_order": [
+    "example_id",
+    "code_sha256",
+    "feature_ids",
+    "primary_diagnostic"
+  ],
+  "reassembly": {
+    "path": "migration/catalog-reassembly.json",
+    "owned_contracts": {
+      "deeplus-0.1.2-baseline-r51f3-examples-active-profile-manifest.json": "examples/manifests/by-outcome",
+      "deeplus-0.1.2-baseline-r51f3-surface-smoke-corpus-positive.json": "tests/conformance/surface/positive",
+      "deeplus-0.1.2-baseline-r51f3-surface-smoke-corpus-rejected.json": "tests/conformance/surface/rejected",
+      "deeplus-0.1.2-baseline-r51f3-surface-smoke-corpus-gated.json": "tests/conformance/surface/gated"
+    },
+    "generated_fields": [
+      "row_count",
+      "ordered_shard_paths",
+      "canonical_object_sha256"
+    ],
+    "preserve_all_other_fields": true,
+    "preserve_all_other_contracts": true
+  },
+  "serialization": {
+    "encoding": "UTF-8",
+    "line_endings": "LF",
+    "terminal_newline": true,
+    "ensure_ascii": false,
+    "indent": 2,
+    "max_shard_bytes": 61440
+  },
+  "derived_defaults": {
+    "corpus_partition": "active_profile",
+    "expected_warnings": [],
+    "code_language": "deeplus",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "surface_result": "NOT_RUN"
+  },
+  "baseline_gate": {
+    "corpus_sha256": "28718c2362e96d9c29e672fa13592ffebebfcfdf764fcaab96d047736483e09a",
+    "counts": {
+      "all": 656,
+      "accept": 363,
+      "accept_with_gate": 2,
+      "reject": 291
+    },
+    "shards": {
+      "examples/manifests/by-outcome": 14,
+      "tests/conformance/surface/positive": 2,
+      "tests/conformance/surface/rejected": 2,
+      "tests/conformance/surface/gated": 1
+    }
+  },
+  "required_fail_codes": [
+    "GENERATOR_BASELINE_MISMATCH",
+    "GENERATOR_AUTHORITY_GAP",
+    "GENERATOR_PARSE_ERROR",
+    "GENERATOR_DUPLICATE_ID",
+    "GENERATOR_NONDETERMINISTIC",
+    "GENERATOR_OUTPUT_ESCAPE",
+    "GENERATOR_REASSEMBLY_SCOPE_VIOLATION"
+  ]
+}

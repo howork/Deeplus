@@ -124,3 +124,8 @@ Every open question must have an owner and closure method.
 | Test_ | | | | |
 | Devel_ | | | | |
 
+[EXPR-001_BINDING]
+clause_id: EXPR-001
+authority: governance/policies/management-policy.yaml#EXPR-001
+clause_digest: 42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39
+classification: non-authoritative projection
