@@ -1,0 +1,3263 @@
+{
+  "schema": "deeplus.test.sfd-p1-009-executable-fixture-manifest/r3",
+  "review_id": "TEST_DEEPLUS_SFD_P1_009_PREIMPLEMENTATION_CONTRACT_REPAIR_R1",
+  "role": "Test_",
+  "verdict": "B001_ACCEPTED_READ_ONLY_CONTRACT_BOUND",
+  "authority": {
+    "design_preimplementation_pack": {
+      "bytes": 29306,
+      "sha256": "d0b9b28a8ee8cbfc3897f5010dba7550a21aed66596f09a7ebcb04c0ee83a216"
+    },
+    "test_r2_pack": {
+      "bytes": 47205,
+      "sha256": "a06d65048154c571404d094b85e390d3978daa328e8e3116c9c98c0abd00d89c"
+    },
+    "impl_target_binding_pack": {
+      "bytes": 34882,
+      "sha256": "ab15c0c911b4959b2f58a630cfc1599efc76590e343a4009b79eb4836e662bf4"
+    },
+    "oracle_matrix": {
+      "bytes": 342463,
+      "sha256": "ffb53c5b31bf511cef424f83e0725b22c33a3bdfa6431b7aa300b06a1433acad",
+      "binding": "transitively bound by Test R2 authority identity"
+    }
+  },
+  "controlling_decisions": {
+    "c30": [
+      "SFD-FG-01-P",
+      "SFD-FG-02-P",
+      "SFD-FG-03-P",
+      "SFD-FG-04-P",
+      "SFD-FG-05-P",
+      "SFD-FG-06-P",
+      "SFD-FG-07-P",
+      "SFD-FG-08-P",
+      "SFD-FG-09-P",
+      "SFD-FG-10-P",
+      "SFD-FG-11-P",
+      "SFD-FG-12-P",
+      "SFD-FG-13-P",
+      "SFD-FG-14-P",
+      "SFD-FG-15-P",
+      "SFD-FG-16-P",
+      "SFD-FG-17-P",
+      "SFD-FG-18-P",
+      "SFD-FG-19-P",
+      "SFD-FG-20-P",
+      "SFD-FG-21-P",
+      "SFD-FG-22-P",
+      "SFD-FG-23-P",
+      "SFD-FG-24-P",
+      "SFD-FG-25-P",
+      "SFD-FG-26-P",
+      "SFD-FG-27-P",
+      "SFD-FG-28-P",
+      "SFD-FG-29-P",
+      "SFD-FG-30-P"
+    ],
+    "receipt_schema": "SFD-TARGET-RECEIPT-V2",
+    "receipt_field_count": 45,
+    "diagnostic_payload": "SFD-DIAGNOSTIC-PAYLOAD-V1"
+  },
+  "counts": {
+    "oracle_ids": 141,
+    "execute_oracles": 140,
+    "not_applicable_oracles": 1,
+    "payload_subfixtures": 456,
+    "candidate_diagnostics": 278,
+    "outcomes": {
+      "ACCEPT": 40,
+      "REJECT": 278,
+      "ASSERT_RELATION": 68,
+      "MUTANT_KILL": 70
+    },
+    "ingress_subfixtures": {
+      "current_source": 18,
+      "api_model": 202,
+      "typed_hir_only": 236
+    },
+    "missing": 0,
+    "duplicate": 0,
+    "orphan": 0,
+    "executed": 0
+  },
+  "payload_bundle": "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json",
+  "oracle_bindings": [
+    {
+      "oracle_id": "SFD-FG-01-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0001"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0001"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-01-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0002",
+        "SFD009-SUB-0003",
+        "SFD009-SUB-0004",
+        "SFD009-SUB-0005"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0002",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0003",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0004",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0005"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-01-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0006"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0006"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-01-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0007"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0007"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-02-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0008"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0008"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-02-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0009",
+        "SFD009-SUB-0010",
+        "SFD009-SUB-0011",
+        "SFD009-SUB-0012"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0009",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0010",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0011",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0012"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-02-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0013"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0013"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-02-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0014",
+        "SFD009-SUB-0015"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0014",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0015"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-03-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0016"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0016"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-03-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0017",
+        "SFD009-SUB-0018",
+        "SFD009-SUB-0019"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0017",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0018",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0019"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-03-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0020"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0020"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-03-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0021",
+        "SFD009-SUB-0022"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0021",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0022"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-04-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0023"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0023"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-04-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0024",
+        "SFD009-SUB-0025"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0024",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0025"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-04-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0026"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0026"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-04-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0027",
+        "SFD009-SUB-0028",
+        "SFD009-SUB-0029"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0027",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0028",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0029"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-05-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0030"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0030"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-05-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0031"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0031"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-05-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0032"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0032"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-05-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0033"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0033"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-06-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0034"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0034"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-06-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0035",
+        "SFD009-SUB-0036"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0035",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0036"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-ROUTE-ID-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-06-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0037"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0037"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-ROUTE-VIRT-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-06-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0038",
+        "SFD009-SUB-0039"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0038",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0039"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-07-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0040"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0040"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-07-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0041",
+        "SFD009-SUB-0042"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0041",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0042"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-07-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0043"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0043"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-07-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0044",
+        "SFD009-SUB-0045"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0044",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0045"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-08-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0046"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0046"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-08-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0047",
+        "SFD009-SUB-0048",
+        "SFD009-SUB-0049"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0047",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0048",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0049"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-08-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0050",
+        "SFD009-SUB-0051"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0050",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0051"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-08-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0052",
+        "SFD009-SUB-0053"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0052",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0053"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-09-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0054"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0054"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-09-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0055",
+        "SFD009-SUB-0056",
+        "SFD009-SUB-0057"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0055",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0056",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0057"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-09-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0058"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0058"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-09-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0059"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0059"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-10-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "current_source",
+      "subfixture_ids": [
+        "SFD009-SUB-0060"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0060"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-FACET-BORROW-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-10-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "current_source",
+      "subfixture_ids": [
+        "SFD009-SUB-0061",
+        "SFD009-SUB-0062"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0061",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0062"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-10-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "current_source",
+      "subfixture_ids": [
+        "SFD009-SUB-0063",
+        "SFD009-SUB-0064",
+        "SFD009-SUB-0065",
+        "SFD009-SUB-0066",
+        "SFD009-SUB-0067",
+        "SFD009-SUB-0068",
+        "SFD009-SUB-0069",
+        "SFD009-SUB-0070",
+        "SFD009-SUB-0071",
+        "SFD009-SUB-0072",
+        "SFD009-SUB-0073",
+        "SFD009-SUB-0074"
+      ],
+      "subfixture_count": 12,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0063",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0064",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0065",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0066",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0067",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0068",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0069",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0070",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0071",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0072",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0073",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0074"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-10-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "current_source",
+      "subfixture_ids": [
+        "SFD009-SUB-0075",
+        "SFD009-SUB-0076",
+        "SFD009-SUB-0077"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0075",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0076",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0077"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-11-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0078"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0078"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-11-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0079",
+        "SFD009-SUB-0080"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0079",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0080"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-11-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0081",
+        "SFD009-SUB-0082",
+        "SFD009-SUB-0083",
+        "SFD009-SUB-0084",
+        "SFD009-SUB-0085",
+        "SFD009-SUB-0086",
+        "SFD009-SUB-0087",
+        "SFD009-SUB-0088",
+        "SFD009-SUB-0089"
+      ],
+      "subfixture_count": 9,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0081",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0082",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0083",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0084",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0085",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0086",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0087",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0088",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0089"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-11-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0090",
+        "SFD009-SUB-0091"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0090",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0091"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-12-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0092"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0092"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-12-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0093",
+        "SFD009-SUB-0094",
+        "SFD009-SUB-0095"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0093",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0094",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0095"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-12-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0096",
+        "SFD009-SUB-0097",
+        "SFD009-SUB-0098",
+        "SFD009-SUB-0099",
+        "SFD009-SUB-0100"
+      ],
+      "subfixture_count": 5,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0096",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0097",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0098",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0099",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0100"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-DYN-PACK-003",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-12-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0101",
+        "SFD009-SUB-0102",
+        "SFD009-SUB-0103"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0101",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0102",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0103"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-13-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0104"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0104"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-DYN-PACK-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-13-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0105",
+        "SFD009-SUB-0106",
+        "SFD009-SUB-0107"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0105",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0106",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0107"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-13-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0108"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0108"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-13-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0109",
+        "SFD009-SUB-0110"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0109",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0110"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-14-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0111"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0111"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-DYN-TAKE-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-14-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0112",
+        "SFD009-SUB-0113",
+        "SFD009-SUB-0114",
+        "SFD009-SUB-0115"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0112",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0113",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0114",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0115"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-14-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0116"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0116"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-DYN-TAKE-002",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-14-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0117"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0117"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-15-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0118"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0118"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-15-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0119"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0119"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-15-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0120"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0120"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-15-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0121",
+        "SFD009-SUB-0122"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0121",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0122"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-16-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0123"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0123"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-16-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0124",
+        "SFD009-SUB-0125",
+        "SFD009-SUB-0126",
+        "SFD009-SUB-0127",
+        "SFD009-SUB-0128",
+        "SFD009-SUB-0129",
+        "SFD009-SUB-0130"
+      ],
+      "subfixture_count": 7,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0124",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0125",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0126",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0127",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0128",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0129",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0130"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-16-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0131",
+        "SFD009-SUB-0132"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0131",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0132"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-16-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0133",
+        "SFD009-SUB-0134"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0133",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0134"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-17-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0135"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0135"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-17-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0136",
+        "SFD009-SUB-0137"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0136",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0137"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-17-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0138"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0138"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-17-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0139",
+        "SFD009-SUB-0140"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0139",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0140"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-18-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0141"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0141"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-18-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0142"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0142"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-18-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0143",
+        "SFD009-SUB-0144",
+        "SFD009-SUB-0145",
+        "SFD009-SUB-0146",
+        "SFD009-SUB-0147",
+        "SFD009-SUB-0148",
+        "SFD009-SUB-0149"
+      ],
+      "subfixture_count": 7,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0143",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0144",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0145",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0146",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0147",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0148",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0149"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-18-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0150",
+        "SFD009-SUB-0151"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0150",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0151"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-19-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0152"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0152"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-19-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0153"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0153"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-19-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0154"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0154"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-19-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0155",
+        "SFD009-SUB-0156"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0155",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0156"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-20-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0157"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0157"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-20-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0158",
+        "SFD009-SUB-0159"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0158",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0159"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-20-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0160",
+        "SFD009-SUB-0161"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0160",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0161"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-20-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0162"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0162"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-21-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0163"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0163"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-21-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0164",
+        "SFD009-SUB-0165",
+        "SFD009-SUB-0166"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0164",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0165",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0166"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-21-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0167",
+        "SFD009-SUB-0168",
+        "SFD009-SUB-0169",
+        "SFD009-SUB-0170",
+        "SFD009-SUB-0171",
+        "SFD009-SUB-0172"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0167",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0168",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0169",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0170",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0171",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0172"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-21-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0173",
+        "SFD009-SUB-0174",
+        "SFD009-SUB-0175"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0173",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0174",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0175"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-22-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0176"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0176"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-22-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0177",
+        "SFD009-SUB-0178",
+        "SFD009-SUB-0179",
+        "SFD009-SUB-0180"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0177",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0178",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0179",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0180"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-22-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0181"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0181"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-22-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0182",
+        "SFD009-SUB-0183",
+        "SFD009-SUB-0184"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0182",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0183",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0184"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-23-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0185"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0185"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-23-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0186",
+        "SFD009-SUB-0187",
+        "SFD009-SUB-0188",
+        "SFD009-SUB-0189"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0186",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0187",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0188",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0189"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-23-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0190"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0190"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-23-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0191"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0191"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-24-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0192"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0192"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-24-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0193",
+        "SFD009-SUB-0194",
+        "SFD009-SUB-0195",
+        "SFD009-SUB-0196",
+        "SFD009-SUB-0197",
+        "SFD009-SUB-0198"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0193",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0194",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0195",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0196",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0197",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0198"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-24-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0199",
+        "SFD009-SUB-0200",
+        "SFD009-SUB-0201",
+        "SFD009-SUB-0202",
+        "SFD009-SUB-0203",
+        "SFD009-SUB-0204",
+        "SFD009-SUB-0205",
+        "SFD009-SUB-0206",
+        "SFD009-SUB-0207"
+      ],
+      "subfixture_count": 9,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0199",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0200",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0201",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0202",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0203",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0204",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0205",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0206",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0207"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-24-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0208",
+        "SFD009-SUB-0209",
+        "SFD009-SUB-0210",
+        "SFD009-SUB-0211"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0208",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0209",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0210",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0211"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-25-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0212"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0212"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-25-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0213",
+        "SFD009-SUB-0214"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0213",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0214"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-25-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0215"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0215"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-25-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0216",
+        "SFD009-SUB-0217",
+        "SFD009-SUB-0218",
+        "SFD009-SUB-0219"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0216",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0217",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0218",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0219"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-26-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0220"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0220"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-26-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0221",
+        "SFD009-SUB-0222",
+        "SFD009-SUB-0223"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0221",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0222",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0223"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-26-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0224"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0224"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-26-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0225",
+        "SFD009-SUB-0226",
+        "SFD009-SUB-0227",
+        "SFD009-SUB-0228"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0225",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0226",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0227",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0228"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-27-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0229"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0229"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-27-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0230"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0230"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-27-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0231"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0231"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-27-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0232",
+        "SFD009-SUB-0233"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0232",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0233"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-28-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0234"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0234"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-28-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0235",
+        "SFD009-SUB-0236",
+        "SFD009-SUB-0237"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0235",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0236",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0237"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-28-B",
+      "execution_disposition": "NOT_APPLICABLE",
+      "subfixture_ids": [],
+      "diagnostic": {
+        "expected_primary_stage": null,
+        "diagnostic_code": null,
+        "primary_span": null,
+        "diagnostic_payload": null
+      },
+      "not_applicable_authority": {
+        "choice_id": "NC-FACETSTORE-001",
+        "rule": "FacetStore excluded from current minimum successor; N/A is not PASS"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-28-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0238",
+        "SFD009-SUB-0239",
+        "SFD009-SUB-0240"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0238",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0239",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0240"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-29-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0241"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0241"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-29-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0242"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0242"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-29-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0243"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0243"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-29-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0244",
+        "SFD009-SUB-0245"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0244",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0245"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-30-P",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0246"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0246"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-MIR-CLOSED-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-30-N",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0247",
+        "SFD009-SUB-0248",
+        "SFD009-SUB-0249",
+        "SFD009-SUB-0250",
+        "SFD009-SUB-0251",
+        "SFD009-SUB-0252"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0247",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0248",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0249",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0250",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0251",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0252"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-30-B",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0253",
+        "SFD009-SUB-0254"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0253",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0254"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-FG-30-M",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0255",
+        "SFD009-SUB-0256",
+        "SFD009-SUB-0257",
+        "SFD009-SUB-0258",
+        "SFD009-SUB-0259",
+        "SFD009-SUB-0260"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0255",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0256",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0257",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0258",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0259",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0260"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-001",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0261",
+        "SFD009-SUB-0262"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0261",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0262"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-002",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0263",
+        "SFD009-SUB-0264",
+        "SFD009-SUB-0265",
+        "SFD009-SUB-0266"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0263",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0264",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0265",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0266"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-REG-DUP-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-003",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0267",
+        "SFD009-SUB-0268",
+        "SFD009-SUB-0269"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0267",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0268",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0269"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-REG-PERM-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-004",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0270"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0270"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-REG-UPD-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-005",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0271"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0271"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-006",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0272",
+        "SFD009-SUB-0273",
+        "SFD009-SUB-0274"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0272",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0273",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0274"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-007",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0275"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0275"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-REG-REM-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-008",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0276",
+        "SFD009-SUB-0277",
+        "SFD009-SUB-0278"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0276",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0277",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0278"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-REG-CONC-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-009",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0279",
+        "SFD009-SUB-0280",
+        "SFD009-SUB-0281"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0279",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0280",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0281"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-010",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0282",
+        "SFD009-SUB-0283"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0282",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0283"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-011",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0284",
+        "SFD009-SUB-0285",
+        "SFD009-SUB-0286",
+        "SFD009-SUB-0287",
+        "SFD009-SUB-0288",
+        "SFD009-SUB-0289"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0284",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0285",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0286",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0287",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0288",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0289"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-012",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "typed_hir_only",
+      "subfixture_ids": [
+        "SFD009-SUB-0290",
+        "SFD009-SUB-0291",
+        "SFD009-SUB-0292",
+        "SFD009-SUB-0293",
+        "SFD009-SUB-0294",
+        "SFD009-SUB-0295",
+        "SFD009-SUB-0296",
+        "SFD009-SUB-0297",
+        "SFD009-SUB-0298",
+        "SFD009-SUB-0299",
+        "SFD009-SUB-0300",
+        "SFD009-SUB-0301",
+        "SFD009-SUB-0302",
+        "SFD009-SUB-0303",
+        "SFD009-SUB-0304",
+        "SFD009-SUB-0305",
+        "SFD009-SUB-0306",
+        "SFD009-SUB-0307",
+        "SFD009-SUB-0308",
+        "SFD009-SUB-0309",
+        "SFD009-SUB-0310",
+        "SFD009-SUB-0311",
+        "SFD009-SUB-0312",
+        "SFD009-SUB-0313",
+        "SFD009-SUB-0314",
+        "SFD009-SUB-0315",
+        "SFD009-SUB-0316",
+        "SFD009-SUB-0317",
+        "SFD009-SUB-0318",
+        "SFD009-SUB-0319",
+        "SFD009-SUB-0320",
+        "SFD009-SUB-0321",
+        "SFD009-SUB-0322",
+        "SFD009-SUB-0323",
+        "SFD009-SUB-0324",
+        "SFD009-SUB-0325",
+        "SFD009-SUB-0326",
+        "SFD009-SUB-0327",
+        "SFD009-SUB-0328",
+        "SFD009-SUB-0329",
+        "SFD009-SUB-0330",
+        "SFD009-SUB-0331",
+        "SFD009-SUB-0332",
+        "SFD009-SUB-0333",
+        "SFD009-SUB-0334",
+        "SFD009-SUB-0335",
+        "SFD009-SUB-0336",
+        "SFD009-SUB-0337",
+        "SFD009-SUB-0338",
+        "SFD009-SUB-0339",
+        "SFD009-SUB-0340",
+        "SFD009-SUB-0341",
+        "SFD009-SUB-0342",
+        "SFD009-SUB-0343",
+        "SFD009-SUB-0344",
+        "SFD009-SUB-0345",
+        "SFD009-SUB-0346",
+        "SFD009-SUB-0347",
+        "SFD009-SUB-0348",
+        "SFD009-SUB-0349",
+        "SFD009-SUB-0350",
+        "SFD009-SUB-0351",
+        "SFD009-SUB-0352",
+        "SFD009-SUB-0353",
+        "SFD009-SUB-0354",
+        "SFD009-SUB-0355",
+        "SFD009-SUB-0356",
+        "SFD009-SUB-0357",
+        "SFD009-SUB-0358",
+        "SFD009-SUB-0359",
+        "SFD009-SUB-0360",
+        "SFD009-SUB-0361",
+        "SFD009-SUB-0362",
+        "SFD009-SUB-0363",
+        "SFD009-SUB-0364",
+        "SFD009-SUB-0365",
+        "SFD009-SUB-0366",
+        "SFD009-SUB-0367",
+        "SFD009-SUB-0368",
+        "SFD009-SUB-0369",
+        "SFD009-SUB-0370",
+        "SFD009-SUB-0371",
+        "SFD009-SUB-0372",
+        "SFD009-SUB-0373",
+        "SFD009-SUB-0374",
+        "SFD009-SUB-0375",
+        "SFD009-SUB-0376",
+        "SFD009-SUB-0377",
+        "SFD009-SUB-0378",
+        "SFD009-SUB-0379",
+        "SFD009-SUB-0380",
+        "SFD009-SUB-0381",
+        "SFD009-SUB-0382",
+        "SFD009-SUB-0383",
+        "SFD009-SUB-0384",
+        "SFD009-SUB-0385",
+        "SFD009-SUB-0386",
+        "SFD009-SUB-0387",
+        "SFD009-SUB-0388",
+        "SFD009-SUB-0389",
+        "SFD009-SUB-0390",
+        "SFD009-SUB-0391",
+        "SFD009-SUB-0392",
+        "SFD009-SUB-0393",
+        "SFD009-SUB-0394",
+        "SFD009-SUB-0395",
+        "SFD009-SUB-0396",
+        "SFD009-SUB-0397",
+        "SFD009-SUB-0398",
+        "SFD009-SUB-0399",
+        "SFD009-SUB-0400",
+        "SFD009-SUB-0401",
+        "SFD009-SUB-0402",
+        "SFD009-SUB-0403",
+        "SFD009-SUB-0404",
+        "SFD009-SUB-0405",
+        "SFD009-SUB-0406",
+        "SFD009-SUB-0407",
+        "SFD009-SUB-0408",
+        "SFD009-SUB-0409",
+        "SFD009-SUB-0410",
+        "SFD009-SUB-0411",
+        "SFD009-SUB-0412",
+        "SFD009-SUB-0413",
+        "SFD009-SUB-0414",
+        "SFD009-SUB-0415",
+        "SFD009-SUB-0416",
+        "SFD009-SUB-0417",
+        "SFD009-SUB-0418",
+        "SFD009-SUB-0419",
+        "SFD009-SUB-0420",
+        "SFD009-SUB-0421"
+      ],
+      "subfixture_count": 132,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0290",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0291",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0292",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0293",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0294",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0295",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0296",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0297",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0298",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0299",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0300",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0301",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0302",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0303",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0304",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0305",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0306",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0307",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0308",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0309",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0310",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0311",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0312",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0313",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0314",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0315",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0316",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0317",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0318",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0319",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0320",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0321",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0322",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0323",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0324",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0325",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0326",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0327",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0328",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0329",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0330",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0331",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0332",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0333",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0334",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0335",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0336",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0337",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0338",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0339",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0340",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0341",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0342",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0343",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0344",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0345",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0346",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0347",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0348",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0349",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0350",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0351",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0352",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0353",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0354",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0355",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0356",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0357",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0358",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0359",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0360",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0361",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0362",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0363",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0364",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0365",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0366",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0367",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0368",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0369",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0370",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0371",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0372",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0373",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0374",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0375",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0376",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0377",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0378",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0379",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0380",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0381",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0382",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0383",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0384",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0385",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0386",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0387",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0388",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0389",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0390",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0391",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0392",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0393",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0394",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0395",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0396",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0397",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0398",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0399",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0400",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0401",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0402",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0403",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0404",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0405",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0406",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0407",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0408",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0409",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0410",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0411",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0412",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0413",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0414",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0415",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0416",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0417",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0418",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0419",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0420",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0421"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-DYN-ID-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-013",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0422",
+        "SFD009-SUB-0423",
+        "SFD009-SUB-0424"
+      ],
+      "subfixture_count": 3,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0422",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0423",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0424"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "MINIMUM_TARGET_VIABILITY_SLICE",
+        "anchor": "SFD-NOGO-001",
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-014",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0425",
+        "SFD009-SUB-0426"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0425",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0426"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-015",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0427",
+        "SFD009-SUB-0428"
+      ],
+      "subfixture_count": 2,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0427",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0428"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-016",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0429"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0429"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-017",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0430",
+        "SFD009-SUB-0431",
+        "SFD009-SUB-0432",
+        "SFD009-SUB-0433",
+        "SFD009-SUB-0434",
+        "SFD009-SUB-0435",
+        "SFD009-SUB-0436"
+      ],
+      "subfixture_count": 7,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0430",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0431",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0432",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0433",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0434",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0435",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0436"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-018",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0437",
+        "SFD009-SUB-0438",
+        "SFD009-SUB-0439",
+        "SFD009-SUB-0440",
+        "SFD009-SUB-0441",
+        "SFD009-SUB-0442",
+        "SFD009-SUB-0443",
+        "SFD009-SUB-0444",
+        "SFD009-SUB-0445"
+      ],
+      "subfixture_count": 9,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0437",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0438",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0439",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0440",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0441",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0442",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0443",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0444",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0445"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-019",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0446",
+        "SFD009-SUB-0447",
+        "SFD009-SUB-0448",
+        "SFD009-SUB-0449",
+        "SFD009-SUB-0450",
+        "SFD009-SUB-0451"
+      ],
+      "subfixture_count": 6,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0446",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0447",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0448",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0449",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0450",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0451"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-020",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0452"
+      ],
+      "subfixture_count": 1,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0452"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "REPRESENTATIVE_EXECUTABLE_SLICE",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    },
+    {
+      "oracle_id": "SFD-PROP-021",
+      "execution_disposition": "EXECUTE",
+      "ingress_phase": "api_model",
+      "subfixture_ids": [
+        "SFD009-SUB-0453",
+        "SFD009-SUB-0454",
+        "SFD009-SUB-0455",
+        "SFD009-SUB-0456"
+      ],
+      "subfixture_count": 4,
+      "payload_refs": [
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0453",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0454",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0455",
+        "Test_Deeplus_SFD_P1_009_Fixture_Payload_Bundle_R1.json#/payloads/SFD009-SUB-0456"
+      ],
+      "path_state": "PROPOSED_NOT_MATERIALIZED",
+      "scope_mapping": {
+        "class": "FULL_BOUNDED_CLOSURE_SLICE_ONLY",
+        "anchor": null,
+        "state": "PROPOSED_TEST_MAPPING"
+      }
+    }
+  ],
+  "guards": {
+    "candidate": "NONCANONICAL_NONACTIVATABLE",
+    "sfd_p1_001_008": "CLOSED_UNCHANGED",
+    "sfd_p1_009": "OPEN_EXECUTION_AUTHORITY_REQUIRED",
+    "inherited_p1": "21_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN",
+    "repository_changes": 0,
+    "executions": 0
+  }
+}
