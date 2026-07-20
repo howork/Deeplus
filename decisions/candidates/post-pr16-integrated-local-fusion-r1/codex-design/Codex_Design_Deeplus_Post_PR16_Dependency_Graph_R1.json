@@ -1,0 +1,61 @@
+{
+  "schema": "deeplus.codex-design.post-pr16-integrated-dependency-graph/r1",
+  "graph_type": "DIRECTED_ACYCLIC_LOCAL_DESIGN_PROJECTION",
+  "topological_layer_order": [
+    "L1_TRAIT_BASE",
+    "L2_CONTROLLING_TRAIT_GUARDS",
+    "L3_CLASS_ENUMERATION_CE_R2",
+    "L4_POST_PR16_SFD_RESIDUAL"
+  ],
+  "nodes": [
+    {"id":"L1_TRAIT_BASE","kind":"fusion_layer","status":"FROZEN_PROJECTION","contents":"TC-R001..R016"},
+    {"id":"L2_CONTROLLING_TRAIT_GUARDS","kind":"fusion_layer","status":"CONTROLLING_SUPPLEMENT","contents":"TCC-DG-001..008 + TCC-DG-P2-009"},
+    {"id":"L3_CLASS_ENUMERATION_CE_R2","kind":"fusion_layer","status":"LOCAL_NONACTIVATABLE","contents":"CE-G6 R2"},
+    {"id":"L4_POST_PR16_SFD_RESIDUAL","kind":"fusion_layer","status":"LOCAL_NONACTIVATABLE","contents":"SFD residual with corrected closure ledger"},
+    {"id":"P1_TRAIT","kind":"p1_group","status":"7_OPEN","contents":"TCC-P1-002..008"},
+    {"id":"P1_CLASS","kind":"p1_group","status":"6_OPEN","contents":"CE-C-P1-001..006"},
+    {"id":"P1_ENUMERATION","kind":"p1_group","status":"8_OPEN","contents":"CE-E-P1-001..008"},
+    {"id":"P1_SFD_EXECUTION","kind":"p1_group","status":"1_OPEN","contents":"SFD-P1-009"},
+    {"id":"SFD_STATIC_CLOSURE","kind":"closed_group","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1","contents":"SFD-P1-001..008"},
+    {"id":"M13_A002","kind":"separate_action","status":"OPEN"},
+    {"id":"M13_A005","kind":"separate_action","status":"OPEN"},
+    {"id":"SFD_FIVE_PATH_TRACK","kind":"external_track","status":"SEPARATE_CODEX_IMPLEMENTATION_THEN_TEST"},
+    {"id":"U07_TARGET","kind":"target_gate","status":"HOLD_UNBOUND_CANONICAL_TARGET"},
+    {"id":"DESIGN_JOIN_REVIEW","kind":"next_authority","status":"REQUIRED"}
+  ],
+  "edges": [
+    {"from":"L1_TRAIT_BASE","to":"L2_CONTROLLING_TRAIT_GUARDS","type":"BASE_BEFORE_CONTROLLING_SUPPLEMENT"},
+    {"from":"L2_CONTROLLING_TRAIT_GUARDS","to":"L3_CLASS_ENUMERATION_CE_R2","type":"TRAIT_AUTHORITY_CONSTRAINS_CE_WITNESS_ROUTES"},
+    {"from":"L3_CLASS_ENUMERATION_CE_R2","to":"L4_POST_PR16_SFD_RESIDUAL","type":"CE_IDENTITY_AND_PROFILE_PRECEDE_SFD_RESIDUAL"},
+    {"from":"L1_TRAIT_BASE","to":"P1_TRAIT","type":"RULE_MATERIALIZATION_GAPS"},
+    {"from":"L2_CONTROLLING_TRAIT_GUARDS","to":"P1_TRAIT","type":"GUARD_ACCEPTANCE_DEPENDENCIES"},
+    {"from":"P1_TRAIT","to":"P1_CLASS","type":"ALL_TRAIT_GATES_BEFORE_CLASS_SYNTHESIS_CLOSURE","affected_item":"CE-C-P1-005"},
+    {"from":"P1_TRAIT","to":"P1_ENUMERATION","type":"ALL_TRAIT_GATES_BEFORE_ENUM_SYNTHESIS_CLOSURE","affected_item":"CE-E-P1-007"},
+    {"from":"P1_CLASS","to":"L3_CLASS_ENUMERATION_CE_R2","type":"OPEN_MATERIALIZATION_BOUNDARY"},
+    {"from":"P1_ENUMERATION","to":"L3_CLASS_ENUMERATION_CE_R2","type":"OPEN_MATERIALIZATION_BOUNDARY"},
+    {"from":"SFD_STATIC_CLOSURE","to":"L4_POST_PR16_SFD_RESIDUAL","type":"CONTROLLING_STATIC_STATUS"},
+    {"from":"L4_POST_PR16_SFD_RESIDUAL","to":"P1_SFD_EXECUTION","type":"STATIC_RESIDUAL_PRECEDES_EXECUTION_EVIDENCE"},
+    {"from":"SFD_FIVE_PATH_TRACK","to":"P1_SFD_EXECUTION","type":"SEPARATE_IMPLEMENTATION_TEST_PRECONDITION_NOT_ABSORBED"},
+    {"from":"U07_TARGET","to":"DESIGN_JOIN_REVIEW","type":"RETAINED_NONBLOCKING_CANONICAL_TARGET_HOLD"},
+    {"from":"L4_POST_PR16_SFD_RESIDUAL","to":"DESIGN_JOIN_REVIEW","type":"INTEGRATED_CANDIDATE_REVIEW"}
+  ],
+  "trait_guard_p1_dependencies": {
+    "TCC-DG-001": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007"],
+    "TCC-DG-002": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007"],
+    "TCC-DG-003": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007"],
+    "TCC-DG-004": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007"],
+    "TCC-DG-005": ["TCC-P1-002", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "TCC-DG-006": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "TCC-DG-007": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007"],
+    "TCC-DG-008": ["TCC-P1-006", "TCC-P1-008"],
+    "TCC-DG-P2-009": ["TCC-P1-002", "TCC-P1-008"]
+  },
+  "separation_guards": {
+    "M13_actions_merged_into_p1": false,
+    "sfd_five_path_source_delta_absorbed": false,
+    "future_execution_head_absorbed": false,
+    "canonical_target_edges": 0,
+    "github_edges": 0,
+    "cycle_count": 0
+  }
+}

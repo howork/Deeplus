@@ -1,0 +1,23 @@
+{
+  "schema": "deeplus.design.post-pr16-integrated-fusion-join-static-acceptance/r1",
+  "verdict": "ACCEPT_LOCAL_INTEGRATED_FUSION_FOR_NONCANONICAL_DESIGN_USE",
+  "checks": [
+    {"id": "JOIN-AT-001", "predicate": "outer ZIP bytes and SHA-256 equal delivery identity", "result": "PASS"},
+    {"id": "JOIN-AT-002", "predicate": "CRC, path safety, exact/casefold duplicates, symlinks and nested archives", "result": "PASS"},
+    {"id": "JOIN-AT-003", "predicate": "all JSON parse and manifest/SHA256SUMS bind payload", "result": "PASS"},
+    {"id": "JOIN-AT-004", "predicate": "live main is identical to current review baseline 623ac66d3c90eac25d7f0d5666e7bda848503a45", "result": "PASS"},
+    {"id": "JOIN-AT-005", "predicate": "fusion order is Trait base then controlling guards then CE-G6 R2 then post-PR16 SFD residual", "result": "PASS"},
+    {"id": "JOIN-AT-006", "predicate": "TC-R001..R016 unchanged and unrenumbered", "result": "PASS"},
+    {"id": "JOIN-AT-007", "predicate": "TCC-DG-001..008 and TCC-DG-P2-009 retained", "result": "PASS"},
+    {"id": "JOIN-AT-008", "predicate": "semantic P0 equals zero", "result": "PASS"},
+    {"id": "JOIN-AT-009", "predicate": "OPEN P1 exact set equals Class 6 plus Enumeration 8 plus Trait 7 plus SFD-P1-009", "result": "PASS"},
+    {"id": "JOIN-AT-010", "predicate": "SFD-P1-001..008 uniformly statically closed and disjoint from OPEN set", "result": "PASS"},
+    {"id": "JOIN-AT-011", "predicate": "M13-A002 and M13-A005 remain separate OPEN actions", "result": "PASS"},
+    {"id": "JOIN-AT-012", "predicate": "U-01..U-06/U-08 projection-only and U-07 HOLD", "result": "PASS"},
+    {"id": "JOIN-AT-013", "predicate": "five-path source delta and future execution HEAD not absorbed", "result": "PASS"},
+    {"id": "JOIN-AT-014", "predicate": "candidate remains NONCANONICAL_NONACTIVATABLE", "result": "PASS"},
+    {"id": "JOIN-AT-015", "predicate": "all 15 product lanes remain NOT_RUN", "result": "PASS"}
+  ],
+  "counts": {"PASS": 15, "FAIL": 0, "NOT_AUDITABLE": 0},
+  "highest_evidence_level": "E2_STATIC_ARTIFACT_ONLY"
+}
