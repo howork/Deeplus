@@ -4,6 +4,8 @@
 
 #![forbid(unsafe_code)]
 
+pub mod sfd_p1_009;
+
 /// The architecture responsibility assigned by Management System R1.1.
 pub const RESPONSIBILITY: &str = "xVM interpreter, debugger hooks, and REPL execution runtime";
 /// A compiled scaffold must not be confused with language support.

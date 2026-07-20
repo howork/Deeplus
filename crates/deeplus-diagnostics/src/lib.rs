@@ -4,6 +4,8 @@
 
 #![forbid(unsafe_code)]
 
+pub mod sfd_p1_009;
+
 /// The architecture responsibility assigned by Management System R1.1.
 pub const RESPONSIBILITY: &str = "stable diagnostic identity, rendering, ordering, and fix-its";
 /// A compiled scaffold must not be confused with language support.

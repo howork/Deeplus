@@ -1,7 +1,7 @@
-//! Deeplus compiler CLI boundary. No compiler product is implemented at M1.
+//! Deeplus compiler CLI boundary.
 
 #![forbid(unsafe_code)]
 
 fn main() {
-    eprintln!("deeplusc: repository scaffold only; product status NOT_RUN");
+    std::process::exit(deeplusc::run(std::env::args_os()));
 }
