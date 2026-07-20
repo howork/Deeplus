@@ -1,0 +1,56 @@
+{
+  "schema": "deeplus.codex-design.post-pr16-integrated-conflict-register/r1",
+  "verdict": "NO_BLOCKING_EXACT_INPUT_OR_AUTHORITY_CONFLICT",
+  "source_tree_conflict_count": 0,
+  "historical_authority_ledger_conflict_count": 1,
+  "unresolved_current_authority_conflict_count": 0,
+  "rows": [
+    {
+      "id": "IFC-CONF-001",
+      "class": "HISTORICAL_AUTHORITY_LEDGER",
+      "inputs": ["Codex_Design_Deeplus_Static_First_Dynamic_Facet_Local_Fusion_Pack_R1.zip", "Design_Deeplus_Post_PR16_Reconciliation_R2_Acceptance_Pack_R1.zip"],
+      "conflict": "the immutable SFD local R1 reports SFD-P1-001..008 OPEN while controlling later authority records them statically closed",
+      "resolution": "CONTROLLING_R2_ACCEPTANCE_APPLIED; SFD-P1-001..008 are CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1 and only SFD-P1-009 remains OPEN",
+      "input_modified": false,
+      "blocking": false
+    },
+    {
+      "id": "IFC-CONF-002",
+      "class": "BASELINE_IDENTITY_ROLE",
+      "inputs": ["Trait base", "Trait guards", "CE R2", "SFD local R1", "post-PR16 acceptance"],
+      "conflict": "older local candidates were produced at f509... while current review main is 623ac66d...",
+      "resolution": "f509... is predecessor provenance/local-candidate baseline; 623ac66d... is current review and implementation-input baseline; no source rebase or execution HEAD is inferred",
+      "blocking": false
+    },
+    {
+      "id": "IFC-CONF-003",
+      "class": "DUPLICATE_P1_PROJECTION",
+      "inputs": ["Trait base ledger", "Trait guard ledger", "CE R2 parent crosswalk"],
+      "conflict": "TCC-P1-002..008 appear in multiple parent projections",
+      "resolution": "deduplicated by exact ID; all seven rows agree on OPEN status; controlling Trait guard dependencies are overlaid without changing IDs or count",
+      "duplicate_output_ids": 0,
+      "blocking": false
+    },
+    {
+      "id": "IFC-CONF-004",
+      "class": "CANONICAL_TARGET_GAP",
+      "inputs": ["U-07 migration inventory projection"],
+      "conflict": "no authorized canonical target or user-selected migration policy exists",
+      "resolution": "HOLD_UNBOUND_CANONICAL_TARGET",
+      "write_authority": false,
+      "blocking_for_local_candidate": false,
+      "blocking_for_canonical_materialization": true
+    },
+    {
+      "id": "IFC-CONF-005",
+      "class": "SEPARATE_EXECUTION_TRACK",
+      "inputs": ["Design_Deeplus_SFD_P1_009_Bounded_Five_Path_Repair_Authority_Pack_R1.zip"],
+      "conflict": "a future execution HEAD must be supplied separately and cannot be represented as a design-fusion value",
+      "resolution": "record authority identity only; absorb no source delta, repair candidate, fixture, command, or future execution HEAD",
+      "blocking": false
+    }
+  ],
+  "stop_conditions_encountered": [],
+  "candidate_result": "LOCAL_INTEGRATED_FUSION_CANDIDATE_READY_FOR_DESIGN_JOIN_REVIEW"
+}
+

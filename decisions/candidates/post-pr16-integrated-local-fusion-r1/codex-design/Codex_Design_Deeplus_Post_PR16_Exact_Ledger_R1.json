@@ -1,0 +1,204 @@
+{
+  "schema": "deeplus.codex-design.post-pr16-integrated-exact-ledger/r1",
+  "semantic_p0": 0,
+  "artifact_creation_closes_p1": false,
+  "open_p1": [
+    {
+      "id": "CE-C-P1-001", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "versioned Class flavor/responsibility descriptor; finite capability vector; Class variance rejected at owner admission",
+      "primary_owner": "Spec_ + TypeSystem_", "supporting_roles": ["Design_", "Impl_", "Test_", "Devel_"],
+      "dependencies": "profile/identity freeze; VS-0/1/4",
+      "acceptance": "every admitted flavor maps to exactly one descriptor; cross-constraint mutants reject; Class in/out accepted-HIR and residue counts zero",
+      "closure_authority": "Design_ after Spec_/TypeSystem_/Test_ evidence"
+    },
+    {
+      "id": "CE-C-P1-002", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "sealed/final/open partition with concrete self-cells, abstract zero, owner-qualified opaque open cells",
+      "primary_owner": "Spec_ + TypeSystem_", "supporting_roles": ["Design_", "Test_", "Impl_", "Devel_"],
+      "dependencies": "CE-C-P1-001; VS-1/3/4",
+      "acceptance": "exact cell set is order/import invariant; uncovered opaque cell rejects; current residual stays current",
+      "closure_authority": "Design_ after executable partition corpus"
+    },
+    {
+      "id": "CE-C-P1-003", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "one construction session/commit owner; typestate, publication and cleanup equations",
+      "primary_owner": "Spec_ + TypeSystem_ + Impl_", "supporting_roles": ["Design_", "Test_", "Devel_"],
+      "dependencies": "CE-C-P1-001; VS-3/4/5/6",
+      "acceptance": "success publication count 1, failure 0; delegated LIVE count 0; failure and success resource equations balance; terminal balance 0",
+      "closure_authority": "Design_ after checker/MIR/xVM receipts"
+    },
+    {
+      "id": "CE-C-P1-004", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "deterministic ClassSlotId and exact normalized call/generic/ownership/isolation/effect/error contract with result-only covariance",
+      "primary_owner": "Spec_ + TypeSystem_ + Impl_", "supporting_roles": ["Design_", "Test_", "Devel_"],
+      "dependencies": "identity freeze; VS-1/3/4/5",
+      "acceptance": "order-independent unique slot; cross-kind collision zero; deterministic owner diagnostic per incompatibility; forwarder ID distinct",
+      "closure_authority": "Design_ after Spec_/Impl_/Test_ evidence"
+    },
+    {
+      "id": "CE-C-P1-005", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "whole-Class synthesis manifest and Trait evidence route without Class-owned witness authority",
+      "primary_owner": "Design_ + Spec_ + TypeSystem_", "supporting_roles": ["Trait authority", "Test_", "Impl_", "Devel_"],
+      "dependencies": "all TCC-P1-002..008; VS-9 deferred",
+      "acceptance": "exactly one legal whole-nominal witness; child witness count zero; same-tier multiplicity terminal; AUTO/VIA/completion residue zero",
+      "closure_authority": "Design_ only after TCC closure and target receipt"
+    },
+    {
+      "id": "CE-C-P1-006", "domain": "CLASS", "status": "OPEN",
+      "problem_target": "complete Class API residue and exact eight independent compatibility lanes",
+      "primary_owner": "Design_ + Spec_", "supporting_roles": ["Impl_", "Test_", "Devel_", "tooling/release"],
+      "dependencies": "CE-C-P1-001/004; PC-10; VS-7",
+      "acceptance": "eight records only; 56 ordered one-lane mutations preserve seven sibling bytes/statuses; product PASS impossible without receipt",
+      "closure_authority": "Design_ after lane-local schema and evidence review"
+    },
+    {
+      "id": "CE-E-P1-001", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "EnumId/stable VariantId universe, payload-style profile, one-case semantics, empty boundary",
+      "primary_owner": "Spec_ + TypeSystem_", "supporting_roles": ["Design_", "Impl_", "Test_", "Devel_"],
+      "dependencies": "identity/profile freeze; VS-0/1/3",
+      "acceptance": "one Enum ID and exact distinct order-independent Variant IDs; one-case allowed without tooling advice; empty ingress/completion zero",
+      "closure_authority": "Design_ after descriptor and oracle evidence"
+    },
+    {
+      "id": "CE-E-P1-002", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "active-only semantic places, component responsibility/join, inline-size acyclicity, move/drop/replace/cancel cleanup",
+      "primary_owner": "Spec_ + TypeSystem_ + Impl_", "supporting_roles": ["Design_", "Test_", "Devel_"],
+      "dependencies": "CE-E-P1-001; VS-3/4/5/6",
+      "acceptance": "inactive semantic place count zero; active proof dominates projection/drop; inline cycles reject; resource partial move is not generally usable; old value survives failed replacement",
+      "closure_authority": "Design_ after checker/MIR/xVM receipts"
+    },
+    {
+      "id": "CE-E-P1-003", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "one pre-resolved formation plan, left-to-right once evaluation, failed unpublished cleanup, and current-mixed/successor-uniform migration",
+      "primary_owner": "Spec_ + TypeSystem_ + Impl_", "supporting_roles": ["Design_", "Test_", "Devel_"],
+      "dependencies": "CE-E-P1-001/002; VS-2/3/4/5/6",
+      "acceptance": "one VariantFormationPlanId; no owner inference after evaluation; reverse cleanup; failure publication zero; complete E-02 inventory; user-selected migration; auto-fix zero",
+      "closure_authority": "Design_ after execution and migration evidence"
+    },
+    {
+      "id": "CE-E-P1-004", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "exact/residual/guard/module-relative partition; external residual remains spelling-deferred",
+      "primary_owner": "Design_ + Spec_ + TypeSystem_ + Test_", "supporting_roles": ["Impl_", "Devel_"],
+      "dependencies": "CE-E-P1-001; VS-4",
+      "acceptance": "guard-only coverage never total; external symbolic cell creates no runtime unknown case; arm-order invariant; deferred spelling completion zero",
+      "closure_authority": "Design_ after Spec_/Test_ evidence"
+    },
+    {
+      "id": "CE-E-P1-005", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "successor final-dot-only common member admission, direct final DefId, zero Class slot/subtype/witness, and E-06 migration",
+      "primary_owner": "Spec_ + TypeSystem_ + Impl_", "supporting_roles": ["Design_", "Test_", "Devel_"],
+      "dependencies": "CE-E-P1-001; VS-2/3/4/5",
+      "acceptance": "current four-marker fixtures unchanged; successor only dot accepts; prohibited HIR zero; ClassSlotId/case-witness zero; complete inventory; auto marker rewrite zero",
+      "closure_authority": "Design_ after predicate/diagnostic/migration evidence"
+    },
+    {
+      "id": "CE-E-P1-006", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "ordinary raw-free Enum; explicit raw/ordinal/FFI mappings separated from semantic identity",
+      "primary_owner": "Design_ + Spec_ + TypeSystem_", "supporting_roles": ["Impl_", "Test_", "Devel_", "FFI_"],
+      "dependencies": "CE-E-P1-001; VS-7/10 deferred",
+      "acceptance": "order and VariantId never act as raw; explicit maps satisfy uniqueness/unknown policy; flags separate; target ABI receipt required",
+      "closure_authority": "Design_ under separate raw/target authority"
+    },
+    {
+      "id": "CE-E-P1-007", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "whole-Enum synthesis manifest, case/field laws, and one Trait origin with no case witness",
+      "primary_owner": "Design_ + Spec_ + TypeSystem_", "supporting_roles": ["Trait authority", "Test_", "Impl_", "Devel_"],
+      "dependencies": "all TCC gates; VS-9 deferred",
+      "acceptance": "manifest law/termination/resource/origin proof passes; case witness zero; failure terminal with fallback zero; current lowercase via unchanged",
+      "closure_authority": "Design_ only after TCC closure and receipt"
+    },
+    {
+      "id": "CE-E-P1-008", "domain": "ENUMERATION", "status": "OPEN",
+      "problem_target": "complete Enum API/evolution residue and exact eight independent compatibility lanes",
+      "primary_owner": "Design_ + Spec_", "supporting_roles": ["Impl_", "Test_", "Devel_", "tooling/release"],
+      "dependencies": "CE-E-P1-001/004/006; PC-10; VS-7",
+      "acceptance": "exact residue; no aggregate compatible badge; one-lane mutation changes one row only; product/ABI stays NOT_RUN without receipt",
+      "closure_authority": "Design_ after lane-local evidence"
+    },
+    {
+      "id": "TCC-P1-002", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "exact root-connected surface/profile ownership, recovery, and current/successor isolation",
+      "primary_owner": "Spec_", "supporting_roles": ["Design_", "Impl_", "Test_", "Devel_"],
+      "dependencies": "TC-R001..R016 frozen; exact profile decision",
+      "acceptance": "root reachability, malformed-prefix recovery, lossless CST owner, profile no-go matrix, and current lowercase via parity",
+      "closure_authority": "Spec_ ratification plus Impl_/Test_ evidence plus Design_ final"
+    },
+    {
+      "id": "TCC-P1-003", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "canonical IDs, normalization, unification, locality, overlap, termination, parent/associated summary, and link algorithms",
+      "primary_owner": "Spec_ + Impl_", "supporting_roles": ["Test_", "Devel_"],
+      "dependencies": "TCC-P1-002 for source admission only",
+      "acceptance": "collision round-trip; alpha/alias/order metamorphisms; independent locality/termination agreement; mutants killed; deterministic resource outcome",
+      "closure_authority": "Spec_ algorithm plus Impl_ target evidence plus independent Test_ plus Design_ final"
+    },
+    {
+      "id": "TCC-P1-004", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "current-marker coexistence and exact diagnostic registry binding",
+      "primary_owner": "Spec_ + Test_", "supporting_roles": ["Design_", "Impl_", "Devel_"],
+      "dependencies": "TC-R002; TCC-P1-002/003",
+      "acceptance": "one code/stage per variant, stable primary span, ordered notes, deterministic cap, safe fix policy, and collision/permutation rejection",
+      "closure_authority": "Spec_ registry plus Test_ oracle plus Devel_ review plus Impl_ emission plus Design_ final"
+    },
+    {
+      "id": "TCC-P1-005", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "successor route/provider availability separated from current lowercase via",
+      "primary_owner": "Design_ + Spec_", "supporting_roles": ["Impl_", "Test_", "Devel_"],
+      "dependencies": "TCC-P1-002 profile fence",
+      "acceptance": "DIRECT-only initial candidate; successor VIA/AUTO unconstructible; current via parity; illegal pairs reject; no fallback; availability not bypassable",
+      "closure_authority": "Design_ final after Spec_/Impl_/Test_ evidence"
+    },
+    {
+      "id": "TCC-P1-006", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "closed HIR/MIR/API metadata, typed dispatch verifier, and zero relookup",
+      "primary_owner": "Impl_", "supporting_roles": ["Spec_", "Test_", "Devel_"],
+      "dependencies": "TCC-P1-003/004/005",
+      "acceptance": "full-ID snapshots; evidence mutants reject; class/trait dispatch domains distinct; unresolved provider runtime lookup zero; deterministic digests",
+      "closure_authority": "Impl_ evidence plus Spec_ contract plus independent Test_ plus Design_ final"
+    },
+    {
+      "id": "TCC-P1-007", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "independently executed manifest-bound corpus and target receipts",
+      "primary_owner": "Test_", "supporting_roles": ["Impl_", "Spec_", "Devel_", "Design_"],
+      "dependencies": "executable targets for TCC-P1-002..006",
+      "acceptance": "required fixtures execute; mutants killed; differential oracles agree; two clean runs reproduce; missing lanes remain NOT_RUN",
+      "closure_authority": "independent Test_ plus Design_ final"
+    },
+    {
+      "id": "TCC-P1-008", "domain": "TRAIT_CONFORMANCE", "status": "OPEN",
+      "problem_target": "status terminology, diagnostics/tool metadata, formatter/LSP, migration docs, API, and package readiness",
+      "primary_owner": "Devel_", "supporting_roles": ["Spec_", "Test_", "Impl_", "Design_"],
+      "dependencies": "TCC-P1-002/004/006 and relevant TCC-P1-007 receipts",
+      "acceptance": "contract freeze, formatter two-pass idempotence, trivia/order preservation, profile-aware tooling, identity navigation, API/migration parity, evidence labels",
+      "closure_authority": "Devel_ formal review with Spec_/Impl_/Test_ signoff plus Design_ final"
+    },
+    {
+      "id": "SFD-P1-009", "domain": "STATIC_FIRST_DYNAMIC", "status": "OPEN",
+      "problem_target": "produce target-bound executable evidence after separate exact execution authority",
+      "primary_owner": "Impl_ + Test_", "supporting_roles": ["Build_ later only"],
+      "dependencies": "final static candidate, bounded five-path repair track, and separate execution authority",
+      "acceptance": "baseline/toolchain/target/command/fixtures/outputs are bound and lane-specific receipts are complete",
+      "closure_authority": "ChatGPT Design_ after target-bound receipts",
+      "automatic_start": false
+    }
+  ],
+  "open_counts": {"class":6,"enumeration":8,"trait":7,"sfd":1,"total":22},
+  "closed_static_sfd": [
+    {"id":"SFD-P1-001","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-002","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-003","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-004","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-005","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-006","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-007","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"},
+    {"id":"SFD-P1-008","status":"CLOSED_BY_DESIGN_NORMATIVE_STATIC_RATIFICATION_R1"}
+  ],
+  "closed_static_sfd_count": 8,
+  "separate_open_actions": [
+    {"id":"M13-A002","status":"OPEN","merged_into_exact_p1":false},
+    {"id":"M13-A005","status":"OPEN","merged_into_exact_p1":false}
+  ],
+  "new_p1": 0,
+  "closed_by_candidate": 0,
+  "renumbered": 0,
+  "product_lanes": "15/15_NOT_RUN"
+}
