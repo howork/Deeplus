@@ -1,0 +1,110 @@
+{
+  "schema": "deeplus.multiline-string-lcp-fixtures/r1",
+  "authority": "CMA-R1-A003",
+  "algorithm": "remove the longest exact common indentation prefix of nonblank content lines",
+  "prefix_unit": "UTF-8 source bytes; tab and space are distinct",
+  "blank_line_policy": "exclude blank content lines from prefix selection",
+  "line_ending_policy": "LF and CRLF select the same prefix for the same logical content lines",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "cases": [
+    {
+      "fixture_id": "LCP-MIXED-TAB-SPACE-EMPTY-PREFIX",
+      "line_ending": "LF",
+      "terminal_content_line_break": true,
+      "content_lines": [
+        "\talpha",
+        " beta"
+      ],
+      "expected_common_prefix": "",
+      "expected_dedented_lines": [
+        "\talpha",
+        " beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    },
+    {
+      "fixture_id": "LCP-BLANK-LINES-EXCLUDED",
+      "line_ending": "LF",
+      "terminal_content_line_break": true,
+      "content_lines": [
+        "    alpha",
+        "",
+        "      beta"
+      ],
+      "expected_common_prefix": "    ",
+      "expected_dedented_lines": [
+        "alpha",
+        "",
+        "  beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    },
+    {
+      "fixture_id": "LCP-LF-PARITY",
+      "line_ending": "LF",
+      "terminal_content_line_break": true,
+      "content_lines": [
+        "\talpha",
+        "\tbeta"
+      ],
+      "expected_common_prefix": "\t",
+      "expected_dedented_lines": [
+        "alpha",
+        "beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    },
+    {
+      "fixture_id": "LCP-CRLF-PARITY",
+      "line_ending": "CRLF",
+      "terminal_content_line_break": true,
+      "content_lines": [
+        "\talpha",
+        "\tbeta"
+      ],
+      "expected_common_prefix": "\t",
+      "expected_dedented_lines": [
+        "alpha",
+        "beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    },
+    {
+      "fixture_id": "LCP-NO-TRAILING-CONTENT-NEWLINE",
+      "line_ending": "LF",
+      "terminal_content_line_break": false,
+      "content_lines": [
+        "  alpha",
+        "  beta"
+      ],
+      "expected_common_prefix": "  ",
+      "expected_dedented_lines": [
+        "alpha",
+        "beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    },
+    {
+      "fixture_id": "LCP-TRAILING-CONTENT-NEWLINE",
+      "line_ending": "LF",
+      "terminal_content_line_break": true,
+      "content_lines": [
+        "  alpha",
+        "  beta"
+      ],
+      "expected_common_prefix": "  ",
+      "expected_dedented_lines": [
+        "alpha",
+        "beta"
+      ],
+      "expected_outcome": "accept",
+      "expected_primary_diagnostic": null
+    }
+  ]
+}

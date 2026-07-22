@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check and render the bounded Post-PR16 R4 Preview current-integrity fields.
+"""Check and render the bounded Post-PR16 R4+CMA-R1 current-integrity fields.
 
 This is deterministic NON_PRODUCT repository tooling.  It owns only the
 authority-domain hashes/aggregate and the current-pointer authority digest.
@@ -26,7 +26,7 @@ from typing import Any
 
 CONTRACT_REL = "tools/generators/post-pr16-current-integrity.contract.json"
 GENERATOR_REL = "tools/generators/generate_post_pr16_current_integrity.py"
-EXPECTED_SCHEMA = "deeplus.post-pr16-current-integrity-contract/r4"
+EXPECTED_SCHEMA = "deeplus.post-pr16-current-integrity-contract/r5"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
 OUTPUTS = (AUTHORITY_REL, POINTER_REL)
@@ -43,7 +43,7 @@ AUTHORITY_DIGEST_RE = re.compile(
 
 
 class GeneratorError(RuntimeError):
-    """A bounded R4 integrity stop condition."""
+    """A bounded R4+CMA-R1 integrity stop condition."""
 
     def __init__(self, code: str, detail: str):
         super().__init__(f"{code}: {detail}")
@@ -94,9 +94,9 @@ def load_contract(root: Path) -> dict[str, Any]:
     )
     if not isinstance(contract, dict) or contract.get("schema") != EXPECTED_SCHEMA:
         raise GeneratorError("POST_PR16_CONTRACT_DRIFT", "contract schema")
-    if contract.get("revision") != "r51f3-post-pr16-preview-design-r4":
+    if contract.get("revision") != "r51f3-post-pr16-preview-design-r4-cma-r1":
         raise GeneratorError("POST_PR16_CONTRACT_DRIFT", "revision")
-    if contract.get("materialization_timestamp") != "2026-07-22T21:03:35+09:00":
+    if contract.get("materialization_timestamp") != "2026-07-23T02:40:25+09:00":
         raise GeneratorError("POST_PR16_CONTRACT_DRIFT", "timestamp")
     ownership = tuple(
         row.get("path") for row in contract.get("output_ownership", [])
@@ -627,7 +627,7 @@ def run(root: Path, mode: str) -> int:
         if second != rendered:
             raise GeneratorError("POST_PR16_NONDETERMINISTIC", "second render")
     receipt = {
-        "schema": "deeplus.post-pr16-current-integrity-receipt/r4",
+        "schema": "deeplus.post-pr16-current-integrity-receipt/r5",
         "result": "PASS",
         "mode": mode.upper(),
         **detail,

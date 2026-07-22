@@ -194,7 +194,7 @@ def pointer_review_route_mismatch(root: Path) -> None:
 def stale_role_memory(root: Path) -> None:
     path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
     value = json.loads(path.read_text(encoding="utf-8"))
-    value["source_revision"] = "r51f3-migration-m1"
+    value["source_revision"] = "r51f3-post-pr16-preview-design-r4"
     write_json(path, value)
 
 
@@ -297,7 +297,7 @@ def run(write_receipt: bool) -> int:
         ("current_integrity_missing_transition", current_integrity_missing_transition, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
         ("current_integrity_nonowned_reassembly", current_integrity_nonowned_reassembly, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
     ]
-    if revision == "r51f3-post-pr16-preview-design-r4":
+    if revision.startswith("r51f3-post-pr16-preview-design-r4"):
         mutations.append(
             (
                 "post_pr16_normalized_unit_hash",
@@ -312,7 +312,17 @@ def run(write_receipt: bool) -> int:
             # Keep Windows copies below MAX_PATH even when a tracked authority
             # artifact already has a deliberately descriptive deep path.
             target = base / f"m{index:02d}"
-            shutil.copytree(ROOT, target)
+            shutil.copytree(
+                ROOT,
+                target,
+                ignore=shutil.ignore_patterns(
+                    ".git",
+                    "candidate",
+                    "dist",
+                    "target",
+                    "__pycache__",
+                ),
+            )
             mutate(target)
             refreshed, refresh_output = refresh_manifest(target, name)
             if not refreshed:

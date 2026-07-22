@@ -1408,7 +1408,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `MALFORMED_NUMERIC_EXPONENT` [error]: A decimal exponent requires one or more digits after its optional sign.
 - `MALFORMED_NUMERIC_RADIX_PREFIX` [error]: A 0b, 0o, or 0x radix prefix must be followed by at least one digit candidate before a suffix or delimiter.
 - `MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE` [error]: A triple-quoted String closer must appear on its own line after indentation.
-- `MULTILINE_STRING_INDENT_PREFIX_MISMATCH` [error]: A nonblank multiline String line does not share the exact indentation prefix selected for dedent.
 - `MULTILINE_STRING_OPENER_REQUIRES_NEWLINE` [error]: A triple-quoted String opener must be followed immediately by a physical newline.
 - `NAMED_UNICODE_ESCAPE_UNKNOWN` [error]: Named Unicode escape is not known in the active Unicode name table.
 - `NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID` [error]: A numeric underscore must occur exactly between two digits of the same component.
