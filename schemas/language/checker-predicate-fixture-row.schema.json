@@ -10,13 +10,15 @@
         "predicate_id",
         "fixture_kind",
         "expected",
-        "descriptor",
+        "descriptor_v5",
         "baseline",
         "row_schema_version"
       ],
       "properties": {
         "admitted_condition": {},
-        "descriptor": {},
+        "descriptor": {
+          "description": "Existing predicate-specific semantic fixture authority retained during the RCTS-V5 migration."
+        },
         "diagnostic_disposition": {},
         "execution_status": {},
         "expected": {
@@ -40,7 +42,7 @@
         "rule_seed": {},
         "descriptor_v5": {
           "$ref": "./rcts-v5-descriptor.schema.json",
-          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+          "description": "Structurally valid RCTS-V5 migration projection. It is semantic authority only for axes the predicate fixture explicitly binds and otherwise does not override descriptor."
         },
         "baseline": {
           "const": "0.1.2-baseline.r51f3"
@@ -58,11 +60,14 @@
         "predicate_id",
         "fixture_kind",
         "expected",
+        "descriptor_v5",
         "baseline",
         "row_schema_version"
       ],
       "properties": {
-        "descriptor": {},
+        "descriptor": {
+          "description": "Existing predicate-specific semantic fixture authority retained during the RCTS-V5 migration."
+        },
         "diagnostic_disposition": {},
         "execution_status": {},
         "expected": {
@@ -87,7 +92,7 @@
         "violated_condition": {},
         "descriptor_v5": {
           "$ref": "./rcts-v5-descriptor.schema.json",
-          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+          "description": "Structurally valid RCTS-V5 migration projection. It is semantic authority only for axes the predicate fixture explicitly binds and otherwise does not override descriptor."
         },
         "baseline": {
           "const": "0.1.2-baseline.r51f3"
@@ -104,6 +109,7 @@
         "fixture_id",
         "predicate_id",
         "fixture_kind",
+        "descriptor_v5",
         "baseline",
         "row_schema_version"
       ],
@@ -131,7 +137,7 @@
         },
         "descriptor_v5": {
           "$ref": "./rcts-v5-descriptor.schema.json",
-          "description": "Structurally valid RCTS-V5 descriptor; rejected cases express semantic, not schema, failure."
+          "description": "Structurally valid RCTS-V5 migration projection. A mutation recipe binds only its named violation and does not make placeholder axes semantic."
         },
         "baseline": {
           "const": "0.1.2-baseline.r51f3"

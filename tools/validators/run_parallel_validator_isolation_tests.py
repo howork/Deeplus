@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Prove validator and Post-PR16 harness isolation under parallel execution."""
+"""Prove current validator and integrity-generator isolation in parallel."""
 
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import json
 import shutil
 import subprocess
@@ -13,13 +12,14 @@ import tempfile
 import time
 from contextlib import ExitStack
 from pathlib import Path
-from types import ModuleType
 
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "release/source-tree-manifest.json"
-POST_TEST_REL = Path("tools/validators/run_post_pr16_current_integrity_tests.py")
 VALIDATOR_REL = Path("tools/validators/validate_workspace.py")
+INTEGRITY_GENERATOR_REL = Path(
+    "tools/generators/generate_language_coherence_current_integrity.py"
+)
 REPOSITORY_TEMP_PREFIXES = (
     ".post-pr16-integrity-test-",
     "deeplus-post-pr16-integrity-test-",
@@ -70,14 +70,18 @@ def copy_manifest_workspace(target: Path) -> None:
         shutil.copy2(source, destination)
 
 
-def load_post_test_module(workspace: Path) -> ModuleType:
-    path = workspace / POST_TEST_REL
-    spec = importlib.util.spec_from_file_location("deeplus_parallel_post_test", path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"PARALLEL_TEST_MODULE_LOAD: {path.as_posix()}")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+def external_temp_directory(
+    prefix: str,
+) -> tempfile.TemporaryDirectory[str]:
+    """Allocate held peer state outside both the repository and clean export."""
+    temporary = tempfile.TemporaryDirectory(prefix=prefix)
+    temporary_path = Path(temporary.name).resolve()
+    if is_inside(temporary_path, ROOT):
+        temporary.cleanup()
+        raise RuntimeError(
+            f"PARALLEL_TEST_TEMP_INSIDE_REPOSITORY: {temporary_path.as_posix()}"
+        )
+    return temporary
 
 
 def poison(root: Path) -> None:
@@ -130,14 +134,26 @@ def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[st
             ],
         ),
         (
-            "post_pr16_a",
-            "post_pr16",
-            [sys.executable, str(workspace / POST_TEST_REL)],
+            "integrity_check",
+            "integrity_check",
+            [
+                sys.executable,
+                str(workspace / INTEGRITY_GENERATOR_REL),
+                "--root",
+                str(workspace),
+                "--check",
+            ],
         ),
         (
-            "post_pr16_b",
-            "post_pr16",
-            [sys.executable, str(workspace / POST_TEST_REL)],
+            "integrity_self_test",
+            "integrity_self_test",
+            [
+                sys.executable,
+                str(workspace / INTEGRITY_GENERATOR_REL),
+                "--root",
+                str(workspace),
+                "--self-test",
+            ],
         ),
     ]
     processes = [
@@ -185,12 +201,20 @@ def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[st
                 and receipt.get("errors") == []
                 and peer_absent
             )
+        elif kind == "integrity_check":
+            passed = (
+                process.returncode == 0
+                and receipt.get("result") == "PASS"
+                and receipt.get("mode") == "CHECK"
+                and receipt.get("product_execution") == "NOT_RUN"
+                and peer_absent
+            )
         else:
             passed = (
                 process.returncode == 0
                 and receipt.get("result") == "PASS"
-                and receipt.get("tests") == 13
-                and receipt.get("passed") == 13
+                and receipt.get("tests") == 3
+                and receipt.get("passed") == 3
                 and receipt.get("product_execution") == "NOT_RUN"
                 and peer_absent
             )
@@ -225,13 +249,12 @@ def main() -> int:
                 raise RuntimeError(f"PARALLEL_TEST_TEMP_INSIDE_REPOSITORY: {outer.as_posix()}")
             workspace = outer / "workspace"
             copy_manifest_workspace(workspace)
-            post_module = load_post_test_module(workspace)
             with ExitStack() as stack:
                 peer_a = Path(stack.enter_context(
-                    post_module.external_temp_directory("deeplus-parallel-peer-a-")
+                    external_temp_directory("deeplus-parallel-peer-a-")
                 )).resolve()
                 peer_b = Path(stack.enter_context(
-                    post_module.external_temp_directory("deeplus-parallel-peer-b-")
+                    external_temp_directory("deeplus-parallel-peer-b-")
                 )).resolve()
                 poison(peer_a)
                 poison(peer_b)

@@ -12,7 +12,9 @@ Public signatures preserve `T...` repeated positional residue and `Record***` na
 
 ## 3. Option, Result and cleanup
 
-Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fallback. Result and errors are separate from Option absence. Resource-facing Prelude contracts preserve move and exactly-once cleanup responsibility.
+Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fallback. Result and errors are separate from Option absence. Every Result use site writes the error-channel role as `Result<T, error E>`; the generic declaration itself may bind `E: ErrorSet` without repeating that use-site role. Resource-facing Prelude contracts preserve move and exactly-once cleanup responsibility.
+
+`ActorMessageError` is the closed current actor admission/reply failure family: `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. One-way message expressions return `Result<Unit, error ActorMessageError>`. Request expressions immediately return `Result<Task<T>, error ActorMessageError>`; callers extract the task before `await`. Cancellation remains a distinct control outcome and is not an enum case.
 
 ## 4. Fixed operators and protocols
 
@@ -25,6 +27,8 @@ Calendar and dynamic unit conversions are stdlib/provider profiles, not core syn
 ## 6. Navigation and evidence
 
 Use the signature catalog for exact names, generic channels, parameter labels, return types and feature references. Use the TypeSystem for compatibility and responsibility judgments, Operational Semantics for MIR behavior, and the example corpus for accepted/rejected design-static surfaces. All runtime/provider results remain `NOT_RUN` until artifact-bound receipts exist.
+
+The current async collection profile binds three Prelude identities without introducing syntax: `AsyncSequence<T, E: ErrorSet>`, `AsyncCollector`, and `CollectPolicy::sequential`. `AsyncSequence<T, E>` is a single-consumer source with one source-ordered async `next` channel and one terminal end/error/cancellation outcome; `E` is the source failure set and cancellation remains a distinct control outcome. `AsyncCollector::list<T, U, ES, ET>` requires checker evidence that the source is finite and exposes exactly `throws ES | ET`, the normalized union of the source and transform failure sets. The single policy means source-order result, fail-fast first failure, cancellation of pending work, a capacity-one buffer, no partial commit, and cleanup before return. Completion-order and dynamically bounded alternatives are not current defaults.
 
 
 ## 7. Surface neutrality
@@ -55,7 +59,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 52 canonical Prelude entries
+## 10. Human index of the 53 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -81,8 +85,10 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded view |
 | `String` | core_type | `stable_design` | immutable Unicode scalar sequence |
 | `Task<T>` | core_type | `stable_design` | structured asynchronous task handle |
+| `AsyncCollector` | stdlib_profile | `stable_design` | finite policy-visible async collection with no partial commit |
+| `AsyncSequence<T, E>` | protocol | `stable_design` | asynchronous element source with a bound error set and visible cancellation, isolation and cleanup responsibilities |
 | `ExitCode` | entry_result | `stable_design` | Launcher-facing result; ordinary calls do not map it to process termination. |
-| `CollectPolicy` | enum | `preview` | explicit async ordering and back-pressure policy |
+| `CollectPolicy` | enum | `stable_design` | exact sequential/source/fail-fast/cancel-pending/buffer-one collection policy |
 | `Option<T>` | enum | `stable_design` | recoverable absence as value, not Error |
 | `Result<T, error E>` | enum | `stable_design` | value-level error channel distinct from throws |
 | `downcastOwned<Target,Source>` | function | `stable_design` | generic target is selected from the exact expected OwnedDowncast result type; no runtime type-token argument is accepted |
@@ -94,15 +100,17 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `Float32` | numeric_type_side_constants | `stable_design` | Non-finite Float32 values are type-side constants rather than lexical numeric literals. |
 | `Float64` | numeric_type_side_constants | `stable_design` | Non-finite Float64 values are type-side constants rather than lexical numeric literals. |
 | `Actor` | protocol | `stable_design` | isolated mailbox execution root |
+| `ActorMessageError` | enum | `stable_design` | closed actor admission/reply failure family; cancellation excluded |
 | `Sequence<T>` | protocol | `stable_design` | ordered finite or lazy sequence contract with an exact associated Item binding |
 | `Char` | scalar | `stable_design` | exactly one Unicode scalar value; surrogates excluded |
 | `Shared<T>` | shared_handle | `stable_design` | shared observation handle, not mutable alias permission |
+| `SharedCell<T>` | synchronization | `stable_design` | sequentially consistent scoped observation and owner replacement for Plain payloads; no raw-layout or lock-free inference |
 | `String::render<T>` | static_function | `stdlib` | single-evaluation nonescaping structured-value renderer |
 | `Option<T>::unwrapOrElse` | stdlib_operation | `stable_design` | Named lazy equivalent of one-layer Option coalescing; fallback executes only for none and preserves conditional ownership/error/effect/cleanup. |
 | `Measure<Rep, Dim>` | stdlib_profile | `stdlib_profile` | Measure conversion APIs are explicit and use unit witness carriers. |
 | `UnitCatalog` | stdlib_profile | `stable_design` | Stable design user unit catalog profile; product support NOT_RUN. Dynamic/provider conversion is outside this stable core. |
 | `Grapheme` | stdlib_value_or_view | `stable_design` | extended grapheme cluster produced by named segmentation API |
-| `SharedMutex<T>` | synchronization | `stable_design` | mutation via scoped lock and effect propagation |
+| `SharedMutex<T>` | synchronization | `stable_design` | receiver-bound non-reentrant scoped mutation; non-suspending access and exactly-once unlock precede the next successful lock |
 | `ExtensionSetId` | tooling_schema | `stable_design` | semantic identity seed for named extension set D-MAD; not current source |
 | `BitfieldCodec` | trait | `stdlib` | explicit endian codec |
 | `BitfieldRaw<Backing>` | trait | `stdlib` | checked raw carrier contract |

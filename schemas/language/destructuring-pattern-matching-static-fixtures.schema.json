@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/destructuring-pattern-matching-static-fixtures.schema.json",
+  "title": "Deeplus current destructuring and pattern-matching design-static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "authority",
+    "evidence_level",
+    "product_execution",
+    "phase_profile",
+    "failure_profile",
+    "lifecycle_identities",
+    "counts",
+    "fixtures"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.destructuring-pattern-matching-static-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"},
+    "revision": {"const": "r51f3-current-language-coherence-r1"},
+    "authority": {"const": "LANGUAGE / TYPE_SYSTEM / TESTER"},
+    "evidence_level": {"const": "DESIGN_STATIC"},
+    "product_execution": {"const": "NOT_RUN"},
+    "phase_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "failure_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "lifecycle_identities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixtures", "positive", "negative", "boundary", "product_executed"],
+      "properties": {
+        "fixtures": {"type": "integer", "minimum": 0},
+        "positive": {"type": "integer", "minimum": 0},
+        "negative": {"type": "integer", "minimum": 0},
+        "boundary": {"type": "integer", "minimum": 0},
+        "product_executed": {"const": 0}
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/fixture"}
+    }
+  },
+  "$defs": {
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "fixture_class",
+        "context_id",
+        "pattern_kind_id",
+        "source",
+        "subject_profile",
+        "expected",
+        "primary_diagnostic_family_or_null",
+        "assertions",
+        "execution_state"
+      ],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^DPM-R1-(POS|NEG|BND)-[0-9]{3}$"},
+        "fixture_class": {"enum": ["positive", "negative", "boundary"]},
+        "context_id": {"type": "string", "pattern": "^PCTX-"},
+        "pattern_kind_id": {"type": "string", "pattern": "^PK-"},
+        "source": {"type": "string", "minLength": 1},
+        "subject_profile": {"type": "string", "minLength": 1},
+        "expected": {"enum": ["ADMIT", "REJECT"]},
+        "primary_diagnostic_family_or_null": {
+          "oneOf": [
+            {"type": "string", "pattern": "^DPD-"},
+            {"type": "null"}
+          ]
+        },
+        "assertions": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": ["string", "number", "integer", "boolean", "array", "object", "null"]
+          }
+        },
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

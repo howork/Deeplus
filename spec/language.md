@@ -115,6 +115,8 @@ The terminal valueless `return` is omitted canonically. Recursive functions are 
 
 Function signatures preserve parameter order, labels, context/witness channels, rest channels, effect/error rows, ownership profiles, and return types. Return type alone never selects an overload. Source order never resolves an otherwise ambiguous overload.
 
+An ordinary parameter is always a named parameter slot, optionally with an explicit ownership mode; it is not a refutable Pattern. Decomposition belongs in the function body or in an exhaustive declarative clause head. Local functions have lexical visibility only after their declaration and must list every captured outer local explicitly. Closure literals have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`), lifetime (`#scoped` where required), effects, errors, and isolation responsibilities. Lambda parameter lists contain identifiers, not general Patterns. Named-function `return` and local lambda/value-body `ret` remain different control owners.
+
 ## 9. Parameter channels
 
 Ordinary value parameters, explicit context parameters, explicit witness parameters, repeated positional parameters, and one named-rest parameter are distinct channels.
@@ -159,7 +161,7 @@ Named unfold requires a structural Record whose label set is statically known. A
 
 ## 11. Calls, labels, and callable compatibility
 
-Ordinary calls use parentheses. Bare parenless ordinary calls are not current. Positional unfold and named unfold are checked in separate channels. Labels are static identity, not strings. A runtime key cannot be materialized into a compile-time argument label.
+Ordinary calls use parentheses. A bare parenless ordinary call is not current except for the one exact trailing-closure CallSuffix: one atomic argument followed by exactly one closure. This exception does not admit a general bare argument list and does not relax capture, ownership, effect, error, or overload rules. Positional unfold and named unfold are checked in separate channels. Labels are static identity, not strings. A runtime key cannot be materialized into a compile-time argument label.
 
 Overload preference is fixed-arity before repeated positional before named rest. A remaining tie is an error. Callable compatibility includes effect, error, ownership, isolation, context, witness, and rest-residue profiles; arity and return type alone are insufficient.
 
@@ -226,9 +228,11 @@ Statement `match` and value `@match` are distinct owners. `MatchExpr` is represe
 
 An `@match` expression arm contains one expression result, or a block whose local `ret` supplies the arm result. Ordinary `return` exits the function and is not an arm result.
 
+Conditions are exactly `Bool`; Deeplus has no truthiness conversion. A statement `try` owns either one or more `catch` clauses with an optional `finally`, or one `finally` clause. Bare `try` blocks and `try Expr` statements are not current. Value `@try` has the same nonempty handler/finalizer requirement, and value `@if` is total: omission of `else` is recovery-only. `catch` handles recoverable Error values and cannot absorb Defect or Cancellation.
+
 ## 19. Loops and structured transfer
 
-`for`, `while`, and `repeat` follow their exact Grammar roots. Every admitting owner accepts at most one pure `if` or `!if` GuardClause. Guard chains are removed. Structured break depth is expressed by repeated `break` words and the admitted continue form; label/depth aliases are not current unless explicitly listed.
+`for`, `while`, and `repeat` follow their exact Grammar roots. Every admitting owner accepts at most one pure `if` or `!if` GuardClause. Guard chains are removed. A refutable `for let` first creates nonowning probe binders; the optional header guard may read those binders, but may not move, escape, suspend, mutate through, or acquire authority from them. Only a true guard commits final bindings and ownership. Pattern mismatch or a false guard skips exactly that candidate with no body event or component move. Structured break depth is expressed by repeated `break` words and the admitted continue form; label/depth aliases are not current unless explicitly listed.
 
 The checker owns target depth, payload type, and cleanup order. A control transfer cannot skip required cleanup. Loop-outcome match receives its subject through InputSupply rather than an optional global grammar slot.
 
@@ -270,7 +274,7 @@ Ordinary indexing follows the current index domain. A List literal without an ex
 
 Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment, which makes place evaluation and value flow visible. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains and must not silently inherit one-based or ordinary collection indexing rules.
 
-The obsolete prefixed collection surface is completely removed. `array` is an ordinary identifier. No Stable, Preview, Recovery, formatter, AST/HIR, or diagnostic path may reintroduce `obsolete-prefixed-collection`.
+The obsolete legacy `#array{...}` constructor is completely removed; current NumericArray literals remain `#[...]` and rank-qualified `#N[...]`. `array` and `case` are ordinary identifiers with no special token, parser role, resolver namespace, checker intrinsic, or formatter rule. Deeplus supplies no predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling may be introduced by an ordinary user declaration and then resolves normally. There is no `case` declaration keyword. Enum alternatives remain variants identified by their declared name and nominal enum path. No Stable, Preview, Recovery, formatter, AST/HIR, or diagnostic path may reintroduce the removed legacy constructor.
 
 ## 25. Strings, interpolation, and rendering
 
@@ -301,19 +305,19 @@ Measure types preserve dimension and exact-ratio conversions. Unit product and q
 
 ## 29. Judgments, normalization, and identity
 
-Type checking normalizes aliases, optional layers, unions/intersections, associated projections, rows, ownership modes, effects, errors, labels, measures, and witness identities before comparing types. Normalization must terminate and must not erase responsibility-bearing distinctions.
+Type checking normalizes aliases, optional layers, unions/intersections, associated projections, rows, ownership modes, effects, errors, cancellation, labels, measures, and witness identities before comparing types. Normalization must terminate, perform an occurs check, and must not erase responsibility-bearing distinctions. Inference is bidirectional and local; it does not invent implicit generics, anonymous unions, hidden authorities, or a runtime type test.
 
 The core judgments cover well-formedness, expression typing, subtyping, conformance evidence, call-shape admission, ownership/place access, effect/error rows, construction, pattern coverage, and MIR handoff.
 
 ## 30. Nominal types, generics, and variance
 
-Nominal class identity is distinct from structural Record identity and Trait evidence. Generic parameters range over the closed current kind family: type, `StaticInt`, `EffectRow`, and `ErrorSet`. Generic constructors are invariant by default. Declared variance is restricted to the currently admitted Trait/type parameter positions and cannot invalidate ownership or mutation safety.
+Nominal class identity is distinct from structural Record identity and Trait evidence. Generic parameters range over the closed current kind family: type, `StaticInt`, `EffectRow`, and `ErrorSet`; rows and labels remain checker identities rather than additional user generic kinds. Generic constructors are invariant by default. Declared variance is restricted to the currently admitted Trait/type parameter positions and cannot invalidate ownership or mutation safety.
 
 Inference must not use hidden runtime values, result type alone, or source-order tie-breaking. Unsatisfied or ambiguous constraints produce deterministic diagnostics.
 
 ## 31. Union, intersection, Option, and Result
 
-Anonymous unions are closed alternatives. Contract intersections combine compatible obligations. Option represents presence/absence; Result represents success/failure. Compact optional suffix denotes one layer. `?:` is the Option-coalescing operator and does not silently consume Result/error effects.
+Anonymous unions are closed alternatives. Contract intersections combine compatible obligations. Option represents presence/absence; Result represents success/failure. A Result use always spells its error-channel argument as `Result<T, error E>`; the generic declaration may name `E: ErrorSet` without repeating the use-site role marker. Compact optional suffix denotes one layer. `?:` is the Option-coalescing operator and does not silently consume Result/error effects.
 
 Union injection must select a unique admissible alternative after normalization. Intersection construction must satisfy every constituent responsibility. Exhaustiveness covers all explicit alternatives; no implicit catch-all is supplied.
 
@@ -333,19 +337,23 @@ Facet borrow packaging is current. Owned and inout Facet packages remain Preview
 
 ## 34. Effects, errors, defects, and cancellation
 
-Effect rows and error sets use visible union structure. Errors, defects, and cancellation are distinct. `#pure` forbids observable effect and hidden authority. `#guard` is a terminating pure predicate profile. Failure propagation and primary/suppressed ordering are deterministic.
+Effect rows and error sets use visible union structure. Errors, defects, cancellation, suspension, and isolation are distinct axes. Cancellation is never an ErrorSet member, and suspension is never hidden in an EffectRow. `#pure` forbids observable effect and hidden authority. `#guard` is a terminating, nonsuspending, nonconsuming pure Bool predicate profile. Failure propagation and primary/suppressed ordering are deterministic.
 
 Cancellation must not bypass cleanup. Async failure aggregation preserves the declared primary and suppressed ordering in MIR.
 
 ## 35. Patterns and exhaustiveness
 
-Patterns bind values under the owner’s admission policy. Enum cases use `::case` or `Type::case`; dot-case shorthand is removed. Typed pattern colon ownership must not collide with parameter type annotation. Guards are evaluated only after the structural pattern admits the subject.
+One lossless Pattern CST and one normalized Pattern AST are shared by every admitting owner; a context-policy row, not a second semantic grammar, decides refutability, guard admission, failure disposition, and exhaustiveness. Plain `let`/`var`, bare `for`, and ordinary callable parameters are irrefutable owners. Guarded `let`, statement `if let`/`while let`/`for let`, and `match` are refutable owners. Callable clause heads may be refutable only when their declared clause family is statically disjoint and exhaustive. Enum cases use `::case` or `Type::case`; dot-case shorthand is removed. A local `BindingPattern` owns its optional whole-pattern type annotation once and excludes a second top-level typed-binder derivation; recursive child patterns retain `Identifier : TypeRef`. The Binding owner carries that whole-pattern annotation through normalized AST and HIR in the nullable `binding_owner_expected_subject_type` field. This field constrains the independently evaluated subject before Pattern admission and never creates a runtime type-test Pattern node. Typed-pattern colon ownership never collides with a parameter type annotation because ordinary parameters contain an Identifier rather than a Pattern.
 
-Sealed-family exhaustiveness uses the complete current family. Option, Result, union, enum, and loop outcome each have explicit alternatives. An undecidable or incomplete partition is rejected rather than assumed exhaustive.
+Every refutable owner follows one phase order: evaluate the subject once; acquire its place/owner; build and execute a nonconsuming structural TestPlan; expose nonowning probe binders; evaluate zero or one terminating pure Bool guard; atomically commit moves/borrows/bindings; expose final binders; run the body; then perform the owner-specific exit or join. A failed structural test or guard performs no component move, irreversible borrow, authority acquisition, escape, suspension, or partial binding. Mismatch disposition belongs to the context: skip a loop candidate, choose the next match arm or clause, take the false branch, or emit the irrefutability diagnostic.
+
+The current destructuring carriers are nominal variant payloads, statically known Record labels, and List. Record patterns require a statically known label subset and do not contribute an open-tail/rest fact to coverage. List patterns are exact-length or end in one ignored final `.._`; captured, middle, and multiple rests are not current. Tuple-pattern syntax is not current. An Or-pattern requires identical observable binders with the same canonical types, ownership modes, mutability, and regions on every branch; path/source order is not identity. `pattern as name` creates a borrow alias rather than a clone, and it cannot coexist with a moved or exclusive descendant. Cross-arm place joins preserve only capabilities valid on every incoming arm.
+
+Ordinary `match` chooses the first admitted arm in source order after structural admission and its optional guard; source order never repairs overlap in a declarative callable-clause family. Sealed-family exhaustiveness uses the complete current family. Option, Result, union, enum, List exactness, and loop outcome each use their explicit current alternatives. An undecidable or incomplete partition is rejected rather than assumed exhaustive. Pattern opening does not directly inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never performs backtracking.
 
 ## 36. RCTS-V5 and dynamic boundary
 
-RCTS-V5 is the closed design descriptor family for checker/reference handoff. It records source kind, normalized type, call shape, ownership, effects, errors, labels, shape/rank/orientation, evidence, and MIR responsibility as required by each predicate. Static validator PASS is design-static evidence only.
+RCTS-V5 is the closed design descriptor family for checker/reference handoff. It records source kind, normalized type, call shape, ownership, effects, errors, cancellation, labels, shape/rank/orientation, evidence, and MIR responsibility as required by each predicate. Static validator PASS is design-static evidence only.
 
 Dyn-RCTS remains `PREVIEW_DESIGN` and nonactivatable. Dynamic inspection cannot manufacture a static type, label, conformance, or authority. Any future activation requires a closed runtime representation, type-erasure law, cast/failure model, MIR events, and independent product evidence.
 
@@ -355,11 +363,21 @@ Dyn-RCTS remains `PREVIEW_DESIGN` and nonactivatable. Dynamic inspection cannot 
 
 Current async declarations use the admitted `def#async` owner. Await is explicit. Task spawning through `~ spawn` has one syntax owner: the ordinary MessageSuffix shape, with HIR deciding the reserved spawn selector semantics. A second TaskSpawnSuffix owner is forbidden.
 
-Suspension points preserve borrow/ownership rules, cleanup obligations, actor isolation, and failure ordering. Async callable literals and async comprehensions remain Preview-design.
+Every current task belongs to a lexical structured scope. A scope records parent task, child-set, cancellation state, failure order, and cleanup obligations; it cannot return until admitted children reach a terminal state and required cleanup completes. Deeplus has no detached-task authority. Cancellation is an explicit control axis and terminal task outcome, never an Error value. Delivery is monotonic and idempotent, cleanup cannot be bypassed, and a later secondary failure is retained in deterministic suppressed order rather than replacing the primary outcome.
+
+Suspension points preserve borrow/ownership rules, cleanup obligations, actor isolation, cancellation responsibility, and failure ordering. A borrow or probe binding may cross suspension only when its region and isolation proof explicitly permit it. Async callable literals and async comprehensions remain Preview-design.
 
 ## 38. Actors and messages
 
-Actors own mailbox, isolation, and request/reply responsibilities. Message send is not an ordinary method call and may have different failure/delivery semantics. Mailbox capacity and protocol families are explicit profiles. Distributed/session guarantees are not inferred beyond the current minimum contract.
+An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. Message send is an asynchronous transfer operation, not an ordinary method call. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
+
+`ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way message expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies `await`. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family.
+
+The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. Its `next` channel throws the bound source failure set `E`; cancellation is a separate control outcome. `AsyncCollector::list<T, U, ES, ET>` accepts a finite `AsyncSequence<T, ES>` and a named asynchronous transform that throws `ET`, and the collection call exposes exactly the normalized error-set union `throws ES | ET`. It cannot erase either failure channel or fold cancellation into that union.
+
+The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured task ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
+
+Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T>` supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
 
 ## 39. Compiler tree boundary
 
@@ -419,7 +437,7 @@ R51f3 promotes four narrowly owned contracts without claiming product execution:
 
 The exact minimum contracts and negative boundaries are in the tooling/profile contract artifact. Every related product lane remains `NOT_RUN`.
 
-`session_protocol_lite_provider`, fixed operator conformance overloading, generic extension-set targets and sealed multimethods remain Preview design. Actor delivery/cancellation and coherence/separate-compilation laws are not yet closed enough for promotion.
+`session_protocol_lite_provider`, fixed operator conformance overloading, generic extension-set targets and sealed multimethods remain Preview design. The current actor admission contract is design-closed, but actor parser/checker/MIR/xVM execution remains `NOT_RUN`; no product promotion follows from the static contract.
 
 ## 45. Preview and noncurrent boundaries
 
@@ -451,13 +469,18 @@ The Frontend Model supplies the owner policies that EBNF deliberately delegates:
 - `**` has no named-rest parameter/type role.
 - Source roots consume EOF.
 - `@match` is the only MatchExpr surface.
-- The obsolete prefixed collection spelling has no lexical, Stable, Preview, Recovery, diagnostic, example, or migration identity.
+- The obsolete legacy `#array{...}` constructor has no lexical, Stable, Preview, Recovery, diagnostic, example, or migration identity; current `#[...]` and `#N[...]` NumericArray literals are distinct.
 - Class and Trait marker domains lower separately.
 - Law bodies do not contain ordinary statements.
 - Source AST quotes and attached logic variables have no production.
 - Regex literals have no token, scanner mode, production, or literal AST kind.
 - The callable profile table contains no tail-recursion kind.
 - Every guard owner admits at most one GuardClause; GuardChain has no production.
+- Ordinary callable parameters contain identifiers rather than refutable Patterns.
+- List patterns are exact or end in one ignored `.._`; tuple patterns, captured rests, middle rests, and Record rest patterns have no current production.
+- `array` and `case` are ordinary identifiers with no special token, declaration keyword, predeclared/intrinsic nominal-type binding, parser, checker, or formatter owner; ordinary user declarations of those spellings resolve normally.
+- Statement `try` and value `@try` each own at least one catch or one finally; `try Expr` is not current.
+- Value `@if` is total after recovery and every condition has type Bool.
 - Multiline String, grouped forwarding, scoped activation groups, enum comma cases, field puns, and pattern-binding controls are root-connected Stable syntax.
 - Quarantine scope appears only under RecoverySyntax and is nonactivatable Preview-design.
 
@@ -556,15 +579,15 @@ public final class ConfigureRequest : Request {
 }
 
 public trait Configurable {
-    +def configure+(options***: Record) -> Result<Unit, ConfigError>
+    +def configure+(options***: Record) -> Result<Unit, error ConfigError>
 }
 
-public def configure(options***: Record) -> Result<Unit, ConfigError> = {
+public def configure(options***: Record) -> Result<Unit, error ConfigError> = {
     validate(**options)!
     apply(**options)
 }
 
-public type Configure = (Record***) -> Result<Unit, ConfigError>
+public type Configure = (Record***) -> Result<Unit, error ConfigError>
 
 public def classify(value: Option<Int>) -> String =
     @match value {
@@ -636,7 +659,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `ASSOCIATED_PROJECTION_REQUIRES_BOUND` [error]: Associated projection requires a trait bound declaring that associated requirement.
 - `ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED` [error]: Associated requirement projection cannot be resolved under the current witness/conformance environment.
 - `ASSOCIATED_REQUIREMENT_UNRESOLVED` [error]: Associated type/value requirement cannot be resolved in this witness or constraint environment.
-- `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` [error]: the current profile Stage 1 admits only List + finite Iterable + named def#async + sequential/source/failFast/cancelPending/buffer1.
+- `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` [error]: the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + exact result throws ES | ET + sequential/source/failFast/cancelPending/buffer1.
 - `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` [error]: Async/Task/Actor core is language-design stable but product support is NOT_RUN.
 - `AT_CONTROL_EXPR_REQUIRES_AT_PREFIX` [error]: Value-producing control expression requires @if/@match/@try/@scope spelling.
 - `AT_MATCH_ARM_RETURN_IS_NOT_RESULT` [error]: `return` exits the enclosing named function and is not an @match arm result.
@@ -843,7 +866,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FLOW_BINDING_TYPE_ANNOTATION_MISMATCH` [error]: The flow-binding value is not assignable to the optional target type annotation; no local binding is committed.
 - `FORWARD_GROUP_COLLISION` [error]: A forwarded member collides with an existing or previously forwarded member.
 - `FORWARD_GROUP_DUPLICATE_MEMBER` [error]: A grouped forwarding list names the same member more than once.
-- `FOR_GUARD_PATTERN_BINDING_NOT_AVAILABLE` [error]: for-guard expressions are evaluated after pattern binding; the referenced binding is not available here.
+- `FOR_GUARD_PATTERN_BINDING_NOT_AVAILABLE` [note]: Retired diagnostic; a `for let` guard may read its nonowning probe bindings, while move, escape, suspension, mutation-through, and authority acquisition remain forbidden before commit.
 - `FOR_LET_FILTER_GUARD_NOT_BOOL` [error]: The optional `for let` GuardClause must have type Bool.
 - `FULL_ENUM_CASE_USES_COLON_COLON` [error]: Fully qualified enum cases use `::`. Expected-type shorthand also uses leading `::case`; dot-prefixed `.case` is not current Deeplus.
 - `FUNCTION_SIGNATURE_MUST_PRESERVE_CONTROL_AXES` [note]: Function signatures must preserve throws/effects/suspension/call-domain axes; do not erase them into a bare callable façade.
@@ -1058,7 +1081,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PLAIN_REJECTS_RESOURCE` [error]: Lifecycle/resource owners cannot be erased into PlainValue/Plain.
 - `PLAIN_REJECTS_SHARED_HANDLE` [error]: Shared<T> is a shared owner/handle, not Plain data.
 - `PLAIN_REJECTS_VIEW_OWNER_REGION` [error]: Plain rejects borrowed view owner-region values.
-- `POSITIONAL_UNFOLD_REQUIRES_SEQUENCE_OR_TUPLE` [error]: `*expr` in an argument list requires a Sequence, tuple, or fixed-arity array evidence.
+- `POSITIONAL_UNFOLD_REQUIRES_SEQUENCE_OR_TUPLE` [error]: `*expr` in an argument list requires Sequence evidence or a statically known tuple arity; NumericArray and runtime-sized collections do not supply positional call arity.
 - `POSTFIX_TRANSPOSE_MUST_BE_ATTACHED` [error]: NumericArray postfix transpose is written attached as `A^`.
 - `PREFER_AT_IF_FOR_MULTILINE_TERNARY` [warning]: Long or multiline ternary is clearer as @if.
 - `PREFIXED_LITERAL_NO_WHITESPACE` [error]: No whitespace is allowed between #, prefix, and literal opener.
@@ -1264,6 +1287,25 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TRAIT_SUPER_CYCLE` [error]: Supertrait graph contains a cycle.
 - `TRAIT_SUPER_WITNESS_MISSING` [error]: Selected witness does not provide a required supertrait witness.
 - `TRAIT_VARIANCE_POSITION_VIOLATION` [error]: Trait-only variance parameter appears in an invalid responsibility position.
+- `TRY_REQUIRES_CATCH_OR_FINALLY` [error]: A statement `try` or value `@try` requires at least one `catch` clause or one `finally` clause.
+- `TRY_EXPRESSION_STATEMENT_NOT_CURRENT` [error]: Statement `try` requires a block body; `try Expr` is not current Deeplus.
+- `TUPLE_PATTERN_NOT_CURRENT` [error]: Tuple decomposition is not a current Pattern; parentheses group one Pattern only.
+- `PATTERN_MULTIPLE_REST` [error]: A List pattern may contain at most one rest form.
+- `PATTERN_REST_MUST_BE_FINAL_IGNORED` [error]: The only current List-pattern rest is one ignored `.._` in final position.
+- `RECORD_PATTERN_DUPLICATE_FIELD` [error]: A Record pattern names the same required label more than once.
+- `RECORD_PATTERN_UNKNOWN_FIELD` [error]: A Record pattern names a label outside the subject's statically known Record row.
+- `RECORD_PATTERN_PRIVATE_FIELD` [error]: A Record pattern cannot project a label that is not visible in the current authority domain.
+- `PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN` [error]: Pattern decomposition cannot open a Class, Dyn, Facet, FFI, or opaque private representation.
+- `REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT` [error]: This context requires the checker to prove the Pattern irrefutable for its admitted subject type.
+- `ALIAS_PATTERN_OWNERSHIP_CONFLICT` [error]: A Pattern alias cannot coexist with a moved or exclusively borrowed descendant of the same subject.
+- `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` [error]: Normally returning Pattern arms leave incompatible usable-place states at the join.
+- `PATTERN_ANALYSIS_RESOURCE_LIMIT` [error]: Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness.
+- `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` [error]: An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress.
+- `SHARED_CELL_REQUIRES_PLAIN_PAYLOAD` [error]: SharedCell<T> requires normalized Plain payload responsibility; Plain does not imply raw or lock-free representation.
+- `SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND` [error]: A SharedCell observation or SharedMutex exclusive-access closure cannot suspend or escape its scoped access.
+- `SHARED_MUTEX_REENTRANT_LOCK_FORBIDDEN` [error]: The current SharedMutex profile is non-reentrant; an owner cannot acquire the same mutex while its scoped lock is active.
+- `SHARED_WRAPPER_DOES_NOT_IMPLY_TRANSFERABLE` [error]: Shared, SharedCell, and SharedMutex wrappers do not synthesize Transferable evidence for their payload.
+- `ACTOR_CHANNEL_FIFO_ORDER_VIOLATION` [error]: Actor dequeue order does not preserve channel_sequence within one sender/receiver/mailbox-profile channel.
 - `TUPLE_ORDINAL_OUT_OF_RANGE` [error]: The tuple ordinal exceeds the tuple arity.
 - `TUPLE_ORDINAL_ZERO_FORBIDDEN` [error]: Tuple ordinals are one-based; `.0` is not admitted.
 - `TYPED_MATERIALIZATION_REQUIRES_CONSTRUCTION_ROW` [error]: Typed materialization requires a checker-certified ConstructionRow for the target type.

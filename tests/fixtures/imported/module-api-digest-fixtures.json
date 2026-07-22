@@ -28,7 +28,7 @@
     ]
   },
   "positive_fixture_count": 1,
-  "negative_fixture_count": 6,
+  "negative_fixture_count": 8,
   "positive_fixtures": [
     {
       "fixture_id": "MODULE-API-POS-001",
@@ -42,13 +42,21 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "beta::function",
@@ -61,6 +69,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -69,6 +79,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -77,7 +89,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -90,41 +121,84 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b"
+        "canonical_sha256": "e61ff38c6e02192cb6ce9a9110a51ff13e0cd11bb7f90adc2c17e3da8ba4275d"
       },
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b",
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "e61ff38c6e02192cb6ce9a9110a51ff13e0cd11bb7f90adc2c17e3da8ba4275d",
       "expected": "admitted"
     }
   ],
@@ -141,13 +215,21 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "beta::function",
@@ -160,6 +242,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -168,6 +252,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -176,7 +262,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "beta::function",
@@ -189,6 +294,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -197,6 +304,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -205,7 +314,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "value",
+                  "type_identity": "Int",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -218,44 +346,87 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "fc105247d3b682dab938bbd74242bd12e00d91eb9b571a1de9a1ac7c33328281"
+        "canonical_sha256": "aa9b96bc1f06b5c551afbad3f8062b3bcc5f6762d7112b3ecd39ac40b513e140"
       },
       "expected_errors": [
         "MODULE_API_SYMBOL_ID_DUPLICATE"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Int) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "fc105247d3b682dab938bbd74242bd12e00d91eb9b571a1de9a1ac7c33328281"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Int) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"value\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Int\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "aa9b96bc1f06b5c551afbad3f8062b3bcc5f6762d7112b3ecd39ac40b513e140"
     },
     {
       "fixture_id": "MODULE-API-NEG-ORDER-001",
@@ -276,6 +447,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -284,6 +457,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -292,19 +467,46 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -317,44 +519,87 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "e9f0768105ba416c2144f22a597a073ab8e766656818af5c24b7c1d572f6610f"
+        "canonical_sha256": "1d0b6572578db62139f21c4c078085ad7cb4e1937308dc35dc372ea764ac0070"
       },
       "expected_errors": [
         "MODULE_API_SYMBOL_ID_ORDER"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "e9f0768105ba416c2144f22a597a073ab8e766656818af5c24b7c1d572f6610f"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "1d0b6572578db62139f21c4c078085ad7cb4e1937308dc35dc372ea764ac0070"
     },
     {
       "fixture_id": "MODULE-API-NEG-KIND-REQUIRED-001",
@@ -368,19 +613,29 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "beta::function",
             "kind": "function",
             "normalized_signature": "def beta::function(Record***) -> Unit",
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -389,6 +644,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -397,7 +654,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -410,44 +686,87 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "72aa27b4a6de8b833a3d3ce82e5ba9c99e97697736ecdc7354c8559b42f54706"
+        "canonical_sha256": "f6e36d26a9f18e76369e34fe03e8628b570b1b85a03e1026c2ae9d4b15f9466a"
       },
       "expected_errors": [
         "MODULE_API_SYMBOL_KIND_FIELD_REQUIRED"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "72aa27b4a6de8b833a3d3ce82e5ba9c99e97697736ecdc7354c8559b42f54706"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "f6e36d26a9f18e76369e34fe03e8628b570b1b85a03e1026c2ae9d4b15f9466a"
     },
     {
       "fixture_id": "MODULE-API-NEG-KIND-FORBIDDEN-001",
@@ -461,10 +780,14 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
             "projection_row_sha256": null,
@@ -473,6 +796,10 @@
               "call_right": "once",
               "environment_receiver": "shared",
               "behavior": "pure"
+            },
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
             }
           },
           {
@@ -486,6 +813,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -494,6 +823,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -502,7 +833,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -515,44 +865,87 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "528029ba3c8b3362f21b7eb19cf262991eed8d3be2540966b3f9b9f4acd92780"
+        "canonical_sha256": "cea0e1441e76f3f8919d9e44131761f90045c7eaea210c383ce2fbe15269e1d8"
       },
       "expected_errors": [
         "MODULE_API_SYMBOL_KIND_FIELD_FORBIDDEN"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "528029ba3c8b3362f21b7eb19cf262991eed8d3be2540966b3f9b9f4acd92780"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "cea0e1441e76f3f8919d9e44131761f90045c7eaea210c383ce2fbe15269e1d8"
     },
     {
       "fixture_id": "MODULE-API-NEG-SET-ORDER-001",
@@ -566,13 +959,21 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "beta::function",
@@ -585,6 +986,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -593,6 +996,8 @@
               "state",
               "io"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -601,7 +1006,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -614,44 +1038,87 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
-        "canonical_sha256": "cf651ac8ccacf151486cafe2dddd98f56fc145b49f004620798e99fec30dfaed"
+        "canonical_sha256": "9bc3bf297a9353fb2fce65ba24b814f984f86947997c7d7b1985347641adac27"
       },
       "expected_errors": [
         "MODULE_API_SET_ROW_ORDER"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"state\",\"io\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "cf651ac8ccacf151486cafe2dddd98f56fc145b49f004620798e99fec30dfaed"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\",\"io\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "9bc3bf297a9353fb2fce65ba24b814f984f86947997c7d7b1985347641adac27"
     },
     {
       "fixture_id": "MODULE-API-NEG-HASH-001",
@@ -665,13 +1132,21 @@
             "symbol_id": "alpha::Type",
             "kind": "type",
             "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "shared",
+            "isolation": "not_applicable",
             "evidence_ids": [],
             "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
-            "projection_row_sha256": null
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
           },
           {
             "symbol_id": "beta::function",
@@ -684,6 +1159,8 @@
               "behavior": "pure"
             },
             "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [
               "IOError",
               "ParseError"
@@ -692,6 +1169,8 @@
               "io",
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [
               "clock",
               "fs"
@@ -700,7 +1179,26 @@
             "evidence_ids": [
               "conf::Eq",
               "conf::Send"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "gamma::method",
@@ -713,35 +1211,78 @@
               "behavior": "ordinary"
             },
             "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [
               "state"
             ],
+            "cancellation": "forbidden",
+            "suspends": false,
             "authority": [],
             "isolation": "local",
-            "evidence_ids": []
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
           },
           {
             "symbol_id": "theta::conformance",
             "kind": "conformance",
             "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
+            "isolation": "not_applicable",
             "evidence_ids": [
               "conf::theta::Display"
-            ]
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
           },
           {
             "symbol_id": "zeta::binding",
             "kind": "static_binding",
             "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
             "error_set": [],
             "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
             "authority": [],
-            "isolation": "local",
-            "evidence_ids": []
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
           }
         ],
         "canonical_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
@@ -749,8 +1290,361 @@
       "expected_errors": [
         "MODULE_API_CANONICAL_SHA256_MISMATCH"
       ],
-      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"shared\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"projection_row_sha256\":null,\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"local\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"symbol_id\":\"zeta::binding\"}]}",
-      "expected_canonical_sha256": "0fb66cbc85005f17fcdaff14aa24387bd17d98e04bd5e257eebaec4b90e05a3b"
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "e61ff38c6e02192cb6ce9a9110a51ff13e0cd11bb7f90adc2c17e3da8ba4275d"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-CALLABLE-AXES-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "not_applicable",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "cancellation": "forbidden",
+            "suspends": false,
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          }
+        ],
+        "canonical_sha256": "99a1a0c891ed41f8862a6511e299409c6b0f0618a338e178e9f84f2a9baa66ac"
+      },
+      "expected_errors": [
+        "MODULE_API_CALLABLE_RESPONSIBILITY_AXIS_NOT_APPLICABLE"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"not_applicable\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "99a1a0c891ed41f8862a6511e299409c6b0f0618a338e178e9f84f2a9baa66ac"
+    },
+    {
+      "fixture_id": "MODULE-API-NEG-CALLABLE-CHANNEL-ID-001",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "fixture.api",
+        "source_role": "library",
+        "symbols": [
+          {
+            "symbol_id": "alpha::Type",
+            "kind": "type",
+            "normalized_signature": "public class alpha::Type",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "construction_row_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "projection_row_sha256": null,
+            "responsibility_profile": {
+              "profile_kind": "type",
+              "declaration_ownership": "not_applicable"
+            }
+          },
+          {
+            "symbol_id": "beta::function",
+            "kind": "function",
+            "normalized_signature": "def beta::function(Record***) -> Unit",
+            "callable_profile": {
+              "lifetime": "scoped",
+              "call_right": "once",
+              "environment_receiver": "shared",
+              "behavior": "pure"
+            },
+            "named_rest_residue": "Record***",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [
+              "IOError",
+              "ParseError"
+            ],
+            "effect_row": [
+              "io",
+              "state"
+            ],
+            "cancellation": "forbidden",
+            "suspends": false,
+            "authority": [
+              "clock",
+              "fs"
+            ],
+            "isolation": "task",
+            "evidence_ids": [
+              "conf::Eq",
+              "conf::Send"
+            ],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": null,
+              "parameters": [
+                {
+                  "channel_id": "named_rest",
+                  "type_identity": "Record***",
+                  "ownership": "move",
+                  "cleanup": "drop_exactly_once"
+                }
+              ],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Unit",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": []
+            }
+          },
+          {
+            "symbol_id": "gamma::method",
+            "kind": "method",
+            "normalized_signature": "gamma::Type.method() -> Bool",
+            "callable_profile": {
+              "lifetime": "escaping",
+              "call_right": "repeatable",
+              "environment_receiver": "mutable",
+              "behavior": "ordinary"
+            },
+            "named_rest_residue": null,
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [
+              "state"
+            ],
+            "cancellation": "forbidden",
+            "suspends": false,
+            "authority": [],
+            "isolation": "local",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "callable",
+              "receiver": {
+                "channel_id": "self",
+                "type_identity": "gamma::Type",
+                "ownership": "inout",
+                "cleanup": "none"
+              },
+              "parameters": [],
+              "result": {
+                "channel_id": "result",
+                "type_identity": "Bool",
+                "ownership": "reusable",
+                "cleanup": "none"
+              },
+              "captures": [
+                {
+                  "channel_id": "self",
+                  "type_identity": "gamma::Type",
+                  "ownership": "borrow",
+                  "cleanup": "view_release"
+                }
+              ]
+            }
+          },
+          {
+            "symbol_id": "theta::conformance",
+            "kind": "conformance",
+            "normalized_signature": "theta::Type conforms Display",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [
+              "conf::theta::Display"
+            ],
+            "responsibility_profile": {
+              "profile_kind": "conformance",
+              "evidence_ownership": "reusable",
+              "evidence_cleanup": "none"
+            }
+          },
+          {
+            "symbol_id": "zeta::binding",
+            "kind": "static_binding",
+            "normalized_signature": "let zeta::binding: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          }
+        ],
+        "canonical_sha256": "e67b6e58bf551249e45fe9afbb89c6bb95c1e04028e07571139888353b88c2ae"
+      },
+      "expected_errors": [
+        "MODULE_API_CALLABLE_CHANNEL_ID_DUPLICATE"
+      ],
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[{\"channel_id\":\"self\",\"cleanup\":\"view_release\",\"ownership\":\"borrow\",\"type_identity\":\"gamma::Type\"}],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
+      "expected_canonical_sha256": "e67b6e58bf551249e45fe9afbb89c6bb95c1e04028e07571139888353b88c2ae"
     }
   ],
   "product_compiler_execution": "NOT_RUN"

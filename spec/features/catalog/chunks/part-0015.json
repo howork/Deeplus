@@ -726,7 +726,10 @@
       "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
+    "depends_on": [
+      "plain_public_alias_of_plainvalue",
+      "scoped_callable_lifetime_profile"
+    ],
     "display_name": "SharedCell<T> Plain payload profile",
     "feature_id": "shared_cell_plain_payload_profile",
     "feature_kind": "canonical_feature",
@@ -747,14 +750,22 @@
     "normative_trace_refs": {
       "diagnostics": [
         "COPYABLE_REMOVED_USE_PLAIN_OR_SHARED",
-        "DUPLICABLE_REMOVED_USE_EXPLICIT_RESPONSIBILITY"
+        "DUPLICABLE_REMOVED_USE_EXPLICIT_RESPONSIBILITY",
+        "SHARED_CELL_REQUIRES_PLAIN_PAYLOAD",
+        "SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND",
+        "WEAK_ATOMIC_ORDERING_REQUIRES_FEATURE_GATE"
       ],
       "predicates": [],
-      "examples": [],
+      "examples": [
+        "EX-R51COH-SHARED-001"
+      ],
       "productions": [],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/shared-state-coherence.json",
+      "tests/fixtures/current/shared-state-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -767,7 +778,10 @@
       "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
+    "depends_on": [
+      "callable_responsibility_profile_core",
+      "scoped_callable_lifetime_profile"
+    ],
     "display_name": "SharedMutex<T> no-drop controlled mutable stdlib profile",
     "feature_id": "shared_mutex_no_drop_minimum_profile",
     "feature_kind": "canonical_feature",
@@ -788,16 +802,23 @@
     "normative_trace_refs": {
       "diagnostics": [
         "MUTABLE_ALIAS_REQUIRES_SHARED_WRAPPER",
-        "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD"
+        "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "SHARED_MUTEX_REENTRANT_LOCK_FORBIDDEN",
+        "SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND"
       ],
       "predicates": [],
-      "examples": [],
+      "examples": [
+        "EX-R51COH-SHARED-002"
+      ],
       "productions": [],
       "semantic_reference_productions": [
         "CleanupDecl"
       ]
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/shared-state-coherence.json",
+      "tests/fixtures/current/shared-state-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1002,7 +1023,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Every admitting owner accepts at most one positive or negative GuardClause; GuardChain is removed. Product execution remains NOT_RUN.",
+    "notes": "Every admitting owner accepts at most one positive or negative GuardClause. Chained guards are not admitted. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

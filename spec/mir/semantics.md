@@ -22,7 +22,7 @@ Plain and raw source strings lower to immutable `ConstString` payloads. The raw 
 
 ## 5. Failure and cleanup
 
-Errors, defects and cancellation are distinct. Primary/suppressed failure order is deterministic. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. A cleanup failure is appended according to the suppression law and never reorders an already selected primary outcome.
+Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one task-scope terminal barrier, the failed child with the lowest lexical `spawn_index` becomes primary and the remaining child failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
 
 ## 6. Option coalescing and lazy evaluation
 
@@ -32,7 +32,13 @@ For `lhs ?: fallback`, `lhs` is evaluated first. When it is `some(v)`, `v` is re
 
 ## 7. Actors and messages
 
-Actor isolation is explicit. Within one sender/receiver channel and one admitted mailbox profile, enqueue order is FIFO; no backend may reverse it. Message send is not a method call. Request/reply, cancellation, capacity and protocol outcomes remain explicit MIR events.
+Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
+
+Message send is not a method call. Prepare-send evaluates the receiver and payload once without transferring ownership. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
+
+The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound task lifecycle under the existing cancellation law.
+
+Task scopes record ScopeId, ParentTaskId, ordered ChildTaskIds, cancellation state, and cleanup barrier. A scope exit joins every admitted child; no detached task event is current. Spawn, suspend, resume, cancellation request/observe/acknowledge, child failure, join and scope terminal events retain FailureId and lexical child order so xVM and LLVM can reproduce the same primary/suppressed outcome.
 
 ## 8. Objects, evidence and construction
 
@@ -49,7 +55,9 @@ The Rust xVM bytecode interpreter is the first development, validation and REPL 
 
 ## 11. Elaboration and evaluation preservation
 
-Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation. Pattern-control subjects evaluate once and their bindings commit atomically. `for let` mismatch emits no body events and advances to the next candidate. A rejected quarantine design probe creates no MIR event.
+Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation.
+
+A successful Pattern owner emits `subject_evaluate`, `subject_acquire`, `test_plan_build`, `structural_test`, `probe_bind`, optional `guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and `exit_or_join`. A structural mismatch terminates after `structural_test`; a false guard terminates after `guard_evaluate`. In both cases only the context-bound `exit_or_join` edge follows. TestPlan and probe events are nonconsuming. Failure before `atomic_commit` has zero ownership commit, `pattern_move_count`, irreversible borrow, authority, escape, suspension, partial binding, and final binders. Guarded-let failure transfers to its required `else`; `for let` mismatch or false guard filters exactly one candidate and emits no body event. Each phase carries the exact DPM fixture identity and attempt disposition so successful match commit, precommit mismatch, false guard, guarded-let transfer, for-let filtering, and plain-let destructuring remain independently auditable. Or-pattern branches expose one canonical binder interface, alias binding is a borrow event, and a place join retains only the intersection of incoming capabilities. A rejected quarantine design probe creates no MIR event.
 
 
 ## 12. Removed-surface MIR boundary

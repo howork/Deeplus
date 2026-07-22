@@ -432,6 +432,35 @@
     "emission_domain": "source"
   },
   {
+    "authority": "LANGUAGE / TYPE_SYSTEM / DIAGNOSTICS",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RESULT_ERROR_ROLE_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "result_error_set_model",
+      "option_result_double_colon_case_surface"
+    ],
+    "fixit_hint": "write the Result use site as Result<T, error E>",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "insert the error role only when the second argument is already proven to be an ErrorSet",
+    "message": "A Result use site must mark its error-channel argument explicitly as `Result<T, error E>`.",
+    "notes": "Current diagnostic contract; the generic Result declaration may bind `E: ErrorSet` without repeating the use-site role. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
     "authority_set": [
       "LANGUAGE",

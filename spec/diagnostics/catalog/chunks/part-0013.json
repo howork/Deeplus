@@ -1110,9 +1110,9 @@
     "feature_refs": [
       "place_view_owner_algebra"
     ],
-    "fixit_hint": "copy view to owned array first",
+    "fixit_hint": "copy the view explicitly into destination-owned storage such as List or NumericArray",
     "fixit_kind": "suggestion",
-    "fixit_policy": "copy view to owned array first",
+    "fixit_policy": "copy the view explicitly into destination-owned storage such as List or NumericArray",
     "message": "Plain rejects borrowed view owner-region values.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -1141,7 +1141,7 @@
     "fixit_hint": "",
     "fixit_kind": "suggestion",
     "fixit_policy": "",
-    "message": "`*expr` in an argument list requires a Sequence, tuple, or fixed-arity array evidence.",
+    "message": "`*expr` in an argument list requires a Sequence or statically known tuple; NumericArray and ordinary array-shaped storage do not supply positional-unfold arity evidence.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

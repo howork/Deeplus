@@ -1,0 +1,165 @@
+{
+  "schema": "deeplus.shared-state-coherence-contract/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "new_source_syntax": false,
+    "implementation_authority": false,
+    "product_support_claim": false,
+    "weak_ordering_surface": false,
+    "lock_free_or_progress_claim": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "rules": [
+    {
+      "rule_id": "SSC-R001",
+      "domain": "shared_cell_admission",
+      "contract": {
+        "payload": "normalized Plain",
+        "plain_implies_raw_layout": false,
+        "plain_implies_byte_copy": false,
+        "plain_implies_lock_free": false,
+        "primary_diagnostic": "SHARED_CELL_REQUIRES_PLAIN_PAYLOAD"
+      }
+    },
+    {
+      "rule_id": "SSC-R002",
+      "domain": "shared_cell_construction",
+      "contract": {
+        "operation": "SharedCell.new",
+        "input_mode": "move",
+        "stored_owner_count_after_success": 1,
+        "hidden_clone_count": 0,
+        "hidden_cleanup_count": 0
+      }
+    },
+    {
+      "rule_id": "SSC-R003",
+      "domain": "shared_cell_observation",
+      "contract": {
+        "operation": "withValue",
+        "access": "one #scoped borrow T",
+        "suspension": "forbidden",
+        "borrow_escape": "forbidden",
+        "ordering": "sequentially_consistent",
+        "value_duplication": false
+      }
+    },
+    {
+      "rule_id": "SSC-R004",
+      "domain": "shared_cell_replace",
+      "contract": {
+        "operation": "replace",
+        "new_value_mode": "move",
+        "commit_count": 1,
+        "result": "old owner",
+        "stored_owner_count_after_success": 1,
+        "ordering": "sequentially_consistent"
+      }
+    },
+    {
+      "rule_id": "SSC-R005",
+      "domain": "shared_cell_progress",
+      "contract": {
+        "weaker_ordering": "not current",
+        "lock_free": "not promised",
+        "wait_free": "not promised",
+        "blocking_strategy": "implementation/profile evidence required",
+        "fairness": "not promised"
+      }
+    },
+    {
+      "rule_id": "SSC-R006",
+      "domain": "shared_mutex_admission",
+      "contract": {
+        "payload": "no lifecycle or effectful cleanup owner",
+        "primary_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "poisoning": false,
+        "recursive": false
+      }
+    },
+    {
+      "rule_id": "SSC-R007",
+      "domain": "shared_mutex_access",
+      "contract": {
+        "operation": "receiver-bound withLock",
+        "access": "one #scoped inout T",
+        "suspension": "forbidden",
+        "place_escape": "forbidden",
+        "reentrant_acquire": "reject"
+      }
+    },
+    {
+      "rule_id": "SSC-R008",
+      "domain": "shared_mutex_unlock",
+      "contract": {
+        "cleanup_owner": "withLock call",
+        "unlock_count": 1,
+        "terminal_paths": ["return", "Error", "Defect", "Cancellation"],
+        "unlock_failure": "not admitted",
+        "body_failure_remains_primary": true
+      }
+    },
+    {
+      "rule_id": "SSC-R009",
+      "domain": "shared_mutex_handoff",
+      "contract": {
+        "edge": "successful unlock happens-before next successful lock on the same mutex",
+        "global_lock_order": false,
+        "fairness": false,
+        "scheduler_order_as_semantics": false
+      }
+    },
+    {
+      "rule_id": "SSC-R010",
+      "domain": "responsibility_preservation",
+      "contract": {
+        "effect_row_erasure": false,
+        "error_set_erasure": false,
+        "cancellation_erasure": false,
+        "isolation_erasure": false,
+        "transferability_inference": false
+      }
+    },
+    {
+      "rule_id": "SSC-R011",
+      "domain": "mir_observability",
+      "contract": {
+        "required_event_kind": "synchronization",
+        "required_identities": ["sync_id", "operation_id", "owner_id", "cleanup_region_id"],
+        "required_operations": ["observe_begin", "observe_end", "replace_commit", "lock_acquire", "lock_release"],
+        "runtime_receipt": "NOT_RUN"
+      }
+    },
+    {
+      "rule_id": "SSC-R012",
+      "domain": "evidence_boundary",
+      "contract": {
+        "parser": "NOT_RUN",
+        "checker": "NOT_RUN",
+        "mir_lowering": "NOT_RUN",
+        "xvm": "NOT_RUN",
+        "schedule_permutation": "NOT_RUN",
+        "static_fixture_as_product_pass": false
+      }
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 12,
+    "rule_ids_unique": true,
+    "new_source_syntax_count": 0,
+    "borrow_escape_count": 0,
+    "suspending_scoped_access_count": 0,
+    "hidden_clone_count": 0,
+    "weaker_ordering_surface_count": 0,
+    "lock_free_claim_count": 0,
+    "poisoning_claim_count": 0,
+    "fairness_claim_count": 0,
+    "product_execution_receipt_count": 0
+  }
+}

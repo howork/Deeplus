@@ -1,0 +1,585 @@
+{
+  "schema": "deeplus.destructuring-pattern-matching-static-fixtures/r1",
+  "fixture_schema": "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json",
+  "revision": "r51f3-current-language-coherence-r1",
+  "authority": "LANGUAGE / TYPE_SYSTEM / TESTER",
+  "evidence_level": "DESIGN_STATIC",
+  "product_execution": "NOT_RUN",
+  "phase_profile": [
+    "EVALUATE_SUBJECT_ONCE",
+    "ACQUIRE_BY_CONTEXT_POLICY",
+    "NONCONSUMING_TEST_PLAN",
+    "CREATE_PROBE_BINDERS",
+    "SINGLE_PURE_BOOL_GUARD",
+    "INFALLIBLE_ATOMIC_COMMIT",
+    "CREATE_FINAL_BINDERS",
+    "BODY",
+    "EXIT_AND_POST_JOIN"
+  ],
+  "failure_profile": [
+    "NO_COMPONENT_COMMIT",
+    "NO_IRREVERSIBLE_PATTERN_MOVE",
+    "END_PROBE_BORROWS",
+    "EXECUTE_CONTEXT_SPECIFIC_FAILURE_DISPOSITION"
+  ],
+  "lifecycle_identities": [
+    "PayloadDropPlanId",
+    "UserCleanupPlanId",
+    "StorageDispositionPlanId",
+    "AllocatorOrDomainId",
+    "ForeignReleasePlanId",
+    "FailureDispositionPlanId"
+  ],
+  "counts": {
+    "fixtures": 33,
+    "positive": 10,
+    "negative": 15,
+    "boundary": 8,
+    "product_executed": 0
+  },
+  "fixtures": [
+    {
+      "fixture_id": "DPM-R1-POS-001",
+      "fixture_class": "positive",
+      "context_id": "PCTX-PLAIN-LET",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "let ${ name, age } = person",
+      "subject_profile": "STRUCTURAL_RECORD_REQUIRED_LABELS_PRESENT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "required_label_subset": true,
+        "extra_labels_ignored": true,
+        "open_tail_coverage_cells": 0,
+        "user_code_calls": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-002",
+      "fixture_class": "positive",
+      "context_id": "PCTX-FOR-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "for let Result::ok(value) in results if value > 0 { consume(value) }",
+      "subject_profile": "ITERATOR_OF_RESULT_INT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "guard_resolves_probe_binder": "value",
+        "ownership_commit_after_true_guard": true,
+        "false_guard_body_events": 0,
+        "false_guard_component_commits": 0,
+        "candidate_disposition": "SKIP_ONCE"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-003",
+      "fixture_class": "positive",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-OR",
+      "source": "match message {\n  Message::count(value) | Message::delta(value) => consume(value)\n  otherwise => ignore()\n}",
+      "subject_profile": "CLOSED_ENUM_EQUAL_INT_PAYLOADS",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "binder_names_equal": true,
+        "normalized_types_equal": true,
+        "modes_equal": true,
+        "mutability_equal": true,
+        "usable_lifetimes_equal": true,
+        "capabilities_equal": true,
+        "projection_paths_may_differ": true,
+        "source_field_order_may_differ": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-004",
+      "fixture_class": "positive",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-ALIAS",
+      "source": "match point { ${ x, y } as whole => inspect(whole, x, y) }",
+      "subject_profile": "BORROWED_STRUCTURAL_RECORD",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "alias_same_subject": true,
+        "alias_clone_count": 0,
+        "descendant_move_count": 0,
+        "descendant_exclusive_borrow_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-005",
+      "fixture_class": "positive",
+      "context_id": "PCTX-IF-LET",
+      "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
+      "source": "if let [head, .._] = values { use(head) }",
+      "subject_profile": "LIST_INT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "rest_count": 1,
+        "rest_position": "FINAL",
+        "rest_pattern": "WILDCARD",
+        "rest_binder_count": 0,
+        "implicit_allocation_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-006",
+      "fixture_class": "positive",
+      "context_id": "PCTX-GUARDED-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "let Result::ok(value) = result else return\nconsume(value)",
+      "subject_profile": "RESULT_INT_ERROR",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "failure_exit_unconditional": true,
+        "failure_component_commits": 0,
+        "success_binding_scope": "AFTER_STATEMENT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-007",
+      "fixture_class": "positive",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-MOVE",
+      "source": "match resource {\n  move Resource::ready(value) if value.is_valid() => consume(value)\n  otherwise => recover(resource)\n}",
+      "subject_profile": "OWNED_RESOURCE_ENUM",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "guard_access": "LIMITED_NONOWNING_PROBE",
+        "pre_guard_move_count": 0,
+        "true_guard_commit_count": 1,
+        "false_guard_component_commits": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-008",
+      "fixture_class": "positive",
+      "context_id": "PCTX-COMPREHENSION-IF-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "@[for item in items, if let Option::some(value) = item, value]",
+      "subject_profile": "COMPREHENSION_OPTION_INT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "mismatch_disposition": "SKIP_ONE_CANDIDATE",
+        "mismatch_component_commits": 0,
+        "binding_visible_to_later_clauses": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-001",
+      "fixture_class": "negative",
+      "context_id": "PCTX-ORDINARY-PARAMETER",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "def accept(Result::ok(value): Result) -> Unit = consume(value)",
+      "subject_profile": "ORDINARY_PUBLIC_PARAMETER",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-SHAPE-REFUTABILITY",
+      "assertions": {
+        "ordinary_parameter_identifier_only": true,
+        "runtime_parameter_mismatch_path_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-002",
+      "fixture_class": "negative",
+      "context_id": "PCTX-LAMBDA-PARAMETER",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "{ Result::ok(value) => value }",
+      "subject_profile": "LAMBDA_PARAMETER",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-SHAPE-REFUTABILITY",
+      "assertions": {
+        "lambda_parameter_identifier_only": true,
+        "expression_to_pattern_reinterpretation_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-003",
+      "fixture_class": "negative",
+      "context_id": "PCTX-PLAIN-LET",
+      "pattern_kind_id": "PK-TUPLE",
+      "source": "let (left, right) = pair",
+      "subject_profile": "TUPLE_INT_INT",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "tuple_pattern_status": "DEFERRED_UNREACHABLE",
+        "tuple_coverage_claim": false,
+        "parenthesized_pattern_is_grouping_only": true,
+        "lowering_event_count": 0,
+        "atomic_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-004",
+      "fixture_class": "negative",
+      "context_id": "PCTX-IF-LET",
+      "pattern_kind_id": "PK-LIST-CAPTURED-REST",
+      "source": "if let [head, ..tail] = values { use(head, tail) }",
+      "subject_profile": "LIST_INT",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "captured_rest_status": "DEFERRED_UNREACHABLE",
+        "implicit_carrier_count": 0,
+        "implicit_allocation_count": 0,
+        "lowering_event_count": 0,
+        "atomic_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-005",
+      "fixture_class": "negative",
+      "context_id": "PCTX-IF-LET",
+      "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
+      "source": "if let [first, .._, .._] = values { use(first) }",
+      "subject_profile": "LIST_INT",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "maximum_rest_count": 1,
+        "observed_rest_count": 2
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-006",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "match account { ${ secret } => expose(secret) }",
+      "subject_profile": "ORDINARY_IDENTITY_CLASS_PRIVATE_FIELD",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-RESOLUTION-VISIBILITY",
+      "assertions": {
+        "direct_class_opening_count": 0,
+        "required_alternative": "EXPLICIT_RECORD_VIEW"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-007",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "match erased { ${ value } => consume(value) }",
+      "subject_profile": "BORROWED_DYN",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-RESOLUTION-VISIBILITY",
+      "assertions": {
+        "direct_dyn_opening_count": 0,
+        "required_alternative": "EXPLICIT_REFINEMENT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-008",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "match facet { ${ payload } => consume(payload) }",
+      "subject_profile": "BORROWED_FACET",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-RESOLUTION-VISIBILITY",
+      "assertions": {
+        "direct_facet_opening_count": 0,
+        "owned_payload_from_borrow_count": 0,
+        "required_alternative": "EXPLICIT_BORROWED_REFINEMENT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-009",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "match foreign_record { ${ tag } => use(tag) }",
+      "subject_profile": "FFI_OR_OPAQUE_WITHOUT_ADAPTER",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-RESOLUTION-VISIBILITY",
+      "assertions": {
+        "direct_ffi_opening_count": 0,
+        "required_alternative": "VERIFIED_ADAPTER"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-010",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-OR",
+      "source": "match message { Message::count(value) | Message::reset => consume(value) }",
+      "subject_profile": "CLOSED_ENUM_BINDER_SET_MISMATCH",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-OR-ALIAS-CONTRACT",
+      "assertions": {
+        "alternative_binder_contracts_equal": false,
+        "implicit_binder_synthesis_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-011",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-ALIAS",
+      "source": "match record { ${ resource: move value } as whole => consume(whole, value) }",
+      "subject_profile": "OWNED_RECORD_WITH_MOVE_ONLY_DESCENDANT",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-OR-ALIAS-CONTRACT",
+      "assertions": {
+        "whole_owned_alias_count": 1,
+        "moved_descendant_count": 1,
+        "clone_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-012",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-EXTRACTOR",
+      "source": "match value { extract normalize(part) => use(part) }",
+      "subject_profile": "USER_EXTRACTOR_SURFACE",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "user_extractor_call_count": 0,
+        "required_alternative": "EXPLICIT_ORDINARY_CALL_THEN_MATCH",
+        "lowering_event_count": 0,
+        "atomic_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-013",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-BACKTRACKING",
+      "source": "match value { ?part & ?part => use(part) }",
+      "subject_profile": "LOGIC_VARIABLE_UNIFICATION_SURFACE",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "logic_variable_count": 0,
+        "unification_operation_count": 0,
+        "backtracking_retry_count": 0,
+        "lowering_event_count": 0,
+        "atomic_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-014",
+      "fixture_class": "negative",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-MOVE",
+      "source": "match resource {\n  move Resource::ready(value) if consume(value) => done()\n  otherwise => recover(resource)\n}",
+      "subject_profile": "OWNED_RESOURCE_GUARD_CONSUME",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-GUARD",
+      "assertions": {
+        "guard_consumes_probe_binder": true,
+        "pre_guard_move_count": 0,
+        "component_commit_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-001",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-PLAIN-LET",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "let ${ name } = versioned_person",
+      "subject_profile": "STRUCTURAL_RECORD_WITH_ADDITIONAL_PERMITTED_FIELDS",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "adding_permitted_extra_field_changes_result": false,
+        "open_tail_coverage_cells": 0,
+        "exact_row_validation_inferred": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-002",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-PLAIN-LET",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "let ${ missing } = person",
+      "subject_profile": "STRUCTURAL_RECORD_REQUIRED_LABEL_ABSENT",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-RESOLUTION-VISIBILITY",
+      "assertions": {
+        "checker_row_constraint_failure": true,
+        "runtime_open_shape_test_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-003",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-PLAIN-LET",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "source": "let ${ nickname } = person_with_none_nickname",
+      "subject_profile": "STRUCTURAL_RECORD_OPTION_FIELD_PRESENT_NONE",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "field_present": true,
+        "payload_is_none": true,
+        "treated_as_missing": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-004",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-MOVE",
+      "source": "match borrowed {\n  move Item::ready(value) if false => consume(value)\n  otherwise => reuse(borrowed)\n}",
+      "subject_profile": "PERSISTENT_BORROWED_PLACE_FALSE_GUARD",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "component_commits": 0,
+        "irreversible_moves": 0,
+        "probe_borrows_balanced": true,
+        "persistent_owner_multiset_unchanged": true,
+        "failure_disposition": "NEXT_MATCH_ARM"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-005",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-IF-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "if let Result::ok(value) = make_temporary() { consume(value) }",
+      "subject_profile": "OWNED_TEMPORARY_MISMATCH",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "component_commits_on_mismatch": 0,
+        "probe_borrows_balanced": true,
+        "failure_disposition": "DISPOSE_TEMPORARY_EXACTLY_ONCE",
+        "owner_ledger_byte_identity_required": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-006",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-FOR-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "for let Result::ok(value) in results if false { consume(value) }",
+      "subject_profile": "ITERATOR_CANDIDATE_FALSE_GUARD",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "body_events": 0,
+        "component_commits": 0,
+        "failure_disposition": "ITERATOR_CANDIDATE_SKIP_OR_DISCHARGE_ONCE"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-007",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-LITERAL",
+      "source": "match borrowed {\n  0 if false => unreachable()\n  otherwise => reuse(borrowed)\n}",
+      "subject_profile": "FAILED_EARLIER_MATCH_ARM",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "scrutinee_preserved_for_later_arm": true,
+        "guarded_arm_unconditional_coverage": false,
+        "source_arm_order_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-BND-008",
+      "fixture_class": "boundary",
+      "context_id": "PCTX-STATEMENT-MATCH",
+      "pattern_kind_id": "PK-MOVE",
+      "source": "match pair {\n  Pair::left(move left) => use(left)\n  Pair::right(move right) => use(right)\n}\nreuse(pair)",
+      "subject_profile": "LIVE_SUBJECT_DIFFERENT_ARM_LOCAL_PARTIAL_MOVES",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-OWNERSHIP-ESCAPE",
+      "assertions": {
+        "normally_returning_arm_usable_place_sets_equal": false,
+        "post_match_subject_live": true,
+        "required_resolution": "CONSUME_WHOLE_OR_TERMINATE_DIFFERING_ARMS_OR_REJECT_USE"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-NEG-015",
+      "fixture_class": "negative",
+      "context_id": "PCTX-IF-LET",
+      "pattern_kind_id": "PK-RECORD-REST",
+      "source": "if let ${ name, ..rest } = person { use(name, rest) }",
+      "subject_profile": "STRUCTURAL_RECORD_WITH_CAPTURED_REMAINDER",
+      "expected": "REJECT",
+      "primary_diagnostic_family_or_null": "DPD-PARSER-RECOVERY-SHAPE",
+      "assertions": {
+        "record_rest_status": "DEFERRED_UNREACHABLE",
+        "residual_record_synthesis_count": 0,
+        "lowering_event_count": 0,
+        "atomic_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-009-BINDING-WHOLE-PATTERN-ANNOTATION",
+      "fixture_class": "positive",
+      "context_id": "PCTX-GUARDED-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "let ::some(value): Option<Int> = maybeValue else return",
+      "subject_profile": "OPTION_INT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "binding_pattern_parse_derivation_count": 1,
+        "whole_pattern_type_annotation_owner_count": 1,
+        "top_level_typed_binding_derivation_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "DPM-R1-POS-010-NESTED-TYPED-BINDER",
+      "fixture_class": "positive",
+      "context_id": "PCTX-GUARDED-LET",
+      "pattern_kind_id": "PK-VARIANT",
+      "source": "let ::some(value: Int) = maybeValue else return",
+      "subject_profile": "OPTION_INT",
+      "expected": "ADMIT",
+      "primary_diagnostic_family_or_null": null,
+      "assertions": {
+        "binding_pattern_parse_derivation_count": 1,
+        "nested_typed_binding_count": 1,
+        "whole_pattern_type_annotation_owner_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ]
+}

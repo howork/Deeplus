@@ -1,0 +1,118 @@
+{
+  "schema": "deeplus.pattern-diagnostic-precedence/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "authority": "LANGUAGE / DIAGNOSTICS / OFFICIAL_TOOLING",
+  "evidence_level": "DESIGN_STATIC",
+  "product_execution": "NOT_RUN",
+  "single_primary_diagnostic": true,
+  "prohibited_primary_diagnostic_ids": [
+    "FOR_GUARD_PATTERN_BINDING_NOT_AVAILABLE"
+  ],
+  "fixit_guards": {
+    "insert_wildcard_automatically": false,
+    "relax_exact_to_open_automatically": false,
+    "replace_move_with_clone_automatically": false,
+    "open_private_or_foreign_representation_automatically": false
+  },
+  "counts": {
+    "precedence_rows": 9
+  },
+  "rows": [
+    {
+      "precedence": 1,
+      "family_id": "DPD-PARSER-RECOVERY-SHAPE",
+      "stage": "parser",
+      "selection_rule": "Reject malformed delimiter, token ownership, multiple rest, nonfinal rest, and recovery shape before semantic analysis.",
+      "representative_diagnostic_ids": [
+        "PATTERN_MULTIPLE_REST",
+        "PATTERN_REST_MUST_BE_FINAL_IGNORED"
+      ]
+    },
+    {
+      "precedence": 2,
+      "family_id": "DPD-LOCAL-IDENTITY",
+      "stage": "checker",
+      "selection_rule": "Reject duplicate binders or duplicate semantic Record labels before external resolution.",
+      "representative_diagnostic_ids": [
+        "PATTERN_DUPLICATE_BINDING",
+        "RECORD_PATTERN_DUPLICATE_FIELD"
+      ]
+    },
+    {
+      "precedence": 3,
+      "family_id": "DPD-RESOLUTION-VISIBILITY",
+      "stage": "checker",
+      "selection_rule": "Resolve qualified variants and required Record labels, then enforce static visibility without consulting getters or runtime keys.",
+      "representative_diagnostic_ids": [
+        "RECORD_PATTERN_UNKNOWN_FIELD",
+        "RECORD_PATTERN_PRIVATE_FIELD",
+        "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN"
+      ]
+    },
+    {
+      "precedence": 4,
+      "family_id": "DPD-SHAPE-REFUTABILITY",
+      "stage": "checker",
+      "selection_rule": "After resolution, reject impossible shape or a refutable pattern in an irrefutable-only context.",
+      "representative_diagnostic_ids": [
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+        "PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN"
+      ]
+    },
+    {
+      "precedence": 5,
+      "family_id": "DPD-OR-ALIAS-CONTRACT",
+      "stage": "checker",
+      "selection_rule": "Check the observable Or binder contract and same-subject alias compatibility; ProjectionPath and source-field-order differences are not errors by themselves.",
+      "representative_diagnostic_ids": [
+        "OR_PATTERN_BINDINGS_INCONSISTENT",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT"
+      ]
+    },
+    {
+      "precedence": 6,
+      "family_id": "DPD-OWNERSHIP-ESCAPE",
+      "stage": "checker",
+      "selection_rule": "Reject overlapping mutable projections, premature moves, invalid partial moves, borrow escape, and cross-arm usable-place mismatch before guard checking.",
+      "representative_diagnostic_ids": [
+        "PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN",
+        "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+        "PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY",
+        "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
+      ]
+    },
+    {
+      "precedence": 7,
+      "family_id": "DPD-GUARD",
+      "stage": "checker",
+      "selection_rule": "A single guard sees read-only nonescaping probe binders; reject consume, mutation, throw, effect, authority acquisition, suspension, escape, and non-Bool type in deterministic order.",
+      "representative_diagnostic_ids": [
+        "MATCH_GUARD_CONSUME_NOT_ALLOWED",
+        "MATCH_GUARD_EFFECT_NOT_ALLOWED",
+        "MATCH_GUARD_THROWS_NOT_ALLOWED",
+        "MATCH_GUARD_NOT_BOOL",
+        "FOR_LET_FILTER_GUARD_NOT_BOOL"
+      ]
+    },
+    {
+      "precedence": 8,
+      "family_id": "DPD-EXHAUSTIVENESS-USEFULNESS",
+      "stage": "checker",
+      "selection_rule": "After all admitted rows are typed, diagnose unreachable arms and a deterministic missing constructor witness; guarded arms add no unconditional coverage.",
+      "representative_diagnostic_ids": [
+        "MATCH_ARM_UNREACHABLE",
+        "MATCH_NOT_EXHAUSTIVE",
+        "MATCH_NONEXHAUSTIVE_AFTER_GUARDS"
+      ]
+    },
+    {
+      "precedence": 9,
+      "family_id": "DPD-ANALYSIS-RESOURCE-LIMIT",
+      "stage": "checker",
+      "selection_rule": "When no semantic result is available within the deterministic symbolic-work budget, emit one resource-limit diagnostic and no partial HIR or MIR.",
+      "representative_diagnostic_ids": [
+        "PATTERN_ANALYSIS_RESOURCE_LIMIT"
+      ]
+    }
+  ]
+}

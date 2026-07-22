@@ -39,8 +39,13 @@
           "symbol_id",
           "kind",
           "normalized_signature",
+          "responsibility_profile",
+          "ownership",
+          "cleanup",
           "error_set",
           "effect_row",
+          "cancellation",
+          "suspends",
           "authority",
           "isolation",
           "evidence_ids"
@@ -62,6 +67,27 @@
           "normalized_signature": {
             "type": "string",
             "minLength": 1
+          },
+          "responsibility_profile": {
+            "$ref": "#/$defs/responsibilityProfile"
+          },
+          "ownership": {
+            "enum": [
+              "not_applicable",
+              "reusable",
+              "borrow",
+              "inout",
+              "move",
+              "resource"
+            ]
+          },
+          "cleanup": {
+            "enum": [
+              "not_applicable",
+              "none",
+              "view_release",
+              "drop_exactly_once"
+            ]
           },
           "callable_profile": {
             "type": "object",
@@ -124,6 +150,21 @@
             },
             "uniqueItems": true
           },
+          "cancellation": {
+            "enum": [
+              "not_applicable",
+              "forbidden",
+              "propagate",
+              "observe",
+              "shielded_cleanup"
+            ]
+          },
+          "suspends": {
+            "oneOf": [
+              {"type": "boolean"},
+              {"const": "not_applicable"}
+            ]
+          },
           "authority": {
             "type": "array",
             "items": {
@@ -133,10 +174,11 @@
           },
           "isolation": {
             "enum": [
+              "not_applicable",
               "local",
               "task",
               "actor",
-              "shared"
+              "global"
             ]
           },
           "evidence_ids": {
@@ -199,6 +241,17 @@
                     ]
                   }
                 ]
+              },
+              "properties": {
+                "responsibility_profile": {
+                  "properties": {"profile_kind": {"const": "type"}},
+                  "required": ["profile_kind"]
+                },
+                "ownership": {"const": "not_applicable"},
+                "cleanup": {"const": "not_applicable"},
+                "cancellation": {"const": "not_applicable"},
+                "suspends": {"const": "not_applicable"},
+                "isolation": {"const": "not_applicable"}
               }
             }
           },
@@ -231,6 +284,21 @@
                     ]
                   }
                 ]
+              },
+              "properties": {
+                "responsibility_profile": {
+                  "properties": {"profile_kind": {"const": "callable"}},
+                  "required": ["profile_kind"]
+                },
+                "ownership": {"const": "not_applicable"},
+                "cleanup": {"const": "not_applicable"},
+                "cancellation": {
+                  "enum": ["forbidden", "propagate", "observe", "shielded_cleanup"]
+                },
+                "suspends": {"type": "boolean"},
+                "isolation": {
+                  "enum": ["local", "task", "actor", "global"]
+                }
               }
             }
           },
@@ -263,6 +331,21 @@
                     ]
                   }
                 ]
+              },
+              "properties": {
+                "responsibility_profile": {
+                  "properties": {"profile_kind": {"const": "callable"}},
+                  "required": ["profile_kind"]
+                },
+                "ownership": {"const": "not_applicable"},
+                "cleanup": {"const": "not_applicable"},
+                "cancellation": {
+                  "enum": ["forbidden", "propagate", "observe", "shielded_cleanup"]
+                },
+                "suspends": {"type": "boolean"},
+                "isolation": {
+                  "enum": ["local", "task", "actor", "global"]
+                }
               }
             }
           },
@@ -304,6 +387,15 @@
                 ]
               },
               "properties": {
+                "responsibility_profile": {
+                  "properties": {"profile_kind": {"const": "conformance"}},
+                  "required": ["profile_kind"]
+                },
+                "ownership": {"const": "not_applicable"},
+                "cleanup": {"const": "not_applicable"},
+                "cancellation": {"const": "not_applicable"},
+                "suspends": {"const": "not_applicable"},
+                "isolation": {"const": "not_applicable"},
                 "evidence_ids": {
                   "minItems": 1
                 }
@@ -346,6 +438,17 @@
                     ]
                   }
                 ]
+              },
+              "properties": {
+                "responsibility_profile": {
+                  "properties": {"profile_kind": {"const": "static_binding"}},
+                  "required": ["profile_kind"]
+                },
+                "ownership": {"const": "not_applicable"},
+                "cleanup": {"const": "not_applicable"},
+                "cancellation": {"const": "not_applicable"},
+                "suspends": {"const": "not_applicable"},
+                "isolation": {"const": "not_applicable"}
               }
             }
           }
@@ -355,6 +458,78 @@
     "canonical_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "$defs": {
+    "responsibilityChannel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel_id", "type_identity", "ownership", "cleanup"],
+      "properties": {
+        "channel_id": {"type": "string", "minLength": 1},
+        "type_identity": {"type": "string", "minLength": 1},
+        "ownership": {
+          "enum": ["reusable", "borrow", "inout", "move", "resource"]
+        },
+        "cleanup": {
+          "enum": ["none", "view_release", "drop_exactly_once"]
+        }
+      }
+    },
+    "responsibilityProfile": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_kind", "declaration_ownership"],
+          "properties": {
+            "profile_kind": {"const": "type"},
+            "declaration_ownership": {"const": "not_applicable"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_kind", "receiver", "parameters", "result", "captures"],
+          "properties": {
+            "profile_kind": {"const": "callable"},
+            "receiver": {
+              "oneOf": [
+                {"$ref": "#/$defs/responsibilityChannel"},
+                {"type": "null"}
+              ]
+            },
+            "parameters": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/responsibilityChannel"}
+            },
+            "result": {"$ref": "#/$defs/responsibilityChannel"},
+            "captures": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/responsibilityChannel"}
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_kind", "evidence_ownership", "evidence_cleanup"],
+          "properties": {
+            "profile_kind": {"const": "conformance"},
+            "evidence_ownership": {"const": "reusable"},
+            "evidence_cleanup": {"const": "none"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_kind", "value"],
+          "properties": {
+            "profile_kind": {"const": "static_binding"},
+            "value": {"$ref": "#/$defs/responsibilityChannel"}
+          }
+        }
+      ]
     }
   },
   "x-deeplus-symbol-id-contract": {
@@ -383,6 +558,11 @@
       "forbidden": [
         "construction_row_sha256",
         "projection_row_sha256"
+      ],
+      "concrete_responsibility_axes": [
+        "cancellation",
+        "suspends",
+        "isolation"
       ]
     },
     "method": {
@@ -393,6 +573,11 @@
       "forbidden": [
         "construction_row_sha256",
         "projection_row_sha256"
+      ],
+      "concrete_responsibility_axes": [
+        "cancellation",
+        "suspends",
+        "isolation"
       ]
     },
     "conformance": {
@@ -416,6 +601,12 @@
         "projection_row_sha256"
       ]
     }
+  },
+  "x-deeplus-callable-channel-id-contract": {
+    "scope": "for each function or method, collect every non-null receiver channel plus every parameters, result, and captures channel",
+    "identity_key": "channel_id",
+    "uniqueness": "all collected channel_id values are pairwise distinct across the complete callable responsibility profile",
+    "duplicate_error": "MODULE_API_CALLABLE_CHANNEL_ID_DUPLICATE"
   },
   "x-deeplus-canonical-byte-algorithm": {
     "hash_algorithm": "SHA-256",

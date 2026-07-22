@@ -24,7 +24,35 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "19b2005ab83706d37a5a488fa969003a1e6e0a752b43ce19fb32974049e83d4b"
+    "normalized_contract_sha256": "eeffa75d2b54be4edb07fc48370c7811921cd1c0928e3acac4ea9828b48f4c2f"
+  },
+  {
+    "entry_id": "actor_message_error",
+    "symbol": "ActorMessageError",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_request_reply"
+    ],
+    "signatures": [
+      "public enum ActorMessageError { mailboxFull; receiverClosedBeforeAdmission; receiverClosedBeforeReply; }"
+    ],
+    "responsibility": "closed recoverable actor admission and post-admission receiver-closure failure family; Cancellation remains a distinct control axis",
+    "notes": "One-way MessageSuffix returns Result<Unit, error ActorMessageError>; request MessageSuffix returns immediate Result<Task<T>, error ActorMessageError>; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum ActorMessageError { mailboxFull; receiverClosedBeforeAdmission; receiverClosedBeforeReply; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "2ef0581145255199e467472c91e8ce91e2c08962390cb077f321cac6a91db094"
   },
   {
     "entry_id": "bitfield_codec",
@@ -51,7 +79,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "bad6119e78b7e924ec4c08d5e8160cb30aa574685bc10b9d3ed4cf1106406245"
+    "normalized_contract_sha256": "7d8105f76d3433de535f153f9398991a83cbe63d8f3fafed3ae29986ab89d795"
   },
   {
     "entry_id": "bitfield_raw",
@@ -78,7 +106,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "8a71633d6659126c437f05c8bee47a0d6dae35f13fdf8ddafb25fb02f6528597"
+    "normalized_contract_sha256": "8b4cceed5c83079fba6d8c1e4963d5a618ebdfc114c7072d2c83d6ba3c009206"
   },
   {
     "entry_id": "bitwise",
@@ -106,7 +134,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "9f0eeaa482c70cae5237718f6121e095d6c307125977fb5b8e1abbe576b108a5"
+    "normalized_contract_sha256": "937eafd1bf130b00071b50c695c1b3a4194d5010216f3edb9698767f8269fb3d"
   },
   {
     "entry_id": "box_t",
@@ -141,7 +169,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "0534b54c4bd1cdb8d07d5789fd2b5dd8f93f54bafea230bbd6b3c7ac72fd9596"
+    "normalized_contract_sha256": "ef2bbeb7eae076dc7e0e4032f0e1567929274fe681a11427c33bae632a6c902a"
   },
   {
     "entry_id": "byte_view",
@@ -177,7 +205,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "60ac3d86d47a662eae9290e70b07f99b50687ffb96dff1c9b1dbdd6f267fb763"
+    "normalized_contract_sha256": "357d5f2d9311e77049a8c7a8e5b075f7e7cdf0356681b3d301141c777d7e9467"
   },
   {
     "entry_id": "bytes",
@@ -211,7 +239,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "bd159a867765216b34cb395168d13971000c0ee84213aff1288f3c06cf4e3892"
+    "normalized_contract_sha256": "66a753a551900b017589a02fe0297bf63e81f5b8ec236e2a794e183735060d0a"
   },
   {
     "entry_id": "char",
@@ -245,34 +273,89 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "656d0dac971952523b8ad384115fec7c6ef5e86d25a75002b3ea2e2672ee9692"
+    "normalized_contract_sha256": "23f723eda811acb57a4bed5a98180100ef1c15131e77c5cd9f146047f41419fe"
   },
   {
-    "entry_id": "collect_policy",
-    "symbol": "CollectPolicy",
-    "kind": "enum",
-    "status": "preview",
+    "entry_id": "async_collector",
+    "symbol": "AsyncCollector",
+    "kind": "stdlib_profile",
+    "status": "stable_design",
     "feature_refs": [
       "policy_visible_async_collector_msp"
     ],
     "signatures": [
-      "public enum CollectPolicy { ordered; completion; bounded(limit: Int) }"
+      "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES | ET"
     ],
-    "responsibility": "explicit async ordering and back-pressure policy",
-    "notes": "R51b integrated current-canonical declaration; product support is not implied",
+    "responsibility": "explicit finite AsyncSequence collection service; the result error set is exactly the normalized union of source ES and transform ET; source order, fail-fast first failure, pending-child cancellation, buffer bound one, no partial commit, cleanup before return; cancellation remains a distinct control outcome and finiteness is checker evidence rather than hidden iteration",
+    "notes": "Current stdlib design identity; source syntax and product execution are not implied",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public enum CollectPolicy { ordered; completion; bounded(limit: Int) }",
+        "text": "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES | ET",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "6bf06aab2f0ea5c840282916efd23b2652cd5371c72c3132ecd4bba338e00a96"
+    "normalized_contract_sha256": "a9762f9cd4011e55276074f636ca9e8de5886b1e360285cbf08bc07252aef9f5"
+  },
+  {
+    "entry_id": "async_sequence_t",
+    "symbol": "AsyncSequence<T, E>",
+    "kind": "protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "async_iterator_protocol_preview",
+      "policy_visible_async_collector_msp"
+    ],
+    "signatures": [
+      "prelude intrinsic AsyncSequence<T, E: ErrorSet> { associated Item = T; associated Failure = E; next: #async () -> Option<T> throws E; terminal: end | error E | cancellation }"
+    ],
+    "responsibility": "explicit single-consumer asynchronous element source with bound failure set E; next is source-ordered, terminal end/error/cancellation is unique, and cancellation, isolation and cleanup responsibilities remain visible; finiteness is separate checker evidence",
+    "notes": "Current protocol identity; product implementation remains NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic AsyncSequence<T, E: ErrorSet> { associated Item = T; associated Failure = E; next: #async () -> Option<T> throws E; terminal: end | error E | cancellation }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "a5255d6e760703d98df2f1309d5076696b8e2898134adb7aee27f61bd0c69903"
+  },
+  {
+    "entry_id": "collect_policy",
+    "symbol": "CollectPolicy",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "policy_visible_async_collector_msp"
+    ],
+    "signatures": [
+      "public enum CollectPolicy { sequential }"
+    ],
+    "responsibility": "exact Stage-1 async collection policy: source-order output, fail-fast first failure, cancel pending work, capacity one",
+    "notes": "The single current policy does not imply completion-order, unbounded buffering, partial success, or a runtime default; product support is not implied",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum CollectPolicy { sequential }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "819c167faffe81c6181303cfd84d613faaaae9b0131136eb361000797104bd3f"
   },
   {
     "entry_id": "contextparameterrole",
@@ -299,7 +382,7 @@
         "schema": "deeplus.checker-meta-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "68c3c025b68b6abdf4aac5b9b7ae120e24f7ee23b3fafcfb8f5ceea57cc51aa3"
+    "normalized_contract_sha256": "136cdfe85161abd4f1d32cb339431b82a21ebaeab04856f9a29f00164d5e4d04"
   },
   {
     "entry_id": "display",
@@ -329,7 +412,7 @@
     "absorbed_entry_ids": [
       "display_025"
     ],
-    "normalized_contract_sha256": "30ae7d6310f7a1bc95613696a09b6a9f67ae3e0ec74f009c445d77268b1de55a"
+    "normalized_contract_sha256": "75163653db16dcae276e86315adeb339ca0811fa63805643714427db4abba8ab"
   },
   {
     "entry_id": "exit_code",
@@ -364,7 +447,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "a8d2eb59fc23829bd4dc49760a9fabc2649c923258a30d71107394f7eb24b513"
+    "normalized_contract_sha256": "9e0634bbdf044454ca92537a859fc8833abf9ef85e5bff3b0f46806ca0eb7836"
   },
   {
     "entry_id": "extensionsetid",
@@ -391,7 +474,7 @@
         "schema": "deeplus.compiler-meta-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "501719d14c3185080a5ca5561247b4798edd1c4534453f29eecf94c3d1ded32e"
+    "normalized_contract_sha256": "172f341ab0f2d55ea3db635ea9d343253e6f7fbf0402a869b9a217c6f927f7ea"
   },
   {
     "entry_id": "facet_rcts_v5",
@@ -418,7 +501,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "a5712fb23f153ee613afb3358e199e6ffc458b0da8ea0b7e7724eacbb0c9c74f"
+    "normalized_contract_sha256": "16ad62714fd905a30cc890d1cab02f3f2bfa796b0f4f3d0776dbed7e0d44c589"
   },
   {
     "entry_id": "fillrepeatadmissibilityprofile",
@@ -445,7 +528,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "43f0769c051227c919a642944cf25ad9b96a4f8d8bebd9a8002de9c9ab86e1db"
+    "normalized_contract_sha256": "a747d64f3ee86730fb241b731a471ae80939d517250c9dd012b981f323acdb2d"
   },
   {
     "entry_id": "float32_nonfinite_constants",
@@ -479,7 +562,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "70f436a6b5de19e2229c661d677a102b84f98adf007f39dd429614d743488818"
+    "normalized_contract_sha256": "97c78f3a0a2af5d52f35e0a5c1d7001fdf443e4dc772f33c11513c03cadddb6f"
   },
   {
     "entry_id": "float64_nonfinite_constants",
@@ -513,7 +596,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "cab21e75ece56f78aec25c58dd8f1c17b6a71a6952fbb62f6b443e2b88c3ebdd"
+    "normalized_contract_sha256": "5459105bba7ceffa0d7e92f00befedf44637492e3fbe8c93fb391bd5722b1e2f"
   },
   {
     "entry_id": "frozen_list_t",
@@ -541,7 +624,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "9c216b5aba2c6f5bf2ac35867f0fdc9679e2eb1858d7d92faf1e3116770fbf6b"
+    "normalized_contract_sha256": "ce252775bb17580c3f9bace801e28a89eea107e88a073a173350a98b94103f55"
   },
   {
     "entry_id": "grapheme",
@@ -568,7 +651,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "07b0e8b88e6d1fcb2d6db497d82eaaf192c1272e350e97a0f7a16c57b2399434"
+    "normalized_contract_sha256": "45553f96e929b022cf645777f16f81abeda09e6fbd4c3ccda1c66b6f50ecdc7a"
   },
   {
     "entry_id": "implementationid",
@@ -595,7 +678,7 @@
         "schema": "deeplus.compiler-meta-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "deaba351c54618994230adb1365c4a2ebbd035e9b0752426815b62114af3cdd8"
+    "normalized_contract_sha256": "612d3dc5bf5dc0ed31f4edf928523a5491f68ecec4440a320fc54866365a3fa3"
   },
   {
     "entry_id": "indexable",
@@ -622,7 +705,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "63d725b7d5cdb62b2017e7af45d3ca1570fa34831261f560af6c8c68f828ad53"
+    "normalized_contract_sha256": "0f3c1d79cb46d545808a7211738d87a1d324034f4b8479fdaf3e7b03af3faca7"
   },
   {
     "entry_id": "iterator",
@@ -657,7 +740,7 @@
       "iterator_t",
       "iteratorprotocolstablecore"
     ],
-    "normalized_contract_sha256": "0900c5002380dee291ecf4124162f5ee89a2b3439c4d1df26f97b98e54add59e"
+    "normalized_contract_sha256": "d3dca13bebf61e09e2f5ae04a5ecf6cee91b6f591b7794199fcd39071a5168aa"
   },
   {
     "entry_id": "jsonvalue",
@@ -684,7 +767,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "ab1107d4b141b5a07d50738b29bdd19bd63e4dedf6c73c23698e09103d438401"
+    "normalized_contract_sha256": "9e8ee3c37c362353c7cb59df5fe14aae26abe7a6bb685b2c575d069cafa9fe76"
   },
   {
     "entry_id": "list_snapshot_t",
@@ -712,7 +795,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "5d22a66fb0221c3baa26f11bc15f39f6744096463fbb2d7fb5b1eaf2c993833f"
+    "normalized_contract_sha256": "1f7d9b938d897c198f65b9a7b35ffe6431bbacac1a9cda6ab84b7d7ce6ba3535"
   },
   {
     "entry_id": "list_t",
@@ -747,7 +830,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "71dbf5b4e9be388ad4819dbc8669b24281d9ca039174d818714e766dac78589f"
+    "normalized_contract_sha256": "0256bfedecdeec2357cabf5e3d9a6838cbd0aab86647bb8ad7494d90511432b2"
   },
   {
     "entry_id": "logical_index_domain",
@@ -774,7 +857,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "0465fb79d1844f32740b85e6b449cc7870b61e583cbdfed8f542184329edbc55"
+    "normalized_contract_sha256": "8ba90b89cd071f4040dcb224eea808d7bade11ed223d30b85328e33c31ffd756"
   },
   {
     "entry_id": "map_k_v",
@@ -808,7 +891,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "8a2e3fc2410e15470097558266a738c4008b10596011e028765b20e9722304e8"
+    "normalized_contract_sha256": "66a9c71623341e8a85591a7d5546c3ba24e71b51036281c5ab11434f60e307ba"
   },
   {
     "entry_id": "measure_rep_dim",
@@ -857,7 +940,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "c4a442d2472075f5b156b506bd2771f34fc9982bceb7379d6232c0b365f12a7f"
+    "normalized_contract_sha256": "87b3912c550cfa53d3485311888b5f8ad64e43862a90e30a913082e9efe6770a"
   },
   {
     "entry_id": "membershipprotocol",
@@ -884,7 +967,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "60dded1edc4021c6a30c3e5fdfdd66086caaab3323ebf8f92458bcade71c912b"
+    "normalized_contract_sha256": "42547531a276f9abe9891cf980d5b0e977ad1ab5557c69e4bb44b16ea9102032"
   },
   {
     "entry_id": "modulesignature",
@@ -911,7 +994,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "dbf75b4cb5d0d03680765984ced09de2ddab5e271b62dc1a1fa9074140b77be6"
+    "normalized_contract_sha256": "5f9c2dc95a267db8f6542c7023fc354639ecddd7b2f72ddf62f42d1f0ee7e176"
   },
   {
     "entry_id": "mutable_list_t",
@@ -954,7 +1037,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "821815ff6c1ad653c5e09ee7916b63d9fabfd9f158d664a52e011af092c37f41"
+    "normalized_contract_sha256": "380c8bbe258cdc50e954c262095ccf2ab57bbc80d30956d8cd9e9e284ad23379"
   },
   {
     "entry_id": "numeric_array",
@@ -981,7 +1064,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "963a27cb0c13fef4ee2cd192aff1c03ca4dd949785ec7196241ea639103d3172"
+    "normalized_contract_sha256": "68db3ac6be9363caf01cea5726d646e597fe8c393fc33715065a32aaa3bcbff7"
   },
   {
     "entry_id": "option_t",
@@ -1008,7 +1091,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "b330c5102a24369ee4e5b46037cf64a2adfc27052862e58b6b35815d88958d98"
+    "normalized_contract_sha256": "3a86585f2f3f264be9e6f939157b1b6e894ee3d7f119fbdaa7122b780c5ec950"
   },
   {
     "entry_id": "option_unwrap_or_else",
@@ -1036,7 +1119,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "97445be1094efdb7889a86b07a502bc7926e177804c899a0fc14f604b85d8739"
+    "normalized_contract_sha256": "1960645efb385f024761956eb9d3b8951b53cdde5f9eaf4a47823b21cba6c219"
   },
   {
     "entry_id": "ord_t",
@@ -1063,7 +1146,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "823583e3b110d4e9f2c60601ffa3acd4d0479d518d54c77150829fbdacd53c0b"
+    "normalized_contract_sha256": "83fde59ff459859e648f1b3110b0ad5d81bf5ff483288c57d70780bfcc3cc810"
   },
   {
     "entry_id": "owned_downcast_op",
@@ -1092,7 +1175,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "8d2da9919cf0f3c4c1b22d55e8fb83d588e124517e5a35f4819264dff9a28408"
+    "normalized_contract_sha256": "cef282f932e95b8dbd5938a87efe69bf9bd12a263172ca2c4fd308e310e566c3"
   },
   {
     "entry_id": "owned_downcast_t",
@@ -1120,7 +1203,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "3fe7ad2e0e4daed1dd5931b26738f9fa45ed897a2ab6970d4464949b604883c1"
+    "normalized_contract_sha256": "dda4e2da2986902b2672cb776914106bde78ad647e718dbe3ca5fb5fcc590fde"
   },
   {
     "entry_id": "readonly_view_t",
@@ -1148,7 +1231,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "c421b3174b8cbd4a760250546be18ba71a417a99c9dbf0f79cb61158a3d8b77c"
+    "normalized_contract_sha256": "203b3d80422637b707f5416af1f6030a8901c189c62a76d9568fb52b4654ebdd"
   },
   {
     "entry_id": "replace_t",
@@ -1176,7 +1259,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "3c90d10b87232bbaf060fd074147233c80dbefa13a92f1e2f5147f3a086383ab"
+    "normalized_contract_sha256": "0d735ce31216e5af5fad5c976ea95648ec6de931572ca075845d4a8133425b1b"
   },
   {
     "entry_id": "result_t_error_e",
@@ -1203,7 +1286,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "c4b14a2360f7f1fb7f9b25aad9ea019744e836e8614549fb6b17d715e12992a5"
+    "normalized_contract_sha256": "8f205d914f736b9e4f7ea1789f66a2c0d94746ce80ce2fe281d3a6a5a3bbdcde"
   },
   {
     "entry_id": "sequence_t",
@@ -1230,7 +1313,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "36cee8db876a2cd854a594102fa3186d583cb47725574b4dac4525f2286dc1c0"
+    "normalized_contract_sha256": "d9571aa9d7f6b2516da8f06aa0f868974115c7a89b627a0f993964412e5e5804"
   },
   {
     "entry_id": "shared_t",
@@ -1257,7 +1340,34 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "36df078cd7977be6c112a547b1f72d7d12599acfcdbbd9828b6400f5a1ad9b09"
+    "normalized_contract_sha256": "cb5db79acc62e108dab0915467ab26bff6e6cfc80ef30bba30ef8ffd0425ffd9"
+  },
+  {
+    "entry_id": "sharedcell_t",
+    "symbol": "SharedCell<T>",
+    "kind": "synchronization",
+    "status": "stable_design",
+    "feature_refs": [
+      "shared_cell_plain_payload_profile"
+    ],
+    "signatures": [
+      "prelude intrinsic SharedCell<T: Plain> { new(move T) -> SharedCell<T>; withValue(#scoped (borrow T) -> R throws E effects ε) -> R throws E effects ε; replace(move T) -> T }"
+    ],
+    "responsibility": "sequentially consistent scoped observation and owner replacement for Plain payloads; observation cannot escape or suspend, replacement commits once and returns the old owner, and Plain implies no raw layout, lock-free, blocking-progress, or fairness property",
+    "notes": "Current minimum stdlib profile; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic SharedCell<T: Plain> { new(move T) -> SharedCell<T>; withValue(#scoped (borrow T) -> R throws E effects ε) -> R throws E effects ε; replace(move T) -> T }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "b63817a7696c2da333d7bdf5032b2349ef84c24c4787af3d181e9994f9c47356"
   },
   {
     "entry_id": "sharedmutex_t",
@@ -1265,26 +1375,26 @@
     "kind": "synchronization",
     "status": "stable_design",
     "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
+      "shared_mutex_no_drop_minimum_profile"
     ],
     "signatures": [
-      "withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state}"
+      "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }"
     ],
-    "responsibility": "mutation via scoped lock and effect propagation",
-    "notes": "",
+    "responsibility": "receiver-bound non-reentrant scoped exclusive mutation; the closure cannot suspend or escape, unlock executes exactly once on every outcome and happens-before the next successful lock; no lifecycle payload, poisoning, fairness, or lock-order inference",
+    "notes": "Current minimum stdlib profile; product support NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state}",
+        "text": "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "fa5af851f79df8da30086a0049259efd8953da5523965b5a5215b1ba61d4510a"
+    "normalized_contract_sha256": "52fa164e4bb61ca475bc447c5e37f815797ed0ac1244f0155132677ca6f71519"
   },
   {
     "entry_id": "string",
@@ -1311,7 +1421,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "6206a52c81791c02cb67431cef35480d303db2f3dcaa3b86ad3ea20878021004"
+    "normalized_contract_sha256": "07f1e4caa260a72420b32097de16b1c05d1485bfbc69a729b6ad78b3ed661c22"
   },
   {
     "entry_id": "string_render",
@@ -1338,7 +1448,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "7e9477c9c436f9f32b83e138a3462711e64c6ef251912c5ed2f4d4c4e184b59c"
+    "normalized_contract_sha256": "d676ff05bb79e63b598eff255fdbce59d708d03d6aadc8c8fdb27889ac689ca2"
   },
   {
     "entry_id": "task_t",
@@ -1365,7 +1475,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "1f105612a015a975d174c323e812ed390a927281298ff6f1dcc833ec5a00cde2"
+    "normalized_contract_sha256": "c0b30852fdc1b051f8332a55e280ed3d72817ceb5acfdc054f63c22cb09763a7"
   },
   {
     "entry_id": "unitcatalog",
@@ -1401,7 +1511,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "3f129a2de193dc3ab5535369fb83806508422ceaf3bab5eeb0a3b845cac3654f"
+    "normalized_contract_sha256": "769119e56b166e056bf56441d2bf41ea6110a9390dcd6e26fde5cef490a9457e"
   },
   {
     "entry_id": "with_borrowed_t",
@@ -1430,7 +1540,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "4f4c95485aa00913b01c912dd91bbc4200f9d9ba76fdc09a8f8b7f54bb716172"
+    "normalized_contract_sha256": "d92f185bc50434da02f107d1af8f583a406b0c8d5f4a3660ee3f565d91a8a75c"
   },
   {
     "entry_id": "witnessid",
@@ -1457,6 +1567,6 @@
         "schema": "deeplus.checker-meta-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "7de47492a86bf94c55a135328705a161142602f01976a9aeaa0b7d3706a57099"
+    "normalized_contract_sha256": "f5507d3106db8921993012f137e70a169eb589ce25f918736e8ee3ee764bbbfd"
   }
 ]

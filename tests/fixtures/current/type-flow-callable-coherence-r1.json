@@ -1,0 +1,662 @@
+{
+  "schema": "deeplus.type-flow-callable-coherence-fixtures/r1",
+  "fixture_schema": "schemas/language/type-flow-callable-coherence-fixtures.schema.json",
+  "revision": "r51f3-current-language-coherence-r1",
+  "contract": "spec/contracts/type-flow-callable-coherence.json",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "fixture_policy": {
+    "source_is_design_fixture": true,
+    "parser_status": "NOT_RUN",
+    "checker_status": "NOT_RUN",
+    "runtime_status": "NOT_RUN",
+    "null_existing_diagnostic": "the rejection rule is fixed but no new final diagnostic registry identity is created by this fixture"
+  },
+  "positive": [
+    {
+      "fixture_id": "TFC-P-001-ORDINARY-ARRAY-CASE",
+      "rule_ids": [
+        "TFC-R001",
+        "TFC-R002",
+        "TFC-R004"
+      ],
+      "source": "class Array<T> { }\nclass Case { }\nlet array = [1, 2]\nlet case = array\nlet vector = #[1, 2]\nlet matrix = #2[1, 2]",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-002-CASE-NAMED-VARIANT",
+      "rule_ids": [
+        "TFC-R001",
+        "TFC-R003"
+      ],
+      "source": "enum Token { case }\nlet token: Token = Token::case",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-003-ARRAY-NAMED-VARIANT",
+      "rule_ids": [
+        "TFC-R001",
+        "TFC-R003"
+      ],
+      "source": "enum JsonValue { array(value: List<JsonValue>) }\nlet value = JsonValue::array([])",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-004-SEQUENCE-TO-REPEATED",
+      "rule_ids": [
+        "TFC-R005",
+        "TFC-R006"
+      ],
+      "source": "def collect(values...: Int) -> Unit = { }\nlet values: Sequence<Int> = numbers()\ncollect(*values)",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-005-TUPLE-TO-FIXED",
+      "rule_ids": [
+        "TFC-R005",
+        "TFC-R006"
+      ],
+      "source": "def pair(x: Int, y: Int) -> Unit = { }\nlet values = (1, 2)\npair(*values)",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-006-STRICT-BOOL",
+      "rule_ids": [
+        "TFC-R007"
+      ],
+      "source": "let ready: Bool = true\nif ready { log() }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-007-TRY-CATCH-FINALLY",
+      "rule_ids": [
+        "TFC-R008",
+        "TFC-R020"
+      ],
+      "source": "try { perform() } catch error { handle(error) } finally { close() }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-008-TRY-FINALLY",
+      "rule_ids": [
+        "TFC-R008",
+        "TFC-R020"
+      ],
+      "source": "try { perform() } finally { close() }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-009-VALUE-TRY",
+      "rule_ids": [
+        "TFC-R009",
+        "TFC-R010"
+      ],
+      "source": "let value = @try { read() } catch error { fallback(error) }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-010-NAMED-RETURN",
+      "rule_ids": [
+        "TFC-R010"
+      ],
+      "source": "def double(value: Int) -> Int = { return value * 2 }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-011-LAMBDA-RET",
+      "rule_ids": [
+        "TFC-R010",
+        "TFC-R017"
+      ],
+      "source": "let double: (Int) -> Int = { value =>\n  ret value * 2\n}",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-012-BOUNDED-PARENLESS-TRAILING-CLOSURE",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "let result = fold 0 { accumulator, value => accumulator + value }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-013-CLOSED-FUNCTION-PROFILE",
+      "rule_ids": [
+        "TFC-R012"
+      ],
+      "source": "def#pure valid(value: Int) -> Bool = return value > 0",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-014-CLASS-METHOD-MARKER",
+      "rule_ids": [
+        "TFC-R014"
+      ],
+      "source": "class Counter { def increment+() -> Unit = { } }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-015-TRAIT-METHOD-MARKER",
+      "rule_ids": [
+        "TFC-R014"
+      ],
+      "source": "trait Display { def display.() -> String }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-016-LOCAL-EXPLICIT-CAPTURE",
+      "rule_ids": [
+        "TFC-R015"
+      ],
+      "source": "def outer(base: Int) -> Int = {\n  [base] def inner(value: Int) -> Int = return base + value\n  return inner(1)\n}",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-017-SCOPED-ONCE-CLOSURE",
+      "rule_ids": [
+        "TFC-R016"
+      ],
+      "source": "let body = [move resource]#scoped#once { => consume(resource) }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-018-EXPLICIT-NULLARY-LAMBDA",
+      "rule_ids": [
+        "TFC-R017"
+      ],
+      "source": "let make: () -> Int = { => 1 }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-019-NAMED-ASYNC-DECLARATION",
+      "rule_ids": [
+        "TFC-R012",
+        "TFC-R018"
+      ],
+      "source": "def#async load() -> Data = { return await fetch() }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-020-EXPECTED-UNION-FLOW-JOIN",
+      "rule_ids": [
+        "TFC-R019"
+      ],
+      "source": "type Value = Int | String\nlet value: Value = @if flag { 1 } else { \"one\" }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "TFC-N-001-NO-PREDECLARED-ARRAY-BINDING",
+      "rule_ids": [
+        "TFC-R004"
+      ],
+      "source": "let values: Array<Int> = [1, 2]",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "Array has no predeclared type binding; the spelling remains available to an explicit user declaration",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-002-NO-PREDECLARED-CASE-BINDING",
+      "rule_ids": [
+        "TFC-R003"
+      ],
+      "source": "let value: Case = state",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "Case has no predeclared type binding; the spelling remains available to an explicit user declaration",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-003-NO-CASE-DECLARATION-KEYWORD",
+      "rule_ids": [
+        "TFC-R002",
+        "TFC-R003"
+      ],
+      "source": "enum State {\n  case ready\n}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "enum variants use bare declarations",
+      "expected_existing_diagnostic": "ENUM_CASE_KEYWORD_NOT_CANONICAL"
+    },
+    {
+      "fixture_id": "TFC-N-004-NO-LEGACY-SHARP-ARRAY-CONSTRUCTOR",
+      "rule_ids": [
+        "TFC-R004"
+      ],
+      "source": "let values = #array{1, 2}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "the removed legacy #array{...} constructor has no current route; #[...] and #N[...] remain active NumericArray surfaces",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-005-NO-NUMERIC-ARRAY-FLATTEN",
+      "rule_ids": [
+        "TFC-R005"
+      ],
+      "source": "def pair(x: Int, y: Int) -> Unit = { }\nlet matrix = #2[1, 2]\npair(*matrix)",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "NumericArray is not positional-unfold evidence",
+      "expected_existing_diagnostic": "POSITIONAL_UNFOLD_REQUIRES_SEQUENCE_OR_TUPLE"
+    },
+    {
+      "fixture_id": "TFC-N-006-UNKNOWN-SEQUENCE-ARITY-TO-FIXED",
+      "rule_ids": [
+        "TFC-R005",
+        "TFC-R006"
+      ],
+      "source": "def pair(x: Int, y: Int) -> Unit = { }\nlet values: Sequence<Int> = numbers()\npair(*values)",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "fixed formal channels require static arity",
+      "expected_existing_diagnostic": "SEQUENCE_UNFOLD_REQUIRES_STATIC_ARITY_FOR_FIXED_PARAMETERS"
+    },
+    {
+      "fixture_id": "TFC-N-007-NONBOOL-IF",
+      "rule_ids": [
+        "TFC-R007"
+      ],
+      "source": "if 1 { log() }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "control conditions require Bool",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-008-TRY-EXPRESSION-STATEMENT",
+      "rule_ids": [
+        "TFC-R008"
+      ],
+      "source": "try perform()",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "try Expr is not current",
+      "expected_existing_diagnostic": "TRY_EXPRESSION_STATEMENT_NOT_CURRENT"
+    },
+    {
+      "fixture_id": "TFC-N-009-TAILLESS-TRY-BLOCK",
+      "rule_ids": [
+        "TFC-R008"
+      ],
+      "source": "try { perform() }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "statement try requires catch or finally",
+      "expected_existing_diagnostic": "TRY_REQUIRES_CATCH_OR_FINALLY"
+    },
+    {
+      "fixture_id": "TFC-N-010-TAILLESS-VALUE-TRY",
+      "rule_ids": [
+        "TFC-R009"
+      ],
+      "source": "let value = @try { read() }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "value try requires catch or finally",
+      "expected_existing_diagnostic": "TRY_REQUIRES_CATCH_OR_FINALLY"
+    },
+    {
+      "fixture_id": "TFC-N-011-RET-IN-NAMED-FUNCTION",
+      "rule_ids": [
+        "TFC-R010"
+      ],
+      "source": "def value() -> Int = { ret 1 }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "ret has only a local value-body owner",
+      "expected_existing_diagnostic": "RET_OUTSIDE_LAMBDA"
+    },
+    {
+      "fixture_id": "TFC-N-012-RETURN-IN-LAMBDA",
+      "rule_ids": [
+        "TFC-R010"
+      ],
+      "source": "let body: () -> Int = { => return 1 }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "return cannot cross a lambda result owner",
+      "expected_existing_diagnostic": "RETURN_NOT_ALLOWED_IN_LAMBDA"
+    },
+    {
+      "fixture_id": "TFC-N-013-BARE-CALL-WITHOUT-CLOSURE",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "let value = transform input",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "ordinary calls require parentheses",
+      "expected_existing_diagnostic": "BARE_FUNCTION_CALL_REQUIRES_TRAILING_CLOSURE"
+    },
+    {
+      "fixture_id": "TFC-N-014-MULTIPLE-UNLABELED-TRAILING-CLOSURES",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "operate(1) { value => value } { error => error }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "only one unlabeled trailing closure is current",
+      "expected_existing_diagnostic": "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT"
+    },
+    {
+      "fixture_id": "TFC-N-015-UNGATED-UNSAFE-DEF",
+      "rule_ids": [
+        "TFC-R012",
+        "TFC-R013"
+      ],
+      "source": "def#unsafe raw() -> Unit = { }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "unsafe declaration is Preview FFI-only",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-016-CLASS-METHOD-MISSING-MARKER",
+      "rule_ids": [
+        "TFC-R014"
+      ],
+      "source": "class Counter { def increment() -> Unit = { } }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "class instance method requires a dispatch marker",
+      "expected_existing_diagnostic": "CLASS_INSTANCE_METHOD_REQUIRES_DISPATCH_MARKER"
+    },
+    {
+      "fixture_id": "TFC-N-017-TRAIT-METHOD-MISSING-MARKER",
+      "rule_ids": [
+        "TFC-R014"
+      ],
+      "source": "trait Display { def display() -> String }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "Trait method requires a witness marker",
+      "expected_existing_diagnostic": "TRAIT_METHOD_MARKER_REQUIRED"
+    },
+    {
+      "fixture_id": "TFC-N-018-LOCAL-IMPLICIT-CAPTURE",
+      "rule_ids": [
+        "TFC-R015"
+      ],
+      "source": "def outer(base: Int) -> Int = {\n  def inner(value: Int) -> Int = return base + value\n  return inner(1)\n}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "local function outer captures are explicit",
+      "expected_existing_diagnostic": "NESTED_DEF_CAPTURE_LIST_REQUIRED"
+    },
+    {
+      "fixture_id": "TFC-N-019-LOCAL-VISIBILITY",
+      "rule_ids": [
+        "TFC-R015"
+      ],
+      "source": "def outer() -> Unit = { public def inner() -> Unit = { } }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "local functions have lexical visibility",
+      "expected_existing_diagnostic": "NESTED_DEF_VISIBILITY_FORBIDDEN"
+    },
+    {
+      "fixture_id": "TFC-N-020-LOCAL-FORWARD-REFERENCE",
+      "rule_ids": [
+        "TFC-R015"
+      ],
+      "source": "def outer() -> Int = {\n  let value = inner()\n  def inner() -> Int = return 1\n  return value\n}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "local function is visible only after declaration",
+      "expected_existing_diagnostic": "NESTED_DEF_FORWARD_REFERENCE_FORBIDDEN"
+    },
+    {
+      "fixture_id": "TFC-N-021-LAMBDA-CONTEXT-PARAMETER",
+      "rule_ids": [
+        "TFC-R017"
+      ],
+      "source": "let body = { context service: Service => service.run() }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "lambda parameters do not reuse context channels",
+      "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-N-022-EMPTY-LAMBDA-WITHOUT-CONTEXT",
+      "rule_ids": [
+        "TFC-R017"
+      ],
+      "source": "let body = {}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "empty lambda needs expected () -> Unit",
+      "expected_existing_diagnostic": "EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE"
+    },
+    {
+      "fixture_id": "TFC-N-023-ASYNC-CALLABLE-LITERAL",
+      "rule_ids": [
+        "TFC-R018"
+      ],
+      "source": "let body = #async { => await fetch() }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "async callable literal is not current",
+      "expected_existing_diagnostic": "ASYNC_CALLABLE_LITERAL_NOT_CURRENT"
+    },
+    {
+      "fixture_id": "TFC-N-024-AUTOMATIC-UNION-FLOW-JOIN",
+      "rule_ids": [
+        "TFC-R019"
+      ],
+      "source": "let value = @if flag { 1 } else { \"one\" }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "flow join does not synthesize a Union",
+      "expected_existing_diagnostic": "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+    },
+    {
+      "fixture_id": "TFC-N-025-CLEANUP-SKIP",
+      "rule_ids": [
+        "TFC-R020"
+      ],
+      "source": "resource class File {\n  def#cleanup() = { closeHandle() }\n}\nvar resource: File = acquireFile()\ndefer close(resource)\nresource = acquireFile()\nreturn",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "a place reserved by an exact cleanup obligation cannot be rebound before that cleanup executes",
+      "expected_existing_diagnostic": "DEFER_CLEANUP_RESERVED_PLACE_MOVED",
+      "responsibility_descriptor": {
+        "bound_place": "resource",
+        "normalized_type": "File",
+        "ownership": "resource",
+        "cleanup": "drop_exactly_once",
+        "reservation": "defer close(resource)"
+      }
+    }
+  ],
+  "boundary": [
+    {
+      "fixture_id": "TFC-B-001-CASE-IDENTIFIER-VS-RECOVERY",
+      "rule_ids": [
+        "TFC-R001",
+        "TFC-R002",
+        "TFC-R003"
+      ],
+      "paired_sources": {
+        "accept": "enum Token { case }",
+        "reject": "enum Token { case ready }"
+      },
+      "boundary": "a single variant named case is ordinary; case followed by another variant name is the enum-body recovery spelling",
+      "expected_existing_diagnostic_for_reject": "ENUM_CASE_KEYWORD_NOT_CANONICAL"
+    },
+    {
+      "fixture_id": "TFC-B-002-SEQUENCE-TARGET-KIND",
+      "rule_ids": [
+        "TFC-R005",
+        "TFC-R006"
+      ],
+      "paired_outcomes": {
+        "Sequence_to_repeated": "accept",
+        "Sequence_unknown_arity_to_fixed": "reject"
+      },
+      "boundary": "target channel kind decides the static-arity obligation"
+    },
+    {
+      "fixture_id": "TFC-B-003-TUPLE-ARITY",
+      "rule_ids": [
+        "TFC-R006"
+      ],
+      "paired_outcomes": {
+        "two_tuple_to_two_fixed": "accept",
+        "three_tuple_to_two_fixed": "reject"
+      },
+      "boundary": "tuple arity is static and must equal the remaining fixed arity"
+    },
+    {
+      "fixture_id": "TFC-B-004-TRAILING-CLOSURE-EXCEPTION",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "paired_sources": {
+        "accept": "fold 0 { accumulator, value => accumulator + value }",
+        "reject": "fold value + 1 { accumulator, item => accumulator + item }"
+      },
+      "boundary": "the parenless argument must be exactly one AtomicCallArgument"
+    },
+    {
+      "fixture_id": "TFC-B-005-AT-IF-ELSE",
+      "rule_ids": [
+        "TFC-R019"
+      ],
+      "paired_outcomes": {
+        "value_if_with_else": "accept",
+        "value_if_without_else": "reject"
+      },
+      "boundary": "a value-producing @if requires an else branch"
+    },
+    {
+      "fixture_id": "TFC-B-006-FINALLY-NOT-A-VALUE",
+      "rule_ids": [
+        "TFC-R009",
+        "TFC-R020"
+      ],
+      "descriptor": {
+        "try_value_type": "Int",
+        "catch_value_type": "Int",
+        "finally_expression_type": "String",
+        "joined_value_type": "Int"
+      },
+      "boundary": "finally executes cleanup but contributes no local result"
+    },
+    {
+      "fixture_id": "TFC-B-007-TERMINAL-VALUELESS-RETURN",
+      "rule_ids": [
+        "TFC-R010"
+      ],
+      "source": "def done() -> Unit = { return }",
+      "expected_outcome": "accept_with_lint",
+      "boundary": "accepted source is canonically printed as Unit fallthrough"
+    },
+    {
+      "fixture_id": "TFC-B-008-CLOSURE-PROFILE-COMBINATION",
+      "rule_ids": [
+        "TFC-R016"
+      ],
+      "paired_profiles": {
+        "admitted": [
+          "scoped",
+          "once",
+          "pure"
+        ],
+        "rejected": [
+          "once",
+          "mut"
+        ]
+      },
+      "boundary": "only enumerated ordered profile sequences are current"
+    },
+    {
+      "fixture_id": "TFC-B-009-MARKER-DOMAIN",
+      "rule_ids": [
+        "TFC-R014"
+      ],
+      "descriptor": {
+        "glyph": ".",
+        "class_lowering": "ClassDispatchKind.final",
+        "trait_lowering": "TraitWitnessKind.final",
+        "identity_equal": false
+      },
+      "boundary": "shared glyph does not merge dispatch and witness identity"
+    },
+    {
+      "fixture_id": "TFC-B-010-IMPLICIT-AT-EXPECTED-ARITY",
+      "rule_ids": [
+        "TFC-R017"
+      ],
+      "paired_outcomes": {
+        "independently_selected_one_parameter_callable": "accept",
+        "zero_or_multiple_or_ambiguous_parameter_callable": "reject"
+      },
+      "boundary": "lambda body checking occurs only after one callable shape is selected"
+    },
+    {
+      "fixture_id": "TFC-B-011-BORROW-CAPTURE-ESCAPE",
+      "rule_ids": [
+        "TFC-R016",
+        "TFC-R020"
+      ],
+      "paired_outcomes": {
+        "nonescaping_scoped_borrow_capture": "accept",
+        "returned_borrow_capture": "reject"
+      },
+      "boundary": "captured borrow may not outlive its region"
+    },
+    {
+      "fixture_id": "TFC-B-012-CATCH-IRREFUTABILITY",
+      "rule_ids": [
+        "TFC-R008"
+      ],
+      "paired_outcomes": {
+        "checker_proven_irrefutable_catch": "accept",
+        "refutable_runtime_dispatch_catch": "reject",
+        "later_catch_after_irrefutable_catch": "statically unreachable"
+      },
+      "boundary": "current catch performs no runtime pattern fallthrough; finally still executes exactly once"
+    },
+    {
+      "fixture_id": "TFC-B-013-EXPECTED-TYPE-FLOW-JOIN",
+      "rule_ids": [
+        "TFC-R019"
+      ],
+      "paired_outcomes": {
+        "explicit_expected_closed_union": "accept when each branch injects uniquely",
+        "no_expected_type": "reject automatic union synthesis"
+      },
+      "boundary": "expected type is fixed independently of branch join"
+    },
+    {
+      "fixture_id": "TFC-B-014-TYPE-SIDE-PLAIN-DEF",
+      "rule_ids": [
+        "TFC-R012",
+        "TFC-R014"
+      ],
+      "paired_outcomes": {
+        "def_colon_colon_plain": "accept",
+        "def_hash_async_colon_colon": "reject"
+      },
+      "boundary": "type-side owner is plain def:: and has no instance marker"
+    },
+    {
+      "fixture_id": "TFC-B-015-ASYNC-NAMED-VS-LITERAL",
+      "rule_ids": [
+        "TFC-R018"
+      ],
+      "paired_outcomes": {
+        "named_def_hash_async": "accept in an admitted owner",
+        "hash_async_closure_literal": "reject in current source"
+      },
+      "boundary": "named declaration activation does not activate async callable literals"
+    }
+  ],
+  "expected_counts": {
+    "positive": 20,
+    "negative": 25,
+    "boundary": 15,
+    "total": 60,
+    "product_executed": 0
+  }
+}

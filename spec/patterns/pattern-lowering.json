@@ -1,0 +1,462 @@
+{
+  "schema": "deeplus.pattern-lowering-registry/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "row_schema": "schemas/language/pattern-lowering-row.schema.json",
+  "authority": "LANGUAGE / TYPE_SYSTEM / MIR",
+  "evidence_level": "DESIGN_STATIC",
+  "product_execution": "NOT_RUN",
+  "profiles": {
+    "phase_profile": {
+      "id": "R2_PATTERN_PHASE_V1",
+      "ordered_phases": [
+        "EVALUATE_SUBJECT_ONCE",
+        "ACQUIRE_BY_CONTEXT_POLICY",
+        "NONCONSUMING_TEST_PLAN",
+        "CREATE_PROBE_BINDERS",
+        "SINGLE_PURE_BOOL_GUARD",
+        "INFALLIBLE_ATOMIC_COMMIT",
+        "CREATE_FINAL_BINDERS",
+        "BODY",
+        "EXIT_AND_POST_JOIN"
+      ]
+    },
+    "failure_profile": {
+      "id": "R2_CONTEXT_FAILURE_V1",
+      "ordered_actions": [
+        "NO_COMPONENT_COMMIT",
+        "NO_IRREVERSIBLE_PATTERN_MOVE",
+        "END_PROBE_BORROWS",
+        "EXECUTE_CONTEXT_SPECIFIC_FAILURE_DISPOSITION"
+      ]
+    },
+    "lifecycle_profile": {
+      "id": "R2_LIFECYCLE_SPLIT_V1",
+      "identities": [
+        "PayloadDropPlanId",
+        "UserCleanupPlanId",
+        "StorageDispositionPlanId",
+        "AllocatorOrDomainId",
+        "ForeignReleasePlanId",
+        "FailureDispositionPlanId"
+      ]
+    }
+  },
+  "global_invariants": {
+    "subject_evaluation_count": 1,
+    "pre_guard_irreversible_move_count": 0,
+    "false_guard_component_commit_count": 0,
+    "user_extractor_call_count": 0,
+    "backtracking_retry_count": 0,
+    "record_open_tail_coverage_cell_count": 0,
+    "direct_class_dyn_facet_ffi_opening_count": 0,
+    "cross_arm_rule": "If the subject remains live after match, every normally returning arm exposes the same usable-place set; otherwise consume the whole subject, terminate the differing arms, or reject post-join use."
+  },
+  "counts": {
+    "rows": 18,
+    "current_lowering_contract": 13,
+    "deferred_no_lowering": 3,
+    "rejected_no_lowering": 2
+  },
+  "rows": [
+    {
+      "lowering_id": "PL-BINDER",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-BINDER",
+      "cst_variant": "BinderPatternCst",
+      "ast_variant": "BindPattern",
+      "hir_variant": "TypedBindPattern",
+      "test_kind": "STATIC_BINDER_ADMISSION",
+      "probe_binder_policy": "LIMITED_NONOWNING_VIEW",
+      "move_policy": "MOVE_DELAYED_UNTIL_COMMIT",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Final BinderId is materialized only after commit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-TYPED-BINDER",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-TYPED-BINDER",
+      "cst_variant": "TypedBinderPatternCst",
+      "ast_variant": "TypedBindPattern",
+      "hir_variant": "TypedBindPattern",
+      "test_kind": "STATIC_TYPE_ADMISSION",
+      "probe_binder_policy": "LIMITED_NONOWNING_VIEW",
+      "move_policy": "MOVE_DELAYED_UNTIL_COMMIT",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "STATIC_ONLY_NO_EVENT",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Type annotation failure rejects before MIR and is not a runtime type test."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-WILDCARD",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-WILDCARD",
+      "cst_variant": "WildcardPatternCst",
+      "ast_variant": "WildcardPattern",
+      "hir_variant": "TypedWildcardPattern",
+      "test_kind": "NONE",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "NO_PLACE_STATE_CHANGE",
+      "mir_disposition": "STATIC_ONLY_NO_EVENT",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Wildcard does not independently consume, destroy, or release its projection."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-UNIT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-UNIT",
+      "cst_variant": "UnitPatternCst",
+      "ast_variant": "UnitPattern",
+      "hir_variant": "TypedUnitPattern",
+      "test_kind": "UNIT_CONSTRUCTOR_TEST",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "NO_PLACE_STATE_CHANGE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "The checker removes the test only when the normalized subject is statically Unit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-LITERAL",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-LITERAL",
+      "cst_variant": "LiteralPatternCst",
+      "ast_variant": "LiteralPattern",
+      "hir_variant": "TypedLiteralPattern",
+      "test_kind": "COMPILER_KNOWN_VALUE_EQUALITY",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "NO_PLACE_STATE_CHANGE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "No user equality method or extractor is invoked."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-PARENTHESIZED",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-PARENTHESIZED",
+      "cst_variant": "ParenthesizedPatternCst",
+      "ast_variant": "ParenthesizedPatternOrigin",
+      "hir_variant": "TypedPatternDelegation",
+      "test_kind": "DELEGATE_CHILD_TEST",
+      "probe_binder_policy": "DELEGATES_TO_CHILDREN",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "DELEGATES_TO_CHILDREN",
+      "mir_disposition": "DELEGATE_CHILD_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Origin metadata is retained for formatting and diagnostics; no tuple shape is created."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-RECORD-SUBSET",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "cst_variant": "RecordPatternCst",
+      "ast_variant": "RecordRequiredLabelSubsetPattern",
+      "hir_variant": "TypedRecordSubsetPattern",
+      "test_kind": "STATIC_REQUIRED_LABEL_PROJECTION_AND_NESTED_TEST",
+      "probe_binder_policy": "DELEGATES_TO_CHILDREN",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Required-label admission and visibility are resolved before MIR.",
+        "Extra fields create no test and no open-tail coverage cell.",
+        "Direct Class, Dyn, Facet, FFI, and opaque opening is rejected before lowering."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-LIST-EXACT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-LIST-EXACT",
+      "cst_variant": "ListPatternCst",
+      "ast_variant": "ListExactPattern",
+      "hir_variant": "TypedListExactPattern",
+      "test_kind": "LIST_EXACT_LENGTH_AND_ELEMENTS",
+      "probe_binder_policy": "DELEGATES_TO_CHILDREN",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Length is tested before element CommitPlan transitions."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-LIST-IGNORED-TAIL",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
+      "cst_variant": "ListPatternCst",
+      "ast_variant": "ListFinalIgnoredTailPattern",
+      "hir_variant": "TypedListPrefixPattern",
+      "test_kind": "LIST_MINIMUM_LENGTH_AND_PREFIX_ELEMENTS",
+      "probe_binder_policy": "DELEGATES_TO_CHILDREN",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "The final ignored tail is not materialized and has no BinderId or independent lifecycle plan."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-VARIANT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-VARIANT",
+      "cst_variant": "VariantPatternCst",
+      "ast_variant": "EnumVariantPattern",
+      "hir_variant": "TypedVariantPattern",
+      "test_kind": "VARIANT_IDENTITY_THEN_ACTIVE_PAYLOAD",
+      "probe_binder_policy": "DELEGATES_TO_CHILDREN",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Inactive payload places are never projected or observed."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-OR",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-OR",
+      "cst_variant": "OrPatternCst",
+      "ast_variant": "OrPattern",
+      "hir_variant": "TypedOrPattern",
+      "test_kind": "ORDERED_ALTERNATIVES_WITH_JOINED_BINDER_CONTRACT",
+      "probe_binder_policy": "JOINED_OBSERVABLE_BINDER_CONTRACT",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Observable binder contracts match exactly across alternatives.",
+        "Alternative ProjectionPath and source-field order may differ and never select a winner."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-ALIAS",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-ALIAS",
+      "cst_variant": "AliasPatternCst",
+      "ast_variant": "AliasPattern",
+      "hir_variant": "TypedSameSubjectAliasPattern",
+      "test_kind": "DELEGATE_CHILD_TEST_AND_ALIAS_OVERLAP_CHECK",
+      "probe_binder_policy": "LIMITED_NONOWNING_VIEW",
+      "move_policy": "DELEGATES_TO_CHILDREN",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Alias is a same-subject identity and never a clone.",
+        "Owned whole alias plus moved or exclusively borrowed descendant rejects before commit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-MOVE",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-MOVE",
+      "cst_variant": "MovePatternCst",
+      "ast_variant": "MovePattern",
+      "hir_variant": "TypedDelayedMovePattern",
+      "test_kind": "DELEGATE_CHILD_TEST_WITH_DELAYED_OWNERSHIP",
+      "probe_binder_policy": "LIMITED_NONOWNING_VIEW",
+      "move_policy": "MOVE_DELAYED_UNTIL_COMMIT",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "A move binder is a read-only nonescaping probe in the guard and owns nothing until commit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-TUPLE",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "DEFERRED_NO_LOWERING",
+      "pattern_kind_id": "PK-TUPLE",
+      "cst_variant": null,
+      "ast_variant": null,
+      "hir_variant": null,
+      "test_kind": "NO_TEST_UNREACHABLE",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "NOT_APPLICABLE",
+      "post_join_policy": "NOT_APPLICABLE",
+      "mir_disposition": "NO_LOWERING_UNREACHABLE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "No current CST, AST, HIR, coverage cell, or MIR identity exists for tuple decomposition."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-RECORD-REST",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "DEFERRED_NO_LOWERING",
+      "pattern_kind_id": "PK-RECORD-REST",
+      "cst_variant": null,
+      "ast_variant": null,
+      "hir_variant": null,
+      "test_kind": "NO_TEST_UNREACHABLE",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "NOT_APPLICABLE",
+      "post_join_policy": "NOT_APPLICABLE",
+      "mir_disposition": "NO_LOWERING_UNREACHABLE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "No residual row value is synthesized from ignored extra labels."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-LIST-CAPTURED-REST",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "DEFERRED_NO_LOWERING",
+      "pattern_kind_id": "PK-LIST-CAPTURED-REST",
+      "cst_variant": null,
+      "ast_variant": null,
+      "hir_variant": null,
+      "test_kind": "NO_TEST_UNREACHABLE",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "NOT_APPLICABLE",
+      "post_join_policy": "NOT_APPLICABLE",
+      "mir_disposition": "NO_LOWERING_UNREACHABLE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "No borrowed or owned tail carrier is inferred."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-EXTRACTOR",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "REJECTED_NO_LOWERING",
+      "pattern_kind_id": "PK-EXTRACTOR",
+      "cst_variant": null,
+      "ast_variant": null,
+      "hir_variant": null,
+      "test_kind": "NO_TEST_REJECTED",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "NOT_APPLICABLE",
+      "post_join_policy": "NOT_APPLICABLE",
+      "mir_disposition": "NO_LOWERING_REJECTED",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "User code execution belongs to an explicit ordinary call before matching."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "lowering_id": "PL-BACKTRACKING",
+      "revision": "r51f3-current-language-coherence-r1",
+      "status": "REJECTED_NO_LOWERING",
+      "pattern_kind_id": "PK-BACKTRACKING",
+      "cst_variant": null,
+      "ast_variant": null,
+      "hir_variant": null,
+      "test_kind": "NO_TEST_REJECTED",
+      "probe_binder_policy": "NONE",
+      "move_policy": "NO_MOVE",
+      "commit_policy": "NOT_APPLICABLE",
+      "post_join_policy": "NOT_APPLICABLE",
+      "mir_disposition": "NO_LOWERING_REJECTED",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "The compiler emits no logic-variable, unification, retry, or backtracking operation."
+      ],
+      "product_execution": "NOT_RUN"
+    }
+  ]
+}

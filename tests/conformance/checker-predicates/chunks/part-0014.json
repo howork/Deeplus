@@ -1,5 +1,441 @@
 [
   {
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-NONNUMERIC-SUBTYPE",
+    "predicate_id": "ListLiteralElementJoinAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "source_kind": "ListLiteral",
+      "normalized_type": "List<Animal>",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_fixed": true,
+        "contextual_element_type": "Animal",
+        "element_literal_kinds": [
+          "nonnumeric"
+        ],
+        "element_literal_values": [
+          null
+        ],
+        "element_literal_suffixes": [
+          null
+        ]
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": [
+        "Dog"
+      ]
+    },
+    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "expected_primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "assignment-compatible subtype Dog is not normalized-type identity with Animal",
+    "fixture_kind": "concrete_negative",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-NONNUMERIC-SUBTYPE"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-U8-RANGE",
+    "predicate_id": "ListLiteralElementJoinAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "source_kind": "ListLiteral",
+      "normalized_type": "List<UInt8>",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_fixed": true,
+        "contextual_element_type": "UInt8",
+        "element_literal_kinds": [
+          "unsuffixed_integer",
+          "unsuffixed_integer"
+        ],
+        "element_literal_values": [
+          "0",
+          "256"
+        ],
+        "element_literal_suffixes": [
+          null,
+          null
+        ]
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": [
+        "Int",
+        "Int"
+      ]
+    },
+    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "256 exceeds the exact UInt8 maximum 255",
+    "fixture_kind": "concrete_negative",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-U8-RANGE"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-UINT8-NEGATIVE",
+    "predicate_id": "ListLiteralElementJoinAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "source_kind": "ListLiteral",
+      "normalized_type": "List<UInt8>",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_fixed": true,
+        "contextual_element_type": "UInt8",
+        "element_literal_kinds": [
+          "unsuffixed_integer"
+        ],
+        "element_literal_values": [
+          "-1"
+        ],
+        "element_literal_suffixes": [
+          null
+        ]
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": [
+        "Int"
+      ]
+    },
+    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "-1 is below the exact UInt8 minimum zero",
+    "fixture_kind": "concrete_negative",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-UINT8-NEGATIVE"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-POS",
+    "predicate_id": "ListLiteralElementJoinAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "ListLiteral",
+      "normalized_type": "List<Int>",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_fixed": false,
+        "contextual_element_type": null,
+        "element_literal_kinds": [
+          "unsuffixed_integer",
+          "unsuffixed_integer",
+          "unsuffixed_integer"
+        ],
+        "element_literal_values": [
+          "1",
+          "2",
+          "3"
+        ],
+        "element_literal_suffixes": [
+          null,
+          null,
+          null
+        ]
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": [
+        "Int",
+        "Int",
+        "Int"
+      ]
+    },
+    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ListLiteralElementJoinAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-POS-CONTEXT-U8",
+    "predicate_id": "ListLiteralElementJoinAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "ListLiteral",
+      "normalized_type": "List<UInt8>",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_fixed": true,
+        "contextual_element_type": "UInt8",
+        "element_literal_kinds": [
+          "unsuffixed_integer",
+          "unsuffixed_integer"
+        ],
+        "element_literal_values": [
+          "1",
+          "2"
+        ],
+        "element_literal_suffixes": [
+          null,
+          null
+        ]
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": [
+        "Int",
+        "Int"
+      ]
+    },
+    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "admitted_condition": "both mathematical values lie in the exact UInt8 range 0 through 255",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ListLiteralElementJoinAdmitted-POS-CONTEXT-U8"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
     "fixture_id": "PF-ListLiteralElementJoinAdmitted-POS-EMPTY-CONTEXT",
     "predicate_id": "ListLiteralElementJoinAdmitted",
     "expected": "admitted",
@@ -65,6 +501,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -147,6 +584,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -233,6 +671,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -315,6 +754,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -397,6 +837,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -424,6 +865,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -504,6 +946,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -576,6 +1019,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -603,6 +1047,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -687,6 +1132,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -763,6 +1209,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -790,6 +1237,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -876,6 +1324,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -958,708 +1407,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-LoopOutcomeExhaustive-NEG-NO-MATCH",
-    "predicate_id": "LoopOutcomeExhaustive",
-    "expected": "rejected",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "LoopOutcome<Int>",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "loop_has_value_break": true,
-        "loop_outcome_match_present": false,
-        "loop_outcome_case_spelling_valid": true,
-        "loop_outcome_exhaustive": false
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": {
-        "labels": [],
-        "visibility_scope": "local",
-        "duplicate_labels": []
-      },
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH",
-    "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "a value break has no immediately following outcome match",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-LoopOutcomeExhaustive-NEG-NO-MATCH"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-LoopOutcomeExhaustive-POS",
-    "predicate_id": "LoopOutcomeExhaustive",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "LoopOutcome<Int>",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "loop_has_value_break": true,
-        "loop_outcome_match_present": true,
-        "loop_outcome_case_spelling_valid": true,
-        "loop_outcome_exhaustive": true
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": {
-        "labels": [
-          "break",
-          "completed"
-        ],
-        "visibility_scope": "local",
-        "duplicate_labels": []
-      },
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-LoopOutcomeExhaustive-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-BOUNDARY",
-    "predicate_id": "LoopOutcomeHandlerAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-LoopOutcomeHandlerAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 LoopOutcomeHandlerAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-NEG",
-    "predicate_id": "LoopOutcomeHandlerAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "LOOP_OUTCOME_HANDLER_TARGET_MISMATCH",
-    "diagnostic_disposition": "active_primary",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor": {
-      "source_kind": "Call",
-      "normalized_type": "LoopWithOutcomeHandler",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": {
-        "acquires_resource": false,
-        "escapes_resource": false
-      },
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "loop_outcome",
-        "outcome_handler_count": 2,
-        "final_target_handler_count": 0
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "an intermediate handler observes the transfer or the final target handler is absent",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-LoopOutcomeHandlerAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-POS",
-    "predicate_id": "LoopOutcomeHandlerAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Call",
-      "normalized_type": "LoopWithOutcomeHandler",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": {
-        "acquires_resource": false,
-        "escapes_resource": false
-      },
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "loop_outcome",
-        "outcome_handler_count": 1,
-        "final_target_handler_count": 1
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-LoopOutcomeHandlerAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MapUnfoldEntryAdmitted-NEG",
-    "predicate_id": "MapUnfoldEntryAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "MAP_UNFOLD_ELLIPSIS_NOT_CURRENT",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "MapUnfoldEntryAdmitted"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MapUnfoldEntryAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MapUnfoldEntryAdmitted-POS",
-    "predicate_id": "MapUnfoldEntryAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MapUnfoldEntryAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchExhaustive-BOUNDARY",
-    "predicate_id": "MatchExhaustive",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchExhaustive-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 MatchExhaustive boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchExhaustive-NEG",
-    "predicate_id": "MatchExhaustive",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "MATCH_NOT_EXHAUSTIVE",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "MatchExhaustive"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchExhaustive-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchExhaustive-POS",
-    "predicate_id": "MatchExhaustive",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchExhaustive-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchGuardPurityAdmitted-BOUNDARY",
-    "predicate_id": "MatchGuardPurityAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchGuardPurityAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 MatchGuardPurityAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchGuardPurityAdmitted-NEG",
-    "predicate_id": "MatchGuardPurityAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "MatchGuardPurityAdmitted"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchGuardPurityAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-MatchGuardPurityAdmitted-POS",
-    "predicate_id": "MatchGuardPurityAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-MatchGuardPurityAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"

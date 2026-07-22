@@ -1,0 +1,528 @@
+{
+  "schema": "deeplus.type-flow-callable-coherence-contract/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "design_principles": [
+    "ordinary names acquire meaning through explicit declarations or Prelude bindings, never spelling alone",
+    "one surface owner supplies one syntax role and one deterministic lowering route",
+    "static identity, ownership, effects, errors, isolation, suspension, and cleanup remain visible",
+    "recovery may diagnose an intended spelling but creates no current semantic identity",
+    "a restriction must preserve an explicit expression of programmer intent"
+  ],
+  "rules": [
+    {
+      "rule_id": "TFC-R001",
+      "domain": "identifiers",
+      "title": "array and case are ordinary identifiers",
+      "contract": {
+        "names": [
+          "array",
+          "case"
+        ],
+        "lexical_class": "IDENTIFIER",
+        "hard_keyword": false,
+        "contextual_keyword": false,
+        "declaration_and_reference_rules": "same as every other ordinary identifier",
+        "shadowing": "ordinary lexical shadowing",
+        "name_resolution": "ordinary declared-name lookup"
+      }
+    },
+    {
+      "rule_id": "TFC-R002",
+      "domain": "identifiers",
+      "title": "ordinary spelling creates no special identity",
+      "contract": {
+        "forbidden_roles": [
+          "dedicated lexer token kind",
+          "parser contextual binding role",
+          "intrinsic name-resolution class",
+          "type-checker intrinsic",
+          "formatter-only special name",
+          "semantic AST or HIR identity"
+        ],
+        "recovery_exception": "after an enum-body parse commitment, the two-identifier spelling `case name` may receive the existing targeted recovery diagnostic without reclassifying either identifier"
+      }
+    },
+    {
+      "rule_id": "TFC-R003",
+      "domain": "enum_cases",
+      "title": "enum case is a metaterm, not a type or declaration keyword",
+      "contract": {
+        "declaration": "bare variant identifier with optional declaration payload",
+        "expression_identity": [
+          "::variant",
+          "EnumType::variant"
+        ],
+        "pattern_identity": [
+          "::variant",
+          "EnumType::variant"
+        ],
+        "case_named_variant_allowed": true,
+        "case_prefixed_declaration_allowed": false,
+        "predeclared_case_type_exists": false,
+        "user_declared_type_named_case_allowed": true,
+        "case_keyword_exists": false
+      }
+    },
+    {
+      "rule_id": "TFC-R004",
+      "domain": "collections",
+      "title": "no predeclared Array binding; legacy #array constructor is removed while NumericArray literals remain current",
+      "contract": {
+        "predeclared_array_type_exists": false,
+        "user_declared_type_named_array_allowed": true,
+        "legacy_sharp_array_constructor": "#array{...}",
+        "legacy_sharp_array_constructor_exists": false,
+        "legacy_sharp_array_recovery_or_migration_route": false,
+        "active_numeric_array_surfaces": [
+          "#[...]",
+          "#N[...]"
+        ],
+        "active_numeric_array_surface_semantics": "NumericArray<T, rank R>",
+        "ordinary_owned_sequence": "List<T>",
+        "iteration_protocol": "Sequence<T>",
+        "fixed_heterogeneous_product": "tuple",
+        "ranked_numeric_storage": "NumericArray<T, rank R>",
+        "named_product": "Record"
+      }
+    },
+    {
+      "rule_id": "TFC-R005",
+      "domain": "call_shape",
+      "title": "positional unfold accepts Sequence or tuple evidence only",
+      "contract": {
+        "surface": "*expr",
+        "admitted_sources": [
+          "Sequence element stream",
+          "tuple with statically known ordered elements"
+        ],
+        "numeric_array_flattening": false,
+        "record_named_unfolding": "separate **Record channel",
+        "map_named_unfolding": false,
+        "evaluation": "source expression once, produced positional values in source order"
+      }
+    },
+    {
+      "rule_id": "TFC-R006",
+      "domain": "call_shape",
+      "title": "fixed formal channels require static positional arity",
+      "contract": {
+        "repeated_positional_target": "finite Sequence or tuple may feed the repeated channel after element compatibility",
+        "fixed_positional_target": "source arity must be statically known and equal to the remaining fixed formal count",
+        "unknown_sequence_arity_to_fixed_target": "reject",
+        "tuple_arity_mismatch": "reject",
+        "source_order_tie_break": false
+      }
+    },
+    {
+      "rule_id": "TFC-R007",
+      "domain": "control_conditions",
+      "title": "control conditions require strict Bool",
+      "contract": {
+        "owners": [
+          "if",
+          "while",
+          "repeat-while",
+          "for guard",
+          "match guard",
+          "guarded transfer",
+          "ternary",
+          "callable guard profile"
+        ],
+        "required_normalized_type": "Bool",
+        "implicit_truthiness": false,
+        "numeric_truthiness": false,
+        "collection_truthiness": false,
+        "optional_truthiness": false,
+        "guard_effects": [],
+        "guard_errors": [],
+        "guard_suspension": false,
+        "guard_control_transfer": false
+      }
+    },
+    {
+      "rule_id": "TFC-R008",
+      "domain": "try_statement",
+      "title": "statement try has an explicit handling or cleanup tail",
+      "contract": {
+        "accepted_shapes": [
+          "try Block CatchClause+ FinallyClause?",
+          "try Block FinallyClause"
+        ],
+        "tail_less_try_block": "reject",
+        "try_expression_statement": "reject",
+        "catch_pattern": "binder, wildcard, or another checker-proven-irrefutable transactional Pattern",
+        "catch_selection": "no runtime pattern dispatch in the current minimum; a refutable catch is rejected before MIR",
+        "later_catches_after_irrefutable": "statically unreachable and do not create a fallthrough route",
+        "unmatched_error": "propagate after finally",
+        "finally_execution_count": 1
+      }
+    },
+    {
+      "rule_id": "TFC-R009",
+      "domain": "try_expression",
+      "title": "value try requires catch or finally and has one local-result owner",
+      "contract": {
+        "introducer": "@try",
+        "accepted_shapes": [
+          "@try ValueBody ValueCatchClause+ FinallyClause?",
+          "@try ValueBody FinallyClause"
+        ],
+        "tail_less_value_try": "reject",
+        "value_producers": [
+          "single expression ValueBody",
+          "local ret on every reachable normal block path"
+        ],
+        "finally_produces_value": false,
+        "unmatched_error": "propagate after finally"
+      }
+    },
+    {
+      "rule_id": "TFC-R010",
+      "domain": "control_transfer",
+      "title": "return and ret have disjoint owners",
+      "contract": {
+        "return_owner": "named function, method, constructor, actor handler, or named local function",
+        "ret_owners": [
+          "lambda block",
+          "@if local value block",
+          "@match local value arm",
+          "@try local value block",
+          "@scope local value block",
+          "declarative value-clause arm"
+        ],
+        "return_in_lambda": "reject",
+        "ret_in_named_function": "reject",
+        "terminal_valueless_return": "admitted but canonically omitted and eligible for a lint",
+        "closure_boundary_crossing": false
+      }
+    },
+    {
+      "rule_id": "TFC-R011",
+      "domain": "calls",
+      "title": "ordinary calls use parentheses with one bounded trailing-closure exception",
+      "contract": {
+        "ordinary_surface": "callee(argument-list)",
+        "parenless_exception": "callee AtomicCallArgument ClosureExpr",
+        "atomic_argument_kinds": [
+          "Literal",
+          "Identifier",
+          "QualifiedStaticExpr",
+          "ExpectedVariantExpr"
+        ],
+        "required_unlabeled_trailing_closure_count": 1,
+        "formal_parameter_requirement": "the selected callable has a matching closure parameter in the trailing suffix",
+        "bare_call_without_closure": "reject",
+        "multiple_unlabeled_trailing_closures": "reject",
+        "message_owned_closure": "separate MessageSuffix owner"
+      }
+    },
+    {
+      "rule_id": "TFC-R012",
+      "domain": "function_profiles",
+      "title": "named callable profiles are closed by declaration owner",
+      "contract": {
+        "module_function": [
+          "def",
+          "def#async",
+          "def#pure",
+          "def#guard"
+        ],
+        "entry_function": [
+          "def#entry",
+          "def#entry#async"
+        ],
+        "extension_function": [
+          "def",
+          "def#async"
+        ],
+        "instance_method": [
+          "def",
+          "def#mut",
+          "def#consume",
+          "def#async",
+          "def#pure"
+        ],
+        "local_function": [
+          "def",
+          "def#pure",
+          "def#async",
+          "def#guard"
+        ],
+        "trait_method": [
+          "def",
+          "def#pure",
+          "def#async"
+        ],
+        "conformance_method": [
+          "def",
+          "def#async",
+          "def#mut",
+          "def#consume",
+          "def#pure"
+        ],
+        "cleanup": [
+          "def#cleanup"
+        ],
+        "type_side_exported_or_extension_set": [
+          "def"
+        ],
+        "duplicate_or_noncanonical_profile_order": "reject"
+      }
+    },
+    {
+      "rule_id": "TFC-R013",
+      "domain": "function_profiles",
+      "title": "unsafe named declaration is Preview FFI-only",
+      "contract": {
+        "surface": "extern#C def#unsafe",
+        "stable_ordinary_owner": false,
+        "source_activation": "explicit Preview gate",
+        "ungated_use": "reject",
+        "ordinary_def_hash_unsafe": "reject"
+      }
+    },
+    {
+      "rule_id": "TFC-R014",
+      "domain": "methods",
+      "title": "method marker domains remain explicit and distinct",
+      "contract": {
+        "class_or_enum_instance_markers": [
+          ".",
+          "+",
+          "*.",
+          "*+"
+        ],
+        "class_or_enum_ast_domain": "ClassDispatchKind",
+        "trait_or_conformance_markers": [
+          ".",
+          "+",
+          "*.",
+          "*+"
+        ],
+        "trait_or_conformance_ast_domain": "TraitWitnessKind",
+        "same_glyph_same_semantic_domain": false,
+        "field_marker": "forbidden",
+        "associated_nonmethod_marker": "forbidden",
+        "type_side_marker": "def:: owner, not an instance dispatch marker"
+      }
+    },
+    {
+      "rule_id": "TFC-R015",
+      "domain": "local_functions",
+      "title": "local functions are lexical declarations with explicit capture",
+      "contract": {
+        "placement": "BlockItem",
+        "visibility_modifier": "forbidden",
+        "visible_before_declaration": false,
+        "implicit_outer_capture": false,
+        "outer_capture_surface": "CaptureList before def",
+        "mutual_recursion": "not current",
+        "profile_set": [
+          "def",
+          "def#pure",
+          "def#async",
+          "def#guard"
+        ]
+      }
+    },
+    {
+      "rule_id": "TFC-R016",
+      "domain": "closures",
+      "title": "closure responsibility is a closed product of visible axes",
+      "contract": {
+        "capture_modes": [
+          "borrow",
+          "inout",
+          "move",
+          "clone",
+          "deep",
+          "copy",
+          "once",
+          "explicit let initialization",
+          "explicit var initialization"
+        ],
+        "implicit_ownership_weakening": false,
+        "axes": {
+          "lifetime": [
+            "ordinary",
+            "scoped"
+          ],
+          "call_right": [
+            "repeatable",
+            "once"
+          ],
+          "environment_receiver": [
+            "shared",
+            "mut"
+          ],
+          "behavior": [
+            "ordinary",
+            "pure",
+            "guard"
+          ],
+          "effects_errors_isolation_suspension": "retained in callable type and compatibility"
+        },
+        "admitted_profile_sequences": [
+          [],
+          [
+            "scoped"
+          ],
+          [
+            "once"
+          ],
+          [
+            "mut"
+          ],
+          [
+            "pure"
+          ],
+          [
+            "guard"
+          ],
+          [
+            "scoped",
+            "once"
+          ],
+          [
+            "scoped",
+            "mut"
+          ],
+          [
+            "scoped",
+            "pure"
+          ],
+          [
+            "scoped",
+            "guard"
+          ],
+          [
+            "once",
+            "pure"
+          ],
+          [
+            "once",
+            "guard"
+          ],
+          [
+            "scoped",
+            "once",
+            "pure"
+          ],
+          [
+            "scoped",
+            "once",
+            "guard"
+          ]
+        ],
+        "borrow_escape": "reject",
+        "overlapping_inout_capture": "reject",
+        "resource_cleanup_path_count": "exactly one"
+      }
+    },
+    {
+      "rule_id": "TFC-R017",
+      "domain": "lambdas",
+      "title": "lambda parameters and contextual shorthand have dedicated rules",
+      "contract": {
+        "explicit_surface": "{ x: T, y: U => body }",
+        "parameter_list_parentheses": false,
+        "admitted_parameter_components": [
+          "optional ownership mode",
+          "identifier",
+          "optional type annotation"
+        ],
+        "forbidden_parameter_channels": [
+          "context",
+          "witness",
+          "repeated positional",
+          "named rest",
+          "stored parameter"
+        ],
+        "implicit_at": "only with an independently selected exactly-one-parameter callable type and no explicit parameter list",
+        "arrow_elided_nullary": "requires independently fixed zero-parameter callable type",
+        "empty_body": "requires expected () -> Unit",
+        "explicit_nullary": "{ => body }",
+        "single_expression_result": "implicit local result",
+        "multiline_nonunit_result": "local ret required on every reachable normal path"
+      }
+    },
+    {
+      "rule_id": "TFC-R018",
+      "domain": "async_callables",
+      "title": "async declarations are current but async callable literals are Preview",
+      "contract": {
+        "named_def_async": "current in owner domains admitted by TFC-R012",
+        "await": "explicit suspension point",
+        "async_callable_literal": "PREVIEW_DESIGN_NONACTIVATABLE",
+        "ordinary_lambda_invocation": "synchronous",
+        "implicit_async_conversion": false,
+        "suspension_responsibility": "part of callable compatibility and escape checking"
+      }
+    },
+    {
+      "rule_id": "TFC-R019",
+      "domain": "flow_joins",
+      "title": "flow joins preserve type and responsibility without automatic union",
+      "contract": {
+        "result_type": "all reachable value paths have one equal normalized type or are each compatible with one independently fixed expected type",
+        "automatic_anonymous_union": false,
+        "ownership_state": "every reaching path yields a compatible place and ownership state",
+        "effect_row": "deterministic normalized union of reachable effects",
+        "error_set": "deterministic normalized union of reachable recoverable errors",
+        "cleanup_state": "balanced before join",
+        "unreachable_path_contribution": "none",
+        "source_order_type_selection": false
+      }
+    },
+    {
+      "rule_id": "TFC-R020",
+      "domain": "evaluation_and_cleanup",
+      "title": "evaluation, failure, suspension, and cleanup order are observable",
+      "contract": {
+        "expression_and_argument_order": "left-to-right exactly once",
+        "pattern_binding": "transactional; failure commits no binding or partial move",
+        "branch_cleanup": "complete before control reaches a join or exits",
+        "finally": "exactly once after the try body or selected catch on every exit",
+        "defer": "deterministic LIFO and exactly once",
+        "primary_and_suppressed_failure_order": "deterministic",
+        "return_break_continue_throw": "cannot skip required cleanup",
+        "suspension": "preserves live ownership, borrow, isolation, and cleanup obligations"
+      }
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 20,
+    "rule_ids_unique": true,
+    "ordinary_identifier_set": [
+      "array",
+      "case"
+    ],
+    "absent_predeclared_type_binding_set": [
+      "Array",
+      "Case"
+    ],
+    "predeclared_array_type_exists": false,
+    "predeclared_case_type_exists": false,
+    "ordinary_user_declaration_of_array_or_case_allowed": true,
+    "legacy_sharp_array_constructor_count": 0,
+    "active_numeric_array_surface_set": [
+      "#[...]",
+      "#N[...]"
+    ],
+    "positional_unfold_source_kinds": [
+      "Sequence",
+      "tuple"
+    ],
+    "numeric_array_flatten_count": 0,
+    "try_expression_statement_count": 0,
+    "async_callable_literal_current_count": 0,
+    "product_execution_receipt_count": 0
+  }
+}

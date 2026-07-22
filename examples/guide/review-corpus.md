@@ -2413,12 +2413,12 @@ public actor Worker {
     }
 }
 public def#async run(job: Job) -> Result
-    throws Never
+    throws ActorMessageError
     effects {task}
 = {
-    return await task {
-        Worker!() ~ compute(job)
-    }
+    let Result::ok(task) = Worker!() ~ compute(job)
+    else Result::err(error) => throw error
+    return await task
 }
 ```
 ## EX-R48E1-031 — Dynamic unit conversion provider under stdlib profile
@@ -5985,7 +5985,7 @@ public schema TileRow {
     tag: Pair<Int, String>
 }
 ```
-## EX-R51a1-034 — parameter mode owns leading mut before a qualified enum pattern
+## EX-R51a1-034 — ordinary parameter binds an identifier before body pattern control
 
 - **source_feature_ids:** `pattern_match_ownership_split`, `enum_case_pattern_double_colon_surface`
 - **checker_trace_ids:** `none`
@@ -5997,8 +5997,10 @@ public schema TileRow {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-def accept(mut Result::ok: Result) -> Unit = {
-    print("ok")
+def accept(mut result: Result<Int, error ParseError>) -> Unit = {
+    if let Result::ok(value) = result {
+        print(value)
+    }
 }
 ```
 ## EX-R51a1-035 — implicit lambda receiver reuses common postfix suffixes
@@ -6523,7 +6525,7 @@ let text = format(3.14, context FormatPattern!("{:.2f}"))
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-def#async consume(stream: AsyncSequence<Int>) -> Unit = {
+def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {
     for await value in stream {
         print(value)
     }
@@ -6547,12 +6549,12 @@ def announceLegacy() -> Unit = {
     return
 }
 ```
-## EX-R51a1-ACOLLECT-NG-001 — async collector does not activate async callable literals
+## EX-R51a1-ACOLLECT-NG-001 — Stage-1 collector rejects an AsyncSequence without finite-source evidence
 
 - **source_feature_ids:** `policy_visible_async_collector_msp`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
-- **source_activation:** `none`
+- **source_activation:** `stdlib`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
@@ -6560,12 +6562,16 @@ def announceLegacy() -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-#preview(policy_visible_async_collector_msp)
-let profiles = await AsyncCollector::list(
-    source: userIds,
-    policy: CollectPolicy::sequential,
-    transform: #async{ id => await loadProfile(id) },
-)
+public def#async collectProfiles(stream: AsyncSequence<UserId, IOError>) -> List<Profile>
+    throws IOError | NetworkError = {
+    // checker evidence for `stream` is not finite
+    // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
+    return await AsyncCollector::list(
+        source: stream,
+        policy: CollectPolicy::sequential,
+        transform: loadProfileForCollect,
+    )
+}
 // ASYNC_COLLECTOR_POLICY_NOT_ADMITTED
 ```
 ## EX-R51a1-ACOLLECT-P-001 — Stable Stage-1 policy-visible async collector
@@ -6573,18 +6579,23 @@ let profiles = await AsyncCollector::list(
 - **source_feature_ids:** `policy_visible_async_collector_msp`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
-- **source_activation:** `none`
+- **source_activation:** `stdlib`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let profiles = await AsyncCollector::list(
-    source: userIds,
-    policy: CollectPolicy::sequential,
-    transform: loadProfileForCollect,
-)
+public def#async collectProfiles(userIds: AsyncSequence<UserId, IOError>) -> List<Profile>
+    throws IOError | NetworkError = {
+    // checker evidence for `userIds` proves a finite source
+    // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
+    return await AsyncCollector::list(
+        source: userIds,
+        policy: CollectPolicy::sequential,
+        transform: loadProfileForCollect,
+    )
+}
 ```
 ## EX-R51a1-AUD-NG-003 — context-free implicit nullary lambda
 
@@ -7433,7 +7444,7 @@ let ::some(value) = maybeValue else return if retrying
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let ::some(value): Int = maybeValue else return
+let ::some(value): Option<Int> = maybeValue else return
 consume(value)
 ```
 ## EX-R51a1-GUARDED-P-002 — Guarded let exact residual exit
@@ -9059,9 +9070,7 @@ let second: Int = first
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let background = spawn async {
-    return 1
-}
+let background = spawn async { => 1 }
 ```
 ## EX-R51a1-NG-060 — rejected: generic entry function
 
@@ -11302,4 +11311,280 @@ let invalid = #bytes"\xG1"
 ```deeplus
 let text = "name=$name:<12"
 // INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM
+```
+
+## EX-R51f3-COH-001 — List pattern commits only after an admitted final ignored remainder probe
+
+- **source_feature_ids:** `pattern_binding_control_family`, `pattern_decomposition`, `pattern_match_ownership_split`
+- **checker_trace_ids:** `PatternBindingControlAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let [head, .._] = values {
+    consume(head)
+}
+```
+
+## EX-R51f3-COH-002 — For-let probe binder guard requires Bool before commit
+
+- **source_feature_ids:** `pattern_binding_control_family`, `strict_boolean_word_operators_msp`
+- **checker_trace_ids:** `PatternBindingControlAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `FOR_LET_FILTER_GUARD_NOT_BOOL`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+for let Result::ok(value) in results if 1 {
+    consume(value)
+}
+```
+
+## EX-R51f3-COH-003 — Tuple decomposition pattern is not current
+
+- **source_feature_ids:** `pattern_binding_control_family`, `pattern_decomposition`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `TUPLE_PATTERN_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let (left, right) = pair {
+    consume(left, right)
+}
+```
+
+## EX-R51f3-COH-004 — Statement try may use finally as its required terminal owner
+
+- **source_feature_ids:** `statement_control_core_phase_a`, `resource_cleanup`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+try {
+    perform()
+} finally {
+    close()
+}
+```
+
+## EX-R51f3-COH-005 — Bare statement try has no current failure owner
+
+- **source_feature_ids:** `statement_control_core_phase_a`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `TRY_REQUIRES_CATCH_OR_FINALLY`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+try {
+    perform()
+}
+```
+
+## EX-R51f3-COH-006 — Strict Boolean control accepts only Bool operands
+
+- **source_feature_ids:** `strict_boolean_word_operators_msp`, `statement_control_core_phase_a`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let ready: Bool = true
+let stopped: Bool = false
+if ready and not stopped {
+    run()
+}
+```
+
+## EX-R51f3-COH-007 — Array and case remain ordinary identifiers
+
+- **source_feature_ids:** `r51e_frontend_grammar_current_canonical`, `ordinary_list_literal_surface`, `enum_case_pattern_double_colon_surface`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let array = [1, 2]
+let case = array[1]
+enum Token { case }
+let token: Token = Token::case
+```
+
+## EX-R51f3-COH-008 — Bounded actor channel keeps send order and explicit request reply
+
+- **source_feature_ids:** `actor_declaration_grammar_closed`, `actor_mailbox_capacity`, `actor_protocol_family`, `actor_request_reply`, `async_task_control`, `structured_task_scope`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public protocol CounterProtocol {
+    send add(value: Int)
+    request current() -> Int
+}
+actor #mailbox(capacity: 8) Counter {
+    on add(value: Int) = { }
+    request current() -> Int = { return 0 }
+}
+public def#async observe(counter: Counter) -> Int
+    throws ActorMessageError
+= {
+    task scope {
+        let Result::ok(_) = counter ~ add(value: 1)
+        else Result::err(error) => throw error
+        let Result::ok(_) = counter ~ add(value: 2)
+        else Result::err(error) => throw error
+        let Result::ok(replyTask) = counter ~ current()
+        else Result::err(error) => throw error
+        return await replyTask
+    }
+}
+```
+
+## EX-R51f3-COH-009 — Actor mailbox capacity must be a positive static bound
+
+- **source_feature_ids:** `actor_declaration_grammar_closed`, `actor_mailbox_capacity`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+actor #mailbox(capacity: 0) Counter { }
+```
+
+## EX-R51f3-COH-010 — Cancellation is not recoverable through catch
+
+- **source_feature_ids:** `async_task_control`, `error_defect_cancellation_split`, `structured_task_scope`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `CATCHES_CANCELLATION_AS_ERROR_FORBIDDEN`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async waitFor(task: Task<Int>) -> Int = {
+    try {
+        return await task
+    } catch cancel: Cancellation {
+        return 0
+    }
+}
+```
+
+## EX-R51f3-COH-011 — Structured task cleanup remains owned at cancellation boundary
+
+- **source_feature_ids:** `async_task_control`, `structured_task_scope`, `single_action_defer_msp`, `deterministic_primary_suppressed_order`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async supervise() -> Unit = {
+    task scope {
+        defer cleanup()
+        let child = spawn async { => await work() }
+        await child
+    }
+}
+```
+
+## EX-R51f3-COH-012 — Omitted mailbox clause selects logical-unbounded admission
+
+- **source_feature_ids:** `actor_declaration_grammar_closed`, `actor_mailbox_capacity`, `actor_protocol_family`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+actor Worker {
+    on run(job: Job) = { }
+}
+public def dispatch(worker: Worker, move job: Job)
+    -> Result<Unit, error ActorMessageError>
+= {
+    return worker ~ run(move job)
+}
+```
+
+## EX-R51COH-SHARED-001 — SharedCell scoped observation and owner replacement
+
+- **source_feature_ids:** `shared_cell_plain_payload_profile`, `scoped_callable_lifetime_profile`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `stdlib`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let cell = SharedCell::new(move state)
+let label = cell.withValue { borrow value => describe(value) }
+let previous = cell.replace(move nextState)
+```
+
+## EX-R51COH-SHARED-002 — SharedMutex receiver-bound non-suspending scoped mutation
+
+- **source_feature_ids:** `shared_mutex_no_drop_minimum_profile`, `scoped_callable_lifetime_profile`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `stdlib`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let mutex = SharedMutex::new(move state)
+mutex.withLock { inout value => value = update(value) }
 ```
