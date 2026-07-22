@@ -1392,8 +1392,7 @@
         "RANGE_STEP_DIRECTION_MISMATCH",
         "RANGE_STEP_ZERO",
         "RANGE_UNSIGNED_DESCENDING_REQUIRES_SIGNED_DOMAIN",
-        "SLICE_BOUND_OUT_OF_RANGE_STATIC",
-        "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR"
+        "SLICE_BOUND_OUT_OF_RANGE_STATIC"
       ],
       "predicates": [],
       "examples": [
@@ -1426,7 +1425,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Range step expression surface clarification. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Current range delimiters are exactly .. and ..<. No step or descending delimiter is admitted: ... has only repeated-positional/comprehension-unfold structural owners and ..> is reserved recovery. Use an explicit named step/reverse API.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1437,8 +1436,13 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+      ],
+      "predicates": [
+        "OperatorPrecedenceTablePhaseAAdmitted",
+        "SliceRangeAdmitted"
+      ],
       "examples": [],
       "productions": [
         "PrattExpr"

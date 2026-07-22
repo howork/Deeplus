@@ -353,7 +353,7 @@
     "depends_on": [
       "one_based_sequence_logical_indexing"
     ],
-    "notes": "Stable bounded logical-domain literal with StaticInt bounds, expression-only element list and exact closed-domain cardinality. Product implementation NOT_RUN.",
+    "notes": "Stable bounded logical-domain literal uses exactly [L..U: elements] with StaticInt bounds, an expression-only element list, the inclusive domain L..U, and exact cardinality U-L+1. The removed [L...: elements] form is not inferred. Product implementation NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -559,7 +559,8 @@
         "EX-R48E1-011",
         "EX-R48F-022",
         "EX-R51a1-007",
-        "EX-R51f3-R2-005"
+        "EX-R51f3-R2-005",
+        "EX-R51VOI-005"
       ],
       "productions": [
         "BytesLiteral",
@@ -1402,7 +1403,8 @@
         "EX-R49B-CHAR-002",
         "EX-R49B-CHAR-003",
         "EX-R49B-CHAR-004",
-        "EX-R49B-CHAR-005"
+        "EX-R49B-CHAR-005",
+        "EX-R51VOI-005"
       ],
       "productions": [
         "BytesLiteral",

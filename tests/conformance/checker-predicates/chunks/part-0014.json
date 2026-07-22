@@ -1,90 +1,5 @@
 [
   {
-    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-NONNUMERIC-SUBTYPE",
-    "predicate_id": "ListLiteralElementJoinAdmitted",
-    "expected": "rejected",
-    "descriptor": {
-      "source_kind": "ListLiteral",
-      "normalized_type": "List<Animal>",
-      "ownership": "owned",
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "context_fixed": true,
-        "contextual_element_type": "Animal",
-        "element_literal_kinds": [
-          "nonnumeric"
-        ],
-        "element_literal_values": [
-          null
-        ],
-        "element_literal_suffixes": [
-          null
-        ]
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": [
-        "Dog"
-      ]
-    },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
-    "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "assignment-compatible subtype Dog is not normalized-type identity with Animal",
-    "fixture_kind": "concrete_negative",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-NONNUMERIC-SUBTYPE"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
     "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-U8-RANGE",
     "predicate_id": "ListLiteralElementJoinAdmitted",
     "expected": "rejected",
@@ -146,7 +61,7 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
     "diagnostic_disposition": "active_dispatched",
@@ -194,14 +109,27 @@
         "context_fixed": true,
         "contextual_element_type": "UInt8",
         "element_literal_kinds": [
-          "unsuffixed_integer"
+          "prefix_minus_unsuffixed_integer"
         ],
         "element_literal_values": [
           "-1"
         ],
         "element_literal_suffixes": [
           null
-        ]
+        ],
+        "source_elements": [
+          "-1"
+        ],
+        "sign_is_prefix_operator": true,
+        "contextual_prefix_sign_adapter": {
+          "ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+          "validated_token_magnitude": 1,
+          "signed_candidate": -1,
+          "exact_target": "UInt8",
+          "representable": false,
+          "arbitrary_constant_fold_count": 0,
+          "hidden_conversion_count": 0
+        }
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -231,7 +159,7 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
     "diagnostic_disposition": "active_dispatched",
@@ -324,7 +252,7 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
@@ -410,7 +338,7 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "both mathematical values lie in the exact UInt8 range 0 through 255",
     "fixture_kind": "concrete_positive",
@@ -485,7 +413,7 @@
       "orientation": null,
       "element_types": []
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "an empty literal is admitted when an independently fixed List<String> context supplies the element type",
     "fixture_kind": "concrete_positive",
@@ -568,7 +496,7 @@
         "Float32"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "the f32 suffix maps exactly to the contextual Float32 type",
     "fixture_kind": "concrete_positive",
@@ -614,7 +542,7 @@
         "context_fixed": true,
         "contextual_element_type": "Int8",
         "element_literal_kinds": [
-          "unsuffixed_integer",
+          "prefix_minus_unsuffixed_integer",
           "unsuffixed_integer"
         ],
         "element_literal_values": [
@@ -624,7 +552,21 @@
         "element_literal_suffixes": [
           null,
           null
-        ]
+        ],
+        "source_elements": [
+          "-128",
+          "127"
+        ],
+        "sign_is_prefix_operator": true,
+        "contextual_prefix_sign_adapter": {
+          "ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+          "validated_token_magnitude": 128,
+          "signed_candidate": -128,
+          "exact_target": "Int8",
+          "representable": true,
+          "arbitrary_constant_fold_count": 0,
+          "hidden_conversion_count": 0
+        }
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -655,9 +597,9 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "admitted_condition": "-128 and 127 are the inclusive mathematical Int8 boundaries",
+    "admitted_condition": "the signless token magnitude 128 under direct prefix minus forms representable Int8 candidate -128; 127 is the upper boundary",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -738,7 +680,7 @@
         "ISize"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "the isize suffix maps exactly to the contextual ISize type",
     "fixture_kind": "concrete_positive",
@@ -821,7 +763,7 @@
         "String"
       ]
     },
-    "rule_seed": "the literal constructs immutable List<T> and is never context-rewritten to NumericArray; without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type; without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted; with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality; integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64; with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}; an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion; a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit; an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix; there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "the normalized nonnumeric element type equals contextual String exactly",
     "fixture_kind": "concrete_positive",
@@ -1033,7 +975,14 @@
     "predicate_id": "LogicalIndexDomainAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "boundary_case": true
+      "receiver_family": "List",
+      "index_type": "Int",
+      "index_value": 1,
+      "logical_domain": {
+        "lower": 1,
+        "upper": 1
+      },
+      "storage_offset": 0
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1053,9 +1002,9 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 LogicalIndexDomainAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "admitted_condition": "the one-element List admits its exact first and last logical coordinate 1",
+    "rule_seed": "one-based minimum closed boundary fixture; product checker NOT_RUN",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
@@ -1065,61 +1014,22 @@
     "fixture_id": "PF-LogicalIndexDomainAdmitted-NEG",
     "predicate_id": "LogicalIndexDomainAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "INDEX_OUT_OF_LOGICAL_DOMAIN",
+    "expected_primary_diagnostic": "ZERO_BASED_INDEX_NOT_CURRENT",
     "diagnostic_disposition": "active_primary",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": null,
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "index_domain_kind": "sequence",
-        "index_type": "Int",
-        "supplied_index_type": "Float64",
-        "index_value": 0,
-        "collection_length": 3,
-        "lower_bound": 1,
-        "upper_bound": 3,
-        "storage_offset": null
+      "receiver_family": "List",
+      "index_type": "Int",
+      "index_value": 0,
+      "logical_domain": {
+        "lower": 1,
+        "upper": 3
       },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "storage_offset": null
     },
-    "violated_condition": "the supplied index type is not Int and the value equals the exclusive sequence bound",
+    "violated_condition": "the exact Int index is zero; no other type, bounds, or receiver condition fails",
     "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "rule_seed": "single-fault zero-based index fixture; product checker NOT_RUN",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -1146,56 +1056,18 @@
     "predicate_id": "LogicalIndexDomainAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "Int",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "index_domain_kind": "sequence",
-        "index_type": "Int",
-        "supplied_index_type": "Int",
-        "index_value": 2,
-        "collection_length": 3,
-        "lower_bound": 1,
-        "upper_bound": 3,
-        "storage_offset": 1
+      "receiver_family": "List",
+      "index_type": "Int",
+      "index_value": 2,
+      "logical_domain": {
+        "lower": 1,
+        "upper": 3
       },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "storage_offset": 1
     },
-    "rule_seed": "the receiver declares exactly one logical index-domain kind: sequence, map, or numeric_array; a sequence index is Int and satisfies 0 <= index < length; a map index normalized type equals the declared key type exactly; a NumericArray index supplies exactly one admitted scalar Int or slice axis per selected axis; floating-point, truthiness, hidden narrowing, and negative-from-end rewriting are forbidden",
+    "rule_seed": "List index is exact Int and satisfies 1 <= index <= length; offset is index-1 only after admission; Map uses exact K and NumericArray keeps typed one-based axes; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1401,6 +1273,352 @@
       "semantic_type": {
         "kind": "nominal",
         "type_id": "PF-LoopOutcomeExhaustive-NEG-CASE-SPELLING"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LoopOutcomeExhaustive-NEG-NO-MATCH",
+    "predicate_id": "LoopOutcomeExhaustive",
+    "expected": "rejected",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "LoopOutcome<Int>",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "loop_has_value_break": true,
+        "loop_outcome_match_present": false,
+        "loop_outcome_case_spelling_valid": true,
+        "loop_outcome_exhaustive": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": {
+        "labels": [],
+        "visibility_scope": "local",
+        "duplicate_labels": []
+      },
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "expected_primary_diagnostic": "BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "a value break has no immediately following outcome match",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-LoopOutcomeExhaustive-NEG-NO-MATCH"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LoopOutcomeExhaustive-POS",
+    "predicate_id": "LoopOutcomeExhaustive",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "LoopOutcome<Int>",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "loop_has_value_break": true,
+        "loop_outcome_match_present": true,
+        "loop_outcome_case_spelling_valid": true,
+        "loop_outcome_exhaustive": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": {
+        "labels": [
+          "break",
+          "completed"
+        ],
+        "visibility_scope": "local",
+        "duplicate_labels": []
+      },
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-LoopOutcomeExhaustive-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-BOUNDARY",
+    "predicate_id": "LoopOutcomeHandlerAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-LoopOutcomeHandlerAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 LoopOutcomeHandlerAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-NEG",
+    "predicate_id": "LoopOutcomeHandlerAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "LOOP_OUTCOME_HANDLER_TARGET_MISMATCH",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Call",
+      "normalized_type": "LoopWithOutcomeHandler",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": {
+        "acquires_resource": false,
+        "escapes_resource": false
+      },
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "kind": "loop_outcome",
+        "outcome_handler_count": 2,
+        "final_target_handler_count": 0
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "an intermediate handler observes the transfer or the final target handler is absent",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-LoopOutcomeHandlerAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LoopOutcomeHandlerAdmitted-POS",
+    "predicate_id": "LoopOutcomeHandlerAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Call",
+      "normalized_type": "LoopWithOutcomeHandler",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": {
+        "acquires_resource": false,
+        "escapes_resource": false
+      },
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "kind": "loop_outcome",
+        "outcome_handler_count": 1,
+        "final_target_handler_count": 1
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-LoopOutcomeHandlerAdmitted-POS"
       },
       "responsibility": {
         "ownership": "reusable",

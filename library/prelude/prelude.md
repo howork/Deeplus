@@ -1,10 +1,10 @@
 # Deeplus Prelude 0.1.2 — R51f3 Current Canonical
 
-Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 52 rows.
+Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 55 rows.
 
 ## 1. Core domains
 
-The catalog covers primitive numeric types, `Bool`, Unicode-scalar `Char`, immutable `String`, `Bytes`, Option, Result, sequence/set/map families, structural `Record`, iterator protocols, fixed operator protocols, callable profiles, measures, construction and evidence facades. `array` remains an ordinary identifier.
+The catalog covers canonical language-facing numeric constants and identities, `Bool`, Unicode-scalar `Char`, immutable `String`, `Bytes`, Option, Result, `ArithmeticDefect`, `IndexError`, sequence/set/map families, structural `Record`, iterator protocols, named behavior protocols, callable profiles, measures, construction and evidence facades. Primitive semantic types remain language identities even when they do not require a separate catalog row. `array` remains an ordinary identifier.
 
 ## 2. Call channels
 
@@ -18,7 +18,15 @@ Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fall
 
 ## 4. Fixed operators and protocols
 
-The operator vocabulary is closed. Prelude protocol names provide fixed semantic ownership; arbitrary custom operator declaration and fixed operator conformance expansion remain nonactivatable until their coherence and MIR obligations close.
+The operator vocabulary and precedence table are closed, and every current glyph dispatches as `INTRINSIC_ONLY`. Prelude Trait and protocol names expose named behavior only; conformance, extension, witness, provider, or source order cannot add or replace a glyph implementation. `Bitwise` and `Ord<T>` are named contract vocabulary, not punctuation hooks. Arbitrary custom operator declaration and fixed-operator conformance expansion remain `PREVIEW_DESIGN`/nonactivatable, and all `TCC-P1-002..008` remain OPEN.
+
+## 4A. Current numeric and indexing boundary
+
+`Int` has the signed 64-bit mathematical domain. Integer operators are checked and raise deterministic `ArithmeticDefect` on dynamic overflow or division or remainder by zero before assignment commit; named APIs own wrapping and saturating behavior. `Float32` and `Float64` follow IEEE-754 binary32/binary64 value behavior with round-to-nearest, ties-to-even; NaN is unordered, signed zero compares equal, and Float receives no implicit `Ord`/`Keyable` evidence. None of these laws selects storage, ABI, or backend layout.
+
+`ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers both integer division and remainder by zero. It is neither an `ErrorSet` member nor an enum-as-error. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
+
+NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. No Prelude operation silently rebases, copies, makes the view mutable, crosses isolation, or extends its owner lifetime. An independent value or rebased coordinate domain requires an explicit named operation.
 
 ## 5. Profile boundaries
 
@@ -59,7 +67,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 53 canonical Prelude entries
+## 10. Human index of the 55 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -68,22 +76,24 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `JsonValue` | boundary_value | `stable_design` | external JSON model distinct from Plain and Dyn |
 | `WitnessId` | checker_identity | `stable_design` | explicit conformance evidence identity; never synthesized from extension presence |
 | `FillRepeatAdmissibilityProfile` | checker_known_protocol | `stable_design` | Stable checker law for shaped fill/repeat/generator initializer admissibility. |
-| `Indexable` | checker_known_protocol | `stable_design` | Stable basic indexing law; advanced slicing/custom indexing are separate. |
+| `Indexable` | checker_known_protocol | `stable_design` | built-in owner indexing descriptor; conformance does not activate brackets |
+| `ArithmeticDefect` | language_intrinsic_defect | `stable_design` | closed nonrecoverable checked-integer failure family: overflow or division/remainder by zero |
+| `IndexError` | enum | `stable_design` | closed recoverable out-of-domain and missing-key indexing failure family |
 | `MembershipProtocol` | checker_known_protocol | `stable_design` | Current Prelude design vocabulary; product support NOT_RUN. |
-| `List<T>` | collection | `stable_design` | ordered owned collection |
-| `Map<K,V>` | collection | `stable_design` | key admissibility without public Copyable |
+| `List<T>` | collection | `stable_design` | ordered owned collection with one-based built-in indexing |
+| `Map<K,V>` | collection | `stable_design` | exact-key lookup; no public Copyable or key-as-member projection |
 | `ImplementationId` | compiler_identity | `stable_design` | implementation symbol reusable without merging extension and witness identity |
 | `Facet<Mode,Contract>` | compiler_intrinsic_type | `stable` | RCTS-V5 ownership-qualified existential carrier; borrow mode Stable, inout/move nonactivatable |
 | `Box<T>` | core_type | `stable_design` | unique owning indirection whose canonical constructor is Box!(value), with exactly-once payload cleanup |
 | `ByteView` | core_type | `stable_design` | contiguous byte-addressable readonly bytes acquired by borrowing Bytes::view; the result retains owner provenance and assumes neither text encoding nor String semantics |
-| `Bytes` | core_type | `stable_design` | raw byte sequence; no implicit String conversion |
+| `Bytes` | core_type | `stable_design` | raw byte sequence with one-based UInt8 indexing; no implicit String conversion |
 | `FrozenList<T>` | core_type | `stable_design` | declared immutable/shareable result of an exclusive freeze transition |
 | `ListSnapshot<T>` | core_type | `stable_design` | independent point-in-time list value with declared copy/COW cost |
 | `MutableList<T>` | core_type | `stable_design` | exclusive mutable list owner; snapshot borrows without invalidating the source, while freeze consumes the receiver and completes its ownership transition |
-| `NumericArray<T, rank R>` | core_type | `stable_design` | ranked numeric storage with visible allocation/backend responsibility |
+| `NumericArray<T, rank R>` | core_type | `stable_design` | ranked numeric value with typed one-based default axes and visible allocation/backend responsibility |
 | `OwnedDowncast<Target,Source>` | core_type | `stable_design` | sum channel that preserves exactly one owner on both downcast outcomes |
-| `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded view |
-| `String` | core_type | `stable_design` | immutable Unicode scalar sequence |
+| `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded coordinate-preserving view |
+| `String` | core_type | `stable_design` | immutable Unicode scalar sequence with one-based Char indexing |
 | `Task<T>` | core_type | `stable_design` | structured asynchronous task handle |
 | `AsyncCollector` | stdlib_profile | `stable_design` | finite policy-visible async collection with no partial commit |
 | `AsyncSequence<T, E>` | protocol | `stable_design` | asynchronous element source with a bound error set and visible cancellation, isolation and cleanup responsibilities |
@@ -95,13 +105,13 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `replace<T>` | function | `stable_design` | one-evaluation exclusive place transaction returning the old owner |
 | `withBorrowed<T,R>` | function | `stable_design` | invocation-bounded borrowed callback helper |
 | `ContextParameterRole` | function_signature_descriptor | `stable_design` | function parameter role preserved in signature identity under the Stable design explicit context parameter law |
-| `Bitwise` | internal_or_stdlib_trait_seed | `stable_design` | bitwise operator admission uses checker-visible witness/admissibility |
+| `Bitwise` | internal_or_stdlib_trait_seed | `stable_design` | named bitwise contract seed; current bitwise glyphs remain intrinsic-only |
 | `ModuleSignature` | language_surface | `stable_design` | public API boundary surface; stable design; not separate compilation receipt |
-| `Float32` | numeric_type_side_constants | `stable_design` | Non-finite Float32 values are type-side constants rather than lexical numeric literals. |
-| `Float64` | numeric_type_side_constants | `stable_design` | Non-finite Float64 values are type-side constants rather than lexical numeric literals. |
+| `Float32` | numeric_type_side_constants | `stable_design` | IEEE binary32 value behavior; non-finite values are type-side constants. |
+| `Float64` | numeric_type_side_constants | `stable_design` | IEEE binary64 value behavior; NaN supplies no implicit ordering/key evidence. |
 | `Actor` | protocol | `stable_design` | isolated mailbox execution root |
 | `ActorMessageError` | enum | `stable_design` | closed actor admission/reply failure family; cancellation excluded |
-| `Sequence<T>` | protocol | `stable_design` | ordered finite or lazy sequence contract with an exact associated Item binding |
+| `Sequence<T>` | protocol | `stable_design` | named ordered-sequence contract; conformance alone does not activate brackets |
 | `Char` | scalar | `stable_design` | exactly one Unicode scalar value; surrogates excluded |
 | `Shared<T>` | shared_handle | `stable_design` | shared observation handle, not mutable alias permission |
 | `SharedCell<T>` | synchronization | `stable_design` | sequentially consistent scoped observation and owner replacement for Plain payloads; no raw-layout or lock-free inference |
@@ -114,7 +124,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `ExtensionSetId` | tooling_schema | `stable_design` | semantic identity seed for named extension set D-MAD; not current source |
 | `BitfieldCodec` | trait | `stdlib` | explicit endian codec |
 | `BitfieldRaw<Backing>` | trait | `stdlib` | checked raw carrier contract |
-| `LogicalIndexDomain<Index>` | trait | `stable_design` | one-based logical-domain to storage-offset contract |
-| `Ord<T>` | trait | `stable_design` | nominal ordering evidence for T |
+| `LogicalIndexDomain<Index>` | trait | `stable_design` | named logical-domain contract; built-in brackets remain closed-owner syntax |
+| `Ord<T>` | trait | `stable_design` | nominal named ordering evidence, never an operator-glyph hook |
 | `Display` | trait/profile | `stable_design` | string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed |
 | `Iterator` | trait_profile | `stable_design` | for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN. |

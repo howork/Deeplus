@@ -1568,7 +1568,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Preview design",
-    "notes": "Nonactivatable design until the operator-to-Trait registry, Prelude signatures, coherence law, MIR lowering and discriminating fixtures are jointly closed.",
+    "notes": "Nonactivatable design. Current fixed-glyph dispatch is intrinsic-only and rejects Trait/conformance/extension/witness activation with FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT. TCC-P1-002..008 remain OPEN; no operator-to-Trait registry or fallback is current.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1581,8 +1581,12 @@
     "normative_trace_refs": {
       "productions": [],
       "semantic_reference_productions": [],
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+      ],
+      "predicates": [
+        "NumericOperatorCoreAdmitted"
+      ],
       "examples": []
     },
     "trace_class": "design_only",

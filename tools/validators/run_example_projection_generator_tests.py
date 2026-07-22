@@ -207,7 +207,7 @@ def snapshot(root: Path) -> dict[str, str]:
 
 
 def write_text(path: Path, text: str) -> None:
-    path.write_text(text, encoding="utf-8", newline="\n")
+    path.write_bytes(text.replace("\r\n", "\n").encode("utf-8"))
 
 
 def mutate_text(root: Path, relative: str, transform: Callable[[str], str]) -> None:
@@ -399,6 +399,44 @@ def main() -> int:
             )
             tests.append("primary_diagnostic_outcome_law")
 
+            accepted_warning = case("accepted_warning")
+            mutate_text(
+                accepted_warning,
+                "examples/guide/review-corpus.md",
+                lambda text: text.replace(
+                    "- **source_root:** `ScriptSourceFile`\n",
+                    "- **source_root:** `ScriptSourceFile`\n"
+                    "- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`\n",
+                    1,
+                ),
+            )
+            warning_projection = generator.render_projection(accepted_warning)
+            warning_rows = []
+            for path, data in warning_projection["output"].items():
+                if path.startswith("examples/manifests/by-outcome/chunks/"):
+                    warning_rows.extend(load_json_bytes(data))
+            assert warning_rows[0]["expected_warnings"] == [
+                "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+            ], warning_rows[0]["expected_warnings"]
+            duplicate_warning = case("duplicate_warning")
+            mutate_text(
+                duplicate_warning,
+                "examples/guide/review-corpus.md",
+                lambda text: text.replace(
+                    "- **source_root:** `ScriptSourceFile`\n",
+                    "- **source_root:** `ScriptSourceFile`\n"
+                    "- **expected_warnings:** `DUPLICATE`, `DUPLICATE`\n",
+                    1,
+                ),
+            )
+            expect_code(
+                generator,
+                "GENERATOR_PARSE_ERROR",
+                lambda: generator.render_projection(duplicate_warning),
+                exercised,
+            )
+            tests.append("accepted_warning_metadata_projected")
+
             authority_gap = case("authority_gap")
             mutate_text(
                 authority_gap,
@@ -451,7 +489,7 @@ def main() -> int:
             stale_render = generator.render_projection(stale)
             generator.write_projection(stale, stale_render)
             stale_path = stale / "tests/conformance/surface/gated/chunks/part-9999.json"
-            stale_path.write_text("[]\n", encoding="utf-8", newline="\n")
+            write_text(stale_path, "[]\n")
             stale_render = generator.render_projection(stale)
             expect_code(
                 generator,

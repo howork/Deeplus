@@ -18,12 +18,15 @@ import os
 import re
 import sys
 import tempfile
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 and earlier
+    import tomli as tomllib
 from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-language-coherence-r1"
+REVISION = "r51f3-current-value-operator-index-coherence-r1"
 PREVIOUS_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"

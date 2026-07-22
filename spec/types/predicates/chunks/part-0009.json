@@ -1404,7 +1404,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericFillSliceIndexAdmitted",
     "source_name": "NumericFillSliceIndexAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "NumericArray fill/index/slice has exact rank and typed one-based axes; slices preserve owner and coordinates",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1412,6 +1412,7 @@
       "ownership",
       "borrow_region",
       "cleanup",
+      "call_shape",
       "source_role",
       "numeric_literal_kind",
       "shape",
@@ -1426,17 +1427,18 @@
       "shaped_fill_initializer_msp"
     ],
     "diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "SLICE_AXIS_COUNT_MISMATCH",
+      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
     ],
-    "design_seed_diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "current source rule required",
-      "readonly views cannot outlive owner"
+      "the operation kind is fill, scalar_index, or slice",
+      "the normalized receiver is NumericArray with exact rank, shape, orientation, and typed axis identities",
+      "readonly views retain owner provenance and cannot outlive or cross isolation"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -1445,6 +1447,7 @@
       "ownership",
       "borrow_region",
       "cleanup",
+      "call_shape",
       "source_role",
       "numeric_literal_kind",
       "shape",
@@ -1456,20 +1459,26 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "current source rule required",
-      "readonly views cannot outlive owner"
+      "the descriptor selects one closed NumericArray operation kind",
+      "rank, shape, selected axes, and owner provenance are explicit",
+      "default source-visible axis coordinates are typed Int domains 1..dimension"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize the NumericArray identity, rank, shape, orientation, ordered typed axes and owner provenance; never import an ordinary Sequence index witness",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericFillSliceIndexAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject a non-NumericArray receiver with SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY",
+      "for scalar_index require exactly rank ordered scalar axes and evaluate each against its typed 1..dimension domain",
+      "for slice require exactly rank ordered scalar, range, or * axes; reject a mismatch with SLICE_AXIS_COUNT_MISMATCH",
+      "evaluate every scalar with LogicalIndexDomainAdmitted and every range with SliceRangeAdmitted left-to-right",
+      "evaluate SliceViewLifetimeAdmitted for the readonly result and admit only when owner provenance and all axes admit",
+      "for fill require exact shape cardinality and element-domain agreement under its existing fill laws; create no product receipt"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "SLICE_AXIS_COUNT_MISMATCH",
+    "secondary_diagnostics": [
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
+    ],
     "positive_fixture_ids": [
       "PF-NumericFillSliceIndexAdmitted-POS"
     ],
@@ -1477,11 +1486,15 @@
       "PF-NumericFillSliceIndexAdmitted-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "LogicalIndexDomainAdmitted",
+      "SliceRangeAdmitted",
+      "SliceViewLifetimeAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "451762aa0190643330acdda2c5c827f0f799b03034e7706caa7dbe4e4e3bfa65",

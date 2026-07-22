@@ -4,7 +4,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericLiteralAdmitted",
     "source_name": "NumericLiteralAdmitted",
-    "summary": "radix, digit, underscore, suffix, exponent, and target-range rules all admit the token",
+    "summary": "exact value or magnitude admission for a lexer-validated signless numeric token",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -21,24 +21,15 @@
       "numeric_literal_lexical_contract"
     ],
     "diagnostic_refs": [
-      "INVALID_DIGIT_FOR_NUMERIC_RADIX",
-      "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
-      "MALFORMED_NUMERIC_EXPONENT",
-      "NUMERIC_SUFFIX_KIND_MISMATCH",
-      "NUMERIC_RADIX_FLOAT_NOT_CURRENT"
+      "NUMERIC_LITERAL_OUT_OF_RANGE"
     ],
-    "design_seed_diagnostic_refs": [
-      "INVALID_DIGIT_FOR_NUMERIC_RADIX",
-      "MALFORMED_NUMERIC_EXPONENT",
-      "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
-      "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
-      "NUMERIC_SUFFIX_KIND_MISMATCH"
-    ],
-    "output": "admit | reject(diagnostic_id) | admit_with_lint(diagnostic_id)",
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "radix, digit, underscore, suffix, exponent, and target-range rules all admit the token"
+      "one successfully lexer-validated maximal digit-led token; sign is a separate PrefixExpr",
+      "exact optional target or magnitude-only request"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -53,24 +44,22 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "radix, digit, underscore, suffix, exponent, and target-range rules all admit the token"
+      "the source frontend emitted one valid numeric token and no lexical error",
+      "token parts and optional target are preserved",
+      "AST prefix sign is separate and unconsumed"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "classify the signless token once; preserve suffix; defaults are Int/Float64",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericLiteralAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "consume the already lexer-validated signless token and parse integer magnitude before target-range checking",
+      "magnitude-only mode returns an unsuffixed-integer magnitude fact to an enclosing direct-prefix adapter and never consumes -",
+      "normal mode selects exact suffix or representable Int/IntN/UIntN target for N={8,16,32,64,128}, never ISize/USize; default Int",
+      "unsuffixed float is Float64; Float32 needs f32",
+      "emit NUMERIC_LITERAL_OUT_OF_RANGE only for checker-owned representability failure; lexical failures never invoke this predicate"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id) | admit_with_lint(diagnostic_id)",
-    "active_primary_diagnostic": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
-    "secondary_diagnostics": [
-      "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
-      "MALFORMED_NUMERIC_EXPONENT",
-      "NUMERIC_SUFFIX_KIND_MISMATCH",
-      "NUMERIC_RADIX_FLOAT_NOT_CURRENT"
-    ],
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "NUMERIC_LITERAL_OUT_OF_RANGE",
+    "secondary_diagnostics": [],
     "positive_fixture_ids": [
       "PF-NumericLiteralAdmitted-POS"
     ],
@@ -80,9 +69,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_incomplete_dispatch",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "620619a6da25830068d9775cdcbadc668d66c7846bc4d463215f02768a6e326c",
@@ -94,34 +83,41 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericOperatorCoreAdmitted",
     "source_name": "NumericOperatorCoreAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "intrinsic owner dispatch over exact literal results; failure precedes commit",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "call_shape",
       "source_role",
       "numeric_literal_kind",
       "element_types"
     ],
     "feature_refs": [
+      "closed_operator_symbols_open_named_extensions",
+      "fixed_operator_conformance_overloading",
       "numeric_operator_core"
     ],
     "diagnostic_refs": [
+      "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
       "NUMERIC_OPERATOR_CORE_REQUIRED"
     ],
-    "design_seed_diagnostic_refs": [
-      "NUMERIC_OPERATOR_CORE_REQUIRED"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "closed numeric glyph",
+      "exact operand domains",
+      "explicit place/dispatch"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "call_shape",
       "source_role",
       "numeric_literal_kind",
       "element_types"
@@ -130,19 +126,27 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "closed intrinsic family",
+      "no provider/witness lookup",
+      "one place/RHS/commit slot"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "consume NumericLiteralAdmitted results; preserve domain, owner, and place",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericOperatorCoreAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject nonintrinsic glyph dispatch with FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "delegate literals to NumericLiteralAdmitted first and propagate its diagnostic",
+      "scalar +,-,*,/ require one exact Int/Float domain; integer results are checked and / truncates toward zero",
+      "% integer-only: a=q*b+r, q toward zero, r zero/dividend-signed, |r|<|b|; float % is named",
+      "zero divisor or signed MIN/-1 /,% raises ArithmeticDefect precommit",
+      "^ requires one exact integer domain plus static nonnegative proof; negative/unknown proof emits NUMERIC_OPERATOR_CORE_REQUIRED; same-domain result is checked; Measure ^ StaticInt delegates measure_static_power_law; float pow named; NumericArray infix Preview",
+      "**/*+ delegate shape laws; bitwise needs exact known-width integer or finite bitfield/#flags domain",
+      "compound place/RHS run once; one success commit returns Unit"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "NUMERIC_OPERATOR_CORE_REQUIRED",
-    "secondary_diagnostics": [],
+    "secondary_diagnostics": [
+      "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+    ],
     "positive_fixture_ids": [
       "PF-NumericOperatorCoreAdmitted-POS"
     ],
@@ -150,11 +154,13 @@
       "PF-NumericOperatorCoreAdmitted-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "NumericLiteralAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "5637c0bee79d20c488cbfebdfa841efec2e6e3b0e577da84872ed53ee211808d",
@@ -234,53 +240,65 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "OperatorPrecedenceTablePhaseAAdmitted",
     "source_name": "OperatorPrecedenceTablePhaseAAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "closed Pratt token, binding powers, associativity, parselet, and owner",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
+      "call_shape",
       "source_role",
       "element_types"
     ],
     "feature_refs": [
-      "operator_precedence_table_phase_a"
+      "closed_operator_symbols_open_named_extensions",
+      "custom_operator",
+      "operator_precedence_table_phase_a",
+      "range_step_expression_surface_clarification"
     ],
     "diagnostic_refs": [
-      "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
+      "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+      "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
     ],
-    "design_seed_diagnostic_refs": [
-      "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "maximal token sequence",
+      "explicit Pratt owner",
+      "closed registry"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
       "source_kind",
       "normalized_type",
+      "call_shape",
       "source_role",
       "element_types"
     ],
     "formal_judgment_id": "J-OperatorPrecedenceTablePhaseAAdmitted",
-    "algorithm_owner": "integrated_checker",
+    "algorithm_owner": "parser_then_integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "token/entry explicit",
+      "no synthesized operator",
+      "structural owner preserved"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "longest token, exact Pratt entry, structural owner before lookup",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record OperatorPrecedenceTablePhaseAAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject custom/table extension with CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "require exact token/binding/associativity/parselet or OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+      "range admits .. and ..<; infix .../..> emits RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "slice-index stops before range/;/]; preserve structural ...; admit without lookup"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+    "secondary_diagnostics": [
+      "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+      "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+    ],
     "positive_fixture_ids": [
       "PF-OperatorPrecedenceTablePhaseAAdmitted-POS"
     ],
@@ -290,9 +308,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "b30b9978bd727e2fbdee6f1d3eca7d52d5a55e04223c0a5b2ea5a257c2169444",

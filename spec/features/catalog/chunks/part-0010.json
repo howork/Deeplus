@@ -623,7 +623,8 @@
       "examples": [
         "EX-R48B-057",
         "EX-R48E1-011",
-        "EX-R48E1-012"
+        "EX-R48E1-012",
+        "EX-R51VOI-005"
       ],
       "productions": [
         "BytesLiteral",
@@ -947,8 +948,7 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "AMPERSAND_POLARITY_UNRESOLVED",
-        "SLICE_ANCHOR_OUTSIDE_SLICE"
+        "AMPERSAND_POLARITY_UNRESOLVED"
       ],
       "predicates": [
         "NumericArrayContextAnchorAdmitted"
@@ -1213,7 +1213,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for NumericArray multi-axis slicing readonly-view MSP. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "NumericArray owns a distinct typed-axis domain; every built-in default source-visible coordinate is 1..dimension. A multi-axis slice yields a provenance-retaining readonly view, never an implicit copy, rebase, mutable assignment, lifetime escape, or isolation transfer.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1225,12 +1225,14 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
+        "INDEX_OUT_OF_LOGICAL_DOMAIN",
+        "ZERO_BASED_INDEX_NOT_CURRENT",
         "SLICE_AXIS_COUNT_MISMATCH",
         "SLICE_RESULT_NONCONTIGUOUS_REQUIRES_EXPLICIT_COPY_FOR_BYTE_VIEW",
-        "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
-        "SLICE_VIEW_ESCAPES_OWNER"
+        "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN"
       ],
       "predicates": [
+        "LogicalIndexDomainAdmitted",
         "NumericFillSliceIndexAdmitted",
         "SliceViewLifetimeAdmitted"
       ],
@@ -1553,7 +1555,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable group",
-    "notes": "Numeric literals use the closed radix, digit, underscore, exponent, suffix, numeric-scanner, and whole-token diagnostic contract.",
+    "notes": "Numeric tokens exclude sign. NumericLiteralAdmitted returns an exact value or unsuffixed-integer magnitude fact. With an exact integer target, the checker may adapt only direct PrefixExpr(-, literal) by testing -magnitude; no other fold or hidden conversion. IntN/UIntN use N={8,16,32,64,128}; ISize/USize need suffix/conversion; Float defaults Float64 and Float32 needs f32. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1570,6 +1572,7 @@
         "MALFORMED_NUMERIC_EXPONENT",
         "MALFORMED_NUMERIC_RADIX_PREFIX",
         "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
+        "NUMERIC_LITERAL_OUT_OF_RANGE",
         "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
         "NUMERIC_SUFFIX_KIND_MISMATCH",
         "UNIT_EXPONENT_REQUIRES_STATIC_INT",
@@ -1666,7 +1669,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Numeric operator core law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "NumericLiteralAdmitted owns normalization. Scalar +,-,*,/ require one exact Int/Float domain; % is integer-only and /,% truncate quotient toward zero. Integer ^ needs one exact domain plus static nonnegative proof. Measure/shape/bitwise use owner laws. ArithmeticDefect precedes commit; no hidden conversion, Trait dispatch, or runtime fallback.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1677,7 +1680,11 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+        "NUMERIC_OPERATOR_CORE_REQUIRED",
+        "POSTFIX_MUTATION_OPERATOR_NOT_CURRENT"
+      ],
       "predicates": [
         "NumericOperatorCoreAdmitted"
       ],

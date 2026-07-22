@@ -1,5 +1,125 @@
 [
   {
+    "violation_id": "PrimaryCtorPromotedFieldReachable:default",
+    "predicate_id": "PrimaryCtorPromotedFieldReachable",
+    "diagnostic_id": "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly:default",
+    "predicate_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
+    "diagnostic_id": "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "ProjectionRowAdmitted:default",
+    "predicate_id": "ProjectionRowAdmitted",
+    "diagnostic_id": "SCHEMA_PROJECTION_ROW_REQUIRED",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ProjectionRowAdmitted",
+    "diagnostic_id": "NAMED_UNFOLD_REQUIRES_STATIC_PROJECTION_ROW",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ProjectionRowAdmitted",
+    "diagnostic_id": "MAP_IS_NOT_NAMED_UNFOLD_SOURCE",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ProviderSupportsConversion:default",
+    "predicate_id": "ProviderSupportsConversion",
+    "diagnostic_id": "DYNAMIC_CONVERSION_REQUIRES_PROVIDER",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "PureCallableAdmitted:default",
+    "predicate_id": "PureCallableAdmitted",
+    "diagnostic_id": "PURE_CALLABLE_PROFILE_VIOLATION",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "PureCallableAdmitted",
+    "diagnostic_id": "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "QualifiedExtensionSelectorAdmitted:default",
+    "predicate_id": "QualifiedExtensionSelectorAdmitted",
+    "diagnostic_id": "MEMBER_EXTENSION_COLLISION",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "QualifiedExtensionSelectorAdmitted",
+    "diagnostic_id": "QUALIFIED_EXTENSION_SELECTOR_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "QualifiedExtensionSelectorAdmitted_R48_60:default",
+    "predicate_id": "QualifiedExtensionSelectorAdmitted_R48_60",
+    "diagnostic_id": "QUALIFIED_EXTENSION_SELECTOR_UNKNOWN",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "QuarantineScopeDesignAdmitted:default",
+    "predicate_id": "QuarantineScopeDesignAdmitted",
+    "diagnostic_id": "QUARANTINE_SCOPE_NOT_ACTIVATABLE",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "QuarantineScopeDesignAdmitted",
+    "diagnostic_id": "QUARANTINE_EXPORT_REQUIRES_TYPED_IMMUTABLE_BINDING",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "QuarantineScopeDesignAdmitted",
+    "diagnostic_id": "QUARANTINE_RESOURCE_ESCAPE_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "QuarantineScopeDesignAdmitted",
+    "diagnostic_id": "QUARANTINE_SUSPENSION_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "QuarantineScopeDesignAdmitted",
+    "diagnostic_id": "QUARANTINE_OUTER_MUTATION_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "R0GuardSafe:default",
+    "predicate_id": "R0GuardSafe",
+    "diagnostic_id": "R0_GUARD_NOT_GUARD_SAFE",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "ReadonlyViewAdmitted:default",
+    "predicate_id": "ReadonlyViewAdmitted",
+    "diagnostic_id": "READONLY_VIEW_ESCAPE_FORBIDDEN",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "ReceiverOwnerResultAdmitted:default",
+    "predicate_id": "ReceiverOwnerResultAdmitted",
+    "diagnostic_id": "RECEIVER_OWNER_RESULT_MUST_BE_EXPLICIT",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ReceiverOwnerResultAdmitted",
+    "diagnostic_id": "RECEIVER_OWNER_RESULT_NOT_EXACTLY_ONCE",
+    "relation": "secondary"
+  },
+  {
     "violation_id": "RecordNamedArgumentSpreadAdmitted:default",
     "predicate_id": "RecordNamedArgumentSpreadAdmitted",
     "diagnostic_id": "MAP_NAMED_ARGUMENT_SPREAD_NOT_ALLOWED",
@@ -224,14 +344,50 @@
   {
     "violation_id": "SliceRangeAdmitted:default",
     "predicate_id": "SliceRangeAdmitted",
-    "diagnostic_id": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+    "diagnostic_id": "SLICE_BOUND_ORDER_INVALID",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceRangeAdmitted",
+    "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceRangeAdmitted",
+    "diagnostic_id": "SLICE_BOUND_OUT_OF_RANGE_STATIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceRangeAdmitted",
+    "diagnostic_id": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceRangeAdmitted",
+    "diagnostic_id": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+    "relation": "secondary"
   },
   {
     "violation_id": "SliceViewLifetimeAdmitted:default",
     "predicate_id": "SliceViewLifetimeAdmitted",
-    "diagnostic_id": "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
+    "diagnostic_id": "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceViewLifetimeAdmitted",
+    "diagnostic_id": "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SliceViewLifetimeAdmitted",
+    "diagnostic_id": "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
+    "relation": "secondary"
   },
   {
     "violation_id": null,

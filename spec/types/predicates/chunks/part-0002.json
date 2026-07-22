@@ -4,7 +4,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "BitwiseDomainAdmitted",
     "source_name": "BitwiseDomainAdmitted",
-    "summary": "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; ordered branch 5: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; ordered branch 6: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL; an admitted result stays in the exact normalized operand bitwise domain and is never Bool",
+    "summary": "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; ordered branch 4: unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; ordered branch 5: same-width operands with different signedness or distinct finite-domain identity emit BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION; ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL; admission requires one exact normalized operand domain and never yields Bool",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -21,6 +21,7 @@
       "BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
       "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
       "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
+      "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
       "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
       "BITWISE_RESULT_USED_AS_BOOL"
     ],
@@ -35,8 +36,9 @@
       "ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
       "ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
       "ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "ordered branch 5: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "ordered branch 6: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
+      "ordered branch 5: same-width signedness mismatch or distinct finite-domain identity emits BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+      "ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
+      "ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
       "an admitted result stays in the exact normalized operand bitwise domain and is never Bool"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -56,11 +58,12 @@
       "ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
       "ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
       "ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "ordered branch 5: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "ordered branch 6: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
+      "ordered branch 5: same-width signedness mismatch or distinct finite-domain identity emits BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+      "ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
+      "ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
       "an admitted result stays in the exact normalized operand bitwise domain and is never Bool"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize exact integer signedness/width or finite bitfield/#flags nominal identity before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
@@ -75,12 +78,12 @@
       "LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL",
       "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
       "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
+      "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
       "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
       "BITWISE_RESULT_USED_AS_BOOL"
     ],
     "positive_fixture_ids": [
-      "PF-BitwiseDomainAdmitted-POS",
-      "PF-BitwiseDomainAdmitted-BOUNDARY"
+      "PF-BitwiseDomainAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-BitwiseDomainAdmitted-NEG",
@@ -88,6 +91,7 @@
       "PF-BitwiseDomainAdmitted-NEG-BOOL-OR",
       "PF-BitwiseDomainAdmitted-NEG-NONBITWISE",
       "PF-BitwiseDomainAdmitted-NEG-MIXED-WIDTH",
+      "PF-BitwiseDomainAdmitted-NEG-MIXED-DOMAIN",
       "PF-BitwiseDomainAdmitted-NEG-COMPLEMENT-WIDTH",
       "PF-BitwiseDomainAdmitted-NEG-RESULT-AS-BOOL"
     ],
@@ -103,8 +107,9 @@
       "2_bool_operand_with_other_bitwise_token": "BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
       "3_nonbitwise_operand_domain": "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
       "4_binary_operand_width_mismatch": "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "5_complement_unknown_width": "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "6_valid_bitwise_result_consumed_as_bool": "BITWISE_RESULT_USED_AS_BOOL"
+      "5_binary_exact_domain_mismatch": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+      "6_complement_unknown_width": "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
+      "7_valid_bitwise_result_consumed_as_bool": "BITWISE_RESULT_USED_AS_BOOL"
     },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",

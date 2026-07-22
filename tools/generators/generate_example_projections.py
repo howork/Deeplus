@@ -13,7 +13,10 @@ import hashlib
 import json
 import re
 import sys
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 and earlier
+    import tomli as tomllib
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -40,9 +43,10 @@ ALLOWED_METADATA = {
     "source_role",
     "source_root",
     "primary_diagnostic",
+    "expected_warnings",
     "parser_status / checker_status",
 }
-REQUIRED_METADATA = ALLOWED_METADATA - {"primary_diagnostic"}
+REQUIRED_METADATA = ALLOWED_METADATA - {"primary_diagnostic", "expected_warnings"}
 VALID_OUTCOMES = {"accept", "accept_with_gate", "reject"}
 
 
@@ -262,6 +266,17 @@ def parse_cards(corpus: bytes, source_file: str) -> list[dict[str, Any]]:
             if primary is not None
             else None
         )
+        warnings = metadata.get("expected_warnings")
+        expected_warnings = (
+            list_value(warnings, example_id, "expected_warnings")
+            if warnings is not None
+            else []
+        )
+        if len(expected_warnings) != len(set(expected_warnings)):
+            raise GeneratorError(
+                "GENERATOR_PARSE_ERROR",
+                f"{example_id}: duplicate expected_warnings",
+            )
         if (expected_outcome == "reject") != bool(primary_diagnostic):
             raise GeneratorError(
                 "GENERATOR_PARSE_ERROR",
@@ -305,6 +320,7 @@ def parse_cards(corpus: bytes, source_file: str) -> list[dict[str, Any]]:
                     metadata["source_root"], example_id, "source_root"
                 ),
                 "primary_diagnostic": primary_diagnostic,
+                "expected_warnings": expected_warnings,
                 "parser_status": parser_status,
                 "checker_status": checker_status,
                 "code_sha256": sha256_bytes(code),
@@ -361,7 +377,7 @@ def manifest_row(card: dict[str, Any], contract: dict[str, Any]) -> dict[str, An
         "source_activation": card["source_activation"],
         "certification_status": card["certification_status"],
         "primary_diagnostic": card["primary_diagnostic"],
-        "expected_warnings": list(defaults["expected_warnings"]),
+        "expected_warnings": list(card["expected_warnings"]),
         "source_role": card["source_role"],
         "source_root": card["source_root"],
         "parser_status": card["parser_status"],

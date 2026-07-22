@@ -1,0 +1,147 @@
+[
+  {
+    "diagnostic_id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Deeplus has no null value; use ::none in an expected Option context or Option<T>::none explicitly.",
+    "feature_refs": [
+      "option_none_case_only",
+      "option_result_double_colon_case_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "fixit_kind": "replace",
+    "fixit_hint": "replace null with ::none when the expected type is Option<T>",
+    "fixit_policy": "apply only when the expected Option type is exact; never infer a nullable type or hidden conversion",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current reserved-recovery diagnostic contract; parser/checker execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Custom operator declarations are not current Deeplus; use a named Trait method or function.",
+    "feature_refs": [
+      "custom_operator",
+      "closed_operator_symbols_open_named_extensions",
+      "operator_precedence_table_phase_a"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "name the operation as a Trait requirement, method, message, or function",
+    "fixit_policy": "do not invent a glyph mapping or activate Preview-design operator dispatch",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current closed-vocabulary rejection; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "A Trait conformance, extension, or witness cannot activate a fixed operator glyph in the current profile.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading",
+      "closed_operator_symbols_open_named_extensions",
+      "numeric_operator_core"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "call the named Trait method or API explicitly",
+    "fixit_policy": "do not synthesize operator evidence, provider lookup, specialization, or fallback",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "TCC-P1-002..008 remain OPEN; fixed-operator conformance overloading remains nonactivatable."
+  },
+  {
+    "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "This range spelling is not current Deeplus; use .. or ..< in an admitted range owner.",
+    "feature_refs": [
+      "operator_precedence_table_phase_a",
+      "range_step_expression_surface_clarification",
+      "inclusive_slice_range_canonical_msp"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use an inclusive .. or explicit-exclusive ..< range and a named step/reverse API when required",
+    "fixit_policy": "never reinterpret ... outside its structural owner or infer descending semantics for ..>",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Reserved-recovery ownership for infix ... and ..>; parser execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "INDEX_SUFFIX_REQUIRES_AXIS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "An index suffix requires a scalar index, a bounded slice range whose bounds may use ^ or $, or an admitted NumericArray * axis.",
+    "feature_refs": [
+      "basic_index_operator",
+      "index_operator"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use the receiver's declared first coordinate or key; use [*] only for an admitted NumericArray full axis",
+    "fixit_policy": "do not infer a default index, hidden copy, or implicit full-axis selection",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current nonempty IndexSuffix contract; parser execution remains NOT_RUN."
+  }
+]

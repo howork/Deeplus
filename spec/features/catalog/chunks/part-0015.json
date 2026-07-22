@@ -1075,7 +1075,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current law: Ordinary `i..<j` slice is accepted with warning unless used for last-anchor/exclusive-end clarity.",
+    "notes": "Explicit-exclusive i..<j is accepted and emits SLICE_HALF_OPEN_RANGE_NONCANONICAL; canonical source uses inclusive i..j. This warning never rejects or silently rewrites the slice.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1090,7 +1090,9 @@
       "diagnostics": [
         "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
       ],
-      "predicates": [],
+      "predicates": [
+        "SliceRangeAdmitted"
+      ],
       "examples": [
         "EX-R48F-013",
         "EX-R48G-007"
@@ -1122,7 +1124,7 @@
     "depends_on": [
       "one_based_sequence_logical_indexing"
     ],
-    "notes": "A slice view or copy retains the selected source logical coordinates. Rebase is an explicit operation.",
+    "notes": "Every slice and resulting ReadonlyView retain selected source logical coordinates and owner provenance: ordinary one-based sources remain one-based, while bounded/sliced owners retain L..U or selected coordinates. Implicit rebase, mutable assignment, lifetime escape, isolation crossing, and hidden copy are forbidden; rebase/copy requires an explicit named operation.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -1139,10 +1141,14 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
-        "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN"
+        "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
+        "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
+        "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
+        "SLICE_VIEW_ESCAPES_OWNER"
       ],
       "predicates": [
-        "SliceLogicalDomainPreserved"
+        "SliceLogicalDomainPreserved",
+        "SliceViewLifetimeAdmitted"
       ],
       "examples": [
         "EX-R51a1-SLICE-001",
@@ -1183,7 +1189,7 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "SLICE_LAST_INDEX_DOLLAR_OUTSIDE_SLICE"
+        "SLICE_ANCHOR_OUTSIDE_SLICE"
       ],
       "predicates": [
         "SliceViewLifetimeAdmitted"
@@ -1459,11 +1465,9 @@
         "SEQUENCE_REQUIRES_REPLAY_ITEM",
         "SETTER_VISIBILITY_CANNOT_EXCEED_GETTER",
         "SET_HASH_BRACE_LITERAL_REMOVED_USE_HASH_SET",
-        "SLICE_BOUND_ORDER_INVALID",
         "SLICE_FIRST_ANCHOR_OFFSET_REQUIRES_INTEGER",
         "SLICE_LAST_ANCHOR_OFFSET_REQUIRES_INTEGER",
         "SLICE_MUTABLE_ALIAS_CONFLICT",
-        "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
         "STRING_MIXIN_NOT_SUPPORTED",
         "TYPE_KIND_HASH_SURFACE_REMOVED",
         "TYPE_RELATION_SYMBOLIC_ALIAS_FORBIDDEN",

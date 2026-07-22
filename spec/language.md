@@ -58,11 +58,17 @@ The parser may admit horizontal whitespace and comments between `#` and a role w
 
 ## 4. Numeric, character, string, and bytes literals
 
-The lexical authority includes decimal and supported radix integers, digit separators, suffixes, decimal exponents, floating forms, and the finite policy for special floating values. An underscore may separate digits only in admitted positions; it may not lead, trail, or touch a radix prefix, decimal point, exponent marker, or suffix unless the Grammar explicitly admits it. A sign is an operator, not part of the numeric token.
+Every source value has a semantic type and value identity independent from storage address, serialization tag, runtime discriminant, backend layout, and ABI. This specification fixes source-observable values; it does not infer a representation contract from a literal spelling or a built-in type name.
+
+The lexical authority includes decimal and supported radix integers, digit separators, suffixes, decimal exponents, floating forms, and the finite policy for special floating values. An underscore may separate digits only in admitted positions; it may not lead, trail, or touch a radix prefix, decimal point, exponent marker, or suffix unless the Grammar explicitly admits it. A sign is an AST prefix operator, never part of the numeric token. An unsuffixed integer has portable type `Int`, whose current mathematical domain is the signed 64-bit interval. Context may adapt a signless unsuffixed integer to one exact admitted `IntN` or `UIntN` domain only when its value is representable. In addition, with one independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker recognizes only a direct `PrefixExpr(-, UnsuffixedIntegerLiteral)`, obtains the already validated token magnitude, computes the signed mathematical candidate `-magnitude`, and admits it only when representable. This contextual prefix-sign adapter performs no arbitrary constant folding, expression rewriting, or hidden widening/narrowing: `let xs: List<Int8> = [-128]` is admitted, while `let low: List<Int8> = [-129]` and `let unsigned: List<UInt8> = [-1]` are rejected with `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE`. `ISize` and `USize` require their suffix or an explicit checked conversion. An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. All of those types remain distinct. Integer arithmetic is checked: statically provable overflow is rejected, while dynamic overflow or integer division or remainder by zero raises a deterministic `ArithmeticDefect` before any enclosing place commit. Wrapping and saturating arithmetic require named APIs.
+
+`Float32` and `Float64` have IEEE-754 binary32 and binary64 value behavior. Ordinary arithmetic rounds to nearest with ties to even. Non-finite values are type-side constants rather than numeric literal spellings. NaN is unordered and supplies neither implicit `Ord` nor `Keyable` evidence; signed zero compares equal. These value laws do not prescribe a backend storage or calling convention.
 
 Character literals use single quotes and contain exactly one Unicode scalar value after escape processing. `''` is invalid. `Char` is not a byte and not a UTF-16 code unit. Plain strings use double quotes. A multiline Unicode String uses triple quotes: the opener is followed by a newline, the closer is on its own line, and the longest exact common indentation prefix of nonblank content lines is removed. Tabs and spaces are distinct prefix bytes; escapes and interpolation behave as in an ordinary String. One-line triple quotes and raw multiline strings are not current. Raw String Phase A has exactly one delimiter family, `raw"..."`; its body has no escape interpretation and no interpolation, produces `String`, preserves exact body text in the CST, lowers to `StringLiteral(raw=true)` and then `MIR::ConstString`, and invokes no provider or authority. Bytes literals produce byte sequences rather than text. Deeplus has no regex literal token or scanner mode; pattern engines are explicit library APIs receiving String or Bytes values.
 
 String escape processing is Unicode-based. Invalid scalar values, unknown Unicode names, unterminated escapes, and invalid delimiter nesting are lexical diagnostics.
+
+`null` is not a current Deeplus value and has no type, constant, AST/HIR value node, or MIR constant. The spelling remains reserved only for deterministic recovery with `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`. Recoverable absence is written as `::none` in an expected `Option` context or as `Option<T>::none` explicitly; it is never inferred from a null sentinel.
 
 ## 5. Punctuation responsibility table
 
@@ -70,7 +76,7 @@ The same glyph may have several roles only when the Grammar owner determines the
 
 | Glyph | Current owners |
 |---|---|
-| `...` | repeated positional parameter/type residue only |
+| `...` | repeated positional parameter/type residue, or `for ... Pattern in Expr` comprehension unfold |
 | `*` | call-side positional unfold where admitted; for example `f(*args)` |
 | `***` | attached named-rest parameter suffix and function-type named-rest residue suffix only |
 | `**` | attached named unfold prefix and linear-product operator |
@@ -210,9 +216,17 @@ Resolution considers nominal members, active extension sets, and conformance evi
 
 ## 16. Operator policy
 
-The operator symbol vocabulary is closed. Operator semantics are assigned to fixed language/Prelude protocol names. Arbitrary custom operator declarations remain Preview-design. Fixed operator conformance overloading also remains nonactivatable until coherence, dispatch, diagnostic, and lowering obligations close.
+The operator token vocabulary and precedence table are closed. Every current glyph is selected by the Grammar and Frontend Model and dispatches as `INTRINSIC_ONLY`. A conformance, extension, witness, provider, import, source order, or runtime lookup cannot create a glyph candidate or change its meaning. User-defined behavior is expressed through named Trait methods and named APIs. Arbitrary custom operator declarations and fixed-operator Trait/conformance overloading remain `PREVIEW_DESIGN` and nonactivatable; this current closure neither activates them nor closes any of `TCC-P1-002..008`.
+
+Scalar `+`, `-`, `*`, `/`, and integer `%` require one exact normalized operand domain after the bounded contextual adaptation of an unsuffixed integer. Hidden widening, narrowing, mixed signedness, mixed width, and witness-based mixed-domain dispatch are forbidden. Integer division truncates toward zero. Integer remainder exists only for integer domains and satisfies `a == trunc(a / b) * b + (a % b)`; the remainder is zero or has the dividend sign and its magnitude is less than the divisor magnitude. A zero divisor and the signed `MIN / -1` or `MIN % -1` cases raise `ArithmeticDefect` before commit. Floating `%` and floating glyph power are not current; a library may expose explicit named APIs.
+
+Spaced infix `^` admits one exact integer domain on both operands only when the checker proves the exponent nonnegative, returns that domain, and checks overflow. A negative or not-statically-proven-nonnegative exponent is rejected with `NUMERIC_OPERATOR_CORE_REQUIRED`; it does not create a dynamic failure route. `Measure<Rep, Dim> ^ StaticInt` delegates to the separate exact measure-power law. NumericArray infix power remains Preview, while `**` and `*+` delegate to their closed shape-specific intrinsic laws. Float arithmetic and comparison otherwise use the IEEE value law from §4; a NaN comparison is unordered, and `+0.0 == -0.0` is true. Equality, ordering, bitwise, membership, identity, cast, Boolean, Option-coalescing, and range tokens are admitted only by their current built-in laws and checker predicates; a similarly named Trait does not activate punctuation.
+
+Strict Boolean `and` and `or` evaluate both operands left-to-right. Sequential `and then` and `otherwise` evaluate the right operand only when required. `not` is the sole Boolean negation spelling; a standalone `!` is not a Boolean prefix operator. `?:` preserves its separate lazy one-layer Option law.
 
 Linear product is left-folded over the exact operator family `**` and `*+`; the current abstract shape is `PowerExpr` followed by zero or more operator/right-power pairs. Numeric exponentiation uses spaced infix `^` and is right-associative where its numeric law applies. Attached `A^` is NumericArray transpose. Mixed attachment is rejected rather than guessed.
+
+`..` and `..<` are the only current range/slice delimiters. `...` has exactly the closed structural owners repeated positional parameter/type residue and `for ... Pattern in Expr` comprehension unfold; it is never a range delimiter or inferred upper bound. `..>` is reserved recovery and is rejected with `RANGE_OPERATOR_SPELLING_NOT_CURRENT`. A bounded List literal uses exactly `[L..U: elements]`, preserves its declared inclusive logical domain, and requires the element count to equal `U - L + 1`.
 
 # Part IV — Expressions and control flow
 
@@ -221,6 +235,8 @@ Linear product is left-folded over the exact operator family `**` and `*+`; the 
 The Grammar declares expression/type/unit entry points and parselet ownership; the Frontend Model declares binding power and attachment. Parenthesized expression, unit, singleton tuple, tuple, and trailing-comma tuple share one prefix owner. Implementations must preserve delimiters and trivia in the lossless CST.
 
 Expression evaluation order is deterministic and left-to-right except where a specific operator law states otherwise. Optimizations may not alter observable failure, cleanup, suspension, message, or provider order.
+
+Assignment evaluates the target place once and then the right-hand expression once. Compound assignment evaluates that same place once, reads its original value once, evaluates the right operand once, completes the intrinsic operation, and performs at most one final write. Target, read, and right operand observations occur left-to-right. Any failure, including `ArithmeticDefect` or `IndexError`, before the final write preserves the original owner and value. `=`, `+=`, `-=`, `*=`, `/=`, and `%=` all produce `Unit`; no pre/post mutation value is synthesized.
 
 ## 18. Conditional, match, and value-control expressions
 
@@ -268,11 +284,13 @@ Typed labeled materialization and schema unfolding must preserve the target cons
 
 ## 24. Collections, comprehensions, and indexing
 
-List, set, map, tuple, Record, and NumericArray owners remain distinct. Comprehension iteration and filters preserve evaluation and failure order. Async comprehension remains Preview-design. Collection operators prefer named protocol/message ownership over hidden punctuation expansion.
+List, set, map, tuple, Record, String, Bytes, ReadonlyView, and NumericArray owners remain distinct. Comprehension iteration and filters preserve evaluation and failure order. The Stable `for ... Pattern in Expr` clause is a structural comprehension-unfold owner; it never forms a range. Async comprehension remains Preview-design. Collection behavior outside the closed built-in syntax owners uses named methods; conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not activate `[]`.
 
-Ordinary indexing follows the current index domain. A List literal without an expected element type infers one homogeneous normalized type and never synthesizes a Union. Heterogeneous elements require an explicit expected type such as `List<Int | String>`.
+The built-in default logical index domain of `List`, `String`, and `Bytes` is exactly `1..length`, and its storage projection is `index - 1`. Every `ReadonlyView` preserves its source owner's declared logical coordinates and provenance: a view of one of those ordinary owners is therefore one-based, while a view of a bounded or sliced owner retains that source domain and mapping. Index zero in a default one-based domain, a negative-from-end spelling, and an index greater than the applicable domain are never rewritten. Current bracket access yields a read-only value or borrow and never an assignable place; compound assignment applies only to independently admitted mutable places. `String[index]` selects one Unicode scalar and returns `Char`; it never selects a byte, UTF-16 code unit, or grapheme. `Bytes[index]` returns `UInt8`. A failed type-correct dynamic lookup raises `IndexError::outOfLogicalDomain`; a statically known invalid index is rejected by the corresponding exact diagnostic.
 
-Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment, which makes place evaluation and value flow visible. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains and must not silently inherit one-based or ordinary collection indexing rules.
+An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logical domain rather than rebasing to one. `Map<K,V>[key]` requires the exact normalized key type `K` and raises `IndexError::keyNotFound` for an absent key. Tuple elements use compile-time one-based `.1` ordinals, and Record fields use static labels; neither tuple nor Record admits runtime bracket indexing. A List literal without an expected element type infers one homogeneous normalized type and never synthesizes a Union. Under a fixed exact integer `List<T>` context, the sole prefix-sign exception is the direct `-` plus unsuffixed-integer-literal adapter from §4; all other element expressions use ordinary typing without hidden folding or conversion. Heterogeneous elements require an explicit expected type such as `List<Int | String>`.
+
+Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment under the single-place transaction law in §17. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains. Each built-in default source-visible NumericArray axis nevertheless has the explicit domain `1..dimension`; its axis type is not supplied by an ordinary sequence witness. A complete rank-matching coordinate list selects one element. Wrong axis type/count is rejected statically, and a dynamic coordinate outside its axis domain raises `IndexError::outOfLogicalDomain`.
 
 The obsolete legacy `#array{...}` constructor is completely removed; current NumericArray literals remain `#[...]` and rank-qualified `#N[...]`. `array` and `case` are ordinary identifiers with no special token, parser role, resolver namespace, checker intrinsic, or formatter rule. Deeplus supplies no predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling may be introduced by an ordinary user declaration and then resolves normally. There is no `case` declaration keyword. Enum alternatives remain variants identified by their declared name and nominal enum path. No Stable, Preview, Recovery, formatter, AST/HIR, or diagnostic path may reintroduce the removed legacy constructor.
 
@@ -292,6 +310,10 @@ A path terminates at a delimiter or format boundary; a member dot that belongs t
 NumericArray has explicit shape, rank, orientation, element type, and coordinate laws. Attached postfix `^` transposes under its admitted shape law. Infix `^` is power and requires the spacing/attachment boundary. Elementwise power remains Preview unless its broadcast and result-shape law is activated by the current profile.
 
 Broadcasting, fill/repeat, slicing, and matrix-like operations must produce deterministic shape diagnostics. NumericArray coordinate domains are not ordinary labels or runtime map keys.
+
+Current range slicing is admitted only for the closed built-in slice carriers. `List`, `String`, `Bytes`, and `ReadonlyView` accept exactly one bounded range axis; semicolon-separated multi-axis selection and the full-axis `*` wildcard are NumericArray-only. `MutableList`, `FrozenList`, and `ListSnapshot` are outside this closed bracket matrix and do not acquire `[]` from a family resemblance or Trait conformance. An axis range is canonical inclusive `i..j` or explicit exclusive-end `i..<j`. `^` and `$` are slice-only first/last anchors. Empty `[]`, omitted range bounds, descending ranges, and step syntax are not current. The half-open spelling is accepted but reports `SLICE_HALF_OPEN_RANGE_NONCANONICAL`; canonical source uses inclusive bounds.
+
+A slice result is a read-only owner-bounded view that preserves the selected source logical coordinates and owner provenance. It does not implicitly rebase, copy, become mutable, cross isolation, or outlive its source. Mutable slice assignment is forbidden. Code requiring coordinates beginning at one or independent ownership must call an explicit named rebase/copy operation whose cost and ownership transfer are visible.
 
 ## 27. Bitfield and flags
 
@@ -685,6 +707,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BITWISE_COMPLEMENT_IS_PREFIX_ONLY` [error]: Bitwise complement is prefix-only: write `~~x`.
 - `BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH` [error]: `~~` requires a known-width or finite-domain operand.
 - `BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL` [error]: Bool is not a bitwise operand domain.
+- `BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION` [error]: Bitwise operands require one exact normalized integer or finite-domain identity; use an explicit conversion.
 - `BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST` [error]: Mixed-width bitwise operands require explicit width conversion.
 - `BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS` [error]: Bitwise operators require known-width or finite-domain bitwise operands.
 - `BITWISE_RESULT_USED_AS_BOOL` [error]: Bitwise operators produce bitwise values, not Bool; compare explicitly or use a flag query.
@@ -854,6 +877,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FFI_MSP_REQUIRES_PREVIEW_GATE` [error]: Safe FFI MSP requires preview gate.
 - `FFI_SIGNATURE_UNREPRESENTABLE` [error]: This type is not representable in the selected FFI profile.
 - `FILL_REPEAT_ADMISSIBILITY_FAILED` [error]: The fill/repeat expression is not admissible for this shaped target and element responsibility.
+- `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT` [error]: Current operator glyph dispatch is intrinsic-only; a Trait, conformance, witness, extension, or provider cannot supply a glyph implementation.
 - `FLAGS_OPERATION_REQUIRES_SAME_NOMINAL_TYPE` [error]: Flags operands must have the same nominal bitfield#flags type.
 - `FLAGS_RESULT_IS_NOT_BOOL` [error]: A flags bitwise result is a flags value, not Bool.
 - `FLAGS_SHIFT_OPERATOR_FORBIDDEN` [error]: Shift operations are forbidden on semantic flags values.
@@ -936,14 +960,14 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` [error]: A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/task/actor free, acyclic, and committed once.
 - `LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT` [error]: A library target cannot contain script computation; split declarations into a library or select an executable script target.
 - `LINEAR_ALGEBRA_STAR_PRODUCT_SPLIT` [error]: `*` is elementwise NumericArray multiplication, not rank-dependent matrix/vector product. Use `*+`, `**`, or a named API.
-- `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE` [error]: An unsuffixed integer literal adapted by an explicit fixed-width List context must lie within that element type's exact mathematical range.
+- `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE` [error]: A List context may adapt an unsuffixed integer token or its direct prefix-minus mathematical candidate only when that candidate lies in the exact element domain.
 - `LIST_LITERAL_ELEMENT_JOIN_FAILED` [error]: Without an explicit expected element type, an ordinary List literal requires one normalized element type; automatic heterogeneous Union inference is not performed.
 - `LOCAL_IMPORT_RUNTIME_LOADING_FORBIDDEN` [error]: A block-local import is compile-time name visibility, never runtime module loading.
 - `LOCAL_USE_RUNTIME_AUTHORITY_FORBIDDEN` [error]: A local use directive cannot acquire runtime authority or create evidence.
 - `LOCAL_USE_TARGET_NOT_SCOPE_ADMISSIBLE` [error]: The local use target does not define an admissible lexical activation domain.
 - `LOCAL_VALUE_BODY_REQUIRES_PATH_TOTAL_RET` [error]: A multi-statement local value body must produce a value with local ret on every reachable normal path.
 - `LOCAL_WITNESS_NOT_CURRENT` [error]: Local witness remains Preview-design and is not current Stable source.
-- `LOGICAL_INDEX_DOMAIN_MISMATCH` [error]: The index expression is outside the receiver's declared logical index domain.
+- `LOGICAL_INDEX_DOMAIN_MISMATCH` [error]: The receiver has no admitted built-in bracket domain, or the key, index, or axis type does not match that exact domain; conformance does not activate `[]`.
 - `LOOP_LABEL_BREAK_NOT_STABLE` [error]: Label-based break is not Stable current surface; use break-chain.
 - `LOOP_OUTCOME_BREAK_ARM_UNREACHABLE` [error]: The ::break arm is unreachable for this loop outcome descriptor.
 - `LOOP_OUTCOME_COMPLETED_ARM_UNREACHABLE` [error]: The ::completed arm is unreachable for this loop outcome descriptor.
@@ -1206,18 +1230,18 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SLICE_ANCHOR_OUTSIDE_SLICE` [error]: Slice anchors ^ and $ are valid only in slice-axis index context.
 - `SLICE_AXIS_COUNT_MISMATCH` [error]: Slice axis count must match source rank.
 - `SLICE_BOUND_ORDER_INVALID` [error]: Slice lower bound must not exceed upper bound for increasing ranges.
-- `SLICE_BOUND_OUT_OF_RANGE_STATIC` [error]: Static slice bound is outside source dimension.
+- `SLICE_BOUND_OUT_OF_RANGE_STATIC` [error]: Static slice bound is outside the source logical domain.
 - `SLICE_FIRST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from ^ must be an integer index expression.
 - `SLICE_HALF_OPEN_RANGE_NONCANONICAL` [warning]: `i..<j` is accepted for explicit exclusive-end slices but is noncanonical in ordinary cases.
 - `SLICE_LAST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from $ must be an integer index expression.
-- `SLICE_LAST_INDEX_DOLLAR_OUTSIDE_SLICE` [error]: The slice last-index anchor `$` is valid only as a SliceBound inside an IndexSuffix slice axis.
+- `SLICE_LAST_INDEX_DOLLAR_OUTSIDE_SLICE` [note]: This historical diagnostic is superseded by parser-owned `SLICE_ANCHOR_OUTSIDE_SLICE` and is not emitted by current Deeplus.
 - `SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN` [error]: A slice preserves selected logical coordinates; call an explicit rebase operation if new coordinates are required.
 - `SLICE_MUTABLE_ALIAS_CONFLICT` [error]: Mutable slice would create an aliasing conflict.
 - `SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED` [error]: Mutable slice assignment is not admitted in Phase A.
 - `SLICE_RESULT_NONCONTIGUOUS_REQUIRES_EXPLICIT_COPY_FOR_BYTE_VIEW` [error]: Non-contiguous slice view requires explicit copy for byte-view/contiguous storage.
 - `SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY` [error]: Multi-axis slicing Phase A is NumericArray-only.
-- `SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY` [error]: NumericArray view cannot cross isolation without owned copy.
-- `SLICE_VIEW_ESCAPES_OWNER` [error]: NumericArray slice view cannot outlive source owner-region.
+- `SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY` [error]: A slice view cannot cross isolation without an explicit owned copy.
+- `SLICE_VIEW_ESCAPES_OWNER` [error]: A slice view cannot outlive its source owner region.
 - `SLICE_VIEW_REQUIRES_SHARED_SOURCE_PROFILE` [error]: Escaping read-only view requires a future Shared-source profile.
 - `SOURCE_LEVEL_CONTEXT_ROLE_FORBIDDEN` [error]: ContextRole is checker-internal evidence, not a source trait.
 - `SOURCE_LEVEL_UNIT_WITNESS_FORBIDDEN` [error]: UnitWitness is checker-internal evidence, not a user-implementable source trait.
@@ -1455,6 +1479,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID` [error]: A numeric underscore must occur exactly between two digits of the same component.
 - `NUMERIC_RADIX_FLOAT_NOT_CURRENT` [error]: Radix floating-point literals are not current Deeplus source; use a decimal float or an explicit conversion.
 - `NUMERIC_SUFFIX_KIND_MISMATCH` [error]: The numeric suffix kind does not match the integer or decimal-float literal.
+- `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE` [error]: `null` is reserved recovery spelling, not a Deeplus value; use `::none` in an expected `Option` context or `Option<T>::none` explicitly.
 - `OPTION_COALESCE_TOKEN_MUST_BE_ADJACENT` [error]: Option coalescing uses the adjacent compound token `?:`; separated `? :` belongs to ternary syntax.
 - `RAW_MULTILINE_STRING_NOT_CURRENT` [error]: Raw multiline String syntax is not current; use the Unicode multiline String or `raw"..."`.
 - `RAW_STRING_DELIMITER_INVALID` [error]: Raw String Phase A uses exactly the raw"..." delimiter family.
@@ -1495,6 +1520,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONSTRUCTOR_OR_CLEANUP_DISPATCH_MARKER_FORBIDDEN` [error]: Constructors and def#cleanup declarations cannot use dispatch markers.
 - `CONSTRUCTOR_REQUIRES_NAME` [error]: Constructor declarations require a name: write `def! new(...)` or `def! name(...)`.
 - `CONSTRUCTOR_SPELLING_REMOVED_USE_DEF_BANG` [error]: Constructors use def! only; def#ctor, def#constructor, and $! are removed.
+- `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT` [error]: Custom operator declarations are nonactivatable Preview-design; express user-defined behavior with a named Trait method or API.
 - `DECLARATION_TILDE_FORBIDDEN` [error]: A declared body selector has no leading tilde; retain tilde only on receiver calls or the top-level target separator.
 - `DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL` [error]: A defer block is not current; register exactly one cleanup invocation.
 - `DEFER_REQUIRES_SINGLE_INVOCATION` [error]: Defer requires exactly one direct, message, or type-side invocation.
@@ -1523,6 +1549,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `GUARDED_LET_EXIT_MUST_BE_UNCONDITIONAL` [error]: A guarded-let failure branch requires one direct unconditional terminating exit.
 - `HASH_ROLE_PHYSICAL_LINE_BREAK_FORBIDDEN` [error]: A role marker may contain horizontal trivia but cannot cross a physical line break between `#` and its role word.
 - `INLINE_CONFORMANCE_HEADER_NOT_CURRENT_USE_CONFORMANCE_DECL` [error]: Inline class/enum header conformance is not current; conformance is an explicit nominal declaration.
+- `INDEX_SUFFIX_REQUIRES_AXIS` [error]: An index suffix requires a scalar index, a bounded slice range whose bounds may use `^` or `$`, or an admitted NumericArray `*` axis; empty `[]` never implies a full slice.
 - `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` [error]: Complex interpolation expression requires ${...}.
 - `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` [error]: Interpolation format spec is admitted only in braced form ${expr:format}.
 - `LAMBDA_PARAM_LIST_PARENS_NOT_CURRENT` [error]: Lambda parameters are written directly before `=>`; write `{ x: T => ... }`.
@@ -1559,12 +1586,13 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PROTOTYPE_DELTA_REQUIRES_FEATURE_GATE` [error]: Feature `prototype_delta` is PREVIEW_DESIGN/nonactivatable and has no current source gate.
 - `PROTOTYPE_DERIVATION_BRACE_FORM_REQUIRED` [error]: Prototype derivation must use source!{...} or source!!{...}; dollar-brace and unbraced cover forms are not current source or invalid.
 - `QUARANTINE_SCOPE_NOT_ACTIVATABLE` [error]: Dynamic/unsafe quarantine scope is a nonactivatable design probe, not current source.
+- `RANGE_OPERATOR_SPELLING_NOT_CURRENT` [error]: Current range and slice delimiters are `..` and `..<`; `...` belongs only to repeated-positional or comprehension-unfold structural owners, and `..>` is rejected recovery spelling.
 - `SCOPED_ACTIVATION_REQUIRES_IN_BLOCK` [error]: A scoped import/use group must be followed by `in` and a block.
 - `SCOPED_IMPORT_BLOCK_IS_STATEMENT_ONLY` [error]: A scoped import block is a statement and cannot produce a value.
 - `SCOPED_USE_BLOCK_IS_STATEMENT_ONLY` [error]: A scoped use block is a statement and cannot produce a value.
 - `SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT` [error]: A script source file cannot contain an explicit entry declaration; choose the executable root for an explicit entry.
 - `SET_HASH_BRACE_LITERAL_REMOVED_USE_HASH_SET` [error]: #{...} set literal is removed; use #set{...}.
-- `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR` [error]: Empty open range .. is forbidden for full-axis selection; use *.
+- `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR` [error]: A slice range requires both bounds; use ^/$ for endpoints, or * for an admitted NumericArray full axis.
 - `SOURCE_ROLE_CARRIER_CONFLICT` [error]: A normalized project-relative path occurs more than once, or the manifest and external carrier assign different source roles to one file.
 - `SOURCE_ROLE_ENTRY_COUNT_MISMATCH` [error]: The parser's explicit entry-declaration count must equal the source front end's selected entry-target count for the same normalized source root.
 - `SOURCE_TRAILING_TOKENS` [error]: The selected source root did not consume all input.

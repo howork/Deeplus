@@ -11,7 +11,10 @@ import platform
 import stat
 import subprocess
 import sys
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 and earlier
+    import tomli as tomllib
 import zipfile
 import zlib
 from pathlib import Path

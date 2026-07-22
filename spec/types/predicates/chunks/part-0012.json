@@ -1018,7 +1018,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "SliceRangeAdmitted",
     "source_name": "inclusive slice range",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "two-bound .. or ..< slice; static diagnostics and dynamic IndexError precede view creation",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1026,25 +1026,32 @@
       "ownership",
       "borrow_region",
       "effect_row",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
     "feature_refs": [
-      "inclusive_slice_range_canonical_msp"
+      "inclusive_slice_range_canonical_msp",
+      "range_step_expression_surface_clarification",
+      "slice_half_open_noncanonical_warning_law"
     ],
     "diagnostic_refs": [
+      "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "SLICE_BOUND_ORDER_INVALID",
+      "SLICE_BOUND_OUT_OF_RANGE_STATIC",
+      "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
       "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
     ],
-    "design_seed_diagnostic_refs": [
-      "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
-    ],
-    "output": "admit | reject(diagnostic_id)",
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | admit_with_lint(diagnostic_id) | reject(diagnostic_id)",
     "requires": [
-      "bounds evaluated once left-to-right",
-      "inclusive end for ..",
-      "exclusive ..< noncanonical warning"
+      "the enclosing IndexSuffix, not expression Pratt, owns the slice delimiter",
+      "the receiver logical domain and optional bounds are exact",
+      "bounds evaluate once left-to-right before selection"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -1053,28 +1060,36 @@
       "ownership",
       "borrow_region",
       "effect_row",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
     "formal_judgment_id": "J-SliceRangeAdmitted",
-    "algorithm_owner": "integrated_checker",
+    "algorithm_owner": "parser_then_integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "bounds evaluated once left-to-right",
-      "inclusive end for ..",
-      "exclusive ..< noncanonical warning"
+      "the delimiter is .. or ..< and both bounds are present",
+      "^ and $ occur only as SliceBound anchors; * is the only full-axis spelling",
+      "the selected receiver domain has ordered closed bounds"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "preserve delimiter spelling, normalize ^/$ anchors against the receiver's first/last logical coordinates, and retain source-domain bounds without rebasing",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record SliceRangeAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject .../..> or either missing bound with the exact range/empty-range diagnostic; ^/$ express endpoints",
+      "evaluate lower then upper once; reject statically out-of-domain or reversed bounds",
+      "a dynamic bounds failure raises IndexError::outOfLogicalDomain before any view or ownership commit",
+      ".. admits inclusive coordinates; ..< admits lower..upper-1 with SLICE_HALF_OPEN_RANGE_NONCANONICAL; never infer step/rebase"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
-    "secondary_diagnostics": [],
+    "success_result": "admit | admit_with_lint(diagnostic_id) | reject(diagnostic_id)",
+    "active_primary_diagnostic": "SLICE_BOUND_ORDER_INVALID",
+    "secondary_diagnostics": [
+      "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "SLICE_BOUND_OUT_OF_RANGE_STATIC",
+      "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+    ],
     "positive_fixture_ids": [
       "PF-SliceRangeAdmitted-POS"
     ],
@@ -1084,9 +1099,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary_with_advisory_lint",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "2946392822226c6591432b6405e70d841882689631ffa97d4c1360661abd08d6",
@@ -1097,8 +1112,8 @@
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "SliceViewLifetimeAdmitted",
-    "source_name": "NumericArray read-only view",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "source_name": "readonly slice carrier view",
+    "summary": "a slice result is a readonly view tied to one live owner and retains the selected source logical coordinates; hidden copy, rebase, mutation, escape, and isolation crossing are forbidden",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1106,28 +1121,31 @@
       "ownership",
       "borrow_region",
       "isolation",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
     "feature_refs": [
       "numeric_array_multiaxis_slice_readonly_view_msp",
+      "slice_logical_domain_preservation",
       "slicing_anchor_range_notation_msp"
     ],
     "diagnostic_refs": [
+      "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
+      "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
       "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
       "SLICE_VIEW_ESCAPES_OWNER"
     ],
-    "design_seed_diagnostic_refs": [
-      "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
-      "SLICE_VIEW_ESCAPES_OWNER"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "view cannot escape owner",
-      "isolation crossing requires owned copy",
-      "mutable assignment unsupported"
+      "the source owner identity and live borrow region are exact",
+      "the ordered selected logical coordinates and result-view provenance are preserved",
+      "the operation requests only a readonly view"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -1136,6 +1154,9 @@
       "ownership",
       "borrow_region",
       "isolation",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
@@ -1143,21 +1164,25 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "view cannot escape owner",
-      "isolation crossing requires owned copy",
-      "mutable assignment unsupported"
+      "the view has exactly one source owner and a bounded borrow region",
+      "selected coordinates are expressed in the source logical domain",
+      "no implicit copy, rebase, mutable assignment, escape, or isolation crossing has been requested"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize owner identity, borrow region, isolation, ordered source coordinates and view provenance while preserving the source logical-domain labels",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record SliceViewLifetimeAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject any requested or observed coordinate rebase with SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
+      "reject mutable slice assignment with SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED; a readonly view exposes no write place",
+      "reject a view whose borrow region can outlive its owner with SLICE_VIEW_ESCAPES_OWNER",
+      "reject an isolation crossing without an explicit owned copy with SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
+      "admit only the owner-bounded readonly view with unchanged coordinates and no hidden copy",
+      "create no product execution receipt"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
+    "active_primary_diagnostic": "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
     "secondary_diagnostics": [
+      "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
+      "SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY",
       "SLICE_VIEW_ESCAPES_OWNER"
     ],
     "positive_fixture_ids": [
@@ -1169,9 +1194,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "01bb721b4c137d195eb2196f2acc0b8d4ec41339a1451bb3b02aba3f4cf0598a",

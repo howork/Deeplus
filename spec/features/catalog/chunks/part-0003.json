@@ -166,7 +166,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The punctuation operator set and precedence table are closed by the language. Users extend behavior for fixed operators only through named Trait/conformance contracts; named messages and extension functions remain open.",
+    "notes": "The punctuation operator set and precedence table are closed. Current glyph dispatch is intrinsic-only: no Trait conformance, extension, witness, provider, source-order, or runtime lookup can activate a glyph. User behavior remains open through named methods, messages, functions, and APIs.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -179,8 +179,14 @@
     "normative_trace_refs": {
       "productions": [],
       "semantic_reference_productions": [],
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+      ],
+      "predicates": [
+        "NumericOperatorCoreAdmitted",
+        "OperatorPrecedenceTablePhaseAAdmitted"
+      ],
       "examples": []
     },
     "trace_class": "semantic",

@@ -1104,32 +1104,34 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "BasicIndexOperatorAdmitted",
     "source_name": "BasicIndexOperatorAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "intrinsic [] is read-only; conformance never activates it",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
       "ownership",
       "borrow_region",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
     "feature_refs": [
-      "basic_index_operator"
+      "basic_index_operator",
+      "index_operator"
     ],
     "diagnostic_refs": [
-      "BASIC_INDEX_OPERATOR_STABLE_LAW"
+      "LOGICAL_INDEX_DOMAIN_MISMATCH"
     ],
-    "design_seed_diagnostic_refs": [
-      "BASIC_INDEX_OPERATOR_STABLE_LAW"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "receiver is indexable",
-      "index expression admissible",
-      "bounds/failure channel visible"
+      "nonempty carrier-admitted axes",
+      "closed intrinsic receiver family",
+      "explicit logical domain"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -1137,6 +1139,9 @@
       "normalized_type",
       "ownership",
       "borrow_region",
+      "call_shape",
+      "shape",
+      "rank",
       "source_role",
       "element_types"
     ],
@@ -1144,20 +1149,20 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "receiver is indexable",
-      "index expression admissible",
-      "bounds/failure channel visible"
+      "normalized carrier and axes",
+      "no conformance/provider lookup",
+      "explicit domain"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "carrier/domain/axes normalized; no conformance",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record BasicIndexOperatorAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject unknown/conformance-only carriers with LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "List/ReadonlyView/String/Bytes/bounded-list admit one scalar or bounded range; Map admits one exact-K key; tuple/Record do not use []",
+      "NumericArray requires axis_count=rank and typed scalar/range/* axes; admit iff all delegated domain decisions admit",
+      "return read-only value/borrow"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "BASIC_INDEX_OPERATOR_STABLE_LAW",
+    "active_primary_diagnostic": "LOGICAL_INDEX_DOMAIN_MISMATCH",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
       "PF-BasicIndexOperatorAdmitted-POS"
@@ -1166,11 +1171,14 @@
       "PF-BasicIndexOperatorAdmitted-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "LogicalIndexDomainAdmitted",
+      "SliceRangeAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "3c57c9a04d542f1c4025b97fa4ab2ed58afa78232401c5149672827ece59f05e",

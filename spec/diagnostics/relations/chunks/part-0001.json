@@ -110,7 +110,7 @@
   {
     "violation_id": "BasicIndexOperatorAdmitted:default",
     "predicate_id": "BasicIndexOperatorAdmitted",
-    "diagnostic_id": "BASIC_INDEX_OPERATOR_STABLE_LAW",
+    "diagnostic_id": "LOGICAL_INDEX_DOMAIN_MISMATCH",
     "relation": "primary"
   },
   {
@@ -201,6 +201,12 @@
     "violation_id": null,
     "predicate_id": "BitwiseDomainAdmitted",
     "diagnostic_id": "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "BitwiseDomainAdmitted",
+    "diagnostic_id": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
     "relation": "secondary"
   },
   {
@@ -1268,6 +1274,12 @@
   {
     "violation_id": null,
     "predicate_id": "LogicalIndexDomainAdmitted",
+    "diagnostic_id": "LOGICAL_INDEX_DOMAIN_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "LogicalIndexDomainAdmitted",
     "diagnostic_id": "ZERO_BASED_INDEX_NOT_CURRENT",
     "relation": "secondary"
   },
@@ -1598,44 +1610,38 @@
   {
     "violation_id": "NumericFillSliceIndexAdmitted:default",
     "predicate_id": "NumericFillSliceIndexAdmitted",
-    "diagnostic_id": "SOURCE_TRUTH_PROJECTION_CONFLICT",
+    "diagnostic_id": "SLICE_AXIS_COUNT_MISMATCH",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "diagnostic_id": "LOGICAL_INDEX_DOMAIN_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "diagnostic_id": "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY",
+    "relation": "secondary"
   },
   {
     "violation_id": "NumericLiteralAdmitted:default",
     "predicate_id": "NumericLiteralAdmitted",
-    "diagnostic_id": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
+    "diagnostic_id": "NUMERIC_LITERAL_OUT_OF_RANGE",
     "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "NumericLiteralAdmitted",
-    "diagnostic_id": "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "NumericLiteralAdmitted",
-    "diagnostic_id": "MALFORMED_NUMERIC_EXPONENT",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "NumericLiteralAdmitted",
-    "diagnostic_id": "NUMERIC_SUFFIX_KIND_MISMATCH",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "NumericLiteralAdmitted",
-    "diagnostic_id": "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
-    "relation": "secondary"
   },
   {
     "violation_id": "NumericOperatorCoreAdmitted:default",
     "predicate_id": "NumericOperatorCoreAdmitted",
     "diagnostic_id": "NUMERIC_OPERATOR_CORE_REQUIRED",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+    "relation": "secondary"
   },
   {
     "violation_id": "OnceCallableAdmitted:default",
@@ -1646,8 +1652,20 @@
   {
     "violation_id": "OperatorPrecedenceTablePhaseAAdmitted:default",
     "predicate_id": "OperatorPrecedenceTablePhaseAAdmitted",
-    "diagnostic_id": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+    "diagnostic_id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "OperatorPrecedenceTablePhaseAAdmitted",
+    "diagnostic_id": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "OperatorPrecedenceTablePhaseAAdmitted",
+    "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+    "relation": "secondary"
   },
   {
     "violation_id": "OptionCoalescingAdmitted:default",
@@ -1803,126 +1821,6 @@
     "violation_id": null,
     "predicate_id": "PreviewFeatureGateAdmitted",
     "diagnostic_id": "PREVIEW_GATE_PLACEMENT_INVALID",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "PrimaryCtorPromotedFieldReachable:default",
-    "predicate_id": "PrimaryCtorPromotedFieldReachable",
-    "diagnostic_id": "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly:default",
-    "predicate_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
-    "diagnostic_id": "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "ProjectionRowAdmitted:default",
-    "predicate_id": "ProjectionRowAdmitted",
-    "diagnostic_id": "SCHEMA_PROJECTION_ROW_REQUIRED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "ProjectionRowAdmitted",
-    "diagnostic_id": "NAMED_UNFOLD_REQUIRES_STATIC_PROJECTION_ROW",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "ProjectionRowAdmitted",
-    "diagnostic_id": "MAP_IS_NOT_NAMED_UNFOLD_SOURCE",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "ProviderSupportsConversion:default",
-    "predicate_id": "ProviderSupportsConversion",
-    "diagnostic_id": "DYNAMIC_CONVERSION_REQUIRES_PROVIDER",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "PureCallableAdmitted:default",
-    "predicate_id": "PureCallableAdmitted",
-    "diagnostic_id": "PURE_CALLABLE_PROFILE_VIOLATION",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "PureCallableAdmitted",
-    "diagnostic_id": "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "QualifiedExtensionSelectorAdmitted:default",
-    "predicate_id": "QualifiedExtensionSelectorAdmitted",
-    "diagnostic_id": "MEMBER_EXTENSION_COLLISION",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "QualifiedExtensionSelectorAdmitted",
-    "diagnostic_id": "QUALIFIED_EXTENSION_SELECTOR_REQUIRED",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "QualifiedExtensionSelectorAdmitted_R48_60:default",
-    "predicate_id": "QualifiedExtensionSelectorAdmitted_R48_60",
-    "diagnostic_id": "QUALIFIED_EXTENSION_SELECTOR_UNKNOWN",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "QuarantineScopeDesignAdmitted:default",
-    "predicate_id": "QuarantineScopeDesignAdmitted",
-    "diagnostic_id": "QUARANTINE_SCOPE_NOT_ACTIVATABLE",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "QuarantineScopeDesignAdmitted",
-    "diagnostic_id": "QUARANTINE_EXPORT_REQUIRES_TYPED_IMMUTABLE_BINDING",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "QuarantineScopeDesignAdmitted",
-    "diagnostic_id": "QUARANTINE_RESOURCE_ESCAPE_FORBIDDEN",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "QuarantineScopeDesignAdmitted",
-    "diagnostic_id": "QUARANTINE_SUSPENSION_FORBIDDEN",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "QuarantineScopeDesignAdmitted",
-    "diagnostic_id": "QUARANTINE_OUTER_MUTATION_FORBIDDEN",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "R0GuardSafe:default",
-    "predicate_id": "R0GuardSafe",
-    "diagnostic_id": "R0_GUARD_NOT_GUARD_SAFE",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "ReadonlyViewAdmitted:default",
-    "predicate_id": "ReadonlyViewAdmitted",
-    "diagnostic_id": "READONLY_VIEW_ESCAPE_FORBIDDEN",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "ReceiverOwnerResultAdmitted:default",
-    "predicate_id": "ReceiverOwnerResultAdmitted",
-    "diagnostic_id": "RECEIVER_OWNER_RESULT_MUST_BE_EXPLICIT",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "ReceiverOwnerResultAdmitted",
-    "diagnostic_id": "RECEIVER_OWNER_RESULT_NOT_EXACTLY_ONCE",
     "relation": "secondary"
   }
 ]
