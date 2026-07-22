@@ -1555,3 +1555,2730 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BITFIELD_RESERVED_BITS_NONZERO` [error]: Checked raw conversion rejected nonzero reserved bits.
 - `LAZY_REENTRANT_FORCE` [error]: Reentrant forcing of an initializing lazy binding is rejected deterministically.
 - `LAZY_SINGLE_COMMIT_VIOLATION` [error]: Concurrent lazy forcing must publish exactly one immutable committed value.
+
+# Part XII — Post-PR16 Nonactivatable Preview Design
+
+> Status fence: this Part is the current preimplementation Preview design snapshot. Deeplus grammar, syntax, and language design remain unsettled; current behavior remains authoritative. Every successor rule below is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, all 22 feature P1 items remain OPEN, and all 15 product lanes remain NOT_RUN.
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R001 -->
+### TC-R001 — requirement and overload identity
+
+`RequirementId` is `(OriginalDeclaringTraitId, RequirementKind, MemberName, CanonicalOverloadSlotKey)`. The slot key contains canonical binder arity/kinds, receiver channel, ordered external labels and normalized input types, channel kinds, and repeated/rest shape. Result type, responsibility-profile-only differences, marker state, defaults, local names, order, and generated ordinals do not create a slot. Those excluded obligations remain in `RequirementContract`. Equal IDs are duplicates; return-only or callable-profile-only overloads reject; alpha-renaming and declaration/file/import permutations preserve identity.
+<!-- POST_PR16_UNIT_END:TC-R001 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R002 -->
+### TC-R002 — unique parent evidence
+
+Every child record has exactly one `SupertraitLink` for each direct parent goal and reuses the sole canonical parent record. An implied parent may be materialized only once and all diamond paths reuse it. A child cannot own a shadow parent record or replace a parent-owned binding. A permitted redundant compatible spelling normalizes to the parent's exact binding; an incompatible replacement rejects deterministically. Parent/refinement evidence is acyclic, and associated bindings obey the same rule. Current marker semantics are not reinterpreted; their successor mapping is `OPEN_P1`.
+<!-- POST_PR16_UNIT_END:TC-R002 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R003 -->
+### TC-R003 — canonical conformance identity
+
+A ground conformance is identified by normalized target, normalized instantiated Trait, and coherence-domain authority—not spelling, alias path, location, route, or discovery order. Equal keys intern to one record or incompatible summaries reject. DIRECT, current lowercase `via`, and any future route cannot create distinct semantic conformances for one ground key.
+<!-- POST_PR16_UNIT_END:TC-R003 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R004 -->
+### TC-R004 — global coherence
+
+An admitted image has at most one applicable record and one compatible binding for each required `RequirementId`. Multiple records, requirement bindings, associated bindings, or parent records are errors; source, import, allocation, schedule, and link order never select a winner.
+<!-- POST_PR16_UNIT_END:TC-R004 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R005 -->
+### TC-R005 — locality and retroactivity
+
+A declaring package owns the target nominal type or the Trait. A third package cannot conform a foreign target to a foreign Trait. The owned side is recorded and link-verified. Module placement inside an owning package remains subject to visibility. Expression-preserving alternatives are an owned nominal wrapper, an owned Trait, or upstream ownership.
+<!-- POST_PR16_UNIT_END:TC-R005 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R006 -->
+### TC-R006 — overlap
+
+Normalized target and Trait heads overlap when jointly unifiable to any ground key. Positive conditions do not prove head disjointness in the initial profile. Every potentially co-linkable overlap rejects. Exact summaries deduplicate only when semantic digests and authority identities are equal.
+<!-- POST_PR16_UNIT_END:TC-R006 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R007 -->
+### TC-R007 — conditional construction
+
+Every binder is substituted and normalized before ground identity, contracts, projections, and parent goals form. Evidence is finite. A recursive cycle is admitted only when every cycle edge has a registered, machine-checkable strict decrease; otherwise it rejects. Failed conditions mean not applicable and cannot authorize an overlapping fallback. Runtime values and order are not conditions.
+<!-- POST_PR16_UNIT_END:TC-R007 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R008 -->
+### TC-R008 — no specialization or priority
+
+Specificity, source/import/module/package order, annotations, and fallback priority cannot resolve overlap. Specialization is rejected in the initial profile. Any future proposal needs an explicit partial order, unique-maximal proof, separate-compilation proof, and deterministic diagnostics.
+<!-- POST_PR16_UNIT_END:TC-R008 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R009 -->
+### TC-R009 — substitution stability
+
+Alpha-equivalent schemas and substitutions yield equal heads, requirement IDs, and ground keys. Transparent aliases normalize; nominal wrappers remain distinct. Inference/allocation order is not persistent identity.
+<!-- POST_PR16_UNIT_END:TC-R009 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R010 -->
+### TC-R010 — associated requirements
+
+Each associated requirement has exactly one compatible explicit or canonical inherited binding. Missing, duplicate, ambiguous, incompatible, or cyclic bindings reject before MIR. A projection retains exact record and requirement identity. Same-name nested items do not synthesize bindings. Defaults, generic associated items, and associated override remain outside the minimum unless separately authorized.
+<!-- POST_PR16_UNIT_END:TC-R010 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R011 -->
+### TC-R011 — refinement and dispatch separation
+
+Trait refinement creates parent proof obligations and links, not a second dispatch domain. Class subtyping/vtable evidence and Trait conformance/witness evidence stay structurally distinct. Subclasses do not automatically inherit unrelated conformance. Any adapter preserves responsibility and API residue or rejects.
+<!-- POST_PR16_UNIT_END:TC-R011 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R012 -->
+### TC-R012 — visibility closure
+
+An exported conformance does not expose a less-visible target, Trait, requirement, witness, associated binding, condition, or parent evidence. Private helpers participate only when current export law can represent them without leaking inaccessible identity. Imports change visible summaries, not priority.
+<!-- POST_PR16_UNIT_END:TC-R012 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R013 -->
+### TC-R013 — separate compilation
+
+Each link-relevant schema emits a deterministic summary with authority, normalized head/binders/conditions, locality, visibility, record/requirement/binding digests, associated bindings, and parent links. The whole-image verifier checks duplicates, overlap, locality, visibility, parent interning, and digest compatibility independent of object/package/import/schedule order. No profile claim is permitted without this link check.
+<!-- POST_PR16_UNIT_END:TC-R013 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R014 -->
+### TC-R014 — frontend closure
+
+One root-connected grammar route must construct one normalized semantic route. This candidate selects no spelling. Current `ConformanceDecl` and current `ConformanceViaClause` remain unchanged and isolated. A future surface needs exact EBNF, reachability, lossless CST ownership, AST/HIR mapping, profile gates, recovery, and diagnostics. Selection closes before MIR.
+<!-- POST_PR16_UNIT_END:TC-R014 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R015 -->
+### TC-R015 — MIR and runtime closure
+
+MIR carries closed record, requirement, witness, associated-binding, and parent-link identities or lossless equivalents. Lowering performs no source/provider/default/specialization/fallback search and preserves responsibility, visibility, and API residue. Runtime strings, names, iteration, or registration order are not evidence authority.
+<!-- POST_PR16_UNIT_END:TC-R015 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TC-R016 -->
+### TC-R016 — deterministic diagnostics
+
+Primary failures use this exact rank, then full canonical semantic identity:
+
+1. malformed/unadmitted surface or unresolved canonical identity;
+2. duplicate requirement, return-only, or callable-profile-only overload;
+3. locality/orphan violation;
+4. duplicate or overlapping conformance head;
+5. non-well-founded conditional proof;
+6. supertrait evidence or inherited-binding conflict;
+7. visibility/export failure;
+8. missing, ambiguous, or incompatible witness;
+9. associated-binding failure;
+10. unresolved MIR evidence closure.
+
+The primary span identifies the rejecting declaration or binding. Notes use canonical conflicting identities, normalized keys/heads, and authorities in stable order. File/import/link permutations do not change family or semantic note order. The exact one-to-one Test_ binding is in `proposed-deltas/diagnostic-binding-ledger.json`.
+<!-- POST_PR16_UNIT_END:TC-R016 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-001 -->
+## TCC-DG-001 — Witness compatibility
+
+One total, origin-independent predicate `WitnessCompatible(R,D,C)` is used at every admission tier. Normalize the ground context, `Self`, Trait arguments, aliases, associated projections, binders, and types. Associated bindings must close without recursive selection. Requirement kind and call input must match, the complete requirement contract must be checked, and unratified fields remain invariant. A witness may not introduce stronger preconditions, stronger constraints, or broader obligations.
+
+The controlling component relations are:
+
+```text
+Normalize(Effects(W,C)) subset_of Normalize(Effects(R,C))
+Normalize(Errors(W,C)) subset_of Normalize(Errors(R,C))
+DeclaredObligations(R,C) proves DeclaredObligations(W,C)
+origin_reads = 0
+```
+
+| Requirement | Witness | Result |
+|---|---|---|
+| effects `{E1,E2}` | effects `{E1}` | compatible component |
+| effects `{E1}` | effects `{E1,E2}` | incompatible |
+| obligations `P & Q` | obligation `P` | compatible when the requirement environment proves `P` |
+| obligation `P` | obligations `P & Q` | incompatible unless the requirement environment independently proves `Q` |
+| equal normalized contracts | equal normalized contracts | compatible |
+
+An explicit witness mismatch is final at the explicit tier and has fallback count zero.
+<!-- POST_PR16_UNIT_END:TCC-DG-001 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-002 -->
+## TCC-DG-002 — Deterministic tiered admission
+
+If the explicit set is nonempty, the tier is committed: success requires exactly one member and that sole member must be compatible. Any explicit cardinality or compatibility failure is final; ordinary and default tiers are `NOT_EVALUATED`, and fallback count is zero. With no explicit witness, exactly one compatible ordinary witness binds; more than one is ambiguous and zero continues. Only an independently authorized default set may then use the same cardinality rule; otherwise the result is missing. Private helpers are excluded. Provider identity and declaration or import order are never rank. `DefaultSet` remains empty until a marker/default mapping is separately ratified.
+<!-- POST_PR16_UNIT_END:TCC-DG-002 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-003 -->
+## TCC-DG-003 — Fixed-goal inference and projection order
+
+Authorized expected context may participate in ordinary call-site inference only to fix a different pre-proof goal. The fixed pipeline is:
+
+```text
+ordinary inference
+-> fixed ground or symbolic goal
+-> proof without reverse conformance enumeration
+-> selected record
+-> closed projection reduction
+```
+
+Generic-definition HIR and abstract obligations remain stable under downstream conformance additions. Reverse enumeration count is zero. Associated projections reduce only after record selection and cannot feed back into candidate discovery, ranking, or goal mutation.
+
+Mutation controls require the pre-proof goal digest, definition HIR digest, abstract obligation digest, reverse-enumeration count, selected-record identity, and projection-order trace. Adding an unrelated conformance may not change a previously fixed ordinary call goal or definition summary; a genuine explicit source edit or changed authorized expected context is a distinct input, not reverse inference.
+<!-- POST_PR16_UNIT_END:TCC-DG-003 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-004 -->
+## TCC-DG-004 — Evidence identity and inheritance
+
+Evidence preserves its original owner. A child namespace does not re-key inherited evidence. Equal normalized instantiations intern to the same evidence identity; different Trait arguments remain distinct. Expected type, subtyping, and current variance may not select, synthesize, merge, or rank evidence. A binding is scoped to the exact record and requirement. One source satisfying two requirements produces two binding identities. A diamond reuses the same parent evidence rather than creating child-local replacements.
+<!-- POST_PR16_UNIT_END:TCC-DG-004 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-005 -->
+## TCC-DG-005 — Evidence privacy boundary
+
+`EvidenceScope` admits only authorized evidence, associated material, and private helpers needed by that evidence. It excludes unrelated public API, storage/layout, constructors, general-extension bodies, and foreign private state. A private helper is never a candidate, binding, conformance-summary item, or public API residue.
+
+An explicitly admitted legal witness may call a helper under ordinary access laws. The helper-body dependency remains in nonpublic HIR/MIR and its behavior cannot be dropped. These fields are independent:
+
+```text
+private_helper_call_from_explicit_witness_allowed_under_ordinary_access
+candidate_count = 0
+witness_binding_count = 0
+conformance_summary_evidence_count = 0
+public_api_residue_count = 0
+nonpublic_body_dependency_count >= 0
+```
+<!-- POST_PR16_UNIT_END:TCC-DG-005 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-006 -->
+## TCC-DG-006 — Dormant value-profile law
+
+This law is conditional and dormant until the exact value `RequirementKind`, profile, AST/HIR, diagnostics, and accessor contract are separately ratified. In the inactive state: `PROFILE_UNAVAILABLE`, `RequirementKindId` is `ABSENT`, evidence count is zero, and MIR/API residue is zero.
+
+In a separately authorized future profile, a read-only requirement may be met by an immutable field, computed property, or read-write getter, but does not expose a setter. A read-write requirement needs compatible getter and setter identities checked by TCC-DG-001. Accessor identities are closed. External evidence may compute from pre-existing accessible state but may not add or synthesize storage/layout or access foreign private state. The layout digest before and after admission must be identical. No source form is activated here.
+<!-- POST_PR16_UNIT_END:TCC-DG-006 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-007 -->
+## TCC-DG-007 — Source admission and whole-image coherence
+
+The controlling sequence is:
+
+```text
+authorized graph/import/re-export/visibility
+-> SourceAdmission
+-> conformance summary or source rejection
+-> WholeImageCoherence
+-> link
+```
+
+Linking cannot repair rejected source admission, manufacture source evidence, or turn hidden graph presence into authority. Source-admission and link-coherence traces remain distinct and order-invariant, with stable diagnostics for the same authorized graph.
+<!-- POST_PR16_UNIT_END:TCC-DG-007 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-008 -->
+## TCC-DG-008 — Independent evolution lanes
+
+The exact independent lanes are `SOURCE`, `RESOLUTION`, `BEHAVIOR`, and `BINARY_ABI`. Each stores its predicate and version, scope/inputs, target, evidence identity, result, and reason. No result propagates between lanes.
+
+Decision precedence is:
+
+1. evaluator or target not invoked: `NOT_RUN`;
+2. a claim with unverifiable inputs, predicate, identity, output, or receipt: `NOT_AUDITABLE`;
+3. valid evaluation with a counterexample: `FAIL`;
+4. complete valid evaluation satisfying the predicate: `PASS`;
+5. complete valid evaluation whose predicate is explicitly indeterminate: `UNKNOWN`.
+
+`BINARY_ABI` remains `NOT_RUN` without an exact target-bound execution receipt.
+<!-- POST_PR16_UNIT_END:TCC-DG-008 -->
+
+<!-- POST_PR16_UNIT_BEGIN:TCC-DG-P2-009 -->
+## TCC-DG-P2-009 — Teaching and tooling split
+
+Progressive tutorial order is: explicit DIRECT; ordinary exact witness; explicit Trait qualification only when the active profile defines it; conformance grouping/associated binding; inheritance/coherence; dormant provider/AUTO. Reference documentation may use another order, but examples must label profile and activation. Current lowercase `via` remains separate from successor VIA.
+
+Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is authorized. A future formatter must preserve parse identity, declaration identity, comments, and trivia, and a second pass must be byte-identical. Evidence labels distinguish prose review, design static fixtures, and compiler-executed examples; the last requires a complete target-bound receipt.
+
+`TCC-DG-P2-009A` is the static tutorial classification/order/label/dormant-placement/receipt-schema contract, depends on `TCC-P1-008`, and remains `NOT_RUN`. `TCC-DG-P2-009B` is the product formatter/idempotence/completion/action/semantic-identity contract, depends on `TCC-P1-002` and `TCC-P1-008` plus separate product authority, and remains `NOT_RUN`. The aggregate dependency projection is `[TCC-P1-002, TCC-P1-008]`.
+<!-- POST_PR16_UNIT_END:TCC-DG-P2-009 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-01 -->
+1. `C-01`: every admitted Class maps to one owner-tagged `ClassResponsibilityDescriptor`. Move, borrow, explicit clone, reusable value, managed sharing, and cleanup authority are independent capability fields with explicit cross-constraints. Flavor spelling does not imply synthesis, layout, or ABI.
+<!-- POST_PR16_UNIT_END:C-01 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-02 -->
+2. `C-02`: sealed partition cells include every instantiable concrete sealed root/intermediate self-cell; abstract nodes have no self-cell; an admitted open direct child contributes one owner-qualified opaque subtree cell. Declaration/import order cannot change the cell set.
+<!-- POST_PR16_UNIT_END:C-02 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-03 -->
+3. `C-03`: stored fields, promoted inputs, accessors, and type-side state remain distinct. Each stored field has one owner-scoped identity and definite-initialization state.
+<!-- POST_PR16_UNIT_END:C-03 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-04 -->
+4. `C-04`: one construction session has one commit owner. The phase order is `PRE_DELEGATION -> BASE_INITIALIZED -> STORAGE_INITIALIZING -> POST_INIT -> LIVE`; failure is `ABORTING -> FAILED_UNPUBLISHED`. Delegated targets return prepublication completion. Success publishes once and failure publishes zero. Failure requires `acquired = discharged`; success requires `acquired = discharged_temporaries + transferred_to_live`; terminal balance is zero.
+<!-- POST_PR16_UNIT_END:C-04 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-05 -->
+5. `C-05`: `ClassSlotId` is based on the declaring root, selector, normalized input channels, binder identity, and receiver responsibility. Override inputs/channels/generics/ownership/isolation/effects/errors are exact; only result covariance with an explicit subtype proof is admitted. A forwarder owns a distinct final identity from its target and target slot.
+<!-- POST_PR16_UNIT_END:C-05 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-06 -->
+6. `C-06`: forwarding names a finite selector list, evaluates its receiver once, preserves argument/effect/error/responsibility order, and creates no subtype edge, Trait witness, storage, or cleanup owner.
+<!-- POST_PR16_UNIT_END:C-06 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-07 -->
+7. `C-07`: every cleanup obligation has exactly one live owner or is discharged. Move transfers authority, borrow does not, and failure/cancellation/suspension cannot bypass cleanup.
+<!-- POST_PR16_UNIT_END:C-07 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-08 -->
+8. `C-08`: Class variance remains `REJECT_AT_CLASS_OWNER_ADMISSION`; rejected or recovery syntax creates zero admitted AST/HIR/MIR/API residue. Explicit Trait views or adapters are the alternatives.
+<!-- POST_PR16_UNIT_END:C-08 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-09 -->
+9. `C-09`: flavor and responsibility never imply equality, hashing, ordering, display, cloning, serialization, or Trait evidence. Any future synthesis needs an operation manifest, termination/law proof, responsibility exclusions, and one whole-Class evidence origin.
+<!-- POST_PR16_UNIT_END:C-09 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-10 -->
+10. `C-10`: Class residue is owner-complete and compatibility uses only the eight independent PC-10 records.
+<!-- POST_PR16_UNIT_END:C-10 -->
+
+<!-- POST_PR16_UNIT_BEGIN:C-11 -->
+11. `C-11`: logical diagnostic families and stable fields may be materialized locally, but final registry codes remain null. Recovery cannot create admitted semantic residue and tooling cannot perform an unproved rewrite.
+<!-- POST_PR16_UNIT_END:C-11 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-01 -->
+1. `E-01`: one `EnumDescriptor` owns one `EnumId`, normalized binders, an exact case universe, and one distinct stable `VariantId` per case. Source order is not raw value, tag, ordinal, layout, ABI, or priority. Empty Enum remains nonactivatable; one-case Enum is semantic-only.
+<!-- POST_PR16_UNIT_END:E-01 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-02 -->
+2. `E-02`: current mixed payload remains current authority. The successor is uniform within each case. Migration has no default: the user selects label-all, unlabel-all, or one Record payload after a complete use-site inventory. Automatic rewrite count is zero.
+<!-- POST_PR16_UNIT_END:E-02 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-03 -->
+3. `E-03`: one `VariantFormationPlanId` and owner/case binding are fixed before any argument evaluation. Arguments evaluate left-to-right exactly once; failed formation cleans successful temporaries in reverse acquisition order and publishes zero values.
+<!-- POST_PR16_UNIT_END:E-03 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-04 -->
+4. `E-04`: guards refine admitted cells but do not cover unguarded residuals. Any future external residual remains owner-relative and does not manufacture an unknown runtime case or activate spelling.
+<!-- POST_PR16_UNIT_END:E-04 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-05 -->
+5. `E-05`: the inline-size dependency graph itself is acyclic; hidden boxing is forbidden.
+<!-- POST_PR16_UNIT_END:E-05 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-06 -->
+6. `E-06`: current `.`, `+`, `*.`, `*+` reachability remains current. The successor admits final trailing `.` only before slot/witness allocation. Migration has no default: the user selects final match behavior, sealed Class, visitor/strategy Trait, or payload object. Marker-to-dot automatic rewrite count is zero.
+<!-- POST_PR16_UNIT_END:E-06 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-07 -->
+7. `E-07`: only active semantic payload places exist. Reserved bytes are representation, not inactive semantic places. Responsibility joins component-wise; a resource partial move cannot leave a generally usable Enum. Failed replacement leaves the old value live; successful replacement has one source-observable MIR ownership commit.
+<!-- POST_PR16_UNIT_END:E-07 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-08 -->
+8. `E-08`: Enum use as an error, state, or message creates no implicit transitions, conversions, or protocol law. `E08-M` is `EXCLUDED_DEFERRED_A3`.
+<!-- POST_PR16_UNIT_END:E-08 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-09 -->
+9. `E-09`: ordinary Enum is raw-free. Semantic identity is distinct from raw value, serialization tag, runtime discriminant, ordinal, layout, and foreign ABI.
+<!-- POST_PR16_UNIT_END:E-09 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-10 -->
+10. `E-10`: Trait evidence belongs to the whole Enum. Case membership creates and replaces zero witnesses. Current lowercase `via` remains unchanged.
+<!-- POST_PR16_UNIT_END:E-10 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-11 -->
+11. `E-11`: public residue records every stable owner fact and eight independent compatibility records. Source aliases, serialization aliases, representation mappings, and semantic identity remain separate.
+<!-- POST_PR16_UNIT_END:E-11 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-12 -->
+12. `E-12`: one-case Enum is `SEMANTIC_ONLY_ONE_CASE_NO_TOOLING_ADVICE`; no warning, recommendation, or rewrite is produced. Empty and advanced profiles remain inactive.
+<!-- POST_PR16_UNIT_END:E-12 -->
+
+<!-- POST_PR16_UNIT_BEGIN:E-13 -->
+13. `E-13`: logical owner diagnostic families and their field contract are materialized without inventing final registry IDs. Recovery creates zero admitted AST/HIR/MIR/API residue.
+<!-- POST_PR16_UNIT_END:E-13 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-01 -->
+```json
+{
+    "id":  "X-01",
+    "target":  "construct selection guidance",
+    "controlling_rule":  "selection uses identity, openness, multiplicity, lifecycle, and structural intent and yields one owner or explicit composition",
+    "guard":  "guidance-only; no syntax or identity generation",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-01 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-02 -->
+```json
+{
+    "id":  "X-02",
+    "target":  "sealed Class versus Enum coverage",
+    "controlling_rule":  "shared coverage algebra preserves owner identity; a Class subtype cell never equals a VariantId",
+    "guard":  "equal coverage does not imply equal construction, layout, dispatch, or evolution",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-02 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-03 -->
+```json
+{
+    "id":  "X-03",
+    "target":  "data/value Class versus one-case Enum",
+    "controlling_rule":  "each retains its nominal owner and intent; crossing uses an explicit conversion",
+    "guard":  "no transparent ABI, synthesis, zero-cost, or recommendation follows",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-03 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-04 -->
+```json
+{
+    "id":  "X-04",
+    "target":  "Class field versus active Enum payload",
+    "controlling_rule":  "Class lifetime fields and Variant-active payload places retain distinct owner states",
+    "guard":  "shared vocabulary cannot merge visibility, initialization, mutability, or inactive-place rules",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-04 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-05 -->
+```json
+{
+    "id":  "X-05",
+    "target":  "construction domains",
+    "controlling_rule":  "Class construction, Enum formation, and schema materialization use distinct plan IDs and failure/cleanup contracts",
+    "guard":  "shared labeled-input vocabulary cannot alias authorities",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-05 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-06 -->
+```json
+{
+    "id":  "X-06",
+    "target":  "dispatch domains",
+    "controlling_rule":  "ClassSlotId virtual dispatch, VariantId partition/switch, direct final Enum calls, and TraitWitnessId calls remain distinct",
+    "guard":  "matching creates no slot and virtual calls establish no finite partition",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-06 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-07 -->
+```json
+{
+    "id":  "X-07",
+    "target":  "Trait evidence across owners",
+    "controlling_rule":  "one whole-nominal evidence origin; subclass and Enum case membership create or replace zero witnesses",
+    "guard":  "current lowercase via unchanged; AUTO/VIA/specialization/child-case replacement inactive",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-07 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-08 -->
+```json
+{
+    "id":  "X-08",
+    "target":  "nominal, structural, and extension boundary",
+    "controlling_rule":  "crossing identity domains is explicit and states ownership transfer and failure",
+    "guard":  "shape equality creates no nominal identity; extensions add no storage/case/subtype/replacement/witness",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-08 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-09 -->
+```json
+{
+    "id":  "X-09",
+    "target":  "shared partition core",
+    "controlling_rule":  "PatternPartitionCore consumes owner ID, universe, owner-tagged cells, deconstruction, and guards and computes algebra only",
+    "guard":  "no owner universe, construction, evaluation, ownership, cleanup, lifecycle, layout, dispatch, or evolution authority",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-09 -->
+
+<!-- POST_PR16_UNIT_BEGIN:X-10 -->
+```json
+{
+    "id":  "X-10",
+    "target":  "typed identity and residue",
+    "controlling_rule":  "semantic, representation, artifact, and Git identities remain disjoint except by explicit typed mapping; eight lanes remain independent",
+    "guard":  "VariantId is not ordinal/tag/discriminant/layout/ABI; hashes are not semantic IDs",
+    "consumes_owner_closed_input":  true
+}
+```
+<!-- POST_PR16_UNIT_END:X-10 -->
+
+<!-- POST_PR16_UNIT_BEGIN:PC-09 -->
+```json
+{
+    "id":  "PC-09",
+    "disposition":  "AMEND",
+    "preliminary_disposition":  "AMEND",
+    "selected_option":  "OWNER_COLLISION_PLUS_TRAIT_FAIL_CLOSED_TIERS",
+    "controlling_rule":  "same reached-tier multiplicity is ambiguity; explicit failure or ambiguity is terminal; lower tiers are NOT_EVALUATED; fallback and order-winner counts are zero",
+    "current_guard":  "current lowercase via remains unchanged and provider/source/import/discovery order never ranks",
+    "successor_guard":  "DefaultSet remains empty and AUTO/VIA/specialization remain inactive until separate authority",
+    "source_evidence_trace":  [
+                                  "Spec Normative Rule PC-09",
+                                  "Wave1 refinement CE-W1-R009",
+                                  "Final Controlling Delta pc09",
+                                  "R1 PC09/PC10 Schema pc09"
+                              ]
+}
+```
+<!-- POST_PR16_UNIT_END:PC-09 -->
+
+<!-- POST_PR16_UNIT_BEGIN:PC-10 -->
+```json
+{
+    "id":  "PC-10",
+    "disposition":  "AMEND",
+    "preliminary_disposition":  "AMEND",
+    "selected_option":  "PROFILE_SCOPED_EIGHT_INDEPENDENT_LANES",
+    "controlling_rule":  "source, resolution, behavior, serialization, runtime_layout, foreign_ABI, tooling_reflection, and product are independent records",
+    "current_guard":  "no current semantic or representation promise is inferred across lanes",
+    "successor_guard":  "no overall_pass or sibling propagation; every PASS requires its own profile and receipt; product remains NOT_RUN",
+    "source_evidence_trace":  [
+                                  "Spec Normative Rule PC-10",
+                                  "Wave1 refinement CE-W1-R010",
+                                  "Final Controlling Delta pc10_lane_keys",
+                                  "R1 PC09/PC10 Schema pc10"
+                              ]
+}
+```
+<!-- POST_PR16_UNIT_END:PC-10 -->
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N001 -->
+```json
+{
+    "schema":  "deeplus.codex-design.static-first-dynamic-decision-map.r1",
+    "status":  "LOCAL_NONCANONICAL_NONACTIVATABLE",
+    "teaching_rule":  "Choose the narrowest mechanism whose precondition matches source intent; evaluate only the mechanism and authority written in source.",
+    "decision_law":  {
+                         "source_selected_mechanism_count_per_row":  1,
+                         "compiler_retry_count":  0,
+                         "automatic_fallback_count":  0,
+                         "expected_type_route_selection_count":  0,
+                         "order_winner_count":  0
+                     },
+    "rows":  [
+                 {
+                     "id":  "UC-01",
+                     "intent":  "represent known finite alternatives",
+                     "selected_source_mechanism":  "Enum, closed union, or sealed Class",
+                     "dynamic_necessity":  "NONE",
+                     "explicit_authority":  "type definition and match owner",
+                     "failure":  "static exhaustiveness error",
+                     "cleanup":  "ordinary lexical cleanup",
+                     "user_selected_alternative":  "sealed Class when hierarchy identity is intended",
+                     "impossible_case":  "implicit type erasure or automatic heterogeneous join",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-02",
+                     "intent":  "use a known capability without concrete identity",
+                     "selected_source_mechanism":  "current borrow Facet or any Trait",
+                     "dynamic_necessity":  "NONE",
+                     "explicit_authority":  "admitted nominal conformance and source lifetime",
+                     "failure":  "static formation rejection",
+                     "cleanup":  "view ends without owning the payload",
+                     "user_selected_alternative":  "nominal adapter",
+                     "impossible_case":  "raw witness or bare Trait value",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-03",
+                     "intent":  "share reusable helper behavior",
+                     "selected_source_mechanism":  "lexical extension",
+                     "dynamic_necessity":  "NONE",
+                     "explicit_authority":  "import and lexical scope",
+                     "failure":  "static missing or ambiguous member error",
+                     "cleanup":  "none beyond underlying value",
+                     "user_selected_alternative":  "adapter plus Facet when capability must be carried as data",
+                     "impossible_case":  "extension becoming a runtime witness or dynamic dispatch authority",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-04",
+                     "intent":  "decode JSON-shaped data",
+                     "selected_source_mechanism":  "JsonValue or schema decoder",
+                     "dynamic_necessity":  "DATA_LEVEL_ONLY",
+                     "explicit_authority":  "decoder or schema",
+                     "failure":  "Result with path-aware decode error",
+                     "cleanup":  "partial construction cleans normally",
+                     "user_selected_alternative":  "generated schema or command model",
+                     "impossible_case":  "Plain, Map, or object acting as universal Dyn",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-05",
+                     "intent":  "receive an unknown value from a plugin",
+                     "selected_source_mechanism":  "explicit owned Dyn pack",
+                     "dynamic_necessity":  "REQUIRED",
+                     "explicit_authority":  "pack operation plus owner, provenance and drop contract",
+                     "failure":  "transactional pack returns exact owner or cleans exactly once",
+                     "cleanup":  "named allocator and drop authority",
+                     "user_selected_alternative":  "owned Facet when capability is known; remains nonactivatable",
+                     "impossible_case":  "unknown allocator or drop authority",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-06",
+                     "intent":  "project a known capability from an unknown plugin value",
+                     "selected_source_mechanism":  "explicit immutable FacetRegistry\u003cTrait\u003e borrow projection",
+                     "dynamic_necessity":  "REQUIRED",
+                     "explicit_authority":  "registry parameter/context, static Trait, unique route and immutable snapshot",
+                     "failure":  "Result or Option; owner state explicit",
+                     "cleanup":  "borrow projection failure does not consume owner",
+                     "user_selected_alternative":  "nominal adapter at plugin boundary",
+                     "impossible_case":  "hidden global lookup, structural conformance, or runtime Trait-to-Facet creation",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-07",
+                     "intent":  "inspect or recover a known concrete type",
+                     "selected_source_mechanism":  "checked concrete borrow or owner-preserving downcast",
+                     "dynamic_necessity":  "ONLY_AFTER_EXPLICIT_DYN_PACK",
+                     "explicit_authority":  "static target type plus descriptor or owner authority",
+                     "failure":  "borrow returns checked failure; owned mismatch returns exact original owner",
+                     "cleanup":  "no owner loss and no double drop",
+                     "user_selected_alternative":  "closed union match",
+                     "impossible_case":  "unchecked recovery or owner destruction on failed recovery",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-08",
+                     "intent":  "associate stateful per-instance behavior",
+                     "selected_source_mechanism":  "explicit nominal adapter Facet",
+                     "dynamic_necessity":  "NONE_BY_DEFAULT",
+                     "explicit_authority":  "adapter owner and admitted conformance",
+                     "failure":  "explicit adapter construction error when applicable",
+                     "cleanup":  "drop or release the distinct Facet or adapter",
+                     "user_selected_alternative":  "caller-owned map; FacetStore only after necessity proof",
+                     "impossible_case":  "hidden original-object fields or global conformance mutation",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-09",
+                     "intent":  "invoke a runtime string-named operation",
+                     "selected_source_mechanism":  "command Enum or Trait; otherwise privileged reflection service",
+                     "dynamic_necessity":  "ONLY_FOR_RUNTIME_LABEL",
+                     "explicit_authority":  "reflection service and inspection authority",
+                     "failure":  "unknown, denied, ambiguous, or invocation error returned",
+                     "cleanup":  "service-defined and visible",
+                     "user_selected_alternative":  "visitor, strategy, or command adapter",
+                     "impossible_case":  "ordinary dynamic member lookup or static-looking completion",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-10",
+                     "intent":  "hot reload a provider route",
+                     "selected_source_mechanism":  "immutable registry snapshot",
+                     "dynamic_necessity":  "REQUIRED",
+                     "explicit_authority":  "plugin manager and registry snapshot lineage/epoch",
+                     "failure":  "build and validate before atomic snapshot publication",
+                     "cleanup":  "old snapshot and provider lease survive while referenced",
+                     "user_selected_alternative":  "new process or module",
+                     "impossible_case":  "retargeting an already-created Facet",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-11",
+                     "intent":  "transfer an open-world value across task or actor boundary",
+                     "selected_source_mechanism":  "owned carrier plus Transferable or Shareable proof",
+                     "dynamic_necessity":  "REQUIRED_FOR_OPEN_WORLD_PAYLOAD",
+                     "explicit_authority":  "boundary proof and owner",
+                     "failure":  "failed send retains owner; cancellation cleans exactly once",
+                     "cleanup":  "single-owner or explicit sharing law",
+                     "user_selected_alternative":  "serialize closed data",
+                     "impossible_case":  "borrow or inout Facet escape",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 },
+                 {
+                     "id":  "UC-12",
+                     "intent":  "cross an FFI boundary",
+                     "selected_source_mechanism":  "opaque handle wrapper",
+                     "dynamic_necessity":  "ONLY_AT_FOREIGN_BOUNDARY",
+                     "explicit_authority":  "named bridge, allocator, deallocator and target descriptor",
+                     "failure":  "retain or return handle, or clean exactly once",
+                     "cleanup":  "bridge-owned explicit rule",
+                     "user_selected_alternative":  "closed wrapper or nominal adapter",
+                     "impossible_case":  "numeric ID or ABI layout establishing Deeplus type identity",
+                     "compiler_retry_count":  0,
+                     "fallback_count":  0
+                 }
+             ],
+    "counts":  {
+                   "unique_use_cases":  12,
+                   "rows_with_one_selected_mechanism":  12,
+                   "compiler_retry":  0,
+                   "automatic_fallback":  0
+               },
+    "source_trace":  [
+                         "Devel_ UX Diagnostic Matrix use_cases UC-01..12",
+                         "Final Cross-Role Reconciliation sections 5, 6.6 and 7",
+                         "Controlling gate AT-SFD-UC"
+                     ]
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N001 -->
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N007 -->
+```json
+{
+    "schema":  "deeplus.codex-design.static-first-dynamic-diagnostic-oracle-binding.r1",
+    "status":  "LOCAL_NONCANONICAL_NONACTIVATABLE",
+    "immutable_source":  {
+                             "filename":  "Test_Deeplus_Static_First_Dynamic_Facet_Independent_Review_Pack_R1.zip",
+                             "bytes":  33472,
+                             "sha256":  "34a1864d555b45f8088d4c8d91685b8d424a91ea526135a422965e882e5a5536",
+                             "member":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json"
+                         },
+    "binding_policy":  "Each local row binds an exact immutable Test_ row identity to controlling Design_ precedence and, for core rows, the positive semantic-event phase crosswalk for the same guard. Source content is referenced, not reauthored.",
+    "diagnostic_authority":  "LOGICAL_FAMILY_AND_PRECEDENCE_ONLY_NO_ACTIVE_REGISTRY_CODES",
+    "precedence":  [
+                       {
+                           "rank":  1,
+                           "check":  "profile, source-surface and recovery admission",
+                           "suppresses":  "all later stages"
+                       },
+                       {
+                           "rank":  2,
+                           "check":  "static type, Trait, label, identity and ProjectionGoal formation",
+                           "suppresses":  "registry, ownership and escape stages"
+                       },
+                       {
+                           "rank":  3,
+                           "check":  "explicit dynamic boundary and registry/inspection authority presence",
+                           "suppresses":  "route/no-route and structural diagnostics"
+                       },
+                       {
+                           "rank":  4,
+                           "check":  "admitted conformance/adapter, normalized key, duplicate and unique route",
+                           "suppresses":  "mode/loan/result checks"
+                       },
+                       {
+                           "rank":  5,
+                           "check":  "mode, PlaceId, owner, region, transaction and lifetime",
+                           "suppresses":  "responsibility/failure postconditions"
+                       },
+                       {
+                           "rank":  6,
+                           "check":  "effects, errors, suspension, isolation and cleanup",
+                           "suppresses":  "visible failure selection"
+                       },
+                       {
+                           "rank":  7,
+                           "check":  "visible failure/result handling",
+                           "suppresses":  "reflection/ABI/product diagnostics"
+                       },
+                       {
+                           "rank":  8,
+                           "check":  "reflection, serialization, ABI privacy and product-claim boundary",
+                           "suppresses":  "none"
+                       }
+                   ],
+    "tie_break":  "canonical semantic identity; never traversal/provider/import/source order",
+    "blocked_not_auditable_ids":  [
+                                      "SFD-FG-10-B",
+                                      "SFD-FG-11-B",
+                                      "SFD-FG-12-B",
+                                      "SFD-FG-18-B",
+                                      "SFD-FG-18-M",
+                                      "SFD-FG-21-B",
+                                      "SFD-FG-24-B",
+                                      "SFD-FG-28-B",
+                                      "SFD-PROP-001",
+                                      "SFD-PROP-006",
+                                      "SFD-PROP-010",
+                                      "SFD-PROP-017",
+                                      "SFD-PROP-018",
+                                      "SFD-PROP-019",
+                                      "SFD-PROP-021"
+                                  ],
+    "rows":  [
+                 {
+                     "oracle_id":  "SFD-FG-01-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-01",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-01-P",
+                     "controlling_rule_ref":  "SFD-FG-01-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-01-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-01-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-01-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-01",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-01-N",
+                     "controlling_rule_ref":  "SFD-FG-01-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-01-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-01-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-01-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-01",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-01-B",
+                     "controlling_rule_ref":  "SFD-FG-01-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-01-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-01-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-01-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-01",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-01-M",
+                     "controlling_rule_ref":  "SFD-FG-01-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-01-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-01-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-02-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-02",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-02-P",
+                     "controlling_rule_ref":  "SFD-FG-02-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-02-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-02-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-02-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-02",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-02-N",
+                     "controlling_rule_ref":  "SFD-FG-02-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-02-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-02-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-02-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-02",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-02-B",
+                     "controlling_rule_ref":  "SFD-FG-02-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-02-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-02-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-02-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-02",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-02-M",
+                     "controlling_rule_ref":  "SFD-FG-02-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-02-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-02-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-03-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-03",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-03-P",
+                     "controlling_rule_ref":  "SFD-FG-03-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-03-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-03-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-03-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-03",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-03-N",
+                     "controlling_rule_ref":  "SFD-FG-03-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-03-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-03-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-03-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-03",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-03-B",
+                     "controlling_rule_ref":  "SFD-FG-03-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-03-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-03-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-03-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-03",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-03-M",
+                     "controlling_rule_ref":  "SFD-FG-03-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-03-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-03-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-04-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-04",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-04-P",
+                     "controlling_rule_ref":  "SFD-FG-04-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-04-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-04-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-04-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-04",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-04-N",
+                     "controlling_rule_ref":  "SFD-FG-04-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-04-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-04-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-04-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-04",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-04-B",
+                     "controlling_rule_ref":  "SFD-FG-04-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-04-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-04-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-04-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-04",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-04-M",
+                     "controlling_rule_ref":  "SFD-FG-04-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-04-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-04-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-05-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-05",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-05-P",
+                     "controlling_rule_ref":  "SFD-FG-05-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-05-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-05-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-05-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-05",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-05-N",
+                     "controlling_rule_ref":  "SFD-FG-05-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-05-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-05-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-05-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-05",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-05-B",
+                     "controlling_rule_ref":  "SFD-FG-05-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-05-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-05-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-05-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-05",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-05-M",
+                     "controlling_rule_ref":  "SFD-FG-05-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-05-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-05-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-06-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-06",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-06-P",
+                     "controlling_rule_ref":  "SFD-FG-06-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-06-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-06-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-06-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-06",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-06-N",
+                     "controlling_rule_ref":  "SFD-FG-06-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-06-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-06-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-06-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-06",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-06-B",
+                     "controlling_rule_ref":  "SFD-FG-06-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-06-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-06-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-06-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-06",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-06-M",
+                     "controlling_rule_ref":  "SFD-FG-06-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-06-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-06-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-07-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-07",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-07-P",
+                     "controlling_rule_ref":  "SFD-FG-07-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-07-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-07-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-07-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-07",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-07-N",
+                     "controlling_rule_ref":  "SFD-FG-07-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-07-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-07-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-07-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-07",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-07-B",
+                     "controlling_rule_ref":  "SFD-FG-07-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-07-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-07-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-07-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-07",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-07-M",
+                     "controlling_rule_ref":  "SFD-FG-07-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-07-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-07-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-08-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-08",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-08-P",
+                     "controlling_rule_ref":  "SFD-FG-08-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-08-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-08-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-08-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-08",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-08-N",
+                     "controlling_rule_ref":  "SFD-FG-08-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-08-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-08-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-08-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-08",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-08-B",
+                     "controlling_rule_ref":  "SFD-FG-08-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-08-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-08-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-08-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-08",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-08-M",
+                     "controlling_rule_ref":  "SFD-FG-08-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-08-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-08-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-09-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-09",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-09-P",
+                     "controlling_rule_ref":  "SFD-FG-09-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-09-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-09-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-09-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-09",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-09-N",
+                     "controlling_rule_ref":  "SFD-FG-09-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-09-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-09-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-09-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-09",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-09-B",
+                     "controlling_rule_ref":  "SFD-FG-09-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-09-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-09-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-09-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-09",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-09-M",
+                     "controlling_rule_ref":  "SFD-FG-09-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-09-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-09-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-10-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-10",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-10-P",
+                     "controlling_rule_ref":  "SFD-FG-10-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-10-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-10-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-10-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-10",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-10-N",
+                     "controlling_rule_ref":  "SFD-FG-10-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-10-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-10-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-10-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-10",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-10-B",
+                     "controlling_rule_ref":  "SFD-FG-10-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-10-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-10-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-10-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-10",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-10-M",
+                     "controlling_rule_ref":  "SFD-FG-10-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-10-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-10-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-11-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-11",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-11-P",
+                     "controlling_rule_ref":  "SFD-FG-11-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-11-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-11-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-11-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-11",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-11-N",
+                     "controlling_rule_ref":  "SFD-FG-11-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-11-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-11-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-11-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-11",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-11-B",
+                     "controlling_rule_ref":  "SFD-FG-11-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-11-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-11-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-11-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-11",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-11-M",
+                     "controlling_rule_ref":  "SFD-FG-11-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-11-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-11-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-12-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-12",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-12-P",
+                     "controlling_rule_ref":  "SFD-FG-12-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-12-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-12-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-12-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-12",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-12-N",
+                     "controlling_rule_ref":  "SFD-FG-12-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-12-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-12-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-12-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-12",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-12-B",
+                     "controlling_rule_ref":  "SFD-FG-12-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-12-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-12-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-12-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-12",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-12-M",
+                     "controlling_rule_ref":  "SFD-FG-12-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-12-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-12-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-13-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-13",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-13-P",
+                     "controlling_rule_ref":  "SFD-FG-13-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-13-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-13-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-13-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-13",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-13-N",
+                     "controlling_rule_ref":  "SFD-FG-13-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-13-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-13-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-13-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-13",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-13-B",
+                     "controlling_rule_ref":  "SFD-FG-13-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-13-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-13-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-13-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-13",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-13-M",
+                     "controlling_rule_ref":  "SFD-FG-13-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-13-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-13-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-14-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-14",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-14-P",
+                     "controlling_rule_ref":  "SFD-FG-14-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-14-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-14-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-14-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-14",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-14-N",
+                     "controlling_rule_ref":  "SFD-FG-14-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-14-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-14-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-14-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-14",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-14-B",
+                     "controlling_rule_ref":  "SFD-FG-14-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-14-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-14-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-14-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-14",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-14-M",
+                     "controlling_rule_ref":  "SFD-FG-14-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-14-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-14-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-15-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-15",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-15-P",
+                     "controlling_rule_ref":  "SFD-FG-15-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-15-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-15-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-15-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-15",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-15-N",
+                     "controlling_rule_ref":  "SFD-FG-15-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-15-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-15-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-15-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-15",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-15-B",
+                     "controlling_rule_ref":  "SFD-FG-15-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-15-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-15-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-15-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-15",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-15-M",
+                     "controlling_rule_ref":  "SFD-FG-15-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-15-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-15-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-16-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-16",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-16-P",
+                     "controlling_rule_ref":  "SFD-FG-16-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-16-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-16-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-16-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-16",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-16-N",
+                     "controlling_rule_ref":  "SFD-FG-16-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-16-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-16-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-16-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-16",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-16-B",
+                     "controlling_rule_ref":  "SFD-FG-16-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-16-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-16-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-16-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-16",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-16-M",
+                     "controlling_rule_ref":  "SFD-FG-16-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-16-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-16-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-17-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-17",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-17-P",
+                     "controlling_rule_ref":  "SFD-FG-17-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-17-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-17-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-17-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-17",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-17-N",
+                     "controlling_rule_ref":  "SFD-FG-17-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-17-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-17-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-17-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-17",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-17-B",
+                     "controlling_rule_ref":  "SFD-FG-17-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-17-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-17-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-17-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-17",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-17-M",
+                     "controlling_rule_ref":  "SFD-FG-17-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-17-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-17-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-18-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-18",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-18-P",
+                     "controlling_rule_ref":  "SFD-FG-18-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-18-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-18-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-18-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-18",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-18-N",
+                     "controlling_rule_ref":  "SFD-FG-18-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-18-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-18-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-18-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-18",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-18-B",
+                     "controlling_rule_ref":  "SFD-FG-18-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-18-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-18-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-18-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-18",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-18-M",
+                     "controlling_rule_ref":  "SFD-FG-18-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-18-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-18-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-19-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-19",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-19-P",
+                     "controlling_rule_ref":  "SFD-FG-19-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-19-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-19-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-19-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-19",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-19-N",
+                     "controlling_rule_ref":  "SFD-FG-19-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-19-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-19-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-19-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-19",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-19-B",
+                     "controlling_rule_ref":  "SFD-FG-19-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-19-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-19-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-19-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-19",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-19-M",
+                     "controlling_rule_ref":  "SFD-FG-19-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-19-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-19-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-20-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-20",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-20-P",
+                     "controlling_rule_ref":  "SFD-FG-20-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-20-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-20-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-20-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-20",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-20-N",
+                     "controlling_rule_ref":  "SFD-FG-20-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-20-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-20-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-20-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-20",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-20-B",
+                     "controlling_rule_ref":  "SFD-FG-20-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-20-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-20-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-20-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-20",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-20-M",
+                     "controlling_rule_ref":  "SFD-FG-20-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-20-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-20-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-21-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-21",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-21-P",
+                     "controlling_rule_ref":  "SFD-FG-21-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-21-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-21-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-21-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-21",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-21-N",
+                     "controlling_rule_ref":  "SFD-FG-21-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-21-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-21-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-21-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-21",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-21-B",
+                     "controlling_rule_ref":  "SFD-FG-21-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-21-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-21-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-21-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-21",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-21-M",
+                     "controlling_rule_ref":  "SFD-FG-21-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-21-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-21-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-22-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-22",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-22-P",
+                     "controlling_rule_ref":  "SFD-FG-22-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-22-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-22-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-22-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-22",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-22-N",
+                     "controlling_rule_ref":  "SFD-FG-22-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-22-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-22-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-22-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-22",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-22-B",
+                     "controlling_rule_ref":  "SFD-FG-22-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-22-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-22-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-22-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-22",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-22-M",
+                     "controlling_rule_ref":  "SFD-FG-22-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-22-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-22-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-23-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-23",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-23-P",
+                     "controlling_rule_ref":  "SFD-FG-23-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-23-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-23-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-23-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-23",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-23-N",
+                     "controlling_rule_ref":  "SFD-FG-23-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-23-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-23-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-23-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-23",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-23-B",
+                     "controlling_rule_ref":  "SFD-FG-23-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-23-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-23-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-23-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-23",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-23-M",
+                     "controlling_rule_ref":  "SFD-FG-23-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-23-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-23-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-24-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-24",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-24-P",
+                     "controlling_rule_ref":  "SFD-FG-24-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-24-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-24-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-24-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-24",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-24-N",
+                     "controlling_rule_ref":  "SFD-FG-24-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-24-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-24-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-24-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-24",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-24-B",
+                     "controlling_rule_ref":  "SFD-FG-24-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-24-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-24-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-24-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-24",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-24-M",
+                     "controlling_rule_ref":  "SFD-FG-24-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-24-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-24-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-25-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-25",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-25-P",
+                     "controlling_rule_ref":  "SFD-FG-25-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-25-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-25-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-25-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-25",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-25-N",
+                     "controlling_rule_ref":  "SFD-FG-25-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-25-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-25-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-25-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-25",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-25-B",
+                     "controlling_rule_ref":  "SFD-FG-25-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-25-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-25-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-25-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-25",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-25-M",
+                     "controlling_rule_ref":  "SFD-FG-25-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-25-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-25-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-26-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-26",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-26-P",
+                     "controlling_rule_ref":  "SFD-FG-26-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-26-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-26-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-26-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-26",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-26-N",
+                     "controlling_rule_ref":  "SFD-FG-26-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-26-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-26-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-26-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-26",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-26-B",
+                     "controlling_rule_ref":  "SFD-FG-26-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-26-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-26-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-26-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-26",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-26-M",
+                     "controlling_rule_ref":  "SFD-FG-26-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-26-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-26-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-27-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-27",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-27-P",
+                     "controlling_rule_ref":  "SFD-FG-27-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-27-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-27-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-27-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-27",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-27-N",
+                     "controlling_rule_ref":  "SFD-FG-27-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-27-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-27-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-27-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-27",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-27-B",
+                     "controlling_rule_ref":  "SFD-FG-27-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-27-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-27-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-27-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-27",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-27-M",
+                     "controlling_rule_ref":  "SFD-FG-27-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-27-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-27-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-28-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-28",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-28-P",
+                     "controlling_rule_ref":  "SFD-FG-28-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-28-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-28-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-28-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-28",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-28-N",
+                     "controlling_rule_ref":  "SFD-FG-28-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-28-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-28-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-28-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-28",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-28-B",
+                     "controlling_rule_ref":  "SFD-FG-28-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-28-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-28-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-28-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-28",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-28-M",
+                     "controlling_rule_ref":  "SFD-FG-28-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-28-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-28-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-29-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-29",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-29-P",
+                     "controlling_rule_ref":  "SFD-FG-29-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-29-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-29-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-29-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-29",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-29-N",
+                     "controlling_rule_ref":  "SFD-FG-29-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-29-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-29-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-29-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-29",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-29-B",
+                     "controlling_rule_ref":  "SFD-FG-29-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-29-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-29-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-29-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-29",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-29-M",
+                     "controlling_rule_ref":  "SFD-FG-29-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-29-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-29-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-30-P",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-30",
+                     "kind":  "positive",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-30-P",
+                     "controlling_rule_ref":  "SFD-FG-30-P.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-30-P.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-30-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-30-N",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-30",
+                     "kind":  "negative",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-30-N",
+                     "controlling_rule_ref":  "SFD-FG-30-N.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-30-N.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-30-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-30-B",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-30",
+                     "kind":  "boundary",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-30-B",
+                     "controlling_rule_ref":  "SFD-FG-30-B.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-30-B.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-30-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-FG-30-M",
+                     "source_kind":  "CORE",
+                     "guard_id":  "FG-30",
+                     "kind":  "mutation",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/core_oracles/SFD-FG-30-M",
+                     "controlling_rule_ref":  "SFD-FG-30-M.guard_rule",
+                     "owner_dependency_acceptance_ref":  "SFD-FG-30-M.authority_owner+dependencies+expected_outcome",
+                     "event_crosswalk_ref":  "07_Semantic_Event_Impl_Phase_Crosswalk_R1.json#/SFD-FG-30-P",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-001",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-001",
+                     "controlling_rule_ref":  "SFD-PROP-001.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-001.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-001",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-002",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-002",
+                     "controlling_rule_ref":  "SFD-PROP-002.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-002.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-002",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-003",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-003",
+                     "controlling_rule_ref":  "SFD-PROP-003.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-003.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-003",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-004",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-004",
+                     "controlling_rule_ref":  "SFD-PROP-004.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-004.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-004",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-005",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-005",
+                     "controlling_rule_ref":  "SFD-PROP-005.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-005.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-005",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-006",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-006",
+                     "controlling_rule_ref":  "SFD-PROP-006.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-006.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-006",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-007",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-007",
+                     "controlling_rule_ref":  "SFD-PROP-007.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-007.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-007",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-008",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-008",
+                     "controlling_rule_ref":  "SFD-PROP-008.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-008.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-008",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-009",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-009",
+                     "controlling_rule_ref":  "SFD-PROP-009.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-009.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-009",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-010",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-010",
+                     "controlling_rule_ref":  "SFD-PROP-010.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-010.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-010",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-011",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-011",
+                     "controlling_rule_ref":  "SFD-PROP-011.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-011.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-011",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-012",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-012",
+                     "controlling_rule_ref":  "SFD-PROP-012.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-012.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-012",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-013",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-013",
+                     "controlling_rule_ref":  "SFD-PROP-013.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-013.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-013",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-014",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-014",
+                     "controlling_rule_ref":  "SFD-PROP-014.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-014.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-014",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-015",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-015",
+                     "controlling_rule_ref":  "SFD-PROP-015.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-015.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-015",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-016",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-016",
+                     "controlling_rule_ref":  "SFD-PROP-016.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-016.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-016",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-017",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-017",
+                     "controlling_rule_ref":  "SFD-PROP-017.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-017.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-017",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-018",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-018",
+                     "controlling_rule_ref":  "SFD-PROP-018.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-018.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-018",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-019",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-019",
+                     "controlling_rule_ref":  "SFD-PROP-019.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-019.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-019",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-020",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-020",
+                     "controlling_rule_ref":  "SFD-PROP-020.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-020.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-020",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "STATIC_LOGICAL_BINDING",
+                     "execution_status":  "NOT_RUN"
+                 },
+                 {
+                     "oracle_id":  "SFD-PROP-021",
+                     "source_kind":  "PROPERTY",
+                     "immutable_source_row_ref":  "Test_Deeplus_Static_First_Dynamic_Facet_Oracle_Matrix_R1.json#/metamorphic_property_tests/SFD-PROP-021",
+                     "controlling_rule_ref":  "SFD-PROP-021.property+transformation+expected",
+                     "owner_dependency_acceptance_ref":  "SFD-PROP-021.dependency+expected",
+                     "event_crosswalk_ref":  null,
+                     "property_binding_ref":  "PROPERTY:SFD-PROP-021",
+                     "diagnostic_binding_ref":  "FINAL_CONTROLLING_PRECEDENCE_PLUS_EXACT_TEST_ROW",
+                     "future_registry_code_or_null":  null,
+                     "binding_state":  "NOT_AUDITABLE",
+                     "execution_status":  "NOT_RUN"
+                 }
+             ],
+    "counts":  {
+                   "core":  120,
+                   "property":  21,
+                   "total":  141,
+                   "unique":  141,
+                   "static_judgeable":  126,
+                   "not_auditable":  15,
+                   "logical_binding_orphan_count":  0,
+                   "event_crosswalk_core_orphan_count":  0,
+                   "executed":  0,
+                   "active_registry_codes":  0,
+                   "product_pass":  0
+               },
+    "guards":  {
+                   "designed_oracle_is_product_pass":  false,
+                   "file_presence_closes_p1":  false,
+                   "formatter_lsp_implementation_claim_count":  0
+               }
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N007 -->
