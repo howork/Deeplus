@@ -4310,6 +4310,22 @@ let accented: Char = 'e\u{0301}'
 let bad: Char = '\u{D800}'
 // CHAR_LITERAL_SURROGATE_FORBIDDEN
 ```
+## EX-R49B-CHAR-005 — Empty Char literal is rejected
+
+- **source_feature_ids:** `char_unicode_scalar_value_model`, `unicode_char_literal_single_quote_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `CHAR_LITERAL_EMPTY`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let empty: Char = ''
+// CHAR_LITERAL_EMPTY
+```
 ## EX-R49B-CLASS-001 — Plain concrete class is final
 
 - **source_feature_ids:** `class_final_by_default`

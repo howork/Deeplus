@@ -285,10 +285,12 @@ Cargo는 workspace 전체 unit, integration, documentation test를 공통 명령
 - package self-contained closure
 - release manifest와 checksum
 - SBOM와 provenance
-- 두 환경의 reproducible build 비교
+- 서로 다른 두 환경의 receipt를 결합한 reproducible build 비교
 - 각 주요 역할의 signed-off report
 
 재현 가능한 빌드는 같은 source, environment, instruction에서 bit-for-bit 동일한 artifact를 재생성하는 것으로 정의하고 hash로 비교한다. [Reproducible Builds definition](https://reproducible-builds.org/docs/definition/)
+
+source content-tree SHA-256은 압축 환경과 독립된 source identity이고, ZIP byte SHA-256은 OS, Python, zlib, zipfile 및 builder fingerprint가 결합된 환경 범위 identity이다. 같은 관찰 환경에서 두 번 byte-identical한 결과는 `SAME_OBSERVED_ENVIRONMENT_REPEAT_PASS`만 입증하며, 실제로 서로 다른 두 environment receipt의 pairwise 비교 전까지 cross-environment byte identity는 `NOT_ESTABLISHED`이다. 이 tooling evidence는 product lane 실행 또는 PASS를 뜻하지 않는다.
 
 SLSA는 source와 build provenance를 단계적으로 강화하는 기준으로 사용하되 초기부터 최고 level을 주장하지 않는다. 첫 목표는 자동화된 build provenance와 검증 가능한 source revision이다. [SLSA v1.2](https://slsa.dev/spec/v1.2/)
 

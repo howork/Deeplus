@@ -354,7 +354,6 @@
     "diagnostic_refs": [
       "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE",
       "MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE",
-      "MULTILINE_STRING_INDENT_PREFIX_MISMATCH",
       "RAW_MULTILINE_STRING_NOT_CURRENT"
     ],
     "design_seed_diagnostic_refs": [],
@@ -363,8 +362,7 @@
       "validate scanner outcome and physical-line facts",
       "reject missing opener newline",
       "reject off-line closer",
-      "compute exact common indent prefix",
-      "reject indent mismatch"
+      "compute and apply the longest exact common indentation prefix of nonblank content lines"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -383,16 +381,14 @@
       "validate scanner outcome and physical-line facts",
       "reject missing opener newline",
       "reject off-line closer",
-      "compute exact common indent prefix",
-      "reject indent mismatch"
+      "compute and apply the longest exact common indentation prefix of nonblank content lines"
     ],
     "normalization": "owner-specific normalization only; no generic RCTS shell may emit a product diagnostic",
     "decision_procedure": [
       "validate scanner outcome and physical-line facts",
       "reject missing opener newline",
       "reject off-line closer",
-      "compute exact common indent prefix",
-      "reject indent mismatch",
+      "compute and apply the longest exact common indentation prefix of nonblank content lines",
       "admit only after escape/interpolation parts are valid"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
@@ -400,7 +396,6 @@
     "active_primary_diagnostic": "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE",
     "secondary_diagnostics": [
       "MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE",
-      "MULTILINE_STRING_INDENT_PREFIX_MISMATCH",
       "RAW_MULTILINE_STRING_NOT_CURRENT"
     ],
     "positive_fixture_ids": [

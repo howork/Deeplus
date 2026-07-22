@@ -16,10 +16,10 @@ from typing import Any
 
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
-SUCCESSOR_REVISION = "r51f3-post-pr16-preview-design-r4"
+SUCCESSOR_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
 EXCLUDED_TREE_PARTS = {".git", "target", "dist", "__pycache__"}
 EXPECTED = {
-    "features": 681, "diagnostics": 1251, "predicates": 245,
+    "features": 681, "diagnostics": 1250, "predicates": 245,
     "predicate_fixtures": 763, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
@@ -74,9 +74,9 @@ SUPPLEMENTAL_MIR_FEATURE_IDS = (
 MATCH_GUARD_FIXIT = "combine predicates into one Bool guard or remove the extra guard"
 FROZEN_UNCHANGED_SEMANTIC_HASHES = {
     "spec/grammar/deeplus.ebnf": "c844f1422b17001d279e7eeb897ad320dd780513de0b93297c986cec69916c72",
-    "spec/frontend/frontend-model.json": "2932c1a7c6f1f933ad1a51d8043f4c583833484a8123c6e0e71782a15d0ce1a9",
+    "spec/frontend/frontend-model.json": "8dc54dca8bc16b22fe07824260c193d5da43b449cc408535290dd420f1bf53bb",
     "spec/types/type-system.md": "17ac6b139b0ffc422b091ef97ba900fe9f028400034f3e73534bb5d6c1fdae4a",
-    "library/prelude/prelude.md": "71182fc438f64dcae39570824ee479a3f2b402a207f12712593cda108bb63cba",
+    "library/prelude/prelude.md": "41d4bdefb110dd4c648b986cca2a4b3ef26760d1f0ced321d4e6d0ce05249a8f",
 }
 EXPECTED_POINTER_KEYS = {
     "schema", "updated_at", "language_version", "spec_revision",
@@ -100,9 +100,27 @@ SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
 ]
 SUCCESSOR_CANONICAL_DELTA_PATHS = {
     "spec/language.md",
+    "spec/frontend/frontend-model.json",
     "spec/types/type-system.md",
     "spec/mir/semantics.md",
     "decisions/language/current-decisions.json",
+    "library/prelude/prelude.md",
+    "examples/guide/review-corpus.md",
+    "examples/manifests/by-outcome/catalog-metadata.json",
+    *(f"examples/manifests/by-outcome/chunks/part-{index:04d}.json" for index in range(5, 15)),
+    "tests/conformance/surface/rejected/catalog-metadata.json",
+    "tests/conformance/surface/rejected/chunks/part-0001.json",
+    "tests/conformance/surface/rejected/chunks/part-0002.json",
+    "library/prelude/signatures/catalog-metadata.json",
+    "library/prelude/signatures/chunks/part-0001.json",
+    "spec/diagnostics/catalog/catalog-metadata.json",
+    "spec/diagnostics/catalog/chunks/part-0011.json",
+    "spec/diagnostics/relations/catalog-metadata.json",
+    "spec/diagnostics/relations/chunks/part-0001.json",
+    "spec/features/catalog/chunks/part-0002.json",
+    "spec/features/catalog/chunks/part-0004.json",
+    "spec/features/catalog/chunks/part-0018.json",
+    "spec/types/predicates/chunks/part-0004.json",
 }
 EXPR_AUTHORITY = "governance/policies/management-policy.yaml#EXPR-001"
 EXPR_DIGEST = "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39"
@@ -165,6 +183,34 @@ def walk_refs(value: Any) -> list[str]:
         for child in value:
             refs.extend(walk_refs(child))
     return refs
+
+
+def scalar_occurrences(value: Any, needle: str) -> int:
+    if isinstance(value, dict):
+        return sum(scalar_occurrences(child, needle) for child in value.values())
+    if isinstance(value, list):
+        return sum(scalar_occurrences(child, needle) for child in value)
+    return int(value == needle)
+
+
+def longest_exact_indent_prefix(lines: list[str]) -> str:
+    prefixes: list[str] = []
+    for line in lines:
+        if not isinstance(line, str):
+            return "\0INVALID"
+        prefix = line[: len(line) - len(line.lstrip(" \t"))]
+        if line[len(prefix):]:
+            prefixes.append(prefix)
+    if not prefixes:
+        return ""
+    common = prefixes[0]
+    for prefix in prefixes[1:]:
+        limit = min(len(common), len(prefix))
+        index = 0
+        while index < limit and common[index] == prefix[index]:
+            index += 1
+        common = common[:index]
+    return common
 
 
 def main() -> int:
@@ -498,6 +544,29 @@ def main() -> int:
     feature_by_id = {row.get("feature_id"): row for row in feature_rows}
     diagnostic_by_id = {row.get("diagnostic_id"): row for row in diagnostic_rows}
     predicate_by_id = {row.get("predicate_id"): row for row in predicate_rows}
+    empty_char = active_by_id.get("EX-R49B-CHAR-005", {})
+    empty_char_surface = next(
+        (row for row in rejected if row.get("example_id") == "EX-R49B-CHAR-005"),
+        {},
+    )
+    empty_char_features = {
+        "char_unicode_scalar_value_model",
+        "unicode_char_literal_single_quote_msp",
+    }
+    empty_char_sha = "57f7a0556e0351b914052e202e272fbf8c801a26dbc3e34179cf1b886c817399"
+    check(
+        empty_char.get("expected_outcome") == "reject"
+        and empty_char.get("primary_diagnostic") == "CHAR_LITERAL_EMPTY"
+        and set(empty_char.get("feature_ids", [])) == empty_char_features
+        and empty_char.get("code_sha256") == empty_char_sha
+        and empty_char.get("parser_status") == "not_run"
+        and empty_char.get("checker_status") == "not_run"
+        and empty_char_surface.get("primary_diagnostic") == "CHAR_LITERAL_EMPTY"
+        and set(empty_char_surface.get("feature_ids", [])) == empty_char_features
+        and empty_char_surface.get("code_sha256") == empty_char_sha,
+        "CMA_EMPTY_CHAR_EXAMPLE",
+        str(empty_char.get("example_id")),
+    )
     required_set = set(REQUIRED_FEATURE_IDS)
     check(
         len(REQUIRED_FEATURE_IDS) == 20
@@ -883,9 +952,14 @@ def main() -> int:
             "POINTER_SNAPSHOT_BINDING", str(snapshot),
         )
         predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
+        expected_predecessor = (
+            "r51f3-post-pr16-preview-design-r4"
+            if revision == SUCCESSOR_REVISION
+            else predecessor_receipt.get("predecessor_revision")
+        )
         check(
             predecessor_receipt.get("result") == "PASS_DIRECT_BYTES"
-            and pointer.get("previous_pointer") == predecessor_receipt.get("predecessor_revision")
+            and pointer.get("previous_pointer") == expected_predecessor
             and bool(re.fullmatch(r"[0-9a-f]{64}", predecessor_receipt.get("pointer_object", {}).get("sha256", ""))),
             "POINTER_PREDECESSOR_BINDING", str(pointer.get("previous_pointer")),
         )
@@ -934,6 +1008,81 @@ def main() -> int:
 
     language = (root / "spec/language.md").read_text(encoding="utf-8")
     grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
+    frontend = parsed.get(root / "spec/frontend/frontend-model.json", {})
+    check(
+        scalar_occurrences(frontend, "FlowBindingArrow") == 1
+        and scalar_occurrences(frontend, "FlowBinding") == 0,
+        "CMA_FLOW_BINDING_PROJECTION",
+        "CST FlowBindingArrow=1; semantic FlowBinding=0",
+    )
+    prelude_rows = rows(
+        "deeplus-0.1.2-baseline-r51f3-prelude-signature-catalog.json", "entries"
+    )
+    forbidden_public_trees = {"RawAst", "ResolvedAst", "TypedAst<T,R>"}
+    check(
+        len(prelude_rows) == 49
+        and not forbidden_public_trees.intersection(
+            {row.get("symbol") for row in prelude_rows}
+        )
+        and all(symbol not in (root / "library/prelude/prelude.md").read_text(encoding="utf-8") for symbol in forbidden_public_trees),
+        "CMA_COMPILER_TREE_BOUNDARY",
+        f"prelude_entries={len(prelude_rows)}",
+    )
+    retired_multiline_diagnostic = "MULTILINE_STRING_INDENT_PREFIX_MISMATCH"
+    diagnostic_relation_rows = rows(
+        "deeplus-0.1.2-baseline-r51f3-diagnostic-relation-registry.json",
+        "relations",
+    )
+    check(
+        retired_multiline_diagnostic not in language
+        and all(row.get("diagnostic_id") != retired_multiline_diagnostic for row in diagnostic_rows)
+        and all(row.get("diagnostic_id") != retired_multiline_diagnostic for row in diagnostic_relation_rows)
+        and all(retired_multiline_diagnostic not in json.dumps(row, ensure_ascii=False) for row in feature_rows)
+        and all(retired_multiline_diagnostic not in json.dumps(row, ensure_ascii=False) for row in predicate_rows),
+        "CMA_MULTILINE_DIAGNOSTIC_RETIRED",
+        retired_multiline_diagnostic,
+    )
+    lcp_fixtures = parsed.get(
+        root / "tests/fixtures/current/multiline-string-lcp-r1.json", {}
+    )
+    lcp_cases = lcp_fixtures.get("cases", [])
+    lcp_ids = [row.get("fixture_id") for row in lcp_cases if isinstance(row, dict)]
+    lcp_valid = (
+        lcp_fixtures.get("schema") == "deeplus.multiline-string-lcp-fixtures/r1"
+        and lcp_fixtures.get("authority") == "CMA-R1-A003"
+        and lcp_fixtures.get("evidence_status") == "DESIGN_STATIC_NOT_RUN"
+        and lcp_fixtures.get("product_support") == "NOT_RUN"
+        and len(lcp_cases) == len(set(lcp_ids)) == 6
+    )
+    for row in lcp_cases:
+        if not isinstance(row, dict):
+            lcp_valid = False
+            continue
+        lines = row.get("content_lines", [])
+        expected_prefix = longest_exact_indent_prefix(lines) if isinstance(lines, list) else "\0INVALID"
+        dedented = [
+            "" if not line.lstrip(" \t") else line[len(expected_prefix):]
+            for line in lines
+        ] if isinstance(lines, list) and expected_prefix != "\0INVALID" else []
+        lcp_valid = lcp_valid and (
+            row.get("line_ending") in {"LF", "CRLF"}
+            and isinstance(row.get("terminal_content_line_break"), bool)
+            and row.get("expected_common_prefix") == expected_prefix
+            and row.get("expected_dedented_lines") == dedented
+            and row.get("expected_outcome") == "accept"
+            and row.get("expected_primary_diagnostic") is None
+        )
+    lcp_by_id = {row.get("fixture_id"): row for row in lcp_cases if isinstance(row, dict)}
+    for left, right in (
+        ("LCP-LF-PARITY", "LCP-CRLF-PARITY"),
+        ("LCP-NO-TRAILING-CONTENT-NEWLINE", "LCP-TRAILING-CONTENT-NEWLINE"),
+    ):
+        a, b = lcp_by_id.get(left, {}), lcp_by_id.get(right, {})
+        lcp_valid = lcp_valid and all(
+            a.get(field) == b.get(field)
+            for field in ("content_lines", "expected_common_prefix", "expected_dedented_lines")
+        )
+    check(lcp_valid, "CMA_MULTILINE_LCP_FIXTURES", f"cases={len(lcp_cases)}")
     check("| `*` | call-side positional unfold" in language and 'PositionalUnfoldArgument ::= "*" Expr ;' in grammar, "POSITIONAL_UNFOLD_OWNER", "* in spec and grammar")
     check("repeated positional parameter/type residue and positional unfold" not in language, "POSITIONAL_UNFOLD_NO_ELLIPSIS", "... is not call-side unfold")
     probes = ["options***: Record", "Record***", "**options", "let#lazy", "sealed class"]
@@ -948,7 +1097,31 @@ def main() -> int:
     for path in memories:
         capsule = parsed.get(path, {})
         check(len(capsule.get("current_facts", [])) <= 50 and len(capsule.get("open_actions", [])) <= 30 and len(capsule.get("watch_items", [])) <= 20 and path.stat().st_size <= 102400, "ROLE_MEMORY_CAP", path.name)
-        check(capsule.get("source_revision") == LEGACY_REVISION and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
+        check(capsule.get("source_revision") == revision and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
+        facts_by_id = {
+            row.get("id"): row
+            for row in capsule.get("current_facts", [])
+            if isinstance(row, dict)
+        }
+        memory_action_ids = {
+            row.get("id")
+            for row in capsule.get("open_actions", [])
+            if isinstance(row, dict)
+        }
+        check(
+            set(facts_by_id) == {
+                "ARCH-001", "EVID-001", "PUB-001", "P1-001",
+                "CMA-001", "MIRX1-001", "EXPR-001",
+            }
+            and "22 total" in facts_by_id.get("P1-001", {}).get("statement", "")
+            and "15 product lanes remain NOT_RUN" in facts_by_id.get("EVID-001", {}).get("statement", "")
+            and facts_by_id.get("CMA-001", {}).get("introduced") == revision
+            and "Issue #24 remains open" in facts_by_id.get("MIRX1-001", {}).get("statement", "")
+            and memory_action_ids <= {"M13-A002", "M13-A005", "M13-TEST-001"}
+            and not {"M13-IMPL-A004", "M13-DEVEL-001"}.intersection(memory_action_ids),
+            "CMA_ROLE_MEMORY_ROTATION",
+            path.name,
+        )
         expr_rows = [row for row in capsule.get("current_facts", []) if row.get("id") == "EXPR-001"]
         check(
             len(expr_rows) == 1

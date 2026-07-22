@@ -89,9 +89,6 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `replace<T>` | function | `stable_design` | one-evaluation exclusive place transaction returning the old owner |
 | `withBorrowed<T,R>` | function | `stable_design` | invocation-bounded borrowed callback helper |
 | `ContextParameterRole` | function_signature_descriptor | `stable_design` | function parameter role preserved in signature identity under the Stable design explicit context parameter law |
-| `RawAst` | immutable_ast | `stable_design` | unresolved syntax with spelling/trivia; non-executable |
-| `ResolvedAst` | immutable_ast | `stable_design` | resolved symbols and source identity; non-executable |
-| `TypedAst<T,R>` | immutable_ast | `stable_design` | typed AST carrying result type and responsibility descriptor; non-executable |
 | `Bitwise` | internal_or_stdlib_trait_seed | `stable_design` | bitwise operator admission uses checker-visible witness/admissibility |
 | `ModuleSignature` | language_surface | `stable_design` | public API boundary surface; stable design; not separate compilation receipt |
 | `Float32` | numeric_type_side_constants | `stable_design` | Non-finite Float32 values are type-side constants rather than lexical numeric literals. |

@@ -568,7 +568,7 @@ release 전 기계적으로 확인한다.
 7. 모든 PASSED lane에는 target release receipt가 있다.
 8. 모든 주요 역할 보고서가 있고 대안과 acceptance test를 포함한다.
 9. extra auditor assignment가 manifest에 있다.
-10. archive가 clean checkout에서 재생성되고 checksum/provenance가 있다.
+10. archive가 clean checkout에서 재생성되고 checksum/provenance와 build-environment fingerprint가 있다. source content-tree digest와 환경 범위 archive-byte digest를 구분하며, 실제 두 환경 receipt의 pairwise 비교 전에는 cross-environment byte identity를 `NOT_ESTABLISHED`로 유지한다.
 
 ## 15. 즉시 채택 항목
 
@@ -579,4 +579,3 @@ release 전 기계적으로 확인한다.
 - 4종 release artifact 분리
 - target baseline receipt 없는 product claim 금지
 - R51f3를 immutable import baseline으로 보존
-

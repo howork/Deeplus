@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Isolated tests for the bounded Post-PR16 R4 current-integrity generator."""
+"""Isolated tests for the bounded Post-PR16 R4+CMA-R1 integrity generator."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from typing import Callable
 ROOT = Path(__file__).resolve().parents[2]
 GENERATOR_REL = Path("tools/generators/generate_post_pr16_current_integrity.py")
 EXCLUDES = {".git", "target", "dist", "candidate", "rfcs", "__pycache__"}
-TEST_TEMP_PREFIX = ".post-pr16-integrity-test-"
+TEST_TEMP_PREFIX = "deeplus-post-pr16-integrity-test-"
 
 
 def write_json(path: Path, value: object) -> None:
@@ -37,13 +37,25 @@ def run_generator(root: Path, mode: str = "--check") -> subprocess.CompletedProc
 
 def copy_workspace(target: Path) -> None:
     def ignore(_path: str, names: list[str]) -> set[str]:
-        return {
-            name
-            for name in names
-            if name in EXCLUDES or name.startswith(TEST_TEMP_PREFIX)
-        }
+        return {name for name in names if name in EXCLUDES}
 
     shutil.copytree(ROOT, target, ignore=ignore)
+
+
+def external_temp_directory(
+    prefix: str = TEST_TEMP_PREFIX,
+) -> tempfile.TemporaryDirectory[str]:
+    """Allocate harness state outside ROOT so repository-wide scanners cannot see it."""
+    temporary = tempfile.TemporaryDirectory(prefix=prefix)
+    temporary_path = Path(temporary.name).resolve()
+    repository_root = ROOT.resolve()
+    if temporary_path == repository_root or repository_root in temporary_path.parents:
+        temporary.cleanup()
+        raise RuntimeError(
+            "POST_PR16_TEST_TEMP_INSIDE_REPOSITORY: "
+            f"{temporary_path.as_posix()}"
+        )
+    return temporary
 
 
 def mutate_unit(root: Path) -> None:
@@ -170,7 +182,7 @@ def main() -> int:
         ("immutable_r2_3", mutate_historical_r2_3, "POST_PR16_HISTORICAL_R2_3_DRIFT"),
     ]
     results = []
-    with tempfile.TemporaryDirectory(prefix=TEST_TEMP_PREFIX, dir=ROOT) as temp:
+    with external_temp_directory() as temp:
         base = Path(temp) / "base"
         copy_workspace(base)
         initial = run_generator(base)
@@ -256,8 +268,8 @@ def main() -> int:
 
     passed = sum(bool(row["pass"]) for row in results)
     receipt = {
-        "schema": "deeplus.post-pr16-current-integrity-test-receipt/r4",
-        "revision": "r51f3-post-pr16-preview-design-r4",
+        "schema": "deeplus.post-pr16-current-integrity-test-receipt/r5",
+        "revision": "r51f3-post-pr16-preview-design-r4-cma-r1",
         "result": "PASS" if passed == len(results) else "FAIL",
         "tests": len(results),
         "passed": passed,

@@ -1,7 +1,7 @@
 {
-  "schema": "deeplus.post-pr16-current-integrity-contract/r4",
-  "revision": "r51f3-post-pr16-preview-design-r4",
-  "materialization_timestamp": "2026-07-22T21:03:35+09:00",
+  "schema": "deeplus.post-pr16-current-integrity-contract/r5",
+  "revision": "r51f3-post-pr16-preview-design-r4-cma-r1",
+  "materialization_timestamp": "2026-07-23T02:40:25+09:00",
   "classification": "NON_PRODUCT_REPOSITORY_TOOLING",
   "authority_packages": [
     {
@@ -25,16 +25,34 @@
     "implementation": "NOT_AUTHORIZED",
     "product_support": "15/15_NOT_RUN"
   },
+  "current_projection_repair": {
+    "authority": "Design_Deeplus_Current_Main_Max_Authority_Audit_Pack_R1.zip",
+    "authority_sha256": "952ce815764260d5061adb3b72feeab9be595f46fb92c2501844790a2f32195f",
+    "base_commit": "6aa2043d20c5d6edba6cbed39be699213bba4696",
+    "issue": "https://github.com/howork/Deeplus/issues/26",
+    "actions": [
+      "CMA-R1-A001",
+      "CMA-R1-A002",
+      "CMA-R1-A003",
+      "CMA-R1-A004",
+      "CMA-R1-A005",
+      "CMA-R1-A006",
+      "CMA-R1-A007"
+    ],
+    "semantic_effect": "NONE",
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN"
+  },
   "canonical_targets": [
     {"path": "decisions/language/current-decisions.json", "bytes": 9324, "sha256": "3655d0c516595ee6d9bb1c2cdc6e3fb53849b4809d9651b6835151fd064f406f"},
-    {"path": "spec/language.md", "bytes": 354395, "sha256": "1703a058c75bef1121d8d8a3bdea85f44eb8c47d52c1eef84a486af9d7ef1435"},
+    {"path": "spec/language.md", "bytes": 354244, "sha256": "6cfc32f48f38689a156e3e66b420af2c85265abcc1ff2257b43143ac6a049d21"},
     {"path": "spec/mir/semantics.md", "bytes": 19024, "sha256": "9fc61359d69fd7bd48518706c2cf76189fb7ff05bf7e3580d274c69a92655efa"},
     {"path": "spec/types/type-system.md", "bytes": 31221, "sha256": "451ebbeb0b028992dab86790a6a220b4bb6ac115f73d8c87451afba210e3445a"}
   ],
-  "pointer_non_owned_canonical_sha256": "5a5e83bb66ca5d93524fc098600286911288b91bfde923c04eebd7b16c1bfe12",
+  "pointer_non_owned_canonical_sha256": "079ac2f171c14ae93166a5957a62cb0797139a70287db658ab9b31bc85f3cee9",
   "baseline_preservation": {
     "markdown_prefixes": [
-      {"path": "spec/language.md", "bytes": 177100, "sha256": "5842aaa664b6da3949b2d52c87c291be6328951f74f702d7717f9732309ac068", "separator_before_container": "\n"},
+      {"path": "spec/language.md", "bytes": 176949, "sha256": "90e4f7b6a8259d328d03d45009d76d35f59b4dc34d56739abc15e0b98aac742c", "separator_before_container": "\n"},
       {"path": "spec/types/type-system.md", "bytes": 15315, "sha256": "17ac6b139b0ffc422b091ef97ba900fe9f028400034f3e73534bb5d6c1fdae4a", "separator_before_container": "\n"},
       {"path": "spec/mir/semantics.md", "bytes": 9890, "sha256": "5b672127c0c4665d037d89708986746dd152e094f302b58d7efd4ba859698005", "separator_before_container": "\n"}
     ],
@@ -71,7 +89,7 @@
   ],
   "feature_catalog": {
     "count": 681,
-    "domain_sha256": "5bcade3b156720efb0830f90dce8af5cb9ca0be9982c678c28325640ed886f24"
+    "domain_sha256": "3d2f6bca12f393d461233ca6226007a0430860be56dc75a3d74fc065ed5a66bd"
   },
   "product_lanes": [
     "rust_frontend_lexer",
@@ -254,6 +272,6 @@
     {"path": "migration/m1.1-repair-manifest.json", "sha256": "dab1aa035a1839e359365661b8d1fc3ea0f3faafcea6735a7354b0ff6d28b165"}
   ],
   "scope_preserved_inputs": [
-    {"path": "migration/catalog-reassembly.json", "sha256": "3f7d39ca5c6a47959cd4f934315e14b3c850d484664f8ee1c908625c5490e052", "reason": "R4 scope correction canceled catalog and feature projection changes"}
+    {"path": "migration/catalog-reassembly.json", "sha256": "184e1f0a7e322955e1bb5f850ad0a3e81258496bebb929985483b539faa53bed", "reason": "CMA-R1 authorizes bounded diagnostic, feature, example, and Prelude projection repairs while preserving historical import provenance"}
   ]
 }

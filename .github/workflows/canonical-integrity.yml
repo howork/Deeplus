@@ -35,9 +35,11 @@ jobs:
           python3 tools/generators/generate_post_pr16_current_integrity.py --root . --check
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
+      - name: Validate parallel tooling isolation
+        run: python3 tools/validators/run_parallel_validator_isolation_tests.py
       - name: Run validator mutation suite
         run: python3 tools/validators/run_repository_bootstrap_mutation_tests.py
-      - name: Rebuild deterministic source archive
+      - name: Rebuild environment-scoped deterministic source archive
         run: |
           touch .source-archive-untracked-probe
           if python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-unsafe.zip; then
@@ -49,10 +51,15 @@ jobs:
             echo "in-tree source archive unexpectedly succeeded" >&2
             exit 1
           fi
-          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-a.zip
+          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-a.zip | tee /tmp/deeplus-source-a-receipt.json
           git diff --exit-code -- release/source-tree-manifest.json
-          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-b.zip
+          python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-b.zip | tee /tmp/deeplus-source-b-receipt.json
           cmp /tmp/deeplus-source-a.zip /tmp/deeplus-source-b.zip
+          python3 tools/release/compare_source_archive_builds.py \
+            --receipt-a /tmp/deeplus-source-a-receipt.json \
+            --archive-a /tmp/deeplus-source-a.zip \
+            --receipt-b /tmp/deeplus-source-b-receipt.json \
+            --archive-b /tmp/deeplus-source-b.zip | tee /tmp/deeplus-source-repeat-receipt.json
           sha256sum /tmp/deeplus-source-a.zip
       - name: Reject committed release archives
         run: |

@@ -4,8 +4,8 @@
     "id": "compiler_runtime_lead",
     "prefix": "Impl_"
   },
-  "updated_at": "2026-07-15T17:25:20+09:00",
-  "source_revision": "r51f3-current-publication-m1.3",
+  "updated_at": "2026-07-23T02:40:25+09:00",
+  "source_revision": "r51f3-post-pr16-preview-design-r4-cma-r1",
   "current_facts": [
     {
       "id": "ARCH-001",
@@ -21,17 +21,44 @@
       "statement": "All 15 product lanes remain NOT_RUN; static publication closure and Rust scaffold buildability are not product evidence.",
       "authority": "current implementation status",
       "source": "current/implementation-status.yaml",
-      "introduced": "r51f3-current-publication-m1.3",
+      "introduced": "r51f3-post-pr16-preview-design-r4",
       "review_after": "first target-bound product receipt",
       "status": "current"
     },
     {
       "id": "PUB-001",
-      "statement": "M1.3 is an internal publication revision over the M1.2 authority source snapshot; merge, tag, GitHub Release, public terms, and product promotion are separate gates.",
+      "statement": "The R4 canonical checkpoint is current with semantic P0 equal to 0; merge, tag, GitHub Release, public terms, implementation, publication, and promotion remain separate gates.",
       "authority": "current publication pointer",
       "source": "current/current-pointer.json",
-      "introduced": "r51f3-current-publication-m1.3",
+      "introduced": "r51f3-post-pr16-preview-design-r4",
       "review_after": null,
+      "status": "current"
+    },
+    {
+      "id": "P1-001",
+      "statement": "The exact feature P1 set remains OPEN: CE-C-P1-001..006, CE-E-P1-001..008, TCC-P1-002..008, and SFD-P1-009, for 22 total.",
+      "authority": "current R4 pointer",
+      "source": "current/current-pointer.json",
+      "introduced": "r51f3-post-pr16-preview-design-r4",
+      "review_after": "explicit Design_ closure authority",
+      "status": "current"
+    },
+    {
+      "id": "CMA-001",
+      "statement": "CMA-R1 is a bounded current-projection repair authority; it advances only pointer revision/digest identity and does not change semantic P0, the exact OPEN P1/action set, product lanes, implementation authority, publication, or promotion state.",
+      "authority": "Design_ current-main maximum-authority audit R1",
+      "source": "Design_Deeplus_Current_Main_Max_Authority_Audit_Pack_R1.zip",
+      "introduced": "r51f3-post-pr16-preview-design-r4-cma-r1",
+      "review_after": "CMA-R1 action materialization",
+      "status": "current"
+    },
+    {
+      "id": "MIRX1-001",
+      "statement": "MIR-X1 remains Draft, noncanonical, and nonactivatable; GitHub Issue #24 remains open and no backend-authority supersession is inferred.",
+      "authority": "current R4 architecture boundary",
+      "source": "rfcs/DP-RFC-0001-xvm-only-mir.md",
+      "introduced": "r51f3-post-pr16-preview-design-r4",
+      "review_after": "explicit Design_ resolution of Issue #24",
       "status": "current"
     },
     {
@@ -53,14 +80,6 @@
       "owner": "Impl_ + Spec_ + Test_",
       "acceptance_test": "Positive/negative source, token span, parse node, diagnostic order, toolchain, command, and target SHA are recorded.",
       "target": "first E3 milestone"
-    },
-    {
-      "id": "M13-IMPL-A004",
-      "priority": "P1",
-      "summary": "Remove scaffold Clippy warnings before product implementation evidence begins.",
-      "owner": "Impl_ + Build_",
-      "acceptance_test": "cargo clippy --workspace --all-targets --locked -- -D warnings passes with zero warnings.",
-      "target": "before first E3 PR"
     }
   ],
   "watch_items": [
@@ -76,23 +95,28 @@
     {
       "id": "RISK-002",
       "statement": "A reviewed PR head, a synthetic merge SHA, an authority source commit, and a preserved Library object are distinct identity types.",
-      "authority": "M1.3 role-review consensus",
-      "source": "release/evidence/current-publication-m1.3-git-binding-receipt.json",
-      "introduced": "r51f3-current-publication-m1.3",
+      "authority": "current R4 provenance boundary",
+      "source": "current/current-pointer.json",
+      "introduced": "r51f3-post-pr16-preview-design-r4",
       "review_after": "each release gate",
       "status": "watch"
     }
   ],
   "recent_releases": [
     {
-      "release": "r51f3-repository-bootstrap-m1.2",
-      "verdict": "canonical repository bootstrap; all product lanes NOT_RUN",
-      "report": "roles/handoffs/repository-bootstrap-m1.2/README.md"
+      "release": "r51f3-post-pr16-preview-design-r4",
+      "verdict": "canonical R4 checkpoint; semantic P0 0; exact feature P1 22 OPEN; product lanes 15/15 NOT_RUN",
+      "report": "current/current-pointer.json"
     },
     {
-      "release": "r51f3-current-publication-m1.3",
-      "verdict": "ACCEPT_WITH_REPAIR at reviewed head; merge remains HOLD pending recorded gates",
-      "report": "release/evidence/current-publication-m1.3-role-review-index.json"
+      "release": "github-pr-23-r4-canonicalization",
+      "verdict": "R4 canonical source and current integrity materialized without product-support promotion",
+      "report": "https://github.com/howork/Deeplus/pull/23"
+    },
+    {
+      "release": "github-pr-25-mir-x1-draft-preservation",
+      "verdict": "MIR-X1 preserved as Draft, noncanonical, and nonactivatable; no backend-authority adoption inferred",
+      "report": "rfcs/DP-RFC-0001-xvm-only-mir.md"
     }
   ]
 }
