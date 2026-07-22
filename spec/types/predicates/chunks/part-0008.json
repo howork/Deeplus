@@ -24,14 +24,13 @@
     "output": "admit | reject(diagnostic_id)",
     "requires": [
       "the literal constructs immutable List<T> and is never context-rewritten to NumericArray",
-      "without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type",
-      "without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted",
+      "every numeric token is validated once by NumericLiteralAdmitted; '-' remains a separate AST prefix operator",
+      "without context, an empty literal is not inferable and only identical delegated or nonnumeric normalized element types are admitted",
       "with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality",
-      "integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64",
-      "with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}",
-      "an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion",
-      "a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit",
-      "an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix",
+      "with fixed exact integer T, only PrefixExpr(-, UnsuffixedIntegerLiteral) may request a magnitude fact and form signed candidate -magnitude; an in-range candidate admits as T",
+      "an out-of-range signed candidate, including Int8 -129 or UInt8 -1, emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "the prefix-sign adapter performs no arbitrary constant folding, hidden widening, or expression rewrite",
+      "other numeric elements require NumericLiteralAdmitted to return exact T; suffix, ISize/USize, and Float32 rules remain delegated",
       "there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -48,20 +47,16 @@
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
       "the literal constructs immutable List<T> and is never context-rewritten to NumericArray",
-      "without context, an empty literal is not inferable and every element is first normalized independently: unsuffixed integer to Int, unsuffixed float to Float64, and a suffixed numeric literal to exactly its suffix type",
-      "without context, only identical normalized element types are admitted; neither heterogeneous numeric join nor nominal common-supertype synthesis is permitted",
-      "with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality",
-      "integer suffixes map exactly as i8/i16/i32/i64/i128 to Int8/Int16/Int32/Int64/Int128 and u8/u16/u32/u64/u128 to UInt8/UInt16/UInt32/UInt64/UInt128; isize/usize map to ISize/USize; f32/f64 map to Float32/Float64",
-      "with a fixed contextual List<T>, an unsuffixed integer whose mathematical signed value is v may adapt to Int or to IntN when -2^(N-1) <= v <= 2^(N-1)-1, or to UIntN when 0 <= v <= 2^N-1, for N in {8,16,32,64,128}",
-      "an unsuffixed integer never implicitly adapts to ISize or USize; those targets require an isize/usize suffix or explicit checked conversion",
-      "a suffixed numeric literal must exactly match T; no widening, narrowing, signed/unsigned conversion, or integer/float conversion is implicit",
-      "an unsuffixed float normalizes only to Float64, while Float32 requires the f32 suffix and Float64 also admits the exact f64 suffix",
-      "there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join"
+      "the optional contextual List<T> target is fixed before element normalization",
+      "numeric token parts, exact contextual target, and direct PrefixExpr shape are preserved",
+      "no hidden conversion, constant folding, synthesized union, or source-order preference has occurred"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize exact List target and element AST shape; keep prefix sign separate from the numeric token",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
-      "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
+      "for a direct prefix-minus unsuffixed integer under exact integer T, request NumericLiteralAdmitted magnitude-only mode, compute -magnitude once, and admit exact T iff representable",
+      "emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE for an unrepresentable signed candidate; do not fold any other expression or insert conversion",
+      "otherwise evaluate NumericLiteralAdmitted once with contextual T when present and propagate its selected diagnostic",
       "evaluate ListLiteralElementJoinAdmitted diagnostic_dispatch conditions once in their declared deterministic order",
       "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
     ],
@@ -95,12 +90,14 @@
       "PF-ListLiteralElementJoinAdmitted-NEG-U8-RANGE"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "NumericLiteralAdmitted"
+    ],
     "execution_receipt": null,
-    "input_adapter": null,
+    "input_adapter": "contextual_prefix_sign_only_for_direct_unsuffixed_integer_literal",
     "diagnostic_dispatch": {
       "empty_without_context_or_nonidentical_normalized_types_or_disallowed_conversion": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
-      "contextual_fixed_width_integer_value_out_of_range": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
+      "contextual_integer_or_direct_prefix_sign_candidate_out_of_range": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
     },
     "diagnostic_disposition": "active_primary",
     "predicate_maturity": "design_algorithm",
@@ -183,7 +180,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "LogicalIndexDomainAdmitted",
     "source_name": "LogicalIndexDomainAdmitted",
-    "summary": "the receiver declares exactly one logical index-domain kind; an ordinary sequence index is Int and satisfies 1 <= index <= length; storage offset is index-1 and never source-visible; Map and NumericArray keep their declared domains; negative-from-end rewriting is forbidden",
+    "summary": "one closed intrinsic logical domain: List/String/Bytes and default NumericArray axes are one-based, bounded owners retain L..U, Map uses exact K, and ReadonlyView preserves its source owner's domain",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -202,14 +199,17 @@
     ],
     "diagnostic_refs": [
       "INDEX_OUT_OF_LOGICAL_DOMAIN",
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
       "ZERO_BASED_INDEX_NOT_CURRENT"
     ],
     "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
+    "output": "admit | admit_with_runtime_check(IndexError::outOfLogicalDomain) | reject(diagnostic_id)",
     "requires": [
-      "the receiver declares exactly one logical index-domain kind; an ordinary sequence index is Int and satisfies 1 <= index <= length; storage offset is index-1 and never source-visible; Map and NumericArray keep their declared domains; negative-from-end rewriting is forbidden"
+      "the receiver family is intrinsic rather than conformance-activated",
+      "the supplied index type and value are explicit",
+      "the declared logical bounds or exact Map key domain are available"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -223,20 +223,24 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "the receiver declares exactly one logical index-domain kind; an ordinary sequence index is Int and satisfies 1 <= index <= length; storage offset is index-1 and never source-visible; Map and NumericArray keep their declared domains; negative-from-end rewriting is forbidden"
+      "the receiver family and logical index-domain kind are uniquely normalized",
+      "no negative-from-end, hidden narrowing, truthiness, or witness rewrite has occurred",
+      "storage offsets are not source-visible inputs"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize the intrinsic receiver family, source-owner identity, exact key/axis type, logical lower/upper bounds, shape and typed axes; ReadonlyView inherits its owner's domain and coordinates; never normalize source coordinates to offsets before admission",
     "decision_procedure": [
-      "validate the closed descriptor and normalize the receiver's logical domain",
-      "for ordinary sequences compute the closed domain 1..length",
-      "reject zero, negative, non-Int, or greater-than-length before internal offset conversion",
-      "convert an admitted sequence index to internal offset index-1 without changing the source domain",
-      "preserve exact Map key and NumericArray axis rules"
+      "validate the closed descriptor and select exactly one intrinsic domain; a ReadonlyView uses its source owner's declared domain and provenance; reject conformance-only or unknown receivers with LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "require exact Int for positional/bounded/NumericArray coordinates and exact K for Map; reject every wrong key or axis type with LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "List/String/Bytes and their direct views use 1..length; bounded or sliced owners and their views preserve declared/selected coordinates; each default NumericArray axis uses typed Int 1..dimension without a Sequence witness",
+      "reject zero with ZERO_BASED_INDEX_NOT_CURRENT only when it is outside a default one-based positional or NumericArray axis; Map key 0 and preserved domains containing 0 remain admissible",
+      "reject a statically known out-of-domain coordinate with INDEX_OUT_OF_LOGICAL_DOMAIN; admit a type-correct dynamic coordinate with runtime check IndexError::outOfLogicalDomain before access",
+      "only after static admission or installing that runtime check derive internal index-lower_bound while retaining owner provenance and source-visible coordinates"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
+    "success_result": "admit | admit_with_runtime_check(IndexError::outOfLogicalDomain) | reject(diagnostic_id)",
     "active_primary_diagnostic": "INDEX_OUT_OF_LOGICAL_DOMAIN",
     "secondary_diagnostics": [
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
       "ZERO_BASED_INDEX_NOT_CURRENT"
     ],
     "positive_fixture_ids": [

@@ -239,11 +239,11 @@
   },
   {
     "example_id": "EX-R51a1-SLICE-NG-001",
-    "code_sha256": "4efe97dd970a288f9db362f23edc73d01cc7e508338a5ec58fadfc038560ba38",
+    "code_sha256": "67dd4b9aac93a1947795d18006e368f95c5609c3b5e5ecc8d70b2adfa9eb936a",
     "feature_ids": [
       "slice_logical_domain_preservation"
     ],
-    "primary_diagnostic": "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN"
+    "primary_diagnostic": "INDEX_OUT_OF_LOGICAL_DOMAIN"
   },
   {
     "example_id": "EX-R51a1-TUPLE-NG-001",
@@ -768,5 +768,87 @@
       "structured_task_scope"
     ],
     "primary_diagnostic": "CATCHES_CANCELLATION_AS_ERROR_FORBIDDEN"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-001",
+    "code_sha256": "3f33f3ad4badad1a3e181c6790775272f5474fda998baf74f6690e408b44152f",
+    "feature_ids": [
+      "option_none_case_only",
+      "option_result_double_colon_case_surface"
+    ],
+    "primary_diagnostic": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-002",
+    "code_sha256": "ef714b0acfc214b73ee8ec02bd804bab2b742aaf6c42def1d020d458102c6172",
+    "feature_ids": [
+      "custom_operator",
+      "closed_operator_symbols_open_named_extensions"
+    ],
+    "primary_diagnostic": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-003",
+    "code_sha256": "f15813654fddef81fe98bb42ac178ece0462e2dc5085e053a02bf03eb71ca718",
+    "feature_ids": [
+      "fixed_operator_conformance_overloading",
+      "closed_operator_symbols_open_named_extensions"
+    ],
+    "primary_diagnostic": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-004",
+    "code_sha256": "5d21d1133ee9698c3be07bd1ace252d61b0f5eff6e20ec007041f9623aae34f5",
+    "feature_ids": [
+      "operator_precedence_table_phase_a",
+      "range_step_expression_surface_clarification"
+    ],
+    "primary_diagnostic": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-005",
+    "code_sha256": "b2807fd7216b9b621406cdf0225c386d1c937a6efd23cffc3a0beda276fdece8",
+    "feature_ids": [
+      "operator_precedence_table_phase_a",
+      "range_step_expression_surface_clarification"
+    ],
+    "primary_diagnostic": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-006",
+    "code_sha256": "dbfb581e19a348341be5d88d7bc926360fc7a975d21165f175f3c87766f66995",
+    "feature_ids": [
+      "basic_index_operator",
+      "index_operator"
+    ],
+    "primary_diagnostic": "INDEX_SUFFIX_REQUIRES_AXIS"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-007",
+    "code_sha256": "0d0b806e4660302ca44221d1bafd6c923b8c99cde60017a81c3f029692e3bbb2",
+    "feature_ids": [
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "one_based_sequence_logical_indexing",
+      "index_operator"
+    ],
+    "primary_diagnostic": "ZERO_BASED_INDEX_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-008",
+    "code_sha256": "bc835ed742dae185d641a5c248267537eefc71027577c8d51dac75531a451d65",
+    "feature_ids": [
+      "numeric_operator_core",
+      "numeric_literal_suffix"
+    ],
+    "primary_diagnostic": "NUMERIC_OPERATOR_CORE_REQUIRED"
+  },
+  {
+    "example_id": "EX-R51VOI-NG-009",
+    "code_sha256": "cf8dd3322b7faf0472200f0305baa888ca012cc79a3ef72d5e75ac76abfe1eb2",
+    "feature_ids": [
+      "inclusive_slice_range_canonical_msp",
+      "slice_logical_domain_preservation"
+    ],
+    "primary_diagnostic": "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED"
   }
 ]

@@ -1,0 +1,908 @@
+{
+  "schema": "deeplus.value-operator-indexing-coherence-fixtures/r1",
+  "fixture_schema": "schemas/language/value-operator-indexing-coherence-fixtures.schema.json",
+  "revision": "r51f3-current-value-operator-index-coherence-r1",
+  "contract": "spec/contracts/value-operator-indexing-coherence.json",
+  "authority": "CURRENT_DESIGN_STATIC_CONTRACT",
+  "evidence_level": "DESIGN_STATIC_NOT_RUN",
+  "semantic_p0": 0,
+  "current_binding": false,
+  "open_feature_p1": [
+    "CE-C-P1-001",
+    "CE-C-P1-002",
+    "CE-C-P1-003",
+    "CE-C-P1-004",
+    "CE-C-P1-005",
+    "CE-C-P1-006",
+    "CE-E-P1-001",
+    "CE-E-P1-002",
+    "CE-E-P1-003",
+    "CE-E-P1-004",
+    "CE-E-P1-005",
+    "CE-E-P1-006",
+    "CE-E-P1-007",
+    "CE-E-P1-008",
+    "TCC-P1-002",
+    "TCC-P1-003",
+    "TCC-P1-004",
+    "TCC-P1-005",
+    "TCC-P1-006",
+    "TCC-P1-007",
+    "TCC-P1-008",
+    "SFD-P1-009"
+  ],
+  "separate_open_actions": [
+    "M13-A002",
+    "M13-A003",
+    "M13-A004",
+    "M13-A005"
+  ],
+  "product_lanes": {
+    "rust_frontend_lexer": "NOT_RUN",
+    "rust_frontend_parser": "NOT_RUN",
+    "rust_hir_lowering": "NOT_RUN",
+    "rust_integrated_checker": "NOT_RUN",
+    "deeplus_mir_lowering": "NOT_RUN",
+    "xvm_bytecode_emitter": "NOT_RUN",
+    "xvm_interpreter": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "official_tooling": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "cross_backend_conformance": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN"
+  },
+  "positive": [
+    {
+      "fixture_id": "VOI-R1-POS-001",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R002"],
+      "domain": "literal",
+      "source": "let answer = 42",
+      "subject_profile": "UNSUFFIXED_DECIMAL_INTEGER",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_type": "Int",
+        "mathematical_width": 64,
+        "signed": true,
+        "storage_layout_selected": false,
+        "serialization_tag_selected": false,
+        "runtime_discriminant_selected": false,
+        "foreign_ABI_identity_selected": false,
+        "backend_lowering_identity_selected": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-002",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R002", "VOI-R006"],
+      "domain": "literal",
+      "source": "let edge: List<Int8> = [-128, 127]",
+      "subject_profile": "CONTEXTUAL_PREFIX_SIGN_ADAPTER",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "numeric_token_contains_sign": false,
+        "ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+        "validated_token_magnitude": 128,
+        "signed_mathematical_candidate": -128,
+        "independently_fixed_domain": "Int8",
+        "representable": true,
+        "arbitrary_constant_fold_count": 0,
+        "implicit_operator_conversion_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-003",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R003"],
+      "domain": "literal",
+      "source": "let ratio = 0.5",
+      "subject_profile": "UNSUFFIXED_DECIMAL_FLOAT",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_type": "Float64",
+        "format": "IEEE-754 binary64",
+        "ordinary_rounding": "roundTiesToEven"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-004",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R004"],
+      "domain": "value",
+      "source": "let missing: Option<Int> = ::none",
+      "subject_profile": "EXPLICIT_OPTION_ABSENCE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_type": "Option<Int>",
+        "absence_case": "none",
+        "null_identity_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-005",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R005", "VOI-R006"],
+      "domain": "operator",
+      "source": "let total: Int32 = left + right",
+      "subject_profile": "EXACT_INT32_OPERANDS",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_operand_domain": "Int32",
+        "result_domain": "Int32",
+        "dispatch": "INTRINSIC_ONLY",
+        "trait_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-006",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R005"],
+      "domain": "operator",
+      "source": "let result = 2 + 3 * 4 ^ 2",
+      "subject_profile": "CLOSED_PRATT_PRECEDENCE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "grouping": "2 + (3 * (4 ^ 2))",
+        "power_associativity": "right",
+        "multiplication_before_addition": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-007",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R007"],
+      "domain": "assignment",
+      "source": "var total: Int = 10; total += next_value()",
+      "subject_profile": "COMPOUND_ASSIGNMENT_SUCCESS",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "target_place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "commit_count": 1,
+        "result_type": "Unit"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-008",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R005"],
+      "domain": "trait_guard",
+      "source": "let combined = left.combine(right)",
+      "subject_profile": "NAMED_TRAIT_METHOD_EXTENSION",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "extension_surface": "named method",
+        "operator_glyph_created": false,
+        "operator_dispatch_changed": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-009",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let first = values[1]",
+      "subject_profile": "LIST_INT_LENGTH_THREE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "logical_index": 1,
+        "storage_offset": 0,
+        "receiver": "List<Int>"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-010",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let scalar: Char = text[2]",
+      "subject_profile": "STRING_WITH_MULTI_BYTE_SCALAR",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "coordinate_unit": "Unicode scalar",
+        "result_type": "Char",
+        "byte_indexing": false,
+        "UTF16_indexing": false,
+        "grapheme_indexing": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-011",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let octet: UInt8 = payload[1]",
+      "subject_profile": "BYTES_NONEMPTY",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "logical_index": 1,
+        "storage_offset": 0,
+        "result_type": "UInt8"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-012",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R008", "VOI-R010"],
+      "domain": "index",
+      "source": "let table = [5..7: 10, 20, 30]\nlet first = table[5]",
+      "subject_profile": "EXPLICIT_BOUNDED_LIST_DOMAIN",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "logical_domain": "5..7",
+        "logical_index": 5,
+        "storage_offset": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-013",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let first = matrix[1; 1]",
+      "subject_profile": "NUMERIC_ARRAY_RANK_TWO_DEFAULT_AXES",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "axis_count": 2,
+        "axis_one_domain": "1..dimension1",
+        "axis_two_domain": "1..dimension2",
+        "ordinary_sequence_witness_used": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-014",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R010"],
+      "domain": "index",
+      "source": "let found = names[\"Ada\"]",
+      "subject_profile": "MAP_STRING_INT",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "index_domain": "String",
+        "integer_coordinate_semantics": false,
+        "key_type_exact": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-015",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let middle = values[2..4]",
+      "subject_profile": "LIST_LENGTH_FIVE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "canonical": true,
+        "inclusive": true,
+        "selected_coordinates": [2, 3, 4],
+        "implicit_rebase": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-016",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let whole_axis = matrix[*; 2]",
+      "subject_profile": "NUMERIC_ARRAY_FULL_FIRST_AXIS",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "full_axis_spelling": "*",
+        "empty_axis_spelling": false,
+        "owner_provenance_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "VOI-R1-NEG-001",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R004"],
+      "domain": "literal",
+      "source": "let missing = null",
+      "subject_profile": "NULL_RECOVERY_SPELLING",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+      "assertions": {
+        "AST_value_count": 0,
+        "HIR_value_count": 0,
+        "MIR_value_count": 0,
+        "suggested_current_surface": "::none"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-002",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005"],
+      "domain": "operator",
+      "source": "operator <+> precedence 130",
+      "subject_profile": "ARBITRARY_CUSTOM_OPERATOR_DECLARATION",
+      "expected": "REJECT",
+      "diagnostic_or_null": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "assertions": {
+        "custom_operator_current_count": 0,
+        "recovery_operator_identity_count": 0,
+        "named_method_alternative_required": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-003",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005"],
+      "domain": "trait_guard",
+      "source": "public trait Additive {\n    +def add+(rhs: Self) -> Self throws Never effects {}\n}\npublic conformance Amount conforms Additive {\n    +def add+(rhs: Self) -> Self throws Never effects {} = { return self }\n}\nlet total = left + right",
+      "subject_profile": "FIXED_OPERATOR_TRAIT_DISPATCH",
+      "expected": "REJECT",
+      "diagnostic_or_null": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "assertions": {
+        "source_activation": "NONACTIVATABLE",
+        "trait_lookup_count": 0,
+        "TCC_P1_002_through_008": "OPEN"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-004",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R006"],
+      "domain": "operator",
+      "source": "let bad = signed32 + unsigned32",
+      "subject_profile": "MIXED_SIGNEDNESS_SAME_WIDTH",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMERIC_OPERATOR_CORE_REQUIRED",
+      "assertions": {
+        "normalized_domain_count": 2,
+        "implicit_signedness_conversion": false,
+        "operator_fallback_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-005",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R006"],
+      "domain": "operator",
+      "source": "let bad = narrow16 * wide64",
+      "subject_profile": "MIXED_INTEGER_WIDTH",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMERIC_OPERATOR_CORE_REQUIRED",
+      "assertions": {
+        "normalized_domain_count": 2,
+        "implicit_widening": false,
+        "implicit_narrowing": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-006",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R002"],
+      "domain": "literal",
+      "source": "let low: List<Int8> = [-129]; let unsigned: List<UInt8> = [-1]",
+      "subject_profile": "CONTEXTUAL_PREFIX_SIGN_OUT_OF_EXACT_DOMAIN",
+      "expected": "REJECT",
+      "diagnostic_or_null": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "assertions": {
+        "numeric_token_contains_sign": false,
+        "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+        "Int8_candidate": -129,
+        "Int8_representable": false,
+        "UInt8_candidate": -1,
+        "UInt8_representable": false,
+        "arbitrary_constant_fold_count": 0,
+        "wrapping_conversion": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-007",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let item = values[0]",
+      "subject_profile": "LIST_ZERO_INDEX",
+      "expected": "REJECT",
+      "diagnostic_or_null": "ZERO_BASED_INDEX_NOT_CURRENT",
+      "assertions": {
+        "logical_domain": "1..length",
+        "negative_from_end_rewrite": false,
+        "storage_read_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-008",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let item = values[-1]",
+      "subject_profile": "LIST_NEGATIVE_INDEX",
+      "expected": "REJECT",
+      "diagnostic_or_null": "INDEX_OUT_OF_LOGICAL_DOMAIN",
+      "assertions": {
+        "negative_from_end_rewrite": false,
+        "logical_domain": "1..length",
+        "storage_read_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-009",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let item = values[4]",
+      "subject_profile": "LIST_LENGTH_THREE",
+      "expected": "REJECT",
+      "diagnostic_or_null": "INDEX_OUT_OF_LOGICAL_DOMAIN",
+      "assertions": {
+        "logical_domain": "1..3",
+        "logical_index": 4,
+        "storage_read_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-010",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let item = custom[1]",
+      "subject_profile": "USER_TYPE_WITH_SEQUENCE_AND_INDEXABLE_CONFORMANCE_ONLY",
+      "expected": "REJECT",
+      "diagnostic_or_null": "LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "assertions": {
+        "built_in_carrier": false,
+        "structural_bracket_activation_count": 0,
+        "witness_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-011",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R009", "VOI-R011"],
+      "domain": "index",
+      "source": "let whole = values[]",
+      "subject_profile": "EMPTY_INDEX_SUFFIX",
+      "expected": "REJECT",
+      "diagnostic_or_null": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "assertions": {
+        "axis_count": 0,
+        "full_axis_inference": false,
+        "semantic_index_node_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-012",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let whole = values[..]",
+      "subject_profile": "EMPTY_OPEN_RANGE_AS_FULL_AXIS",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "assertions": {
+        "canonical_full_axis": "*",
+        "implicit_bound_count": 0,
+        "semantic_slice_node_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-013",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R008"],
+      "domain": "range",
+      "source": "let range = 1..>4",
+      "subject_profile": "RESERVED_RANGE_SPELLING",
+      "expected": "REJECT",
+      "diagnostic_or_null": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "assertions": {
+        "current_range_identity_count": 0,
+        "recovery_range_identity_count": 0,
+        "canonical_replacement": "1..4"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-014",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R008"],
+      "domain": "range",
+      "source": "let range = 1...4",
+      "subject_profile": "REPEATED_POSITIONAL_RESIDUE_IN_RANGE_POSITION",
+      "expected": "REJECT",
+      "diagnostic_or_null": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "assertions": {
+        "range_operator_count": 0,
+        "residue_owner": "...",
+        "bounded_list_inferred_upper_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-015",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let first = ^ + 1",
+      "subject_profile": "SLICE_ANCHOR_OUTSIDE_SLICE",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_ANCHOR_OUTSIDE_SLICE",
+      "assertions": {
+        "anchor_scope": "SLICE_ONLY",
+        "ordinary_prefix_operator_count": 0,
+        "semantic_anchor_node_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-016",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let odds = values[1..9 by 2]",
+      "subject_profile": "EXPLICIT_SLICE_STEP",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SOURCE_TRAILING_TOKENS",
+      "assertions": {
+        "step_syntax_current": false,
+        "implicit_copy": false,
+        "semantic_slice_node_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-017",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let reversed = values[4..2]",
+      "subject_profile": "DESCENDING_SLICE_WITHOUT_PROFILE",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_BOUND_ORDER_INVALID",
+      "assertions": {
+        "descending_syntax_current": false,
+        "implicit_reverse": false,
+        "implicit_copy": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-018",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "values[2..4] = replacements",
+      "subject_profile": "MUTABLE_SLICE_ASSIGNMENT",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED",
+      "assertions": {
+        "owner_mutation_count": 0,
+        "partial_commit_count": 0,
+        "named_copy_or_rebase_required": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-019",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "return local_values[2..4]",
+      "subject_profile": "READONLY_VIEW_ESCAPES_LOCAL_OWNER",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_VIEW_ESCAPES_OWNER",
+      "assertions": {
+        "owner_provenance_preserved": true,
+        "hidden_copy_count": 0,
+        "escaping_view_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-020",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R010", "VOI-R011"],
+      "domain": "slice",
+      "source": "let row = matrix[1..2]",
+      "subject_profile": "NUMERIC_ARRAY_RANK_TWO_AXIS_COUNT_ONE",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SLICE_AXIS_COUNT_MISMATCH",
+      "assertions": {
+        "source_rank": 2,
+        "selector_axis_count": 1,
+        "implicit_remaining_axis_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "boundary": [
+    {
+      "fixture_id": "VOI-R1-BND-001",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R002"],
+      "domain": "literal",
+      "source": "let min: Int = -9223372036854775807 - 1\nlet max: Int = 9223372036854775807",
+      "subject_profile": "INT_EXACT_ENDPOINTS",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "minimum_in_domain": true,
+        "maximum_in_domain": true,
+        "implicit_big_integer": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-002",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R002", "VOI-R007"],
+      "domain": "assignment",
+      "source": "counter += delta",
+      "subject_profile": "DYNAMIC_CHECKED_INTEGER_OVERFLOW",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "terminal_outcome_if_overflow": "ArithmeticDefect::overflow",
+        "commit_count_if_overflow": 0,
+        "original_counter_preserved": true,
+        "product_execution": "NOT_RUN"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-003",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R002", "VOI-R007"],
+      "domain": "operator",
+      "source": "let quotient = dividend / divisor",
+      "subject_profile": "DYNAMIC_INTEGER_DIVISOR_MAY_BE_ZERO",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "terminal_outcome_if_zero": "ArithmeticDefect::divisionByZero",
+        "integer_quotient_rounding": "towardZero",
+        "integer_remainder_identity": "a == trunc(a / b) * b + r",
+        "integer_remainder_sign": "zero_or_dividend_sign",
+        "signed_MIN_div_or_rem_negative_one": "ArithmeticDefect::overflow",
+        "floating_remainder_glyph_current": false,
+        "enclosing_place_commit_count_if_zero": 0,
+        "implicit_zero_result": false,
+        "product_execution": "NOT_RUN"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-004",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R003"],
+      "domain": "operator",
+      "source": "let same = positive_zero == negative_zero",
+      "subject_profile": "FLOAT64_SIGNED_ZERO",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "comparison_result": true,
+        "bit_pattern_identity_required": false,
+        "semantic_value_equality": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-005",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R003"],
+      "domain": "operator",
+      "source": "let keys: Set<Float64> = #set{Float64::nan}",
+      "subject_profile": "FLOAT64_NAN_KEY_IDENTITY",
+      "expected": "REJECT",
+      "diagnostic_or_null": "TYPE_KEY_REQUIRES_KEYABLE",
+      "assertions": {
+        "NaN_ordering": "UNORDERED",
+        "implicit_Ord_evidence": false,
+        "implicit_Keyable_evidence": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-006",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R007"],
+      "domain": "assignment",
+      "source": "var total: Int = 10; total /= divisor()",
+      "subject_profile": "COMPOUND_ASSIGNMENT_PRECOMMIT_FAILURE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "target_place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "commit_count_on_ArithmeticDefect": 0,
+        "original_value_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-007",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let last = values[3]",
+      "subject_profile": "LIST_LENGTH_THREE_LAST_INDEX",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "logical_index": 3,
+        "storage_offset": 2,
+        "upper_bound_inclusive": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-008",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let impossible = empty[1]",
+      "subject_profile": "EMPTY_LIST_LENGTH_ZERO",
+      "expected": "REJECT",
+      "diagnostic_or_null": "INDEX_OUT_OF_LOGICAL_DOMAIN",
+      "assertions": {
+        "logical_domain": "empty",
+        "storage_read_count": 0,
+        "special_zero_index_case": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-009",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let bounded = [0..4: 10, 20, 30, 40, 50]\nlet first = bounded[0]",
+      "subject_profile": "EXPLICIT_BOUNDED_LIST_ZERO_DOMAIN",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "declared_logical_domain": "0..4",
+        "logical_index": 0,
+        "negative_from_end_rewrite": false,
+        "storage_offset": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-010",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R011"],
+      "domain": "slice",
+      "source": "let values = [10, 20, 30, 40]\nlet prefix = values[1..<4]",
+      "subject_profile": "EXPLICIT_HALF_OPEN_SLICE",
+      "expected": "WARN",
+      "diagnostic_or_null": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+      "assertions": {
+        "accepted": true,
+        "selected_coordinates": [1, 2, 3],
+        "canonical_replacement": "values[1..3]"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-011",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R010", "VOI-R011"],
+      "domain": "slice",
+      "source": "let middle = values[2..4]\nlet original_third = middle[3]",
+      "subject_profile": "SLICE_COORDINATE_PRESERVATION",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "selected_coordinates": [2, 3, 4],
+        "middle_logical_domain": "2..4",
+        "implicit_rebase": false,
+        "owner_provenance_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-012",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R009", "VOI-R010"],
+      "domain": "index",
+      "source": "let corner = matrix[1; 1]",
+      "subject_profile": "NUMERIC_ARRAY_BUILTIN_DEFAULT_AXIS_ORIGIN",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "axis_origin": 1,
+        "axis_identity": "typed and rank-owned",
+        "ordinary_sequence_witness_used": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-013",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R008"],
+      "domain": "range",
+      "source": "def collect(items...: Int) {}\ncollect(1, 2, 3)\nlet flattened = [item for ... item in groups]",
+      "subject_profile": "ELLIPSIS_CLOSED_STRUCTURAL_OWNERS_NOT_RANGE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "ellipsis_structural_owners": ["RepeatedPositionalMarker", "UnfoldClause"],
+        "range_operator_tokens": ["..", "..<"],
+        "three_dot_range_operator_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-014",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R012"],
+      "domain": "evidence_boundary",
+      "source": "the design-static fixture matrix parses and binds the current contract",
+      "subject_profile": "STATIC_MATERIALIZATION_ONLY",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "semantic_p0": 0,
+        "open_feature_p1": 22,
+        "closed_feature_p1": 0,
+        "product_lanes": "15/15_NOT_RUN",
+        "product_pass_claim": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "expected_counts": {
+    "positive": 16,
+    "negative": 20,
+    "boundary": 14,
+    "total": 50,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "product_executed": 0
+  }
+}

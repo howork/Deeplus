@@ -59,7 +59,7 @@
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "source_activation": "none",
     "depends_on": [],
-    "notes": "Ordinary sequences expose logical indices 1..length. Storage offsets remain internal zero-based values; negative-from-end rewriting is forbidden.",
+    "notes": "List/String/Bytes use 1..length. ReadonlyView preserves source domains, including bounded/sliced coordinates. Offsets are internal; no negative rewrite or witness activation.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -85,7 +85,8 @@
       "examples": [
         "EX-R51a1-INDEX-001",
         "EX-R51a1-INDEX-NG-001",
-        "EX-R51a1-SLICE-001"
+        "EX-R51a1-SLICE-001",
+        "EX-R51VOI-005"
       ],
       "productions": [
         "IndexSuffix"
@@ -280,7 +281,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Operator precedence table Phase A. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Pratt is closed. Ranges are .. and ..<; ... is repeated/comprehension-unfold structure, never range; ..> is rejected. Custom declarations cannot extend it.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -292,7 +293,9 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
+        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+        "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+        "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
       ],
       "predicates": [
         "OperatorPrecedenceTablePhaseAAdmitted"
@@ -488,7 +491,9 @@
     "normative_trace_refs": {
       "productions": [],
       "semantic_reference_productions": [],
-      "diagnostics": [],
+      "diagnostics": [
+        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE"
+      ],
       "predicates": [],
       "examples": []
     },
@@ -566,7 +571,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Option cases use `Option<T>::some` and `Option<T>::none`; Result cases use `Result<T, error E>::ok` and `Result<T, error E>::err`. Expected-type shorthand may omit only the leading nominal type, never the `error` role in a Result type argument. Bare and dot-case aliases are rejected.",
+    "notes": "Option/Result cases use `::`; shorthand may omit only the owner. Bare/dot aliases and null are rejected.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -579,6 +584,7 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
+        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
         "NONE_IS_NOT_A_TYPE",
         "OPTION_BARE_NONE_REMOVED",
         "OPTION_BARE_SOME_REMOVED",
@@ -875,7 +881,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`[e1, ...]` constructs immutable `List<T>`. Context-free inference requires nonempty identical independently normalized element types. A fixed `List<T>` context requires normalized-type identity except that an unsuffixed integer may adapt to exact in-range `IntN`/`UIntN`; no NumericArray rewrite or heterogeneous join exists.",
+    "notes": "`[e, ...]` makes immutable `List<T>`. Without context, normalized element types must be identical. Fixed `List<T>` admits an in-range unsuffixed integer or direct prefix-minus literal candidate; no other fold/conversion, NumericArray rewrite, or heterogeneous join.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

@@ -33,9 +33,11 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "The index is outside the receiver's declared one-based logical domain.",
+    "message": "The index is outside the receiver's declared logical domain.",
     "feature_refs": [
-      "one_based_sequence_logical_indexing"
+      "one_based_sequence_logical_indexing",
+      "index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
     ],
     "related_feature_refs": [],
     "stage": "checker",
@@ -49,7 +51,7 @@
     "authority": "LANGUAGE / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "",
-    "fixit_policy": "",
+    "fixit_policy": "preserve the receiver's declared logical coordinates; do not infer rebasing or negative-from-end indexing",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN."
   },

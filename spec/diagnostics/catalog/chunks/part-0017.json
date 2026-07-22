@@ -829,11 +829,11 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "numeric_array_context_anchor_polarity_law"
+      "slicing_anchor_range_notation_msp"
     ],
-    "fixit_hint": "move anchor into slice axis or use an ordinary expression",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "move anchor into slice axis or use an ordinary expression",
+    "fixit_hint": "use ^ or $ only as a SliceBound, or write an ordinary expression with an explicit value",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "parser recovery emits no semantic anchor node and never guesses a replacement expression",
     "message": "Slice anchors ^ and $ are valid only in slice-axis index context.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -841,7 +841,7 @@
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
-    "stage": "checker",
+    "stage": "parser",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
   },
@@ -883,11 +883,11 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "source_truth_projection_unification"
+      "inclusive_slice_range_canonical_msp"
     ],
     "fixit_hint": "adjust bounds or use a named reverse traversal API",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "adjust bounds or use a named reverse traversal API",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never reorder bounds, invent a traversal API, or change result order automatically",
     "message": "Slice lower bound must not exceed upper bound for increasing ranges.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -912,10 +912,10 @@
     "feature_refs": [
       "range_literal_refinement_type"
     ],
-    "fixit_hint": "use in-range static bound",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use in-range static bound",
-    "message": "Static slice bound is outside source dimension.",
+    "fixit_hint": "choose explicit bounds or anchors that are within the source logical domain",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never guess a replacement coordinate, clamp a bound, or rewrite the source domain",
+    "message": "Static slice bound is outside the source logical domain.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -937,12 +937,12 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "range_literal_refinement_type"
+      "inclusive_slice_range_canonical_msp"
     ],
-    "fixit_hint": "write * for full axis",
-    "fixit_kind": "suggestion",
-    "fixit_policy": "write * for full axis",
-    "message": "Empty open range .. is forbidden for full-axis selection; use *.",
+    "fixit_hint": "write both bounds, using ^/$ for first/last; use * only for a NumericArray full axis",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never infer a missing endpoint or a full-axis carrier from an omitted bound",
+    "message": "A slice range requires both bounds; use ^/$ for endpoints, or * for an admitted NumericArray full axis.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1021,7 +1021,8 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "slice_half_open_noncanonical_warning_law"
+      "slice_half_open_noncanonical_warning_law",
+      "inclusive_slice_range_canonical_msp"
     ],
     "fixit_hint": "",
     "fixit_kind": "none",
@@ -1072,24 +1073,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "SLICE_LAST_INDEX_DOLLAR_OUTSIDE_SLICE",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
     "feature_refs": [
       "slicing_anchor_range_notation_msp"
     ],
-    "fixit_hint": "use `$` only in a slice bound or write an ordinary value expression",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use `$` only in a slice bound or write an ordinary value expression",
-    "message": "The slice last-index anchor `$` is valid only as a SliceBound inside an IndexSuffix slice axis.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Superseded by parser-owned SLICE_ANCHOR_OUTSIDE_SLICE; identity retained for reference integrity.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "error",
-    "stage": "checker",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source"
+    "severity": "note",
+    "stage": "design_static",
+    "diagnostic_class": "historical_or_design",
+    "emission_domain": "historical"
   },
   {
     "diagnostic_id": "SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
@@ -1100,7 +1101,8 @@
     "emission_domain": "source",
     "message": "A slice preserves selected logical coordinates; call an explicit rebase operation if new coordinates are required.",
     "feature_refs": [
-      "slice_logical_domain_preservation"
+      "slice_logical_domain_preservation",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
     ],
     "related_feature_refs": [],
     "stage": "checker",
@@ -1156,11 +1158,11 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "source_truth_projection_unification"
+      "slice_logical_domain_preservation"
     ],
-    "fixit_hint": "use future named replacement API",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use future named replacement API",
+    "fixit_hint": "use an explicit named copy or rebuild operation only when an available API and its ownership contract are exact",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never invent a future API or rewrite a readonly view into mutation",
     "message": "Mutable slice assignment is not admitted in Phase A.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -1291,12 +1293,12 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "numeric_array_multiaxis_slice_readonly_view_msp"
+      "slice_logical_domain_preservation"
     ],
-    "fixit_hint": "copy with ~ toArray before Task/Actor transfer",
-    "fixit_kind": "suggestion",
-    "fixit_policy": "copy with ~ toArray before Task/Actor transfer",
-    "message": "NumericArray view cannot cross isolation without owned copy.",
+    "fixit_hint": "use an explicit available owned-copy operation whose allocation and transfer contract are exact",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never invent a copy API or silently convert a readonly view into independent ownership",
+    "message": "A slice view cannot cross isolation without an explicit owned copy.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1318,12 +1320,12 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "numeric_array_multiaxis_slice_readonly_view_msp"
+      "slice_logical_domain_preservation"
     ],
-    "fixit_hint": "use ~ toArray before returning/storing",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use ~ toArray before returning/storing",
-    "message": "NumericArray slice view cannot outlive source owner-region.",
+    "fixit_hint": "keep the view within its owner region or use an explicit available owned-copy operation",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never invent a copy API or extend the owner region automatically",
+    "message": "A slice view cannot outlive its source owner region.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

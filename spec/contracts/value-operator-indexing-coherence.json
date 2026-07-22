@@ -1,0 +1,521 @@
+{
+  "schema": "deeplus.value-operator-indexing-coherence-contract/r1",
+  "revision": "r51f3-current-value-operator-index-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "new_source_syntax": false,
+    "custom_operator_activation": false,
+    "fixed_operator_conformance_overloading_activation": false,
+    "structural_index_activation": false,
+    "implementation_authority": false,
+    "product_support_claim": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "status": "EXACTLY_22_OPEN",
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_contract": 0,
+    "new_by_contract": 0
+  },
+  "separate_open_actions": [
+    "M13-A002",
+    "M13-A003",
+    "M13-A004",
+    "M13-A005"
+  ],
+  "rules": [
+    {
+      "rule_id": "VOI-R001",
+      "domain": "value_identity",
+      "title": "source value identity is independent of representation identities",
+      "contract": {
+        "source_semantic_identity": "normalized source type and value",
+        "independent_domains": [
+          "storage layout",
+          "serialization tag",
+          "runtime discriminant",
+          "foreign ABI identity",
+          "backend lowering identity"
+        ],
+        "source_equivalence_implies_equal_layout": false,
+        "layout_equivalence_implies_source_equivalence": false,
+        "abi_or_layout_selected_by_contract": false
+      }
+    },
+    {
+      "rule_id": "VOI-R002",
+      "domain": "integer_values",
+      "title": "integer domains and failure behavior are explicit",
+      "contract": {
+        "unsuffixed_integer_normalization": "Int",
+        "numeric_token_contains_sign": false,
+        "sign_ast_owner": "PrefixExpr",
+        "contextual_prefix_sign_adapter": {
+          "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+          "required_context": "one independently fixed exact Int, IntN, or UIntN target",
+          "candidate": "negative of the validated token magnitude",
+          "admission": "signed candidate is mathematically representable in the exact target",
+          "ISize_or_USize_target": false,
+          "arbitrary_constant_folding": false,
+          "hidden_widening_or_narrowing": false,
+          "list_out_of_range_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
+        },
+        "Int_mathematical_domain": "-9223372036854775808..9223372036854775807",
+        "explicit_domains": [
+          "Int8",
+          "Int16",
+          "Int32",
+          "Int64",
+          "Int128",
+          "UInt8",
+          "UInt16",
+          "UInt32",
+          "UInt64",
+          "UInt128",
+          "ISize",
+          "USize"
+        ],
+        "static_overflow": "REJECT",
+        "dynamic_overflow": "DETERMINISTIC_DEFECT_BEFORE_COMMIT",
+        "divide_or_remainder_by_zero": "DETERMINISTIC_DEFECT_BEFORE_COMMIT",
+        "implicit_wrap": false,
+        "implicit_saturate": false,
+        "named_wrap_or_saturate_api_required": true
+      }
+    },
+    {
+      "rule_id": "VOI-R003",
+      "domain": "floating_values",
+      "title": "floating behavior is bounded to IEEE binary values",
+      "contract": {
+        "Float32": "IEEE-754 binary32",
+        "Float64": "IEEE-754 binary64",
+        "ordinary_rounding": "roundTiesToEven",
+        "NaN_ordering": "UNORDERED",
+        "NaN_implicit_Ord_evidence": false,
+        "NaN_implicit_Keyable_evidence": false,
+        "positive_and_negative_zero_compare_equal": true,
+        "payload_or_backend_bit_identity_as_source_semantics": false
+      }
+    },
+    {
+      "rule_id": "VOI-R004",
+      "domain": "absence",
+      "title": "absence is Option and null has no current value identity",
+      "contract": {
+        "current_absence_values": [
+          "::none",
+          "Option<T>::none"
+        ],
+        "null_source_value": false,
+        "null_lexical_role": "RESERVED_RECOVERY_SPELLING",
+        "null_diagnostic": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+        "recovery_AST_value_count": 0,
+        "recovery_HIR_value_count": 0,
+        "recovery_MIR_value_count": 0
+      }
+    },
+    {
+      "rule_id": "VOI-R005",
+      "domain": "operator_authority",
+      "title": "current operator glyphs are closed intrinsic dispatch",
+      "contract": {
+        "token_vocabulary": "CLOSED",
+        "precedence_table": "CLOSED",
+        "glyph_dispatch": "INTRINSIC_ONLY",
+        "conformance_lookup_count": 0,
+        "extension_lookup_count": 0,
+        "witness_lookup_count": 0,
+        "provider_lookup_count": 0,
+        "runtime_lookup_count": 0,
+        "source_order_tie_break_count": 0,
+        "user_extension_route": "NAMED_TRAIT_METHOD_OR_NAMED_API",
+        "arbitrary_custom_operator": "PREVIEW_DESIGN_NONACTIVATABLE",
+        "fixed_operator_conformance_overloading": "PREVIEW_DESIGN_NONACTIVATABLE",
+        "trait_successor_p1_guard": "TCC-P1-002..008_REMAIN_OPEN"
+      }
+    },
+    {
+      "rule_id": "VOI-R006",
+      "domain": "numeric_operator_typing",
+      "title": "homogeneous scalar operators use one exact normalized domain and specialized owners delegate",
+      "contract": {
+        "literal_context_adaptation": "a signless unsuffixed integer may adopt an exact representable Int/IntN/UIntN target; only direct PrefixExpr(-, UnsuffixedIntegerLiteral) may instead adapt its signed -magnitude candidate; no arbitrary folding; ISize/USize require suffix or checked conversion; unsuffixed float remains Float64",
+        "homogeneous_scalar_operators": ["+", "-", "*", "/", "%", "integer ^"],
+        "homogeneous_scalar_operand_domain_count": 1,
+        "specialized_intrinsic_routes": {
+          "Measure ^ StaticInt": "measure_static_power_law",
+          "NumericArray ** or *+": "shape-specific linear algebra law",
+          "NumericArray infix ^": "PREVIEW_NONACTIVATABLE_WITHOUT_GATE"
+        },
+        "implicit_widening": false,
+        "implicit_narrowing": false,
+        "mixed_signedness_dispatch": false,
+        "mixed_width_dispatch": false,
+        "result_domain": "the exact homogeneous scalar domain, or the separately specified closed intrinsic result for a specialized owner",
+        "user_conformance_can_change_result": false
+      }
+    },
+    {
+      "rule_id": "VOI-R007",
+      "domain": "assignment",
+      "title": "assignment has one place evaluation and one atomic commit",
+      "contract": {
+        "assignment_tokens": [
+          "=",
+          "+=",
+          "-=",
+          "*=",
+          "/=",
+          "%="
+        ],
+        "target_place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "evaluation_order": "target place then RHS, left-to-right",
+        "compound_read_count": 1,
+        "compound_arithmetic_before_commit": true,
+        "successful_commit_count": 1,
+        "precommit_failure_commit_count": 0,
+        "precommit_failure_preserves_original": true,
+        "expression_result_type": "Unit"
+      }
+    },
+    {
+      "rule_id": "VOI-R008",
+      "domain": "range_ownership",
+      "title": "range, slice, residue, and rejected spellings have disjoint owners",
+      "contract": {
+        "current_range_delimiters": [
+          "..",
+          "..<"
+        ],
+        "ellipsis_structural_owners": [
+          "repeated positional parameter/type residue",
+          "for ... Pattern in Expr comprehension unfold"
+        ],
+        "ellipsis_range_delimiter": false,
+        "reserved_rejected_spelling": "..>",
+        "bounded_list_exact_form": "[L..U: elements]",
+        "bounded_list_inferred_upper_form_count": 0,
+        "three_dot_range_operator_count": 0,
+        "three_dot_bounded_list_form_count": 0
+      }
+    },
+    {
+      "rule_id": "VOI-R009",
+      "domain": "one_based_indexing",
+      "title": "built-in ordered sequences are one-based",
+      "contract": {
+        "default_logical_domain": "1..length",
+        "storage_offset_equation": "logical_index - 1",
+        "zero_index_in_default_one_based_domain": "REJECT",
+        "negative_index_in_default_one_based_domain": "REJECT",
+        "bounded_or_map_zero_policy": "apply the declared L..U or exact K domain without one-based rewriting",
+        "negative_from_end_rewrite": false,
+        "current_index_activation": "CLOSED_BUILTIN_CARRIER_MATRIX_ONLY",
+        "Sequence_conformance_activates_brackets": false,
+        "Indexable_conformance_activates_brackets": false,
+        "LogicalIndexDomain_conformance_activates_brackets": false
+      }
+    },
+    {
+      "rule_id": "VOI-R010",
+      "domain": "index_carriers",
+      "title": "each current index carrier owns one explicit logical domain",
+      "contract": {
+        "ordinary_sequence_domain": "1..length",
+        "bounded_list_domain": "declared L..U",
+        "map_domain": "exact K",
+        "tuple_domain": "static .1 through .arity ordinals",
+        "record_domain": "static declared labels",
+        "String_element": "Unicode scalar Char",
+        "String_byte_or_UTF16_or_grapheme_index": false,
+        "Bytes_element": "UInt8",
+        "NumericArray_axis_identity": "typed axis coordinate",
+        "NumericArray_default_source_coordinate": "1..dimension per built-in axis",
+        "NumericArray_inherits_ordinary_sequence_witness": false,
+        "closed_runtime_bracket_carriers": [
+          "List",
+          "explicitly bounded List",
+          "Map",
+          "String",
+          "Bytes",
+          "ReadonlyView",
+          "NumericArray"
+        ],
+        "explicitly_excluded_bracket_profiles": [
+          "MutableList",
+          "FrozenList",
+          "ListSnapshot"
+        ],
+        "nonlisted_collection_bracket_activation": "FORBIDDEN"
+      }
+    },
+    {
+      "rule_id": "VOI-R011",
+      "domain": "slicing",
+      "title": "current slices preserve logical coordinates and provenance",
+      "contract": {
+        "canonical_range": "i..j inclusive",
+        "accepted_noncanonical_range": "i..<j",
+        "noncanonical_diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+        "step_syntax": false,
+        "descending_syntax": false,
+        "first_anchor": "^",
+        "last_anchor": "$",
+        "anchor_scope": "SLICE_ONLY",
+        "full_axis": "*",
+        "empty_axis_or_empty_brackets": false,
+        "selected_logical_coordinates_preserved": true,
+        "owner_provenance_preserved": true,
+        "implicit_rebase": false,
+        "implicit_copy": false,
+        "mutable_slice_assignment": false,
+        "lifetime_escape": false,
+        "isolation_crossing": false,
+        "explicit_named_rebase_or_copy_required": true
+      }
+    },
+    {
+      "rule_id": "VOI-R012",
+      "domain": "evidence_boundary",
+      "title": "design-static materialization is not product execution",
+      "contract": {
+        "parser": "NOT_RUN",
+        "checker": "NOT_RUN",
+        "HIR_MIR_lowering": "NOT_RUN",
+        "xVM_runtime": "NOT_RUN",
+        "LLVM_backends": "NOT_RUN",
+        "formatter_LSP": "NOT_RUN",
+        "independent_conformance": "NOT_RUN",
+        "product_lanes": "15/15_NOT_RUN",
+        "static_fixture_as_product_pass": false
+      }
+    }
+  ],
+  "literal_domain_matrix": [
+    {
+      "literal_id": "LIT-BOOL",
+      "source_family": "true | false",
+      "normalized_type": "Bool",
+      "current": true,
+      "notes": "closed truth values"
+    },
+    {
+      "literal_id": "LIT-INT-UNSUFFIXED",
+      "source_family": "decimal or admitted radix integer without suffix",
+      "normalized_type": "Int",
+      "current": true,
+      "notes": "signed 64-bit mathematical domain"
+    },
+    {
+      "literal_id": "LIT-INT-EXPLICIT",
+      "source_family": "integer with an admitted signed or unsigned width suffix",
+      "normalized_type": "exact suffix domain",
+      "current": true,
+      "notes": "no implicit mixed-domain operator dispatch"
+    },
+    {
+      "literal_id": "LIT-FLOAT-UNSUFFIXED",
+      "source_family": "decimal floating literal without suffix",
+      "normalized_type": "Float64",
+      "current": true,
+      "notes": "IEEE binary64"
+    },
+    {
+      "literal_id": "LIT-FLOAT-EXPLICIT",
+      "source_family": "floating literal with f32 or f64 suffix",
+      "normalized_type": "exact suffix domain",
+      "current": true,
+      "notes": "IEEE binary32 or binary64"
+    },
+    {
+      "literal_id": "LIT-CHAR",
+      "source_family": "character literal",
+      "normalized_type": "Char",
+      "current": true,
+      "notes": "one Unicode scalar value"
+    },
+    {
+      "literal_id": "LIT-STRING",
+      "source_family": "ordinary, multiline, or admitted raw string",
+      "normalized_type": "String",
+      "current": true,
+      "notes": "String indexing observes Unicode scalar values"
+    },
+    {
+      "literal_id": "LIT-BYTES",
+      "source_family": "bytes literal",
+      "normalized_type": "Bytes",
+      "current": true,
+      "notes": "Bytes indexing observes UInt8"
+    },
+    {
+      "literal_id": "LIT-UNIT",
+      "source_family": "()",
+      "normalized_type": "Unit",
+      "current": true,
+      "notes": "single Unit value"
+    },
+    {
+      "literal_id": "LIT-OPTION-NONE",
+      "source_family": "::none | Option<T>::none",
+      "normalized_type": "contextual Option<T>",
+      "current": true,
+      "notes": "current absence value"
+    },
+    {
+      "literal_id": "LIT-NULL-RECOVERY",
+      "source_family": "null",
+      "normalized_type": null,
+      "current": false,
+      "notes": "reserved recovery spelling; no value node survives"
+    }
+  ],
+  "expression_operator_precedence_matrix": [
+    {"rank": 10, "operator_id": "assignment", "tokens": ["=", "+=", "-=", "*=", "/=", "%="], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 20, "operator_id": "ternary", "tokens": ["?", ":"], "fixity": "structured", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 30, "operator_id": "otherwise", "tokens": ["otherwise"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 40, "operator_id": "or", "tokens": ["or"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 50, "operator_id": "and_then", "tokens": ["and then"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 60, "operator_id": "and", "tokens": ["and"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 70, "operator_id": "comparison", "tokens": ["==", "!=", "<", "<=", ">", ">=", "in", "! in", "is", "! is"], "fixity": "infix", "associativity": "checker_bounded_chain", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 80, "operator_id": "option_coalesce", "tokens": ["?:"], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 90, "operator_id": "bitwise_or", "tokens": ["||"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 100, "operator_id": "bitwise_xor", "tokens": ["^^"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 110, "operator_id": "bitwise_and", "tokens": ["&&"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 120, "operator_id": "range", "tokens": ["..", "..<"], "fixity": "infix", "associativity": "nonassociative", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 130, "operator_id": "additive", "tokens": ["+", "-"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 140, "operator_id": "multiplicative", "tokens": ["*", "/", "%"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 150, "operator_id": "linear_product", "tokens": ["**", "*+"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 160, "operator_id": "power", "tokens": ["^"], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 170, "operator_id": "prefix", "tokens": ["+", "-", "not", "~~", "move", "borrow", "&", "await"], "fixity": "prefix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 180, "operator_id": "cast", "tokens": ["as?", "as!"], "fixity": "infix", "associativity": "nonassociative", "dispatch": "INTRINSIC_ONLY"},
+    {"rank": 190, "operator_id": "postfix", "tokens": ["call", "tuple ordinal", "index", "member", "message", "transpose", "constructor", "derivation", "trailing closure"], "fixity": "structured", "associativity": "left", "dispatch": "CLOSED_STRUCTURED_PARSELETS"}
+  ],
+  "numeric_operator_matrix": [
+    {"operator": "+", "admitted_domains": "one exact integer or Float32/Float64 domain", "result": "same exact domain", "failure": "checked integer overflow Defect before commit; IEEE floating addition"},
+    {"operator": "-", "admitted_domains": "one exact integer or Float32/Float64 domain", "result": "same exact domain", "failure": "checked integer overflow Defect before commit; IEEE floating subtraction"},
+    {"operator": "*", "admitted_domains": "one exact integer or Float32/Float64 domain", "result": "same exact domain", "failure": "checked integer overflow Defect before commit; IEEE floating multiplication"},
+    {"operator": "/", "admitted_domains": "one exact integer or Float32/Float64 domain", "result": "same exact domain", "failure": "integer quotient truncates toward zero; zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating division follows IEEE value behavior"},
+    {"operator": "%", "admitted_domains": "one exact integer domain only", "result": "same exact integer domain; a = trunc(a/b)*b + r, and r is zero or has the dividend sign with |r| < |b|", "failure": "zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating remainder requires a named API"},
+    {"operator": "^", "admitted_domains": "one exact integer domain for both operands with a statically proven nonnegative exponent, or Measure<Rep,Dim> base with StaticInt exponent under measure_static_power_law", "result": "checked same-domain integer result or the exact normalized powered Measure domain", "failure": "negative or not-statically-proven-nonnegative integer exponent rejects with NUMERIC_OPERATOR_CORE_REQUIRED; unsupported floating/NumericArray glyph route rejects; integer overflow raises ArithmeticDefect before commit; floating power requires a named API and NumericArray infix power remains Preview"},
+    {"operator": "|| | ^^ | && | ~~", "admitted_domains": "one exact known-width integral domain or one admitted finite bitfield/#flags domain", "result": "the same exact normalized domain", "failure": "mixed width, signedness, or domain rejects"},
+    {"operator": "** | *+", "admitted_domains": "closed intrinsic linear-algebra owners only", "result": "owner-specific exact intrinsic result", "failure": "no Trait fallback or structural operator admission"}
+  ],
+  "index_carrier_matrix": [
+    {"carrier": "List<T>", "surface": "value[index]", "index_domain": "Int in 1..length", "result": "read-only T; range slice returns ReadonlyView<T>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "ReadonlyView<T>", "surface": "value[index]", "index_domain": "source owner's declared logical coordinates", "result": "borrowed T; range slice returns ReadonlyView<T> preserving the source domain", "slice": true, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "String", "surface": "value[index]", "index_domain": "Int in 1..UnicodeScalarCount", "result": "Char; range slice returns ReadonlyView<Char>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "Bytes", "surface": "value[index]", "index_domain": "Int in 1..byteCount", "result": "UInt8; range slice returns ReadonlyView<UInt8>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "BoundedList<T,L,U>", "surface": "value[index]", "index_domain": "declared L..U", "result": "read-only T; range slice returns ReadonlyView<T>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "NumericArray<T,rank R>", "surface": "value[axis1; ...; axisR]", "index_domain": "typed coordinate per axis; built-in default 1..dimension", "result": "all R scalar axes return T; otherwise a ReadonlyView<T> preserves or reduces selected-axis shape/rank according to non-scalar selectors without implicit collapse or rebase", "slice": true, "activation": "BUILTIN_INTRINSIC_WITH_TYPED_AXES"},
+    {"carrier": "Map<K,V>", "surface": "value[key]", "index_domain": "exact K", "result": "V; an absent exact-K key raises IndexError::keyNotFound", "slice": false, "activation": "BUILTIN_INTRINSIC"},
+    {"carrier": "tuple", "surface": "value.1 through value.arity", "index_domain": "static ordinal only", "result": "statically selected element", "slice": false, "activation": "CLOSED_STRUCTURED_POSTFIX"},
+    {"carrier": "Record", "surface": "value.label", "index_domain": "static declared label only", "result": "statically selected field", "slice": false, "activation": "CLOSED_STRUCTURED_POSTFIX"},
+    {"carrier": "user type by Sequence/Indexable/LogicalIndexDomain conformance alone", "surface": "value[index]", "index_domain": "none", "result": "REJECT", "slice": false, "activation": "NONACTIVATABLE"}
+  ],
+  "slice_form_matrix": [
+    {"form": "value[i..j]", "status": "CURRENT_CANONICAL", "meaning": "inclusive logical coordinates i through j"},
+    {"form": "value[i..<j]", "status": "CURRENT_ACCEPTED_NONCANONICAL", "meaning": "logical coordinates i through the predecessor of j", "diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL"},
+    {"form": "value[^..$]", "status": "CURRENT_CANONICAL", "meaning": "first through last logical coordinate"},
+    {"form": "value[*]", "status": "CURRENT_CANONICAL", "meaning": "full axis selector where an axis selector is admitted"},
+    {"form": "value[]", "status": "REJECT", "meaning": "empty index or full-axis shorthand is absent"},
+    {"form": "value[..]", "status": "REJECT", "meaning": "both range bounds are required; use ^/$ for endpoints, or * only for an admitted NumericArray full axis"},
+    {"form": "value[i..>j]", "status": "REJECT", "meaning": "reserved spelling has no current range identity"},
+    {"form": "value[i...j]", "status": "REJECT", "meaning": "three dots have only repeated-positional and comprehension-unfold structural owners, never a range owner"}
+  ],
+  "new_rejection_diagnostic_matrix": [
+    {
+      "diagnostic_id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+      "surface": "null",
+      "semantic_residue_count": 0
+    },
+    {
+      "diagnostic_id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "surface": "arbitrary custom operator declaration at the bounded recovery entry",
+      "semantic_residue_count": 0
+    },
+    {
+      "diagnostic_id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "surface": "Trait/conformance attempt to define or select a fixed glyph",
+      "semantic_residue_count": 0
+    },
+    {
+      "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "surface": "..> or ... in range/operator position",
+      "semantic_residue_count": 0
+    },
+    {
+      "diagnostic_id": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "surface": "empty [] index suffix",
+      "semantic_residue_count": 0
+    },
+    {
+      "diagnostic_id": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+      "surface": "same-width bitwise operands with different signedness or distinct finite-domain identity",
+      "semantic_residue_count": 0
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 12,
+    "rule_ids_unique": true,
+    "literal_domain_row_count": 11,
+    "expression_precedence_row_count": 19,
+    "expression_precedence_ranks_strictly_increasing": true,
+    "operator_dispatch_mode": "INTRINSIC_ONLY",
+    "custom_operator_current_count": 0,
+    "fixed_operator_conformance_overloading_current_count": 0,
+    "trait_operator_lookup_count": 0,
+    "index_carrier_row_count": 10,
+    "structural_bracket_activation_count": 0,
+    "ordinary_sequence_first_index": 1,
+    "negative_from_end_rewrite_count": 0,
+    "slice_form_row_count": 8,
+    "new_rejection_diagnostic_count": 6,
+    "implicit_rebase_count": 0,
+    "semantic_p0": 0,
+    "open_feature_p1_count": 22,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0,
+    "product_execution_receipt_count": 0,
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

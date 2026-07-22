@@ -1327,9 +1327,11 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "Sequence index zero is not in the current one-based logical domain; use 1 for the first element.",
+    "message": "Index zero is outside a built-in default one-based sequence or NumericArray axis; use logical coordinate 1 for its first element.",
     "feature_refs": [
-      "one_based_sequence_logical_indexing"
+      "one_based_sequence_logical_indexing",
+      "index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
     ],
     "related_feature_refs": [],
     "stage": "checker",
@@ -1343,7 +1345,7 @@
     "authority": "LANGUAGE / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "",
-    "fixit_policy": "",
+    "fixit_policy": "apply only to built-in default one-based domains; never rewrite Map key 0 or an explicit bounded domain containing 0",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN."
   },

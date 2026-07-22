@@ -942,7 +942,7 @@ let c: Char = '가'
 let smile: Char = '\u{1F642}'
 let s: String = "가"
 ```
-## EX-R48B-058 — Bytes literal preview
+## EX-R48B-058 — Bytes literal current Stable form
 
 - **source_feature_ids:** `bytes_literal_hash_bytes_msp`
 - **checker_trace_ids:** `none`
@@ -1107,7 +1107,7 @@ def readValue() -> String = {
 let s1 = "value:$value"
 let s2 = "name:${user.name}"
 ```
-## EX-R48B-068 — String interpolation factor and format preview
+## EX-R48B-068 — String interpolation factor and format current form
 
 - **source_feature_ids:** `string_interpolation_shorthand_factor_msp`, `string_interpolation_format_spec_core`
 - **checker_trace_ids:** `none`
@@ -1121,7 +1121,7 @@ let s2 = "name:${user.name}"
 ```deeplus
 let s = "$i-th value is $a[i]; padded=${name:<12}"
 ```
-## EX-R48B-069 — String interpolation dot shorthand is rejected
+## EX-R48B-069 — String interpolation dot shorthand is accepted
 
 - **source_feature_ids:** `interpolation_path_shorthand`
 - **checker_trace_ids:** `none`
@@ -1187,7 +1187,7 @@ if isReady and isValid {
     commit()
 }
 
-if 0 <= i < xs.length and then xs[i] == 0 {
+if 1 <= i <= xs.length and then xs[i] == 0 {
     handleZero(i)
 }
 
@@ -2684,6 +2684,7 @@ let bad = v^
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
+- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -2700,6 +2701,7 @@ let beforeLast = xs[1..<$]
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
+- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -3018,6 +3020,7 @@ let squared = A ^ 2
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
+- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -3420,7 +3423,7 @@ let a = #2,3[
 ]
 let gram = a^ ** a
 ```
-## EX-R48L-009 — NumericArray infix power requires current
+## EX-R48L-009 — NumericArray infix power requires the Preview gate
 
 - **source_feature_ids:** `numeric_array_elementwise_power_msp`
 - **checker_trace_ids:** `none`
@@ -5869,7 +5872,7 @@ let consumeOnce = [move token] #once { value => consume(token, value) }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let first = matrix^[0]
+let first = matrix^[1]
 let rows = matrix^.shape
 let escaped = matrix^.\class
 let mapped = matrix^ transform { value => value }
@@ -9607,23 +9610,23 @@ let values = [10, 20, 30, 40, 50]
 let middle = values[2..4]
 let sameCoordinate = middle[3]
 ```
-## EX-R51a1-SLICE-NG-001 — slice does not rebase implicitly
+## EX-R51a1-SLICE-NG-001 — preserved slice coordinates reject an out-of-domain index
 
 - **source_feature_ids:** `slice_logical_domain_preservation`
-- **checker_trace_ids:** `none`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN`
+- **primary_diagnostic:** `INDEX_OUT_OF_LOGICAL_DOMAIN`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 let values = [10, 20, 30, 40, 50]
 let middle = values[2..4]
 let bad = middle[1]
-// SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN
+// INDEX_OUT_OF_LOGICAL_DOMAIN
 ```
 ## EX-R51a1-TUPLE-001 — tuple ordinal projection is compile-time and one-based
 
@@ -10313,8 +10316,10 @@ let text = "value=$provider.load()"
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
+let matrix = #2,2[1, 2; 3, 4]
+let base: Int = 2
 let transposed = matrix^
-let powered = base ^ exponent
+let powered = base ^ 3
 ```
 ## EX-R51c-011 — Mixed caret attachment is rejected
 
@@ -11587,4 +11592,340 @@ let previous = cell.replace(move nextState)
 ```deeplus
 let mutex = SharedMutex::new(move state)
 mutex.withLock { inout value => value = update(value) }
+```
+
+## EX-R51VOI-001 — Unsuffixed and suffixed numeric values keep exact domains
+
+- **source_feature_ids:** `numeric_literal_lexical_contract`, `numeric_literal_suffix`, `numeric_operator_core`
+- **checker_trace_ids:** `NumericLiteralAdmitted`, `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let count: Int = 42
+let exact: Int32 = 42i32
+let ratio: Float64 = 1.5
+let compact: Float32 = 1.5f32
+let sum: Int = count + 1
+```
+
+## EX-R51VOI-002 — Compound assignment evaluates one mutable place and commits once
+
+- **source_feature_ids:** `numeric_operator_core`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+def nextDelta() -> Int = return 1
+var total: Int = 10
+total += nextDelta()
+```
+
+## EX-R51VOI-003 — Option none is the only current absence value
+
+- **source_feature_ids:** `option_none_case_only`, `option_result_double_colon_case_surface`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let missing: Option<Int> = ::none
+let present: Option<Int> = ::some(42)
+```
+
+## EX-R51VOI-004 — Ordinary and bounded logical domains remain explicit
+
+- **source_feature_ids:** `one_based_sequence_logical_indexing`, `bounded_contiguous_index_domain_msp`, `basic_index_operator`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`, `BoundedLogicalIndexDomainAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let ordinary = [10, 20, 30]
+let first = ordinary[1]
+let bounded = [3..5: 10, 20, 30]
+let declaredFirst = bounded[3]
+```
+
+## EX-R51VOI-005 — String and Bytes indexing use one-based scalar coordinates
+
+- **source_feature_ids:** `one_based_sequence_logical_indexing`, `char_unicode_scalar_value_model`, `no_string_char_bytes_implicit_conversion_law`, `bytes_literal_hash_bytes_msp`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`, `StringCharBytesBoundaryAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let text: String = "가A"
+let scalar: Char = text[1]
+let bytes: Bytes = #bytes"\x41\x42"
+let firstByte: UInt8 = bytes[1]
+```
+
+## EX-R51VOI-006 — Map indexing remains in the exact key domain
+
+- **source_feature_ids:** `index_operator`, `map_prefixed_literal`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let ports = #map{ "https": 443 }
+let secure = ports["https"]
+```
+
+## EX-R51VOI-007 — NumericArray built-in axes are typed and one-based
+
+- **source_feature_ids:** `numeric_array_multiaxis_slice_readonly_view_msp`, `one_based_sequence_logical_indexing`, `index_operator`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`, `NumericFillSliceIndexAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let matrix = #2,2[1, 2; 3, 4]
+let topLeft = matrix[1; 1]
+let firstRow = matrix[1; *]
+```
+
+## EX-R51VOI-008 — Inclusive slices and anchors preserve source coordinates
+
+- **source_feature_ids:** `inclusive_slice_range_canonical_msp`, `slicing_anchor_range_notation_msp`, `slice_logical_domain_preservation`
+- **checker_trace_ids:** `SliceRangeAdmitted`, `SliceLogicalDomainPreserved`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let values = [10, 20, 30, 40]
+let middle = values[2..$]
+let sameCoordinate = middle[3]
+```
+
+## EX-R51VOI-009 — Explicit exclusive slice end is accepted with a warning
+
+- **source_feature_ids:** `inclusive_slice_range_canonical_msp`, `slice_half_open_noncanonical_warning_law`
+- **checker_trace_ids:** `SliceRangeAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let values = [10, 20, 30, 40]
+let prefix = values[1..<4]
+```
+
+## EX-R51VOI-NG-001 — null is reserved recovery, not a value
+
+- **source_feature_ids:** `option_none_case_only`, `option_result_double_colon_case_surface`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let missing: Option<Int> = null
+// NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE
+```
+
+## EX-R51VOI-NG-002 — custom operator declarations are not current
+
+- **source_feature_ids:** `custom_operator`, `closed_operator_symbols_open_named_extensions`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+operator <+> precedence 130
+// CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT
+```
+
+## EX-R51VOI-NG-003 — Trait conformance cannot activate a fixed glyph
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`, `closed_operator_symbols_open_named_extensions`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public class Amount {
+    +let value: Int
+
+    +def! new(value: Int)
+        : super!()
+    = {
+        self.value = value
+    }
+}
+
+public trait Additive {
+    +def add+(rhs: Self) -> Self
+        throws Never
+        effects {}
+}
+
+public conformance Amount conforms Additive {
+    +def add+(rhs: Self) -> Self
+        throws Never
+        effects {}
+    = {
+        return Amount!(self.value + rhs.value)
+    }
+}
+
+let total = Amount!(1) + Amount!(2)
+// FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT
+```
+
+## EX-R51VOI-NG-004 — descending range glyph is not current
+
+- **source_feature_ids:** `operator_precedence_table_phase_a`, `range_step_expression_surface_clarification`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `RANGE_OPERATOR_SPELLING_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let descending = 5..>1
+// RANGE_OPERATOR_SPELLING_NOT_CURRENT
+```
+
+## EX-R51VOI-NG-005 — ellipsis is not an expression range operator
+
+- **source_feature_ids:** `operator_precedence_table_phase_a`, `range_step_expression_surface_clarification`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `RANGE_OPERATOR_SPELLING_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = 1...5
+// RANGE_OPERATOR_SPELLING_NOT_CURRENT
+```
+
+## EX-R51VOI-NG-006 — an empty index suffix never implies a full slice
+
+- **source_feature_ids:** `basic_index_operator`, `index_operator`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `INDEX_SUFFIX_REQUIRES_AXIS`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = values[]
+// INDEX_SUFFIX_REQUIRES_AXIS
+```
+
+## EX-R51VOI-NG-007 — NumericArray zero is outside every built-in positional axis
+
+- **source_feature_ids:** `numeric_array_multiaxis_slice_readonly_view_msp`, `one_based_sequence_logical_indexing`, `index_operator`
+- **checker_trace_ids:** `LogicalIndexDomainAdmitted`, `NumericFillSliceIndexAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `ZERO_BASED_INDEX_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let matrix = #2,2[1, 2; 3, 4]
+let invalid = matrix[0; 1]
+// ZERO_BASED_INDEX_NOT_CURRENT
+```
+
+## EX-R51VOI-NG-008 — mixed numeric widths require an explicit conversion
+
+- **source_feature_ids:** `numeric_operator_core`, `numeric_literal_suffix`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `NUMERIC_OPERATOR_CORE_REQUIRED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = 1i32 + 2i64
+// NUMERIC_OPERATOR_CORE_REQUIRED
+```
+
+## EX-R51VOI-NG-009 — mutable slice assignment is not current
+
+- **source_feature_ids:** `inclusive_slice_range_canonical_msp`, `slice_logical_domain_preservation`
+- **checker_trace_ids:** `SliceRangeAdmitted`, `SliceLogicalDomainPreserved`, `SliceViewLifetimeAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+var values = [10, 20, 30, 40, 50]
+let replacements = [90, 91, 92]
+values[2..4] = replacements
+// SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED
 ```

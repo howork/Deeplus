@@ -55,6 +55,33 @@
     "normalized_contract_sha256": "2ef0581145255199e467472c91e8ce91e2c08962390cb077f321cac6a91db094"
   },
   {
+    "entry_id": "arithmetic_defect",
+    "symbol": "ArithmeticDefect",
+    "kind": "language_intrinsic_defect",
+    "status": "stable_design",
+    "feature_refs": [
+      "numeric_operator_core"
+    ],
+    "signatures": [
+      "prelude intrinsic ArithmeticDefect { overflow; divisionByZero; }"
+    ],
+    "responsibility": "closed nonrecoverable checked-integer arithmetic failure identity; not an ErrorSet member or enum-as-error",
+    "notes": "overflow covers dynamic checked overflow; divisionByZero covers integer division or remainder by zero; all outcomes occur before enclosing assignment commit; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic ArithmeticDefect { overflow; divisionByZero; }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "f4ed7a126659b43ef4c6b99c69b8da3aff419e90b433acbc8ddfa3e8ff396af5"
+  },
+  {
     "entry_id": "bitfield_codec",
     "symbol": "BitfieldCodec",
     "kind": "trait",
@@ -120,8 +147,8 @@
     "signatures": [
       "public trait Bitwise<Self>"
     ],
-    "responsibility": "bitwise operator admission uses checker-visible witness/admissibility",
-    "notes": "",
+    "responsibility": "named bitwise contract vocabulary; current bitwise glyph dispatch is intrinsic-only",
+    "notes": "Conformance, witness, extension, provider, and source order do not activate or replace a glyph implementation.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -134,7 +161,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "937eafd1bf130b00071b50c695c1b3a4194d5010216f3edb9698767f8269fb3d"
+    "normalized_contract_sha256": "2fd784c8b340a1308784eac0cc563605e8694839cbaf5de54b0875b0b6331752"
   },
   {
     "entry_id": "box_t",
@@ -219,8 +246,8 @@
       "public def Bytes::fromHex(text: String) -> Result<Bytes, error ParseError>",
       "public type Bytes"
     ],
-    "responsibility": "raw byte sequence; no implicit String conversion",
-    "notes": "",
+    "responsibility": "raw byte sequence with one-based UInt8 indexing; no implicit String conversion",
+    "notes": "The built-in logical domain is 1..length with storage offset index - 1; failure uses IndexError::outOfLogicalDomain.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -239,7 +266,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "66a753a551900b017589a02fe0297bf63e81f5b8ec236e2a794e183735060d0a"
+    "normalized_contract_sha256": "33a529da436815e0034976a0262cbf073f9b15cbb23e7989fd2f2a64d91993c2"
   },
   {
     "entry_id": "char",
@@ -542,8 +569,8 @@
       "Float32::nan: Float32",
       "Float32::positiveInfinity: Float32"
     ],
-    "responsibility": "Non-finite Float32 values are type-side constants rather than lexical numeric literals.",
-    "notes": "Negative infinity is unary minus applied to positiveInfinity.",
+    "responsibility": "IEEE-754 binary32 value behavior; non-finite values are type-side constants rather than lexical numeric literals.",
+    "notes": "Ordinary arithmetic rounds to nearest, ties to even; NaN is unordered, signed zero compares equal, and negative infinity is unary minus applied to positiveInfinity.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -562,7 +589,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "97c78f3a0a2af5d52f35e0a5c1d7001fdf443e4dc772f33c11513c03cadddb6f"
+    "normalized_contract_sha256": "75cebc2a45bb8550aaedd866962534214f3d6545fd9749dccabe342de8f17ef0"
   },
   {
     "entry_id": "float64_nonfinite_constants",
@@ -576,8 +603,8 @@
       "Float64::nan: Float64",
       "Float64::positiveInfinity: Float64"
     ],
-    "responsibility": "Non-finite Float64 values are type-side constants rather than lexical numeric literals.",
-    "notes": "NaN payload literals are not current source; Float is not Keyable by default.",
+    "responsibility": "IEEE-754 binary64 value behavior; non-finite values are type-side constants rather than lexical numeric literals.",
+    "notes": "Ordinary arithmetic rounds to nearest, ties to even; NaN is unordered, signed zero compares equal, and Float has no implicit Ord or Keyable evidence.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -596,7 +623,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "5459105bba7ceffa0d7e92f00befedf44637492e3fbe8c93fb391bd5722b1e2f"
+    "normalized_contract_sha256": "5280c3d65c7cc09aebc0531f1983d06aa1e90ca4c96ed533335ecc2a73efae9a"
   },
   {
     "entry_id": "frozen_list_t",
@@ -686,13 +713,15 @@
     "kind": "checker_known_protocol",
     "status": "stable_design",
     "feature_refs": [
-      "basic_index_operator"
+      "basic_index_operator",
+      "index_operator",
+      "one_based_sequence_logical_indexing"
     ],
     "signatures": [
       "index(receiver, index) -> Element throws IndexError effects {}"
     ],
-    "responsibility": "Stable basic indexing law; advanced slicing/custom indexing are separate.",
-    "notes": "",
+    "responsibility": "checker-known descriptor for the closed built-in indexing owners",
+    "notes": "Source conformance does not activate []; built-in failures use the canonical IndexError family and product support remains NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -705,7 +734,36 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "0f3c1d79cb46d545808a7211738d87a1d324034f4b8479fdaf3e7b03af3faca7"
+    "normalized_contract_sha256": "61a0808f1179b1d4ec60e24731fb1e25f22cb43655c72ab8e64e48ceea380e64"
+  },
+  {
+    "entry_id": "index_error",
+    "symbol": "IndexError",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "basic_index_operator",
+      "index_operator",
+      "one_based_sequence_logical_indexing"
+    ],
+    "signatures": [
+      "public enum IndexError { outOfLogicalDomain; keyNotFound; }"
+    ],
+    "responsibility": "closed recoverable indexing failure family; type and domain mismatches remain static diagnostics",
+    "notes": "outOfLogicalDomain covers dynamic built-in positional and NumericArray coordinate failure; keyNotFound covers absent exact-typed Map keys; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum IndexError { outOfLogicalDomain; keyNotFound; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "bfd9fc6558112fd7b0a20381f564b7fa948f16edf68cf009a9b4f3da8ac9bbda"
   },
   {
     "entry_id": "iterator",
@@ -810,8 +868,8 @@
       "appending(value: consume T) -> List<T>",
       "iterator() -> some Iterator where Item == T"
     ],
-    "responsibility": "ordered owned collection",
-    "notes": "",
+    "responsibility": "ordered owned collection with one-based built-in indexing",
+    "notes": "Default logical domain is 1..length with storage offset index - 1; an explicit bounded List preserves its declared L..U domain.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -830,7 +888,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "0256bfedecdeec2357cabf5e3d9a6838cbd0aab86647bb8ad7494d90511432b2"
+    "normalized_contract_sha256": "8e6de849cc9ec74ffe38cb9b6c46ee7964c0b4371744c13389886e7b23148b81"
   },
   {
     "entry_id": "logical_index_domain",
@@ -843,8 +901,8 @@
     "signatures": [
       "public trait LogicalIndexDomain<Index> { def contains(self, index: Index) -> Bool; def storageOffset(self, index: Index) -> Int }"
     ],
-    "responsibility": "one-based logical-domain to storage-offset contract",
-    "notes": "R51b integrated current-canonical declaration; product support is not implied",
+    "responsibility": "named logical-domain to storage-offset contract; built-in bracket syntax remains closed-owner",
+    "notes": "The default built-in sequence law is 1..length with offset index - 1; conformance alone does not activate []; product support is not implied.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -857,7 +915,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "8ba90b89cd071f4040dcb224eea808d7bade11ed223d30b85328e33c31ffd756"
+    "normalized_contract_sha256": "b28bdd97955e2aec2a9a8095cccf26e72faf13b478dec88753d6ddaee4a6536a"
   },
   {
     "entry_id": "map_k_v",
@@ -871,8 +929,8 @@
       "public def Map::empty<K,V>() -> Map<K,V>",
       "public type Map<K,V>"
     ],
-    "responsibility": "key admissibility without public Copyable",
-    "notes": "",
+    "responsibility": "exact-K key lookup without public Copyable or key-as-member projection",
+    "notes": "An absent key raises IndexError::keyNotFound; no implicit key conversion or dot projection is admitted.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -891,7 +949,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "66a9c71623341e8a85591a7d5546c3ba24e71b51036281c5ab11434f60e307ba"
+    "normalized_contract_sha256": "387f56b446a5ddf8758ec78ac51a8ec0b7bdf66a66dc8770030ccfcb20bcf7df"
   },
   {
     "entry_id": "measure_rep_dim",
@@ -1045,13 +1103,15 @@
     "kind": "core_type",
     "status": "stable_design",
     "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "one_based_sequence_logical_indexing"
     ],
     "signatures": [
       "prelude intrinsic NumericArray<T, rank R>"
     ],
-    "responsibility": "ranked numeric storage with visible allocation/backend responsibility",
-    "notes": "R51b core identity closure",
+    "responsibility": "ranked numeric value with typed one-based default axes and visible allocation/backend responsibility",
+    "notes": "Each built-in default source-visible axis is 1..dimension; slicing returns an owner-bounded coordinate-preserving ReadonlyView and does not inherit a Sequence witness.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1064,7 +1124,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "68db3ac6be9363caf01cea5726d646e597fe8c393fc33715065a32aaa3bcbff7"
+    "normalized_contract_sha256": "83e18e2b13da4261d5bf3c21c49044fbce0813d0e98e1a397c0c9693d80d7bda"
   },
   {
     "entry_id": "option_t",
@@ -1132,8 +1192,8 @@
     "signatures": [
       "public trait Ord<T> { +def compare.(lhs: T, rhs: T) -> Int; }"
     ],
-    "responsibility": "nominal ordering evidence for T",
-    "notes": "R51b core identity closure",
+    "responsibility": "nominal named ordering evidence for T; never an operator-glyph hook",
+    "notes": "Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1146,7 +1206,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "83fde59ff459859e648f1b3110b0ad5d81bf5ff483288c57d70780bfcc3cc810"
+    "normalized_contract_sha256": "242b40124c99863f23b325aed709f73e05923683c137fdb247eb994e9faa9f64"
   },
   {
     "entry_id": "owned_downcast_op",
@@ -1217,8 +1277,8 @@
     "signatures": [
       "public borrowed type ReadonlyView<T>"
     ],
-    "responsibility": "nonowning nonmutating owner-bounded view",
-    "notes": "R50 core identity closure",
+    "responsibility": "nonowning nonmutating owner-bounded coordinate-preserving view",
+    "notes": "Every view preserves its source owner's declared logical coordinates and provenance; ordinary one-based sources remain one-based, while bounded or sliced sources retain their domains. No implicit rebase, hidden copy, isolation crossing, or owner-lifetime escape is permitted.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1231,7 +1291,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "203b3d80422637b707f5416af1f6030a8901c189c62a76d9568fb52b4654ebdd"
+    "normalized_contract_sha256": "0e71ac5f79fa95c66911f8d026b0e0235f696311982af25364b868de50621d45"
   },
   {
     "entry_id": "replace_t",
@@ -1299,8 +1359,8 @@
     "signatures": [
       "public trait Sequence<T> { +def iterator.() -> some Iterator where Item == T; }"
     ],
-    "responsibility": "ordered finite or lazy sequence contract with an exact associated Item binding",
-    "notes": "R51b core identity closure",
+    "responsibility": "named ordered finite or lazy sequence contract with an exact associated Item binding",
+    "notes": "Conformance supplies iteration behavior only and does not activate bracket indexing.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1313,7 +1373,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "d9571aa9d7f6b2516da8f06aa0f868974115c7a89b627a0f993964412e5e5804"
+    "normalized_contract_sha256": "27984b8bf90f4b7dfc92f37cffd817848de53d8808ee6a231019900f386a3905"
   },
   {
     "entry_id": "shared_t",
@@ -1407,8 +1467,8 @@
     "signatures": [
       "prelude intrinsic String: immutable Unicode scalar sequence"
     ],
-    "responsibility": "immutable Unicode scalar sequence",
-    "notes": "R51b core identity closure",
+    "responsibility": "immutable Unicode scalar sequence with one-based Char indexing",
+    "notes": "The built-in logical domain is 1..scalarCount with offset index - 1; indexing never selects bytes, UTF-16 units, or graphemes.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1421,152 +1481,6 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "07f1e4caa260a72420b32097de16b1c05d1485bfbc69a729b6ad78b3ed661c22"
-  },
-  {
-    "entry_id": "string_render",
-    "symbol": "String::render<T>",
-    "kind": "static_function",
-    "status": "stdlib",
-    "feature_refs": [
-      "string_render_structured_value_profile"
-    ],
-    "signatures": [
-      "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }"
-    ],
-    "responsibility": "single-evaluation nonescaping structured-value renderer",
-    "notes": "R51c current contract; product support NOT_RUN",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "d676ff05bb79e63b598eff255fdbce59d708d03d6aadc8c8fdb27889ac689ca2"
-  },
-  {
-    "entry_id": "task_t",
-    "symbol": "Task<T>",
-    "kind": "core_type",
-    "status": "stable_design",
-    "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
-    ],
-    "signatures": [
-      "prelude intrinsic Task<T>"
-    ],
-    "responsibility": "structured asynchronous task handle",
-    "notes": "R51b core identity closure",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "prelude intrinsic Task<T>",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "c0b30852fdc1b051f8332a55e280ed3d72817ceb5acfdc054f63c22cb09763a7"
-  },
-  {
-    "entry_id": "unitcatalog",
-    "symbol": "UnitCatalog",
-    "kind": "stdlib_profile",
-    "status": "stable_design",
-    "feature_refs": [
-      "user_unit_catalog_msp",
-      "exact_ratio_unit_conversion_msp",
-      "unit_operation_policy_msp"
-    ],
-    "signatures": [
-      "unit catalog CatalogName { ... }",
-      "unit in equalsRatio 1[ft] / 12"
-    ],
-    "responsibility": "Stable design user unit catalog profile; product support NOT_RUN. Dynamic/provider conversion is outside this stable core.",
-    "notes": "",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "unit catalog CatalogName { ... }",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      },
-      {
-        "text": "unit in equalsRatio 1[ft] / 12",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "769119e56b166e056bf56441d2bf41ea6110a9390dcd6e26fde5cef490a9457e"
-  },
-  {
-    "entry_id": "with_borrowed_t",
-    "symbol": "withBorrowed<T,R>",
-    "kind": "function",
-    "status": "stable_design",
-    "feature_refs": [
-      "pure_callable_profile",
-      "r51a1_fully_merged_current_canonical_single_source_truth",
-      "scoped_callable_lifetime_profile"
-    ],
-    "signatures": [
-      "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R"
-    ],
-    "responsibility": "invocation-bounded borrowed callback helper",
-    "notes": "R50 core identity closure",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "d92f185bc50434da02f107d1af8f583a406b0c8d5f4a3660ee3f565d91a8a75c"
-  },
-  {
-    "entry_id": "witnessid",
-    "symbol": "WitnessId",
-    "kind": "checker_identity",
-    "status": "stable_design",
-    "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
-    ],
-    "signatures": [
-      "checker identity WitnessId"
-    ],
-    "responsibility": "explicit conformance evidence identity; never synthesized from extension presence",
-    "notes": "",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "checker identity WitnessId",
-        "dialect": "checker_meta",
-        "grammar_root": null,
-        "schema": "deeplus.checker-meta-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "f5507d3106db8921993012f137e70a169eb589ce25f918736e8ee3ee764bbbfd"
+    "normalized_contract_sha256": "f02948d8763b21a8292e20ef585ea014b45143a7092a55e318ce8b5c1e92a0c4"
   }
 ]

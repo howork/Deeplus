@@ -845,10 +845,14 @@ PositionalUnfoldArgument ::= "*" Expr ;
 NamedUnfoldArgument ::= "**" Expr ;
 AtomicCallArgument ::= Literal | Identifier | QualifiedStaticExpr | ExpectedVariantExpr ;
 
-IndexSuffix ::= "[" SliceAxisList? "]" ;
+(* An index suffix always supplies at least one axis. `[]` is recovery-only and
+   diagnoses INDEX_SUFFIX_REQUIRES_AXIS; a full slice axis is written `*`. *)
+IndexSuffix ::= "[" SliceAxisList "]" ;
 SliceAxisList ::= SliceAxis (";" SliceAxis)* ;
 SliceAxis ::= SliceRange | SliceIndexExpr | AxisWildcard ;
-SliceRange ::= SliceBound? (".." | "..<") SliceBound? ;
+(* SliceRange owns `..`/`..<` at this delimiter level. PrattSliceIndexExpr
+   terminates before those tokens and cannot consume the enclosing range. *)
+SliceRange ::= SliceBound (".." | "..<") SliceBound ;
 SliceBound ::= SliceIndexExpr | "^" | "$" | "^" OffsetExpr | "$" OffsetExpr ;
 OffsetExpr ::= ("+" | "-") NumericLiteral ;
 AxisWildcard ::= "*" ;
@@ -933,9 +937,8 @@ PrattSliceIndexExpr ::= SLICE_INDEX_PRATT_ENTRY ;
    ================================================================== *)
 (* Literal and collection syntax. *)
 
-Literal ::= BoolLiteral | NullLiteral | NumericLiteral | StringLiteralExpr | CharLiteralExpr | BytesLiteral ;
+Literal ::= BoolLiteral | NumericLiteral | StringLiteralExpr | CharLiteralExpr | BytesLiteral ;
 BoolLiteral ::= "true" | "false" ;
-NullLiteral ::= "null" ;
 NumericLiteral ::= NUMERIC_LITERAL ;
 CharLiteralExpr ::= CHAR_LITERAL ;
 BytesLiteral ::= BYTES_LITERAL ;
@@ -964,7 +967,7 @@ InterpolationIndex ::= StaticIntLiteral | Identifier ;
 
 (* Ordinary list, bounded list and comprehension share the '[' commitment point. *)
 ListLiteral ::= "[" ExpressionList? "]" ;
-BoundedListLiteral ::= "[" StaticIntLiteral ("..." | ".." StaticIntLiteral)
+BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral
                        ":" ExpressionList? "]" ;
 ComprehensionExpr ::= "[" Expr ComprehensionClause+ "]" ;
 
@@ -1052,11 +1055,28 @@ PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
 RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
                  | RecoveryFacetPackExpr
                  | RecoveryFacetType
+                 | RecoveryNullLiteral
+                 | RecoveryEmptyIndexSuffix
+                 | RecoveryCustomOperatorDeclaration
                  | RecoveryNamedRestDoubleStar
                  | RecoveryFunctionTypeNamedRestDoubleStar
                  | RecoveryLazyBindingAt
                  | RecoveryUnitMiddleDot
                  | RecoveryQuarantineScope ;
+
+(* `null` is reserved only so the parser can emit
+   NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE. It never creates a value node. *)
+RecoveryNullLiteral ::= "null" ;
+
+(* Context-bounded parser recovery only. Neither production creates a Stable
+   expression/declaration or an AST/HIR/MIR node. *)
+RecoveryEmptyIndexSuffix ::= "[" "]" ;
+RecoveryCustomOperatorDeclaration ::= "operator" RecoveryOperatorSymbol
+                                      ("precedence" StaticIntLiteral)? StatementBoundary ;
+(* ScannerRecoveryOperatorSymbol is emitted only after the parser has committed to
+   this recovery production at a declaration entry. It has no Stable/Preview token
+   identity and consumes one nonempty run from the bounded operator-punctuation set. *)
+RecoveryOperatorSymbol ::= ScannerRecoveryOperatorSymbol ;
 
 (* Generic entry is recognized only to emit the current dedicated rejection. *)
 RecoveryGenericEntryFunctionDecl ::= "def" "#" "entry" Identifier TypeParameterList ParameterList

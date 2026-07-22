@@ -198,7 +198,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Preview design",
-    "notes": "Current contract: Custom operator. This row grants no hidden source activation, authority, or product implementation claim beyond the stated status and companion rules.",
+    "notes": "Arbitrary custom operator declarations are Preview design and nonactivatable. Current source rejects them with CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT and directs authors to a named Trait method, function, message, or API.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -210,8 +210,12 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "design_only",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT"
+      ],
+      "predicates": [
+        "OperatorPrecedenceTablePhaseAAdmitted"
+      ],
       "examples": [],
       "productions": [],
       "semantic_reference_productions": []
@@ -1638,7 +1642,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current contract promotes && || ^^ ~~ as the canonical bitwise family; Bool operands are rejected.",
+    "notes": "Current && || ^^ ~~ bitwise operators reject Bool and require one exact normalized known-width integer or identical finite bitfield/#flags domain; no signedness, width, or nominal-domain mixing is implicit.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1655,6 +1659,7 @@
         "BITWISE_COMPLEMENT_IS_PREFIX_ONLY",
         "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
         "BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
+        "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
         "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
         "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
         "BITWISE_RESULT_USED_AS_BOOL",

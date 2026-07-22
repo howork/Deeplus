@@ -229,6 +229,7 @@
     "named_repeated_function_type": "***",
     "named_unfold": "**",
     "positional_repeated": "...",
+    "comprehension_unfold": "for ... Pattern in Expr",
     "lazy_binding": "let#lazy",
     "interpolation_shorthand": "$root.member[index]",
     "unit_infix": [
@@ -253,8 +254,23 @@
     "recovery_only": [
       "let@lazy",
       "unit middle dot",
-      "named-rest parameter/type written with **"
+      "named-rest parameter/type written with **",
+      "null literal",
+      "infix ..> or ... range spelling",
+      "custom operator declaration"
     ],
+    "semantic_rejections": [
+      "fixed-operator Trait/conformance dispatch"
+    ],
+    "value_absence": "::none or Option<T>::none; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor; null is recovery only",
+    "operator_token_vocabulary": "CLOSED",
+    "operator_glyph_dispatch": "INTRINSIC_ONLY",
+    "range_delimiters": [
+      "..",
+      "..<"
+    ],
+    "index_suffix_requires_axis": true,
+    "full_slice_axis": "*",
     "no_generic_at_role": true,
     "named_rest_disambiguation": "grammar owner: attached suffix *** in parameter/type; attached prefix ** only in call/materialization unfold",
     "class_instance_method_marker": "mandatory one of . + *. *+",
@@ -324,8 +340,14 @@
     {
       "surface": "...",
       "lexer": "ELLIPSIS",
-      "cst": "RepeatedPositionalMarker",
-      "ast": "RepeatedPositional"
+      "cst_roles": [
+        "RepeatedPositionalMarker",
+        "UnfoldClause"
+      ],
+      "ast_roles": [
+        "RepeatedPositional",
+        "ComprehensionUnfold"
+      ]
     },
     {
       "surface": "***",
@@ -546,12 +568,18 @@
     {
       "id": "POSITIONAL_REPEAT",
       "surface": "...",
-      "trivia": "ATTACHED_SUFFIX",
+      "trivia": "CONTEXT_DEPENDENT",
       "contexts": [
         "parameter",
-        "function_type"
+        "function_type",
+        "comprehension_unfold_clause"
       ],
-      "formatter": "attached"
+      "trivia_by_context": {
+        "parameter": "ATTACHED_SUFFIX",
+        "function_type": "ATTACHED_SUFFIX",
+        "comprehension_unfold_clause": "SPACE_AFTER_FOR_AND_BEFORE_PATTERN"
+      },
+      "formatter": "contextual"
     },
     {
       "id": "TYPE_OPTIONAL_SUFFIX",
@@ -1163,24 +1191,19 @@
               "="
             ],
             [
-              "+",
-              "="
+              "+="
             ],
             [
-              "-",
-              "="
+              "-="
             ],
             [
-              "*",
-              "="
+              "*="
             ],
             [
-              "/",
-              "="
+              "/="
             ],
             [
-              "%",
-              "="
+              "%="
             ]
           ],
           "lbp": 10,
@@ -1347,17 +1370,16 @@
             ],
             [
               "..<"
-            ],
-            [
-              "..>"
-            ],
-            [
-              "..."
             ]
           ],
           "lbp": 120,
           "rbp": 121,
-          "assoc": "nonassociative"
+          "assoc": "nonassociative",
+          "parselet": "range",
+          "rejected_reserved_spellings": {
+            "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+            "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+          }
         },
         {
           "id": "additive",
@@ -1480,6 +1502,36 @@
           "assoc": "left"
         }
       ]
+    },
+    "slice_index": {
+      "entry": "SLICE_INDEX_PRATT_ENTRY",
+      "enclosing_owner": "IndexSuffix",
+      "range_owner": "SliceRange",
+      "scalar_expression_owner": "PrattSliceIndexExpr",
+      "bounds_required": true,
+      "missing_bound_recovery": "use ^ or $ for the first or last logical coordinate",
+      "terminates_before": [
+        "..",
+        "..<",
+        ";",
+        "]"
+      ],
+      "anchors_owned_by_slice_bound_only": [
+        "^",
+        "$"
+      ],
+      "anchor_outside_slice_bound_recovery": {
+        "diagnostic": "SLICE_ANCHOR_OUTSIDE_SLICE",
+        "stage": "parser",
+        "semantic_anchor_node_count": 0
+      },
+      "full_axis": "* (NumericArray axis only)",
+      "empty_axis": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "empty_axis_recovery_production": "RecoveryEmptyIndexSuffix",
+      "rejected_reserved_spellings": {
+        "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+        "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+      }
     },
     "type": {
       "operators": [
@@ -1635,6 +1687,16 @@
         ],
         "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
         "mir": "ConstString for plain content; ordered RenderParts for interpolation"
+      },
+      "ScannerRecoveryOperatorSymbol": {
+        "profile": "RECOVERY_ONLY",
+        "context": "only after a declaration-entry parser has committed to exact contextual lexeme operator",
+        "nonempty_character_set": "!%&*+-/<=>?^|~",
+        "termination": "trivia, precedence contextual lexeme, or StatementBoundary",
+        "longest_match": true,
+        "stable_token_identity": null,
+        "preview_token_identity": null,
+        "semantic_node_count": 0
       }
     }
   },
@@ -1665,6 +1727,25 @@
     },
     "recovery": "diagnostic-only; never admitted"
   },
+  "parser_recovery_owners": {
+    "null_literal": {
+      "production": "RecoveryNullLiteral",
+      "diagnostic": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+      "semantic_node_count": 0
+    },
+    "empty_index_suffix": {
+      "production": "RecoveryEmptyIndexSuffix",
+      "diagnostic": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "context": "after an admitted postfix receiver only",
+      "semantic_node_count": 0
+    },
+    "custom_operator_declaration": {
+      "production": "RecoveryCustomOperatorDeclaration",
+      "diagnostic": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "context": "declaration entry after exact contextual operator lexeme only; ScannerRecoveryOperatorSymbol is recovery-only",
+      "semantic_node_count": 0
+    }
+  },
   "diagnostics": [
     {
       "id": "MODIFIER_NOT_ADMITTED_FOR_OWNER",
@@ -1679,6 +1760,31 @@
       "id": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
       "stage": "PARSER",
       "fix": "***"
+    },
+    {
+      "id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+      "stage": "PARSER",
+      "fix": "::none"
+    },
+    {
+      "id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+      "stage": "PARSER",
+      "fix": "named Trait method or function"
+    },
+    {
+      "id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "stage": "CHECKER",
+      "fix": "named Trait method or API"
+    },
+    {
+      "id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "stage": "PARSER",
+      "fix": ".. or ..<"
+    },
+    {
+      "id": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "stage": "PARSER",
+      "fix": "declared first coordinate/key; [*] only for NumericArray"
     },
     {
       "id": "LAZY_BINDING_USE_HASH",
@@ -1732,12 +1838,23 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 89,
-    "STABLE": 439,
+    "STABLE": 438,
     "PREVIEW": 13,
-    "RECOVERY": 11
+    "RECOVERY": 15
   },
   "numeric_lexical_policy": {
     "sign_is_prefix_operator": true,
+    "sign_is_numeric_token_part": false,
+    "contextual_prefix_sign_adapter": {
+      "owner": "integrated_checker",
+      "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+      "required_context": "one independently fixed exact Int, IntN, or UIntN domain; ISize/USize excluded",
+      "candidate": "negative of the validated token magnitude",
+      "admission": "candidate is mathematically representable in the exact target domain",
+      "list_failure": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "arbitrary_constant_folding": false,
+      "hidden_widening_or_narrowing": false
+    },
     "radices": [
       2,
       8,
@@ -1767,7 +1884,11 @@
     "exponent": "decimal_only_with_required_digits",
     "radix_floats": "not_current",
     "unsuffixed_integer_default": "Int",
+    "unsuffixed_integer_contextual_targets": "representable Int, IntN, or UIntN for N in {8,16,32,64,128} only",
+    "unsuffixed_integer_excluded_contextual_targets": "ISize and USize require isize/usize or explicit checked conversion",
     "unsuffixed_float_default": "Float64",
+    "unsuffixed_float_contextual_targets": "Float64 only; Float32 requires f32",
+    "normalization_owner": "NumericLiteralAdmitted",
     "nonfinite_policy": "not lexical literals; use Float32/Float64 static nan and positiveInfinity members",
     "candidate_scanner": {
       "trigger": "an ASCII decimal digit in CODE mode",

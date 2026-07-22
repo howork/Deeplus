@@ -1,0 +1,148 @@
+[
+  {
+    "entry_id": "string_render",
+    "symbol": "String::render<T>",
+    "kind": "static_function",
+    "status": "stdlib",
+    "feature_refs": [
+      "string_render_structured_value_profile"
+    ],
+    "signatures": [
+      "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }"
+    ],
+    "responsibility": "single-evaluation nonescaping structured-value renderer",
+    "notes": "R51c current contract; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public extension String { def:: render<T>(arg: T, act: (T) -> String) -> String }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "d676ff05bb79e63b598eff255fdbce59d708d03d6aadc8c8fdb27889ac689ca2"
+  },
+  {
+    "entry_id": "task_t",
+    "symbol": "Task<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic Task<T>"
+    ],
+    "responsibility": "structured asynchronous task handle",
+    "notes": "R51b core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Task<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c0b30852fdc1b051f8332a55e280ed3d72817ceb5acfdc054f63c22cb09763a7"
+  },
+  {
+    "entry_id": "unitcatalog",
+    "symbol": "UnitCatalog",
+    "kind": "stdlib_profile",
+    "status": "stable_design",
+    "feature_refs": [
+      "user_unit_catalog_msp",
+      "exact_ratio_unit_conversion_msp",
+      "unit_operation_policy_msp"
+    ],
+    "signatures": [
+      "unit catalog CatalogName { ... }",
+      "unit in equalsRatio 1[ft] / 12"
+    ],
+    "responsibility": "Stable design user unit catalog profile; product support NOT_RUN. Dynamic/provider conversion is outside this stable core.",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "unit catalog CatalogName { ... }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "unit in equalsRatio 1[ft] / 12",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "769119e56b166e056bf56441d2bf41ea6110a9390dcd6e26fde5cef490a9457e"
+  },
+  {
+    "entry_id": "with_borrowed_t",
+    "symbol": "withBorrowed<T,R>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "pure_callable_profile",
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "scoped_callable_lifetime_profile"
+    ],
+    "signatures": [
+      "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R"
+    ],
+    "responsibility": "invocation-bounded borrowed callback helper",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def withBorrowed<T,R>(borrow value: T, body: #scoped#pure (borrow T) -> R) -> R",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "d92f185bc50434da02f107d1af8f583a406b0c8d5f4a3660ee3f565d91a8a75c"
+  },
+  {
+    "entry_id": "witnessid",
+    "symbol": "WitnessId",
+    "kind": "checker_identity",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "checker identity WitnessId"
+    ],
+    "responsibility": "explicit conformance evidence identity; never synthesized from extension presence",
+    "notes": "",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "checker identity WitnessId",
+        "dialect": "checker_meta",
+        "grammar_root": null,
+        "schema": "deeplus.checker-meta-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "f5507d3106db8921993012f137e70a169eb589ce25f918736e8ee3ee764bbbfd"
+  }
+]

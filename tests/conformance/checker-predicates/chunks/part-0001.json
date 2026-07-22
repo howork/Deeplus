@@ -1858,11 +1858,14 @@
     "fixture_id": "PF-BasicIndexOperatorAdmitted-NEG",
     "predicate_id": "BasicIndexOperatorAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "BASIC_INDEX_OPERATOR_STABLE_LAW",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "expected_primary_diagnostic": "LOGICAL_INDEX_DOMAIN_MISMATCH",
+    "diagnostic_disposition": "active_primary",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor_mutation": {
-      "local_violation": "BasicIndexOperatorAdmitted"
+      "axis_count": 1,
+      "surface": "value[1]",
+      "receiver_family": "ConformanceOnlyIndexable",
+      "local_violation": "unknown_or_conformance_only_carrier"
     },
     "fixture_kind": "mutation_recipe",
     "descriptor_v5": {

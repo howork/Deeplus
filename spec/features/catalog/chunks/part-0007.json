@@ -1556,7 +1556,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current law: Slice `i..j` is inclusive-end; `i..<j` is allowed for explicit exclusive end but noncanonical except anchor cases.",
+    "notes": "Slice i..j has an inclusive end and both bounds are required; use ^/$ for first/last coordinates. Explicit-exclusive i..<j is admitted with SLICE_HALF_OPEN_RANGE_NONCANONICAL. SliceRange owns the delimiter; ..., ..>, omitted bounds, and step/descending syntax are not current.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1568,7 +1568,12 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "syntax",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+        "SLICE_BOUND_ORDER_INVALID",
+        "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+        "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+      ],
       "predicates": [
         "SliceRangeAdmitted"
       ],
@@ -1603,7 +1608,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The receiver supplies its exact logical index domain: one-based logical-domain. Floating-point, truthiness, hidden narrowing, and negative-from-end rewriting are not admitted.",
+    "notes": "Built-in List/String/Bytes expose 1..length; every ReadonlyView preserves its source owner's domain, including bounded or selected coordinates. Bounded lists preserve L..U, Maps require exact K, tuples use .1 ordinals, Records use labels, and NumericArray uses separate typed one-based axes. Floating-point, truthiness, hidden narrowing, negative-from-end rewriting, and conformance-activated [] are forbidden.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1615,7 +1620,10 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "LOGICAL_INDEX_DOMAIN_MISMATCH"
+        "INDEX_SUFFIX_REQUIRES_AXIS",
+        "LOGICAL_INDEX_DOMAIN_MISMATCH",
+        "INDEX_OUT_OF_LOGICAL_DOMAIN",
+        "ZERO_BASED_INDEX_NOT_CURRENT"
       ],
       "predicates": [
         "LogicalIndexDomainAdmitted",

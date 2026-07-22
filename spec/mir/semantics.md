@@ -10,15 +10,23 @@ A step state contains the current MIR frame, ordered operand stack, places and o
 
 Operands, arguments, guards, interpolation segments, collection entries and cleanup registrations evaluate left-to-right unless a named law fixes another order. Calls preserve value, context, witness, repeated positional and named channels. `options***: Record` declares a named-rest channel; `**record` supplies static labels. Labels, witness ids, extension ids and providers are fixed before MIR execution.
 
+Current operator glyphs lower only to closed intrinsic MIR operations chosen from the normalized built-in operand domain. Lowering performs no conformance, extension, witness, provider, import-order, source-order, or runtime dispatch. Named Trait methods lower as ordinary named calls and never become glyph hooks. Strict Boolean `and`/`or` evaluate both operands left-to-right; sequential `and then`/`otherwise` evaluate the right operand only when required. The existing `?:` Option law remains separately lazy.
+
+An assignment evaluates its target place once and its right operand once. A compound assignment evaluates the place, reads the original value, evaluates the right operand, completes one intrinsic operation, and commits at most one write, in that order. Every assignment returns `Unit`. Any failure before commit preserves the original owner and value; no compound-assignment MIR opcode may hide a second place evaluation or partial write.
+
 ## 3. Ordinary and rightward local bindings
 
 An ordinary local binding evaluates its initializer exactly once while the target is absent from scope. On success it commits one immutable or mutable place; on failure it commits none and transfers along the initializer failure edge. Rightward binding has no MIR operation: `$`/`$$` is eliminated by frontend normalization to this rule. Cleanup responsibility moves into the committed local exactly as for direct `let`/`var`.
 
 `yield value -> $response` first emits the coroutine suspension event. After resume, the response value is passed to the ordinary binding rule. This does not make general rightward binding a suspension form.
 
-## 4. Strings
+## 4. Values, literals, strings, and bytes
 
 Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both LLVM backends observe the same String value.
+
+MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating `%` and floating glyph power have no MIR operation. A statically rejected failure creates no MIR.
+
+`Float32` and `Float64` operations preserve IEEE-754 binary32/binary64 behavior and round to nearest with ties to even. NaN is unordered and signed zero compares equal. Char constants contain exactly one Unicode scalar. String indexing observes Unicode scalar position; Bytes indexing observes one `UInt8`. Neither lowering implies UTF-16, grapheme, text/byte conversion, or a public representation. The recovery spelling `null` creates no MIR constant; Option absence lowers only from the explicit `none` alternative.
 
 ## 5. Failure and cleanup
 
@@ -62,7 +70,11 @@ A successful Pattern owner emits `subject_evaluate`, `subject_acquire`, `test_pl
 
 ## 12. Removed-surface MIR boundary
 
-Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through ordinary place read, arithmetic, and place write operations; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union.
+Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Custom operator declarations and fixed-operator Trait dispatch create no MIR operation. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
+
+Built-in indexing evaluates the owner and each index once, left-to-right, then validates the declared logical domain before projecting storage. `List`, `String`, and `Bytes` use `1..length` with offset `index - 1`; an explicitly bounded List retains `L..U`. Every `ReadonlyView` carries its source owner's declared logical domain, coordinate-to-storage mapping, and provenance, so no view construction independently rebases it. A missing Map key emits `IndexError::keyNotFound`; any type-correct dynamic built-in positional or NumericArray coordinate outside its logical domain emits `IndexError::outOfLogicalDomain`. Both are precommit failures. Map uses the exact key type; tuple ordinals and Record labels are resolved before MIR and never become dynamic bracket lookup. Conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not add a lowering route.
+
+An ordinary closed slice carrier accepts exactly one bounded range selector. A rank-complete NumericArray coordinate list preserves typed axis identity, and every built-in default source-visible axis is `1..dimension`; only NumericArray admits semicolon-separated multi-axis selection and full-axis `*`. Slice lowering first evaluates and validates every scalar/range/full-axis selector, including `^`/`$` anchor resolution, without mutating the owner. Success creates one readonly view carrying the source owner region, provenance, and selected logical coordinates. There is no implicit rebase, hidden copy, mutable slice assignment, isolation crossing, or owner-lifetime escape. A named explicit rebase/copy call is an ordinary visible operation with its own allocation and ownership observations.
 
 
 ## 13. R51f3 tooling/profile observability
@@ -77,10 +89,10 @@ This section classifies the frozen required 20-feature audit set without changin
 |---|---|---|
 | `named_rest_parameter_record_msp` | `LAW_PRESENT` | §§2 and 8 bind the named-rest channel and static-label supply. |
 | `schema_named_unfolding` | `GENERIC_LAW_PRESENT` | §§8 and 11 bind pre-MIR unfolding and materialization identity. |
-| `unicode_char_literal_single_quote_msp` | `DEFERRED_PRODUCT_HANDOFF` | Char representation and lowering are not inferable. |
-| `char_unicode_scalar_value_model` | `DEFERRED_PRODUCT_HANDOFF` | Scalar representation and conversion are not inferable. |
-| `strict_boolean_word_operators_msp` | `DEFERRED_PRODUCT_HANDOFF` | Strict evaluation and failure observables are not closed. |
-| `sequential_boolean_control_words_msp` | `DEFERRED_PRODUCT_HANDOFF` | Short-circuit and effect-suppression observables are not closed. |
+| `unicode_char_literal_single_quote_msp` | `LAW_PRESENT` | §4 binds one Unicode scalar without selecting a backend representation. |
+| `char_unicode_scalar_value_model` | `LAW_PRESENT` | §4 separates Char, String scalar, Bytes, UTF-16 and grapheme domains. |
+| `strict_boolean_word_operators_msp` | `LAW_PRESENT` | §2 binds strict left-to-right two-operand evaluation. |
+| `sequential_boolean_control_words_msp` | `LAW_PRESENT` | §2 binds short-circuit right-operand suppression. |
 | `standalone_bang_not_current_not_word_law` | `NO_DISTINCT_MIR_OP` | This is a frontend spelling boundary and authorizes no standalone Boolean `!` operation. |
 | `rightward_flow_dollar_local_binding_msp` | `LAW_PRESENT` | §3 binds normalization to ordinary local binding and no distinct MIR operation. |
 | `optional_chaining_not_current_law` | `NOT_APPLICABLE(rejected current surface)` | Rejected source creates no MIR event under §12. |
@@ -90,15 +102,15 @@ This section classifies the frozen required 20-feature audit set without changin
 | `local_value_body_msp` | `NO_DISTINCT_MIR_OP` | The local body result uses ordinary control-flow/block normalization. |
 | `match_exhaustiveness_phase_a` | `NOT_APPLICABLE(checker-only rejection before MIR)` | Rejected non-exhaustive source creates no runtime MIR event. |
 | `match_arm_guard_msp` | `GENERIC_LAW_PRESENT` | §§2 and 11 bind subject-once evaluation and atomic binding after static admission. |
-| `bytes_literal_hash_bytes_msp` | `DEFERRED_PRODUCT_HANDOFF` | Bytes payload, representation, and conversion observables are not closed. |
+| `bytes_literal_hash_bytes_msp` | `LAW_PRESENT` | §4 binds raw byte values and forbids hidden text conversion without selecting storage. |
 | `string_interpolation_braced_expr_core` | `DEFERRED_PRODUCT_HANDOFF` | Rendering, provider, and failure observables are not closed. |
 | `string_interpolation_format_spec_core` | `DEFERRED_PRODUCT_HANDOFF` | Formatting provider identity and failure behavior are not closed. |
 | `string_interpolation_shorthand_factor_msp` | `DEFERRED_PRODUCT_HANDOFF` | Shorthand lowering cannot infer rendering or provider behavior. |
 | `numeric_array_postfix_transpose_caret_msp` | `DEFERRED_PRODUCT_HANDOFF` | View/copy, ownership, representation, rank/orientation, and backend observables are not closed. |
 
-The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are also `DEFERRED_PRODUCT_HANDOFF`; they do not replace or enlarge the required 20-feature set.
+The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are `LAW_PRESENT` under §4; they do not replace or enlarge the required 20-feature set.
 
-For every `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged and product lanes remain `NOT_RUN`. An implementer must not infer view/copy, ownership, conversion, strict or short-circuit evaluation, rendering/provider/failure, scalar or byte representation, rank/orientation, opcode, or backend behavior. Removing a block requires an approved future MIR law and a target-bound execution receipt. This repair chooses no opcode, representation, ownership, evaluation, provider, failure, or backend semantics.
+For every remaining `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged and product lanes remain `NOT_RUN`. An implementer must not infer any still-unbound view/copy, ownership, conversion, rendering/provider/failure, representation, rank/orientation, opcode, or backend behavior. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim.
 
 ## 15. Post-PR16 nonactivatable Preview operational contracts
 

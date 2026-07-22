@@ -4,48 +4,21 @@
     "predicate_id": "BasicIndexOperatorAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
+      "receiver_family": "List",
+      "dispatch": "intrinsic",
+      "axis_count": 1,
+      "axis_kind": "scalar",
+      "index_type": "Int",
+      "index_value": 1,
+      "logical_domain": {
+        "lower": 1,
+        "upper": 3
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "storage_offset": 0
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "rule_seed": "one explicit scalar axis on an intrinsic List admits at logical index 1 and derives internal offset 0; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -981,18 +954,42 @@
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
-    "fixture_id": "PF-BitwiseDomainAdmitted-BOUNDARY",
+    "fixture_id": "PF-BitwiseDomainAdmitted-NEG-MIXED-DOMAIN",
     "predicate_id": "BitwiseDomainAdmitted",
-    "expected": "admitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
     "descriptor": {
-      "boundary_case": true
+      "source_kind": "Type",
+      "normalized_type": null,
+      "call_shape": {
+        "kind": "bitwise_operation",
+        "operator": "^^",
+        "bit_width_known": true,
+        "operand_bit_widths": [
+          8,
+          8
+        ],
+        "operand_domain_kinds": [
+          "known_width_integer",
+          "known_width_integer"
+        ],
+        "operand_normalized_domains": [
+          "Int8",
+          "UInt8"
+        ],
+        "result_consumed_as_bool": false
+      },
+      "element_types": [
+        "Int8",
+        "UInt8"
+      ]
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
       "semantic_type": {
         "kind": "nominal",
-        "type_id": "PF-BitwiseDomainAdmitted-BOUNDARY"
+        "type_id": "PF-BitwiseDomainAdmitted-NEG-MIXED-DOMAIN"
       },
       "responsibility": {
         "ownership": "reusable",
@@ -1005,11 +1002,11 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 BitwiseDomainAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
+    "violated_condition": "both operands are admitted 8-bit integer domains, but Int8 and UInt8 have different exact normalized signedness domains",
+    "rule_seed": "same-width mixed-domain single-fault design fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_dispatched",
+    "fixture_kind": "concrete_negative",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1656,7 +1653,7 @@
         "UInt32"
       ]
     },
-    "rule_seed": "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; ordered branch 5: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; ordered branch 6: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL; an admitted result stays in the exact normalized operand bitwise domain and is never Bool",
+    "rule_seed": "ordered branches: 1 Bool `&&`/`||` -> LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL/LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; 2 Bool with other bitwise token -> BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; 3 non-bitwise or non-finite domain -> BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; 4 unequal widths -> BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; 5 equal-width distinct signedness or finite-domain identity -> BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION; 6 complement without known width or finite domain -> BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; 7 valid bitwise result consumed as Bool -> BITWISE_RESULT_USED_AS_BOOL; otherwise admit one exact normalized non-Bool bitwise domain; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

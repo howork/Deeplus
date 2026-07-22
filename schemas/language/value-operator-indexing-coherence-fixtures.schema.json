@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/value-operator-indexing-coherence-fixtures.schema.json",
+  "title": "Deeplus current value, operator, and indexing design-static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "authority",
+    "evidence_level",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "separate_open_actions",
+    "product_lanes",
+    "positive",
+    "negative",
+    "boundary",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.value-operator-indexing-coherence-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/value-operator-indexing-coherence-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-value-operator-index-coherence-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/value-operator-indexing-coherence.json"
+    },
+    "authority": {
+      "const": "CURRENT_DESIGN_STATIC_CONTRACT"
+    },
+    "evidence_level": {
+      "const": "DESIGN_STATIC_NOT_RUN"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": false
+    },
+    "open_feature_p1": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "uniqueItems": true,
+      "prefixItems": [
+        {"const": "CE-C-P1-001"},
+        {"const": "CE-C-P1-002"},
+        {"const": "CE-C-P1-003"},
+        {"const": "CE-C-P1-004"},
+        {"const": "CE-C-P1-005"},
+        {"const": "CE-C-P1-006"},
+        {"const": "CE-E-P1-001"},
+        {"const": "CE-E-P1-002"},
+        {"const": "CE-E-P1-003"},
+        {"const": "CE-E-P1-004"},
+        {"const": "CE-E-P1-005"},
+        {"const": "CE-E-P1-006"},
+        {"const": "CE-E-P1-007"},
+        {"const": "CE-E-P1-008"},
+        {"const": "TCC-P1-002"},
+        {"const": "TCC-P1-003"},
+        {"const": "TCC-P1-004"},
+        {"const": "TCC-P1-005"},
+        {"const": "TCC-P1-006"},
+        {"const": "TCC-P1-007"},
+        {"const": "TCC-P1-008"},
+        {"const": "SFD-P1-009"}
+      ],
+      "items": false
+    },
+    "separate_open_actions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "prefixItems": [
+        {"const": "M13-A002"},
+        {"const": "M13-A003"},
+        {"const": "M13-A004"},
+        {"const": "M13-A005"}
+      ],
+      "items": false
+    },
+    "product_lanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {"const": "NOT_RUN"},
+        "rust_frontend_parser": {"const": "NOT_RUN"},
+        "rust_hir_lowering": {"const": "NOT_RUN"},
+        "rust_integrated_checker": {"const": "NOT_RUN"},
+        "deeplus_mir_lowering": {"const": "NOT_RUN"},
+        "xvm_bytecode_emitter": {"const": "NOT_RUN"},
+        "xvm_interpreter": {"const": "NOT_RUN"},
+        "llvm_aot_backend": {"const": "NOT_RUN"},
+        "llvm_orc_jit_backend": {"const": "NOT_RUN"},
+        "formatter_lsp": {"const": "NOT_RUN"},
+        "stdlib_provider_runner": {"const": "NOT_RUN"},
+        "official_tooling": {"const": "NOT_RUN"},
+        "independent_conformance": {"const": "NOT_RUN"},
+        "cross_backend_conformance": {"const": "NOT_RUN"},
+        "actual_user_team_study": {"const": "NOT_RUN"}
+      }
+    },
+    "positive": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/fixture"},
+          {
+            "properties": {
+              "fixture_id": {"pattern": "^VOI-R1-POS-[0-9]{3}$"},
+              "fixture_class": {"const": "positive"},
+              "expected": {"const": "ADMIT"}
+            }
+          }
+        ]
+      }
+    },
+    "negative": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/fixture"},
+          {
+            "properties": {
+              "fixture_id": {"pattern": "^VOI-R1-NEG-[0-9]{3}$"},
+              "fixture_class": {"const": "negative"},
+              "expected": {"const": "REJECT"}
+            }
+          }
+        ]
+      }
+    },
+    "boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/fixture"},
+          {
+            "properties": {
+              "fixture_id": {"pattern": "^VOI-R1-BND-[0-9]{3}$"},
+              "fixture_class": {"const": "boundary"},
+              "expected": {"enum": ["ADMIT", "REJECT", "WARN"]}
+            }
+          }
+        ]
+      }
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "positive",
+        "negative",
+        "boundary",
+        "total",
+        "semantic_p0",
+        "open_feature_p1",
+        "closed_feature_p1",
+        "new_feature_p1",
+        "product_executed"
+      ],
+      "properties": {
+        "positive": {"type": "integer", "minimum": 1},
+        "negative": {"type": "integer", "minimum": 1},
+        "boundary": {"type": "integer", "minimum": 1},
+        "total": {"type": "integer", "minimum": 3},
+        "semantic_p0": {"const": 0},
+        "open_feature_p1": {"const": 22},
+        "closed_feature_p1": {"const": 0},
+        "new_feature_p1": {"const": 0},
+        "product_executed": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "fixture_class",
+        "rule_ids",
+        "domain",
+        "source",
+        "subject_profile",
+        "expected",
+        "diagnostic_or_null",
+        "assertions",
+        "execution_state"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^VOI-R1-(POS|NEG|BND)-[0-9]{3}$"
+        },
+        "fixture_class": {
+          "enum": ["positive", "negative", "boundary"]
+        },
+        "rule_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^VOI-R0(0[1-9]|1[0-2])$"
+          }
+        },
+        "domain": {
+          "enum": [
+            "value",
+            "literal",
+            "operator",
+            "assignment",
+            "range",
+            "index",
+            "slice",
+            "trait_guard",
+            "evidence_boundary"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected": {
+          "enum": ["ADMIT", "REJECT", "WARN"]
+        },
+        "diagnostic_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assertions": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "integer",
+              "boolean",
+              "array",
+              "object",
+              "null"
+            ]
+          }
+        },
+        "execution_state": {
+          "const": "DESIGN_STATIC_NOT_RUN"
+        }
+      }
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

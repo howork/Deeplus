@@ -9,7 +9,10 @@ import json
 import re
 import subprocess
 import sys
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10 and earlier
+    import tomli as tomllib
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -17,7 +20,7 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-language-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-value-operator-index-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -52,10 +55,10 @@ REQUIRED_FEATURE_IDS = (
 MIR_DISPOSITIONS = {
     "named_rest_parameter_record_msp": "LAW_PRESENT",
     "schema_named_unfolding": "GENERIC_LAW_PRESENT",
-    "unicode_char_literal_single_quote_msp": "DEFERRED_PRODUCT_HANDOFF",
-    "char_unicode_scalar_value_model": "DEFERRED_PRODUCT_HANDOFF",
-    "strict_boolean_word_operators_msp": "DEFERRED_PRODUCT_HANDOFF",
-    "sequential_boolean_control_words_msp": "DEFERRED_PRODUCT_HANDOFF",
+    "unicode_char_literal_single_quote_msp": "LAW_PRESENT",
+    "char_unicode_scalar_value_model": "LAW_PRESENT",
+    "strict_boolean_word_operators_msp": "LAW_PRESENT",
+    "sequential_boolean_control_words_msp": "LAW_PRESENT",
     "standalone_bang_not_current_not_word_law": "NO_DISTINCT_MIR_OP",
     "rightward_flow_dollar_local_binding_msp": "LAW_PRESENT",
     "optional_chaining_not_current_law": "NOT_APPLICABLE(rejected current surface)",
@@ -65,7 +68,7 @@ MIR_DISPOSITIONS = {
     "local_value_body_msp": "NO_DISTINCT_MIR_OP",
     "match_exhaustiveness_phase_a": "NOT_APPLICABLE(checker-only rejection before MIR)",
     "match_arm_guard_msp": "GENERIC_LAW_PRESENT",
-    "bytes_literal_hash_bytes_msp": "DEFERRED_PRODUCT_HANDOFF",
+    "bytes_literal_hash_bytes_msp": "LAW_PRESENT",
     "string_interpolation_braced_expr_core": "DEFERRED_PRODUCT_HANDOFF",
     "string_interpolation_format_spec_core": "DEFERRED_PRODUCT_HANDOFF",
     "string_interpolation_shorthand_factor_msp": "DEFERRED_PRODUCT_HANDOFF",
@@ -635,6 +638,36 @@ def main() -> int:
     feature_by_id = {row.get("feature_id"): row for row in feature_rows}
     diagnostic_by_id = {row.get("diagnostic_id"): row for row in diagnostic_rows}
     predicate_by_id = {row.get("predicate_id"): row for row in predicate_rows}
+    predicate_relation_rows = rows(
+        "deeplus-0.1.2-baseline-r51f3-diagnostic-relation-registry.json",
+        "relations",
+    )
+    for predicate_id, predicate in predicate_by_id.items():
+        if not predicate.get("emission_eligible"):
+            continue
+        primary_relations = [
+            row.get("diagnostic_id")
+            for row in predicate_relation_rows
+            if row.get("predicate_id") == predicate_id
+            and row.get("relation") == "primary"
+        ]
+        secondary_relations = {
+            row.get("diagnostic_id")
+            for row in predicate_relation_rows
+            if row.get("predicate_id") == predicate_id
+            and row.get("relation") == "secondary"
+        }
+        declared_secondaries = set(predicate.get("secondary_diagnostics", []))
+        check(
+            primary_relations == [predicate.get("active_primary_diagnostic")],
+            "DIAGNOSTIC_RELATION_PRIMARY_BINDING",
+            f"{predicate_id}: declared={predicate.get('active_primary_diagnostic')} relations={primary_relations}",
+        )
+        check(
+            declared_secondaries == secondary_relations,
+            "DIAGNOSTIC_RELATION_SECONDARY_BINDING",
+            f"{predicate_id}: missing={sorted(declared_secondaries - secondary_relations)} extra={sorted(secondary_relations - declared_secondaries)}",
+        )
     empty_char = active_by_id.get("EX-R49B-CHAR-005", {})
     empty_char_surface = next(
         (row for row in rejected if row.get("example_id") == "EX-R49B-CHAR-005"),
@@ -860,14 +893,14 @@ def main() -> int:
         if disposition == "DEFERRED_PRODUCT_HANDOFF"
     }
     check(
-        len(deferred_required) == 11
+        len(deferred_required) == 6
         and all(
             f"`{feature_id}`" in mir_section[-1]
             for feature_id in SUPPLEMENTAL_MIR_FEATURE_IDS
         )
-        and mir_section[-1].count("also `DEFERRED_PRODUCT_HANDOFF`") == 1
+        and mir_section[-1].count("are `LAW_PRESENT`") == 1
         and "All product lanes remain `NOT_RUN`" in mir_section[-1]
-        and "approved future MIR law and a target-bound execution receipt" in mir_section[-1],
+        and "not a product execution receipt" in mir_section[-1],
         "MIR_DEFERRED_PRODUCT_HANDOFF",
         f"required={len(deferred_required)} supplemental={SUPPLEMENTAL_MIR_FEATURE_IDS}",
     )
@@ -925,6 +958,7 @@ def main() -> int:
         "tests/fixtures/imported/deterministic-suite-fixtures.json": ("profile_schema", "schemas/language/deterministic-suite-profile.schema.json"),
         "tests/fixtures/current/type-flow-callable-coherence-r1.json": ("fixture_schema", "schemas/language/type-flow-callable-coherence-fixtures.schema.json"),
         "tests/fixtures/current/destructuring-pattern-matching-r1.json": ("fixture_schema", "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"),
+        "tests/fixtures/current/value-operator-indexing-coherence-r1.json": ("fixture_schema", "schemas/language/value-operator-indexing-coherence-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
@@ -1012,6 +1046,133 @@ def main() -> int:
         and all(row.get("execution_state") == "DESIGN_STATIC_NOT_RUN" for row in dpm_rows),
         "DPM_FIXTURE_COUNT_AND_ID_CLOSURE",
         f"rows={len(dpm_rows)} ids={len(set(dpm_ids))} classes={dict(dpm_class_counts)}",
+    )
+
+    voi_rel = "tests/fixtures/current/value-operator-indexing-coherence-r1.json"
+    voi = parsed.get(root / voi_rel, {})
+    voi_top_keys = {
+        "schema", "fixture_schema", "revision", "contract", "authority",
+        "evidence_level", "semantic_p0", "current_binding", "open_feature_p1",
+        "separate_open_actions", "product_lanes", "positive", "negative",
+        "boundary", "expected_counts",
+    }
+    voi_row_keys = {
+        "fixture_id", "fixture_class", "rule_ids", "domain", "source",
+        "subject_profile", "expected", "diagnostic_or_null", "assertions",
+        "execution_state",
+    }
+    voi_groups = {
+        group: voi.get(group, []) for group in ("positive", "negative", "boundary")
+    }
+    voi_rows = [
+        row for group in voi_groups.values() for row in group if isinstance(row, dict)
+    ]
+    voi_ids = [row.get("fixture_id") for row in voi_rows]
+    voi_counts = voi.get("expected_counts", {})
+    check(
+        set(voi) == voi_top_keys
+        and all(set(row) == voi_row_keys for row in voi_rows)
+        and len(voi_rows) == len(voi_ids) == len(set(voi_ids)) == 50
+        and all(voi_counts.get(group) == len(rows) for group, rows in voi_groups.items())
+        and voi_counts.get("total") == 50
+        and voi_counts.get("semantic_p0") == 0
+        and voi_counts.get("open_feature_p1") == 22
+        and voi_counts.get("closed_feature_p1") == 0
+        and voi_counts.get("new_feature_p1") == 0
+        and voi_counts.get("product_executed") == 0,
+        "VOI_FIXTURE_SHAPE_COUNT_AND_ID_CLOSURE",
+        f"rows={len(voi_rows)} ids={len(set(voi_ids))} counts={voi_counts}",
+    )
+    voi_contract = parsed.get(root / "spec/contracts/value-operator-indexing-coherence.json", {})
+    voi_rule_ids = [
+        row.get("rule_id") for row in voi_contract.get("rules", []) if isinstance(row, dict)
+    ]
+    expected_voi_rules = [f"VOI-R{index:03d}" for index in range(1, 13)]
+    expected_feature_p1 = SUCCESSOR_ACTION_IDS[4:]
+    expected_product_lanes = {row: "NOT_RUN" for row in (
+        "rust_frontend_lexer", "rust_frontend_parser", "rust_hir_lowering",
+        "rust_integrated_checker", "deeplus_mir_lowering", "xvm_bytecode_emitter",
+        "xvm_interpreter", "llvm_aot_backend", "llvm_orc_jit_backend",
+        "formatter_lsp", "stdlib_provider_runner", "official_tooling",
+        "independent_conformance", "cross_backend_conformance",
+        "actual_user_team_study",
+    )}
+    check(
+        voi_rule_ids == expected_voi_rules
+        and {
+            rule_id
+            for row in voi_rows
+            for rule_id in row.get("rule_ids", [])
+        } == set(expected_voi_rules)
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(expected_voi_rules))
+            and row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in voi_rows
+        )
+        and voi.get("open_feature_p1") == expected_feature_p1
+        and voi.get("separate_open_actions") == EXPECTED_ACTION_IDS
+        and voi.get("product_lanes") == expected_product_lanes,
+        "VOI_RULE_GUARD_AND_PRODUCT_CLOSURE",
+        f"rules={voi_rule_ids} p1={len(voi.get('open_feature_p1', []))} lanes={len(voi.get('product_lanes', {}))}",
+    )
+    voi_machine = voi_contract.get("machine_acceptance", {})
+    voi_new_diagnostics = [
+        row.get("diagnostic_id")
+        for row in voi_contract.get("new_rejection_diagnostic_matrix", [])
+        if isinstance(row, dict)
+    ]
+    expected_voi_diagnostics = [
+        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+        "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+        "INDEX_SUFFIX_REQUIRES_AXIS",
+        "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+    ]
+    check(
+        voi_contract.get("revision") == revision
+        and voi_contract.get("semantic_p0") == 0
+        and voi_contract.get("current_binding") is False
+        and voi_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and voi_contract.get("open_feature_p1", {}).get("total") == 22
+        and voi_machine.get("rule_count") == 12
+        and voi_machine.get("literal_domain_row_count")
+        == len(voi_contract.get("literal_domain_matrix", [])) == 11
+        and voi_machine.get("expression_precedence_row_count")
+        == len(voi_contract.get("expression_operator_precedence_matrix", [])) == 19
+        and voi_machine.get("index_carrier_row_count")
+        == len(voi_contract.get("index_carrier_matrix", [])) == 10
+        and voi_machine.get("slice_form_row_count")
+        == len(voi_contract.get("slice_form_matrix", [])) == 8
+        and voi_machine.get("operator_dispatch_mode") == "INTRINSIC_ONLY"
+        and voi_machine.get("custom_operator_current_count") == 0
+        and voi_machine.get("fixed_operator_conformance_overloading_current_count") == 0
+        and voi_machine.get("trait_operator_lookup_count") == 0
+        and voi_machine.get("structural_bracket_activation_count") == 0
+        and voi_machine.get("ordinary_sequence_first_index") == 1
+        and voi_machine.get("negative_from_end_rewrite_count") == 0
+        and voi_machine.get("implicit_rebase_count") == 0
+        and voi_machine.get("product_execution_receipt_count") == 0
+        and voi_machine.get("new_rejection_diagnostic_count")
+        == len(voi_new_diagnostics) == 6
+        and voi_new_diagnostics == expected_voi_diagnostics
+        and set(voi_new_diagnostics).issubset(set(diagnostic_by_id)),
+        "VOI_CONTRACT_MACHINE_ACCEPTANCE",
+        f"machine={voi_machine} diagnostics={voi_new_diagnostics}",
+    )
+    voi_example_ids = {
+        *(f"EX-R51VOI-{index:03d}" for index in range(1, 10)),
+        *(f"EX-R51VOI-NG-{index:03d}" for index in range(1, 10)),
+    }
+    warning_example = active_by_id.get("EX-R51VOI-009", {})
+    check(
+        voi_example_ids.issubset(active_ids)
+        and warning_example.get("expected_outcome") == "accept"
+        and warning_example.get("expected_warnings")
+        == ["SLICE_HALF_OPEN_RANGE_NONCANONICAL"],
+        "VOI_EXAMPLE_AND_WARNING_BINDING",
+        f"missing={sorted(voi_example_ids - active_ids)} warning={warning_example.get('expected_warnings')}",
     )
 
     module_fixtures = parsed.get(root / "tests/fixtures/imported/module-api-digest-fixtures.json", {})
@@ -1283,6 +1444,88 @@ def main() -> int:
         "CMA_FLOW_BINDING_PROJECTION",
         "CST FlowBindingArrow=1; semantic FlowBinding=0",
     )
+    expression_operators = frontend.get("pratt", {}).get("expression", {}).get(
+        "operators", []
+    )
+    range_operator = next(
+        (row for row in expression_operators if row.get("id") == "range"), {}
+    )
+    assignment_operator = next(
+        (row for row in expression_operators if row.get("id") == "assignment"), {}
+    )
+    slice_index_owner = frontend.get("pratt", {}).get("slice_index", {})
+    ellipsis_stage = next(
+        (row for row in frontend.get("stage_names", []) if row.get("surface") == "..."),
+        {},
+    )
+    ellipsis_token = next(
+        (
+            row
+            for row in frontend.get("boundary_policies", [])
+            if row.get("id") == "POSITIONAL_REPEAT"
+        ),
+        {},
+    )
+    literal_rule = re.search(r"^Literal ::= (.+)$", grammar, re.MULTILINE)
+    vocabulary = parsed.get(root / "spec/grammar/keyword-vocabulary.json", {})
+    check(
+        literal_rule is not None
+        and "NullLiteral" not in literal_rule.group(1)
+        and 'RecoveryNullLiteral ::= "null" ;' in grammar
+        and 'UnfoldClause ::= "for" "..." Pattern "in" Expr ;' in grammar
+        and 'IndexSuffix ::= "[" SliceAxisList "]" ;' in grammar
+        and 'BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral'
+        in grammar
+        and range_operator.get("tokens") == [[".."], ["..<"]]
+        and range_operator.get("rejected_reserved_spellings")
+        == {
+            "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+            "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+        }
+        and assignment_operator.get("tokens")
+        == [["="], ["+="], ["-="], ["*="], ["/="], ["%="]]
+        and slice_index_owner.get("entry") == "SLICE_INDEX_PRATT_ENTRY"
+        and slice_index_owner.get("bounds_required") is True
+        and slice_index_owner.get("full_axis") == "* (NumericArray axis only)"
+        and slice_index_owner.get("empty_axis") == "INDEX_SUFFIX_REQUIRES_AXIS"
+        and slice_index_owner.get("anchor_outside_slice_bound_recovery")
+        == {
+            "diagnostic": "SLICE_ANCHOR_OUTSIDE_SLICE",
+            "stage": "parser",
+            "semantic_anchor_node_count": 0,
+        }
+        and ellipsis_stage.get("cst_roles")
+        == ["RepeatedPositionalMarker", "UnfoldClause"]
+        and ellipsis_stage.get("ast_roles")
+        == ["RepeatedPositional", "ComprehensionUnfold"]
+        and ellipsis_token.get("contexts")
+        == ["parameter", "function_type", "comprehension_unfold_clause"]
+        and vocabulary.get("recovery_reserved_words", {}).get("null", {}).get(
+            "admitted_as_literal"
+        )
+        is False,
+        "VOI_GRAMMAR_FRONTEND_OWNER_CLOSURE",
+        f"literal={literal_rule.group(1) if literal_rule else None} range={range_operator.get('tokens')} assignment={assignment_operator.get('tokens')}",
+    )
+    basic_index_predicate = predicate_by_id.get("BasicIndexOperatorAdmitted", {})
+    index_suffix_diagnostic = diagnostic_by_id.get("INDEX_SUFFIX_REQUIRES_AXIS", {})
+    check(
+        index_suffix_diagnostic.get("stage") == "parser"
+        and slice_index_owner.get("empty_axis_recovery_production")
+        == "RecoveryEmptyIndexSuffix"
+        and basic_index_predicate.get("active_primary_diagnostic")
+        == "LOGICAL_INDEX_DOMAIN_MISMATCH"
+        and basic_index_predicate.get("diagnostic_refs")
+        == ["LOGICAL_INDEX_DOMAIN_MISMATCH"]
+        and basic_index_predicate.get("secondary_diagnostics") == []
+        and not any(
+            row.get("predicate_id") == "BasicIndexOperatorAdmitted"
+            and row.get("diagnostic_id") == "INDEX_SUFFIX_REQUIRES_AXIS"
+            for row in predicate_relation_rows
+        ),
+        "VOI_EMPTY_INDEX_SINGLE_OWNER",
+        f"parser={index_suffix_diagnostic.get('stage')} primary={basic_index_predicate.get('active_primary_diagnostic')}",
+    )
     prelude_rows = rows(
         "deeplus-0.1.2-baseline-r51f3-prelude-signature-catalog.json", "entries"
     )
@@ -1302,6 +1545,36 @@ def main() -> int:
         and all(symbol not in (root / "library/prelude/prelude.md").read_text(encoding="utf-8") for symbol in forbidden_public_trees),
         "CMA_COMPILER_TREE_BOUNDARY",
         f"prelude_entries={len(prelude_rows)}",
+    )
+    prelude_by_id = {row.get("entry_id"): row for row in prelude_rows}
+    arithmetic_defect = prelude_by_id.get("arithmetic_defect", {})
+    index_error = prelude_by_id.get("index_error", {})
+    indexable = prelude_by_id.get("indexable", {})
+    check(
+        arithmetic_defect.get("symbol") == "ArithmeticDefect"
+        and arithmetic_defect.get("kind") == "language_intrinsic_defect"
+        and arithmetic_defect.get("signatures")
+        == ["prelude intrinsic ArithmeticDefect { overflow; divisionByZero; }"]
+        and arithmetic_defect.get("product_support") == "NOT_RUN"
+        and index_error.get("symbol") == "IndexError"
+        and index_error.get("status") == "stable_design"
+        and index_error.get("signatures")
+        == ["public enum IndexError { outOfLogicalDomain; keyNotFound; }"]
+        and index_error.get("product_support") == "NOT_RUN"
+        and "conformance does not activate []" in indexable.get("notes", "")
+        and all(
+            diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
+            == "active"
+            for diagnostic_id in (
+                "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
+                "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+                "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+                "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+                "INDEX_SUFFIX_REQUIRES_AXIS",
+            )
+        ),
+        "VOI_PRELUDE_AND_DIAGNOSTIC_CLOSURE",
+        f"arithmetic_defect={arithmetic_defect.get('entry_id')} index_error={index_error.get('entry_id')} indexable={indexable.get('entry_id')}",
     )
     retired_multiline_diagnostic = "MULTILINE_STRING_INDENT_PREFIX_MISMATCH"
     diagnostic_relation_rows = rows(
