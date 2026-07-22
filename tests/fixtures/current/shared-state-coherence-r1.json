@@ -1,0 +1,33 @@
+{
+  "schema": "deeplus.shared-state-coherence-fixtures/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "contract": "spec/contracts/shared-state-coherence.json",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "fixtures": [
+    {"fixture_id": "SSC-P-001", "rule_ids": ["SSC-R001", "SSC-R002"], "source": "let cell = SharedCell::new(move value)", "expected": "accept_design_static"},
+    {"fixture_id": "SSC-P-002", "rule_ids": ["SSC-R003"], "source": "cell.withValue { borrow value => inspect(value) }", "expected": "accept_design_static"},
+    {"fixture_id": "SSC-P-003", "rule_ids": ["SSC-R004"], "source": "let old = cell.replace(move next)", "expected": "accept_design_static"},
+    {"fixture_id": "SSC-P-004", "rule_ids": ["SSC-R006", "SSC-R007"], "source": "mutex.withLock { inout state => state = update(state) }", "expected": "accept_design_static"},
+    {"fixture_id": "SSC-B-001", "rule_ids": ["SSC-R003", "SSC-R005"], "descriptor": {"ordering": "sequentially_consistent", "implementation_strategy": "unselected", "lock_free_claim": false}, "expected": "bounded_design_assertion"},
+    {"fixture_id": "SSC-B-002", "rule_ids": ["SSC-R008"], "descriptor": {"body_outcome": "Error", "unlock_count": 1, "body_failure_primary": true}, "expected": "bounded_design_assertion"},
+    {"fixture_id": "SSC-B-003", "rule_ids": ["SSC-R008"], "descriptor": {"body_outcome": "Cancellation", "unlock_count": 1, "cancellation_reclassified": false}, "expected": "bounded_design_assertion"},
+    {"fixture_id": "SSC-B-004", "rule_ids": ["SSC-R009"], "descriptor": {"same_mutex": true, "unlock_before_next_lock": true, "fairness_claim": false}, "expected": "bounded_design_assertion"},
+    {"fixture_id": "SSC-N-001", "rule_ids": ["SSC-R001"], "source": "SharedCell::new(move resource)", "expected": "reject_design_static", "expected_diagnostic": "SHARED_CELL_REQUIRES_PLAIN_PAYLOAD"},
+    {"fixture_id": "SSC-N-002", "rule_ids": ["SSC-R003"], "source": "cell.withValue { borrow value => await save(value) }", "expected": "reject_design_static", "expected_diagnostic": "SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND"},
+    {"fixture_id": "SSC-N-003", "rule_ids": ["SSC-R003"], "source": "let escaped = cell.withValue { borrow value => value }", "expected": "reject_design_static", "expected_diagnostic": "SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN"},
+    {"fixture_id": "SSC-N-004", "rule_ids": ["SSC-R006"], "source": "SharedMutex::new(move lifecycleOwner)", "expected": "reject_design_static", "expected_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD"},
+    {"fixture_id": "SSC-N-005", "rule_ids": ["SSC-R007"], "source": "mutex.withLock { inout state => mutex.withLock { inout again => use(again) } }", "expected": "reject_design_static", "expected_diagnostic": "SHARED_MUTEX_REENTRANT_LOCK_FORBIDDEN"},
+    {"fixture_id": "SSC-N-006", "rule_ids": ["SSC-R007"], "source": "mutex.withLock { inout state => await work(state) }", "expected": "reject_design_static", "expected_diagnostic": "SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND"},
+    {"fixture_id": "SSC-N-007", "rule_ids": ["SSC-R005"], "descriptor": {"requested_ordering": "relaxed"}, "expected": "reject_design_static", "expected_diagnostic": "WEAK_ATOMIC_ORDERING_REQUIRES_FEATURE_GATE"},
+    {"fixture_id": "SSC-N-008", "rule_ids": ["SSC-R010"], "descriptor": {"shared_wrapper_implies_transferable": true}, "expected": "reject_design_static", "expected_diagnostic": "SHARED_WRAPPER_DOES_NOT_IMPLY_TRANSFERABLE"}
+  ],
+  "expected_counts": {
+    "positive": 4,
+    "boundary": 4,
+    "negative": 8,
+    "total": 16,
+    "product_executed": 0
+  }
+}

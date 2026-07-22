@@ -18,6 +18,8 @@
     "cancellation_state",
     "task_scope",
     "actor_isolation",
+    "pattern_trace",
+    "synchronization_events",
     "control_events",
     "callable_events",
     "evidence_events",
@@ -124,6 +126,9 @@
           },
           {
             "$ref": "#/$defs/task_joinEvent"
+          },
+          {
+            "$ref": "#/$defs/task_lifecycleEvent"
           }
         ]
       }
@@ -137,8 +142,23 @@
           },
           {
             "$ref": "#/$defs/actor_dequeueEvent"
+          },
+          {
+            "$ref": "#/$defs/actor_lifecycleEvent"
           }
         ]
+      }
+    },
+    "pattern_trace": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pattern_phaseEvent"
+      }
+    },
+    "synchronization_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/synchronizationEvent"
       }
     },
     "control_events": {
@@ -890,6 +910,10 @@
         "source_span",
         "task_id",
         "owner_id",
+        "scope_id",
+        "parent_task_id",
+        "cancellation_id",
+        "cleanup_barrier_id",
         "spawn_index"
       ],
       "properties": {
@@ -939,6 +963,10 @@
           "type": "string",
           "minLength": 1
         },
+        "scope_id": {"type": "string", "minLength": 1},
+        "parent_task_id": {"type": ["string", "null"]},
+        "cancellation_id": {"type": ["string", "null"]},
+        "cleanup_barrier_id": {"type": "string", "minLength": 1},
         "spawn_index": {
           "type": "integer",
           "minimum": 0
@@ -955,8 +983,16 @@
         "law_id",
         "source_span",
         "task_id",
+        "scope_id",
+        "parent_task_id",
+        "spawn_index",
+        "cancellation_id",
+        "cleanup_barrier_id",
         "join_index",
-        "outcome"
+        "outcome",
+        "failure_id",
+        "failure_role",
+        "suppression_index"
       ],
       "properties": {
         "kind": {
@@ -1001,6 +1037,11 @@
           "type": "string",
           "minLength": 1
         },
+        "scope_id": {"type": "string", "minLength": 1},
+        "parent_task_id": {"type": ["string", "null"]},
+        "spawn_index": {"type": "integer", "minimum": 0},
+        "cancellation_id": {"type": ["string", "null"]},
+        "cleanup_barrier_id": {"type": "string", "minLength": 1},
         "join_index": {
           "type": "integer",
           "minimum": 0
@@ -1010,6 +1051,16 @@
             "completed",
             "failed",
             "cancelled"
+          ]
+        },
+        "failure_id": {"type": ["string", "null"]},
+        "failure_role": {
+          "enum": ["none", "body_primary", "child_primary", "child_suppressed", "cleanup_suppressed"]
+        },
+        "suppression_index": {
+          "oneOf": [
+            {"type": "integer", "minimum": 0},
+            {"type": "null"}
           ]
         }
       }
@@ -1024,9 +1075,18 @@
         "law_id",
         "source_span",
         "actor_id",
+        "receiver_id",
         "sender_id",
+        "channel_id",
+        "mailbox_id",
+        "mailbox_profile_id",
         "message_id",
-        "enqueue_index"
+        "transfer_id",
+        "channel_sequence",
+        "enqueue_index",
+        "capacity_outcome",
+        "ownership_commit_count",
+        "transfer_disposition"
       ],
       "properties": {
         "kind": {
@@ -1071,17 +1131,30 @@
           "type": "string",
           "minLength": 1
         },
+        "receiver_id": {"type": "string", "minLength": 1},
         "sender_id": {
           "type": "string",
           "minLength": 1
         },
+        "channel_id": {"type": "string", "minLength": 1},
+        "mailbox_id": {"type": "string", "minLength": 1},
+        "mailbox_profile_id": {"type": "string", "minLength": 1},
         "message_id": {
           "type": "string",
           "minLength": 1
         },
+        "transfer_id": {"type": "string", "minLength": 1},
+        "channel_sequence": {"type": "integer", "minimum": 0},
         "enqueue_index": {
           "type": "integer",
           "minimum": 0
+        },
+        "capacity_outcome": {
+          "const": "admitted"
+        },
+        "ownership_commit_count": {"const": 1},
+        "transfer_disposition": {
+          "enum": ["receiver_owned", "shared_evidence"]
         }
       }
     },
@@ -1095,8 +1168,14 @@
         "law_id",
         "source_span",
         "actor_id",
+        "receiver_id",
         "sender_id",
+        "channel_id",
+        "mailbox_id",
+        "mailbox_profile_id",
         "message_id",
+        "transfer_id",
+        "channel_sequence",
         "dequeue_index"
       ],
       "properties": {
@@ -1142,14 +1221,20 @@
           "type": "string",
           "minLength": 1
         },
+        "receiver_id": {"type": "string", "minLength": 1},
         "sender_id": {
           "type": "string",
           "minLength": 1
         },
+        "channel_id": {"type": "string", "minLength": 1},
+        "mailbox_id": {"type": "string", "minLength": 1},
+        "mailbox_profile_id": {"type": "string", "minLength": 1},
         "message_id": {
           "type": "string",
           "minLength": 1
         },
+        "transfer_id": {"type": "string", "minLength": 1},
+        "channel_sequence": {"type": "integer", "minimum": 0},
         "dequeue_index": {
           "type": "integer",
           "minimum": 0
@@ -1514,6 +1599,556 @@
         }
       }
     },
+    "pattern_phaseEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "trace_id",
+        "dpm_fixture_id",
+        "attempt_disposition",
+        "context_id",
+        "subject_id",
+        "pattern_id",
+        "test_plan_id",
+        "probe_binder_set_id",
+        "probe_binder_ids",
+        "final_binder_set_id",
+        "final_binder_ids",
+        "commit_plan_id",
+        "failure_disposition",
+        "pattern_move_count",
+        "lifecycle_ids",
+        "precommit_zero_counts",
+        "phase",
+        "outcome",
+        "consuming"
+      ],
+      "properties": {
+        "kind": {
+          "const": "pattern_phase"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "start", "end"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "pattern_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dpm_fixture_id": {
+          "type": "string",
+          "pattern": "^DPM-R1-(?:POS|NEG|BND)-[A-Z0-9-]+$"
+        },
+        "attempt_disposition": {
+          "enum": [
+            "MATCH_BODY_COMPLETED",
+            "PATTERN_MISMATCH_PRECOMMIT",
+            "GUARD_FALSE_PRECOMMIT",
+            "GUARDED_LET_ELSE_TRANSFER",
+            "FOR_LET_CANDIDATE_FILTERED",
+            "DESTRUCTURING_BODY_COMPLETED"
+          ]
+        },
+        "context_id": {
+          "type": "string",
+          "pattern": "^PCTX-[A-Z0-9-]+$"
+        },
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "test_plan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "probe_binder_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "probe_binder_set_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_binder_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "final_binder_set_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_plan_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "failure_disposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pattern_move_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lifecycle_ids": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "payload_drop_plan_id",
+            "user_cleanup_plan_id",
+            "storage_disposition_plan_id",
+            "allocator_or_domain_id",
+            "foreign_release_plan_id",
+            "failure_disposition_plan_id"
+          ],
+          "properties": {
+            "payload_drop_plan_id": {"type": "string", "minLength": 1},
+            "user_cleanup_plan_id": {"type": "string", "minLength": 1},
+            "storage_disposition_plan_id": {"type": "string", "minLength": 1},
+            "allocator_or_domain_id": {"type": "string", "minLength": 1},
+            "foreign_release_plan_id": {"type": "string", "minLength": 1},
+            "failure_disposition_plan_id": {"type": "string", "minLength": 1}
+          }
+        },
+        "precommit_zero_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ownership_commit",
+            "irreversible_borrow",
+            "authority_acquisition",
+            "escape",
+            "suspension",
+            "partial_binding"
+          ],
+          "properties": {
+            "ownership_commit": {"const": 0},
+            "irreversible_borrow": {"const": 0},
+            "authority_acquisition": {"const": 0},
+            "escape": {"const": 0},
+            "suspension": {"const": 0},
+            "partial_binding": {"const": 0}
+          }
+        },
+        "phase": {
+          "enum": [
+            "subject_evaluate",
+            "subject_acquire",
+            "test_plan_build",
+            "structural_test",
+            "probe_bind",
+            "guard_evaluate",
+            "atomic_commit",
+            "final_bind",
+            "body",
+            "exit_or_join"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "entered",
+            "matched",
+            "mismatched",
+            "true",
+            "false",
+            "committed",
+            "completed",
+            "not_evaluated"
+          ]
+        },
+        "consuming": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "enum": [
+                  "subject_evaluate",
+                  "subject_acquire",
+                  "test_plan_build",
+                  "structural_test",
+                  "probe_bind",
+                  "guard_evaluate"
+                ]
+              }
+            },
+            "required": ["phase"]
+          },
+          "then": {"properties": {"consuming": {"const": false}}}
+        },
+        {
+          "if": {
+            "properties": {
+              "attempt_disposition": {
+                "enum": [
+                  "PATTERN_MISMATCH_PRECOMMIT",
+                  "GUARD_FALSE_PRECOMMIT",
+                  "GUARDED_LET_ELSE_TRANSFER",
+                  "FOR_LET_CANDIDATE_FILTERED"
+                ]
+              }
+            },
+            "required": ["attempt_disposition"]
+          },
+          "then": {
+            "properties": {
+              "pattern_move_count": {"const": 0},
+              "final_binder_ids": {"maxItems": 0},
+              "consuming": {"const": false}
+            }
+          }
+        }
+      ]
+    },
+    "task_lifecycleEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "task_id",
+        "scope_id",
+        "parent_task_id",
+        "spawn_index",
+        "aggregation_scope_id",
+        "cancellation_id",
+        "cleanup_barrier_id",
+        "phase",
+        "outcome",
+        "failure_id",
+        "child_failure_id",
+        "primary_failure_id",
+        "failure_role",
+        "suppression_index"
+      ],
+      "properties": {
+        "kind": {"const": "task_lifecycle"},
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 0},
+        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "start", "end"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "task_id": {"type": "string", "minLength": 1},
+        "scope_id": {"type": "string", "minLength": 1},
+        "parent_task_id": {"type": ["string", "null"]},
+        "spawn_index": {"type": "integer", "minimum": 0},
+        "aggregation_scope_id": {"type": "string", "minLength": 1},
+        "cancellation_id": {"type": ["string", "null"]},
+        "cleanup_barrier_id": {"type": "string", "minLength": 1},
+        "phase": {
+          "enum": [
+            "scope_enter",
+            "spawn",
+            "suspend",
+            "resume",
+            "cancel_request",
+            "cancel_observe",
+            "cancel_acknowledge",
+            "cleanup_barrier",
+            "join",
+            "scope_terminal"
+          ]
+        },
+        "outcome": {
+          "enum": ["pending", "success", "error", "defect", "cancelled"]
+        },
+        "failure_id": {"type": ["string", "null"]},
+        "child_failure_id": {"type": ["string", "null"]},
+        "primary_failure_id": {"type": ["string", "null"]},
+        "failure_role": {
+          "enum": ["none", "body_primary", "child_primary", "child_suppressed", "cleanup_suppressed"]
+        },
+        "suppression_index": {
+          "oneOf": [
+            {"type": "integer", "minimum": 0},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "actor_lifecycleEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "actor_id",
+        "receiver_id",
+        "sender_id",
+        "mailbox_id",
+        "channel_id",
+        "channel_sequence",
+        "mailbox_profile_id",
+        "state_region_id",
+        "state_region_authority",
+        "turn_id",
+        "turn_index",
+        "handler_id",
+        "supervisor_id",
+        "message_id",
+        "phase",
+        "outcome",
+        "correlation_id",
+        "reply_id",
+        "transfer_id",
+        "failure_id",
+        "capacity_outcome",
+        "ownership_commit_state",
+        "ownership_commit_count",
+        "transfer_disposition"
+      ],
+      "properties": {
+        "kind": {"const": "actor_lifecycle"},
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 0},
+        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "start", "end"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "actor_id": {"type": "string", "minLength": 1},
+        "receiver_id": {"type": "string", "minLength": 1},
+        "sender_id": {"type": "string", "minLength": 1},
+        "mailbox_id": {"type": "string", "minLength": 1},
+        "channel_id": {"type": "string", "minLength": 1},
+        "channel_sequence": {
+          "oneOf": [
+            {"type": "integer", "minimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "mailbox_profile_id": {"type": "string", "minLength": 1},
+        "state_region_id": {"type": "string", "minLength": 1},
+        "state_region_authority": {
+          "enum": ["held", "released", "not_applicable"]
+        },
+        "handler_id": {"type": ["string", "null"]},
+        "supervisor_id": {"type": ["string", "null"]},
+        "turn_id": {"type": ["string", "null"]},
+        "turn_index": {
+          "oneOf": [
+            {"type": "integer", "minimum": 0},
+            {"type": "null"}
+          ]
+        },
+        "message_id": {"type": "string", "minLength": 1},
+        "phase": {
+          "enum": [
+            "prepare_send",
+            "admission_rejected",
+            "enqueue_committed",
+            "dequeue",
+            "turn_start",
+            "turn_suspend",
+            "turn_resume",
+            "turn_finish",
+            "reply_terminal",
+            "supervisor_disposition"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "success",
+            "capacity_rejected",
+            "receiver_closed",
+            "protocol_rejected",
+            "error",
+            "defect",
+            "cancelled"
+          ]
+        },
+        "correlation_id": {"type": ["string", "null"]},
+        "reply_id": {"type": ["string", "null"]},
+        "transfer_id": {"type": ["string", "null"]},
+        "failure_id": {"type": ["string", "null"]},
+        "capacity_outcome": {
+          "enum": ["admitted", "capacity_rejected", "receiver_closed", "protocol_rejected", "not_applicable"]
+        },
+        "ownership_commit_state": {
+          "enum": ["precommit", "committed", "not_applicable"]
+        },
+        "ownership_commit_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "transfer_disposition": {
+          "enum": ["sender_retained", "receiver_owned", "shared_evidence", "not_applicable"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"phase": {"const": "admission_rejected"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "channel_sequence": {"type": "null"},
+              "turn_id": {"type": "null"},
+              "turn_index": {"type": "null"},
+              "handler_id": {"type": "null"},
+              "capacity_outcome": {
+                "enum": ["capacity_rejected", "receiver_closed", "protocol_rejected"]
+              },
+              "ownership_commit_state": {"const": "precommit"},
+              "ownership_commit_count": {"const": 0},
+              "transfer_disposition": {"const": "sender_retained"},
+              "state_region_authority": {"const": "not_applicable"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "enum": ["turn_start", "turn_suspend", "turn_resume", "turn_finish"]
+              }
+            },
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "channel_sequence": {"type": "integer", "minimum": 0},
+              "turn_id": {"type": "string", "minLength": 1},
+              "turn_index": {"type": "integer", "minimum": 0},
+              "handler_id": {"type": "string", "minLength": 1},
+              "capacity_outcome": {"const": "admitted"},
+              "ownership_commit_state": {"const": "committed"},
+              "ownership_commit_count": {"const": 1},
+              "transfer_disposition": {
+                "enum": ["receiver_owned", "shared_evidence"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "phase": {"enum": ["turn_start", "turn_suspend", "turn_resume"]}
+            },
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {"state_region_authority": {"const": "held"}}
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "turn_finish"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {"state_region_authority": {"const": "released"}}
+          }
+        }
+      ]
+    },
+    "synchronizationEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "sync_id",
+        "operation_id",
+        "profile",
+        "operation",
+        "owner_id",
+        "value_id",
+        "outcome",
+        "ordering",
+        "cleanup_region_id",
+        "handoff_index",
+        "cancellation_id",
+        "consuming"
+      ],
+      "properties": {
+        "kind": {"const": "synchronization"},
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 0},
+        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "start", "end"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "sync_id": {"type": "string", "minLength": 1},
+        "operation_id": {"type": "string", "minLength": 1},
+        "profile": {"enum": ["shared_cell", "shared_mutex"]},
+        "operation": {
+          "enum": ["observe_begin", "observe_end", "replace_commit", "lock_acquire", "lock_release"]
+        },
+        "owner_id": {"type": "string", "minLength": 1},
+        "value_id": {"type": ["string", "null"]},
+        "outcome": {"enum": ["entered", "completed", "committed", "acquired", "released", "error", "defect", "cancelled"]},
+        "ordering": {"enum": ["sequentially_consistent", "mutex_handoff"]},
+        "cleanup_region_id": {"type": ["string", "null"]},
+        "handoff_index": {"type": "integer", "minimum": 0},
+        "cancellation_id": {"type": ["string", "null"]},
+        "consuming": {"type": "boolean"}
+      }
+    },
     "event": {
       "oneOf": [
         {
@@ -1572,6 +2207,18 @@
         },
         {
           "$ref": "#/$defs/evidence_selectEvent"
+        },
+        {
+          "$ref": "#/$defs/pattern_phaseEvent"
+        },
+        {
+          "$ref": "#/$defs/task_lifecycleEvent"
+        },
+        {
+          "$ref": "#/$defs/actor_lifecycleEvent"
+        },
+        {
+          "$ref": "#/$defs/synchronizationEvent"
         }
       ]
     }
@@ -1651,29 +2298,56 @@
       "required_payload_fields": [
         "task_id",
         "owner_id",
+        "scope_id",
+        "parent_task_id",
+        "cancellation_id",
+        "cleanup_barrier_id",
         "spawn_index"
       ]
     },
     "task_join": {
       "required_payload_fields": [
         "task_id",
+        "scope_id",
+        "parent_task_id",
+        "spawn_index",
+        "cancellation_id",
+        "cleanup_barrier_id",
         "join_index",
-        "outcome"
+        "outcome",
+        "failure_id",
+        "failure_role",
+        "suppression_index"
       ]
     },
     "actor_enqueue": {
       "required_payload_fields": [
         "actor_id",
+        "receiver_id",
         "sender_id",
+        "channel_id",
+        "mailbox_id",
+        "mailbox_profile_id",
         "message_id",
-        "enqueue_index"
+        "transfer_id",
+        "channel_sequence",
+        "enqueue_index",
+        "capacity_outcome",
+        "ownership_commit_count",
+        "transfer_disposition"
       ]
     },
     "actor_dequeue": {
       "required_payload_fields": [
         "actor_id",
+        "receiver_id",
         "sender_id",
+        "channel_id",
+        "mailbox_id",
+        "mailbox_profile_id",
         "message_id",
+        "transfer_id",
+        "channel_sequence",
         "dequeue_index"
       ]
     },
@@ -1713,6 +2387,88 @@
         "trait_id",
         "candidate_count"
       ]
+    },
+    "pattern_phase": {
+      "required_payload_fields": [
+        "trace_id",
+        "context_id",
+        "subject_id",
+        "pattern_id",
+        "test_plan_id",
+        "probe_binder_set_id",
+        "probe_binder_ids",
+        "final_binder_set_id",
+        "final_binder_ids",
+        "commit_plan_id",
+        "failure_disposition",
+        "lifecycle_ids",
+        "precommit_zero_counts",
+        "phase",
+        "outcome",
+        "consuming"
+      ]
+    },
+    "task_lifecycle": {
+      "required_payload_fields": [
+        "task_id",
+        "scope_id",
+        "parent_task_id",
+        "spawn_index",
+        "aggregation_scope_id",
+        "cancellation_id",
+        "cleanup_barrier_id",
+        "phase",
+        "outcome",
+        "failure_id",
+        "child_failure_id",
+        "primary_failure_id",
+        "failure_role",
+        "suppression_index"
+      ]
+    },
+    "actor_lifecycle": {
+      "required_payload_fields": [
+        "actor_id",
+        "receiver_id",
+        "sender_id",
+        "mailbox_id",
+        "channel_id",
+        "channel_sequence",
+        "mailbox_profile_id",
+        "state_region_id",
+        "state_region_authority",
+        "turn_id",
+        "turn_index",
+        "handler_id",
+        "supervisor_id",
+        "message_id",
+        "phase",
+        "outcome",
+        "correlation_id",
+        "reply_id",
+        "transfer_id",
+        "failure_id",
+        "capacity_outcome",
+        "ownership_commit_state",
+        "ownership_commit_count",
+        "transfer_disposition"
+      ]
+    },
+    "synchronization": {
+      "required_payload_fields": [
+        "sync_id",
+        "operation_id",
+        "profile",
+        "operation",
+        "owner_id",
+        "value_id",
+        "outcome",
+        "ordering",
+        "cleanup_region_id",
+        "handoff_index",
+        "cancellation_id",
+        "consuming"
+      ]
     }
   },
   "x-deeplus-stack-kind-contracts": {
@@ -1744,11 +2500,19 @@
     ],
     "task_scope": [
       "task_spawn",
-      "task_join"
+      "task_join",
+      "task_lifecycle"
     ],
     "actor_isolation": [
       "actor_enqueue",
-      "actor_dequeue"
+      "actor_dequeue",
+      "actor_lifecycle"
+    ],
+    "pattern_trace": [
+      "pattern_phase"
+    ],
+    "synchronization_events": [
+      "synchronization"
     ],
     "control_events": [
       "guard",
@@ -1769,7 +2533,19 @@
     "source_span": "start is less than or equal to end for the record and every event",
     "commit_point": "null or the event_id of an ownership_commit event in ownership_events",
     "stack_projection": "each event-bearing field admits exactly the kinds named by x-deeplus-stack-kind-contracts",
-    "event_payload": "each discriminated event contains every and only the common fields plus its kind-specific required payload"
+    "event_payload": "each discriminated event contains every and only the common fields plus its kind-specific required payload",
+    "pattern_phase_order": "one successful Pattern attempt is subject_evaluate, subject_acquire, test_plan_build, structural_test, probe_bind, optional guard_evaluate, atomic_commit, final_bind, body, exit_or_join; structural mismatch terminates after structural_test and false guard terminates after guard_evaluate, each followed only by exit_or_join, with no replay or backtracking",
+    "pattern_authority_binding": "each phase names one exact DPM fixture, attempt disposition, and context; the fixture registry binds two records each for successful match commit, precommit mismatch, false guard, guarded-let else transfer, for-let filtering, and representative plain-let destructuring",
+    "pattern_failure_before_commit": "mismatch or false guard leaves every precommit_zero_counts field and pattern_move_count at zero, creates no final binder, and executes only the context-bound failure disposition",
+    "pattern_guard_false": "a false guard forbids atomic_commit, final_bind, and body events for that attempt",
+    "task_failure_order": "at one aggregation scope barrier, a body failure remains primary; otherwise the minimum lexical spawn_index child failure is primary, sibling failures are suppressed in ascending spawn_index, and cleanup failures follow in actual LIFO execution order",
+    "task_order_non_evidence": "scheduler completion order and source-file enumeration order are never failure-order evidence; the fixture registry includes two children that complete in reverse spawn order and a rejection case that incorrectly chooses the first completion",
+    "actor_fifo": "actor_enqueue is an admitted ownership-commit event and assigns its non-null channel_sequence at that commit; the sequence is FIFO within the key sender_id, receiver_id, mailbox_profile_id, channel_id, and no cross-channel global order is promised",
+    "actor_transfer": "a rejected precommit send is represented only by actor_lifecycle admission_rejected with null channel_sequence, ownership_commit_count zero, and sender_retained; a successful actor_enqueue has exactly one commit and receiver_owned or shared_evidence",
+    "actor_reply": "one correlation_id has exactly one terminal reply, declared failure, or cancellation outcome",
+    "actor_turn": "for one actor_id/state_region_id the exact admitted lifecycle is turn_start, zero or more paired turn_suspend and turn_resume transitions that retain held state-region authority, then turn_finish/released before the next turn_start; overlapping turns are forbidden",
+    "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
+    "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
   "x-product-runtime": "NOT_RUN"

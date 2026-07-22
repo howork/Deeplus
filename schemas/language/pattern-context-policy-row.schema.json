@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/pattern-context-policy-row.schema.json",
+  "title": "Deeplus pattern context policy row R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "context_id",
+    "revision",
+    "policy_state",
+    "grammar_owner",
+    "admitted_form",
+    "allowed_pattern_kind_ids",
+    "pattern_failure_disposition",
+    "guard_false_disposition",
+    "subject_failure_policy",
+    "guard_binder_access",
+    "binding_scope",
+    "commit_policy",
+    "coverage_duty",
+    "suspension_policy",
+    "product_execution"
+  ],
+  "properties": {
+    "context_id": {
+      "type": "string",
+      "pattern": "^PCTX-[A-Z0-9-]+$"
+    },
+    "revision": {
+      "const": "r51f3-current-language-coherence-r1"
+    },
+    "policy_state": {
+      "const": "CURRENT"
+    },
+    "grammar_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "admitted_form": {
+      "enum": [
+        "IDENTIFIER_ONLY",
+        "CHECKER_PROVEN_IRREFUTABLE",
+        "EXPLICIT_REFUTABLE",
+        "DECLARATIVE_DISJOINT_PARTITION"
+      ]
+    },
+    "allowed_pattern_kind_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^PK-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
+    },
+    "pattern_failure_disposition": {
+      "enum": [
+        "COMPILE_TIME_REJECTION",
+        "GUARDED_LET_FAILURE_EXIT",
+        "IF_FALSE_BRANCH",
+        "WHILE_TERMINATE",
+        "FOR_CANDIDATE_SKIP",
+        "NEXT_MATCH_ARM_THEN_STATIC_EXHAUSTIVENESS",
+        "DECLARATIVE_PARTITION_REJECTION",
+        "COMPREHENSION_CANDIDATE_SKIP"
+      ]
+    },
+    "guard_false_disposition": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "FOR_CANDIDATE_SKIP",
+        "NEXT_MATCH_ARM_THEN_STATIC_EXHAUSTIVENESS",
+        "DECLARATIVE_PARTITION_REJECTION"
+      ]
+    },
+    "subject_failure_policy": {
+      "enum": [
+        "PERSISTENT_PLACE_UNCHANGED",
+        "OWNED_TEMPORARY_DISPOSED_BY_CONTEXT",
+        "ITERATOR_CANDIDATE_RETURNED_OR_DISCHARGED_ONCE",
+        "MATCH_SCRUTINEE_PRESERVED_FOR_LATER_ARM",
+        "DECLARATIVE_INPUT_DISPOSITION_OWNED_BY_CALL_CONTRACT",
+        "CONTEXT_DISPATCH_BY_SUBJECT_ACQUISITION",
+        "NO_RUNTIME_FAILURE_COMPILE_TIME_ONLY"
+      ]
+    },
+    "guard_binder_access": {
+      "enum": [
+        "NONE",
+        "PROBE_BINDERS_READ_ONLY_NO_ESCAPE"
+      ]
+    },
+    "binding_scope": {
+      "enum": [
+        "DECLARATION_SCOPE_AFTER_COMMIT",
+        "SUCCESS_BRANCH_ONLY",
+        "LOOP_BODY_ONLY",
+        "SELECTED_ARM_ONLY",
+        "SELECTED_CLAUSE_ONLY",
+        "PARAMETER_BODY_SCOPE",
+        "LAMBDA_BODY_SCOPE",
+        "FAILURE_EXIT_ONLY"
+      ]
+    },
+    "commit_policy": {
+      "const": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT"
+    },
+    "coverage_duty": {
+      "enum": [
+        "NONE",
+        "STATIC_IRREFUTABILITY",
+        "FULL_CONSTRUCTOR_SPACE",
+        "DISJOINT_FINITE_PARTITION"
+      ]
+    },
+    "suspension_policy": {
+      "enum": [
+        "NO_SUSPENSION_IN_PATTERN_OR_GUARD",
+        "OWNER_MAY_SUSPEND_ONLY_AFTER_COMMIT"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_execution": {
+      "const": "NOT_RUN"
+    }
+  }
+}

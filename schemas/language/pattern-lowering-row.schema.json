@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/pattern-lowering-row.schema.json",
+  "title": "Deeplus pattern lowering row R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lowering_id",
+    "revision",
+    "status",
+    "pattern_kind_id",
+    "cst_variant",
+    "ast_variant",
+    "hir_variant",
+    "test_kind",
+    "probe_binder_policy",
+    "move_policy",
+    "commit_policy",
+    "post_join_policy",
+    "mir_disposition",
+    "phase_profile",
+    "failure_profile",
+    "lifecycle_profile",
+    "product_execution"
+  ],
+  "properties": {
+    "lowering_id": {
+      "type": "string",
+      "pattern": "^PL-[A-Z0-9-]+$"
+    },
+    "revision": {
+      "const": "r51f3-current-language-coherence-r1"
+    },
+    "status": {
+      "enum": [
+        "CURRENT_LOWERING_CONTRACT",
+        "DEFERRED_NO_LOWERING",
+        "REJECTED_NO_LOWERING"
+      ]
+    },
+    "pattern_kind_id": {
+      "type": "string",
+      "pattern": "^PK-[A-Z0-9-]+$"
+    },
+    "cst_variant": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ast_variant": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hir_variant": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "test_kind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "probe_binder_policy": {
+      "enum": [
+        "NONE",
+        "LIMITED_NONOWNING_VIEW",
+        "DELEGATES_TO_CHILDREN",
+        "JOINED_OBSERVABLE_BINDER_CONTRACT"
+      ]
+    },
+    "move_policy": {
+      "enum": [
+        "NO_MOVE",
+        "COPY_ONLY_IF_REUSABLE",
+        "MOVE_DELAYED_UNTIL_COMMIT",
+        "DELEGATES_TO_CHILDREN"
+      ]
+    },
+    "commit_policy": {
+      "enum": [
+        "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "post_join_policy": {
+      "enum": [
+        "NO_PLACE_STATE_CHANGE",
+        "DELEGATES_TO_CHILDREN",
+        "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "mir_disposition": {
+      "enum": [
+        "STATIC_ONLY_NO_EVENT",
+        "TEST_PROBE_COMMIT_TRACE",
+        "DELEGATE_CHILD_TRACE",
+        "NO_LOWERING_UNREACHABLE",
+        "NO_LOWERING_REJECTED"
+      ]
+    },
+    "phase_profile": {
+      "const": "R2_PATTERN_PHASE_V1"
+    },
+    "failure_profile": {
+      "const": "R2_CONTEXT_FAILURE_V1"
+    },
+    "lifecycle_profile": {
+      "const": "R2_LIFECYCLE_SPLIT_V1"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "product_execution": {
+      "const": "NOT_RUN"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "CURRENT_LOWERING_CONTRACT"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "cst_variant": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ast_variant": {
+            "type": "string",
+            "minLength": 1
+          },
+          "hir_variant": {
+            "type": "string",
+            "minLength": 1
+          },
+          "commit_policy": {
+            "const": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "DEFERRED_NO_LOWERING",
+              "REJECTED_NO_LOWERING"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "cst_variant": {
+            "type": "null"
+          },
+          "ast_variant": {
+            "type": "null"
+          },
+          "hir_variant": {
+            "type": "null"
+          },
+          "probe_binder_policy": {
+            "const": "NONE"
+          },
+          "move_policy": {
+            "const": "NO_MOVE"
+          },
+          "post_join_policy": {
+            "const": "NOT_APPLICABLE"
+          },
+          "commit_policy": {
+            "const": "NOT_APPLICABLE"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "DEFERRED_NO_LOWERING"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "test_kind": {
+            "const": "NO_TEST_UNREACHABLE"
+          },
+          "mir_disposition": {
+            "const": "NO_LOWERING_UNREACHABLE"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "REJECTED_NO_LOWERING"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "test_kind": {
+            "const": "NO_TEST_REJECTED"
+          },
+          "mir_disposition": {
+            "const": "NO_LOWERING_REJECTED"
+          }
+        }
+      }
+    }
+  ]
+}

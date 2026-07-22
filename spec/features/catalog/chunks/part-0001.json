@@ -130,7 +130,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "This current contract is defined by the named authority, activation and dependency fields.",
+    "notes": "Actor syntax owners are closed; mailbox admission and message result semantics are supplied by the current actor coherence contract without new syntax.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -149,7 +149,10 @@
       "examples": [
         "EX-R48E-019",
         "EX-R48E1-030",
-        "EX-R48F-028"
+        "EX-R48F-028",
+        "EX-R51f3-COH-008",
+        "EX-R51f3-COH-009",
+        "EX-R51f3-COH-012"
       ],
       "productions": [
         "ActorBody",
@@ -164,9 +167,11 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
     "authority_set": [
-      "LANGUAGE"
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
@@ -178,7 +183,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "This current contract is defined by the named authority, activation and dependency fields.",
+    "notes": "Absent clause selects logical_unbounded_v1. Positive static #mailbox(capacity: N) selects bounded_reject_v1 with immediate ActorMessageError and no block/retry/suspend/drop. N is a manual choice. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -190,24 +195,35 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT"
+      ],
       "predicates": [],
-      "examples": [],
+      "examples": [
+        "EX-R51f3-COH-008",
+        "EX-R51f3-COH-009",
+        "EX-R51f3-COH-012"
+      ],
       "productions": [
         "MailboxClause"
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/actor-concurrency-coherence.json",
+      "tests/fixtures/current/actor-concurrency-coherence-r1.json",
+      "library/prelude/signatures/chunks/part-0001.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
     "authority_set": [
-      "LANGUAGE"
+      "LANGUAGE",
+      "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
@@ -219,7 +235,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "This current contract is defined by the named authority, activation and dependency fields.",
+    "notes": "Protocol send and request requirements remain distinct; admission returns are fixed by the actor coherence contract and never inferred from ordinary method dispatch.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -241,7 +257,8 @@
       ],
       "examples": [
         "EX-R48E-019",
-        "EX-R48F-028"
+        "EX-R48F-028",
+        "EX-R51f3-COH-008"
       ],
       "productions": [
         "ActorProtocolBody",
@@ -258,9 +275,11 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
     "authority_set": [
-      "LANGUAGE"
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
@@ -272,7 +291,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "This current contract is defined by the named authority, activation and dependency fields.",
+    "notes": "A request expression immediately returns Result<Task<T>, error ActorMessageError>; source extracts Task<T> before explicit await, and receiver closure before reply terminates that admitted task through its declared failure axis.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -290,7 +309,9 @@
       ],
       "examples": [
         "EX-R48E-019",
-        "EX-R48F-028"
+        "EX-R48E1-030",
+        "EX-R48F-028",
+        "EX-R51f3-COH-008"
       ],
       "productions": [
         "ActorProtocolRequestRequirement",
@@ -298,7 +319,11 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/actor-concurrency-coherence.json",
+      "tests/fixtures/current/actor-concurrency-coherence-r1.json",
+      "library/prelude/signatures/chunks/part-0001.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1028,7 +1053,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`def#async` is the current Stable async declaration introducer in every admitted owner domain. Its body may suspend only at explicit await points and is checked against declared effect, cancellation, isolation, and error responsibilities.",
+    "notes": "`def#async` is Stable for module, entry, extension, instance, local, Trait, and conformance function owners. Suspension is explicit and preserves declared effect, cancellation, isolation, and error responsibilities.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1053,9 +1078,13 @@
         "EX-R51a1-NEW-017"
       ],
       "productions": [
+        "ConformanceMethodDecl",
+        "EntryFunctionDecl",
         "ExtensionFunctionDecl",
+        "LocalFunctionDecl",
         "MemberFunctionDecl",
-        "ModuleFunctionDecl"
+        "ModuleFunctionDecl",
+        "TraitMethodDecl"
       ],
       "semantic_reference_productions": []
     },
@@ -1129,7 +1158,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Current contract: the protocol is a stdlib/profile law rather than a Preview source gate.",
+    "notes": "AsyncSequence<T, E: ErrorSet> binds source failure, keeps cancellation separate, and is a current stdlib profile rather than a Preview source gate.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1228,7 +1257,10 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "TRY_EXPRESSION_STATEMENT_NOT_CURRENT",
+        "TRY_REQUIRES_CATCH_OR_FINALLY"
+      ],
       "predicates": [],
       "examples": [
         "EX-R48-021"

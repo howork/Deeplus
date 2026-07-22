@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/type-flow-callable-coherence-fixtures.schema.json",
+  "title": "Deeplus current type, flow, and callable design-static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "evidence_status",
+    "product_support",
+    "product_lanes",
+    "fixture_policy",
+    "positive",
+    "negative",
+    "boundary",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.type-flow-callable-coherence-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/type-flow-callable-coherence-fixtures.schema.json"},
+    "revision": {"const": "r51f3-current-language-coherence-r1"},
+    "contract": {"const": "spec/contracts/type-flow-callable-coherence.json"},
+    "evidence_status": {"const": "DESIGN_STATIC_NOT_RUN"},
+    "product_support": {"const": "NOT_RUN"},
+    "product_lanes": {"const": "15/15_NOT_RUN"},
+    "fixture_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_is_design_fixture",
+        "parser_status",
+        "checker_status",
+        "runtime_status",
+        "null_existing_diagnostic"
+      ],
+      "properties": {
+        "source_is_design_fixture": {"const": true},
+        "parser_status": {"const": "NOT_RUN"},
+        "checker_status": {"const": "NOT_RUN"},
+        "runtime_status": {"const": "NOT_RUN"},
+        "null_existing_diagnostic": {"type": "string", "minLength": 1}
+      }
+    },
+    "positive": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/positiveFixture"}
+    },
+    "negative": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/negativeFixture"}
+    },
+    "boundary": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/boundaryFixture"}
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative", "boundary", "total", "product_executed"],
+      "properties": {
+        "positive": {"type": "integer", "minimum": 0},
+        "negative": {"type": "integer", "minimum": 0},
+        "boundary": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0},
+        "product_executed": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "ruleIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^TFC-R[0-9]{3}$"}
+    },
+    "diagnosticOrNull": {
+      "oneOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "positiveFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "rule_ids", "source", "expected_outcome", "expected_existing_diagnostic"],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^TFC-P-"},
+        "rule_ids": {"$ref": "#/$defs/ruleIds"},
+        "source": {"type": "string", "minLength": 1},
+        "expected_outcome": {"const": "accept"},
+        "expected_existing_diagnostic": {"type": "null"}
+      }
+    },
+    "negativeFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "rule_ids", "source", "expected_outcome", "expected_rejection_reason", "expected_existing_diagnostic"],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^TFC-N-"},
+        "rule_ids": {"$ref": "#/$defs/ruleIds"},
+        "source": {"type": "string", "minLength": 1},
+        "expected_outcome": {"const": "reject"},
+        "expected_rejection_reason": {"type": "string", "minLength": 1},
+        "expected_existing_diagnostic": {"$ref": "#/$defs/diagnosticOrNull"},
+        "responsibility_descriptor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["bound_place", "normalized_type", "ownership", "cleanup", "reservation"],
+          "properties": {
+            "bound_place": {"type": "string", "minLength": 1},
+            "normalized_type": {"type": "string", "minLength": 1},
+            "ownership": {"const": "resource"},
+            "cleanup": {"const": "drop_exactly_once"},
+            "reservation": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "boundaryFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "rule_ids", "boundary"],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^TFC-B-"},
+        "rule_ids": {"$ref": "#/$defs/ruleIds"},
+        "boundary": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "expected_outcome": {"enum": ["accept", "reject"]},
+        "descriptor": {"type": "object"},
+        "paired_outcomes": {"type": "object", "minProperties": 2},
+        "paired_profiles": {"type": "object", "minProperties": 2},
+        "paired_sources": {"type": "object", "minProperties": 2},
+        "expected_existing_diagnostic_for_reject": {"type": "string", "minLength": 1}
+      },
+      "oneOf": [
+        {"required": ["source", "expected_outcome"]},
+        {"required": ["descriptor"]},
+        {"required": ["paired_outcomes"]},
+        {"required": ["paired_profiles"]},
+        {"required": ["paired_sources"]}
+      ]
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

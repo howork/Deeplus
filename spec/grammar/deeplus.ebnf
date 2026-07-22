@@ -361,7 +361,9 @@ Parameter ::= StoredParameter
             | NamedRestParameter
             | ValueParameter ;
 ValueParameter ::= ParameterMode? ParameterPatternSlot TypeAnnotation ;
-ParameterPatternSlot ::= PARAMETER_PATTERN_BY_ADMISSION_POLICY ;
+(* Public callable signatures carry names, modes and types, never a refutable
+   decomposition contract. Destructure explicitly in the body. *)
+ParameterPatternSlot ::= Identifier ;
 ParameterMode ::= "borrow" | "mut" | "move" | "inout" ;
 ContextParameter ::= "context" Identifier ":" TypeRef ;
 WitnessParameter ::= "using" Identifier ":" "witness" TypeRef ;
@@ -618,13 +620,30 @@ PatternPrimary ::= TypedBindingPattern
 TypedBindingPattern ::= Identifier ":" TypeRef ;
 ParenthesizedPattern ::= "(" Pattern ")" ;
 
+(* BindingPattern gives `let pattern : Type = value` one unambiguous colon
+   owner while Record/List/Variant/parenthesized children keep full Pattern. *)
+BindingPattern ::= BindingOrPattern TypeAnnotation? ;
+BindingOrPattern ::= BindingAliasPattern ("|" BindingAliasPattern)* ;
+BindingAliasPattern ::= BindingMovePattern ("as" Identifier)? ;
+BindingMovePattern ::= "move"? BindingPatternPrimary ;
+BindingPatternPrimary ::= Identifier
+                        | RecordPattern
+                        | ListPattern
+                        | VariantPattern
+                        | "_"
+                        | UnitSyntax
+                        | Literal
+                        | ParenthesizedPattern ;
+
 RecordPattern ::= "${" PatternFieldList? "}" ;
 PatternFieldList ::= PatternField ("," PatternField)* ","? ;
 PatternField ::= Identifier | Identifier ":" Pattern ;
 
-ListPattern ::= "[" ListPatternItems? "]" ;
-ListPatternItems ::= ListPatternItem ("," ListPatternItem)* ","? ;
-ListPatternItem ::= Pattern | ".." Pattern ;
+(* Current List decomposition is exact or has one ignored final remainder.
+   Captured, middle and multiple rests have no current carrier/ownership law. *)
+ListPattern ::= "[" (ListPatternPrefix ("," IgnoredListRest)? ","? | IgnoredListRest ","?)? "]" ;
+ListPatternPrefix ::= Pattern ("," Pattern)* ;
+IgnoredListRest ::= ".." "_" ;
 
 VariantPattern ::= VariantQualifier Identifier VariantPatternPayload? ;
 VariantQualifier ::= TypeRef "::" | "::" ;
@@ -667,10 +686,13 @@ SingleExpressionValueBody ::= "{" Expr "}" ;
 ExplicitRetValueBody ::= "{" BlockItem* RetTransfer "}" ;
 RetTransfer ::= "ret" Expr? GuardClause? ;
 
-BindingCore ::= ("let" | "var") Pattern TypeAnnotation? "=" Expr ;
+(* A local binding owns its optional whole-pattern annotation exactly once.
+   BindingPattern excludes only a top-level TypedBindingPattern; recursive
+   child patterns still use Pattern and therefore retain typed child binders. *)
+BindingCore ::= ("let" | "var") BindingPattern "=" Expr ;
 LocalBindingStmt ::= BindingCore StatementBoundary | RightwardLocalBindingSurface | LazyBindingStmt | GuardedBindingStmt ;
 LazyBindingStmt ::= "let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary ;
-GuardedBindingStmt ::= "let" Pattern TypeAnnotation? "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
+GuardedBindingStmt ::= "let" BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
 (* Failure exits are structurally unconditional. yield, ret and guarded transfers are not admitted. *)
 GuardedBindingFailure ::= GuardedBindingExit | Pattern "=>" GuardedBindingExit ;
 GuardedBindingExit ::= GuardedReturnExit | GuardedThrowExit | GuardedBreakExit | GuardedContinueExit ;
@@ -714,8 +736,9 @@ MatchHead ::= Pattern | "otherwise" ;
 MatchArmSeparator ::= MATCH_ARM_SEPARATOR_BY_CONTEXT ;
 MatchArmBodySlot ::= MATCH_ARM_BODY_BY_CONTEXT ;
 
-TryStmt ::= "try" Block CatchClause* FinallyClause?
-          | "try" Expr StatementBoundary ;
+(* A statement try must own at least one handler or a finally cleanup. Bare
+   try blocks and unowned try-expression statements are not current source. *)
+TryStmt ::= "try" Block (CatchClause+ FinallyClause? | FinallyClause) ;
 CatchClause ::= "catch" Pattern? Block ;
 ValueCatchClause ::= "catch" Pattern? ValueBody ;
 FinallyClause ::= "finally" Block ;
@@ -852,8 +875,9 @@ StaticQualifier ::= QualifiedTypeReference | AssociatedProjection ;
 
 (* `@` forms below are exact expression/generator introducers. They do not use RoleWord or a generic AtTag. *)
 AtControlExpr ::= AtIfExpr | AtTryExpr | AtScopeExpr ;
+(* Omitted else is parsed only for recovery; a value @if is total. *)
 AtIfExpr ::= "@" "if" Expr ValueBody ("else" ValueBody)? ;
-AtTryExpr ::= "@" "try" ValueBody ValueCatchClause* FinallyClause? ;
+AtTryExpr ::= "@" "try" ValueBody (ValueCatchClause+ FinallyClause? | FinallyClause) ;
 AtScopeExpr ::= "@" "scope" ScopeModifier* ValueBody ;
 ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
 

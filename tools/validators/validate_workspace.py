@@ -16,7 +16,11 @@ from typing import Any
 
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
-SUCCESSOR_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
+POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-language-coherence-r1"
+LANGUAGE_COHERENCE_CONTRACT_REL = (
+    "spec/contracts/language-coherence-current-integrity-r1.json"
+)
 EXCLUDED_TREE_PARTS = {".git", "target", "dist", "__pycache__"}
 EXPECTED = {
     "features": 681, "diagnostics": 1250, "predicates": 245,
@@ -98,7 +102,7 @@ SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
     *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
     "SFD-P1-009",
 ]
-SUCCESSOR_CANONICAL_DELTA_PATHS = {
+POST_PR16_CANONICAL_DELTA_PATHS = {
     "spec/language.md",
     "spec/frontend/frontend-model.json",
     "spec/types/type-system.md",
@@ -240,10 +244,36 @@ def main() -> int:
         revision = ""
         check(False, "REVISION_PARITY", str(exc))
     check(
-        revision in {LEGACY_REVISION, SUCCESSOR_REVISION},
+        revision
+        in {LEGACY_REVISION, POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION},
         "REVISION_PARITY",
         revision,
     )
+
+    language_coherence_contract: dict[str, Any] = {}
+    if revision == LANGUAGE_COHERENCE_REVISION:
+        try:
+            language_coherence_contract = json.loads(
+                (root / LANGUAGE_COHERENCE_CONTRACT_REL).read_text(
+                    encoding="utf-8"
+                )
+            )
+            fixed_counts = language_coherence_contract.get("canonical_counts", {})
+            check(
+                language_coherence_contract.get("schema")
+                == "deeplus.language-coherence-current-integrity-contract/r1"
+                and language_coherence_contract.get("revision") == revision
+                and fixed_counts.get("features") == 681
+                and fixed_counts.get("predicates") == 245
+                and fixed_counts.get("predicate_fixtures") == 764
+                and fixed_counts.get("no_go") == 150
+                and fixed_counts.get("hard_keywords") == 30
+                and fixed_counts.get("contextual_words") == 101,
+                "LANGUAGE_COHERENCE_CONTRACT",
+                str(fixed_counts),
+            )
+        except Exception as exc:  # noqa: BLE001
+            check(False, "LANGUAGE_COHERENCE_CONTRACT", str(exc))
 
     required = [
         "README.md", "GOVERNANCE.md", "CONTRIBUTING.md", "Cargo.toml",
@@ -268,11 +298,16 @@ def main() -> int:
         "release/evidence/current-publication-m1.3-git-binding-receipt.json",
         "release/evidence/current-publication-m1.3-role-review-index.json",
     ]
-    if revision == SUCCESSOR_REVISION:
+    if revision == POST_PR16_REVISION:
         required.extend([
             "tools/generators/generate_post_pr16_current_integrity.py",
             "tools/generators/post-pr16-current-integrity.contract.json",
             "tools/validators/run_post_pr16_current_integrity_tests.py",
+        ])
+    elif revision == LANGUAGE_COHERENCE_REVISION:
+        required.extend([
+            "tools/generators/generate_language_coherence_current_integrity.py",
+            LANGUAGE_COHERENCE_CONTRACT_REL,
         ])
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
@@ -296,11 +331,19 @@ def main() -> int:
             detail[-2000:],
         )
 
-    current_integrity_generator = root / (
-        "tools/generators/generate_post_pr16_current_integrity.py"
-        if revision == SUCCESSOR_REVISION
-        else "tools/generators/generate_current_integrity.py"
-    )
+    if revision == LANGUAGE_COHERENCE_REVISION:
+        current_integrity_generator_rel = (
+            "tools/generators/generate_language_coherence_current_integrity.py"
+        )
+    elif revision == POST_PR16_REVISION:
+        current_integrity_generator_rel = (
+            "tools/generators/generate_post_pr16_current_integrity.py"
+        )
+    else:
+        current_integrity_generator_rel = (
+            "tools/generators/generate_current_integrity.py"
+        )
+    current_integrity_generator = root / current_integrity_generator_rel
     if current_integrity_generator.is_file():
         process = subprocess.run(
             [
@@ -323,6 +366,31 @@ def main() -> int:
             "CURRENT_INTEGRITY_GENERATOR_CHECK",
             detail[-4000:],
         )
+        if revision == LANGUAGE_COHERENCE_REVISION:
+            mutation_process = subprocess.run(
+                [
+                    sys.executable,
+                    str(current_integrity_generator),
+                    "--root",
+                    str(root),
+                    "--self-test",
+                ],
+                cwd=root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            mutation_detail = (
+                mutation_process.stdout.strip()
+                if mutation_process.returncode == 0
+                else mutation_process.stderr.strip()
+                or mutation_process.stdout.strip()
+            )
+            check(
+                mutation_process.returncode == 0,
+                "CURRENT_INTEGRITY_GENERATOR_MUTATION_CHECK",
+                mutation_detail[-4000:],
+            )
 
     parsed: dict[Path, Any] = {}
     json_files = sorted(root.rglob("*.json"))
@@ -401,6 +469,24 @@ def main() -> int:
             and file_sha(root / rel) == approved_current_sha256
         )
 
+    language_identity_exemptions = {
+        row.get("path"): row.get("sha256")
+        for row in language_coherence_contract.get(
+            "migration_identity_exemptions", []
+        )
+        if isinstance(row, dict)
+        and set(row) == {"path", "sha256"}
+        and isinstance(row.get("path"), str)
+        and isinstance(row.get("sha256"), str)
+    }
+
+    def revision_identity_exempt(relative: str, current_sha256: str) -> bool:
+        if revision == POST_PR16_REVISION:
+            return relative in POST_PR16_CANONICAL_DELTA_PATHS
+        if revision == LANGUAGE_COHERENCE_REVISION:
+            return language_identity_exemptions.get(relative) == current_sha256
+        return False
+
     repair = parsed.get(root / "migration/m1.1-repair-manifest.json", {})
     changed_paths = {repair.get("human_corpus", {}).get("path")}
     transformations = repair.get("reference_normalization", {}).get("transformations", [])
@@ -413,10 +499,7 @@ def main() -> int:
             path.is_file()
             and (
                 current_hash == row["output_sha256"]
-                or (
-                    revision == SUCCESSOR_REVISION
-                    and row["path"] in SUCCESSOR_CANONICAL_DELTA_PATHS
-                )
+                or revision_identity_exempt(row["path"], current_hash)
                 or exact_transition(
                     row["path"],
                     "migration/m1.1-repair-manifest.json",
@@ -440,10 +523,7 @@ def main() -> int:
                 current_hash = file_sha(target)
                 check(
                     current_hash == entry["sha256"]
-                    or (
-                        revision == SUCCESSOR_REVISION
-                        and rel in SUCCESSOR_CANONICAL_DELTA_PATHS
-                    )
+                    or revision_identity_exempt(rel, current_hash)
                     or exact_transition(
                         rel,
                         "migration/import-manifest.json",
@@ -538,7 +618,18 @@ def main() -> int:
     vocabulary = parsed.get(root / "spec/grammar/keyword-vocabulary.json", {})
     actual["hard_keywords"] = len(vocabulary.get("hard_keywords", []))
     actual["contextual_words"] = len(vocabulary.get("contextual_words", []))
-    for key, expected in EXPECTED.items():
+    expected_counts = (
+        {
+            key: value
+            for key, value in language_coherence_contract.get(
+                "canonical_counts", {}
+            ).items()
+            if key != "prelude_entries"
+        }
+        if revision == LANGUAGE_COHERENCE_REVISION
+        else EXPECTED
+    )
+    for key, expected in expected_counts.items():
         check(actual[key] == expected, "CANONICAL_COUNT", f"{key}={actual[key]} expected={expected}")
 
     feature_by_id = {row.get("feature_id"): row for row in feature_rows}
@@ -781,8 +872,22 @@ def main() -> int:
         f"required={len(deferred_required)} supplemental={SUPPLEMENTAL_MIR_FEATURE_IDS}",
     )
 
+    successor_semantic_files = {
+        row.get("path"): row.get("sha256")
+        for row in language_coherence_contract.get(
+            "semantic_authority_files", []
+        )
+        if isinstance(row, dict) and set(row) == {"path", "sha256"}
+    }
     for rel, expected_sha in FROZEN_UNCHANGED_SEMANTIC_HASHES.items():
-        if revision == SUCCESSOR_REVISION and rel == "spec/types/type-system.md":
+        if revision == LANGUAGE_COHERENCE_REVISION:
+            check(
+                successor_semantic_files.get(rel) == file_sha(root / rel),
+                "SUCCESSOR_SEMANTIC_FILE_IDENTITY",
+                rel,
+            )
+            continue
+        if revision == POST_PR16_REVISION and rel == "spec/types/type-system.md":
             continue
         check(file_sha(root / rel) == expected_sha, "FROZEN_SEMANTIC_FILE_IDENTITY", rel)
     r42 = feature_by_id.get("type_system_rcts_v5_ts_r42_current_canonical_companion", {})
@@ -818,10 +923,168 @@ def main() -> int:
         "tests/conformance/checker-predicates/catalog-metadata.json": ("fixture_schema", "schemas/language/checker-predicate-fixture-row.schema.json"),
         "tests/fixtures/imported/uml-export-fixtures.json": ("profile_schema", "schemas/language/uml-export-profile.schema.json"),
         "tests/fixtures/imported/deterministic-suite-fixtures.json": ("profile_schema", "schemas/language/deterministic-suite-profile.schema.json"),
+        "tests/fixtures/current/type-flow-callable-coherence-r1.json": ("fixture_schema", "schemas/language/type-flow-callable-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/destructuring-pattern-matching-r1.json": ("fixture_schema", "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
         check(value.get(field) == expected and (root / expected).exists(), "OPERATIONAL_POINTER", f"{rel}:{field}")
+
+    tfc_rel = "tests/fixtures/current/type-flow-callable-coherence-r1.json"
+    tfc = parsed.get(root / tfc_rel, {})
+    tfc_top_keys = {
+        "schema", "fixture_schema", "revision", "contract", "evidence_status",
+        "product_support", "product_lanes", "fixture_policy", "positive",
+        "negative", "boundary", "expected_counts",
+    }
+    check(set(tfc) == tfc_top_keys, "TFC_FIXTURE_CLOSED_SHAPE", str(sorted(set(tfc) ^ tfc_top_keys)))
+    tfc_groups = {
+        "positive": tfc.get("positive", []),
+        "negative": tfc.get("negative", []),
+        "boundary": tfc.get("boundary", []),
+    }
+    tfc_rows = [row for rows in tfc_groups.values() for row in rows if isinstance(row, dict)]
+    tfc_ids = [row.get("fixture_id") for row in tfc_rows]
+    tfc_counts = tfc.get("expected_counts", {})
+    check(
+        len(tfc_rows) == len(tfc_ids) == len(set(tfc_ids))
+        and all(tfc_counts.get(group) == len(rows) for group, rows in tfc_groups.items())
+        and tfc_counts.get("total") == len(tfc_rows)
+        and tfc_counts.get("product_executed") == 0,
+        "TFC_FIXTURE_COUNT_AND_ID_CLOSURE",
+        f"rows={len(tfc_rows)} ids={len(set(tfc_ids))} counts={tfc_counts}",
+    )
+    tfc_contract = parsed.get(root / "spec/contracts/type-flow-callable-coherence.json", {})
+    tfc_rule_ids = [row.get("rule_id") for row in tfc_contract.get("rules", []) if isinstance(row, dict)]
+    check(
+        len(tfc_rule_ids) == 20
+        and len(set(tfc_rule_ids)) == 20
+        and all(
+            isinstance(row.get("rule_ids"), list)
+            and row["rule_ids"]
+            and set(row["rule_ids"]).issubset(set(tfc_rule_ids))
+            for row in tfc_rows
+        ),
+        "TFC_RULE_BINDING_CLOSURE",
+        f"rules={len(tfc_rule_ids)} rows={len(tfc_rows)}",
+    )
+    cleanup_skip = next(
+        (row for row in tfc_groups["negative"] if row.get("fixture_id") == "TFC-N-025-CLEANUP-SKIP"),
+        {},
+    )
+    cleanup_descriptor = cleanup_skip.get("responsibility_descriptor", {})
+    check(
+        cleanup_skip.get("expected_existing_diagnostic") == "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
+        and cleanup_descriptor.get("normalized_type") == "File"
+        and cleanup_descriptor.get("ownership") == "resource"
+        and cleanup_descriptor.get("cleanup") == "drop_exactly_once"
+        and cleanup_descriptor.get("bound_place") == "resource",
+        "TFC_CLEANUP_OBLIGATION_EXPLICIT",
+        str(cleanup_descriptor),
+    )
+
+    dpm_rel = "tests/fixtures/current/destructuring-pattern-matching-r1.json"
+    dpm = parsed.get(root / dpm_rel, {})
+    dpm_top_keys = {
+        "schema", "fixture_schema", "revision", "authority", "evidence_level",
+        "product_execution", "phase_profile", "failure_profile",
+        "lifecycle_identities", "counts", "fixtures",
+    }
+    dpm_row_keys = {
+        "fixture_id", "fixture_class", "context_id", "pattern_kind_id", "source",
+        "subject_profile", "expected", "primary_diagnostic_family_or_null",
+        "assertions", "execution_state",
+    }
+    dpm_rows = [row for row in dpm.get("fixtures", []) if isinstance(row, dict)]
+    dpm_ids = [row.get("fixture_id") for row in dpm_rows]
+    dpm_class_counts = Counter(row.get("fixture_class") for row in dpm_rows)
+    dpm_counts = dpm.get("counts", {})
+    check(
+        set(dpm) == dpm_top_keys
+        and all(set(row) == dpm_row_keys for row in dpm_rows),
+        "DPM_FIXTURE_CLOSED_SHAPE",
+        f"top_delta={sorted(set(dpm) ^ dpm_top_keys)} rows={len(dpm_rows)}",
+    )
+    check(
+        len(dpm_rows) == len(dpm_ids) == len(set(dpm_ids)) == dpm_counts.get("fixtures")
+        and all(dpm_counts.get(group) == dpm_class_counts.get(group, 0) for group in ("positive", "negative", "boundary"))
+        and dpm_counts.get("product_executed") == 0
+        and all(row.get("execution_state") == "DESIGN_STATIC_NOT_RUN" for row in dpm_rows),
+        "DPM_FIXTURE_COUNT_AND_ID_CLOSURE",
+        f"rows={len(dpm_rows)} ids={len(set(dpm_ids))} classes={dict(dpm_class_counts)}",
+    )
+
+    module_fixtures = parsed.get(root / "tests/fixtures/imported/module-api-digest-fixtures.json", {})
+    module_positive = module_fixtures.get("positive_fixtures", [])
+    callable_rows = [
+        symbol
+        for fixture in module_positive
+        for symbol in fixture.get("payload", {}).get("symbols", [])
+        if symbol.get("kind") in {"function", "method"}
+    ]
+    callable_axis_ok = all(
+        row.get("cancellation") in {"forbidden", "propagate", "observe", "shielded_cleanup"}
+        and isinstance(row.get("suspends"), bool)
+        and row.get("isolation") in {"local", "task", "actor", "global"}
+        for row in callable_rows
+    )
+    callable_channel_ok = True
+    for row in callable_rows:
+        profile = row.get("responsibility_profile", {})
+        channels = []
+        if isinstance(profile.get("receiver"), dict):
+            channels.append(profile["receiver"])
+        channels.extend(profile.get("parameters", []))
+        if isinstance(profile.get("result"), dict):
+            channels.append(profile["result"])
+        channels.extend(profile.get("captures", []))
+        channel_ids = [channel.get("channel_id") for channel in channels]
+        callable_channel_ok = callable_channel_ok and len(channel_ids) == len(set(channel_ids))
+    module_negative_by_id = {
+        row.get("fixture_id"): row for row in module_fixtures.get("negative_fixtures", [])
+    }
+    axis_negative = module_negative_by_id.get("MODULE-API-NEG-CALLABLE-AXES-001", {})
+    axis_negative_function = next(
+        (
+            row for row in axis_negative.get("payload", {}).get("symbols", [])
+            if row.get("kind") == "function"
+        ),
+        {},
+    )
+    channel_negative = module_negative_by_id.get("MODULE-API-NEG-CALLABLE-CHANNEL-ID-001", {})
+    channel_negative_method = next(
+        (
+            row for row in channel_negative.get("payload", {}).get("symbols", [])
+            if row.get("kind") == "method"
+        ),
+        {},
+    )
+    channel_negative_profile = channel_negative_method.get("responsibility_profile", {})
+    channel_negative_rows = []
+    if isinstance(channel_negative_profile.get("receiver"), dict):
+        channel_negative_rows.append(channel_negative_profile["receiver"])
+    channel_negative_rows.extend(channel_negative_profile.get("parameters", []))
+    if isinstance(channel_negative_profile.get("result"), dict):
+        channel_negative_rows.append(channel_negative_profile["result"])
+    channel_negative_rows.extend(channel_negative_profile.get("captures", []))
+    channel_negative_ids = [row.get("channel_id") for row in channel_negative_rows]
+    check(callable_axis_ok, "MODULE_API_CALLABLE_AXES_CONCRETE", f"callables={len(callable_rows)}")
+    check(callable_channel_ok, "MODULE_API_CALLABLE_CHANNEL_IDS_UNIQUE", f"callables={len(callable_rows)}")
+    check(
+        "MODULE_API_CALLABLE_RESPONSIBILITY_AXIS_NOT_APPLICABLE"
+        in axis_negative.get("expected_errors", [])
+        and all(
+            axis_negative_function.get(axis) == "not_applicable"
+            for axis in ("cancellation", "suspends", "isolation")
+        )
+        and "MODULE_API_CALLABLE_CHANNEL_ID_DUPLICATE"
+        in channel_negative.get("expected_errors", [])
+        and len(channel_negative_ids) > len(set(channel_negative_ids))
+        and module_fixtures.get("negative_fixture_count")
+        == len(module_fixtures.get("negative_fixtures", [])),
+        "MODULE_API_CALLABLE_NEGATIVE_COVERAGE",
+        f"negative={module_fixtures.get('negative_fixture_count')}",
+    )
 
     authority_path = root / "current/authority-map.yaml"
     authority_text = authority_path.read_text(encoding="utf-8")
@@ -952,11 +1215,14 @@ def main() -> int:
             "POINTER_SNAPSHOT_BINDING", str(snapshot),
         )
         predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
-        expected_predecessor = (
-            "r51f3-post-pr16-preview-design-r4"
-            if revision == SUCCESSOR_REVISION
-            else predecessor_receipt.get("predecessor_revision")
-        )
+        if revision == LANGUAGE_COHERENCE_REVISION:
+            expected_predecessor = POST_PR16_REVISION
+        elif revision == POST_PR16_REVISION:
+            expected_predecessor = "r51f3-post-pr16-preview-design-r4"
+        else:
+            expected_predecessor = predecessor_receipt.get(
+                "predecessor_revision"
+            )
         check(
             predecessor_receipt.get("result") == "PASS_DIRECT_BYTES"
             and pointer.get("previous_pointer") == expected_predecessor
@@ -970,7 +1236,9 @@ def main() -> int:
         action_ids = [row.get("id") for row in actions]
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         expected_action_ids = (
-            SUCCESSOR_ACTION_IDS if revision == SUCCESSOR_REVISION else EXPECTED_ACTION_IDS
+            SUCCESSOR_ACTION_IDS
+            if revision in {POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION}
+            else EXPECTED_ACTION_IDS
         )
         check(
             action_ids == expected_action_ids
@@ -1019,8 +1287,15 @@ def main() -> int:
         "deeplus-0.1.2-baseline-r51f3-prelude-signature-catalog.json", "entries"
     )
     forbidden_public_trees = {"RawAst", "ResolvedAst", "TypedAst<T,R>"}
+    expected_prelude_entries = (
+        language_coherence_contract.get("canonical_counts", {}).get(
+            "prelude_entries"
+        )
+        if revision == LANGUAGE_COHERENCE_REVISION
+        else 49
+    )
     check(
-        len(prelude_rows) == 49
+        len(prelude_rows) == expected_prelude_entries
         and not forbidden_public_trees.intersection(
             {row.get("symbol") for row in prelude_rows}
         )
@@ -1115,7 +1390,12 @@ def main() -> int:
             }
             and "22 total" in facts_by_id.get("P1-001", {}).get("statement", "")
             and "15 product lanes remain NOT_RUN" in facts_by_id.get("EVID-001", {}).get("statement", "")
-            and facts_by_id.get("CMA-001", {}).get("introduced") == revision
+            and facts_by_id.get("CMA-001", {}).get("introduced")
+            == (
+                POST_PR16_REVISION
+                if revision == LANGUAGE_COHERENCE_REVISION
+                else revision
+            )
             and "Issue #24 remains open" in facts_by_id.get("MIRX1-001", {}).get("statement", "")
             and memory_action_ids <= {"M13-A002", "M13-A005", "M13-TEST-001"}
             and not {"M13-IMPL-A004", "M13-DEVEL-001"}.intersection(memory_action_ids),

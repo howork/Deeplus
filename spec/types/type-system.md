@@ -8,7 +8,7 @@ The checker owns well-formedness, expression typing, subtyping, conformance evid
 
 ## 2. Normalization and identity
 
-Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, measures, shapes, and witness identities normalize before comparison. Normalization is terminating and responsibility preserving.
+Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, cancellation, measures, shapes, and witness identities normalize before comparison. Normalization is terminating, performs an occurs check, and preserves every responsibility-bearing distinction. Inference is bidirectional and local: it never invents an implicit generic, anonymous union, hidden authority, cancellation conversion, or runtime type test.
 
 ## 3. Named rest, function-type residue, and unfold
 
@@ -20,19 +20,19 @@ Subclassing, Trait conformance, extension activation, containment/association, a
 
 ## 5. Generics and function types
 
-Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet. Generic constructors are invariant by default. Function compatibility preserves value/context/witness/rest channels, ownership, callable profile, effect/error rows, isolation, and return type. Return type and source order are not overload tie-breakers.
+Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet; rows and labels are checker identities, not further user generic kinds. Generic constructors are invariant by default. Function compatibility preserves value/context/witness/rest channels, ownership, callable profile, effect/error rows, cancellation, suspension, isolation, capture, and return type. Return type and source order are not overload tie-breakers. Ordinary callable parameters contain identifiers, modes, labels, and types rather than refutable Patterns; decomposition occurs in the body or an exhaustive declarative clause family.
 
 ## 6. Union, intersection, Option, Result, and Facet
 
-Union injection is unique after normalization. Contract intersections require every constituent obligation. Option and Result have explicit alternatives. Borrow Facet is current; owned/inout Facet packages remain Preview-design.
+Union injection is unique after normalization. Contract intersections require every constituent obligation. Option and Result have explicit alternatives. Every Result use-site spells its error channel `Result<T, error E>`; the generic declaration may bind `E: ErrorSet` without repeating the role marker. Borrow Facet is current; owned/inout Facet packages remain Preview-design.
 
 ## 7. Ownership, effects, and cleanup
 
-Move, borrow, inout, resource, isolation, effect, error, defect, cancellation, and cleanup obligations remain explicit. Borrow escape and inout aliasing are rejected. Cleanup is deterministic across normal return, failure, and cancellation.
+Move, borrow, inout, resource, isolation, suspension, effect, error, defect, cancellation, and cleanup obligations remain explicit. Cancellation is not an ErrorSet member and suspension is not hidden in an EffectRow. Borrow escape and inout aliasing are rejected. Cleanup is deterministic across normal return, failure, and cancellation.
 
 ## 8. Patterns, clauses, and laws
 
-Pattern-control binding is immutable and transactional: the initializer is evaluated once, failure commits no binding or partial move, `while let` failure completes the loop, and `for let` failure skips the candidate. Pattern coverage is closed over enum, union, Option, Result, sealed families, and loop outcome. Declarative clauses use the finite partition algorithm. Law bodies admit only pure predicate assertions.
+Every Pattern owner uses one normalized Pattern AST plus an explicit context policy. Plain `let`/`var`, bare `for`, and ordinary parameters require irrefutability; guarded `let`, `if let`, `while let`, `for let`, and `match` admit refutable patterns under their own failure disposition. The subject is evaluated once, structural testing is nonconsuming, probe binders are nonowning, the optional guard is terminating/pure/Bool, and final moves/borrows/bindings commit atomically only after success. Failure commits no binding, partial move, irreversible borrow, escape, suspension, or authority. `while let` failure completes the loop and `for let` failure skips the candidate. Pattern coverage is closed over enum, union, Option, Result, sealed families, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcome. Tuple patterns and Record rest patterns are not current. Declarative clauses use the finite partition algorithm. Law bodies admit only pure predicate assertions.
 
 ## 9. NumericArray, bitfield, and measures
 
@@ -40,7 +40,7 @@ NumericArray typing preserves element, shape, rank, orientation, and coordinate 
 
 ## 10. RCTS-V5 and MIR handoff
 
-RCTS-V5 descriptors are closed discriminated inputs to design predicates. Static validation is E2 evidence only. Dyn-RCTS is nonactivatable. Every admitted surface lowers to Deeplus MIR with call shape, labels, ownership, effects/errors, cleanup, evidence, and evaluation order preserved.
+RCTS-V5 descriptors are closed discriminated inputs to design predicates and preserve cancellation independently from effects and errors. Static validation is E2 evidence only. Dyn-RCTS is nonactivatable. Every admitted surface lowers to Deeplus MIR with call shape, labels, ownership, effects/errors/cancellation, cleanup, evidence, and evaluation order preserved.
 
 ## 11. Core judgment notation
 
@@ -96,15 +96,23 @@ Each place has a state sufficient to reject use-after-move, overlapping inout ac
 
 Closure capture, async suspension, actor isolation, Facet packaging, defer registration, and return are escape boundaries. The checker must prove every captured borrow outlives its use and every resource has exactly one cleanup path. Borrow Facet packaging is current because it cannot outlive its source region; owned and inout Facet packaging remain Preview-design.
 
+`SharedCell<T>` admits only normalized Plain payload and exposes sequentially consistent `withValue` scoped observation plus `replace` owner exchange. The borrow cannot escape or suspend, and `replace` commits one new owner while returning the old owner; Plain supplies neither raw layout nor lock-free representation. `SharedMutex<T>` admits the no-lifecycle-payload minimum profile and grants one receiver-bound, non-reentrant, non-suspending scoped inout place to `withLock`. Unlock is an infallible exactly-once cleanup on every terminal path and establishes the mutex handoff edge to the next successful lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering, actor transferability, or hidden cleanup.
+
+Actor message typing has one closed admission family. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. The exact error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
+
+`AsyncSequence<T, E: ErrorSet>` binds its source failure set instead of leaving a free terminal type. Its `next` operation throws `E`, while cancellation remains a distinct control outcome. For `AsyncCollector::list<T, U, ES, ET>`, the source is `AsyncSequence<T, ES>`, the named asynchronous transform throws `ET`, and the result throws exactly `normalize(ES | ET)`. Neither source nor transform errors may be erased or converted to cancellation.
+
+Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
+
 ## 16. Effects, errors, cancellation, and callable profiles
 
-Effect rows and error sets are normalized finite rows. `#pure` admits no observable effect or hidden authority. `#guard` is a terminating pure predicate profile. A callable value's type includes its effect row, error set, ownership/capture responsibility, suspension capability, isolation, and relevant context/witness channels.
+Effect rows and error sets are normalized finite rows. `#pure` admits no observable effect or hidden authority. `#guard` is a terminating, nonsuspending, nonconsuming pure Bool predicate profile. A callable value's type includes its effect row, error set, cancellation responsibility, ownership/capture responsibility, suspension capability, isolation, and relevant context/witness channels.
 
 Errors, defects, and cancellation are distinct control outcomes. Propagation operators consume only their declared family. Cleanup executes under a deterministic budget before the outcome escapes. Async suspension preserves live-place and cleanup obligations, and cancellation cannot silently bypass a registered cleanup. Callable compatibility is contravariant/covariant only where the declared responsibility profile permits; default inference remains invariant and conservative.
 
 ## 17. Pattern partition and exhaustiveness
 
-Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, sealed families, tuple/Record shapes, and loop outcomes. A guard refines only the already admitted structural partition. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
+Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, sealed families, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcomes. Tuple patterns, captured/middle/multiple List rests, and Record rest patterns are not current. A guard refines only the already admitted structural partition and may read probe binders without moving, escaping, suspending, mutating through, or acquiring authority from them. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
 
 Exhaustiveness succeeds only when the finite current partition is covered. Redundant or unreachable arms are diagnosed deterministically. An unknown future child is not assumed impossible unless the sealed-family authority proves closure. Clause functions and declarative clauses reuse the same partition engine but preserve their own input-supply and return-totality rules.
 
@@ -136,7 +144,7 @@ Dynamic conversion admission is the conjunction `ProfileActive ∧ ProviderBound
 
 Field punning elaborates `label` to `label: label` before construction-row checking, without inserting clone, move, authority or lookup. Grouped forwarding elaborates to a finite ordered list of ordinary forwarding declarations and rejects duplicate or colliding names. Scoped import/use grouping pushes exactly one compile-time lexical frame for its `in` block and pops it on every exit. Enum comma lists, multiline indentation, and the single-guard law are parser/scanner obligations whose normalized HIR is identical to their unsugared forms.
 
-`if let`, `while let`, and `for let` use one transactional pattern-commit judgment. The checker evaluates the subject once, tests the refutable pattern, validates ownership/move effects, and commits all immutable bindings atomically. Failed `for let` matching skips the current element; it is not an error or loop failure.
+`if let`, `while let`, and `for let` use one transactional pattern-commit judgment: evaluate once, acquire, compile a nonconsuming TestPlan, test, expose probe binders, evaluate zero or one guard, commit atomically, expose final binders, execute, and exit/join. Failed `for let` matching or a false guard skips the current element; it is not an error or loop failure.
 
 The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, task, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 

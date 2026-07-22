@@ -1,0 +1,790 @@
+{
+  "schema": "deeplus.actor-concurrency-coherence-fixtures/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "contract": "spec/contracts/actor-concurrency-coherence.json",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "fixture_policy": {
+    "source_is_design_fixture": true,
+    "new_source_syntax_count": 0,
+    "parser_status": "NOT_RUN",
+    "checker_status": "NOT_RUN",
+    "mir_status": "NOT_RUN",
+    "runtime_status": "NOT_RUN",
+    "null_existing_diagnostic": "the rejection rule is fixed but no new final diagnostic registry identity is created by this fixture",
+    "static_acceptance_is_product_pass": false
+  },
+  "positive": [
+    {
+      "fixture_id": "ACC-P-001-ACTOR-PROTOCOL-DOMAINS",
+      "rule_ids": [
+        "ACC-R001",
+        "ACC-R007",
+        "ACC-R008"
+      ],
+      "source": "public protocol WorkerProtocol {\n    send run(job: Job)\n    request status() -> Int\n}",
+      "expected_outcome": "accept_design_static",
+      "assertion": "send and request requirements retain distinct actor-protocol owners"
+    },
+    {
+      "fixture_id": "ACC-P-002-ACTOR-MAILBOX-AND-HANDLERS",
+      "rule_ids": [
+        "ACC-R001",
+        "ACC-R004",
+        "ACC-R007",
+        "ACC-R008"
+      ],
+      "source": "actor #mailbox(capacity: 8) Worker {\n    on run(job: Job) = { }\n    request status() -> Int = { return 1 }\n}",
+      "expected_outcome": "accept_design_static",
+      "assertion": "a positive static mailbox capacity and the existing on/request declaration owners are represented without adding a surface"
+    },
+    {
+      "fixture_id": "ACC-P-003-EXPLICIT-AWAIT-REQUEST",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R008",
+        "ACC-R011"
+      ],
+      "source": "def#async readStatus(worker: Worker) -> Int throws ActorMessageError = {\n    let Result::ok(task) = worker ~ status()\n    else Result::err(error) => throw error\n    return await task\n}",
+      "expected_outcome": "accept_design_static",
+      "assertion": "a request immediately returns Result<Task<Int>, error ActorMessageError>; source extracts Task<Int> before explicit await"
+    },
+    {
+      "fixture_id": "ACC-P-004-STRUCTURED-SPAWN",
+      "rule_ids": [
+        "ACC-R009",
+        "ACC-R010",
+        "ACC-R011"
+      ],
+      "source": "task scope {\n    let child = spawn async { => await load() }\n    await child\n}",
+      "expected_outcome": "accept_design_static",
+      "assertion": "standalone spawn uses the narrow TaskBody inside the existing structured scope"
+    },
+    {
+      "fixture_id": "ACC-P-005-MESSAGE-SPAWN-OWNER",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R009"
+      ],
+      "source": "let child = worker ~ spawn { => worker ~ run(job) }",
+      "expected_outcome": "accept_design_static",
+      "assertion": "message spawn is recognized from ordinary MessageSuffix and does not create TaskSpawnSuffix"
+    },
+    {
+      "fixture_id": "ACC-P-006-ASYNC-ITERATION-SURFACE",
+      "rule_ids": [
+        "ACC-R001",
+        "ACC-R011"
+      ],
+      "source": "def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {\n    for await item in stream {\n        process(item)\n    }\n}",
+      "expected_outcome": "accept_design_static",
+      "assertion": "the fixture pins only the existing for-await surface and claims no Prelude or runtime support"
+    },
+    {
+      "fixture_id": "ACC-P-007-PER-CHANNEL-FIFO",
+      "rule_ids": [
+        "ACC-R003",
+        "ACC-R017"
+      ],
+      "descriptor": {
+        "channel_key": [
+          "sender-1",
+          "actor-1",
+          "bounded_reject_v1"
+        ],
+        "enqueue": [
+          {
+            "message_id": "m1",
+            "channel_sequence": 0
+          },
+          {
+            "message_id": "m2",
+            "channel_sequence": 1
+          }
+        ],
+        "dequeue": [
+          {
+            "message_id": "m1",
+            "channel_sequence": 0
+          },
+          {
+            "message_id": "m2",
+            "channel_sequence": 1
+          }
+        ]
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "one sender/receiver/profile channel preserves FIFO"
+    },
+    {
+      "fixture_id": "ACC-P-008-SUCCESSFUL-ENQUEUE-OWNER-TRANSFER",
+      "rule_ids": [
+        "ACC-R002",
+        "ACC-R006"
+      ],
+      "descriptor": {
+        "payload_mode": "move",
+        "enqueue_commit": true,
+        "enqueue_commit_count": 1,
+        "channel_sequence": 0,
+        "sender_live_owner_count_after": 0,
+        "actor_live_owner_count_after": 1,
+        "cleanup_owner_count": 1
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "enqueue commit transfers one owner exactly once"
+    },
+    {
+      "fixture_id": "ACC-P-009-CORRELATED-REQUEST-REPLY",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R016"
+      ],
+      "descriptor": {
+        "immediate_result_type": "Result<Task<Int>, error ActorMessageError>",
+        "immediate_result_case": "ok",
+        "task_extracted_before_await": true,
+        "request_enqueue_commit": true,
+        "correlation_id": "request-1",
+        "terminal_events": [
+          {
+            "kind": "reply",
+            "correlation_id": "request-1"
+          }
+        ]
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "one committed request has one correlated terminal reply"
+    },
+    {
+      "fixture_id": "ACC-P-010-COOPERATIVE-CANCELLATION-CLEANUP",
+      "rule_ids": [
+        "ACC-R012",
+        "ACC-R016"
+      ],
+      "descriptor": {
+        "states": [
+          "requested",
+          "observed",
+          "cleanup_complete",
+          "terminal_cancelled"
+        ],
+        "cleanup_execution_count": 1,
+        "error_conversion_count": 0
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "cancellation remains distinct and cleanup completes exactly once"
+    },
+    {
+      "fixture_id": "ACC-P-011-DETERMINISTIC-CHILD-FAILURE-ORDER",
+      "rule_ids": [
+        "ACC-R010",
+        "ACC-R014"
+      ],
+      "descriptor": {
+        "terminal_child_failures": [
+          {
+            "spawn_index": 2,
+            "failure_id": "f2"
+          },
+          {
+            "spawn_index": 0,
+            "failure_id": "f0"
+          }
+        ],
+        "expected_primary": "f0",
+        "expected_suppressed": [
+          "f2"
+        ]
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "lexical spawn index, not scheduler completion, selects the stable failure order"
+    },
+    {
+      "fixture_id": "ACC-P-012-MINIMUM-VISIBILITY-EDGES",
+      "rule_ids": [
+        "ACC-R015",
+        "ACC-R017"
+      ],
+      "descriptor": {
+        "edges": [
+          "parent_pre_spawn->child_start",
+          "child_cleanup_complete->await_resume",
+          "enqueue_commit->matching_dequeue",
+          "cancellation_cleanup_complete->scope_exit"
+        ],
+        "global_schedule_order": false
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "only the bounded current happens-before edges are required"
+    },
+    {
+      "fixture_id": "ACC-P-013-LOGICAL-UNBOUNDED-PROFILE",
+      "rule_ids": [
+        "ACC-R004"
+      ],
+      "source": "actor Worker {\n    on run(job: Job) = { }\n}",
+      "descriptor": {
+        "mailbox_clause_present": false,
+        "mailbox_profile_id": "logical_unbounded_v1",
+        "language_level_capacity_rejection": false
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "omitting MailboxClause selects logical_unbounded_v1 without inventing policy syntax"
+    },
+    {
+      "fixture_id": "ACC-P-014-BOUNDED-ONE-WAY-RESULT",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R006",
+        "ACC-R007"
+      ],
+      "descriptor": {
+        "mailbox_profile_id": "bounded_reject_v1",
+        "mailbox_full": false,
+        "immediate_result_type": "Result<Unit, error ActorMessageError>",
+        "result_case": "ok",
+        "enqueue_commit_count": 1,
+        "owner_commit_count": 1,
+        "channel_sequence": 4
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "one-way success returns Unit only after exactly one ownership/enqueue commit and sequence allocation"
+    },
+    {
+      "fixture_id": "ACC-P-015-BOUNDED-REQUEST-ADMISSION-RESULT",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "mailbox_profile_id": "bounded_reject_v1",
+        "immediate_result_type": "Result<Task<Status>, error ActorMessageError>",
+        "result_case": "ok",
+        "task_extracted_before_await": true,
+        "correlation_id_created_after_commit": true
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "request admission and later task terminal outcome remain separate phases"
+    },
+    {
+      "fixture_id": "ACC-P-016-CLOSED-BEFORE-REPLY-TASK-FAILURE",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R016"
+      ],
+      "descriptor": {
+        "admission_result": "Result::ok(task)",
+        "enqueue_commit": true,
+        "receiver_closed_before_reply": true,
+        "task_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
+        "admission_result_rewritten": false
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "post-admission receiver closure terminates the correlated Task without rewriting its earlier admission result"
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "ACC-N-001-ZERO-MAILBOX-CAPACITY",
+      "rule_ids": [
+        "ACC-R004"
+      ],
+      "source": "actor #mailbox(capacity: 0) Worker { }",
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT",
+      "violated_condition": "capacity is not positive"
+    },
+    {
+      "fixture_id": "ACC-N-002-DYNAMIC-MAILBOX-CAPACITY",
+      "rule_ids": [
+        "ACC-R004"
+      ],
+      "source": "actor #mailbox(capacity: configuredLimit) Worker { }",
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT",
+      "violated_condition": "minimum-profile capacity is not a StaticInt literal"
+    },
+    {
+      "fixture_id": "ACC-N-003-EXTERNAL-ACTOR-STATE-MUTATION",
+      "rule_ids": [
+        "ACC-R002"
+      ],
+      "descriptor": {
+        "actor_state_owner": "actor-1",
+        "mutation_requester": "task-2",
+        "message_boundary_used": false
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "actor-owned state is mutated outside the admitted actor boundary"
+    },
+    {
+      "fixture_id": "ACC-N-004-BORROWED-PAYLOAD-ESCAPE",
+      "rule_ids": [
+        "ACC-R002",
+        "ACC-R006"
+      ],
+      "descriptor": {
+        "payload_mode": "borrow",
+        "source_region": "caller-frame",
+        "target_isolation": "actor"
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "a borrowed payload crosses the actor isolation boundary"
+    },
+    {
+      "fixture_id": "ACC-N-005-ORDINARY-METHOD-FALLBACK",
+      "rule_ids": [
+        "ACC-R005"
+      ],
+      "descriptor": {
+        "receiver_domain": "actor",
+        "message_selector_admitted": false,
+        "ordinary_method_with_same_name": true,
+        "selected_route": "ordinary_method"
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "actor message lookup silently falls back to ordinary method dispatch"
+    },
+    {
+      "fixture_id": "ACC-N-006-GLOBAL-FIFO-INFERENCE",
+      "rule_ids": [
+        "ACC-R003",
+        "ACC-R017"
+      ],
+      "descriptor": {
+        "senders": [
+          "sender-1",
+          "sender-2"
+        ],
+        "receiver": "actor-1",
+        "claimed_order": "one global enqueue order derived from source timestamps"
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "the current law promises FIFO only within one sender/receiver/profile channel"
+    },
+    {
+      "fixture_id": "ACC-N-007-SILENT-MAILBOX-DROP",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R016"
+      ],
+      "descriptor": {
+        "mailbox_full": true,
+        "mailbox_profile_id": "bounded_reject_v1",
+        "message_dropped": true,
+        "explicit_outcome_event": false
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "capacity pressure silently drops a message"
+    },
+    {
+      "fixture_id": "ACC-N-008-REPLY-WITHOUT-CORRELATED-REQUEST",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R016"
+      ],
+      "descriptor": {
+        "reply_correlation_id": "missing-request",
+        "matching_committed_request_count": 0
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "a reply has no matching committed request identity"
+    },
+    {
+      "fixture_id": "ACC-N-009-DUPLICATE-REQUEST-TERMINAL",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "correlation_id": "request-1",
+        "terminal_events": [
+          "reply",
+          "declared_failure"
+        ]
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "one request correlation receives two terminal outcomes"
+    },
+    {
+      "fixture_id": "ACC-N-010-DETACHED-CHILD-ESCAPE",
+      "rule_ids": [
+        "ACC-R010"
+      ],
+      "descriptor": {
+        "scope_exit": true,
+        "child_state": "running",
+        "child_owner": "none",
+        "join_or_cancel_event": false
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "a structured scope exits with an unowned live child"
+    },
+    {
+      "fixture_id": "ACC-N-011-CANCELLATION-SKIPS-CLEANUP",
+      "rule_ids": [
+        "ACC-R010",
+        "ACC-R012"
+      ],
+      "descriptor": {
+        "states": [
+          "requested",
+          "terminal_cancelled"
+        ],
+        "registered_cleanup_count": 1,
+        "executed_cleanup_count": 0
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "terminal cancellation bypasses registered cleanup"
+    },
+    {
+      "fixture_id": "ACC-N-012-CANCELLATION-CAUGHT-AS-ERROR",
+      "rule_ids": [
+        "ACC-R012",
+        "ACC-R014"
+      ],
+      "descriptor": {
+        "incoming_outcome": "Cancellation",
+        "handler_domain": "catch Error",
+        "selected_handler": true
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "CATCHES_CANCELLATION_AS_ERROR_FORBIDDEN",
+      "violated_condition": "catch absorbs Cancellation as a recoverable Error"
+    },
+    {
+      "fixture_id": "ACC-N-013-IMPLICIT-AWAIT",
+      "rule_ids": [
+        "ACC-R011"
+      ],
+      "descriptor": {
+        "operand_type": "Task<Int>",
+        "explicit_await_present": false,
+        "use_context_requires": "Int",
+        "implicit_suspension_inserted": true
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "AWAIT_REQUIRED_FOR_ASYNC_CALL",
+      "violated_condition": "the checker inserts an implicit suspension"
+    },
+    {
+      "fixture_id": "ACC-N-014-SCHEDULER-ORDERED-PRIMARY-FAILURE",
+      "rule_ids": [
+        "ACC-R014"
+      ],
+      "descriptor": {
+        "child_failures": [
+          {
+            "spawn_index": 0,
+            "completion_index": 1,
+            "failure_id": "f0"
+          },
+          {
+            "spawn_index": 1,
+            "completion_index": 0,
+            "failure_id": "f1"
+          }
+        ],
+        "selected_primary": "f1"
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "DETERMINISTIC_PRIMARY_SUPPRESSED_ORDER_VIOLATION",
+      "violated_condition": "scheduler completion order replaces lexical spawn order"
+    },
+    {
+      "fixture_id": "ACC-N-015-PER-CHANNEL-REORDER",
+      "rule_ids": [
+        "ACC-R003",
+        "ACC-R016",
+        "ACC-R017"
+      ],
+      "descriptor": {
+        "channel_key": ["sender-1", "actor-1", "bounded_reject_v1"],
+        "enqueue": [
+          {"message_id": "m1", "channel_sequence": 0},
+          {"message_id": "m2", "channel_sequence": 1}
+        ],
+        "dequeue": [
+          {"message_id": "m2", "channel_sequence": 1},
+          {"message_id": "m1", "channel_sequence": 0}
+        ]
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "ACTOR_CHANNEL_FIFO_ORDER_VIOLATION",
+      "violated_condition": "one channel dequeues a later channel_sequence before an earlier one"
+    },
+    {
+      "fixture_id": "ACC-N-016-REJECTED-ATTEMPT-HAS-SEQUENCE",
+      "rule_ids": [
+        "ACC-R003",
+        "ACC-R004",
+        "ACC-R006"
+      ],
+      "descriptor": {
+        "mailbox_profile_id": "bounded_reject_v1",
+        "mailbox_full": true,
+        "enqueue_commit": false,
+        "result": "ActorMessageError::mailboxFull",
+        "channel_sequence": 7
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "a rejected admission allocates channel_sequence even though no enqueue commit exists"
+    },
+    {
+      "fixture_id": "ACC-N-017-DIRECT-AWAIT-REQUEST-RESULT",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R011"
+      ],
+      "source": "def#async invalid(worker: Worker) -> Int = {\n    return await worker ~ status()\n}",
+      "descriptor": {
+        "message_expression_type": "Result<Task<Int>, error ActorMessageError>",
+        "task_extracted_before_await": false
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": null,
+      "violated_condition": "await is applied to the request admission Result instead of an extracted Task<Int>"
+    }
+  ],
+  "boundary": [
+    {
+      "fixture_id": "ACC-B-001-TWO-SENDER-FIFO-SCOPES",
+      "rule_ids": [
+        "ACC-R003"
+      ],
+      "descriptor": {
+        "channel_1": {
+          "sender": "s1",
+          "messages": [
+            "a1",
+            "a2"
+          ]
+        },
+        "channel_2": {
+          "sender": "s2",
+          "messages": [
+            "b1",
+            "b2"
+          ]
+        },
+        "admitted_cross_channel_interleavings": "all interleavings preserving each local list"
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "per-channel FIFO does not choose a global sender order"
+    },
+    {
+      "fixture_id": "ACC-B-002-FULL-MAILBOX-PRECOMMIT",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R006"
+      ],
+      "descriptor": {
+        "mailbox_full": true,
+        "mailbox_profile_id": "bounded_reject_v1",
+        "enqueue_commit": false,
+        "immediate_result": "Result::err(ActorMessageError::mailboxFull)",
+        "channel_sequence": null,
+        "sender_owner_retained": true
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "the exact current bounded profile rejects immediately, retains every owner and allocates no sequence; only target execution evidence remains gated"
+    },
+    {
+      "fixture_id": "ACC-B-003-CANCEL-BEFORE-ENQUEUE-COMMIT",
+      "rule_ids": [
+        "ACC-R006",
+        "ACC-R015"
+      ],
+      "descriptor": {
+        "ordered_events": [
+          "cancellation_observed",
+          "enqueue_attempt_aborted"
+        ],
+        "terminal_axis": "Cancellation",
+        "actor_message_error_conversion_count": 0,
+        "message_enqueued": false,
+        "channel_sequence": null,
+        "sender_owner_retained": true
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "precommit cancellation retains the sender owner"
+    },
+    {
+      "fixture_id": "ACC-B-004-CANCEL-AFTER-ENQUEUE-COMMIT",
+      "rule_ids": [
+        "ACC-R006",
+        "ACC-R015"
+      ],
+      "descriptor": {
+        "ordered_events": [
+          "enqueue_commit",
+          "cancellation_observed"
+        ],
+        "admission_result": "Result::ok(Unit)",
+        "message_enqueued": true,
+        "channel_sequence": 3,
+        "actor_owner_count": 1,
+        "message_retracted": false
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "postcommit cancellation does not silently retract actor-owned payload"
+    },
+    {
+      "fixture_id": "ACC-B-005-ACTOR-STOP-PENDING-REQUEST",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "request_committed": true,
+        "admission_result": "Result::ok(task)",
+        "reply_emitted": false,
+        "actor_stopped": true,
+        "required_terminal_outcome": "ActorMessageError::receiverClosedBeforeReply",
+        "admission_result_rewritten": false
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "a pending request cannot disappear or remain permanently unaccounted"
+    },
+    {
+      "fixture_id": "ACC-B-006-BODY-FAILURE-THEN-CLEANUP-FAILURE",
+      "rule_ids": [
+        "ACC-R014"
+      ],
+      "descriptor": {
+        "body_failure": "body-failure",
+        "cleanup_failures_in_execution_order": [
+          "cleanup-2",
+          "cleanup-1"
+        ],
+        "expected_primary": "body-failure",
+        "expected_suppressed": [
+          "cleanup-2",
+          "cleanup-1"
+        ]
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "cleanup never replaces an already selected body failure"
+    },
+    {
+      "fixture_id": "ACC-B-007-TASK-GROUP-PRODUCT-GATE",
+      "rule_ids": [
+        "ACC-R001",
+        "ACC-R010",
+        "ACC-R018"
+      ],
+      "descriptor": {
+        "surface": "TaskGroupStmt",
+        "grammar_identity": "current",
+        "join_or_collect_profile_bound": false,
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "grammar identity does not invent a product join/collect default"
+    },
+    {
+      "fixture_id": "ACC-B-008-ON-BINDING-NOT-INFERRED",
+      "rule_ids": [
+        "ACC-R007"
+      ],
+      "descriptor": {
+        "protocol_send_name": "run",
+        "actor_on_name": "run",
+        "names_equal": true,
+        "conformance_evidence_present": false,
+        "binding_inferred_from_spelling": false
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "matching names alone do not establish protocol conformance or a new on semantic"
+    },
+    {
+      "fixture_id": "ACC-B-009-SHIELDED-CLEANUP-FENCE",
+      "rule_ids": [
+        "ACC-R012",
+        "ACC-R013"
+      ],
+      "descriptor": {
+        "scope_modifier": "shielded",
+        "incoming_cancellation": true,
+        "converted_to_error": false,
+        "discarded": false,
+        "cleanup_execution_count": 1
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "shielded does not catch, discard, or reclassify Cancellation"
+    },
+    {
+      "fixture_id": "ACC-B-010-DESIGN-STATIC-NOT-PRODUCT",
+      "rule_ids": [
+        "ACC-R016",
+        "ACC-R018"
+      ],
+      "descriptor": {
+        "contract_parse": "PASS",
+        "fixture_parse": "PASS",
+        "parser_execution": "NOT_RUN",
+        "checker_execution": "NOT_RUN",
+        "runtime_execution": "NOT_RUN",
+        "product_lanes": "15/15_NOT_RUN"
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "JSON parseability and static coherence are not conformance or product support"
+    },
+    {
+      "fixture_id": "ACC-B-011-ACTOR-SELF-AWAIT-CYCLE",
+      "rule_ids": [
+        "ACC-R011",
+        "ACC-R017"
+      ],
+      "descriptor": {
+        "active_actor_id": "actor-1",
+        "active_turn_id": "turn-1",
+        "awaited_request_receiver": "actor-1",
+        "progress_requires_active_turn": true,
+        "second_mutating_turn_admitted": false
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN",
+      "boundary": "await does not release actor state authority or introduce implicit reentrancy"
+    },
+    {
+      "fixture_id": "ACC-B-012-RECEIVER-CLOSURE-PHASE-SPLIT",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R008",
+        "ACC-R015"
+      ],
+      "descriptor": {
+        "before_commit": {
+          "result": "Result::err(ActorMessageError::receiverClosedBeforeAdmission)",
+          "sender_owner_retained": true,
+          "channel_sequence": null
+        },
+        "after_commit_before_reply": {
+          "admission_result": "Result::ok(task)",
+          "task_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
+          "message_retracted": false
+        }
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "the enqueue commit is the unique phase boundary between admission failure and correlated task failure"
+    }
+  ],
+  "expected_counts": {
+    "positive": 16,
+    "negative": 17,
+    "boundary": 12,
+    "total": 45,
+    "product_executed": 0
+  }
+}

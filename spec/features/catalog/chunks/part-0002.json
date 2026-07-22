@@ -795,7 +795,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`*expr` in an argument list unfolds a sequence/tuple into positional argument channel. Fixed-arity targets require static arity evidence.",
+    "notes": "`*expr` in an argument list unfolds a Sequence or statically known tuple into the positional argument channel. A fixed-parameter target requires static arity evidence; NumericArray and ordinary array-shaped storage never supply positional-unfold arity evidence.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -820,9 +820,10 @@
         "EX-R49-PARAM-007"
       ],
       "productions": [
-        "MaterializationBody",
-        "SchemaDecl",
-        "TypedMaterializationExpr"
+        "CallSuffix",
+        "ArgumentList",
+        "Argument",
+        "PositionalUnfoldArgument"
       ],
       "semantic_reference_productions": []
     },

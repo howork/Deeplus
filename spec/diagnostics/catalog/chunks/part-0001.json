@@ -248,24 +248,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "actor_protocol_family"
+      "actor_mailbox_capacity"
     ],
-    "fixit_hint": "use a positive StaticInt literal",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use a positive StaticInt literal",
+    "fixit_hint": "choose a positive StaticInt capacity that matches the program's intended mailbox bound",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never guess or synthesize a capacity; the programmer must select the positive StaticInt value",
     "message": "actor mailbox capacity must be a statically known positive integer in the minimum profile.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "notes": "Current diagnostic contract; product parser/checker execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
@@ -1134,7 +1134,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "the current profile Stage 1 admits only List + finite Iterable + named def#async + sequential/source/failFast/cancelPending/buffer1.",
+    "message": "the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + exact result throws ES | ET + sequential/source/failFast/cancelPending/buffer1.",
     "feature_refs": [
       "policy_visible_async_collector_msp"
     ],

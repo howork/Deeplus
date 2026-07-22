@@ -1,0 +1,690 @@
+{
+  "schema": "deeplus.pattern-kind-registry/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "row_schema": "schemas/language/pattern-kind-row.schema.json",
+  "authority": "LANGUAGE / TYPE_SYSTEM",
+  "evidence_level": "DESIGN_STATIC",
+  "product_execution": "NOT_RUN",
+  "counts": {
+    "rows": 18,
+    "current_reachable": 13,
+    "deferred_unreachable": 3,
+    "rejected_not_current": 2
+  },
+  "subject_opening_policy": {
+    "structural_record": "REQUIRED_LABEL_SUBSET_ADMITTED",
+    "ordinary_class": "DIRECT_OPENING_REJECTED_USE_EXPLICIT_RECORD_VIEW",
+    "dyn": "DIRECT_OPENING_REJECTED_USE_EXPLICIT_REFINEMENT",
+    "facet": "DIRECT_OPENING_REJECTED_USE_EXPLICIT_BORROWED_REFINEMENT",
+    "ffi_or_opaque": "DIRECT_OPENING_REJECTED_USE_VERIFIED_ADAPTER"
+  },
+  "whole_pattern_annotation_contract": {
+    "cst_owner": "BindingPattern.TypeAnnotation",
+    "normalized_ast_owner": "BindingOwner",
+    "normalized_ast_field": "binding_owner_expected_subject_type",
+    "hir_owner": "BindingOwner",
+    "hir_field": "binding_owner_expected_subject_type",
+    "field_type": "NormalizedTypeIdentity | null",
+    "semantic_role": "constrain the independently evaluated binding subject before Pattern admission; do not create a runtime type-test Pattern node",
+    "top_level_typed_binder_derivation_count": 0,
+    "recursive_typed_child_binders_preserved": true
+  },
+  "global_guards": {
+    "tuple_coverage_claim": false,
+    "record_rest_admitted": false,
+    "record_open_tail_coverage_cell_count": 0,
+    "user_extractor_call_count": 0,
+    "backtracking_engine_count": 0,
+    "implicit_clone_count": 0,
+    "implicit_allocation_count": 0
+  },
+  "rows": [
+    {
+      "pattern_kind_id": "PK-BINDER",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "PatternPrimary.Identifier",
+      "normalized_variant": "BindPattern",
+      "refutability": "ALWAYS_IRREFUTABLE",
+      "binder_contract": "INTRODUCES_ONE",
+      "execution_class": "COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-ORDINARY-PARAMETER",
+        "PCTX-LAMBDA-PARAMETER",
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "NONE",
+      "constraints": [
+        "An unqualified identifier is always a binder, never an inferred constant or Enum case.",
+        "Ownership is acquired only by the enclosing context's atomic commit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-TYPED-BINDER",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "TypedBindingPattern",
+      "normalized_variant": "TypedBindPattern",
+      "refutability": "ALWAYS_IRREFUTABLE",
+      "binder_contract": "INTRODUCES_ONE",
+      "execution_class": "COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "NONE",
+      "constraints": [
+        "The annotation is a static admission constraint, not a runtime type-test pattern.",
+        "Ordinary and lambda parameter grammars remain identifier-only."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-WILDCARD",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "PatternPrimary._",
+      "normalized_variant": "WildcardPattern",
+      "refutability": "ALWAYS_IRREFUTABLE",
+      "binder_contract": "NONE",
+      "execution_class": "COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "NONE",
+      "constraints": [
+        "Wildcard does not independently move, drop, or release the projected value."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-UNIT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "UnitSyntax",
+      "normalized_variant": "UnitPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "NONE",
+      "execution_class": "COMPILER_KNOWN_PURE_TEST",
+      "ownership_capabilities": [
+        "INSPECT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
+      "constraints": [
+        "Unit is irrefutable only for a statically Unit subject."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-LITERAL",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "Literal",
+      "normalized_variant": "LiteralPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "NONE",
+      "execution_class": "COMPILER_KNOWN_PURE_TEST",
+      "ownership_capabilities": [
+        "INSPECT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
+      "constraints": [
+        "Literal equality is compiler-known and invokes no user code.",
+        "A literal is rejected in an irrefutable-only context unless the subject universe proves one exact value."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-PARENTHESIZED",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "ParenthesizedPattern",
+      "normalized_variant": "ParenthesizedPatternOrigin",
+      "refutability": "DELEGATES_TO_CHILD",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "DELEGATES_TO_CHILD",
+      "constraints": [
+        "Parentheses preserve CST origin and never imply tuple arity or decomposition."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-RECORD-SUBSET",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "RecordPattern",
+      "normalized_variant": "RecordRequiredLabelSubsetPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "NESTED_CHILDREN_ONLY",
+      "constraints": [
+        "Every requested label is statically proven present, unique, and visible on a structural Record.",
+        "Extra permitted labels are ignored and do not make the pattern refutable.",
+        "Open-tail coverage cell count is zero.",
+        "Record rest, computed keys, defaults, getters, and user extractors are not admitted."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-LIST-EXACT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "ListPattern",
+      "normalized_variant": "ListExactPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
+      "constraints": [
+        "The runtime list length equals the number of element patterns.",
+        "No hidden rest carrier, clone, or allocation is created."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "ListPattern",
+      "normalized_variant": "ListFinalIgnoredTailPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
+      "constraints": [
+        "Exactly one rest marker is admitted, it is final, and its pattern is exactly wildcard.",
+        "The ignored tail creates no binder, owner, view, clone, allocation, or independent drop."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-VARIANT",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "VariantPattern",
+      "normalized_variant": "EnumVariantPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
+      "constraints": [
+        "Cases use ::case or Type::case and never dotted-case inference.",
+        "Only the active payload is probed and payload ownership is delayed until commit."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-OR",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "OrPattern",
+      "normalized_variant": "OrPattern",
+      "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+      "binder_contract": "JOINS_OBSERVABLE_ALTERNATIVE_CONTRACTS",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "COPY_IF_REUSABLE",
+        "SHARED_BORROW",
+        "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "UNION_OF_ALTERNATIVES",
+      "constraints": [
+        "Alternatives expose identical final binder name, normalized type, mode, mutability, usable lifetime, and capability.",
+        "ProjectionPath and source-field order equality are not required.",
+        "No implicit LUB, clone, retain, lifetime extension, or capability union is introduced."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-ALIAS",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "AliasPattern",
+      "normalized_variant": "AliasPattern",
+      "refutability": "DELEGATES_TO_CHILD",
+      "binder_contract": "ALIASES_THE_SAME_SUBJECT",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "SHARED_BORROW"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "DELEGATES_TO_CHILD",
+      "constraints": [
+        "Alias denotes the same subject or projection and never clones it.",
+        "A whole owned alias cannot coexist with a moved or exclusively borrowed descendant.",
+        "Shared-borrow aliasing requires compatible regions and nonconflicting overlap."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-MOVE",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "CURRENT_REACHABLE",
+      "grammar_production": "MovePattern",
+      "normalized_variant": "MovePattern",
+      "refutability": "DELEGATES_TO_CHILD",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "COMPOSITE_COMPILER_KNOWN_PURE",
+      "ownership_capabilities": [
+        "INSPECT",
+        "MOVE_DELAYED_UNTIL_COMMIT"
+      ],
+      "allowed_context_ids": [
+        "PCTX-PLAIN-LET",
+        "PCTX-PLAIN-VAR",
+        "PCTX-GUARDED-LET",
+        "PCTX-GUARDED-LET-RESIDUAL",
+        "PCTX-IF-LET",
+        "PCTX-WHILE-LET",
+        "PCTX-BARE-FOR",
+        "PCTX-FOR-LET",
+        "PCTX-ASYNC-BARE-FOR",
+        "PCTX-ASYNC-FOR-LET",
+        "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE",
+        "PCTX-CATCH",
+        "PCTX-VALUE-CATCH",
+        "PCTX-GENERATOR-FOR",
+        "PCTX-COMPREHENSION-FOR",
+        "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-COMPREHENSION-UNFOLD"
+      ],
+      "coverage_contribution": "DELEGATES_TO_CHILD",
+      "constraints": [
+        "Before commit, guard access is a limited nonowning probe and no ownership transfer occurs.",
+        "The ownership move occurs only in an infallible atomic CommitPlan after a true guard."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-TUPLE",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "DEFERRED_UNREACHABLE",
+      "grammar_production": null,
+      "normalized_variant": null,
+      "refutability": "NOT_APPLICABLE",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "NO_EXECUTION_UNREACHABLE",
+      "ownership_capabilities": [],
+      "allowed_context_ids": [],
+      "coverage_contribution": "NOT_APPLICABLE",
+      "constraints": [
+        "ParenthesizedPattern is grouping only and supplies no tuple arity.",
+        "Current pattern coverage contains no tuple decomposition claim."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-RECORD-REST",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "DEFERRED_UNREACHABLE",
+      "grammar_production": null,
+      "normalized_variant": null,
+      "refutability": "NOT_APPLICABLE",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "NO_EXECUTION_UNREACHABLE",
+      "ownership_capabilities": [],
+      "allowed_context_ids": [],
+      "coverage_contribution": "NOT_APPLICABLE",
+      "constraints": [
+        "Ignored extra labels are not a rest binding.",
+        "Type subtraction, borrowed residual view, and owned materialization require separate future authority."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-LIST-CAPTURED-REST",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "DEFERRED_UNREACHABLE",
+      "grammar_production": null,
+      "normalized_variant": null,
+      "refutability": "NOT_APPLICABLE",
+      "binder_contract": "INTRODUCES_ONE",
+      "execution_class": "NO_EXECUTION_UNREACHABLE",
+      "ownership_capabilities": [],
+      "allowed_context_ids": [],
+      "coverage_contribution": "NOT_APPLICABLE",
+      "constraints": [
+        "Only one final ignored .._ form is current.",
+        "Captured or middle rest requires an explicit carrier, lifetime, ownership, and allocation contract."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-EXTRACTOR",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "REJECTED_NOT_CURRENT",
+      "grammar_production": null,
+      "normalized_variant": null,
+      "refutability": "NOT_APPLICABLE",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "NO_EXECUTION_REJECTED",
+      "ownership_capabilities": [],
+      "allowed_context_ids": [],
+      "coverage_contribution": "NOT_APPLICABLE",
+      "constraints": [
+        "Core matching executes no user getter, extractor, Trait witness, or arbitrary callable.",
+        "Use an explicit ordinary call that returns a Record or Enum and match that result."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "pattern_kind_id": "PK-BACKTRACKING",
+      "revision": "r51f3-current-language-coherence-r1",
+      "surface_status": "REJECTED_NOT_CURRENT",
+      "grammar_production": null,
+      "normalized_variant": null,
+      "refutability": "NOT_APPLICABLE",
+      "binder_contract": "DELEGATES_TO_CHILDREN",
+      "execution_class": "NO_EXECUTION_REJECTED",
+      "ownership_capabilities": [],
+      "allowed_context_ids": [],
+      "coverage_contribution": "NOT_APPLICABLE",
+      "constraints": [
+        "Logic variables, unification, hidden retry, and implicit backtracking are not current Deeplus patterns.",
+        "Ordinary match preserves source order without retrying a committed arm."
+      ],
+      "product_execution": "NOT_RUN"
+    }
+  ]
+}

@@ -1,0 +1,429 @@
+{
+  "schema": "deeplus.actor-concurrency-coherence-contract/r1",
+  "revision": "r51f3-current-language-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_effect": "NORMATIVE_CLARIFICATION_WITHOUT_NEW_SOURCE_SYNTAX",
+  "ledger_effect": {
+    "existing_open_feature_p1_count": 22,
+    "closed_by_contract": 0,
+    "new_p1_by_contract": 0
+  },
+  "authority_fence": {
+    "new_source_syntax": false,
+    "new_prelude_surface": true,
+    "prelude_surface_scope": [
+      "AsyncSequence<T, E>",
+      "AsyncCollector",
+      "CollectPolicy::sequential",
+      "ActorMessageError",
+      "SharedCell<T> identity linkage; exact shared-state rules are external"
+    ],
+    "shared_state_contract": "spec/contracts/shared-state-coherence.json",
+    "feature_activation": false,
+    "implementation_authority": false,
+    "product_support_claim": false,
+    "on_semantics": "ActorOnDecl remains the existing grammar owner; this contract does not infer structural protocol conformance or add an alternate handler surface",
+    "await_semantics": "await remains the existing explicit unary suspension owner over an independently admitted awaitable expression; this contract adds neither implicit await nor a task expression"
+  },
+  "current_authority_refs": [
+    "spec/language.md#37-async-functions-tasks-and-suspension",
+    "spec/language.md#38-actors-and-messages",
+    "spec/types/type-system.md#15-ownership-and-place-state-transitions",
+    "spec/types/type-system.md#16-effects-errors-cancellation-and-callable-profiles",
+    "spec/mir/semantics.md#5-failure-and-cleanup",
+    "spec/mir/semantics.md#7-actors-and-messages",
+    "spec/grammar/deeplus.ebnf#Actors-and-actor-protocols",
+    "spec/grammar/deeplus.ebnf#Quotes-generators-tasks-and-Facet",
+    "spec/contracts/constitutional-laws.json#OP-ACTOR-014",
+    "spec/contracts/constitutional-laws.json#OP-ACTOR-FIFO-029",
+    "spec/contracts/constitutional-laws.json#OP-CANCEL-012",
+    "spec/contracts/constitutional-laws.json#OP-TASK-013"
+  ],
+  "rules": [
+    {
+      "rule_id": "ACC-R001",
+      "domain": "surface_authority",
+      "title": "current concurrency surfaces retain their existing owners",
+      "contract": {
+        "actor_declaration": "ActorDecl with optional MailboxClause",
+        "actor_handlers": [
+          "ActorOnDecl",
+          "ActorRequestDecl"
+        ],
+        "actor_protocol_requirements": [
+          "ActorProtocolSendRequirement",
+          "ActorProtocolRequestRequirement"
+        ],
+        "task_surfaces": [
+          "SpawnExpr",
+          "StructuredTaskScope",
+          "TaskGroupStmt",
+          "ordinary MessageSuffix whose selected identifier is spawn"
+        ],
+        "async_surfaces": [
+          "def#async",
+          "explicit await",
+          "AsyncForLoop"
+        ],
+        "new_surface_count": 0,
+        "async_callable_literal_activation": false
+      }
+    },
+    {
+      "rule_id": "ACC-R002",
+      "domain": "actor_isolation",
+      "title": "actor-owned state and boundary transfer remain explicit",
+      "contract": {
+        "actor_state_owner": "the actor identity",
+        "external_direct_mutation": "reject",
+        "boundary_inputs": "owned values with Transferable proof or explicitly shared values with Shareable proof",
+        "borrow_or_inout_escape": "reject",
+        "ambient_authority_inference": false,
+        "message_receiver_identity": "fixed before enqueue commit",
+        "isolation_axis": "preserved through checking, API identity, MIR, and runtime evidence"
+      }
+    },
+    {
+      "rule_id": "ACC-R003",
+      "domain": "actor_channel_identity",
+      "title": "the ordered actor channel is internal and profile-bound",
+      "contract": {
+        "first_class_Channel_source_type": false,
+        "channel_key": [
+          "sender identity",
+          "receiver actor identity",
+          "admitted mailbox profile identity"
+        ],
+        "channel_identity": "ChannelId is derived from exactly the channel_key tuple and does not add a fourth semantic ordering component",
+        "fifo_scope": "one channel_key",
+        "sequence_allocation": "channel_sequence is allocated exactly once at successful enqueue commit and is strictly increasing within the channel_key",
+        "rejected_attempt_channel_sequence": null,
+        "global_sender_order": false,
+        "cross_sender_tie_break": "not promised by source semantics",
+        "channel_identity_required_in_mir": true
+      }
+    },
+    {
+      "rule_id": "ACC-R004",
+      "domain": "mailbox_capacity_and_backpressure",
+      "title": "current mailbox profiles select one exact immediate-rejection contract",
+      "contract": {
+        "capacity_source": "MailboxClause",
+        "capacity_requirement": "positive StaticInt literal",
+        "zero_or_negative_capacity": "reject",
+        "dynamic_capacity": "reject in the minimum current profile",
+        "clause_present_profile": "bounded_reject_v1",
+        "clause_absent_profile": "logical_unbounded_v1",
+        "logical_unbounded_meaning": "no language-level capacity rejection; implementation storage remains finite and resource exhaustion is not converted into ActorMessageError.mailboxFull",
+        "bounded_full_outcome": "immediate Result::err(ActorMessageError::mailboxFull) before enqueue commit",
+        "receiver_closed_before_admission": "immediate Result::err(ActorMessageError::receiverClosedBeforeAdmission) before enqueue commit",
+        "receiver_closed_before_reply": "a successfully admitted request Task terminates through its declared ActorMessageError failure axis with ActorMessageError::receiverClosedBeforeReply",
+        "error_family": "ActorMessageError { mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }",
+        "silent_drop": false,
+        "implicit_retry": false,
+        "implicit_block_or_suspend": false,
+        "policy_selector_surface_count": 0,
+        "product_policy_status": "NOT_RUN"
+      }
+    },
+    {
+      "rule_id": "ACC-R005",
+      "domain": "message_selection",
+      "title": "actor message selection is not ordinary method dispatch",
+      "contract": {
+        "surface_owner": "MessageSuffix",
+        "receiver_evaluation_count": 1,
+        "argument_evaluation": "left-to-right exactly once",
+        "selector_identity": "resolved before enqueue against the admitted actor/protocol domain",
+        "ordinary_method_fallback": false,
+        "runtime_string_lookup": false,
+        "source_order_as_resolution_evidence": false
+      }
+    },
+    {
+      "rule_id": "ACC-R006",
+      "domain": "message_ownership",
+      "title": "enqueue commit is the ownership transfer point",
+      "contract": {
+        "precommit_failure": "sender retains every moved owner",
+        "successful_enqueue": "receiver actor acquires each moved owner exactly once",
+        "enqueue_commit_count": "exactly one on an admitted attempt and zero on a rejected attempt",
+        "rejected_attempt_channel_sequence_count": 0,
+        "postcommit_retraction": false,
+        "borrow_or_inout_payload": "reject across the isolation boundary",
+        "shared_payload": "requires explicit Shareable evidence",
+        "cleanup_owner_count": "exactly one on every terminal path"
+      }
+    },
+    {
+      "rule_id": "ACC-R007",
+      "domain": "send_and_on",
+      "title": "one-way send and actor on declarations stay distinct from requests",
+      "contract": {
+        "protocol_one_way_owner": "ActorProtocolSendRequirement",
+        "actor_handler_surface": "ActorOnDecl",
+        "message_expression_type": "Result<Unit, error ActorMessageError>",
+        "success_value": "Result::ok with a Unit payload only after successful enqueue commit",
+        "admission_failure_values": [
+          "ActorMessageError::mailboxFull",
+          "ActorMessageError::receiverClosedBeforeAdmission"
+        ],
+        "reply_channel": false,
+        "implicit_request_conversion": false,
+        "implicit_protocol_conformance": false,
+        "handler_binding": "must be established by the existing checker and conformance authority; spelling alone is insufficient"
+      }
+    },
+    {
+      "rule_id": "ACC-R008",
+      "domain": "request_reply",
+      "title": "request and reply use one explicit correlated terminal channel",
+      "contract": {
+        "protocol_owner": "ActorProtocolRequestRequirement",
+        "handler_owner": "ActorRequestDecl",
+        "message_expression_type": "Result<Task<T>, error ActorMessageError>, where T is the selected request reply type",
+        "admission_success": "Result::ok(task) only after successful enqueue commit; source must extract Task<T> before await",
+        "admission_failure_values": [
+          "ActorMessageError::mailboxFull",
+          "ActorMessageError::receiverClosedBeforeAdmission"
+        ],
+        "correlation_identity_creation": "after successful request enqueue commit",
+        "terminal_outcomes": [
+          "reply",
+          "declared failure",
+          "cancellation"
+        ],
+        "terminal_outcome_count": 1,
+        "reply_type": "must match the selected request requirement",
+        "ordinary_method_return": false,
+        "implicit_await": false,
+        "actor_stop_with_pending_request": "must produce an explicit terminal outcome",
+        "receiver_closed_before_reply": "the admitted Task<T> terminates through its declared failure axis with ActorMessageError::receiverClosedBeforeReply"
+      }
+    },
+    {
+      "rule_id": "ACC-R009",
+      "domain": "task_spawn_ownership",
+      "title": "standalone spawn and message spawn have distinct existing syntax owners",
+      "contract": {
+        "standalone_owner": "SpawnExpr",
+        "standalone_body": "the narrow TaskBody and TaskBodySequence grammar",
+        "message_spawn_owner": "ordinary MessageSuffix recognized by HIR when the selector is spawn",
+        "second_TaskSpawnSuffix": false,
+        "general_async_callable_literal_activation": false,
+        "implicit_spawn_from_await": false,
+        "owner_conflation": false
+      }
+    },
+    {
+      "rule_id": "ACC-R010",
+      "domain": "structured_task_scope",
+      "title": "a task scope owns every child until terminal join or cancellation",
+      "contract": {
+        "scope_owner": "StructuredTaskScope or an admitted TaskGroupStmt owner",
+        "child_owner": "the lexical task scope",
+        "scope_exit_condition": "every owned child is joined or cancelled and its required cleanup is complete",
+        "detached_child": false,
+        "task_handle_escape": "reject unless a separately admitted owner transfer contract exists",
+        "unobserved_child_failure": "must remain visible to the scope terminal outcome",
+        "task_group_collection_policy": "requires an explicit admitted checker/runtime profile; no product default is claimed"
+      }
+    },
+    {
+      "rule_id": "ACC-R011",
+      "domain": "await",
+      "title": "await is explicit and preserves responsibility across suspension",
+      "contract": {
+        "surface": "the existing unary await owner",
+        "operand": "an independently admitted awaitable expression",
+        "implicit_await": false,
+        "task_creation": false,
+        "message_dispatch_creation": false,
+        "live_borrow_rule": "a borrow or inout value may cross only with an independently admitted proof",
+        "cleanup_obligation": "preserved across suspension",
+        "isolation_obligation": "preserved across suspension",
+        "actor_turn_suspension": "the same ActorTurn retains its state-region and dequeue authority across await; no second mutating turn is admitted",
+        "statically_proven_self_or_dependency_cycle": "reject before MIR because the awaited progress requires the same active actor turn",
+        "task_handle_repeat_await_policy": "not created or changed by this contract"
+      }
+    },
+    {
+      "rule_id": "ACC-R012",
+      "domain": "cancellation",
+      "title": "cancellation is cooperative, distinct, and cleanup-bounded",
+      "contract": {
+        "classification": "distinct from Error and Defect",
+        "catch_as_Error": false,
+        "minimum_state_order": [
+          "requested",
+          "observed",
+          "cleanup_complete",
+          "terminal_cancelled"
+        ],
+        "observation": "only at an admitted cooperative cancellation boundary",
+        "cleanup_execution_count": "exactly once",
+        "cleanup_bypass": false,
+        "conversion_to_declared_error": false,
+        "terminal_visibility": "preserved in MIR and task/request outcome evidence"
+      }
+    },
+    {
+      "rule_id": "ACC-R013",
+      "domain": "scope_modifiers",
+      "title": "existing scope modifiers do not manufacture hidden authority",
+      "contract": {
+        "current_modifiers": [
+          "isolated",
+          "cancellable",
+          "shielded"
+        ],
+        "isolated": "preserves the existing isolation boundary and grants no ambient capability",
+        "cancellable": "permits cooperative observation under ACC-R012",
+        "shielded": "does not convert, discard, or catch Cancellation and cannot bypass cleanup",
+        "combination_admission": "remains owned by the existing scope admission policy",
+        "new_modifier_count": 0
+      }
+    },
+    {
+      "rule_id": "ACC-R014",
+      "domain": "failure_aggregation",
+      "title": "task failure aggregation is scheduler-independent",
+      "contract": {
+        "body_failure": "retained as primary before cleanup failures",
+        "child_failure_primary_order": "ascending lexical spawn_index among terminal child failures observed by one scope",
+        "child_failure_suppressed_order": "ascending lexical spawn_index after the primary child failure",
+        "cleanup_failure_order": "append in actual deterministic LIFO cleanup execution order",
+        "cancellation_as_error": false,
+        "scheduler_completion_order_as_tie_break": false,
+        "source_file_enumeration_order_as_tie_break": false
+      }
+    },
+    {
+      "rule_id": "ACC-R015",
+      "domain": "enqueue_cancellation_race",
+      "title": "enqueue commit separates sender and actor ownership under cancellation",
+      "contract": {
+        "cancellation_before_enqueue_commit": "no message is enqueued and the sender retains moved owners",
+        "cancellation_before_enqueue_result": "Cancellation remains a distinct control outcome; it is not converted to ActorMessageError",
+        "enqueue_commit_before_cancellation": "the actor owns the enqueued payload and cancellation does not silently retract it",
+        "one_way_after_commit": "the Result::ok Unit outcome remains committed; later cancellation cannot rewrite it",
+        "request_after_commit": "Result::ok(Task<T>) remains committed; cancellation of the awaiting task is correlation-bound and does not retract the message",
+        "requester_terminal_outcome": "remains explicit and correlation-bound",
+        "race_winner_evidence": "the ordered MIR event sequence",
+        "double_cleanup": false,
+        "lost_owner": false
+      }
+    },
+    {
+      "rule_id": "ACC-R016",
+      "domain": "mir_observability",
+      "title": "concurrency outcomes require explicit MIR identities and events",
+      "contract": {
+        "required_identities": [
+          "task scope",
+          "task",
+          "actor",
+          "sender",
+          "actor channel",
+          "mailbox profile",
+          "message",
+          "channel sequence",
+          "request correlation"
+        ],
+        "required_event_families": [
+          "task spawn and terminal join",
+          "cancellation request, observation, cleanup completion, and terminal cancellation",
+          "actor enqueue and dequeue",
+          "bounded admission success or immediate ActorMessageError rejection without channel_sequence",
+          "request creation and correlated terminal reply/failure/cancellation",
+          "primary and suppressed failure selection"
+        ],
+        "implicit_backend_event": false,
+        "schema_and_runtime_receipt_status": "NOT_RUN"
+      }
+    },
+    {
+      "rule_id": "ACC-R017",
+      "domain": "ordering_and_visibility",
+      "title": "minimum happens-before edges are explicit and no global schedule is promised",
+      "contract": {
+        "task_program_order": true,
+        "spawn_to_child_start": "parent pre-spawn actions precede child start",
+        "child_terminal_to_await_resume": "child terminal actions and cleanup precede the awaiting continuation",
+        "enqueue_to_matching_dequeue": true,
+        "cancellation_cleanup_to_scope_exit": true,
+        "cross_sender_global_fifo": false,
+        "weak_atomic_ordering_activation": false,
+        "scheduler_fairness_guarantee": false
+      }
+    },
+    {
+      "rule_id": "ACC-R018",
+      "domain": "evidence_boundary",
+      "title": "design-static coherence is not implementation or product evidence",
+      "contract": {
+        "parser": "NOT_RUN",
+        "checker": "NOT_RUN",
+        "mir_lowering": "NOT_RUN",
+        "xvm_runtime": "NOT_RUN",
+        "formatter_lsp": "NOT_RUN",
+        "independent_conformance": "NOT_RUN",
+        "product_lanes": "15/15_NOT_RUN",
+        "static_fixture_as_product_pass": false
+      }
+    }
+  ],
+  "unclosed_product_gates": [
+    {
+      "gate_id": "ACC-G001",
+      "topic": "target-bound parser/checker/MIR/xVM execution receipt for bounded_reject_v1, logical_unbounded_v1, ActorMessageError and channel_sequence allocation",
+      "gate_kind": "TARGET_EXECUTION_GATE",
+      "design_contract_status": "SATISFIED",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
+    },
+    {
+      "gate_id": "ACC-G002",
+      "topic": "protocol requirement to ActorOnDecl/ActorRequestDecl conformance and handler identity algorithm",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
+    },
+    {
+      "gate_id": "ACC-G003",
+      "topic": "TaskGroupStmt join/collect policy and Task handle repeated-await rule",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
+    },
+    {
+      "gate_id": "ACC-G004",
+      "topic": "target-bound RCTS-V5 cancellation and complete MIR actor/task event lowering receipts",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
+    },
+    {
+      "gate_id": "ACC-G005",
+      "topic": "target-bound parser/checker/MIR/xVM and schedule-permutation evidence",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 18,
+    "rule_ids_unique": true,
+    "gate_count": 5,
+    "new_source_syntax_count": 0,
+    "first_class_channel_source_type_count": 0,
+    "silent_drop_count": 0,
+    "global_fifo_guarantee_count": 0,
+    "implicit_await_count": 0,
+    "detached_child_count": 0,
+    "cancellation_as_error_count": 0,
+    "mailbox_profile_count": 2,
+    "actor_message_error_case_count": 3,
+    "one_way_result_shape_count": 1,
+    "request_admission_result_shape_count": 1,
+    "rejected_attempt_channel_sequence_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0,
+    "product_execution_receipt_count": 0
+  }
+}

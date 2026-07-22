@@ -584,7 +584,8 @@
         "OPTION_BARE_SOME_REMOVED",
         "OPTION_NONE_REQUIRES_EXPECTED_TYPE",
         "OPTION_SOME_PAYLOAD_TYPE_MISMATCH",
-        "RESULT_ERROR_ARGUMENT_POSITION_INVALID"
+        "RESULT_ERROR_ARGUMENT_POSITION_INVALID",
+        "RESULT_ERROR_ROLE_REQUIRED"
       ],
       "predicates": [
         "OptionLocalTargetInsertionAdmitted",
@@ -788,7 +789,9 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT"
+      ],
       "predicates": [],
       "examples": [],
       "productions": [
@@ -797,7 +800,13 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/patterns/diagnostic-precedence.json",
+      "spec/patterns/pattern-context-policies.json",
+      "spec/patterns/pattern-kinds.json",
+      "spec/patterns/pattern-lowering.json",
+      "tests/fixtures/current/destructuring-pattern-matching-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1129,7 +1138,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Bindings are immutable, transactional and refutable; failure commits no partial binding. `for let` failure skips the candidate. Product execution remains NOT_RUN.",
+    "notes": "Bindings are immutable and transactional; failure commits no partial binding. A `for let` pattern first creates noncommitted probe binders, its single GuardClause may read those binders without moving, escaping, suspending, mutating through, or acquiring authority from them, and mismatch or false skips the candidate. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1162,7 +1171,12 @@
       "spec/language.md",
       "spec/grammar/deeplus.ebnf",
       "spec/frontend/frontend-model.json",
-      "spec/types/type-system.md"
+      "spec/types/type-system.md",
+      "spec/patterns/diagnostic-precedence.json",
+      "spec/patterns/pattern-context-policies.json",
+      "spec/patterns/pattern-kinds.json",
+      "spec/patterns/pattern-lowering.json",
+      "tests/fixtures/current/destructuring-pattern-matching-r1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1193,7 +1207,18 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "PATTERN_ANALYSIS_RESOURCE_LIMIT",
+        "PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY",
+        "PATTERN_MULTIPLE_REST",
+        "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN",
+        "PATTERN_REST_MUST_BE_FINAL_IGNORED",
+        "RECORD_PATTERN_DUPLICATE_FIELD",
+        "RECORD_PATTERN_PRIVATE_FIELD",
+        "RECORD_PATTERN_UNKNOWN_FIELD",
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+        "TUPLE_PATTERN_NOT_CURRENT"
+      ],
       "predicates": [],
       "examples": [
         "EX-R51b-GRAM-P-005"
@@ -1204,7 +1229,13 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/patterns/diagnostic-precedence.json",
+      "spec/patterns/pattern-context-policies.json",
+      "spec/patterns/pattern-kinds.json",
+      "spec/patterns/pattern-lowering.json",
+      "tests/fixtures/current/destructuring-pattern-matching-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1277,7 +1308,10 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "OWN_CAST_REQUIRES_REUSABLE_SOURCE"
+        "OR_PATTERN_BINDINGS_INCONSISTENT",
+        "OWN_CAST_REQUIRES_REUSABLE_SOURCE",
+        "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+        "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
       ],
       "predicates": [],
       "examples": [
@@ -1291,7 +1325,13 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/patterns/diagnostic-precedence.json",
+      "spec/patterns/pattern-context-policies.json",
+      "spec/patterns/pattern-kinds.json",
+      "spec/patterns/pattern-lowering.json",
+      "tests/fixtures/current/destructuring-pattern-matching-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1561,15 +1601,18 @@
     "feature_kind": "canonical_feature",
     "authority_set": [
       "LANGUAGE",
-      "PARSER",
       "TYPE_SYSTEM",
       "CHECKER",
       "RUNTIME"
     ],
-    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / CHECKER / RUNTIME",
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / RUNTIME",
     "source_activation": "stdlib",
-    "depends_on": [],
-    "notes": "Stdlib profile with finite input, explicit sequential/source/failFast/cancelPending/buffer1 policy, upstream cancellation, first-failure ownership, no partial commit, and cleanup-before-return. Product execution NOT_RUN.",
+    "depends_on": [
+      "async_function_declaration_surface",
+      "async_iterator_protocol_preview",
+      "async_task_control"
+    ],
+    "notes": "Finite AsyncSequence<T, ES> plus named transform throwing ET yields exactly throws normalize(ES | ET); cancellation stays separate. Policy is sequential/source/failFast/cancelPending/buffer1 with no partial commit and cleanup before return. NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -1583,7 +1626,7 @@
     "independent_conformance": "NOT_RUN",
     "display_name": "Policy-visible async collector Stage 1",
     "row_schema_version": "deeplus.feature-row/r51f3",
-    "trace_class": "syntax",
+    "trace_class": "library",
     "normative_trace_refs": {
       "diagnostics": [
         "ASYNC_COLLECTOR_POLICY_NOT_ADMITTED"
@@ -1598,7 +1641,10 @@
       "productions": [],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": []
+    "artifact_trace_refs": [
+      "library/prelude/prelude.md",
+      "library/prelude/signatures/catalog-metadata.json"
+    ]
   },
   {
     "actual_user_team_study": "NOT_RUN",

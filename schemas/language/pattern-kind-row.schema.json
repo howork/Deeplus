@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/pattern-kind-row.schema.json",
+  "title": "Deeplus pattern kind row R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pattern_kind_id",
+    "revision",
+    "surface_status",
+    "grammar_production",
+    "normalized_variant",
+    "refutability",
+    "binder_contract",
+    "execution_class",
+    "ownership_capabilities",
+    "allowed_context_ids",
+    "coverage_contribution",
+    "constraints",
+    "product_execution"
+  ],
+  "properties": {
+    "pattern_kind_id": {
+      "type": "string",
+      "pattern": "^PK-[A-Z0-9-]+$"
+    },
+    "revision": {
+      "const": "r51f3-current-language-coherence-r1"
+    },
+    "surface_status": {
+      "enum": [
+        "CURRENT_REACHABLE",
+        "DEFERRED_UNREACHABLE",
+        "REJECTED_NOT_CURRENT"
+      ]
+    },
+    "grammar_production": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "normalized_variant": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "refutability": {
+      "enum": [
+        "ALWAYS_IRREFUTABLE",
+        "ALWAYS_REFUTABLE",
+        "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
+        "DELEGATES_TO_CHILD",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "binder_contract": {
+      "enum": [
+        "NONE",
+        "INTRODUCES_ONE",
+        "DELEGATES_TO_CHILDREN",
+        "JOINS_OBSERVABLE_ALTERNATIVE_CONTRACTS",
+        "ALIASES_THE_SAME_SUBJECT"
+      ]
+    },
+    "execution_class": {
+      "enum": [
+        "COMPILER_KNOWN_PURE",
+        "COMPILER_KNOWN_PURE_TEST",
+        "COMPOSITE_COMPILER_KNOWN_PURE",
+        "NO_EXECUTION_UNREACHABLE",
+        "NO_EXECUTION_REJECTED"
+      ]
+    },
+    "ownership_capabilities": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "INSPECT",
+          "COPY_IF_REUSABLE",
+          "SHARED_BORROW",
+          "EXCLUSIVE_BORROW_AFTER_ADMISSION",
+          "MOVE_DELAYED_UNTIL_COMMIT"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "allowed_context_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PCTX-[A-Z0-9-]+$"
+      },
+      "uniqueItems": true
+    },
+    "coverage_contribution": {
+      "enum": [
+        "NONE",
+        "SUBJECT_CONSTRUCTOR_CELL",
+        "NESTED_CHILDREN_ONLY",
+        "DELEGATES_TO_CHILD",
+        "UNION_OF_ALTERNATIVES",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "product_execution": {
+      "const": "NOT_RUN"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "surface_status": {
+            "const": "CURRENT_REACHABLE"
+          }
+        },
+        "required": [
+          "surface_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "grammar_production": {
+            "type": "string",
+            "minLength": 1
+          },
+          "normalized_variant": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "grammar_production",
+          "normalized_variant"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "surface_status": {
+            "enum": [
+              "DEFERRED_UNREACHABLE",
+              "REJECTED_NOT_CURRENT"
+            ]
+          }
+        },
+        "required": [
+          "surface_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "grammar_production": {
+            "type": "null"
+          },
+          "normalized_variant": {
+            "type": "null"
+          },
+          "allowed_context_ids": {
+            "maxItems": 0
+          },
+          "refutability": {
+            "const": "NOT_APPLICABLE"
+          },
+          "coverage_contribution": {
+            "const": "NOT_APPLICABLE"
+          }
+        }
+      }
+    }
+  ]
+}

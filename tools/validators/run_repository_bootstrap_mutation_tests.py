@@ -293,7 +293,7 @@ def run(write_receipt: bool) -> int:
         ("pointer_review_route_mismatch", pointer_review_route_mismatch, "POINTER_ACTION_BINDING"),
         ("stale_role_memory", stale_role_memory, "ROLE_MEMORY_CURRENT"),
         ("match_guard_annotation_fixit", match_guard_annotation_fixit, "MATCH_GUARD_FIXIT"),
-        ("current_integrity_delta_hash", current_integrity_delta_hash, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
+        ("current_integrity_delta_hash", current_integrity_delta_hash, "CURRENT_DELTA_TRANSITION_EXACT"),
         ("current_integrity_missing_transition", current_integrity_missing_transition, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
         ("current_integrity_nonowned_reassembly", current_integrity_nonowned_reassembly, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
     ]

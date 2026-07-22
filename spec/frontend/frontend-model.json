@@ -185,7 +185,7 @@
       "set",
       "unsafe"
     ],
-    "ordinary_or_prelude_identifiers": [
+    "ordinary_identifiers": [
       "EffectRow",
       "ErrorSet",
       "ExitCode",
@@ -199,6 +199,23 @@
       "array",
       "case"
     ],
+    "predeclared_language_or_prelude_bindings": [
+      "EffectRow",
+      "ErrorSet",
+      "ExitCode",
+      "Facet",
+      "Never",
+      "Record",
+      "Sequence",
+      "StaticInt",
+      "String",
+      "Unit"
+    ],
+    "ordinary_identifier_regression_seeds": [
+      "array",
+      "case"
+    ],
+    "identifier_classification_law": "ordinary_identifiers is the disjoint union of the two category lists; membership never creates a keyword, intrinsic token kind, parser hook, resolver namespace, checker intrinsic, or formatter special case",
     "wildcard": {
       "surface": "_",
       "lexer": "WILDCARD",
@@ -927,7 +944,7 @@
       "EffectRow",
       "ErrorSet"
     ],
-    "typed_pattern": "Identifier : TypeRef; parameter context excludes typed-pattern colon capture via ParameterPatternSlot",
+    "typed_pattern": "Pattern children use Identifier : TypeRef; a local BindingPattern owns one optional whole-pattern TypeAnnotation while excluding a second top-level TypedBindingPattern derivation; callable parameters use ParameterPatternSlot = Identifier and never reinterpret a refutable Pattern into a public signature",
     "field_dispatch_marker": "FORBIDDEN_CURRENT",
     "trait_associated_dispatch_marker": "FORBIDDEN_CURRENT"
   },
@@ -1625,8 +1642,8 @@
     "grammar": "structure only",
     "cst": "all tokens/trivia, missing/unexpected tokens, source form, supply-policy IDs",
     "ast": "normalized syntax meaning and stage-specific semantic enums",
-    "hir": "generated declarations, property/forwarding/comprehension/loop normalization, and reserved `~ spawn` message recognition",
-    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, failure, evidence, xVM/LLVM lowering",
+    "hir": "generated declarations; property/forwarding/comprehension/loop normalization; actor/protocol ownership; structured task scope; and reserved `~ spawn` message recognition",
+    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, cancellation, failure, actor/task state, evidence, xVM/LLVM lowering",
     "checker": "owner admission, type/effect/ownership/coherence/exhaustiveness/layout checks",
     "formatter": "canonical spacing and comments; # role compacting is convention",
     "rightward_local_binding": {
@@ -1863,6 +1880,151 @@
       "value open",
       "resource open"
     ]
+  },
+  "pattern_frontend_contract": {
+    "lossless_cst_nodes": [
+      "OrPattern",
+      "AliasPattern",
+      "MovePattern",
+      "TypedBindingPattern",
+      "BindingPattern",
+      "RecordPattern",
+      "ListPattern",
+      "VariantPattern",
+      "WildcardPattern",
+      "UnitPattern",
+      "LiteralPattern",
+      "ParenthesizedPattern"
+    ],
+    "normalized_ast_nodes": [
+      "PatternOr",
+      "PatternAliasBorrow",
+      "PatternMove",
+      "PatternBind",
+      "PatternRecordSubset",
+      "PatternListExactOrIgnoredTail",
+      "PatternVariant",
+      "PatternWildcard",
+      "PatternUnit",
+      "PatternLiteral"
+    ],
+    "whole_pattern_annotation": {
+      "cst_owner": "BindingPattern.TypeAnnotation",
+      "normalized_ast_owner": "BindingOwner",
+      "normalized_ast_field": "binding_owner_expected_subject_type",
+      "hir_owner": "BindingOwner",
+      "hir_field": "binding_owner_expected_subject_type",
+      "field_type": "NormalizedTypeIdentity | null",
+      "contract": "the field constrains the independently evaluated subject before Pattern admission and never creates a second top-level TypedBindingPattern or runtime type test"
+    },
+    "context_policy_authority": "spec/patterns/pattern-context-policies.json",
+    "lowering_authority": "spec/patterns/pattern-lowering.json",
+    "tuple_pattern_current": false,
+    "record_rest_current": false,
+    "list_rest_current": "zero or one final ignored .._",
+    "parameter_pattern_current": "Identifier only"
+  },
+  "concurrency_frontend_contract": {
+    "source_owners": [
+      "ActorDecl",
+      "ActorProtocolDecl",
+      "ActorOnDecl",
+      "ActorRequestDecl",
+      "AsyncForLoop",
+      "TaskGroupStmt",
+      "SpawnExpr",
+      "StructuredTaskScope",
+      "AtScopeExpr",
+      "PrefixExpr(await)",
+      "MessageSuffix"
+    ],
+    "lossless_cst_nodes": [
+      "ActorDeclCst",
+      "ActorProtocolDeclCst",
+      "ActorHandlerCst",
+      "ActorRequestCst",
+      "AsyncForLoopCst",
+      "TaskGroupCst",
+      "SpawnExprCst",
+      "StructuredTaskScopeCst",
+      "AtScopeExprCst",
+      "AwaitExprCst",
+      "MessageSendCst"
+    ],
+    "normalized_ast_nodes": [
+      "ActorDeclaration",
+      "ActorProtocolDeclaration",
+      "ActorHandlerDeclaration",
+      "ActorRequestDeclaration",
+      "AsyncFor",
+      "TaskGroup",
+      "SpawnTask",
+      "StructuredTaskScope",
+      "ValueTaskScope",
+      "Await",
+      "MessageSend"
+    ],
+    "typed_hir_identities": [
+      "ActorId",
+      "ActorProtocolId",
+      "MailboxProfileId",
+      "ActorHandlerId",
+      "ActorRequestId",
+      "MessageId",
+      "ActorMessageErrorTypeId",
+      "CorrelationId",
+      "ReplyId",
+      "TaskId",
+      "TaskScopeId",
+      "CancellationId",
+      "FailureId"
+    ],
+    "mir_projection": "schemas/language/mir-responsibility.schema.json",
+    "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
+    "message_send_owner": "MessageSuffix; reserved spawn selector is recognized in HIR without a second syntax owner",
+    "mailbox_profile_binding": {
+      "clause_absent": "logical_unbounded_v1",
+      "positive_static_capacity_clause": "bounded_reject_v1",
+      "additional_policy_syntax_count": 0
+    },
+    "message_hir_result_shapes": {
+      "one_way": "Result<Unit, error ActorMessageError>",
+      "request": "Result<Task<T>, error ActorMessageError>",
+      "request_await_order": "extract Task<T> from Result, then apply explicit await",
+      "error_cases": [
+        "mailboxFull",
+        "receiverClosedBeforeAdmission",
+        "receiverClosedBeforeReply"
+      ]
+    },
+    "enqueue_commit_contract": {
+      "precommit_owner": "sender",
+      "commit_count": "exactly_one_on_success",
+      "rejected_channel_sequence": null,
+      "successful_fifo_key": [
+        "SenderId",
+        "ReceiverActorId",
+        "MailboxProfileId"
+      ],
+      "successful_channel_sequence": "strictly_increasing_per_fifo_key"
+    },
+    "cancellation_phase_split": {
+      "before_commit": "abort, sender retains owners, no channel_sequence, Cancellation is not ActorMessageError",
+      "after_commit": "message remains actor-owned and admission Result is not rewritten"
+    },
+    "await_owner": "the existing prefix await operator only",
+    "detached_task_node_count": 0,
+    "implicit_distributed_delivery_node_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "control_frontend_contract": {
+    "try_statement": "try Block followed by one-or-more catch clauses with optional finally, or finally only",
+    "try_expression_statement": "not current",
+    "at_try_expression": "@try ValueBody followed by one-or-more value catches with optional finally, or finally only",
+    "value_if_totality": "@if requires else after recovery",
+    "guard_cardinality": "zero or one per admitting owner",
+    "guard_chain_node_count": 0,
+    "parenless_call_exception": "one AtomicCallArgument followed by exactly one ClosureExpr"
   },
   "parser_commitments": [
     {

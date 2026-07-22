@@ -16,6 +16,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -36,6 +37,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -56,6 +58,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -81,6 +84,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -107,6 +111,7 @@
           "cleanup": "view_release",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -132,6 +137,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -157,6 +163,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -181,6 +188,69 @@
         ],
         "layout_digest": "positive-bitfield"
       }
+    },
+    {
+      "fixture_id": "RCTS5-POS-CANCELLATION-PROPAGATE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "positive-cancellation-propagate"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "cancellation": "propagate",
+          "authorities": [],
+          "suspends": true,
+          "isolation": "task"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-CANCELLATION-OBSERVE",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "positive-cancellation-observe"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "cancellation": "observe",
+          "authorities": [],
+          "suspends": true,
+          "isolation": "task"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-POS-CANCELLATION-SHIELDED-CLEANUP",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "positive-cancellation-shielded-cleanup"
+        },
+        "responsibility": {
+          "ownership": "resource",
+          "cleanup": "drop_exactly_once",
+          "effects": [],
+          "errors": [],
+          "cancellation": "shielded_cleanup",
+          "authorities": [],
+          "suspends": false,
+          "isolation": "task"
+        }
+      }
     }
   ],
   "negative": [
@@ -199,6 +269,7 @@
           "cleanup": "view_release",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -220,6 +291,7 @@
           "cleanup": "view_release",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -241,6 +313,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -267,6 +340,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -294,6 +368,7 @@
           "cleanup": "view_release",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -320,6 +395,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -346,6 +422,7 @@
           "cleanup": "none",
           "effects": [],
           "errors": [],
+          "cancellation": "forbidden",
           "authorities": [],
           "suspends": false,
           "isolation": "local"
@@ -370,12 +447,62 @@
         ],
         "layout_digest": "negative-bitfield"
       }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-CANCELLATION-MISSING",
+      "expected_error": "RCTS_CANCELLATION_AXIS_REQUIRED",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "negative-cancellation-missing"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "authorities": [],
+          "suspends": true,
+          "isolation": "task"
+        }
+      }
+    },
+    {
+      "fixture_id": "RCTS5-NEG-CANCELLATION-INVALID",
+      "expected_error": "RCTS_CANCELLATION_AXIS_INVALID",
+      "descriptor": {
+        "schema": "deeplus.rcts-v5/descriptor",
+        "variant": "responsibility_core",
+        "semantic_type": {
+          "kind": "nominal",
+          "type_id": "negative-cancellation-invalid"
+        },
+        "responsibility": {
+          "ownership": "reusable",
+          "cleanup": "none",
+          "effects": [],
+          "errors": [],
+          "cancellation": "catch_as_error",
+          "authorities": [],
+          "suspends": true,
+          "isolation": "task"
+        }
+      }
     }
   ],
   "coverage": {
     "variant_count": 7,
     "positive_per_variant": true,
-    "negative_per_variant": true
+    "negative_per_variant": true,
+    "cancellation_values": [
+      "forbidden",
+      "propagate",
+      "observe",
+      "shielded_cleanup"
+    ],
+    "cancellation_axis_complete": true
   },
   "product_checker": "NOT_RUN"
 }

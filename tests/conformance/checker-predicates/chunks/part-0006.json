@@ -1,5 +1,271 @@
 [
   {
+    "fixture_id": "PF-ContextParameterRoleAdmitted-NEG",
+    "predicate_id": "ContextParameterRoleAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "CONTEXT_ARGUMENT_REQUIRED",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Call",
+      "normalized_type": "LoggerContext",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_parameters": 1,
+        "context_argument_count": 0,
+        "context_channel_explicit": false,
+        "context_role_match": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "a required context parameter has no exact explicit context argument",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ContextParameterRoleAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ContextParameterRoleAdmitted-POS",
+    "predicate_id": "ContextParameterRoleAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "Call",
+      "normalized_type": "LoggerContext",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "context_parameters": 1,
+        "context_argument_count": 1,
+        "context_channel_explicit": true,
+        "context_role_match": true
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel; exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match; missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "fixture_kind": "concrete_positive",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ContextParameterRoleAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ContextValueAdmitted-BOUNDARY",
+    "predicate_id": "ContextValueAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ContextValueAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 ContextValueAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ContextValueAdmitted-NEG",
+    "predicate_id": "ContextValueAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "CONTEXT_VALUE_REQUIRES_REUSABLE_SHAREABLE",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "DatabaseSession",
+      "ownership": "owned",
+      "borrow_region": null,
+      "cleanup": {
+        "acquires_resource": true,
+        "escapes_resource": true
+      },
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": [
+        "database"
+      ],
+      "construction_domain": null,
+      "call_shape": {
+        "context_channel_explicit": false,
+        "context_value_reusable": false,
+        "context_value_shareable": false,
+        "context_value_no_drop": false,
+        "context_value_resource_free": false,
+        "context_value_authority_free": false
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the candidate is ambient, owned, resource/drop-bearing, non-shareable, and authority-bearing",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ContextValueAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
     "fixture_id": "PF-ContextValueAdmitted-POS",
     "predicate_id": "ContextValueAdmitted",
     "expected": "admitted",
@@ -68,6 +334,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -99,6 +366,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -172,6 +440,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -208,6 +477,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -281,6 +551,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -317,6 +588,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -390,6 +662,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -422,6 +695,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -512,6 +786,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -594,6 +869,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -625,6 +901,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -693,6 +970,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -720,6 +998,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -756,6 +1035,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -824,6 +1104,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -855,6 +1136,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -928,6 +1210,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -964,6 +1247,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1032,6 +1316,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1059,6 +1344,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1095,6 +1381,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1163,6 +1450,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1190,6 +1478,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1277,6 +1566,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1357,6 +1647,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1437,6 +1728,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"
@@ -1519,246 +1811,7 @@
         "cleanup": "none",
         "effects": [],
         "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-EntrySignatureAdmitted-NEG-GENERIC",
-    "predicate_id": "EntrySignatureAdmitted",
-    "expected": "rejected",
-    "descriptor": {
-      "source_kind": "FunctionType",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": [],
-      "effect_row": [],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "parameters": [],
-        "result": "Unit",
-        "generic": true,
-        "receiver": false,
-        "context_parameters": 0,
-        "witness_parameters": 0,
-        "rest_parameters": 0,
-        "default_parameters": 0,
-        "selected_entry_target_count": 1
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": "executable",
-      "entry_kind": "sync",
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "ENTRY_SIGNATURE_NOT_ADMITTED",
-    "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "an entry cannot be generic",
-    "fixture_kind": "concrete_negative",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EntrySignatureAdmitted-NEG-GENERIC"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-EntrySignatureAdmitted-NEG-MULTIPLE-TARGET",
-    "predicate_id": "EntrySignatureAdmitted",
-    "expected": "rejected",
-    "descriptor": {
-      "source_kind": "FunctionType",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": [],
-      "effect_row": [],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "parameters": [],
-        "result": "Unit",
-        "generic": false,
-        "receiver": false,
-        "context_parameters": 0,
-        "witness_parameters": 0,
-        "rest_parameters": 0,
-        "default_parameters": 0,
-        "selected_entry_target_count": 2
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": "executable",
-      "entry_kind": "sync",
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "ENTRY_DECL_DUPLICATE",
-    "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "the executable root has multiple selected entry targets",
-    "fixture_kind": "concrete_negative",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EntrySignatureAdmitted-NEG-MULTIPLE-TARGET"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-EntrySignatureAdmitted-NEG-NO-TARGET",
-    "predicate_id": "EntrySignatureAdmitted",
-    "expected": "rejected",
-    "descriptor": {
-      "source_kind": "FunctionType",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": [],
-      "effect_row": [],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "parameters": [],
-        "result": "Unit",
-        "generic": false,
-        "receiver": false,
-        "context_parameters": 0,
-        "witness_parameters": 0,
-        "rest_parameters": 0,
-        "default_parameters": 0,
-        "selected_entry_target_count": 0
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": "executable",
-      "entry_kind": "sync",
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "NO_EXECUTABLE_ENTRY",
-    "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "the executable root has no selected entry target",
-    "fixture_kind": "concrete_negative",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EntrySignatureAdmitted-NEG-NO-TARGET"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
+        "cancellation": "forbidden",
         "authorities": [],
         "suspends": false,
         "isolation": "local"

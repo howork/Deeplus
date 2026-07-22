@@ -4,17 +4,24 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ActorProtocolGateAdmitted",
     "source_name": "Actor protocol",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Current actor protocol and message-admission design predicate; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "cleanup",
+      "errors",
+      "cancellation",
+      "suspension",
       "isolation",
+      "call_shape",
       "source_role",
       "element_types"
     ],
     "feature_refs": [
       "actor_declaration_grammar_closed",
+      "actor_mailbox_capacity",
       "actor_protocol_family",
       "actor_request_reply"
     ],
@@ -26,7 +33,10 @@
     "requires": [
       "actor syntax requires current law",
       "send/request not ordinary method call",
-      "isolation transfer visible"
+      "isolation transfer visible",
+      "bounded mailboxes use bounded_reject_v1 and unbounded mailboxes use logical_unbounded_v1",
+      "one-way admission returns Result<Unit, error ActorMessageError>",
+      "request admission returns Result<Task<T>, error ActorMessageError> before await"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -34,7 +44,13 @@
     "rule_facets": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "cleanup",
+      "errors",
+      "cancellation",
+      "suspension",
       "isolation",
+      "call_shape",
       "source_role",
       "element_types"
     ],
@@ -44,12 +60,16 @@
     "preconditions": [
       "actor syntax requires current law",
       "send/request not ordinary method call",
-      "isolation transfer visible"
+      "isolation transfer visible",
+      "mailbox admission profile identity and Result channel are explicit",
+      "precommit rejection retains sender ownership and creates no request Task"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the declared descriptor shape as design documentation only",
-      "record ActorProtocolGateAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "validate the selected actor/protocol handler identity and Transferable or Shareable boundary evidence",
+      "validate bounded_reject_v1 admission, precommit ownership, one-way Result, and request Result<Task<T>> channel shapes",
+      "record ActorProtocolGateAdmitted requires and candidate diagnostic vocabulary without executing a product checker decision",
       "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
       "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
     ],
@@ -757,22 +777,28 @@
     "input_descriptor": "RCTSDescriptorV5",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "collector List and source finite Iterable",
-      "transform is named def#async",
+      "collector List and source finite AsyncSequence<T, ES> with ES bound to ErrorSet",
+      "transform is named def#async with ET bound to ErrorSet",
+      "result error set is exactly normalize(ES | ET)",
+      "cancellation remains outside the result error set",
       "policy is sequential/source/failFast/cancelPending/buffer1"
     ],
     "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
     "decision_procedure": [
       "validate the closed RCTSDescriptorV5 and native conditional constraints",
       "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
-      "check collector List and source finite Iterable",
-      "check transform is named def#async",
+      "check collector List and source finite AsyncSequence<T, ES> with ES bound to ErrorSet",
+      "check transform is named def#async with ET bound to ErrorSet",
+      "check result error set is exactly normalize(ES | ET)",
+      "check cancellation is not represented in the result error set",
       "check policy is sequential/source/failFast/cancelPending/buffer1",
       "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
     ],
     "requires": [
-      "collector List and source finite Iterable",
-      "transform is named def#async",
+      "collector List and source finite AsyncSequence<T, ES> with ES bound to ErrorSet",
+      "transform is named def#async with ET bound to ErrorSet",
+      "result error set is exactly normalize(ES | ET)",
+      "cancellation remains outside the result error set",
       "policy is sequential/source/failFast/cancelPending/buffer1"
     ],
     "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
@@ -784,6 +810,7 @@
       "PF-AsyncCollectorPolicyAdmitted-BOUNDARY"
     ],
     "negative_fixture_ids": [
+      "PF-AsyncCollectorPolicyAdmitted-ERROR-UNION-NEG",
       "PF-AsyncCollectorPolicyAdmitted-NEG"
     ],
     "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
@@ -796,7 +823,7 @@
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "source_name": "AsyncCollectorPolicyAdmitted",
-    "summary": "Admits the Stage-1 policy-visible collector profile without activating async callable literals.",
+    "summary": "Admits the Stage-1 policy-visible collector profile with explicit source and transform ErrorSets and exact union propagation, without activating async callable literals.",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
