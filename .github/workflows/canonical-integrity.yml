@@ -30,7 +30,7 @@ jobs:
           python3 tools/generators/generate_example_projections.py --root . --check
       - name: Validate deterministic current integrity
         run: |
-          python3 tools/validators/run_current_integrity_generator_tests.py
+          python3 tools/validators/run_legacy_current_integrity_compatibility_tests.py
           python3 tools/validators/run_post_pr16_current_integrity_tests.py
           python3 tools/generators/generate_post_pr16_current_integrity.py --root . --check
       - name: Validate current or candidate workspace
