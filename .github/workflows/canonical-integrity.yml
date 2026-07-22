@@ -31,8 +31,8 @@ jobs:
       - name: Validate deterministic current integrity
         run: |
           python3 tools/validators/run_legacy_current_integrity_compatibility_tests.py
-          python3 tools/validators/run_post_pr16_current_integrity_tests.py
-          python3 tools/generators/generate_post_pr16_current_integrity.py --root . --check
+          python3 tools/generators/generate_language_coherence_current_integrity.py --root . --check
+          python3 tools/generators/generate_language_coherence_current_integrity.py --root . --self-test
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Validate parallel tooling isolation
