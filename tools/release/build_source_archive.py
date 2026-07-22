@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import stat
+import subprocess
 import tomllib
 import zipfile
 from pathlib import Path
@@ -20,29 +22,139 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def source_files(root: Path) -> list[Path]:
+def fail(code: str, detail: str) -> None:
+    raise SystemExit(f"{code}: {detail}")
+
+
+def checked_member(root: Path, relative: Path) -> Path:
+    if relative.is_absolute() or not relative.parts or ".." in relative.parts:
+        fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", relative.as_posix())
+    path = root / relative
+    if path.is_symlink() or not path.is_file():
+        fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", relative.as_posix())
+    try:
+        path.resolve(strict=True).relative_to(root)
+    except (OSError, ValueError):
+        fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", relative.as_posix())
+    return path
+
+
+def repository_output(root: Path, relative: Path) -> Path:
+    if relative.is_absolute() or not relative.parts or ".." in relative.parts:
+        fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", relative.as_posix())
+    current = root
+    for part in relative.parts:
+        current /= part
+        if current.is_symlink():
+            fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", relative.as_posix())
+    try:
+        current.resolve(strict=False).relative_to(root)
+    except (OSError, ValueError):
+        fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", relative.as_posix())
+    if current.exists() and not current.is_file():
+        fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", relative.as_posix())
+    return current
+
+
+def git_source_files(root: Path, *, allow_dirty: bool) -> list[Path] | None:
+    if not (root / ".git").exists():
+        return None
+    status = subprocess.run(
+        ["git", "-C", str(root), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+        capture_output=True,
+        check=False,
+    )
+    if status.returncode != 0:
+        fail("SOURCE_ARCHIVE_GIT_STATE", status.stderr.decode("utf-8", "replace"))
+    if status.stdout and not allow_dirty:
+        fail("SOURCE_ARCHIVE_DIRTY_SOURCE_SET", "tracked or untracked workspace changes")
+    listed = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z", "--cached"],
+        capture_output=True,
+        check=False,
+    )
+    if listed.returncode != 0:
+        fail("SOURCE_ARCHIVE_GIT_STATE", listed.stderr.decode("utf-8", "replace"))
+    try:
+        names = listed.stdout.decode("utf-8").split("\0")
+    except UnicodeDecodeError as exc:
+        fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", str(exc))
     files = []
-    for path in root.rglob("*"):
-        if not path.is_file():
+    for name in names:
+        if not name or name == MANIFEST:
             continue
-        rel = path.relative_to(root)
-        if any(part in EXCLUDED_PARTS for part in rel.parts) or rel.as_posix() == MANIFEST:
+        relative = Path(name)
+        if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue
-        files.append(path)
+        if allow_dirty and not (root / relative).exists():
+            # Explicit dirty-mode callers may be validating an intentional
+            # tracked deletion.  The deleted path is absent from that snapshot.
+            continue
+        files.append(checked_member(root, relative))
+    return files
+
+
+def exported_source_files(root: Path) -> list[Path]:
+    files = []
+    for current, directories, names in os.walk(root, topdown=True, followlinks=False):
+        base = Path(current)
+        retained = []
+        for name in directories:
+            path = base / name
+            if name in EXCLUDED_PARTS:
+                continue
+            if path.is_symlink():
+                fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", path.relative_to(root).as_posix())
+            retained.append(name)
+        directories[:] = retained
+        for name in names:
+            relative = (base / name).relative_to(root)
+            if (
+                any(part in EXCLUDED_PARTS for part in relative.parts)
+                or relative.as_posix() == MANIFEST
+            ):
+                continue
+            files.append(checked_member(root, relative))
+    return files
+
+
+def source_files(root: Path, *, allow_dirty: bool) -> list[Path]:
+    files = git_source_files(root, allow_dirty=allow_dirty)
+    if files is None:
+        files = exported_source_files(root)
     return sorted(files, key=lambda path: path.relative_to(root).as_posix())
+
+
+def lexical_output_path(value: Path) -> Path:
+    path = Path(os.path.abspath(value))
+    current = Path(path.parts[0])
+    for part in path.parts[1:]:
+        current /= part
+        if current.is_symlink():
+            fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", str(current))
+    return path
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--allow-dirty-source", action="store_true")
     args = parser.parse_args()
     root = args.root.resolve()
-    output = args.output.resolve()
+    output = lexical_output_path(args.output).resolve()
+    try:
+        output_relative = output.relative_to(root)
+    except ValueError:
+        output_relative = None
+    if output_relative is not None and not any(
+        part in EXCLUDED_PARTS for part in output_relative.parts
+    ):
+        fail("SOURCE_ARCHIVE_OUTPUT_COLLISION", output_relative.as_posix())
     version = tomllib.loads((root / "current/language-version.toml").read_text(encoding="utf-8"))
     revision = version["spec_revision"]
     rows = []
-    for path in source_files(root):
+    for path in source_files(root, allow_dirty=args.allow_dirty_source):
         rel = path.relative_to(root).as_posix()
         rows.append({"path": rel, "bytes": path.stat().st_size, "sha256": sha(path)})
     tree_material = "\n".join(f"{row['path']}\0{row['sha256']}" for row in rows).encode()
@@ -56,9 +168,11 @@ def main() -> int:
         "self_hash_policy": "manifest is excluded; archive digest is recorded externally",
         "files": rows,
     }
-    manifest_path = root / MANIFEST
-    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    all_files = source_files(root) + [manifest_path]
+    manifest_path = repository_output(root, Path(MANIFEST))
+    manifest_path.write_bytes(
+        (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    )
+    all_files = source_files(root, allow_dirty=True) + [manifest_path]
     all_files.sort(key=lambda path: path.relative_to(root).as_posix())
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:

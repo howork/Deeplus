@@ -49,6 +49,15 @@ def authority_drift(root: Path) -> None:
     path.write_text(path.read_text(encoding="utf-8") + "\nmutation\n", encoding="utf-8")
 
 
+def post_pr16_unit_hash(root: Path) -> None:
+    path = root / "spec/language.md"
+    text = path.read_text(encoding="utf-8")
+    marker = "<!-- POST_PR16_UNIT_BEGIN:TC-R001 -->\n"
+    if text.count(marker) != 1:
+        raise RuntimeError("TC-R001 wrapper unavailable")
+    path.write_text(text.replace(marker, marker + "mutation\n", 1), encoding="utf-8")
+
+
 def invalid_gate(root: Path) -> None:
     reassembly = json.loads((root / "migration/catalog-reassembly.json").read_text(encoding="utf-8"))
     contract = next(
@@ -224,7 +233,15 @@ def current_integrity_nonowned_reassembly(root: Path) -> None:
 def refresh_manifest(root: Path, name: str) -> tuple[bool, str]:
     output = root.parent / f"{name}.zip"
     result = subprocess.run(
-        [sys.executable, str(BUILDER), "--root", str(root), "--output", str(output)],
+        [
+            sys.executable,
+            str(BUILDER),
+            "--root",
+            str(root),
+            "--output",
+            str(output),
+            "--allow-dirty-source",
+        ],
         text=True,
         capture_output=True,
         check=False,
@@ -280,11 +297,21 @@ def run(write_receipt: bool) -> int:
         ("current_integrity_missing_transition", current_integrity_missing_transition, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
         ("current_integrity_nonowned_reassembly", current_integrity_nonowned_reassembly, "CURRENT_INTEGRITY_GENERATOR_CHECK"),
     ]
+    if revision == "r51f3-post-pr16-preview-design-r4":
+        mutations.append(
+            (
+                "post_pr16_normalized_unit_hash",
+                post_pr16_unit_hash,
+                "CURRENT_INTEGRITY_GENERATOR_CHECK",
+            )
+        )
     results = []
-    with tempfile.TemporaryDirectory(prefix="deeplus-workspace-mutations-") as temp:
+    with tempfile.TemporaryDirectory(prefix="dw-") as temp:
         base = Path(temp)
-        for name, mutate, expected_code in mutations:
-            target = base / name
+        for index, (name, mutate, expected_code) in enumerate(mutations):
+            # Keep Windows copies below MAX_PATH even when a tracked authority
+            # artifact already has a deliberately descriptive deep path.
+            target = base / f"m{index:02d}"
             shutil.copytree(ROOT, target)
             mutate(target)
             refreshed, refresh_output = refresh_manifest(target, name)

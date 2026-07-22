@@ -30,14 +30,25 @@ jobs:
           python3 tools/generators/generate_example_projections.py --root . --check
       - name: Validate deterministic current integrity
         run: |
-          python3 tools/validators/run_current_integrity_generator_tests.py
-          python3 tools/generators/generate_current_integrity.py --root . --check
+          python3 tools/validators/run_legacy_current_integrity_compatibility_tests.py
+          python3 tools/validators/run_post_pr16_current_integrity_tests.py
+          python3 tools/generators/generate_post_pr16_current_integrity.py --root . --check
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Run validator mutation suite
         run: python3 tools/validators/run_repository_bootstrap_mutation_tests.py
       - name: Rebuild deterministic source archive
         run: |
+          touch .source-archive-untracked-probe
+          if python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-unsafe.zip; then
+            echo "dirty source archive unexpectedly succeeded" >&2
+            exit 1
+          fi
+          rm .source-archive-untracked-probe
+          if python3 tools/release/build_source_archive.py --output release/deeplus-source-unsafe.zip; then
+            echo "in-tree source archive unexpectedly succeeded" >&2
+            exit 1
+          fi
           python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-a.zip
           git diff --exit-code -- release/source-tree-manifest.json
           python3 tools/release/build_source_archive.py --output /tmp/deeplus-source-b.zip

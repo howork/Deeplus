@@ -91,3 +91,150 @@ This section classifies the frozen required 20-feature audit set without changin
 The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are also `DEFERRED_PRODUCT_HANDOFF`; they do not replace or enlarge the required 20-feature set.
 
 For every `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged and product lanes remain `NOT_RUN`. An implementer must not infer view/copy, ownership, conversion, strict or short-circuit evaluation, rendering/provider/failure, scalar or byte representation, rank/orientation, opcode, or backend behavior. Removing a block requires an approved future MIR law and a target-bound execution receipt. This repair chooses no opcode, representation, ownership, evaluation, provider, failure, or backend semantics.
+
+## 15. Post-PR16 nonactivatable Preview operational contracts
+
+> Status fence: this section is governed by Part XII's current preimplementation Preview boundary. Current MIR behavior remains authoritative; the successor material is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, and this text closes no P1 or product lane.
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N004 -->
+```json
+{
+    "schema":  "deeplus.codex-design.static-first-dynamic-registry-snapshot-route-liveness.r1",
+    "status":  "LOCAL_NONCANONICAL_NONACTIVATABLE",
+    "projection_split":  {
+                             "direct_concrete_borrow":  {
+                                                            "operation":  "withDynBorrow\u003cT,R\u003e",
+                                                            "static_target":  true,
+                                                            "registry_lookup_count":  0,
+                                                            "witness_lookup_count":  0
+                                                        },
+                             "static_trait_registry_projection":  {
+                                                                      "operation":  "FacetRegistry\u003cK\u003e.projectBorrow\u003cA\u003e",
+                                                                      "static_goal":  "ProjectionGoal\u003cK,A,Borrow\u003e",
+                                                                      "registry_authority":  "EXPLICIT_IMMUTABLE_INPUT",
+                                                                      "runtime_trait_token_allowed":  false
+                                                                  }
+                         },
+    "registry_key":  {
+                         "ordered_fields":  [
+                                                "AuthorityScopeId",
+                                                "RuntimeTypeId",
+                                                "TraitId",
+                                                "NormalizedAssociatedBindings",
+                                                "FacetMode",
+                                                "ResponsibilityProfileId"
+                                            ],
+                         "exact_field_count":  6,
+                         "forbidden_fields":  [
+                                                  "RegistryEpoch",
+                                                  "RegistrySnapshotId",
+                                                  "RegistryLineageId",
+                                                  "ProviderId",
+                                                  "SourceOrder",
+                                                  "ImportOrder",
+                                                  "DiscoveryOrder",
+                                                  "WallClock"
+                                              ],
+                         "raw_digest_is_semantic_identity":  false,
+                         "field_deletion_allowed":  false,
+                         "field_substitution_allowed":  false
+                     },
+    "responsibility_profile":  {
+                                   "identity":  "ResponsibilityProfileId",
+                                   "normalized_components":  [
+                                                                 "receiver",
+                                                                 "effects",
+                                                                 "errors",
+                                                                 "authority",
+                                                                 "suspension",
+                                                                 "isolation",
+                                                                 "cleanup"
+                                                             ],
+                                   "raw_digest_role":  "INTEGRITY_ONLY"
+                               },
+    "snapshot":  {
+                     "typed_metadata_fields":  [
+                                                   "RegistryId",
+                                                   "RegistryLineageId",
+                                                   "RegistrySchemaVersion",
+                                                   "RegistryEpoch",
+                                                   "CanonicalSortedEntries",
+                                                   "ContentDigest"
+                                               ],
+                     "selection":  "EXPLICIT_OPERATION_INPUT",
+                     "capture_per_operation":  1,
+                     "immutable":  true,
+                     "in_place_mutation":  false,
+                     "duplicate_normalized_key_policy":  "REJECT_SNAPSHOT",
+                     "same_key_equivalent_route_policy":  "REJECT_DUPLICATE_EQUIVALENT",
+                     "same_key_non_equivalent_route_policy":  "REJECT_DUPLICATE_CONFLICT",
+                     "silent_deduplication":  false,
+                     "lookup_tie_breaker":  "NONE_FAIL_CLOSED",
+                     "permutation_preserves_canonical_digest":  true
+                 },
+    "routes":  {
+                   "admitted_kinds":  [
+                                          {
+                                              "kind":  "ExistingConformance",
+                                              "requires":  [
+                                                               "ConformanceId",
+                                                               "TraitWitnessId",
+                                                               "sealed behavior and drop metadata"
+                                                           ]
+                                          },
+                                          {
+                                              "kind":  "SynchronousNominalAdapterFactory",
+                                              "requires":  [
+                                                               "explicit nominal adapter type",
+                                                               "already admitted conformance",
+                                                               "prepare/failure/commit cleanup contract"
+                                                           ]
+                                          }
+                                      ],
+                   "forbidden_action_counts":  {
+                                                   "create_conformance":  0,
+                                                   "create_witness":  0,
+                                                   "create_static_label":  0,
+                                                   "create_authority":  0,
+                                                   "use_extension_as_evidence":  0,
+                                                   "perform_fallback":  0
+                                               },
+                   "provider_import_source_order_winner_count":  0
+               },
+    "live_facet_seal":  {
+                            "captured":  [
+                                             "ConformanceId",
+                                             "TraitWitnessId",
+                                             "ProviderId",
+                                             "sealed behavior",
+                                             "normalized associated bindings",
+                                             "responsibility profile",
+                                             "RegistrySnapshotId",
+                                             "RegistryEpoch",
+                                             "ProviderLeaseId"
+                                         ],
+                            "later_snapshot_retarget_count":  0,
+                            "removal_revokes_existing_facet":  false,
+                            "future_projection_uses_new_snapshot":  true
+                        },
+    "provider_liveness":  {
+                              "ProviderLeaseId":  {
+                                                      "visibility":  "IMPLEMENTATION_PRIVATE",
+                                                      "registry_key_member":  false,
+                                                      "public_semantic_identity":  false,
+                                                      "source_authority":  false,
+                                                      "trait_witness":  false
+                                                  },
+                              "unload_rule":  "UNLOAD_ONLY_AFTER_LAST_LIVE_PROVIDER_LEASE",
+                              "existing_live_facet_behavior_change_count":  0
+                          },
+    "deferred":  [
+                     "REGISTRY_INOUT_PROJECTION",
+                     "REGISTRY_OWNED_PROJECTION",
+                     "STRUCTURAL_CONFORMANCE",
+                     "RUNTIME_TRAIT_TO_TYPED_FACET",
+                     "FACET_STORE"
+                 ]
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N004 -->

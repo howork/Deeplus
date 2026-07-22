@@ -159,3 +159,296 @@ List literal inference computes one homogeneous normalized element type. It neve
 - `Pattern.compile` has explicit `String`, engine, and budget inputs and returns `Result<Pattern, error PatternCompileError>`; no contextual literal conversion or hidden engine lookup exists.
 - xVM agent, tail-call analysis, and UML state-machine provider are tooling contracts and create no source type, witness, overload candidate, effect erasure, or public API residue.
 - Tail-call eligibility is backend evidence over already-typed MIR; it never changes call typing, cleanup, errors, suspension, or authority.
+
+## 25. Post-R51f3 nonactivatable Preview design
+
+> Status fence: this section is governed by Part XII's current preimplementation Preview boundary. Current type-system behavior remains authoritative; the successor material is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, and this text closes no P1 or product lane.
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N002 -->
+```json
+{
+    "carrier":  "DynOwned",
+    "existential_shape":  "exists T where DynPackable(T)",
+    "fields":  [
+                   {
+                       "name":  "payload",
+                       "type":  "Own\u003cT\u003e"
+                   },
+                   {
+                       "name":  "runtime_type",
+                       "type":  "RuntimeTypeId"
+                   },
+                   {
+                       "name":  "drop_plan",
+                       "type":  "DropPlan\u003cT\u003e"
+                   },
+                   {
+                       "name":  "provenance",
+                       "type":  "OpaqueProvenance"
+                   },
+                   {
+                       "name":  "descriptor_schema",
+                       "type":  "DescriptorSchemaVersion"
+                   }
+               ],
+    "storable_modes":  [
+                           "OWNED"
+                       ],
+    "loan_modes":  [
+                       "BORROW",
+                       "INOUT_DEFERRED"
+                   ],
+    "borrowed_carrier_variant_count":  0,
+    "runtime_tagged_mixed_envelope_count":  0,
+    "implicit_mode_conversion_count":  0,
+    "DynPackable":  {
+                        "status":  "GUARDED_OPEN_PREDICATE",
+                        "requires":  [
+                                         "admitted runtime descriptor",
+                                         "concrete drop plan",
+                                         "owned responsibility profile",
+                                         "target/runtime metadata authority"
+                                     ],
+                        "inferred_packable_type_count":  0,
+                        "closure_dependency":  [
+                                                   "SFD-P1-005",
+                                                   "SFD-P1-007"
+                                               ]
+                    }
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N002 -->
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N003 -->
+```json
+{
+    "abstract_operations":  [
+                                {
+                                    "id":  "PACK_DYN",
+                                    "signature":  "packDyn\u003cT: DynPackable\u003e(move value: T) -\u003e PackDynResult\u003cT\u003e",
+                                    "kind":  "EXPLICIT_TRANSACTIONAL_PACK",
+                                    "success":  "one Dyn owner",
+                                    "failure":  "exact original T owner returned",
+                                    "evaluation_count":  1,
+                                    "commit_count":  "0_OR_1",
+                                    "partial_publication_count":  0
+                                },
+                                {
+                                    "id":  "IS_DYN_TYPE",
+                                    "signature":  "isDynType\u003cT\u003e(value: borrow Dyn) -\u003e Bool",
+                                    "kind":  "STATIC_TARGET_EXACT_TYPE_TEST",
+                                    "requires_registry":  false,
+                                    "owner_delta":  0,
+                                    "witness_creation_count":  0
+                                },
+                                {
+                                    "id":  "WITH_DYN_BORROW",
+                                    "signature":  "withDynBorrow\u003cT,R\u003e(value: borrow Dyn, body: nonescaping (borrow T) -\u003e R) -\u003e Result\u003cR,DynProjectionFailure\u003e",
+                                    "kind":  "DIRECT_CONCRETE_BORROW",
+                                    "requires_registry":  false,
+                                    "requires_static_concrete_target":  true,
+                                    "escape_suspend_actor_cross_count":  0
+                                },
+                                {
+                                    "id":  "DOWNCAST_OWNED",
+                                    "signature":  "downcastOwned\u003cT\u003e(move value: Dyn) -\u003e OwnedDowncast\u003cT,Dyn\u003e",
+                                    "kind":  "OWNER_PRESERVING_RECOVERY",
+                                    "success":  "exactly one T owner",
+                                    "mismatch":  "exact original Dyn owner",
+                                    "both_or_zero_owner_count":  0
+                                },
+                                {
+                                    "id":  "PROJECT_FACET_BORROW",
+                                    "signature":  "FacetRegistry\u003cK\u003e.projectBorrow\u003cA\u003e(goal: ProjectionGoal\u003cK,A,Borrow\u003e, value: borrow Dyn) -\u003e Result\u003cFacet\u003cborrow any K where A\u003e,FacetProjectionFailure\u003e",
+                                    "kind":  "STATIC_TRAIT_REGISTRY_PROJECTION",
+                                    "requires_registry":  true,
+                                    "requires_static_projection_goal":  true,
+                                    "runtime_trait_token_allowed":  false,
+                                    "initial_modes":  [
+                                                          "BORROW"
+                                                      ]
+                                }
+                            ],
+    "transaction_laws":  {
+                             "prepared_to_commit":  {
+                                                        "suspension_count":  0,
+                                                        "cancellation_checkpoint_count":  0,
+                                                        "reentry_count":  0
+                                                    },
+                             "success_owner_disposition_count":  1,
+                             "failure_owner_disposition_count":  1,
+                             "cleanup_token_balance":  0,
+                             "owner_failure_channel":  "OWNER_BEARING_RESULT_NOT_ERRORSET"
+                         }
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N003 -->
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N005 -->
+```json
+{
+    "schema":  "deeplus.codex-design.static-first-dynamic-typed-identity-matrix.r1",
+    "status":  "LOCAL_NONCANONICAL_NONACTIVATABLE",
+    "authority_facing_kinds":  [
+                                   "RuntimeTypeId",
+                                   "ClassId",
+                                   "ClassSlotId",
+                                   "EnumId",
+                                   "VariantId",
+                                   "TraitId",
+                                   "ConformanceId",
+                                   "TraitWitnessId",
+                                   "FacetTypeId",
+                                   "FacetInstanceId",
+                                   "ProviderId",
+                                   "AbiTag"
+                               ],
+    "kind_count":  12,
+    "same_kind_round_trip_count":  12,
+    "unordered_cross_kind_pair_count":  66,
+    "directed_cross_kind_rejection_count":  132,
+    "unnamed_cross_kind_conversion_policy":  "REJECT",
+    "noncanonical_alias_emission_count":  0,
+    "unresolved_identity_reference_count":  0,
+    "internal_typed_kinds":  [
+                                 "DynInstanceId",
+                                 "DynDescriptorId",
+                                 "DynPackPlanId",
+                                 "DynProjectionPlanId",
+                                 "OwnerTokenId",
+                                 "LoanId",
+                                 "PlaceId",
+                                 "CleanupPlanId",
+                                 "CleanupTokenId",
+                                 "FacetConstructionPlanId",
+                                 "RegistryId",
+                                 "RegistrySnapshotId",
+                                 "RegistryLineageId",
+                                 "RegistryEpoch",
+                                 "AuthorityScopeId",
+                                 "ResponsibilityProfileId",
+                                 "ProviderLeaseId",
+                                 "DropPlanId",
+                                 "DescriptorSchemaVersion",
+                                 "ArtifactIdentity"
+                             ],
+    "domain_separation":  {
+                              "semantic_identity_vs_runtime_type":  "DISTINCT",
+                              "semantic_identity_vs_serialization_tag":  "DISTINCT",
+                              "semantic_identity_vs_runtime_discriminant":  "DISTINCT",
+                              "semantic_identity_vs_layout_or_abi":  "DISTINCT",
+                              "semantic_identity_vs_hash_or_digest":  "DISTINCT",
+                              "git_commit_vs_artifact_sha256":  "DISTINCT_HASH_DOMAINS"
+                          },
+    "named_checked_mapping_examples":  [
+                                           {
+                                               "name":  "emitRuntimeType",
+                                               "from":  "ClassId or EnumId plus runtime image",
+                                               "to":  "Option\u003cRuntimeTypeId\u003e",
+                                               "authority":  "target/runtime descriptor authority"
+                                           },
+                                           {
+                                               "name":  "runtimeMatches",
+                                               "from":  "RuntimeTypeId plus expected ClassId or EnumId",
+                                               "to":  "Match or NoMatch",
+                                               "authority":  "checked descriptor table"
+                                           },
+                                           {
+                                               "name":  "ownerOf",
+                                               "from":  "VariantId",
+                                               "to":  "EnumId",
+                                               "authority":  "canonical total owner relation"
+                                           },
+                                           {
+                                               "name":  "traitOf",
+                                               "from":  "ConformanceId",
+                                               "to":  "TraitId",
+                                               "authority":  "normalized ground conformance record"
+                                           },
+                                           {
+                                               "name":  "conformanceOf",
+                                               "from":  "TraitWitnessId",
+                                               "to":  "ConformanceId",
+                                               "authority":  "one admitted whole-type binding"
+                                           },
+                                           {
+                                               "name":  "providerRoute",
+                                               "from":  "ProviderId",
+                                               "to":  "validated ConformanceId and TraitWitnessId",
+                                               "authority":  "validated registry entry"
+                                           },
+                                           {
+                                               "name":  "facetTypeOf",
+                                               "from":  "FacetInstanceId",
+                                               "to":  "FacetTypeId",
+                                               "authority":  "runtime metadata authority"
+                                           },
+                                           {
+                                               "name":  "payloadRuntimeType",
+                                               "from":  "FacetInstanceId",
+                                               "to":  "RuntimeTypeId",
+                                               "authority":  "privileged redacted inspection"
+                                           },
+                                           {
+                                               "name":  "abiLookup",
+                                               "from":  "RuntimeTypeId plus target and ABI manifest",
+                                               "to":  "Option\u003cAbiTag\u003e",
+                                               "authority":  "target-specific ABI authority"
+                                           }
+                                       ],
+    "cross_service_guard":  {
+                                "input":  "OWNER_CLOSED_IMMUTABLE_INPUT_ONLY",
+                                "owner_fact_generation_count":  0,
+                                "owner_identity_generation_count":  0,
+                                "witness_generation_count":  0,
+                                "authority_generation_count":  0,
+                                "upstream_feedback_edge_count":  0
+                            }
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N005 -->
+
+<!-- POST_PR16_UNIT_BEGIN:SFD-N006 -->
+```json
+{
+    "current_authority":  {
+                              "borrow_facet_type":  "Facet\u003cborrow any Trait\u003e",
+                              "borrow_facet_construction":  "facet[borrow value as Trait]",
+                              "surface_change_count":  0,
+                              "lowercase_via_change_count":  0,
+                              "class_enumeration_trait_change_count":  0
+                          },
+    "facet_profiles":  [
+                           {
+                               "mode":  "BORROW",
+                               "status":  "CURRENT_SURFACE_PRESERVED_PRODUCT_NOT_RUN",
+                               "payload_relation":  "shared region-bounded view",
+                               "cleanup_owner":  "source",
+                               "escape_suspend_isolation_count":  0
+                           },
+                           {
+                               "mode":  "INOUT",
+                               "status":  "GUARDED_PREVIEW_NONACTIVATABLE",
+                               "payload_relation":  "one exclusive PlaceId loan",
+                               "overlapping_exclusive_view_count":  0,
+                               "store_return_suspend_cancel_actor_cross_count":  0,
+                               "cleanup_owner":  "source; exclusive token released exactly once"
+                           },
+                           {
+                               "mode":  "OWNED",
+                               "status":  "GUARDED_PREVIEW_NONACTIVATABLE",
+                               "authorized_source_spelling":  null,
+                               "recovery_operation":  "move",
+                               "payload_relation":  "one moved owner",
+                               "failure":  "exact owner returned or discharged exactly once"
+                           }
+                       ],
+    "terminology":  {
+                        "ordinary_facet_create":  "construct or project a distinct Facet value",
+                        "ordinary_facet_end":  "drop or release the Facet",
+                        "attach_detach_successor_term_count":  0,
+                        "facet_store":  "DEFERRED_SEPARATE_RFC_AFTER_NECESSITY_PROOF"
+                    }
+}
+```
+<!-- POST_PR16_UNIT_END:SFD-N006 -->

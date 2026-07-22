@@ -15,7 +15,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-publication-m1.3"
+LEGACY_REVISION = "r51f3-current-publication-m1.3"
+SUCCESSOR_REVISION = "r51f3-post-pr16-preview-design-r4"
 EXCLUDED_TREE_PARTS = {".git", "target", "dist", "__pycache__"}
 EXPECTED = {
     "features": 681, "diagnostics": 1251, "predicates": 245,
@@ -91,6 +92,18 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
 EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
+SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
+    *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+    *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+    *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+    "SFD-P1-009",
+]
+SUCCESSOR_CANONICAL_DELTA_PATHS = {
+    "spec/language.md",
+    "spec/types/type-system.md",
+    "spec/mir/semantics.md",
+    "decisions/language/current-decisions.json",
+}
 EXPR_AUTHORITY = "governance/policies/management-policy.yaml#EXPR-001"
 EXPR_DIGEST = "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39"
 EXPR_FIELDS = {
@@ -173,6 +186,19 @@ def main() -> int:
         if not condition:
             errors.append(f"{code}: {detail}")
 
+    try:
+        revision = tomllib.loads(
+            (root / "current/language-version.toml").read_text(encoding="utf-8")
+        )["spec_revision"]
+    except Exception as exc:  # noqa: BLE001
+        revision = ""
+        check(False, "REVISION_PARITY", str(exc))
+    check(
+        revision in {LEGACY_REVISION, SUCCESSOR_REVISION},
+        "REVISION_PARITY",
+        revision,
+    )
+
     required = [
         "README.md", "GOVERNANCE.md", "CONTRIBUTING.md", "Cargo.toml",
         "current/authority-map.yaml", "current/implementation-status.yaml",
@@ -196,6 +222,12 @@ def main() -> int:
         "release/evidence/current-publication-m1.3-git-binding-receipt.json",
         "release/evidence/current-publication-m1.3-role-review-index.json",
     ]
+    if revision == SUCCESSOR_REVISION:
+        required.extend([
+            "tools/generators/generate_post_pr16_current_integrity.py",
+            "tools/generators/post-pr16-current-integrity.contract.json",
+            "tools/validators/run_post_pr16_current_integrity_tests.py",
+        ])
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
         check((root / rel).is_file(), "REQUIRED_PATH", rel)
@@ -218,7 +250,11 @@ def main() -> int:
             detail[-2000:],
         )
 
-    current_integrity_generator = root / "tools/generators/generate_current_integrity.py"
+    current_integrity_generator = root / (
+        "tools/generators/generate_post_pr16_current_integrity.py"
+        if revision == SUCCESSOR_REVISION
+        else "tools/generators/generate_current_integrity.py"
+    )
     if current_integrity_generator.is_file():
         process = subprocess.run(
             [
@@ -331,6 +367,10 @@ def main() -> int:
             path.is_file()
             and (
                 current_hash == row["output_sha256"]
+                or (
+                    revision == SUCCESSOR_REVISION
+                    and row["path"] in SUCCESSOR_CANONICAL_DELTA_PATHS
+                )
                 or exact_transition(
                     row["path"],
                     "migration/m1.1-repair-manifest.json",
@@ -354,6 +394,10 @@ def main() -> int:
                 current_hash = file_sha(target)
                 check(
                     current_hash == entry["sha256"]
+                    or (
+                        revision == SUCCESSOR_REVISION
+                        and rel in SUCCESSOR_CANONICAL_DELTA_PATHS
+                    )
                     or exact_transition(
                         rel,
                         "migration/import-manifest.json",
@@ -669,6 +713,8 @@ def main() -> int:
     )
 
     for rel, expected_sha in FROZEN_UNCHANGED_SEMANTIC_HASHES.items():
+        if revision == SUCCESSOR_REVISION and rel == "spec/types/type-system.md":
+            continue
         check(file_sha(root / rel) == expected_sha, "FROZEN_SEMANTIC_FILE_IDENTITY", rel)
     r42 = feature_by_id.get("type_system_rcts_v5_ts_r42_current_canonical_companion", {})
     active_navigation_text = "\n".join(
@@ -776,7 +822,7 @@ def main() -> int:
     check(len(review_consumers) == 7, "EXPR_REVIEW_TEMPLATE_DISCOVERY", str(len(review_consumers)))
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
-        check(state.get("candidate_revision") == REVISION and state.get("authority_digest") == computed_authority and state.get("current_pointer_published") is False, "CANDIDATE_STATE", str(state.get("candidate_revision")))
+        check(state.get("candidate_revision") == revision and state.get("authority_digest") == computed_authority and state.get("current_pointer_published") is False, "CANDIDATE_STATE", str(state.get("candidate_revision")))
     else:
         pointer = parsed.get(root / "current/current-pointer.json", {})
         check(set(pointer) == EXPECTED_POINTER_KEYS, "POINTER_REQUIRED_KEYS", f"missing={sorted(EXPECTED_POINTER_KEYS - set(pointer))} extra={sorted(set(pointer) - EXPECTED_POINTER_KEYS)}")
@@ -843,14 +889,22 @@ def main() -> int:
             and bool(re.fullmatch(r"[0-9a-f]{64}", predecessor_receipt.get("pointer_object", {}).get("sha256", ""))),
             "POINTER_PREDECESSOR_BINDING", str(pointer.get("previous_pointer")),
         )
-        check(pointer.get("spec_revision") == REVISION and pointer.get("authority_digest") == computed_authority, "POINTER_AUTHORITY", str(pointer.get("spec_revision")))
+        check(pointer.get("spec_revision") == revision and pointer.get("authority_digest") == computed_authority, "POINTER_AUTHORITY", str(pointer.get("spec_revision")))
         check(pointer.get("product_lanes") == lane_status, "POINTER_LANE_PARITY", f"pointer={len(pointer.get('product_lanes', {}))} registry={len(lane_status)}")
         actions = pointer.get("open_actions", [])
         action_keys = {"id", "priority", "summary", "owner", "tracking_ref", "acceptance_test", "target"}
         action_ids = [row.get("id") for row in actions]
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
+        expected_action_ids = (
+            SUCCESSOR_ACTION_IDS if revision == SUCCESSOR_REVISION else EXPECTED_ACTION_IDS
+        )
         check(
-            action_ids == EXPECTED_ACTION_IDS and next_review_ids == action_ids
+            action_ids == expected_action_ids
+            and (
+                next_review_ids == action_ids
+                if revision == LEGACY_REVISION
+                else pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS
+            )
             and len(action_ids) == len(set(action_ids))
             and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
             "POINTER_ACTION_BINDING", str(action_ids),
@@ -894,7 +948,7 @@ def main() -> int:
     for path in memories:
         capsule = parsed.get(path, {})
         check(len(capsule.get("current_facts", [])) <= 50 and len(capsule.get("open_actions", [])) <= 30 and len(capsule.get("watch_items", [])) <= 20 and path.stat().st_size <= 102400, "ROLE_MEMORY_CAP", path.name)
-        check(capsule.get("source_revision") == REVISION and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
+        check(capsule.get("source_revision") == LEGACY_REVISION and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
         expr_rows = [row for row in capsule.get("current_facts", []) if row.get("id") == "EXPR-001"]
         check(
             len(expr_rows) == 1
@@ -941,12 +995,12 @@ def main() -> int:
         row = listed_map.get(rel, {})
         check(row.get("sha256") == file_sha(path) and row.get("bytes") == path.stat().st_size, "SOURCE_TREE_FILE_IDENTITY", rel)
     tree_material = "\n".join(f"{row['path']}\0{row['sha256']}" for row in sorted(listed, key=lambda x: x["path"])).encode()
-    check(manifest.get("revision") == REVISION and manifest.get("tree_sha256") == hashlib.sha256(tree_material).hexdigest(), "SOURCE_TREE_AGGREGATE", str(manifest.get("tree_sha256")))
+    check(manifest.get("revision") == revision and manifest.get("tree_sha256") == hashlib.sha256(tree_material).hexdigest(), "SOURCE_TREE_AGGREGATE", str(manifest.get("tree_sha256")))
 
     result = "PASS" if not errors else "FAIL"
     receipt = {
         "schema": "deeplus.canonical-workspace-validation-receipt/v1.1",
-        "revision": REVISION, "mode": "candidate" if args.candidate else "published-current",
+        "revision": revision, "mode": "candidate" if args.candidate else "published-current",
         "result": result, "evidence_level": "E2_STATIC_CLOSURE",
         "checks": len(checks), "passed": sum(row["pass"] for row in checks),
         "failed": sum(not row["pass"] for row in checks), "canonical_counts": actual,
