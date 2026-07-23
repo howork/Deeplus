@@ -24,6 +24,12 @@ REPOSITORY_TEMP_PREFIXES = (
     ".post-pr16-integrity-test-",
     "deeplus-post-pr16-integrity-test-",
 )
+EXPECTED_INTEGRITY_SELF_TEST_CASES = {
+    "portable-bound-path-order",
+    "bound-root-mutation",
+    "pointer-nonowned-mutation",
+    "authority-nonowned-mutation",
+}
 
 
 def sha(path: Path) -> str:
@@ -210,11 +216,22 @@ def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[st
                 and peer_absent
             )
         else:
+            self_test_cases = receipt.get("cases", [])
+            observed_case_ids = {
+                row.get("case")
+                for row in self_test_cases
+                if isinstance(row, dict) and isinstance(row.get("case"), str)
+            }
             passed = (
                 process.returncode == 0
                 and receipt.get("result") == "PASS"
-                and receipt.get("tests") == 3
-                and receipt.get("passed") == 3
+                and receipt.get("tests") == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
+                and receipt.get("passed") == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
+                and observed_case_ids == EXPECTED_INTEGRITY_SELF_TEST_CASES
+                and all(
+                    isinstance(row, dict) and row.get("pass") is True
+                    for row in self_test_cases
+                )
                 and receipt.get("product_execution") == "NOT_RUN"
                 and peer_absent
             )

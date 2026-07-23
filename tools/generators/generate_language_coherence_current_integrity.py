@@ -127,7 +127,13 @@ def iter_bound_files(root: Path, target: Path) -> list[Path]:
     if not target.is_dir():
         raise GeneratorError("LANGUAGE_COHERENCE_BOUND_PATH", str(target))
     result: list[Path] = []
-    for path in sorted(target.rglob("*")):
+    # Path ordering follows the host filesystem flavour by default.  In
+    # particular, Windows compares case-insensitively while POSIX compares
+    # case-sensitively, which made mixed-case trees hash differently in CI.
+    # Bind the portable repository spelling instead.
+    for path in sorted(
+        target.rglob("*"), key=lambda item: item.relative_to(root).as_posix()
+    ):
         if any(part in EXCLUDED_PARTS for part in path.relative_to(root).parts):
             continue
         if path.is_symlink():
@@ -582,6 +588,17 @@ def self_test(root: Path) -> dict[str, Any]:
     contract = load_contract(root)
     render_outputs(root)
     cases = []
+
+    grammar_reference_paths = [
+        path.relative_to(root).as_posix()
+        for path in iter_bound_files(root, safe_path(root, "docs/grammar-reference"))
+    ]
+    cases.append(
+        {
+            "case": "portable-bound-path-order",
+            "pass": grammar_reference_paths == sorted(grammar_reference_paths),
+        }
+    )
 
     bad_bound = copy.deepcopy(contract)
     bad_bound["bound_roots"][0]["sha256"] = "0" * 64
