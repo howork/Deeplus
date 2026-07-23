@@ -1558,7 +1558,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Top level type visibility unification. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Exactly nine type-producing owners require one explicit visibility domain across all six stable/preview library, executable, and script roots: ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl. Their omission is recovery-only, emits TYPE_DECL_VISIBILITY_REQUIRED, and admits zero HIR type nodes. Other top-level owners carrying TopLevelVisibility? default omission to private. Wider API residue cannot expose a narrower identity; common is nonexportable and public still requires an admitted export or module interface.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1572,13 +1572,40 @@
       "diagnostics": [
         "TYPE_DECL_VISIBILITY_REQUIRED"
       ],
-      "predicates": [],
-      "examples": [],
-      "productions": [],
+      "predicates": [
+        "TopLevelTypeVisibilityAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-VIS-P-001",
+        "EX-R51f3-VIS-BOUNDARY-001",
+        "EX-R51f3-VIS-NG-001"
+      ],
+      "productions": [
+        "TopLevelVisibility",
+        "ClassDecl",
+        "TraitDecl",
+        "EnumDecl",
+        "TypeAliasDecl",
+        "SchemaDecl",
+        "ActorDecl",
+        "ActorProtocolDecl",
+        "TypestateResourceDecl",
+        "BitfieldDecl",
+        "LibrarySourceFile",
+        "ExecutableSourceFile",
+        "ScriptSourceFile",
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ],
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/frontend/frontend-model.json#/visibility_admission",
+      "schemas/language/top-level-type-visibility-descriptor.schema.json",
+      "spec/types/predicates/chunks/part-0015.json#TopLevelTypeVisibilityAdmitted"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

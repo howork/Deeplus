@@ -329,8 +329,8 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
         "features": 688,
-        "predicates": 245,
-        "predicate_fixtures": 764,
+        "predicates": 247,
+        "predicate_fixtures": 771,
         "no_go": 150,
         "hard_keywords": 30,
         "contextual_words": 101,
@@ -547,8 +547,11 @@ def refresh_contract(root: Path) -> dict[str, Any]:
     pointer = read_json(safe_path(root, POINTER_REL), "LANGUAGE_COHERENCE_POINTER")
     contract["pointer_non_owned_canonical_sha256"] = normalized_pointer_sha(pointer)
     contract["canonical_counts"] = collect_counts(root)
+    bound_paths = [row["path"] for row in contract["bound_roots"]]
+    if "docs/grammar-reference" not in bound_paths:
+        bound_paths.append("docs/grammar-reference")
     contract["bound_roots"] = [
-        bound_identity(root, row["path"]) for row in contract["bound_roots"]
+        bound_identity(root, path) for path in bound_paths
     ]
     contract["migration_identity_exemptions"] = collect_migration_exemptions(root)
     frozen = [

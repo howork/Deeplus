@@ -398,7 +398,7 @@ let positives = @for n in numbers {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type Port = 0..65_535
+private type Port = 0..65_535
 let maybePort: Option<Port> = raw as? Port
 ```
 ## EX-R48-024 — Closure capture descriptor stable current law
@@ -641,7 +641,7 @@ let checkedPort: Result<Port, error RefinementError> = Port::check(raw)
 ```deeplus
 use std::units::si
 
-type Meter = typeof 1[m]
+public type Meter = typeof 1[m]
 public def move(distance: Meter) -> Unit
     throws Never
     effects {}
@@ -660,7 +660,7 @@ public def move(distance: Meter) -> Unit
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type T = typeof 0
+private type T = typeof 0
 ```
 ## EX-R48-041 — typeof call form is forbidden
 
@@ -675,7 +675,7 @@ type T = typeof 0
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type T = typeof([0, ""])
+private type T = typeof([0, ""])
 // TYPEOF_CALL_FORM_FORBIDDEN
 ```
 ## EX-R48-042 — Ordinary trailing closure preserves call responsibility
@@ -1507,8 +1507,8 @@ let visibleValues = @for value in values {
 ```deeplus
 use std::units::si
 
-type Meter = typeof 1[m]
-type Vec3 = typeof #[1, 2, 3]
+public type Meter = typeof 1[m]
+private type Vec3 = typeof #[1, 2, 3]
 public def move(distance: Meter) = return distance ~ scalarIn(1[m])
 ```
 ## EX-R48E-002 — `typeof` still rejects runtime/effectful samples
@@ -1525,7 +1525,7 @@ public def move(distance: Meter) = return distance ~ scalarIn(1[m])
 
 ```deeplus
 let x = 1
-type Bad = typeof x
+private type Bad = typeof x
 // TYPEOF_SAMPLE_REQUIRES_STATIC_SAMPLE
 ```
 ## EX-R48E-003 — Trailing closure is stable but bare ordinary parenless call remains rejected
@@ -2248,7 +2248,7 @@ let total = items ~ fold 0 { acc, x => acc + x }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type Bad = typeof([0, ""])
+private type Bad = typeof([0, ""])
 // TYPEOF_CALL_FORM_FORBIDDEN
 ```
 ## EX-R48E1-021 — Ternary spacing law with ordinary operands
@@ -2808,8 +2808,8 @@ let chosen = cond ? x : y
 ```deeplus
 use std::units::si
 
-type Meter = typeof 1[m]
-type Vec3 = typeof #[1, 2, 3]
+private type Meter = typeof 1[m]
+private type Vec3 = typeof #[1, 2, 3]
 ```
 ## EX-R48F-021 — Stable trailing closure no preview gate
 
@@ -6096,7 +6096,7 @@ public type Value = Int
 
 ```deeplus
 sealed
-class OpenThing {}
+private class OpenThing {}
 ```
 ## EX-R51a1-041 — optional data-class and trait braces belong to their declarations
 
@@ -6125,7 +6125,7 @@ public trait Marker {}
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-data class Marker
+private data class Marker
 ({ x: Int => x })
 ```
 ## EX-R51a1-043 — cleanup budget maximally remains in the data-class header
@@ -6140,7 +6140,7 @@ data class Marker
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-data class Tracked
+private data class Tracked
 cleanup budget {
     effects {io}
 }
@@ -7763,7 +7763,7 @@ def command(name: String, args...: String, options***: Record) -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type Command = (String, String..., Record***) -> Unit
+private type Command = (String, String..., Record***) -> Unit
 ```
 ## EX-R51a1-NEW-005 — typed immutable flow binding
 
@@ -9439,7 +9439,7 @@ let value: Printable & Auditable
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type PrintableDocument = Document & Printable & Auditable
+private type PrintableDocument = Document & Printable & Auditable
 ```
 ## EX-R51a1-RCTS-LAZY-NG-001 — Lazy hidden throw channel forbidden
 
@@ -9499,7 +9499,7 @@ let value = @if cond { 1 } else { "one" }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-type TextOrNumber = Int | String
+private type TextOrNumber = Int | String
 let value: TextOrNumber = 13
 let text = @match value {
     n: Int => n ~ toString()
@@ -10199,7 +10199,7 @@ public def configure(options**: Record) -> Unit = { }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-open class Counter {
+private open class Counter {
     -var value: Int = 0
     +def increment.() -> Unit = { value += 1 }
     +def describe+() -> String = return "count=${value}"
@@ -10218,7 +10218,7 @@ open class Counter {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-class Bad {
+private class Bad {
     +def run() -> Unit = { }
 }
 ```
@@ -10235,7 +10235,7 @@ class Bad {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-class BadField {
+private class BadField {
     +let name. : String
 }
 ```
@@ -10251,7 +10251,7 @@ class BadField {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-trait Iterator {
+private trait Iterator {
     type Item
     let:: empty: Bool
     def:: defaultBatch() -> Int
@@ -10271,7 +10271,7 @@ trait Iterator {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-trait BadIterator {
+private trait BadIterator {
     type Item+
 }
 ```
@@ -11441,7 +11441,7 @@ if ready and not stopped {
 ```deeplus
 let array = [1, 2]
 let case = array[1]
-enum Token { case }
+private enum Token { case }
 let token: Token = Token::case
 ```
 
@@ -11461,7 +11461,7 @@ public protocol CounterProtocol {
     send add(value: Int)
     request current() -> Int
 }
-actor #mailbox(capacity: 8) Counter {
+public actor #mailbox(capacity: 8) Counter {
     on add(value: Int) = { }
     request current() -> Int = { return 0 }
 }
@@ -11493,7 +11493,7 @@ public def#async observe(counter: Counter) -> Int
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-actor #mailbox(capacity: 0) Counter { }
+private actor #mailbox(capacity: 0) Counter { }
 ```
 
 ## EX-R51f3-COH-010 — Cancellation is not recoverable through catch
@@ -11551,7 +11551,7 @@ public def#async supervise() -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-actor Worker {
+public actor Worker {
     on run(job: Job) = { }
 }
 public def dispatch(worker: Worker, move job: Job)
@@ -11928,4 +11928,171 @@ var values = [10, 20, 30, 40, 50]
 let replacements = [90, 91, 92]
 values[2..4] = replacements
 // SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED
+```
+
+## EX-R51f3-UNION-ISTEST-P-001 — closed Union is narrows the and then right-hand side
+
+- **source_feature_ids:** `closed_anonymous_union_type_msp`, `sequential_boolean_control_words_msp`
+- **checker_trace_ids:** `ClosedUnionTypeTestAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type TextOrNumber = Int | String
+
+public def isPositiveNumber(value: TextOrNumber) -> Bool = {
+    return value is Int and then value > 0
+}
+```
+
+## EX-R51f3-UNION-ISTEST-P-002 — closed Union !is tests the exact complementary alternative set
+
+- **source_feature_ids:** `closed_anonymous_union_type_msp`
+- **checker_trace_ids:** `ClosedUnionTypeTestAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type TextOrNumber = Int | String
+
+public def isText(value: TextOrNumber) -> Bool = {
+    return value !is Int
+}
+```
+
+## EX-R51f3-UNION-ISTEST-NG-001 — is rejects a subject that is not one closed Union
+
+- **source_feature_ids:** `closed_anonymous_union_type_msp`
+- **checker_trace_ids:** `ClosedUnionTypeTestAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def invalidTypeTest(value: Int) -> Bool = {
+    return value is Int
+}
+// TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION
+```
+
+## EX-R51f3-UNION-ISTEST-NG-002 — is rejects a target that is not one exact Union alternative
+
+- **source_feature_ids:** `closed_anonymous_union_type_msp`
+- **checker_trace_ids:** `ClosedUnionTypeTestAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type TextOrNumber = Int | String
+
+public def invalidAlternative(value: TextOrNumber) -> Bool = {
+    return value is TextOrNumber
+}
+// UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT
+```
+
+## EX-R51f3-UNION-ISTEST-NG-003 — is cannot participate directly in a comparison chain
+
+- **source_feature_ids:** `closed_anonymous_union_type_msp`, `ordered_comparison_chain_msp`
+- **checker_trace_ids:** `ClosedUnionTypeTestAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type TextOrNumber = Int | String
+
+public def invalidComparisonChain(value: TextOrNumber) -> Bool = {
+    return value is Int == true
+}
+// COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A
+```
+
+## EX-R51f3-VIS-P-001 — Exact type-producing owners use explicit visibility
+
+- **source_feature_ids:** `top_level_type_visibility_unification`
+- **checker_trace_ids:** `TopLevelTypeVisibilityAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public class PublicBox {}
+common trait PackageTrait {}
+private enum LocalState {
+    idle
+}
+public type PublicCount = Int
+common schema PackageRecord {
+    value: Int
+}
+private actor LocalWorker {}
+public protocol PublicProtocol {}
+common typestate PackageResource {}
+private bitfield LocalBits
+    backing UInt8
+    order ::lsb0
+{
+    enabled: 1
+    _: 7
+}
+```
+
+## EX-R51f3-VIS-BOUNDARY-001 — Non-type top-level omission defaults to private
+
+- **source_feature_ids:** `top_level_type_visibility_unification`
+- **checker_trace_ids:** `TopLevelTypeVisibilityAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+def helper() -> Unit = { }
+// Omitted non-type top-level visibility normalizes to private.
+```
+
+## EX-R51f3-VIS-NG-001 — Preview-root type omission admits zero identities
+
+- **source_feature_ids:** `top_level_type_visibility_unification`, `preview_profile_root_contract`, `numeric_array_elementwise_power_msp`
+- **checker_trace_ids:** `TopLevelTypeVisibilityAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `explicit_feature_gate`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `PreviewScriptSourceFile`
+- **primary_diagnostic:** `TYPE_DECL_VISIBILITY_REQUIRED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+#preview(numeric_array_elementwise_power_msp)
+actor Worker {}
+// TYPE_DECL_VISIBILITY_REQUIRED
+// Recovery admits 0 HIR type nodes, type identities, and API-digest entries.
 ```

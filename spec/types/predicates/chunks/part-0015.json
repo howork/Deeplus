@@ -450,5 +450,175 @@
       "branch_02": "TRAIT_METHOD_AUTHORITY_TOO_WIDE",
       "branch_03": "TRAIT_METHOD_AUTHORITY_TOO_WIDE"
     }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "source_name": "ClosedUnionTypeTestAdmitted",
+    "summary": "Admit is/!is only as a nonconsuming exact alternative identity test over one normalized closed Union and compute bounded complementary Phi facts.",
+    "input_descriptor": "ClosedUnionTypeTestDescriptor",
+    "input_descriptor_schema": "schemas/language/closed-union-type-test-descriptor.schema.json",
+    "descriptor_axes": [
+      "subject_static_type",
+      "normalized_alternatives",
+      "target_type",
+      "normalized_target_identity",
+      "operator",
+      "current_phi_alternatives",
+      "subject_stable_place",
+      "mutation_between_test_and_use",
+      "propagation_context"
+    ],
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "diagnostic_refs": [
+      "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+      "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(Bool, true_phi, false_phi) | reject(diagnostic_id)",
+    "requires": [
+      "subject static type normalizes to one finite closed Union",
+      "target normalizes to exactly one declared alternative identity",
+      "evaluate the subject once and read its stored injection identity once",
+      "perform no subtyping, refinement, reflection, Trait, witness, or provider search",
+      "bind no value and commit no ownership, authority, effect, or allocation",
+      "retain durable Phi facts only for a stable place not invalidated by a kill event"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "flow",
+      "ownership",
+      "evaluation_order"
+    ],
+    "formal_judgment_id": "J-ClosedUnionTypeTestAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "the comparison-chain owner has already rejected direct chaining before this predicate runs",
+      "parse the is/!is right operand through the TypeRef goal",
+      "normalize aliases and the subject Union identity",
+      "read the current Phi alternative set"
+    ],
+    "normalization": "flatten and normalize the closed Union, exact target identity, and current Phi alternative set",
+    "decision_procedure": [
+      "reject a subject that is not exactly one normalized closed Union with TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+      "reject a target that is not exactly one declared alternative identity with UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
+      "evaluate the subject once and compare the stored injection identity once without consuming",
+      "for is, compute true Phi as current intersect target and false Phi as current minus target; swap those outputs for !is",
+      "propagate the left true fact into and then RHS and the left false fact into otherwise RHS; do not pre-narrow a strict and/or RHS",
+      "discard a durable fact after assignment, aliasing mutation, exclusive borrow, escape, capture, consume, or a may-mutate call",
+      "return Bool plus the bounded edge facts without changing the declared type"
+    ],
+    "termination_metric": "finite normalized Union alternative count",
+    "success_result": "Bool plus bounded complementary Phi facts",
+    "active_primary_diagnostic": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+    "secondary_diagnostics": [
+      "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT"
+    ],
+    "positive_fixture_ids": [
+      "PF-ClosedUnionTypeTestAdmitted-POS",
+      "PF-ClosedUnionTypeTestAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ClosedUnionTypeTestAdmitted-NEG",
+      "PF-ClosedUnionTypeTestAdmitted-NEG-TARGET"
+    ],
+    "evaluation_order": "schema -> normalization -> subject domain -> target identity -> one discriminator read -> Phi transfer -> diagnostic",
+    "dependency_predicates": [
+      "NormalizeUnion"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_subject_not_one_closed_union": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+      "2_target_not_exact_declared_alternative": "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT"
+    },
+    "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TopLevelTypeVisibilityAdmitted",
+    "source_name": "TopLevelTypeVisibilityAdmitted",
+    "summary": "Normalize one top-level visibility domain while requiring an explicit word for exactly nine type-producing owners in all six stable and preview source roots.",
+    "input_descriptor": "TopLevelTypeVisibilityDescriptorR1",
+    "input_descriptor_schema": "schemas/language/top-level-type-visibility-descriptor.schema.json",
+    "descriptor_axes": [
+      "source_root",
+      "declaration_kind",
+      "type_producing_owner",
+      "explicit_visibility",
+      "module_identity",
+      "package_identity",
+      "external_export_or_module_interface_admitted",
+      "api_dependency_visibilities"
+    ],
+    "feature_refs": [
+      "top_level_type_visibility_unification"
+    ],
+    "diagnostic_refs": [
+      "TYPE_DECL_VISIBILITY_REQUIRED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(normalized_visibility, external_api_eligibility, ApiVisibilityClosureObligation) | reject(TYPE_DECL_VISIBILITY_REQUIRED)",
+    "requires": [
+      "the type-producing owner set is exactly ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl",
+      "the source-root set is exactly the stable and preview library, executable, and script roots",
+      "a type-producing owner has one explicit public, common, or private word before HIR identity admission",
+      "an omitted word on every other top-level owner carrying TopLevelVisibility normalizes to private",
+      "private is module-local, common is package-wide and nonexportable, and public is only externally eligible through an admitted export or module interface",
+      "wider API residue cannot expose a dependency identity from a narrower domain"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "authority",
+      "api_digest"
+    ],
+    "formal_judgment_id": "J-TopLevelTypeVisibilityAdmitted",
+    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
+    "preconditions": [
+      "validate the closed descriptor and one of the six source roots",
+      "derive type-producing ownership from the exact nine-owner set rather than trusting a caller flag"
+    ],
+    "normalization": "normalize an explicit visibility verbatim; normalize omission to private only when the declaration kind is outside the exact type-producing owner set",
+    "decision_procedure": [
+      "validate the descriptor and recompute type_producing_owner from the exact nine-owner set",
+      "reject a recomputed type-producing owner with no explicit visibility using TYPE_DECL_VISIBILITY_REQUIRED before creating a HIR type node, type identity, or API-digest entry",
+      "for every other top-level owner carrying TopLevelVisibility, normalize an omitted word to private; otherwise preserve the explicit private, common, or public domain",
+      "derive external_api_eligibility as false for private and common and as the explicit export-or-module-interface admission bit for public",
+      "derive an API closure obligation in which public residue may reference only public identities, common residue may reference only common or public identities, and private residue may reference any identity accessible in its declaring module",
+      "return the normalized domain and closure obligation to HIR/API admission without inventing an export, package identity, or visibility word"
+    ],
+    "termination_metric": "one finite descriptor, one nine-owner membership test, and one finite API-dependency visibility list",
+    "success_result": "one normalized visibility domain, one external-API eligibility bit, and one finite API-visibility closure obligation",
+    "active_primary_diagnostic": "TYPE_DECL_VISIBILITY_REQUIRED",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-TopLevelTypeVisibilityAdmitted-POS",
+      "PF-TopLevelTypeVisibilityAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-TopLevelTypeVisibilityAdmitted-NEG"
+    ],
+    "evaluation_order": "schema -> exact source root -> exact owner classification -> omission gate -> domain normalization -> API closure obligation -> HIR identity admission",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_missing_required_visibility": "TYPE_DECL_VISIBILITY_REQUIRED"
+    },
+    "predecessor_identity": null
   }
 ]

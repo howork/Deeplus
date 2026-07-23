@@ -1754,5 +1754,199 @@
     },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ClosedUnionTypeTestAdmitted-POS",
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.closed-union-type-test-descriptor/r1",
+      "subject_static_type": "Int | String",
+      "normalized_alternatives": [
+        "Int",
+        "String"
+      ],
+      "target_type": "Int",
+      "normalized_target_identity": "Int",
+      "operator": "is",
+      "current_phi_alternatives": [
+        "Int",
+        "String"
+      ],
+      "subject_stable_place": true,
+      "mutation_between_test_and_use": false,
+      "propagation_context": "and_then_rhs"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "union",
+      "semantic_type": {
+        "kind": "union",
+        "type_id": "PF-ClosedUnionTypeTestAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "alternatives": [
+        "Int",
+        "String"
+      ],
+      "injection_policy": "fixed_expected_unique_exact"
+    },
+    "admitted_condition": "exact declared alternative; true Phi is Int and false Phi is String",
+    "rule_seed": "closed-Union is evaluates and reads the subject identity once without open RTTI",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ClosedUnionTypeTestAdmitted-BOUNDARY",
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.closed-union-type-test-descriptor/r1",
+      "subject_static_type": "Int | String",
+      "normalized_alternatives": [
+        "Int",
+        "String"
+      ],
+      "target_type": "Int",
+      "normalized_target_identity": "Int",
+      "operator": "!is",
+      "current_phi_alternatives": [
+        "Int",
+        "String"
+      ],
+      "subject_stable_place": true,
+      "mutation_between_test_and_use": false,
+      "propagation_context": "otherwise_rhs"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "union",
+      "semantic_type": {
+        "kind": "union",
+        "type_id": "PF-ClosedUnionTypeTestAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      },
+      "alternatives": [
+        "Int",
+        "String"
+      ],
+      "injection_policy": "fixed_expected_unique_exact"
+    },
+    "admitted_condition": "exact !is complement; true Phi is String and false Phi is Int",
+    "rule_seed": "closed-Union !is is the exact adjacent complement and binds no value",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ClosedUnionTypeTestAdmitted-NEG",
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.closed-union-type-test-descriptor/r1",
+      "subject_static_type": "Int",
+      "normalized_alternatives": [],
+      "target_type": "Int",
+      "normalized_target_identity": "Int",
+      "operator": "is",
+      "current_phi_alternatives": [
+        "Int"
+      ],
+      "subject_stable_place": true,
+      "mutation_between_test_and_use": false,
+      "propagation_context": "standalone"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Int"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "a nominal non-Union subject must not activate open RTTI",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+    "violated_condition": "subject static type is not one normalized closed Union",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TopLevelTypeVisibilityAdmitted-POS",
+    "predicate_id": "TopLevelTypeVisibilityAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.top-level-type-visibility-descriptor/r1",
+      "source_root": "LibrarySourceFile",
+      "declaration_kind": "ClassDecl",
+      "type_producing_owner": true,
+      "explicit_visibility": "public",
+      "module_identity": "acme.geometry",
+      "package_identity": "acme",
+      "external_export_or_module_interface_admitted": true,
+      "api_dependency_visibilities": [
+        "public"
+      ]
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-TopLevelTypeVisibilityAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "an explicit public ClassDecl is admitted and is externally eligible only because an export or module interface is separately admitted",
+    "rule_seed": "exact type-producing owner plus explicit three-domain visibility",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

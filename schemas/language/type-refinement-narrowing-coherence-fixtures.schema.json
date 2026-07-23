@@ -14,13 +14,13 @@
     "current_binding": {"const": false},
     "open_feature_p1": {"type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true, "items": {"type": "string"}},
     "product_lanes": {"type": "object", "minProperties": 15, "maxProperties": 15, "additionalProperties": {"const": "NOT_RUN"}},
-    "cases": {"type": "array", "minItems": 35, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
+    "cases": {"type": "array", "minItems": 40, "maxItems": 40, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
     "expected_counts": {
       "type": "object", "additionalProperties": false,
-      "required": ["cases", "admit", "reject", "runtime_union_tests", "open_runtime_type_tests", "def_guard_narrowing_facts", "p1_closed", "p1_created"],
+      "required": ["cases", "admit", "reject", "runtime_union_pattern_tests", "closed_union_expression_tests", "open_runtime_type_tests", "def_guard_narrowing_facts", "p1_closed", "p1_created"],
       "properties": {
-        "cases": {"const": 35}, "admit": {"const": 10}, "reject": {"const": 25},
-        "runtime_union_tests": {"const": 2}, "open_runtime_type_tests": {"const": 0},
+        "cases": {"const": 40}, "admit": {"const": 13}, "reject": {"const": 27},
+        "runtime_union_pattern_tests": {"const": 2}, "closed_union_expression_tests": {"const": 5}, "open_runtime_type_tests": {"const": 0},
         "def_guard_narrowing_facts": {"const": 0}, "p1_closed": {"const": 0}, "p1_created": {"const": 0}
       }
     }

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/top-level-type-visibility-descriptor.schema.json",
+  "title": "Deeplus top-level visibility admission descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "source_root",
+    "declaration_kind",
+    "type_producing_owner",
+    "explicit_visibility",
+    "module_identity",
+    "package_identity",
+    "external_export_or_module_interface_admitted",
+    "api_dependency_visibilities"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.top-level-type-visibility-descriptor/r1"
+    },
+    "source_root": {
+      "enum": [
+        "LibrarySourceFile",
+        "ExecutableSourceFile",
+        "ScriptSourceFile",
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ]
+    },
+    "declaration_kind": {
+      "enum": [
+        "ClassDecl",
+        "TraitDecl",
+        "EnumDecl",
+        "TypeAliasDecl",
+        "SchemaDecl",
+        "ActorDecl",
+        "ActorProtocolDecl",
+        "TypestateResourceDecl",
+        "BitfieldDecl",
+        "ExportableModuleFunctionDecl",
+        "ModuleFunctionDecl",
+        "ExtensionFunctionDecl",
+        "ConformanceDecl",
+        "ExtensionSetDecl",
+        "TopLevelBindingDecl",
+        "NamedEffectCapabilityDecl",
+        "UnitCatalogDecl",
+        "ModuleSignatureDecl",
+        "OpaqueModuleFacadeDecl"
+      ]
+    },
+    "type_producing_owner": {
+      "type": "boolean"
+    },
+    "explicit_visibility": {
+      "oneOf": [
+        {
+          "enum": [
+            "private",
+            "common",
+            "public"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "module_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "package_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "external_export_or_module_interface_admitted": {
+      "type": "boolean"
+    },
+    "api_dependency_visibilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "private",
+          "common",
+          "public"
+        ]
+      }
+    }
+  }
+}

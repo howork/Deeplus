@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 28,
+  "law_count": 29,
   "laws": [
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
@@ -242,12 +242,21 @@
     },
     {
       "id": "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE",
-      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable only inside closed Union pattern owners; no open RTTI is introduced. def#guard call results are opaque to narrowing. Union formation requires a finite pairwise DISJOINT proof, guarded match arms never establish exhaustiveness, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
+      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable inside closed Union pattern owners; the existing closed-Union-only `is`/`!is` forms parse an exact TypeRef alternative, evaluate the subject and stored injection identity once, and produce complementary Bool edge facts without binding. `is` intersects/removes the target on true/false edges and `!is` swaps them; `and then` receives the left true fact, `otherwise` the left false fact, and strict `and`/`or` do not pre-narrow. Durable facts require a stable place and die on assignment, aliasing mutation, exclusive borrow, escape/capture, consume, or a may-mutate/may-consume call. Neither form introduces open RTTI. def#guard call results are opaque to narrowing. Union formation requires a finite pairwise DISJOINT proof, guarded match arms never establish exhaustiveness, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/type-refinement-narrowing-coherence.json and user comprehensive review direction",
       "effective_revision": "r51f3-current-type-refinement-narrowing-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-TOP-LEVEL-TYPE-VISIBILITY-COHERENCE",
+      "law": "Exactly ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl are type-producing top-level visibility owners. In every stable or preview library, executable, and script root they require an explicit public/common/private domain; omission is recovery-only and produces zero admitted HIR type identities. Every other top-level owner carrying TopLevelVisibility? defaults an omitted word to private. Wider API residue cannot expose a narrower identity, common is never external or re-exported, and public requires a separately admitted export or module interface.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "spec/language.md section 6 and spec/frontend/frontend-model.json visibility_admission",
+      "effective_revision": "r51f3-current-top-level-type-visibility-coherence-r1"
     }
   ],
   "authority_policy": "USER_DIRECT records current user direction and receives strong presumptive weight, but remains reviewable against contradictions and evidence; no decision row is immutable constitutional law. Explicit decisions adopted for this release control its projections until revised. DESIGNER_ACCEPTED decisions are reviewable; DERIVED_PROJECTION rows have no independent authority."

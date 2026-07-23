@@ -114,9 +114,33 @@ For every remaining `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged a
 
 ## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
 
-The checker lowers an admitted closed-union typed arm to `UnionAlternativeTest(UnionTypeId, AlternativeTypeId)` followed by nonowning probe bindings. This operation reads only the discriminator already required by the closed Union representation. MIR must not replace it with RTTI, subtype search, reflection, a Trait query, or evaluation of a refinement predicate.
+The checker lowers an admitted closed-union typed arm to
+`UnionAlternativeTest(UnionTypeId, AlternativeTypeId)` followed by nonowning
+probe bindings. The distinct expression forms `subject is Alternative` and
+`subject !is Alternative` lower to
+`ClosedUnionAlternativeTest(UnionTypeId, AlternativeTypeId, negated)` and
+produce `Bool` without a binding. Both operations read only the discriminator
+already required by the closed Union representation. MIR must not replace
+either operation with a generic `TypeTest`, RTTI, subtype search, reflection, a
+Trait query, provider or witness lookup, or evaluation of a refinement
+predicate.
+
+`ClosedUnionAlternativeTest` evaluates its subject once, reads the stored
+injection identity once, and introduces no ownership commit, effect, authority,
+allocation, or hidden failure. The checker has already rejected a non-Union
+subject, a target that is not exactly one declared alternative, and direct
+comparison chaining. Its `negated` bit only swaps the true and false
+successors.
 
 `Phi` is compile-time evidence and is not a runtime value. MIR receives only the selected structural test, the admitted guard evaluation, a delayed commit plan, and explicit failure edges. False structural tests, false guards, and statically unreachable arms commit zero bindings, moves, exclusive borrows, or authorities. Guarded arms do not become exhaustive in MIR merely because their predicate returns Bool.
+
+For an expression test over a stable place, the checker may attach bounded
+complementary alternative facts to the two successors. `and then` passes the
+left true fact to its right operand and `otherwise` passes the left false fact;
+strict `and` and `or` receive no such pre-narrowing. Assignment, aliasing
+mutation, exclusive borrow, escape or capture with possible mutation, consume,
+or a may-mutate/may-consume call kills the durable fact. MIR does not materialize
+`Phi`, and these facts never change the declared semantic type.
 
 Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. A `def#guard` call carries no hidden narrowing summary and cannot erase a later refinement check.
 

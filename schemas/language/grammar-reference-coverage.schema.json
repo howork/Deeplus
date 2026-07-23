@@ -1,0 +1,651 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/grammar-reference-coverage-r1.json",
+  "title": "Deeplus grammar reference coverage manifest R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "reference_root",
+    "authority",
+    "source_bindings",
+    "manual_documents",
+    "generated_outputs",
+    "grammar",
+    "registries",
+    "governance",
+    "manual_quality",
+    "vocabulary",
+    "coverage",
+    "product_support"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.grammar-reference-coverage/r1"
+    },
+    "revision": {
+      "const": "r51f3-current-literal-shaped-collection-design-r1"
+    },
+    "reference_root": {
+      "const": "docs/grammar-reference"
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "semantic_authority",
+        "conflict_order"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CANONICAL_DOCUMENTATION_PROJECTION"
+        },
+        "semantic_authority": {
+          "const": false
+        },
+        "conflict_order": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "source_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/fileBinding"
+      }
+    },
+    "manual_documents": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "title",
+          "status_marker",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(landing|[0-9]{2})$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^docs/grammar-reference/.+\\.md$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status_marker": {
+            "const": "CURRENT_CANONICAL_DOCUMENTATION_PROJECTION"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    },
+    "generated_outputs": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "$ref": "#/$defs/fileBinding"
+      }
+    },
+    "grammar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "production_count",
+        "profile_counts",
+        "duplicate_production_count",
+        "unknown_profile_count"
+      ],
+      "properties": {
+        "path": {
+          "const": "spec/grammar/deeplus.ebnf"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "production_count": {
+          "const": 560
+        },
+        "profile_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "LEXICAL",
+            "STABLE",
+            "PREVIEW",
+            "RECOVERY"
+          ],
+          "properties": {
+            "LEXICAL": {
+              "const": 89
+            },
+            "STABLE": {
+              "const": 443
+            },
+            "PREVIEW": {
+              "const": 13
+            },
+            "RECOVERY": {
+              "const": 15
+            }
+          }
+        },
+        "duplicate_production_count": {
+          "const": 0
+        },
+        "unknown_profile_count": {
+          "const": 0
+        }
+      }
+    },
+    "registries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "features",
+        "diagnostics",
+        "predicates",
+        "prelude",
+        "examples"
+      ],
+      "properties": {
+        "features": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/registryBinding"
+            },
+            {
+              "properties": {
+                "row_count": {
+                  "const": 688
+                },
+                "unique_id_count": {
+                  "const": 688
+                }
+              }
+            }
+          ]
+        },
+        "diagnostics": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/registryBinding"
+            },
+            {
+              "properties": {
+                "row_count": {
+                  "const": 1281
+                },
+                "unique_id_count": {
+                  "const": 1281
+                }
+              }
+            }
+          ]
+        },
+        "predicates": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/registryBinding"
+            },
+            {
+              "properties": {
+                "row_count": {
+                  "const": 247
+                },
+                "unique_id_count": {
+                  "const": 247
+                }
+              }
+            }
+          ]
+        },
+        "prelude": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/registryBinding"
+            },
+            {
+              "properties": {
+                "row_count": {
+                  "const": 56
+                },
+                "unique_id_count": {
+                  "const": 56
+                }
+              }
+            }
+          ]
+        },
+        "examples": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/registryBinding"
+            },
+            {
+              "properties": {
+                "row_count": {
+                  "const": 703
+                },
+                "unique_id_count": {
+                  "const": 703
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_path",
+        "semantic_p0",
+        "feature_p1_status",
+        "feature_p1_ids",
+        "separate_action_status",
+        "separate_open_action_ids",
+        "product_lanes"
+      ],
+      "properties": {
+        "source_path": {
+          "const": "current/current-pointer.json"
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "feature_p1_status": {
+          "const": "OPEN"
+        },
+        "feature_p1_ids": {
+          "type": "array",
+          "minItems": 22,
+          "maxItems": 22,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "CE-C-P1-001",
+              "CE-C-P1-002",
+              "CE-C-P1-003",
+              "CE-C-P1-004",
+              "CE-C-P1-005",
+              "CE-C-P1-006",
+              "CE-E-P1-001",
+              "CE-E-P1-002",
+              "CE-E-P1-003",
+              "CE-E-P1-004",
+              "CE-E-P1-005",
+              "CE-E-P1-006",
+              "CE-E-P1-007",
+              "CE-E-P1-008",
+              "TCC-P1-002",
+              "TCC-P1-003",
+              "TCC-P1-004",
+              "TCC-P1-005",
+              "TCC-P1-006",
+              "TCC-P1-007",
+              "TCC-P1-008",
+              "SFD-P1-009"
+            ]
+          }
+        },
+        "separate_action_status": {
+          "const": "OPEN"
+        },
+        "separate_open_action_ids": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "M13-A002",
+              "M13-A003",
+              "M13-A004",
+              "M13-A005"
+            ]
+          }
+        },
+        "product_lanes": {
+          "$ref": "#/$defs/productLanes"
+        }
+      }
+    },
+    "manual_quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "forbidden_path_token_count",
+        "manual_internal_link_count",
+        "planned_generated_internal_link_count",
+        "invalid_internal_link_count",
+        "referenced_example_id_count",
+        "unknown_example_reference_count",
+        "deeplus_example_block_count",
+        "registry_bound_example_block_count",
+        "illustrative_example_block_count",
+        "example_binding_violation_count",
+        "preview_gated_feature_count",
+        "preview_design_feature_count",
+        "preview_review_card_count",
+        "preview_review_card_field_violation_count",
+        "status_fence_scope",
+        "status_fence_violation_count"
+      ],
+      "properties": {
+        "forbidden_path_token_count": {
+          "const": 0
+        },
+        "manual_internal_link_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "planned_generated_internal_link_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_internal_link_count": {
+          "const": 0
+        },
+        "referenced_example_id_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unknown_example_reference_count": {
+          "const": 0
+        },
+        "deeplus_example_block_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "registry_bound_example_block_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "illustrative_example_block_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "example_binding_violation_count": {
+          "const": 0
+        },
+        "preview_gated_feature_count": {
+          "const": 3
+        },
+        "preview_design_feature_count": {
+          "const": 47
+        },
+        "preview_review_card_count": {
+          "const": 47
+        },
+        "preview_review_card_field_violation_count": {
+          "const": 0
+        },
+        "status_fence_scope": {
+          "const": "UNTIL_NEXT_FENCE_OR_EOF"
+        },
+        "status_fence_violation_count": {
+          "const": 0
+        }
+      }
+    },
+    "vocabulary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "hard_keyword_count",
+        "contextual_word_count"
+      ],
+      "properties": {
+        "path": {
+          "const": "spec/grammar/keyword-vocabulary.json"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "hard_keyword_count": {
+          "const": 30
+        },
+        "contextual_word_count": {
+          "const": 101
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targets",
+        "observed",
+        "uncovered_count",
+        "unknown_reference_count",
+        "status_fence_violations"
+      ],
+      "properties": {
+        "targets": {
+          "$ref": "#/$defs/counts"
+        },
+        "observed": {
+          "$ref": "#/$defs/counts"
+        },
+        "uncovered_count": {
+          "const": 0
+        },
+        "unknown_reference_count": {
+          "const": 0
+        },
+        "status_fence_violations": {
+          "const": 0
+        }
+      }
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "bytes",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "registryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata_path",
+        "chunks_root",
+        "row_count",
+        "unique_id_count",
+        "duplicate_id_count",
+        "sha256"
+      ],
+      "properties": {
+        "metadata_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chunks_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unique_id_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "duplicate_id_count": {
+          "const": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar_productions",
+        "features",
+        "diagnostics",
+        "predicates",
+        "prelude_entries",
+        "examples",
+        "hard_keywords",
+        "contextual_words"
+      ],
+      "properties": {
+        "grammar_productions": {
+          "const": 560
+        },
+        "features": {
+          "const": 688
+        },
+        "diagnostics": {
+          "const": 1281
+        },
+        "predicates": {
+          "const": 247
+        },
+        "prelude_entries": {
+          "const": 56
+        },
+        "examples": {
+          "const": 703
+        },
+        "hard_keywords": {
+          "const": 30
+        },
+        "contextual_words": {
+          "const": 101
+        }
+      }
+    },
+    "productLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {
+          "const": "NOT_RUN"
+        },
+        "rust_frontend_parser": {
+          "const": "NOT_RUN"
+        },
+        "rust_hir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "rust_integrated_checker": {
+          "const": "NOT_RUN"
+        },
+        "deeplus_mir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "xvm_bytecode_emitter": {
+          "const": "NOT_RUN"
+        },
+        "xvm_interpreter": {
+          "const": "NOT_RUN"
+        },
+        "llvm_aot_backend": {
+          "const": "NOT_RUN"
+        },
+        "llvm_orc_jit_backend": {
+          "const": "NOT_RUN"
+        },
+        "formatter_lsp": {
+          "const": "NOT_RUN"
+        },
+        "stdlib_provider_runner": {
+          "const": "NOT_RUN"
+        },
+        "official_tooling": {
+          "const": "NOT_RUN"
+        },
+        "independent_conformance": {
+          "const": "NOT_RUN"
+        },
+        "cross_backend_conformance": {
+          "const": "NOT_RUN"
+        },
+        "actual_user_team_study": {
+          "const": "NOT_RUN"
+        }
+      }
+    }
+  }
+}

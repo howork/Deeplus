@@ -8,7 +8,7 @@ The checker owns well-formedness, expression typing, subtyping, conformance evid
 
 ## 2. Normalization and identity
 
-Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, cancellation, measures, shapes, and witness identities normalize before comparison. Normalization is terminating, performs an occurs check, and preserves every responsibility-bearing distinction. Inference is bidirectional and local: it never invents an implicit generic, anonymous union, hidden authority, cancellation conversion, or runtime type test.
+Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, cancellation, measures, shapes, and witness identities normalize before comparison. Normalization is terminating, performs an occurs check, and preserves every responsibility-bearing distinction. Inference is bidirectional and local: it never invents an implicit generic, anonymous union, hidden authority, cancellation conversion, or open runtime type test.
 
 A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `IntN`, `UIntN`, `ISize`, and `USize` are separate domains; contextual adaptation of a signless unsuffixed integer succeeds only for one exact representable `IntN` or `UIntN` target. A sign remains an AST prefix operator. With an independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated magnitude fact, compute `-magnitude`, and test that signed candidate against the exact target domain. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. `ISize`/`USize` require an exact suffix or explicit checked conversion. An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
 
@@ -52,11 +52,17 @@ Move, borrow, inout, resource, isolation, suspension, effect, error, defect, can
 
 ## 8. Patterns, clauses, and laws
 
-Every Pattern owner uses one normalized Pattern AST plus an explicit context policy. Plain `let`/`var`, bare `for`, and ordinary parameters require irrefutability; guarded `let`, `if let`, `while let`, `for let`, and `match` admit refutable patterns under their own failure disposition. The subject is evaluated once, structural testing is nonconsuming, probe binders are nonowning, the optional guard is terminating/pure/Bool, and final moves/borrows/bindings commit atomically only after success. Failure commits no binding, partial move, irreversible borrow, escape, suspension, or authority. `while let` failure completes the loop and `for let` failure skips the candidate. Pattern coverage is closed over enum, union, Option, Result, sealed families, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcome. Tuple patterns and Record rest patterns are not current. Declarative clauses use the finite partition algorithm. Law bodies admit only pure predicate assertions.
+Every Pattern owner uses one normalized Pattern AST plus an explicit context policy. Plain `let`/`var`, bare `for`, and ordinary parameters require irrefutability; guarded `let`, `if let`, `while let`, `for let`, and `match` admit refutable patterns under their own failure disposition. The subject is evaluated once, structural testing is nonconsuming, probe binders are nonowning, the optional guard is terminating/pure/Bool, and final moves/borrows/bindings commit atomically only after success. Failure commits no binding, partial move, irreversible borrow, escape, suspension, or authority. `while let` failure completes the loop and `for let` failure skips the candidate. Pattern coverage is closed over enum, union, Option, Result, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcome. Sealed-Class closure does not create constructor patterns. Tuple patterns, scalar-interval patterns, and Record rest patterns are not current. Declarative clauses use the finite partition algorithm. Law bodies admit only pure predicate assertions.
 
 ## 9. NumericArray, bitfield, and measures
 
 NumericArray typing preserves element, shape, rank, orientation, and typed coordinate domain. Each built-in default source-visible axis is exactly `1..dimension`, but it is not an ordinary Sequence witness. A full rank-matching coordinate list selects one element; coordinate type/count mismatch is static, and a dynamic coordinate outside the declared axis raises `IndexError::outOfLogicalDomain`. A NumericArray slice produces an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. Bitfield uses unsigned strict layout and finite flags universe. Exact-ratio units are core; calendar units require the stdlib/provider profile.
+
+Current `Set<T>` is an immutable unique-element collection. Literal and
+comprehension elements require one exact normalized `T` plus admitted equality
+and keyability evidence. Duplicate literal entries reject, membership never
+widens or stringifies the probe, and iteration order is not a semantic
+contract. Set has no bracket-indexing judgment.
 
 ## 10. RCTS-V5 and MIR handoff
 
@@ -100,7 +106,31 @@ The source parameter `options***: Record` and the function-type item `Record***`
 
 Nominal subclassing establishes class ancestry and inherited class slots. Trait conformance establishes witness evidence. An extension contributes members only under its activation/import domain. These relations are checked independently and then combined by explicit resolution rules.
 
-Concrete classes are final unless declared open. Sealed classes close direct subclass declarations to the declared family scope; exhaustiveness recursively includes current descendants and rejects foreign direct children. Class dispatch markers lower to `ClassDispatchKind`; Trait witness markers lower to `TraitWitnessKind`. Associated requirements have their own item identities and do not acquire method markers.
+Concrete classes are final unless declared open. Sealed classes close direct
+subclass declarations to the declared family scope; nominal-family analysis
+recursively includes current descendants and rejects foreign direct children.
+This closure does not invent a constructor-pattern carrier. Class dispatch
+markers lower to `ClassDispatchKind`; Trait witness markers lower to
+`TraitWitnessKind`. Associated requirements have their own item identities and
+do not acquire method markers.
+
+Top-level type visibility is a three-domain lattice. `private` is
+module-local, `common` is package-wide but nonexportable, and `public` is
+eligible for external API only through an admitted export/module interface.
+The exact type-producing owner set is `ClassDecl`, `TraitDecl`, `EnumDecl`,
+`TypeAliasDecl`, `SchemaDecl`, `ActorDecl`, `ActorProtocolDecl`,
+`TypestateResourceDecl`, and `BitfieldDecl`. Each of those nine owners requires
+an explicit domain in all library, executable, script, preview-library,
+preview-executable, and preview-script roots. Omission is checker recovery
+only: it emits `TYPE_DECL_VISIBILITY_REQUIRED` and produces zero admitted HIR
+type nodes, type identities, and API-digest entries.
+
+For every other top-level owner whose Grammar production carries
+`TopLevelVisibility?`, omission normalizes to `private`; this default never
+applies to the nine type-producing owners. After that normalization, wider API
+residue cannot mention a narrower identity, `common` residue cannot be
+externally exported or re-exported, and `public` residue enters external API
+only through a separately admitted export or module interface.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
@@ -130,7 +160,18 @@ An assignment target is checked and evaluated as one place. Compound assignment 
 
 ## 16. Effects, errors, cancellation, and callable profiles
 
-Effect rows and error sets are normalized finite rows. `#pure` admits no observable effect or hidden authority. `#guard` is a terminating, nonsuspending, nonconsuming pure Bool predicate profile. A callable value's type includes its effect row, error set, cancellation responsibility, ownership/capture responsibility, suspension capability, isolation, and relevant context/witness channels.
+Effect rows and error sets are normalized finite rows. A named effect
+capability is a nominal, non-value permission identity bound to one normalized
+nonempty effect row. Declaring it neither performs the effect nor grants
+authority. An effectful callable must expose the observable row and, where the
+operation requires authority, receive the matching capability through an
+explicit context channel. Effect description and authority possession are
+disjoint judgments; neither is inferred from the other. `#pure` admits no
+observable effect or hidden authority. `#guard` is a terminating,
+nonsuspending, nonconsuming pure Bool predicate profile. A callable value's
+type includes its effect row, error set, cancellation responsibility,
+ownership/capture responsibility, suspension capability, isolation, and
+relevant context/witness channels.
 
 Errors, defects, and cancellation are distinct control outcomes. Propagation operators consume only their declared family. Cleanup executes under a deterministic budget before the outcome escapes. Async suspension preserves live-place and cleanup obligations, and cancellation cannot silently bypass a registered cleanup. Callable compatibility is contravariant/covariant only where the declared responsibility profile permits; default inference remains invariant and conservative.
 
@@ -138,11 +179,31 @@ Checked integer overflow and integer division or remainder by zero produce deter
 
 ## 17. Pattern partition and exhaustiveness
 
-Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, sealed families, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcomes. Tuple patterns, captured/middle/multiple List rests, and Record rest patterns are not current. A guard refines only the already admitted structural partition and may read probe binders without moving, escaping, suspending, mutating through, or acquiring authority from them. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
+Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcomes. Sealed-Class closure informs nominal analysis but has no current constructor-pattern carrier. Tuple patterns, scalar-interval patterns, captured/middle/multiple List rests, and Record rest patterns are not current. A guard refines only the already admitted structural partition and may read probe binders without moving, escaping, suspending, mutating through, or acquiring authority from them. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
 
-Exhaustiveness succeeds only when the finite current partition is covered. Redundant or unreachable arms are diagnosed deterministically. An unknown future child is not assumed impossible unless the sealed-family authority proves closure. Clause functions and declarative clauses reuse the same partition engine but preserve their own input-supply and return-totality rules.
+Exhaustiveness succeeds only when the finite current pattern partition is
+covered. Redundant or unreachable arms are diagnosed deterministically. A
+sealed Class may prove nominal-family closure for other checker judgments, but
+that proof is not a substitute for absent constructor-pattern syntax. Clause
+functions and declarative clauses reuse the same partition engine but preserve
+their own input-supply and return-totality rules.
 
 The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
+
+For a normalized closed Union only, `subject is Alternative` and the adjacent
+negation `subject !is Alternative` read the stored injection identity once and
+produce complementary `Phi` facts. `Alternative` must be exactly one declared
+alternative identity; the test performs no subtyping search, refinement
+execution, reflection, Trait discovery, or provider lookup and binds no value.
+For `is`, the true edge intersects the current alternative set with the target
+and the false edge removes it; `!is` swaps the two results. `and then` supplies
+the left true edge to its right operand and `otherwise` supplies the left false
+edge. Strict `and` and `or` do not pre-narrow their right operand. A durable
+fact requires a stable place and is killed by assignment, aliasing mutation,
+exclusive borrow, escape or capture with possible mutation, consume, or a
+call whose responsibility summary may mutate or consume the subject. Every
+other runtime type-test shape is rejected. `as?`/`as!` own conversion, and
+typed patterns own alternative binding.
 
 For a closed Union scrutinee only, a typed child binder naming exactly one declared alternative elaborates to `UnionAlternativeBindPattern`. Its test is the existing Union injection identity; it is not a subtype test or a refinement check. Union formation itself requires every normalized alternative pair to be proven disjoint by the finite R0 relation procedure. Equivalent or implying members are subsumed; overlap or an unknown relation rejects rather than choosing a runtime winner.
 

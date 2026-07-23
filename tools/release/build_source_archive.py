@@ -20,7 +20,13 @@ import zlib
 from pathlib import Path
 
 
-EXCLUDED_PARTS = {".git", "target", "dist", "__pycache__"}
+EXCLUDED_PARTS = {
+    ".git",
+    "target",
+    "dist",
+    "candidate",
+    "__pycache__",
+}
 MANIFEST = "release/source-tree-manifest.json"
 ARCHIVE_ROOT = "Deeplus_Canonical_Workspace/"
 ARCHIVE_COMPRESSION = zipfile.ZIP_DEFLATED

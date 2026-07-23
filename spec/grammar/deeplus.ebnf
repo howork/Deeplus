@@ -167,6 +167,14 @@ Identifier ::= IDENTIFIER ;
 QualifiedPath ::= Identifier ("::" Identifier)* ;
 
 TopLevelVisibility ::= "public" | "private" | "common" ;
+(* TopLevelVisibility? is structurally optional for recovery and non-type
+   defaults. Checker admission requires it explicitly for exactly ClassDecl,
+   TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl,
+   ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl in each of the
+   six stable/preview library, executable, and script roots. Omission for
+   those nine owners emits TYPE_DECL_VISIBILITY_REQUIRED and produces zero
+   admitted HIR type nodes. For every other top-level owner that carries this
+   optional production, omission normalizes to private. *)
 MemberVisibility ::= "+" | "-" | "#" ;
 ClassDispatchMarker ::= "." | "+" | "*." | "*+" ;
 TraitWitnessMarker ::= "." | "+" | "*." | "*+" ;
@@ -400,7 +408,7 @@ FieldDecl ::= MemberVisibility? ("let" | "var") Identifier
               TypeAnnotation? Initializer? StatementBoundary ;
 TypeSideFieldDecl ::= MemberVisibility? "let" "::" Identifier TypeAnnotation? Initializer? StatementBoundary ;
 
-AccessorPropertyDecl ::= MemberVisibility? ("let" | "var") Identifier TypeAnnotation ":=" AccessorSpec ;
+AccessorPropertyDecl ::= ("let" | "var") Identifier TypeAnnotation ":=" AccessorSpec ;
 AccessorSpec ::= AccessorDecl | "{" AccessorDecl+ "}" ;
 AccessorDecl ::= MemberVisibility? "get" Block
                | MemberVisibility? "set" "(" Identifier ")" Block ;
@@ -480,7 +488,7 @@ TypeAliasRhs ::= TypeRef RefinementClause? | StaticRangeType ;
 StaticRangeType ::= StaticIntLiteral ".." StaticIntLiteral ;
 
 TopLevelBindingDecl ::= TopLevelVisibility? ("let" | "var") Identifier TypeAnnotation? "=" Expr StatementBoundary ;
-NamedEffectCapabilityDecl ::= TopLevelVisibility? "capability" Identifier "for" EffectRow ;
+NamedEffectCapabilityDecl ::= TopLevelVisibility? "capability" Identifier "for" EffectRow StatementBoundary ;
 
 (* ---------- Actors and actor protocols ---------- *)
 

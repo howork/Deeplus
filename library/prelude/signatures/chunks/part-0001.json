@@ -1376,6 +1376,35 @@
     "normalized_contract_sha256": "27984b8bf90f4b7dfc92f37cffd817848de53d8808ee6a231019900f386a3905"
   },
   {
+    "entry_id": "set_t",
+    "symbol": "Set<T>",
+    "kind": "collection",
+    "status": "stable_design",
+    "feature_refs": [
+      "set_prefixed_literal",
+      "set_comprehension",
+      "membership_in_operator_candidate"
+    ],
+    "signatures": [
+      "prelude intrinsic Set<T>"
+    ],
+    "responsibility": "immutable unique-element collection with explicit element equality and keyability; duplicate literal entries reject, membership is intrinsic over the exact element domain, and iteration order is not semantic",
+    "notes": "Current #set literal and Set comprehension identity; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Set<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "d4a00149ea61f2ea1ea1ddfa4175d640ab4d6692b05732526cf50e89c3178fef"
+  },
+  {
     "entry_id": "shared_t",
     "symbol": "Shared<T>",
     "kind": "shared_handle",
