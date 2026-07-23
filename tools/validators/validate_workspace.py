@@ -20,8 +20,8 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-value-operator-index-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-enum-derived-capabilities-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -267,7 +267,7 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 681
+                and fixed_counts.get("features") == 684
                 and fixed_counts.get("predicates") == 245
                 and fixed_counts.get("predicate_fixtures") == 764
                 and fixed_counts.get("no_go") == 150
@@ -961,6 +961,7 @@ def main() -> int:
         "tests/fixtures/current/destructuring-pattern-matching-r1.json": ("fixture_schema", "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"),
         "tests/fixtures/current/value-operator-indexing-coherence-r1.json": ("fixture_schema", "schemas/language/value-operator-indexing-coherence-fixtures.schema.json"),
         "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json": ("fixture_schema", "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/enum-derived-capabilities-r1.json": ("fixture_schema", "schemas/language/enum-derived-capabilities-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
@@ -1217,6 +1218,121 @@ def main() -> int:
         "TRN_CONTRACT_FIXTURE_CLOSURE",
         f"rules={trn_rule_ids} rows={len(trn_rows)} admit={trn_admit} reject={trn_reject} counts={trn_counts}",
     )
+
+    edc_rel = "tests/fixtures/current/enum-derived-capabilities-r1.json"
+    edc = parsed.get(root / edc_rel, {})
+    edc_contract = parsed.get(
+        root / "spec/contracts/enum-derived-capabilities.json", {}
+    )
+    edc_rows = [row for row in edc.get("cases", []) if isinstance(row, dict)]
+    edc_ids = [row.get("fixture_id") for row in edc_rows]
+    edc_rule_ids = [
+        row.get("rule_id")
+        for row in edc_contract.get("rules", [])
+        if isinstance(row, dict)
+    ]
+    edc_counts = edc.get("expected_counts", {})
+    edc_expected_p1 = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    edc_feature_ids = {
+        "enum_declaration_order_ord_preview_design",
+        "enum_case_display_mapping_preview_design",
+        "enum_exact_variant_subset_alias_preview_design",
+    }
+    edc_features = [feature_by_id.get(feature_id, {}) for feature_id in edc_feature_ids]
+    edc_frontend = parsed.get(root / "spec/frontend/frontend-model.json", {}).get(
+        "preview_design_nonactivatable", {}
+    )
+    edc_frontend_ids = {
+        "enum_declaration_order_ord_derivation",
+        "enum_case_display_mapping",
+        "enum_exact_variant_subset_alias",
+    }
+    edc_pc10_lanes = [
+        "source", "resolution", "behavior", "serialization",
+        "runtime_layout", "foreign_ABI", "tooling_reflection", "product",
+    ]
+    edc_serialized = json.dumps(edc_contract, ensure_ascii=False)
+    grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
+    check(
+        edc.get("revision") == revision
+        and edc_contract.get("revision") == revision
+        and edc_contract.get("semantic_p0") == 0
+        and edc_contract.get("current_binding") is False
+        and edc_contract.get("source_activation") == "nonactivatable"
+        and edc_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and edc_contract.get("open_feature_p1", {}).get("total") == 22
+        and edc_contract.get("compatibility_lanes") == edc_pc10_lanes
+        and edc_contract.get("compatibility_lane_subrecords") == {
+            "resolution": ["subset_membership", "variant_owner_widening"],
+            "behavior": ["order_behavior", "display_behavior"],
+            "serialization": ["raw_identity"],
+        }
+        and "overall_pass" not in edc_serialized
+        and "sibling_status_propagation" not in edc_serialized
+        and edc_contract.get("trait_contracts", {}).get("Ord<T>", {}).get(
+            "canonical_signature"
+        ) == "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
+        and edc_contract.get("trait_contracts", {}).get("Display", {}).get(
+            "canonical_signature"
+        ) == "public trait Display { +def display.() -> String throws Never effects {}; }"
+        and edc.get("open_feature_p1") == edc_expected_p1
+        and edc_rule_ids == [f"EDC-R{index:03d}" for index in range(1, 19)]
+        and len(edc_rows) == len(edc_ids) == len(set(edc_ids)) == 35
+        and sum(row.get("expected_design") == "ADMIT" for row in edc_rows)
+        == edc_counts.get("design_admit") == 15
+        and sum(row.get("expected_design") == "REJECT" for row in edc_rows)
+        == edc_counts.get("design_reject") == 15
+        and sum(row.get("expected_design") == "BOUNDARY" for row in edc_rows)
+        == edc_counts.get("boundary") == 5
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(edc_rule_ids))
+            and row.get("current_source_outcome") == "NONACTIVATABLE_NOT_CURRENT"
+            and row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in edc_rows
+        )
+        and set(edc_rule_ids)
+        == {rule_id for row in edc_rows for rule_id in row.get("rule_ids", [])}
+        and len(edc.get("product_lanes", {})) == 15
+        and set(edc.get("product_lanes", {}).values()) == {"NOT_RUN"}
+        and edc_counts.get("current_source_activated") == 0
+        and edc_counts.get("p1_closed") == 0
+        and edc_counts.get("p1_created") == 0
+        and edc_counts.get("product_executed") == 0,
+        "EDC_CONTRACT_FIXTURE_CLOSURE",
+        f"rules={edc_rule_ids} rows={len(edc_rows)} counts={edc_counts}",
+    )
+    check(
+        all(
+            feature.get("status_enum") == "PREVIEW_DESIGN"
+            and feature.get("source_activation") == "nonactivatable"
+            and feature.get("product_support") == "NOT_RUN"
+            and feature.get("production_lexer") == "NOT_RUN"
+            and feature.get("production_parser") == "NOT_RUN"
+            and feature.get("integrated_checker") == "NOT_RUN"
+            and feature.get("runtime_xvm") == "NOT_RUN"
+            and feature.get("artifact_trace_refs")
+            == ["spec/contracts/enum-derived-capabilities.json"]
+            and feature.get("normative_trace_refs", {}).get("productions") == []
+            for feature in edc_features
+        )
+        and all(
+            edc_frontend.get(feature_id, {}).get("parser_cover_grammar") is False
+            and edc_frontend.get(feature_id, {}).get("source_activation")
+            == "nonactivatable"
+            for feature_id in edc_frontend_ids
+        )
+        and "enum#increasing" not in grammar
+        and "enum#decreasing" not in grammar
+        and "~>" not in grammar,
+        "EDC_NONACTIVATABLE_FEATURE_FENCE",
+        f"features={sorted(edc_feature_ids)} frontend={sorted(edc_frontend_ids)}",
+    )
     trn_case_by_id = {row.get("fixture_id"): row for row in trn_rows}
     trn_required_axes = {f"TRN-R1-{kind}-{index:03d}" for kind, index in (
         [("NEG", value) for value in range(19, 30)] + [("POS", 30), ("POS", 31)]
@@ -1261,6 +1377,15 @@ def main() -> int:
     check(
         pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 19
         and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 19
+        and pattern_kinds.get("revision") == PREVIOUS_LANGUAGE_COHERENCE_REVISION
+        and pattern_lowering.get("revision") == PREVIOUS_LANGUAGE_COHERENCE_REVISION
+        and pattern_policies.get("revision") == PREVIOUS_LANGUAGE_COHERENCE_REVISION
+        and all(
+            row.get("revision") == PREVIOUS_LANGUAGE_COHERENCE_REVISION
+            for row in pattern_kinds.get("rows", [])
+            + pattern_lowering.get("rows", [])
+            + pattern_policies.get("rows", [])
+        )
         and union_kind.get("normalized_variant") == "UnionAlternativeBindPattern"
         and union_kind.get("coverage_contribution") == "SUBJECT_CONSTRUCTOR_CELL"
         and set(union_kind.get("allowed_context_ids", [])) == expected_union_contexts
@@ -1720,6 +1845,8 @@ def main() -> int:
     arithmetic_defect = prelude_by_id.get("arithmetic_defect", {})
     index_error = prelude_by_id.get("index_error", {})
     indexable = prelude_by_id.get("indexable", {})
+    display_entry = prelude_by_id.get("display", {})
+    ord_entry = prelude_by_id.get("ord_t", {})
     check(
         arithmetic_defect.get("symbol") == "ArithmeticDefect"
         and arithmetic_defect.get("kind") == "language_intrinsic_defect"
@@ -1732,6 +1859,10 @@ def main() -> int:
         == ["public enum IndexError { outOfLogicalDomain; keyNotFound; }"]
         and index_error.get("product_support") == "NOT_RUN"
         and "conformance does not activate []" in indexable.get("notes", "")
+        and display_entry.get("signatures")
+        == ["public trait Display { +def display.() -> String throws Never effects {}; }"]
+        and ord_entry.get("signatures")
+        == ["public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"]
         and all(
             diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
             == "active"

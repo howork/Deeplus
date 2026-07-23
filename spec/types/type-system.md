@@ -28,6 +28,22 @@ Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet; rows and l
 
 Union injection is unique after normalization. Contract intersections require every constituent obligation. Option and Result have explicit alternatives. Every Result use-site spells its error channel `Result<T, error E>`; the generic declaration may bind `E: ErrorSet` without repeating the role marker. Borrow Facet is current; owned/inout Facet packages remain Preview-design.
 
+The accepted nonactivatable Enum subset design adds no open subtyping search. A
+payload-free exact variant is normalized to `(EnumId, VariantId)`, and a named
+subset is normalized to one owner `EnumId`, a finite allowed-`VariantId` set,
+and the frozen enum-universe digest. Distinct variants of one owner are disjoint.
+Injection selects one exact included variant; subset-to-owner conversion uses the
+bounded `VariantOwnerWidening` proof; subset-to-subset conversion is implicit only
+for proven finite-set inclusion. Owner-to-subset conversion is never implicit and
+uses `as?` or an admitted pattern. Pattern coverage for a subset is exactly its
+allowed set, so an outside case is unreachable and an omitted allowed case remains
+in the exhaustiveness residual. When the normalized allowed set equals the frozen
+owner universe, the canonical type is the nominal owner Enum; an associated alias
+is only a non-identifying source spelling. This judgment is separate from the closed-Union
+typed-alternative judgment and creates no wrapper, runtime membership test, case,
+`VariantId`, storage, or alias-local Trait witness. The surface remains
+`PREVIEW_DESIGN`/nonactivatable.
+
 Absence is an explicit `Option` alternative. The recovery spelling `null` has no typing judgment, does not infer `Option<T>`, and produces `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`; only `::none` in an expected `Option` context or explicit `Option<T>::none` constructs the absent alternative.
 
 ## 7. Ownership, effects, and cleanup

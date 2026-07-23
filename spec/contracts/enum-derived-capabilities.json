@@ -1,0 +1,116 @@
+{
+  "schema": "deeplus.enum-derived-capabilities-contract/r1",
+  "revision": "r51f3-current-enum-derived-capabilities-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_PREVIEW_DESIGN_CONTRACT",
+  "design_verdict": "ACCEPTED_PREVIEW_DESIGN_WITH_GUARDS",
+  "source_activation": "nonactivatable",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "controlling_authority": {
+    "decision": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-PREVIEW",
+    "source_reports": [
+      "Supp1_Deeplus_Enum_Declaration_Order_Derived_Ord_Review_R1",
+      "Supp1_Deeplus_Enum_Display_Mapping_And_Variant_Subset_Union_Review_R1"
+    ],
+    "adoption_scope": "design contract only; no grammar, parser, checker, MIR, runtime, tooling, publication, or product activation"
+  },
+  "authority_fence": {
+    "current_enum_changed": false,
+    "grammar_activation": false,
+    "implementation_authority": false,
+    "operator_glyph_activation": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "class": ["CE-C-P1-001", "CE-C-P1-002", "CE-C-P1-003", "CE-C-P1-004", "CE-C-P1-005", "CE-C-P1-006"],
+    "enumeration": ["CE-E-P1-001", "CE-E-P1-002", "CE-E-P1-003", "CE-E-P1-004", "CE-E-P1-005", "CE-E-P1-006", "CE-E-P1-007", "CE-E-P1-008"],
+    "trait_conformance": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "static_first_dynamic": ["SFD-P1-009"],
+    "total": 22
+  },
+  "separate_open_actions": ["M13-A002", "M13-A003", "M13-A004", "M13-A005"],
+  "subcandidate_ownership": {
+    "declaration_order_ord": ["CE-E-P1-007", "CE-E-P1-008", "TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "case_display_mapping": ["CE-E-P1-007", "CE-E-P1-008", "TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "exact_variant_subset": ["CE-E-P1-001", "CE-E-P1-004", "CE-E-P1-008", "TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"]
+  },
+  "surface_decisions": {
+    "order_roles": ["enum#increasing", "enum#decreasing"],
+    "order_role_cardinality": "exactly_one_when_selected",
+    "order_role_words_outside_owner": "ordinary_identifier",
+    "display_mapping": "EnumCaseCore ~> RestrictedStringTemplate",
+    "display_token_owner": "enum_case_only",
+    "associated_subset": "MemberVisibility? type Identifier = ExactVariantUnion; canonical example: +type Weekend = Sat | Sun",
+    "bare_subset_assignment": "rejected",
+    "parser_cover_grammar": false
+  },
+  "trait_contracts": {
+    "Ord<T>": {
+      "canonical_signature": "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }",
+      "receiver_channels": ["borrow lhs", "borrow rhs"],
+      "effects": [],
+      "errors": "Never",
+      "suspends": false,
+      "consumes": false,
+      "observable_result_contract": "sign_is_the_only_meaningful_stable_property",
+      "laws": ["totality", "trichotomy", "transitivity", "antisymmetry", "zero_is_ground_equality"],
+      "operator_glyph_hook": false
+    },
+    "Display": {
+      "canonical_signature": "public trait Display { +def display.() -> String throws Never effects {}; }",
+      "receiver_channel": "borrow self",
+      "effects": [],
+      "errors": "Never",
+      "suspends": false,
+      "consumes": false,
+      "hidden_provider_lookup": false,
+      "non_implications": ["serialization", "parsing", "localization", "redaction", "raw_identity", "reverse_map"]
+    }
+  },
+  "rules": [
+    {"rule_id":"EDC-R001","title":"accepted design remains nonactivatable","contract":"All three facilities are canonical PREVIEW_DESIGN decisions with no current source, grammar, implementation, publication, promotion, P1 closure, or product-lane effect."},
+    {"rule_id":"EDC-R002","title":"order role is owner-specific and singular","contract":"A future Enum may select exactly one of enum#increasing or enum#decreasing; both words remain ordinary identifiers outside the exact Enum introducer role."},
+    {"rule_id":"EDC-R003","title":"semantic order is representation-independent","contract":"SemanticOrderRank and the ordered VariantId vector determine declaration order but are never VariantId numeric value, raw value, tag, discriminant, serialization, layout, ABI, match priority, range, iteration, or transition authority."},
+    {"rule_id":"EDC-R004","title":"minimum Ord synthesis profile is closed","contract":"Only a nominal nonempty payload-free nongeneric Enum is eligible; compare borrows, is pure, synchronous, throws Never, consumes nothing, observes sign only, and returns zero exactly for the same EnumId and VariantId."},
+    {"rule_id":"EDC-R005","title":"Ord synthesis has one evidence origin","contract":"The marker forms exactly one whole-Enum Ord witness and zero case witnesses; an explicit same-ground conformance conflicts and no priority, specialization, provider lookup, fallback, or operator glyph activation exists."},
+    {"rule_id":"EDC-R006","title":"order evolution has independent residue","contract":"Marker, direction, case order, and case-universe changes update ordered-vector and behavior digests while stable VariantIds remain stable; incompatible summaries reject at import or link validation."},
+    {"rule_id":"EDC-R007","title":"display mapping is all-or-none and enum-owned","contract":"The future ~> token belongs only to Enum case mapping, requires exactly one restricted String template for every inhabitable case once selected, permits duplicate display strings, and supplies no case-name fallback."},
+    {"rule_id":"EDC-R008","title":"display template has a bounded borrowed scope","contract":"Only named payload binders and admitted read-only paths rooted in them are visible; each hole requires one preselected Display witness and cannot move, mutate, throw, suspend, spawn, escape, or perform hidden provider or locale lookup."},
+    {"rule_id":"EDC-R009","title":"display synthesis has one evidence origin","contract":"A complete mapping forms exactly one whole-Enum Display witness and zero case witnesses; an explicit same-ground conformance conflicts and runtime witness lookup and source-order fallback are zero."},
+    {"rule_id":"EDC-R010","title":"display is behavior not identity","contract":"Display text is not raw, serialization, parsing, localization, redaction, ABI, layout, or reverse-map identity; a template mutation changes only Display behavior residue."},
+    {"rule_id":"EDC-R011","title":"exact variant is a finite owner identity","contract":"The minimum exact-variant type is payload-free (EnumId, VariantId), disjoint from sibling variants, independent of declaration order and representation, and never an open runtime subtype test."},
+    {"rule_id":"EDC-R012","title":"associated subset alias is explicit","contract":"A future Enum member uses MemberVisibility? type Name = ExactVariantUnion; bare assignment is rejected and case/type namespace collision is deterministic."},
+    {"rule_id":"EDC-R013","title":"subset normalization is finite and same-owner","contract":"VariantSubsetType contains one EnumId, a deduplicated order-insensitive allowed VariantId set, and a frozen enum-universe digest; cross-owner unions reject. If the allowed set equals that complete frozen universe, the canonical type is the nominal owner Enum and the alias spelling has no independent identity."},
+    {"rule_id":"EDC-R014","title":"widening and narrowing are asymmetric","contract":"Exact variants and subsets widen to their owner through VariantOwnerWidening; subset inclusion permits subset widening, while owner-to-subset and unrelated subset narrowing require an explicit checked boundary."},
+    {"rule_id":"EDC-R015","title":"subset patterns use exact finite coverage","contract":"An admitted subset pattern uses its frozen allowed set for usefulness, exhaustiveness, guards, and Phi facts; it does not invoke general subtype search or alter the closed-Union alternative judgment."},
+    {"rule_id":"EDC-R016","title":"aliases reuse owner representation and evidence","contract":"A subset creates no wrapper, allocation, storage, case, VariantId, raw mapping, layout, or Trait witness; every operation reuses the owner Enum's one nominal witness after the widening proof."},
+    {"rule_id":"EDC-R017","title":"subset evolution is explicit and lane-local","contract":"Adding a case does not expand an explicit subset and may invalidate a prior full-universe-to-owner normalization until the frozen universe is revalidated; removing an included case or changing its identity breaks the alias residue; membership order is irrelevant and incompatible universe digests reject."},
+    {"rule_id":"EDC-R018","title":"deferred profiles imply nothing","contract":"Payload ordering, payload-bearing exact variants, generic conditional synthesis, reverse parsing, subset ranges or iteration, bundled Traits, AUTO/VIA, specialization, child-local witness replacement, and product support remain inactive or deferred."}
+  ],
+  "compatibility_lanes": ["source", "resolution", "behavior", "serialization", "runtime_layout", "foreign_ABI", "tooling_reflection", "product"],
+  "compatibility_lane_subrecords": {
+    "resolution": ["subset_membership", "variant_owner_widening"],
+    "behavior": ["order_behavior", "display_behavior"],
+    "serialization": ["raw_identity"]
+  },
+  "machine_acceptance": {
+    "rule_count": 18,
+    "fixture_count": 35,
+    "accepted_surface_count": 3,
+    "source_activation_count": 0,
+    "generated_ord_witness_max": 1,
+    "generated_display_witness_max": 1,
+    "case_witness_count": 0,
+    "alias_witness_count": 0,
+    "runtime_provider_lookup_count": 0,
+    "operator_glyph_activation_count": 0,
+    "implicit_owner_to_subset_narrowing_count": 0,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "product_execution_receipt_count": 0
+  }
+}

@@ -1964,6 +1964,70 @@ Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is 
 13. `E-13`: logical owner diagnostic families and their field contract are materialized without inventing final registry IDs. Recovery creates zero admitted AST/HIR/MIR/API residue.
 <!-- POST_PR16_UNIT_END:E-13 -->
 
+### Enum-derived capabilities: accepted Preview design, not current syntax
+
+The following three facilities are accepted as one coordinated `PREVIEW_DESIGN`
+contract under `CE-E-P1-004`, `CE-E-P1-007`, `CE-E-P1-008`, and the open TCC
+gates. They are canonical design decisions but are `nonactivatable`: the current
+`EnumDecl`, current `.`, `+`, `*.`, `*+` reachability, current lowercase `via`,
+and current parser/checker/runtime behavior do not change. Static files or
+fixtures close no P1 and establish no product support.
+
+1. A future declaration may select exactly one owner-specific order role,
+   `enum#increasing` or `enum#decreasing`. The first form means declaration
+   order is strictly increasing; the second means it is strictly decreasing.
+   The minimum profile is nominal, nonempty, payload-free, and nongeneric. It
+   synthesizes exactly one whole-Enum `Ord<E>` witness. `SemanticOrderRank` and
+   the ordered `VariantId` vector are not source-visible ordinals and are
+   independent of raw values, tags, discriminants, serialization, layout, ABI,
+   match priority, ranges, iteration, or transitions. Comparison observes only
+   sign, borrows both operands, is pure, synchronous, `throws Never`, consumes
+   nothing, and returns zero exactly for the same `EnumId` and `VariantId`.
+   An explicit same-ground `Ord<E>` conformance conflicts; no priority,
+   specialization, provider lookup, fallback, or comparison-glyph activation is
+   inferred.
+2. A future enum case may own `~>` followed by a restricted String template.
+   If one inhabitable case maps, every inhabitable case maps exactly once. Named
+   payload fields are read-only borrowed binders inside that case's template;
+   an unlabeled payload gets no invented `$1` or `it` name. Every interpolation
+   hole requires one already selected `Display` witness. The template cannot
+   move, mutate, throw, suspend, spawn, escape a binder, call an arbitrary
+   provider, or perform hidden locale lookup. The complete mapping synthesizes
+   exactly one whole-Enum `Display` witness and zero case witnesses. It is not
+   serialization, parsing, localization, redaction, raw identity, or a reverse
+   map. Partial mapping has no case-name fallback, and an explicit same-ground
+   `Display` conformance conflicts.
+3. A future enum body may contain an explicit associated alias such as
+   `+type Weekend = Sat | Sun`; the bare spelling `Weekend = ...` is not
+   admitted. A payload-free exact variant is the finite identity
+   `(EnumId, VariantId)`, not an open runtime subtype. A named subset is a frozen
+   same-owner `VariantId` set plus an enum-universe digest. It creates no case,
+   constructor, wrapper, storage, allocation, tag, raw mapping, layout, or Trait
+   witness. An exact variant or subset widens to its owner by a bounded
+   `VariantOwnerWidening` proof; owner-to-subset and unrelated subset narrowing
+   require `as?`, an admitted pattern, or another explicit checked boundary.
+   Exhaustiveness and unreachability operate on the frozen allowed-variant set,
+   not general subtyping search. Alias order is semantically irrelevant, subset
+   inclusion is the only implicit subset conversion, and aliases reuse the
+   owner's one nominal witness. If a normalized subset contains the complete
+   frozen variant universe, its canonical type is the nominal owner Enum; the
+   associated alias remains a non-identifying source spelling.
+
+PC-10 keeps exactly eight independent top-level records: `source`, `resolution`,
+`behavior`, `serialization`, `runtime_layout`, `foreign_ABI`,
+`tooling_reflection`, and `product`. Order and Display are independent
+subrecords of `behavior`; subset membership and owner widening are independent
+subrecords of `resolution`; raw identity is a `serialization` subrecord and
+never aliases semantic identity. Reordering preserves stable `VariantId` values
+but changes the order vector and order-behavior digest. Changing a display
+template changes only Display behavior residue. Adding a case does not silently
+expand an explicit subset. Incompatible order, generated-witness, subset, or
+enum-universe summaries reject at import/link validation instead of choosing by
+source order. No sibling status propagation or `overall_pass` is introduced.
+Payload ordering, payload-bearing exact-variant types, generic conditional
+synthesis, automatic reverse parsing, subset iteration/ranges, and bundled Trait
+derivation remain deferred.
+
 <!-- POST_PR16_UNIT_BEGIN:X-01 -->
 ```json
 {
