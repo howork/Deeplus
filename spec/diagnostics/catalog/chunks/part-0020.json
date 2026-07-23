@@ -539,11 +539,11 @@
     "feature_refs": [
       "top_level_type_visibility_unification"
     ],
-    "fixit_hint": "none",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
-    "message": "Top-level class, trait, and enum declarations must use public/private/common visibility.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "Choose public, common, or private; use private when no wider API is intended.",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "suggest a visibility word but do not infer or apply one automatically",
+    "message": "A top-level Class, Trait, Enum, type alias, schema, actor, actor protocol, typestate resource, or bitfield must explicitly use public, common, or private visibility.",
+    "notes": "Uniform across the six stable/preview library, executable, and script roots. Omission is recovery-only and admits zero HIR type nodes. Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],

@@ -127,7 +127,13 @@ def iter_bound_files(root: Path, target: Path) -> list[Path]:
     if not target.is_dir():
         raise GeneratorError("LANGUAGE_COHERENCE_BOUND_PATH", str(target))
     result: list[Path] = []
-    for path in sorted(target.rglob("*")):
+    # Path ordering follows the host filesystem flavour by default.  In
+    # particular, Windows compares case-insensitively while POSIX compares
+    # case-sensitively, which made mixed-case trees hash differently in CI.
+    # Bind the portable repository spelling instead.
+    for path in sorted(
+        target.rglob("*"), key=lambda item: item.relative_to(root).as_posix()
+    ):
         if any(part in EXCLUDED_PARTS for part in path.relative_to(root).parts):
             continue
         if path.is_symlink():
@@ -329,8 +335,8 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
         "features": 688,
-        "predicates": 245,
-        "predicate_fixtures": 764,
+        "predicates": 247,
+        "predicate_fixtures": 771,
         "no_go": 150,
         "hard_keywords": 30,
         "contextual_words": 101,
@@ -547,8 +553,11 @@ def refresh_contract(root: Path) -> dict[str, Any]:
     pointer = read_json(safe_path(root, POINTER_REL), "LANGUAGE_COHERENCE_POINTER")
     contract["pointer_non_owned_canonical_sha256"] = normalized_pointer_sha(pointer)
     contract["canonical_counts"] = collect_counts(root)
+    bound_paths = [row["path"] for row in contract["bound_roots"]]
+    if "docs/grammar-reference" not in bound_paths:
+        bound_paths.append("docs/grammar-reference")
     contract["bound_roots"] = [
-        bound_identity(root, row["path"]) for row in contract["bound_roots"]
+        bound_identity(root, path) for path in bound_paths
     ]
     contract["migration_identity_exemptions"] = collect_migration_exemptions(root)
     frozen = [
@@ -579,6 +588,17 @@ def self_test(root: Path) -> dict[str, Any]:
     contract = load_contract(root)
     render_outputs(root)
     cases = []
+
+    grammar_reference_paths = [
+        path.relative_to(root).as_posix()
+        for path in iter_bound_files(root, safe_path(root, "docs/grammar-reference"))
+    ]
+    cases.append(
+        {
+            "case": "portable-bound-path-order",
+            "pass": grammar_reference_paths == sorted(grammar_reference_paths),
+        }
+    )
 
     bad_bound = copy.deepcopy(contract)
     bad_bound["bound_roots"][0]["sha256"] = "0" * 64

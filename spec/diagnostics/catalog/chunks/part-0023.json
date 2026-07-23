@@ -185,5 +185,65 @@
     "fixit_policy": "do not infer a default index, hidden copy, or implicit full-axis selection",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Current nonempty IndexSuffix contract; parser execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "The is/!is subject must have one normalized closed Union static type.",
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "related_feature_refs": [
+      "refinement_type_phase_a"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use a closed Union, an explicit typed pattern, or as?/as! conversion",
+    "fixit_policy": "never infer open RTTI, subclass search, reflection, or provider lookup",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current closed-Union expression-test admission diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "An is/!is test over a closed Union must name exactly one declared alternative identity.",
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "related_feature_refs": [
+      "refinement_type_phase_a"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "name one exact declared Union alternative; use a typed pattern to bind or as?/as! to convert",
+    "fixit_policy": "never widen the test to a supertype, refinement, subset, Trait, or open family",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current closed-Union expression-test target diagnostic; product execution remains NOT_RUN."
   }
 ]

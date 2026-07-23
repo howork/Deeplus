@@ -1695,17 +1695,17 @@
     "feature_refs": [
       "member_visibility_sigils_only"
     ],
-    "fixit_hint": "none",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
-    "message": "Callable/member visibility must use +, -, # sigils, not public/private/protected/common keywords.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "Use +, -, or # for a callable nested in a type; remove a visibility word from a nested local function.",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not rewrite a top-level callable, where public/common/private are admitted and omission defaults to private",
+    "message": "Member callables use +, -, or # visibility, and nested local functions have lexical visibility; public/common/private are top-level-only callable visibility words.",
+    "notes": "Scoped to member and nested-local callable owners. Top-level callable visibility follows TopLevelVisibility and is not rejected by this diagnostic. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
-    "stage": "lexer",
+    "stage": "parser",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
   }

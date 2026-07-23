@@ -1,6 +1,6 @@
 # Deeplus Prelude 0.1.2 — R51f3 Current Canonical
 
-Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 55 rows.
+Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 56 rows.
 
 ## 1. Core domains
 
@@ -82,12 +82,13 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `MembershipProtocol` | checker_known_protocol | `stable_design` | Current Prelude design vocabulary; product support NOT_RUN. |
 | `List<T>` | collection | `stable_design` | ordered owned collection with one-based built-in indexing |
 | `Map<K,V>` | collection | `stable_design` | exact-key lookup; no public Copyable or key-as-member projection |
+| `Set<T>` | collection | `stable_design` | immutable unique-element collection; equality and keyability are explicit, duplicate literal entries reject, and iteration order is not semantic |
 | `ImplementationId` | compiler_identity | `stable_design` | implementation symbol reusable without merging extension and witness identity |
 | `Facet<Mode,Contract>` | compiler_intrinsic_type | `stable` | RCTS-V5 ownership-qualified existential carrier; borrow mode Stable, inout/move nonactivatable |
 | `Box<T>` | core_type | `stable_design` | unique owning indirection whose canonical constructor is Box!(value), with exactly-once payload cleanup |
 | `ByteView` | core_type | `stable_design` | contiguous byte-addressable readonly bytes acquired by borrowing Bytes::view; the result retains owner provenance and assumes neither text encoding nor String semantics |
 | `Bytes` | core_type | `stable_design` | raw byte sequence with one-based UInt8 indexing; no implicit String conversion |
-| `FrozenList<T>` | core_type | `stable_design` | declared immutable/shareable result of an exclusive freeze transition |
+| `FrozenList<T>` | core_type | `stable_design` | immutable result of an exclusive freeze transition; cross-isolation shareability requires an independent payload-capability proof |
 | `ListSnapshot<T>` | core_type | `stable_design` | independent point-in-time list value with declared copy/COW cost |
 | `MutableList<T>` | core_type | `stable_design` | exclusive mutable list owner; snapshot borrows without invalidating the source, while freeze consumes the receiver and completes its ownership transition |
 | `NumericArray<T, rank R>` | core_type | `stable_design` | ranked numeric value with typed one-based default axes and visible allocation/backend responsibility |

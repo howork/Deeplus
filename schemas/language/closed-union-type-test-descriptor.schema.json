@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/closed-union-type-test-descriptor.schema.json",
+  "title": "Deeplus closed Union exact-alternative type-test descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "subject_static_type",
+    "normalized_alternatives",
+    "target_type",
+    "normalized_target_identity",
+    "operator",
+    "current_phi_alternatives",
+    "subject_stable_place",
+    "mutation_between_test_and_use",
+    "propagation_context"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.closed-union-type-test-descriptor/r1"
+    },
+    "subject_static_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normalized_alternatives": {
+      "type": "array",
+      "minItems": 0,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "target_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normalized_target_identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operator": {
+      "enum": [
+        "is",
+        "!is"
+      ]
+    },
+    "current_phi_alternatives": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "subject_stable_place": {
+      "type": "boolean"
+    },
+    "mutation_between_test_and_use": {
+      "type": "boolean"
+    },
+    "propagation_context": {
+      "enum": [
+        "standalone",
+        "and_then_rhs",
+        "otherwise_rhs",
+        "strict_bool_rhs"
+      ]
+    }
+  }
+}

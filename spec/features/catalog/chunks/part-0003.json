@@ -57,7 +57,7 @@
     "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / CHECKER / RUNTIME",
     "source_activation": "none",
     "depends_on": [],
-    "notes": "Stable closed union: finite pairwise-disjoint alternatives, fixed expected-type unique injection, explicit narrowing, no automatic join or implicit extraction. Product implementation NOT_RUN.",
+    "notes": "Stable closed union: finite pairwise-disjoint alternatives, fixed expected-type unique injection, explicit narrowing, no automatic join or implicit extraction. is/!is requires one normalized closed Union subject and one exact declared alternative target, evaluates the subject and stored injection identity once, binds or consumes no value, and returns Bool with complementary bounded Phi facts. It performs no subtyping, refinement, reflection, Trait, witness, or provider search and cannot participate directly in a comparison chain. Product implementation NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -75,7 +75,9 @@
     "normative_trace_refs": {
       "diagnostics": [
         "MATCH_ARM_UNREACHABLE",
+        "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
         "UNION_MEMBER_SUBSUMED",
+        "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
         "UNION_AUTOMATIC_JOIN_FORBIDDEN",
         "UNION_EXPECTED_TYPE_REQUIRED_FOR_INJECTION",
         "UNION_INJECTION_AMBIGUOUS",
@@ -83,6 +85,7 @@
       ],
       "predicates": [
         "ClosedAnonymousUnionAdmitted",
+        "ClosedUnionTypeTestAdmitted",
         "NormalizeUnion",
         "SelectUnionInjection",
         "NarrowUnionByPattern"
@@ -91,7 +94,12 @@
         "EX-R51a1-RCTS-UNION-NG-001",
         "EX-R51a1-RCTS-UNION-P-001",
         "EX-R51a1-UNION-NG-001",
-        "EX-R51a1-UNION-P-001"
+        "EX-R51a1-UNION-P-001",
+        "EX-R51f3-UNION-ISTEST-P-001",
+        "EX-R51f3-UNION-ISTEST-P-002",
+        "EX-R51f3-UNION-ISTEST-NG-001",
+        "EX-R51f3-UNION-ISTEST-NG-002",
+        "EX-R51f3-UNION-ISTEST-NG-003"
       ],
       "productions": [
         "TypeRef"

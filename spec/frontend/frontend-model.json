@@ -260,7 +260,9 @@
       "custom operator declaration"
     ],
     "semantic_rejections": [
-      "fixed-operator Trait/conformance dispatch"
+      "fixed-operator Trait/conformance dispatch",
+      "open or provider-driven runtime type tests",
+      "accessor property header member visibility"
     ],
     "value_absence": "::none or Option<T>::none; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor; null is recovery only",
     "operator_token_vocabulary": "CLOSED",
@@ -514,7 +516,7 @@
         "IDENT(is, contextual)"
       ],
       "cst": "NegatedTypeTestOperator",
-      "ast": "TypeTest(negated=true)"
+      "ast": "ClosedUnionAlternativeTest(negated=true)"
     },
     {
       "surface": "!if",
@@ -1180,6 +1182,169 @@
       ]
     }
   },
+  "visibility_admission": {
+    "top_level_type_declarations": {
+      "type_producing_owner_count": 9,
+      "type_producing_owners": [
+        "ClassDecl",
+        "TraitDecl",
+        "EnumDecl",
+        "TypeAliasDecl",
+        "SchemaDecl",
+        "ActorDecl",
+        "ActorProtocolDecl",
+        "TypestateResourceDecl",
+        "BitfieldDecl"
+      ],
+      "source_root_count": 6,
+      "source_roots": [
+        "LibrarySourceFile",
+        "ExecutableSourceFile",
+        "ScriptSourceFile",
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ],
+      "structural_candidate_may_omit_for_recovery": true,
+      "admitted_visibility_required": true,
+      "missing_diagnostic": "TYPE_DECL_VISIBILITY_REQUIRED",
+      "omission_disposition": "RECOVERY_ONLY_REJECT_BEFORE_HIR_IDENTITY",
+      "omission_admitted_hir_node_count": 0,
+      "omission_admitted_type_identity_count": 0,
+      "omission_admitted_api_digest_entry_count": 0,
+      "domains": {
+        "private": "declaring_module_only",
+        "common": "declaring_package_modules_only_nonexportable",
+        "public": "external_api_eligible_only_through_admitted_export_or_module_interface"
+      },
+      "narrow_identity_in_wider_api": "REJECT",
+      "package_identity_owner": "build_and_module_graph"
+    },
+    "other_top_level_visibility_owners": {
+      "type_producing": false,
+      "omitted_visibility_normalizes_to": "private",
+      "explicit_visibility_preserved": true,
+      "owners": [
+        "ExportableModuleFunctionDecl",
+        "ModuleFunctionDecl",
+        "ExtensionFunctionDecl",
+        "ConformanceDecl",
+        "ExtensionSetDecl",
+        "TopLevelBindingDecl",
+        "NamedEffectCapabilityDecl",
+        "UnitCatalogDecl",
+        "ModuleSignatureDecl",
+        "OpaqueModuleFacadeDecl"
+      ]
+    },
+    "api_visibility_closure": {
+      "domain_order_narrow_to_wide": [
+        "private",
+        "common",
+        "public"
+      ],
+      "wider_residue_may_reference_narrower_identity": false,
+      "common_external_export_or_reexport": false,
+      "public_requires_admitted_export_or_module_interface": true
+    },
+    "members": {
+      "surface": [
+        "+",
+        "-",
+        "#"
+      ],
+      "top_level_words_forbidden": true,
+      "hash_domain": "declaring_nominal_type_and_nominal_subclasses"
+    }
+  },
+  "accessor_property_admission": {
+    "header_member_visibility": "FORBIDDEN",
+    "header_diagnostic": "ACCESSOR_PROPERTY_HEADER_VISIBILITY_FORBIDDEN",
+    "accessor_visibility_owner": "each get or set AccessorDecl",
+    "accessor_roles": [
+      "get",
+      "set"
+    ],
+    "visibility_plus_role_compositions": [
+      "+get",
+      "-get",
+      "#get",
+      "+set",
+      "-set",
+      "#set"
+    ],
+    "noncurrent_independent_role_tags": [
+      "#beforeSet",
+      "#afterSet",
+      "do#get"
+    ]
+  },
+  "named_effect_capability_contract": {
+    "production": "NamedEffectCapabilityDecl",
+    "identity": "nominal_nonvalue_capability",
+    "effect_row": "normalized_nonempty",
+    "terminator": "StatementBoundary",
+    "declaration_performs_effect": false,
+    "declaration_grants_authority": false,
+    "creates_global_value": false,
+    "creates_trait_conformance": false,
+    "use_channel": "explicit context parameter",
+    "observable_effect_row_still_required": true,
+    "effect_description_and_authority_are_disjoint": true,
+    "inference_from_effect_name": false
+  },
+  "closed_union_type_test_contract": {
+    "surfaces": [
+      "is",
+      "!is"
+    ],
+    "parselet": "comparison_chain",
+    "ast": "ClosedUnionAlternativeTest",
+    "right_operand_parse_goal": "TypeRef",
+    "direct_comparison_chaining": false,
+    "direct_comparison_chain_diagnostic": "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A",
+    "diagnostic_precedence": [
+      "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A",
+      "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+      "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT"
+    ],
+    "subject_static_domain": "normalized closed Union",
+    "target": "exactly one declared Union alternative identity",
+    "subject_evaluation_count": 1,
+    "runtime_read": "stored Union injection identity exactly once",
+    "result": "Bool",
+    "true_false_flow_facts": "bounded complementary alternative sets in Phi",
+    "is_transfer": {
+      "true_edge": "current Phi alternatives intersect the exact target identity",
+      "false_edge": "current Phi alternatives minus the exact target identity"
+    },
+    "not_is_transfer": {
+      "true_edge": "current Phi alternatives minus the exact target identity",
+      "false_edge": "current Phi alternatives intersect the exact target identity"
+    },
+    "sequential_boolean_transfer": {
+      "and_then_rhs": "left true-edge Phi",
+      "otherwise_rhs": "left false-edge Phi",
+      "strict_and_or_rhs_pre_narrowing": false
+    },
+    "durable_fact_requires_stable_place": true,
+    "fact_kill_events": [
+      "assignment to subject",
+      "mutation through an alias",
+      "exclusive borrow",
+      "escape or capture with possible mutation",
+      "consume",
+      "call whose responsibility summary may mutate or consume the subject"
+    ],
+    "binds_value": false,
+    "subtyping_search": false,
+    "refinement_execution": false,
+    "trait_or_provider_lookup": false,
+    "open_runtime_type_test": false,
+    "negated_spelling_must_be_adjacent": true,
+    "nonexact_target_diagnostic": "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
+    "nonunion_subject_diagnostic": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION"
+  },
   "pratt": {
     "expression": {
       "grammar_precedence_ladder": false,
@@ -1667,6 +1832,108 @@
       "raw_multiline": "not_current"
     },
     "external_terminals": {
+      "ScannerPlainStringLiteral": {
+        "token": "PLAIN_STRING_LITERAL",
+        "mode": "STRING",
+        "opener": "\"",
+        "closer": "\"",
+        "direct_scalars": "Unicode scalar except quote, backslash, dollar, CR, LF, and disallowed controls",
+        "escapes": [
+          "\\0",
+          "\\n",
+          "\\r",
+          "\\t",
+          "\\\"",
+          "\\\\",
+          "\\$",
+          "\\`",
+          "\\u{HEX_1_TO_6}",
+          "\\N{UNICODE_NAME}"
+        ],
+        "interpolation": false,
+        "selection_law": "emit this whole-token outcome only when no unescaped interpolation opener occurs",
+        "recovery": [
+          "unknown escape",
+          "invalid Unicode scalar or name",
+          "physical newline",
+          "unterminated at EOF"
+        ]
+      },
+      "ScannerInterpolatedStringStart": {
+        "token": "STRING_START",
+        "mode": "STRING",
+        "surface": "\"",
+        "selection_law": "emit the part-token family when at least one unescaped interpolation opener occurs"
+      },
+      "ScannerInterpolatedStringText": {
+        "token": "STRING_TEXT",
+        "mode": "STRING",
+        "direct_scalars": "same direct Unicode scalar set as ScannerPlainStringLiteral",
+        "maximal_until": [
+          "escape",
+          "interpolation opener",
+          "closing delimiter"
+        ]
+      },
+      "ScannerStringEscape": {
+        "token": "STRING_ESCAPE",
+        "mode": "STRING",
+        "escapes": [
+          "\\0",
+          "\\n",
+          "\\r",
+          "\\t",
+          "\\\"",
+          "\\\\",
+          "\\$",
+          "\\`",
+          "\\u{HEX_1_TO_6}",
+          "\\N{UNICODE_NAME}"
+        ],
+        "decoded_value": "one Unicode scalar or declared control scalar"
+      },
+      "ScannerInterpolationBoundary": {
+        "token": "INTERPOLATION_BOUNDARY",
+        "mode": "STRING",
+        "surface": "`",
+        "admission": "only immediately after one complete shorthand interpolation path",
+        "output": "none"
+      },
+      "ScannerInterpolationOpen": {
+        "token": "INTERPOLATION_OPEN",
+        "mode_transition": "STRING_TO_INTERPOLATION_CODE",
+        "surface": "${"
+      },
+      "ScannerInterpolationClose": {
+        "token": "INTERPOLATION_CLOSE",
+        "mode_transition": "INTERPOLATION_CODE_TO_STRING",
+        "surface": "}",
+        "balance_owner": "scanner interpolation stack"
+      },
+      "ScannerInterpolationFormatText": {
+        "token": "INTERPOLATION_FORMAT_TEXT",
+        "mode": "INTERPOLATION_CODE",
+        "start": "colon after the braced interpolation expression",
+        "termination": "matching interpolation close",
+        "semantic_owner": "formatter and rendering contract"
+      },
+      "ScannerInterpolatedStringEnd": {
+        "token": "STRING_END",
+        "mode_transition": "STRING_TO_NORMAL",
+        "surface": "\""
+      },
+      "ScannerRawStringLiteral": {
+        "token": "RAW_STRING_LITERAL",
+        "mode": "RAW_STRING",
+        "surface": "raw\"...\"",
+        "direct_scalars": "every Unicode scalar except the closing quote and physical line terminator",
+        "escapes": [],
+        "interpolation": false,
+        "recovery": [
+          "physical newline",
+          "unterminated at EOF"
+        ]
+      },
       "ScannerMultilineStringLiteral": {
         "token": "MULTILINE_STRING_LITERAL",
         "mode": "MULTILINE_STRING",
@@ -1687,6 +1954,32 @@
         ],
         "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
         "mir": "ConstString for plain content; ordered RenderParts for interpolation"
+      },
+      "ScannerBytesLiteral": {
+        "token": "BYTES_LITERAL",
+        "mode": "BYTES",
+        "surface": "#bytes\"...\"",
+        "direct_bytes": "ASCII 0x20..0x7E except quote and backslash",
+        "escapes": [
+          "\\0",
+          "\\n",
+          "\\r",
+          "\\t",
+          "\\\"",
+          "\\\\",
+          "\\xHH"
+        ],
+        "hex_escape_width": 2,
+        "unicode_escapes": false,
+        "interpolation": false,
+        "result_type": "Bytes",
+        "recovery": [
+          "non-ASCII direct scalar",
+          "unknown or Unicode escape",
+          "invalid two-digit hex escape",
+          "physical newline",
+          "unterminated at EOF"
+        ]
       },
       "ScannerRecoveryOperatorSymbol": {
         "profile": "RECOVERY_ONLY",
@@ -1838,7 +2131,7 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 89,
-    "STABLE": 438,
+    "STABLE": 443,
     "PREVIEW": 13,
     "RECOVERY": 15
   },

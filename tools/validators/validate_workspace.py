@@ -26,7 +26,13 @@ PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
-EXCLUDED_TREE_PARTS = {".git", "target", "dist", "__pycache__"}
+EXCLUDED_TREE_PARTS = {
+    ".git",
+    "target",
+    "dist",
+    "candidate",
+    "__pycache__",
+}
 EXPECTED = {
     "features": 681, "diagnostics": 1250, "predicates": 245,
     "predicate_fixtures": 763, "no_go": 150,
@@ -269,8 +275,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 688
-                and fixed_counts.get("predicates") == 245
-                and fixed_counts.get("predicate_fixtures") == 764
+                and fixed_counts.get("predicates") == 247
+                and fixed_counts.get("predicate_fixtures") == 771
                 and fixed_counts.get("no_go") == 150
                 and fixed_counts.get("hard_keywords") == 30
                 and fixed_counts.get("contextual_words") == 101,
@@ -293,6 +299,12 @@ def main() -> int:
         "tools/generators/generate_example_projections.py",
         "tools/generators/example-projections.contract.json",
         "tools/validators/run_example_projection_generator_tests.py",
+        "docs/grammar-reference/README.md",
+        "docs/grammar-reference/coverage-manifest.json",
+        "spec/contracts/grammar-reference-r1.json",
+        "schemas/language/grammar-reference-coverage.schema.json",
+        "tools/generators/generate_grammar_reference.py",
+        "tools/validators/run_grammar_reference_generator_tests.py",
         "tools/generators/generate_current_integrity.py",
         "tools/generators/current-integrity.contract.json",
         "tools/validators/run_current_integrity_generator_tests.py",
@@ -334,6 +346,32 @@ def main() -> int:
             process.returncode == 0,
             "EXAMPLE_PROJECTION_GENERATOR_CHECK",
             detail[-2000:],
+        )
+
+    grammar_reference_generator = (
+        root / "tools/generators/generate_grammar_reference.py"
+    )
+    if grammar_reference_generator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(grammar_reference_generator),
+                "--root",
+                str(root),
+                "--check",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "GRAMMAR_REFERENCE_GENERATOR_CHECK",
+            detail[-4000:],
         )
 
     if revision == LANGUAGE_COHERENCE_REVISION:
@@ -398,7 +436,14 @@ def main() -> int:
             )
 
     parsed: dict[Path, Any] = {}
-    json_files = sorted(root.rglob("*.json"))
+    json_files = sorted(
+        path
+        for path in root.rglob("*.json")
+        if not any(
+            part in EXCLUDED_TREE_PARTS
+            for part in path.relative_to(root).parts
+        )
+    )
     for path in json_files:
         try:
             parsed[path] = json.loads(path.read_text(encoding="utf-8"))
@@ -412,7 +457,16 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001
         check(False, "TOML_PARSE", str(exc))
 
-    archives = [p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file() and p.suffix.lower() in {".zip", ".tar", ".gz", ".zst"}]
+    archives = [
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file()
+        and path.suffix.lower() in {".zip", ".tar", ".gz", ".zst"}
+        and not any(
+            part in EXCLUDED_TREE_PARTS
+            for part in path.relative_to(root).parts
+        )
+    ]
     check(not archives, "NO_NESTED_ARCHIVES", str(archives))
 
     integrity_contract = parsed.get(
@@ -580,7 +634,14 @@ def main() -> int:
         ids = [row.get(contract["id_key"]) for row in rows if isinstance(row, dict) and row.get(contract["id_key"])]
         check(len(ids) == len(set(ids)), "CATALOG_ID_UNIQUENESS", contract["legacy_file"])
         reconstructed[contract["legacy_file"]] = doc
-    chunk_files = sorted(root.glob("**/chunks/part-*.json"))
+    chunk_files = sorted(
+        path
+        for path in root.glob("**/chunks/part-*.json")
+        if not any(
+            part in EXCLUDED_TREE_PARTS
+            for part in path.relative_to(root).parts
+        )
+    )
     check(set(chunk_files) == set(all_shards), "SHARD_CONTRACT_COVERAGE", f"actual={len(chunk_files)} declared={len(all_shards)}")
     check(len(reconstructed) == 12, "CATALOG_COUNT", str(len(reconstructed)))
 
@@ -1199,9 +1260,9 @@ def main() -> int:
         and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
         and trn_contract.get("open_feature_p1", {}).get("total") == 22
         and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 14)]
-        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 35
-        and trn_admit == trn_counts.get("admit") == 10
-        and trn_reject == trn_counts.get("reject") == 25
+        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 40
+        and trn_admit == trn_counts.get("admit") == 13
+        and trn_reject == trn_counts.get("reject") == 27
         and all(
             row.get("rule_ids")
             and set(row["rule_ids"]).issubset(set(trn_rule_ids))
@@ -1212,7 +1273,8 @@ def main() -> int:
         and len(trn.get("open_feature_p1", [])) == 22
         and len(trn.get("product_lanes", {})) == 15
         and set(trn.get("product_lanes", {}).values()) == {"NOT_RUN"}
-        and trn_counts.get("runtime_union_tests") == 2
+        and trn_counts.get("runtime_union_pattern_tests") == 2
+        and trn_counts.get("closed_union_expression_tests") == 5
         and trn_counts.get("open_runtime_type_tests") == 0
         and trn_counts.get("def_guard_narrowing_facts") == 0
         and trn_counts.get("p1_closed") == 0

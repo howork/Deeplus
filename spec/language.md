@@ -66,7 +66,19 @@ The lexical authority includes decimal and supported radix integers, digit separ
 
 Character literals use single quotes and contain exactly one Unicode scalar value after escape processing. `''` is invalid. `Char` is not a byte and not a UTF-16 code unit. Plain strings use double quotes. A multiline Unicode String uses triple quotes: the opener is followed by a newline, the closer is on its own line, and the longest exact common indentation prefix of nonblank content lines is removed. Tabs and spaces are distinct prefix bytes; escapes and interpolation behave as in an ordinary String. One-line triple quotes and raw multiline strings are not current. Raw String Phase A has exactly one delimiter family, `raw"..."`; its body has no escape interpretation and no interpolation, produces `String`, preserves exact body text in the CST, lowers to `StringLiteral(raw=true)` and then `MIR::ConstString`, and invokes no provider or authority. Bytes literals produce byte sequences rather than text. Deeplus has no regex literal token or scanner mode; pattern engines are explicit library APIs receiving String or Bytes values.
 
-String escape processing is Unicode-based. Invalid scalar values, unknown Unicode names, unterminated escapes, and invalid delimiter nesting are lexical diagnostics.
+An ordinary String direct segment admits Unicode scalars except the quote,
+backslash, dollar, physical line terminators, and disallowed controls. Its
+closed escape set is `\0`, `\n`, `\r`, `\t`, `\"`, `\\`, `\$`, ``\` ``,
+`\u{H...}` with one through six hex digits, and `\N{UNICODE NAME}`. An
+unescaped `$` begins either `${...}` or the exact shorthand interpolation path;
+use `\$` for a literal dollar. A `#bytes"..."` body admits printable ASCII
+direct bytes except quote and backslash, plus `\0`, `\n`, `\r`, `\t`, `\"`,
+`\\`, and exactly two-digit `\xHH`. It admits neither interpolation nor Unicode
+escapes.
+
+String escape processing is Unicode-based. Invalid scalar values, unknown
+Unicode names, unterminated escapes, and invalid delimiter nesting are lexical
+diagnostics.
 
 `null` is not a current Deeplus value and has no type, constant, AST/HIR value node, or MIR constant. The spelling remains reserved only for deterministic recovery with `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`. Recoverable absence is written as `::none` in an expected `Option` context or as `Option<T>::none` explicitly; it is never inferred from a null sentinel.
 
@@ -94,7 +106,39 @@ The scanner uses maximal munch, but maximal munch does not by itself admit a tok
 
 ## 6. Declaration visibility and structural annotations
 
-Top-level and member declarations use explicit visibility where needed. The hierarchy-protected `#` member visibility is visible in the declaring nominal type and its nominal subclasses, not in arbitrary conforming or structurally similar types. Public API residue records visibility exactly.
+The type-producing top-level owner set is exactly `ClassDecl`, `TraitDecl`,
+`EnumDecl`, `TypeAliasDecl`, `SchemaDecl`, `ActorDecl`, `ActorProtocolDecl`,
+`TypestateResourceDecl`, and `BitfieldDecl`. Each of those nine owners requires
+one explicit `public`, `common`, or `private` word in every
+`LibrarySourceFile`, `ExecutableSourceFile`, `ScriptSourceFile`,
+`PreviewLibrarySourceFile`, `PreviewExecutableSourceFile`, and
+`PreviewScriptSourceFile`. This admission rule is uniform across all six roots;
+a preview gate changes neither the explicit-visibility requirement for these
+nine owners nor the `private` default for other top-level visibility owners.
+
+The exact Grammar keeps `TopLevelVisibility?` on these owners for deterministic
+recovery. If the word is omitted, the parser may retain a structural candidate,
+but the checker emits `TYPE_DECL_VISIBILITY_REQUIRED` and admits zero HIR type
+declaration nodes, type identities, or API-digest entries from that candidate.
+This recovery form is never an implicit `private` type declaration.
+
+Other top-level owners that grammatically carry `TopLevelVisibility?` are not
+type-producing owners. Their omitted word normalizes to `private`; an explicit
+word is preserved. `public` is eligible to enter external package API only
+through an admitted export or module interface. `common` is visible across
+modules of the declaring package but is excluded from external package API and
+re-export. `private` is visible only in the declaring module. Package identity
+comes from the build/module graph; `common` introduces no package-declaration
+syntax. API closure is checked after normalization: a wider visibility domain
+cannot expose a dependency identity from a narrower domain, and a `public`
+declaration is not externally exported merely because it is public.
+
+Member declarations use `+`, `-`, and `#`, not top-level visibility words. The
+hierarchy-protected `#` member visibility is visible in the declaring nominal
+type and its nominal subclasses, not in arbitrary conforming or structurally
+similar types. Public API residue records visibility exactly. The structural
+Grammar accepts an omitted type-producing-owner visibility only for the
+recovery path described above.
 
 Annotations are structural attachments and must not float to a different declaration across recovery. Modifier sequences are closed by declaration owner. Duplicate or reordered modifiers that are not in the owner matrix are rejected.
 
@@ -111,7 +155,14 @@ openCounter() -> $$counter        // var counter = openCounter()
 
 The CST preserves the arrow, `$`/`$$`, annotation, spans, and trivia. Before semantic checking, `$` normalizes to ordinary `let` and `$$` to ordinary `var`. The initializer is evaluated exactly once under the pre-binding environment; the fresh name is committed only after successful initialization. Type inference, coercion, ownership, borrow regions, effects, failure, cleanup, shadowing, and scope are exactly those of ordinary local binding. Only one fresh identifier target is admitted, only as a statement; chaining, pattern/place/member/index targets and guard attachment are rejected. No flow-binding AST/HIR/MIR/xVM/LLVM node exists. A `yield ... -> $x` still owns its suspension/resume event, then performs the same ordinary response binding after resume.
 
-Properties use `#get`, `#set`, `#beforeSet`, and `#afterSet` roles. `do#get` is not current. A getter may use the recommended `_` result convention but that spelling is not globally mandatory. Property initialization and accessor visibility must preserve field ownership and mutation responsibility.
+Properties use the exact `get` and `set(name)` accessor productions. An
+optional member-visibility sigil attaches to each accessor, so `+get`, `-get`,
+`#get` and the corresponding `set` forms are visibility-plus-accessor
+compositions rather than independent role tags. `#beforeSet`, `#afterSet`, and
+`do#get` have no current production. A getter may use the recommended `_`
+result convention, but that spelling is not globally mandatory. Property
+initialization and accessor visibility must preserve field ownership and
+mutation responsibility.
 
 ## 8. Functions and declaration profiles
 
@@ -157,7 +208,7 @@ The following are rejected:
 
 ```deeplus
 def bad(options**: Record) -> Unit = { }  // parameter/type owner requires ***
-type Bad = (Record**) -> Unit             // type residue requires ***
+private type Bad = (Record**) -> Unit     // type residue requires ***
 configure(***options)                     // unfold owner requires **
 ```
 
@@ -216,7 +267,41 @@ Resolution considers nominal members, active extension sets, and conformance evi
 
 ## 16. Operator policy
 
-The operator token vocabulary and precedence table are closed. Every current glyph is selected by the Grammar and Frontend Model and dispatches as `INTRINSIC_ONLY`. A conformance, extension, witness, provider, import, source order, or runtime lookup cannot create a glyph candidate or change its meaning. User-defined behavior is expressed through named Trait methods and named APIs. Arbitrary custom operator declarations and fixed-operator Trait/conformance overloading remain `PREVIEW_DESIGN` and nonactivatable; this current closure neither activates them nor closes any of `TCC-P1-002..008`.
+The operator token vocabulary and precedence table are closed. Every current
+glyph is selected by the Grammar and Frontend Model and dispatches as
+`INTRINSIC_ONLY`. A conformance, extension, witness, provider, import, source
+order, or runtime lookup cannot create a glyph candidate or change its meaning.
+User-defined behavior is expressed through named Trait methods and named APIs.
+Arbitrary custom operator declarations and fixed-operator Trait/conformance
+overloading remain `PREVIEW_DESIGN` and nonactivatable; this current closure
+neither activates them nor closes any of `TCC-P1-002..008`.
+
+`subject is Alternative` and adjacent `subject !is Alternative` are current
+only when the subject's static type is one normalized closed Union and
+the right operand parses through the `TypeRef` goal and is exactly one declared
+alternative identity of that Union. The subject is evaluated once; the checker
+reads the stored Union injection
+identity once and produces `Bool`. The true and false edges carry the exact
+complementary alternative facts into `Phi`, but the expression binds no value.
+It performs no subclass search, refinement evaluation, reflection, Trait or
+provider lookup. A non-Union subject is rejected with
+`TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION`; a target that is not one exact
+declared alternative is rejected with
+`UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT`. Direct comparison chaining remains
+forbidden and emits `COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A`. This structural
+chain diagnostic precedes the subject-domain diagnostic, which in turn
+precedes the exact-target diagnostic; a rejected chain does not continue into
+speculative type-test diagnostics. Conversions remain `as?` and `as!`, and a
+typed pattern is used when the selected value must be bound.
+
+For `is`, the true edge intersects the current alternative set with the target
+and the false edge removes it; `!is` swaps those results. `and then` supplies
+the left true-edge fact to its right operand, while `otherwise` supplies the
+left false-edge fact. Strict `and` and `or` do not pre-narrow their right
+operand. A durable fact requires a stable place and is killed by assignment,
+mutation through an alias, exclusive borrow, escape or capture with possible
+mutation, consume, or a call whose responsibility summary may mutate or
+consume the subject. These flow facts never rewrite the declared type.
 
 Scalar `+`, `-`, `*`, `/`, and integer `%` require one exact normalized operand domain after the bounded contextual adaptation of an unsuffixed integer. Hidden widening, narrowing, mixed signedness, mixed width, and witness-based mixed-domain dispatch are forbidden. Integer division truncates toward zero. Integer remainder exists only for integer domains and satisfies `a == trunc(a / b) * b + (a % b)`; the remainder is zero or has the dividend sign and its magnitude is less than the divisor magnitude. A zero divisor and the signed `MIN / -1` or `MIN % -1` cases raise `ArithmeticDefect` before commit. Floating `%` and floating glyph power are not current; a library may expose explicit named APIs.
 
@@ -254,7 +339,12 @@ The checker owns target depth, payload type, and cleanup order. A control transf
 
 ## 20. Declarative clause functions
 
-Declarative clause functions partition a finite normalized subject domain. Phase A admits closed enum/sealed constructors, Option/Result alternatives, literal equality, normalized scalar intervals, and closed-union alternatives. Guards must be R0-pure and terminating.
+Declarative clause functions partition a finite normalized subject domain.
+Phase A admits the pattern carriers that have exact current productions and
+context rows: Enum, Option, and Result variants; literal equality; and exact
+closed-Union alternative binders. Sealed-Class constructor patterns and
+scalar-interval patterns have no current production and are not inferred from
+type closure or range expressions. Guards must be R0-pure and terminating.
 
 The checker constructs a finite partition, intersects each source-ordered arm, rejects the first nonempty overlap, subtracts covered cells, lets one final `otherwise` cover the exact remainder, and rejects a nonempty remainder. Option, Result, and `throws` do not add implicit arms.
 
@@ -285,6 +375,14 @@ Typed labeled materialization and schema unfolding must preserve the target cons
 ## 24. Collections, comprehensions, and indexing
 
 List, set, map, tuple, Record, String, Bytes, ReadonlyView, and NumericArray owners remain distinct. Comprehension iteration and filters preserve evaluation and failure order. The Stable `for ... Pattern in Expr` clause is a structural comprehension-unfold owner; it never forms a range. Async comprehension remains Preview-design. Collection behavior outside the closed built-in syntax owners uses named methods; conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not activate `[]`.
+
+`#set{...}` constructs the current immutable `Set<T>` identity. All elements
+must normalize to one exact element domain with the required equality and
+keyability evidence. A duplicate literal element is rejected rather than
+silently discarded. Membership is intrinsic over that exact domain, and Set
+iteration order is not semantic or observable API residue. A Set
+comprehension uses `SetComprehensionExpr`; it does not inherit List ordering or
+Map key/value behavior.
 
 The built-in default logical index domain of `List`, `String`, and `Bytes` is exactly `1..length`, and its storage projection is `index - 1`. Every `ReadonlyView` preserves its source owner's declared logical coordinates and provenance: a view of one of those ordinary owners is therefore one-based, while a view of a bounded or sliced owner retains that source domain and mapping. Index zero in a default one-based domain, a negative-from-end spelling, and an index greater than the applicable domain are never rewritten. Current bracket access yields a read-only value or borrow and never an assignable place; compound assignment applies only to independently admitted mutable places. `String[index]` selects one Unicode scalar and returns `Char`; it never selects a byte, UTF-16 code unit, or grapheme. `Bytes[index]` returns `UInt8`. A failed type-correct dynamic lookup raises `IndexError::outOfLogicalDomain`; a statically known invalid index is rejected by the corresponding exact diagnostic.
 
@@ -359,7 +457,22 @@ Facet borrow packaging is current. Owned and inout Facet packages remain Preview
 
 ## 34. Effects, errors, defects, and cancellation
 
-Effect rows and error sets use visible union structure. Errors, defects, cancellation, suspension, and isolation are distinct axes. Cancellation is never an ErrorSet member, and suspension is never hidden in an EffectRow. `#pure` forbids observable effect and hidden authority. `#guard` is a terminating, nonsuspending, nonconsuming pure Bool predicate profile. Failure propagation and primary/suppressed ordering are deterministic.
+Effect rows and error sets use visible union structure. Errors, defects,
+cancellation, suspension, and isolation are distinct axes. Cancellation is
+never an ErrorSet member, and suspension is never hidden in an EffectRow.
+
+`capability Name for EffectRow` declares one nominal, non-value capability
+identity and binds it to one normalized nonempty effect row. The declaration
+does not perform an effect, create a global value, grant authority, or make a
+Trait conformance. A callable that needs the permission carries the capability
+through an explicit `context` parameter and still declares its observable
+`effects` row; the two axes are checked independently. Capability declarations
+end at `StatementBoundary`, obey top-level visibility, and cannot be
+constructed, forged, or inferred from an effect name.
+
+`#pure` forbids observable effect and hidden authority. `#guard` is a
+terminating, nonsuspending, nonconsuming pure Bool predicate profile. Failure
+propagation and primary/suppressed ordering are deterministic.
 
 Cancellation must not bypass cleanup. Async failure aggregation preserves the declared primary and suppressed ordering in MIR.
 
@@ -371,7 +484,7 @@ Every refutable owner follows one phase order: evaluate the subject once; acquir
 
 The current destructuring carriers are nominal variant payloads, statically known Record labels, and List. Record patterns require a statically known label subset and do not contribute an open-tail/rest fact to coverage. List patterns are exact-length or end in one ignored final `.._`; captured, middle, and multiple rests are not current. Tuple-pattern syntax is not current. An Or-pattern requires identical observable binders with the same canonical types, ownership modes, mutability, and regions on every branch; path/source order is not identity. `pattern as name` creates a borrow alias rather than a clone, and it cannot coexist with a moved or exclusive descendant. Cross-arm place joins preserve only capabilities valid on every incoming arm.
 
-Ordinary `match` chooses the first admitted arm in source order after structural admission and its optional guard; source order never repairs overlap in a declarative callable-clause family. Sealed-family exhaustiveness uses the complete current family. Option, Result, union, enum, List exactness, and loop outcome each use their explicit current alternatives. An undecidable or incomplete partition is rejected rather than assumed exhaustive. Pattern opening does not directly inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never performs backtracking.
+Ordinary `match` chooses the first admitted arm in source order after structural admission and its optional guard; source order never repairs overlap in a declarative callable-clause family. Option, Result, union, enum, List exactness, Record required-label subsets, and loop outcome each use their explicit current alternatives. Sealed-Class closure may inform subtype analysis but supplies no constructor-pattern syntax. An undecidable or incomplete partition is rejected rather than assumed exhaustive. Pattern opening does not directly inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never performs backtracking.
 
 `Identifier : TypeRef` remains an irrefutable static typed binder except in a refutable owner over an already normalized closed Union. There, and only when `TypeRef` is exactly one declared alternative identity, the checker elaborates it to a union-alternative binder and tests the Union's stored injection identity. This bounded discriminator read is not a general runtime type test: it performs no subtyping search, refinement execution, reflection, provider lookup, or Trait discovery.
 
@@ -481,7 +594,11 @@ Removed surfaces have no implicit compatibility entitlement because Deeplus has 
 
 ## 46. Exact Grammar incorporation
 
-The exact syntax authority is `spec/grammar/deeplus.ebnf`. This specification does not duplicate EBNF productions. The Grammar is an inseparable normative component of the R51f3 package and contains four profiles:
+The exact syntax authority is `spec/grammar/deeplus.ebnf`. This specification
+does not duplicate EBNF productions. `docs/grammar-reference` is a
+generated-and-validated reader projection, not a second syntax authority. The
+Grammar is an inseparable normative component of the R51f3 package and
+contains four profiles:
 
 - LEXICAL: scanner-level structure and external scanner contracts;
 - STABLE: current source reachable from the declared Deeplus roots;
@@ -612,9 +729,10 @@ public trait Configurable {
     +def configure+(options***: Record) -> Result<Unit, error ConfigError>
 }
 
-public def configure(options***: Record) -> Result<Unit, error ConfigError> = {
-    validate(**options)!
-    apply(**options)
+public def configure(options***: Record) -> Result<Unit, error ConfigError>
+= return @match validate(**options) {
+    ::ok(_) => apply(**options)
+    ::err(error) => ::err(error)
 }
 
 public type Configure = (Record***) -> Result<Unit, error ConfigError>
@@ -654,7 +772,13 @@ The removal boundary is checked across all package authorities. `MemberSuffix` r
 
 ## Package self-containment law
 
-The `r51f3/` directory is the complete current authority and requires no external package. Every current filename, schema identity, fixture pointer, profile identifier and checksum resolves inside this directory. The exact Grammar and Frontend Model remain separate first-class canonical artifacts.
+The repository root is the complete current authority workspace and requires
+no external authority package. Every current filename, schema identity,
+fixture pointer, profile identifier, and checksum resolves through a tracked
+path in this source tree. Historical external packs are provenance evidence
+only. The exact Grammar and Frontend Model remain separate first-class
+canonical artifacts, while `docs/grammar-reference` is their validated
+documentation projection.
 
 This edition consolidates terminology and removes non-normative version history without changing language surfaces, type rules, diagnostic status, example outcomes, Grammar productions or MIR behavior. Static validation is E2 evidence; product lanes remain `NOT_RUN`.
 
@@ -1353,7 +1477,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TYPEOF_SAMPLE_RESOURCE_FORBIDDEN` [error]: `typeof` Phase A samples cannot allocate resources, invoke constructors, or introduce cleanup responsibility.
 - `TYPE_BANG_REQUIRES_NEW_CONSTRUCTOR` [error]: `Type!(...)` resolves only to a matching `def! new(...)` constructor.
 - `TYPE_DATA_REMOVED_USE_EXPLICIT_BOUNDARY` [error]: Data is not a plain-value erasure type name. Choose Plain, Dyn, JsonValue, or a domain-specific type; no automatic fix-it is provided.
-- `TYPE_DECL_VISIBILITY_REQUIRED` [error]: Top-level class, trait, and enum declarations must use public/private/common visibility.
+- `TYPE_DECL_VISIBILITY_REQUIRED` [error]: A type-producing top-level declaration must explicitly use public, common, or private visibility.
 - `TYPE_DESCRIPTOR_QUERY_RUNTIME_USE_FORBIDDEN` [error]: Compile-time type descriptors are not runtime reflective values.
 - `TYPE_DOLLAR_IS_NOT_CONSTRUCTOR_ALIAS` [error]: `Type${...}` is typed schema construction, not a constructor-domain call. Use `Type!(...)` or `Type!name(...)` for nominal construction.
 - `TYPE_DOLLAR_SCHEMA_CONSTRUCTION_REQUIRES_SCHEMA_TYPE` [error]: `Type${...}` requires a resolved type with an admitted schema ConstructionRow and is never a constructor alias.
@@ -1465,7 +1589,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BYTES_LITERAL_UNICODE_ESCAPE_NOT_ALLOWED` [error]: Unicode escapes are not allowed in #bytes literals.
 - `BYTE_LITERAL_NON_BYTE_SCALAR` [error]: A Bytes literal admits ASCII direct bytes and byte escapes only; use `\xHH` for arbitrary bytes.
 - `CALLABLE_PROFILE_LITERAL_ATTACHMENT_REQUIRED` [error]: The final callable profile and literal { must be adjacent.
-- `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` [error]: Callable/member visibility must use +, -, # sigils, not public/private/protected/common keywords.
+- `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` [error]: A callable nested in a type uses member visibility `+`, `-`, or `#`; a nested local function has lexical visibility. Top-level callables may use `public`, `common`, or `private`, and omission normalizes to `private`.
 - `CHAR_LITERAL_EMPTY` [error]: Char literal cannot be empty.
 - `CHAR_LITERAL_REQUIRES_ONE_SCALAR` [error]: A Char literal must decode to exactly one Unicode scalar value.
 - `CHAR_LITERAL_SURROGATE_FORBIDDEN` [error]: A Unicode surrogate is not a Unicode scalar value and cannot form Char.
@@ -1843,9 +1967,13 @@ Linking cannot repair rejected source admission, manufacture source evidence, or
 <!-- POST_PR16_UNIT_END:TCC-DG-007 -->
 
 <!-- POST_PR16_UNIT_BEGIN:TCC-DG-008 -->
-## TCC-DG-008 — Independent evolution lanes
+## TCC-DG-008 — Trait-conformance evolution lanes
 
-The exact independent lanes are `SOURCE`, `RESOLUTION`, `BEHAVIOR`, and `BINARY_ABI`. Each stores its predicate and version, scope/inputs, target, evidence identity, result, and reason. No result propagates between lanes.
+The exact Trait-conformance evolution lanes are `SOURCE`, `RESOLUTION`,
+`BEHAVIOR`, and `BINARY_ABI`. Each stores its predicate and version,
+scope/inputs, target, evidence identity, result, and reason. No result
+propagates between lanes. This four-lane set is scoped to TCC evolution and
+does not replace or abbreviate the eight CE compatibility lanes in PC-10.
 
 Decision precedence is:
 

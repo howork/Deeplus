@@ -1,0 +1,325 @@
+{
+  "schema": "deeplus.grammar-reference-contract/r1",
+  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "reference_root": "docs/grammar-reference",
+  "authority": {
+    "kind": "CANONICAL_DOCUMENTATION_PROJECTION",
+    "semantic_authority": false,
+    "conflict_order": [
+      "approved_current_decision",
+      "domain_semantic_authority",
+      "generated_grammar_reference_projection"
+    ],
+    "product_support": "NOT_RUN"
+  },
+  "manual_status_marker": "CURRENT_CANONICAL_DOCUMENTATION_PROJECTION",
+  "allowed_status_fences": [
+    "CURRENT",
+    "PREVIEW_GATED",
+    "PREVIEW_NONACTIVATABLE",
+    "RECOVERY_ONLY",
+    "REMOVED"
+  ],
+  "preview_documentation_policy": {
+    "chapter_path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
+    "status_fence_scope": "UNTIL_NEXT_FENCE_OR_EOF",
+    "required_status_fences": [
+      "PREVIEW_GATED",
+      "PREVIEW_NONACTIVATABLE",
+      "RECOVERY_ONLY",
+      "REMOVED"
+    ],
+    "activation_disclaimer": "이 장의 Preview 설계 문서화는 구문, 구현, 제품 지원 또는 활성화 권위를 부여하지 않는다.",
+    "required_registry_status_counts": {
+      "PREVIEW": 3,
+      "PREVIEW_DESIGN": 47
+    },
+    "review_card_begin_marker": "<!-- deeplus-preview-design-review-cards: begin -->",
+    "review_card_end_marker": "<!-- deeplus-preview-design-review-cards: end -->",
+    "review_card_fields": [
+      "motivation",
+      "surface_or_api",
+      "static_semantics_and_interactions",
+      "diagnostics_migration_tooling",
+      "open_alternatives",
+      "activation_prerequisites"
+    ],
+    "required_review_card_count": 47
+  },
+  "manual_quality_policy": {
+    "forbidden_path_tokens": [
+      "candidate/",
+      "candidate\\"
+    ],
+    "illustrative_example_marker": "deeplus-example: illustrative",
+    "allowed_illustrative_statuses": [
+      "CURRENT_EXPLANATORY",
+      "PREVIEW_GATED",
+      "PREVIEW_NONACTIVATABLE",
+      "RECOVERY_ONLY",
+      "REJECTED_EXPLANATORY"
+    ],
+    "generated_link_targets_are_planned_valid": true
+  },
+  "governance": {
+    "source_path": "current/current-pointer.json",
+    "chapter_path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
+    "semantic_p0": 0,
+    "feature_p1_status": "OPEN",
+    "feature_p1_ids": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006",
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008",
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008",
+      "SFD-P1-009"
+    ],
+    "separate_action_status": "OPEN",
+    "separate_open_action_ids": [
+      "M13-A002",
+      "M13-A003",
+      "M13-A004",
+      "M13-A005"
+    ],
+    "product_lane_status": "NOT_RUN",
+    "product_lane_ids": [
+      "rust_frontend_lexer",
+      "rust_frontend_parser",
+      "rust_hir_lowering",
+      "rust_integrated_checker",
+      "deeplus_mir_lowering",
+      "xvm_bytecode_emitter",
+      "xvm_interpreter",
+      "llvm_aot_backend",
+      "llvm_orc_jit_backend",
+      "formatter_lsp",
+      "stdlib_provider_runner",
+      "official_tooling",
+      "independent_conformance",
+      "cross_backend_conformance",
+      "actual_user_team_study"
+    ],
+    "chapter_begin_marker": "<!-- deeplus-governance-invariants: begin -->",
+    "chapter_end_marker": "<!-- deeplus-governance-invariants: end -->"
+  },
+  "manual_documents": [
+    {
+      "id": "landing",
+      "path": "docs/grammar-reference/README.md",
+      "title": "Deeplus 문법 명세 및 참조서"
+    },
+    {
+      "id": "00",
+      "path": "docs/grammar-reference/00-status-authority-and-notation.md",
+      "title": "상태, 권위 및 표기법"
+    },
+    {
+      "id": "01",
+      "path": "docs/grammar-reference/01-lexical-structure.md",
+      "title": "어휘 구조"
+    },
+    {
+      "id": "02",
+      "path": "docs/grammar-reference/02-programs-modules-and-imports.md",
+      "title": "프로그램, 모듈 및 가져오기"
+    },
+    {
+      "id": "03",
+      "path": "docs/grammar-reference/03-declarations-bindings-and-names.md",
+      "title": "선언, 바인딩 및 이름"
+    },
+    {
+      "id": "04",
+      "path": "docs/grammar-reference/04-types-generics-and-refinement.md",
+      "title": "타입, 제네릭 및 리파인먼트"
+    },
+    {
+      "id": "05",
+      "path": "docs/grammar-reference/05-functions-methods-closures-and-calls.md",
+      "title": "함수, 메서드, 클로저 및 호출"
+    },
+    {
+      "id": "06",
+      "path": "docs/grammar-reference/06-classes-traits-conformance-and-extensions.md",
+      "title": "클래스, 트레이트, 적합성 및 확장"
+    },
+    {
+      "id": "07",
+      "path": "docs/grammar-reference/07-enums-records-schemas-bitfields-and-units.md",
+      "title": "열거형, 레코드, 스키마, 비트필드 및 단위"
+    },
+    {
+      "id": "08",
+      "path": "docs/grammar-reference/08-expressions-and-operators.md",
+      "title": "표현식 및 연산자"
+    },
+    {
+      "id": "09",
+      "path": "docs/grammar-reference/09-collections-indexing-and-slicing.md",
+      "title": "컬렉션, 인덱싱 및 슬라이싱"
+    },
+    {
+      "id": "10",
+      "path": "docs/grammar-reference/10-patterns-destructuring-and-matching.md",
+      "title": "패턴, 구조 분해 및 패턴 매칭"
+    },
+    {
+      "id": "11",
+      "path": "docs/grammar-reference/11-control-flow-errors-effects-and-cleanup.md",
+      "title": "제어 흐름, 오류, 효과 및 정리"
+    },
+    {
+      "id": "12",
+      "path": "docs/grammar-reference/12-ownership-borrowing-and-responsibility.md",
+      "title": "소유권, 대여 및 책임"
+    },
+    {
+      "id": "13",
+      "path": "docs/grammar-reference/13-async-tasks-actors-and-concurrency.md",
+      "title": "비동기, 태스크, 액터 및 동시성"
+    },
+    {
+      "id": "14",
+      "path": "docs/grammar-reference/14-ffi-unsafe-metaprogramming-and-profiles.md",
+      "title": "FFI, unsafe 경계, 메타프로그래밍 및 프로파일"
+    },
+    {
+      "id": "15",
+      "path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
+      "title": "프리뷰, 복구 및 제거된 표면"
+    }
+  ],
+  "source_bindings": [
+    {
+      "id": "human_language",
+      "path": "spec/language.md"
+    },
+    {
+      "id": "exact_grammar",
+      "path": "spec/grammar/deeplus.ebnf"
+    },
+    {
+      "id": "keyword_vocabulary",
+      "path": "spec/grammar/keyword-vocabulary.json"
+    },
+    {
+      "id": "frontend_admission",
+      "path": "spec/frontend/frontend-model.json"
+    },
+    {
+      "id": "type_system",
+      "path": "spec/types/type-system.md"
+    },
+    {
+      "id": "mir_observable_semantics",
+      "path": "spec/mir/semantics.md"
+    },
+    {
+      "id": "prelude",
+      "path": "library/prelude/prelude.md"
+    },
+    {
+      "id": "current_decisions",
+      "path": "decisions/language/current-decisions.json"
+    },
+    {
+      "id": "current_pointer",
+      "path": "current/current-pointer.json"
+    },
+    {
+      "id": "coverage_schema",
+      "path": "schemas/language/grammar-reference-coverage.schema.json"
+    }
+  ],
+  "grammar": {
+    "path": "spec/grammar/deeplus.ebnf",
+    "frontend_model_path": "spec/frontend/frontend-model.json",
+    "expected_total": 560,
+    "expected_profile_counts": {
+      "LEXICAL": 89,
+      "STABLE": 443,
+      "PREVIEW": 13,
+      "RECOVERY": 15
+    }
+  },
+  "registries": {
+    "features": {
+      "metadata_path": "spec/features/catalog/catalog-metadata.json",
+      "chunks_root": "spec/features/catalog/chunks",
+      "count_field": "feature_count",
+      "id_field": "feature_id",
+      "expected_count": 688
+    },
+    "diagnostics": {
+      "metadata_path": "spec/diagnostics/catalog/catalog-metadata.json",
+      "chunks_root": "spec/diagnostics/catalog/chunks",
+      "count_field": "diagnostic_count",
+      "id_field": "diagnostic_id",
+      "expected_count": 1281
+    },
+    "predicates": {
+      "metadata_path": "spec/types/predicates/catalog-metadata.json",
+      "chunks_root": "spec/types/predicates/chunks",
+      "count_field": "predicate_count",
+      "id_field": "predicate_id",
+      "expected_count": 247
+    },
+    "prelude": {
+      "metadata_path": "library/prelude/signatures/catalog-metadata.json",
+      "chunks_root": "library/prelude/signatures/chunks",
+      "count_field": "entry_count",
+      "id_field": "entry_id",
+      "expected_count": 56
+    },
+    "examples": {
+      "metadata_path": "examples/manifests/by-outcome/catalog-metadata.json",
+      "chunks_root": "examples/manifests/by-outcome/chunks",
+      "count_field": "example_count",
+      "id_field": "example_id",
+      "expected_count": 703
+    }
+  },
+  "vocabulary": {
+    "path": "spec/grammar/keyword-vocabulary.json",
+    "hard_field": "hard_keywords",
+    "contextual_field": "contextual_words",
+    "expected_hard_count": 30,
+    "expected_contextual_count": 101
+  },
+  "generated_outputs": [
+    "docs/grammar-reference/SUMMARY.md",
+    "docs/grammar-reference/appendices/a-production-index.md",
+    "docs/grammar-reference/appendices/b-token-keyword-operator-index.md",
+    "docs/grammar-reference/appendices/c-feature-status-index.md",
+    "docs/grammar-reference/appendices/d-diagnostic-predicate-index.md",
+    "docs/grammar-reference/appendices/e-prelude-example-index.md",
+    "docs/grammar-reference/appendices/f-coverage-report.md",
+    "docs/grammar-reference/coverage-manifest.json"
+  ],
+  "coverage_targets": {
+    "grammar_productions": 560,
+    "features": 688,
+    "diagnostics": 1281,
+    "predicates": 247,
+    "prelude_entries": 56,
+    "examples": 703,
+    "hard_keywords": 30,
+    "contextual_words": 101
+  }
+}

@@ -34,6 +34,38 @@
     "ordinary_bool_call_adds_fact": false,
     "def_guard_call_adds_fact": false
   },
+  "closed_union_type_test": {
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "descriptor_schema": "schemas/language/closed-union-type-test-descriptor.schema.json",
+    "operators": ["is", "!is"],
+    "subject_domain": "exactly one normalized closed Union",
+    "target_domain": "exactly one declared alternative identity",
+    "right_operand_parse_goal": "TypeRef",
+    "subject_evaluation_count": 1,
+    "injection_identity_read_count": 1,
+    "result_type": "Bool",
+    "binds_value": false,
+    "open_runtime_type_test": false,
+    "direct_comparison_chaining": false,
+    "diagnostic_precedence": [
+      "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A",
+      "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+      "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT"
+    ],
+    "sequential_transfer": {
+      "and_then_rhs": "left true-edge Phi",
+      "otherwise_rhs": "left false-edge Phi",
+      "strict_and_or_rhs_pre_narrowing": false
+    },
+    "stable_place_required_for_durable_fact": true,
+    "kill_events": [
+      "assignment to the subject or an aliased place",
+      "exclusive borrow",
+      "escape or capture with possible mutation",
+      "consume",
+      "call whose responsibility summary may mutate or consume the subject"
+    ]
+  },
   "rules": [
     {
       "rule_id": "TRN-R001",
@@ -42,13 +74,13 @@
     },
     {
       "rule_id": "TRN-R002",
-      "title": "closed-union typed arm has one bounded elaboration",
-      "contract": "Inside a match-like refutable context whose subject is a normalized closed union, Identifier : TypeRef elaborates to UnionAlternativeBindPattern only when TypeRef is exactly one declared alternative identity. It performs UNION_INJECTION_TAG_TEST and binds that alternative. Everywhere else it remains the irrefutable static TypedBindPattern."
+      "title": "closed-union exact alternative has one bounded elaboration",
+      "contract": "Inside a match-like refutable context whose subject is a normalized closed union, Identifier : TypeRef elaborates to UnionAlternativeBindPattern only when TypeRef is exactly one declared alternative identity; it performs UNION_INJECTION_TAG_TEST and binds that alternative. The existing `subject is Alternative` and adjacent `subject !is Alternative` comparison forms use the same exact-identity precondition and discriminator read but produce Bool and complementary Phi facts without binding. Everywhere else Identifier : TypeRef remains the irrefutable static TypedBindPattern."
     },
     {
       "rule_id": "TRN-R003",
       "title": "union alternative selection is not an open runtime type test",
-      "contract": "The test reads only the discriminator of the already-declared closed union. Subtyping search, reflection, provider lookup, Trait witness discovery, arbitrary downcast and refinement-predicate execution are forbidden."
+      "contract": "Pattern selection and `is`/`!is` read only the discriminator of the already-declared closed union and require one exact declared alternative identity. Subtyping search, reflection, provider lookup, Trait witness discovery, arbitrary downcast and refinement-predicate execution are forbidden."
     },
     {
       "rule_id": "TRN-R004",
@@ -126,7 +158,10 @@
     "REFINEMENT_PROOF_REQUIRED",
     "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
     "UNION_MEMBER_SUBSUMED",
-    "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"
+    "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
+    "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+    "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
+    "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A"
   ],
   "predicate_input_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
   "predicate_inputs": [

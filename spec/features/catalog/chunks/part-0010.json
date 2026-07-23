@@ -54,9 +54,10 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "TOOLING",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
     "authority_set": [
-      "TOOLING"
+      "LANGUAGE",
+      "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
@@ -66,7 +67,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Named effect capability profile. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "A declaration binds one nominal non-value capability identity to one normalized nonempty EffectRow and ends at StatementBoundary. It performs no effect, grants no authority, creates no value or conformance, and remains disjoint from the callable's explicit effects row and context permission channel.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -83,12 +84,14 @@
         "EX-R48-020"
       ],
       "productions": [
+        "NamedEffectCapabilityDecl",
+        "ContextParameter",
         "EffectsClause",
         "ThrowsClause"
       ],
       "semantic_reference_productions": []
     },
-    "trace_class": "tooling",
+    "trace_class": "semantic",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1102,7 +1105,8 @@
         "EX-R48G-006",
         "EX-R48L-009",
         "EX-R48L-010",
-        "EX-R51a1-AUD-NG-028"
+        "EX-R51a1-AUD-NG-028",
+        "EX-R51f3-VIS-NG-001"
       ],
       "productions": [],
       "semantic_reference_productions": [

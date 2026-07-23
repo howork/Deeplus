@@ -456,12 +456,6 @@
     "relation": "primary"
   },
   {
-    "violation_id": null,
-    "predicate_id": "ConformanceVisibilityOrphanAdmitted",
-    "diagnostic_id": "TYPE_DECL_VISIBILITY_REQUIRED",
-    "relation": "secondary"
-  },
-  {
     "violation_id": "ConstructionRowAdmitted:default",
     "predicate_id": "ConstructionRowAdmitted",
     "diagnostic_id": "TYPED_MATERIALIZATION_REQUIRES_CONSTRUCTION_ROW",
@@ -1870,5 +1864,23 @@
     "predicate_id": "PreviewFeatureGateAdmitted",
     "diagnostic_id": "PREVIEW_GATE_PLACEMENT_INVALID",
     "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosedUnionTypeTestAdmitted:subject_not_one_closed_union",
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "diagnostic_id": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
+    "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ClosedUnionTypeTestAdmitted",
+    "diagnostic_id": "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "TopLevelTypeVisibilityAdmitted:missing_required_visibility",
+    "predicate_id": "TopLevelTypeVisibilityAdmitted",
+    "diagnostic_id": "TYPE_DECL_VISIBILITY_REQUIRED",
+    "relation": "primary"
   }
 ]
