@@ -57,7 +57,7 @@ QualifiedPath ::= Identifier ("::" Identifier)* ;
 
 ```ebnf
 ImportDecl ::= "import" QualifiedPath ImportTail? StatementBoundary ;
-ImportAlias ::= "as" Identifier ;
+ImportAlias ::= NameAliasClause ;
 ImportSelection ::= "::" "{" IdentifierList "}" ;
 UseDecl ::= "use" QualifiedPath StatementBoundary ;
 UseExportDecl ::= "use" "export" QualifiedPath StatementBoundary ;

@@ -473,6 +473,140 @@
         },
         "cleanup": {
           "enum": ["none", "view_release", "drop_exactly_once"]
+        },
+        "task_origin": {
+          "enum": [
+            "ordinary_async",
+            "actor_request_admitted"
+          ]
+        },
+        "task_responsibility": {
+          "$ref": "#/$defs/taskResponsibilityDescriptor"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type_identity": {
+                "pattern": "(?:^|[^A-Za-z0-9_])Task<"
+              }
+            },
+            "required": [
+              "type_identity"
+            ]
+          },
+          "then": {
+            "required": [
+              "task_origin"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "task_origin"
+                  ]
+                },
+                {
+                  "required": [
+                    "task_responsibility"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "task_origin": {
+                "const": "actor_request_admitted"
+              }
+            },
+            "required": [
+              "task_origin"
+            ]
+          },
+          "then": {
+            "required": [
+              "task_responsibility"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "task_origin": {
+                "const": "ordinary_async"
+              }
+            },
+            "required": [
+              "task_origin"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "task_responsibility"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "taskResponsibilityDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_type",
+        "normalized_handler_error_set",
+        "cancellation_axis",
+        "isolation_owner",
+        "correlation_id",
+        "terminal_transport_failure"
+      ],
+      "properties": {
+        "result_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "normalized_handler_error_set": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "enum": [
+                "mailboxFull",
+                "receiverClosedBeforeAdmission",
+                "ActorMessageError::mailboxFull",
+                "ActorMessageError::receiverClosedBeforeAdmission"
+              ]
+            }
+          },
+          "uniqueItems": true
+        },
+        "cancellation_axis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "isolation_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlation_id": {
+          "const": "per_value_non_forgeable"
+        },
+        "terminal_transport_failure": {
+          "type": "array",
+          "items": {
+            "const": "receiverClosedBeforeReply"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true
         }
       }
     },
@@ -607,6 +741,27 @@
     "identity_key": "channel_id",
     "uniqueness": "all collected channel_id values are pairwise distinct across the complete callable responsibility profile",
     "duplicate_error": "MODULE_API_CALLABLE_CHANNEL_ID_DUPLICATE"
+  },
+  "x-deeplus-task-responsibility-contract": {
+    "source_type_spelling": "Task<T>",
+    "task_origin_discriminator": {
+      "required_for_Task_T_responsibility_channels": true,
+      "ordinary_async": "general structured asynchronous Task<T>; actor transport responsibility is forbidden",
+      "actor_request_admitted": "Task<T> produced only after successful actor request enqueue commit; actor request TaskResponsibility is required"
+    },
+    "await_error_set": "normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply)",
+    "normalized_handler_error_set_order": "strict ascending Unicode scalar sequence with no duplicates",
+    "admission_result_only_errors_forbidden_in_descriptor": [
+      "mailboxFull",
+      "receiverClosedBeforeAdmission"
+    ],
+    "compatibility_join_and_storage": "for task_origin=actor_request_admitted, preserve the descriptor on every value; require exact normalized static-field equality except when an explicit admitted error-set-subsumption proof widens normalized_handler_error_set; preserve each value's correlation_id without erasure or forgery",
+    "api_export": "every responsibility channel whose type_identity contains Task<T> records task_origin; actor_request_admitted requires the static task_responsibility shape in canonical bytes, while ordinary_async forbids the actor transport descriptor",
+    "module_api_correlation_id_field": "the module digest stores the constant policy marker per_value_non_forgeable rather than one runtime request identity; each admitted value receives its concrete correlation identity only in the value-level typed-HIR/MIR residue",
+    "implicit_erasure": false,
+    "implicit_error_set_union": false,
+    "erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+    "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
   },
   "x-deeplus-canonical-byte-algorithm": {
     "hash_algorithm": "SHA-256",

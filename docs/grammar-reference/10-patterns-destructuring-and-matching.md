@@ -29,16 +29,19 @@ PatternPrimary ::= TypedBindingPattern
                  | ListPattern
                  | VariantPattern
                  | "_"
-                 | "()"
+                 | UnitSyntax
                  | Literal
                  | ParenthesizedPattern
 
 TypedBindingPattern ::= Identifier ":" TypeRef
 RecordPattern       ::= "${" PatternFieldList? "}"
-ListPattern         ::= "[" (ListPatternPrefix ("," IgnoredListRest)?)? "]"
+ListPattern         ::= "["
+                        (ListPatternPrefix ("," IgnoredListRest)? ","?
+                        | IgnoredListRest ","?)?
+                        "]"
 IgnoredListRest     ::= ".." "_"
-VariantPattern      ::= (TypeRef "::" | "::") Identifier
-                        VariantPatternPayload?
+VariantPattern      ::= VariantQualifier Identifier VariantPatternPayload?
+VariantQualifier    ::= TypeRef "::" | "::"
 ```
 
 괄호는 하나의 Pattern을 묶을 뿐 tuple Pattern을 만들지 않는다. Record
@@ -51,11 +54,12 @@ Pattern은 exact length이거나 마지막에 단 하나의 ignored remainder
 ```ebnf
 BindingCore       ::= ("let" | "var") BindingPattern "=" Expr
 GuardedBindingStmt ::= "let" BindingPattern "=" Expr
-                       "else" GuardedBindingFailure
+                       "else" GuardedBindingFailure StatementBoundary?
 
 PatternControlCondition ::= Expr | "let" Pattern "=" Expr
-ForLoop          ::= "for" ("let" Pattern | Pattern) "in" Expr ...
-WhileLoop        ::= "while" PatternControlCondition ...
+ForLoop          ::= "for" ("let" Pattern | Pattern) "in" Expr
+                     GuardClause? Block MatchStatement?
+WhileLoop        ::= "while" PatternControlCondition Block MatchStatement?
 MatchStatement   ::= "match" MatchCore
 MatchExpr        ::= "@" "match" MatchCore
 ```
@@ -67,7 +71,8 @@ binder다.
 ### match 분기
 
 ```ebnf
-MatchArm ::= (Pattern | "otherwise") GuardClause? "=>" MatchArmBody
+MatchArm ::= MatchHead GuardClause? "=>" MatchArmBodySlot
+MatchHead ::= Pattern | "otherwise"
 ```
 
 statement `match`는 statement body를 실행한다. value `@match`는 각 정상
@@ -126,9 +131,13 @@ borrowed refinement, verified adapter를 사용한다.
 - residual이 없는데 `otherwise`가 오면 `OTHERWISE_UNREACHABLE`이다.
 - 나머지 final residual은 `MATCH_NOT_EXHAUSTIVE`다.
 
-Option, Result, closed Union, Enum, sealed family, List exactness, loop outcome은
-각자의 명시적 universe를 사용한다. 불완전하거나 결정할 수 없는
-partition을 exhaustive라고 추정하지 않는다.
+Option, Result, closed Union, Enum, List exactness, loop outcome은 각자의
+명시적 Pattern universe를 사용한다. sealed Class family의 닫힘은 subtype
+분석과 명목적 도달 가능성에는 정보를 제공하지만 constructor Pattern
+cell을 만들지 않는다. 따라서 sealed family가 닫혀 있다는 사실만으로
+`Circle(radius)` 같은 Class 구조 분해나 Class 기반 exhaustiveness를
+허용해서는 안 된다. 불완전하거나 결정할 수 없는 partition을
+exhaustive라고 추정하지 않는다.
 
 ## 평가·소유권·효과
 
@@ -236,6 +245,28 @@ let text = @match value {
 ```
 
 ## 거부되거나 격리된 형식
+
+sealed Class도 현행 constructor Pattern carrier가 아니다. 다음 예시는
+명목 family가 닫혀 있더라도 Class 내부 표현을 Pattern으로 열려고 하므로
+거부된다.
+
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/types/type-system.md -->
+```deeplus
+public sealed class Shape {}
+public final class Circle : Shape {
+    +let radius: Int
+}
+
+let area = @match shape {
+    Circle(radius) => radius * radius
+    otherwise => 0
+}
+```
+
+Class가 명시적으로 제공하는 Record view 또는 별도의 안전한 adapter를
+통해 Pattern carrier로 변환한 뒤 매칭해야 한다. 이 구분은 Class의
+봉인성, layout, 생성자 형식과 Pattern의 데이터 공개 권위를 섞지 않게
+한다.
 
 | 형식 또는 주장 | 판정 |
 |---|---|

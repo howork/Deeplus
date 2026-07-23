@@ -331,6 +331,25 @@ An `@match` expression arm contains one expression result, or a block whose loca
 
 Conditions are exactly `Bool`; Deeplus has no truthiness conversion. A statement `try` owns either one or more `catch` clauses with an optional `finally`, or one `finally` clause. Bare `try` blocks and `try Expr` statements are not current. Value `@try` has the same nonempty handler/finalizer requirement, and value `@if` is total: omission of `else` is recovery-only. `catch` handles recoverable Error values and cannot absorb Defect or Cancellation.
 
+The spaced conditional expression `condition ? whenTrue : whenFalse` evaluates
+the Bool condition once and exactly one arm once. Its two arms must have the
+same normalized result type or independently check against one already fixed
+expected type; the checker does not synthesize an anonymous Union to make them
+join. Ownership, places, effects, errors, cancellation, suspension, and cleanup
+obligations join only when the resulting state is valid on both edges. MIR
+therefore contains one condition branch, two lazy arm regions, and one explicit
+responsibility join. A long or multiline form should use total `@if`, but that
+style guidance does not change semantics.
+
+A `catch` header admits only a binder, wildcard, or checker-proven
+irrefutable transactional Pattern for the caught ErrorSet. It is not a runtime
+pattern-dispatch list: a refutable variant, value, List, or guarded Pattern
+cannot silently skip to the next `catch`. Once an irrefutable catch covers the
+remaining declared ErrorSet, every later catch is unreachable. Refutable typed
+multi-handler dispatch is not current and would require a separately admitted
+closed ErrorSet partition. Defect and Cancellation remain outside every catch
+partition.
+
 ## 19. Loops and structured transfer
 
 `for`, `while`, and `repeat` follow their exact Grammar roots. Every admitting owner accepts at most one pure `if` or `!if` GuardClause. Guard chains are removed. A refutable `for let` first creates nonowning probe binders; the optional header guard may read those binders, but may not move, escape, suspend, mutate through, or acquire authority from them. Only a true guard commits final bindings and ownership. Pattern mismatch or a false guard skips exactly that candidate with no body event or component move. Structured break depth is expressed by repeated `break` words and the admitted continue form; label/depth aliases are not current unless explicitly listed.
@@ -384,6 +403,22 @@ iteration order is not semantic or observable API residue. A Set
 comprehension uses `SetComprehensionExpr`; it does not inherit List ordering or
 Map key/value behavior.
 
+A Map literal first builds one `MapLiteralPlan`. Its direct entries and
+`**base` unfolds are evaluated exactly once in left-to-right source order.
+Every unfolded base must have the same normalized key and value domains.
+Within the plan a later occurrence of an equal key replaces the earlier value;
+the displaced owner is cleaned exactly once. No hidden clone, key
+stringification, widening, or conversion occurs. The selected `Keyable`
+equality/hash contract is nonconsuming and synchronous and contributes
+`throws Never effects {}`, no cancellation, and no authority; it therefore
+cannot hide an additional failure channel. Construction is failure-atomic:
+before final publication, a failed key/value or unfold evaluation—including
+any Error, Defect, effect, cancellation, authority, ownership, or cleanup
+responsibility declared by that expression—publishes no partial Map and cleans
+acquired temporaries in reverse order. `**base` in a Map literal is therefore
+a runtime immutable-map unfold and remains distinct from call-site `**record`,
+which expands static labels.
+
 The built-in default logical index domain of `List`, `String`, and `Bytes` is exactly `1..length`, and its storage projection is `index - 1`. Every `ReadonlyView` preserves its source owner's declared logical coordinates and provenance: a view of one of those ordinary owners is therefore one-based, while a view of a bounded or sliced owner retains that source domain and mapping. Index zero in a default one-based domain, a negative-from-end spelling, and an index greater than the applicable domain are never rewritten. Current bracket access yields a read-only value or borrow and never an assignable place; compound assignment applies only to independently admitted mutable places. `String[index]` selects one Unicode scalar and returns `Char`; it never selects a byte, UTF-16 code unit, or grapheme. `Bytes[index]` returns `UInt8`. A failed type-correct dynamic lookup raises `IndexError::outOfLogicalDomain`; a statically known invalid index is rejected by the corresponding exact diagnostic.
 
 An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logical domain rather than rebasing to one. `Map<K,V>[key]` requires the exact normalized key type `K` and raises `IndexError::keyNotFound` for an absent key. Tuple elements use compile-time one-based `.1` ordinals, and Record fields use static labels; neither tuple nor Record admits runtime bracket indexing. A List literal without an expected element type infers one homogeneous normalized type and never synthesizes a Union. Under a fixed exact integer `List<T>` context, the sole prefix-sign exception is the direct `-` plus unsuffixed-integer-literal adapter from §4; all other element expressions use ordinary typing without hidden folding or conversion. Heterogeneous elements require an explicit expected type such as `List<Int | String>`.
@@ -401,11 +436,42 @@ let text = "name=$user.profile.name"
 let rendered = "value=${compute()}"
 ```
 
-A path terminates at a delimiter or format boundary; a member dot that belongs to the path is not prematurely rejected. `String::render` is the explicit rendering protocol surface. Rendering must not become hidden locale/provider authority.
+A path terminates at a delimiter or format boundary; a member dot that belongs to the path is not prematurely rejected. `String::render` is an explicit structured-value library helper with its own trailing renderer closure; it is not the hidden implementation hook for interpolation. Basic interpolation uses the selected `Display` evidence described below. Rendering must not become hidden locale/provider authority.
+
+An interpolated String evaluates its direct segments and holes from left to
+right. Each braced expression is evaluated once; each shorthand path evaluates
+its root once and performs only admitted read-only projections. Before runtime
+evaluation the checker selects one `Display` witness for every non-String hole.
+Rendering borrows the value, is synchronous and nonconsuming, declares
+`throws Never effects {}`, and produces one fresh String segment. No locale,
+serialization, parsing, provider, reflection, redaction, or authority lookup is
+implicit. `Secret` or `Redacted` values must first pass through an explicit
+redaction API. Failure while evaluating a braced expression occurs before the
+final String is published and cleans temporary segments in reverse order.
+
+The scanner preserves the text after the colon in `${expr:format}`, but the
+internal format-text grammar, its mapping to a rendering argument, width unit,
+padding and truncation behavior, and invalid-format outcome are not yet
+ratified. That format-spec core remains `DEFERRED_PRODUCT_HANDOFF`.
+Implementations must not borrow another language's format mini-language,
+silently ignore the text, or infer locale/provider authority. A hole without a
+colon follows the closed `Display` plan above.
 
 ## 26. NumericArray
 
 NumericArray has explicit shape, rank, orientation, element type, and coordinate laws. Attached postfix `^` transposes under its admitted shape law. Infix `^` is power and requires the spacing/attachment boundary. Elementwise power remains Preview unless its broadcast and result-shape law is activated by the current profile.
+
+Stable postfix transpose evaluates its NumericArray operand once and returns a
+semantic nonowning, owner-bounded read-only coordinate view; it authorizes no
+implicit element copy, language-observable allocation, mutation, or inferred
+shareability. For an abstract rank-two shape tuple `(R,C)` the result shape
+tuple is `(C,R)` and the logical coordinate projection is `(i,j) -> (j,i)`.
+A rank-one value
+requires an explicit row or column orientation witness and flips that
+orientation. The view preserves the element owner, logical one-based
+coordinates, provenance, effects, and lifetime and cannot outlive or cross the
+isolation boundary of its source. Backend representation and incidental
+storage strategy remain unselected. Transpose is not complex adjoint.
 
 Broadcasting, fill/repeat, slicing, and matrix-like operations must produce deterministic shape diagnostics. NumericArray coordinate domains are not ordinary labels or runtime map keys.
 
@@ -435,6 +501,18 @@ Nominal class identity is distinct from structural Record identity and Trait evi
 
 Inference must not use hidden runtime values, result type alone, or source-order tie-breaking. Unsatisfied or ambiguous constraints produce deterministic diagnostics.
 
+Phase-A generic inference creates fresh variables only for the parameters
+declared by the selected generic owner. It gathers constraints from explicit
+value arguments in left-to-right source order, normalizes them, performs the
+occurs and kind checks, and requires one unique substitution. A fixed expected
+result type may verify that substitution after argument solving; it cannot
+choose an overload or become the sole source of an otherwise unconstrained
+parameter. The checker then applies `where` constraints and selects explicit
+conformance evidence. `StaticInt`, `EffectRow`, and `ErrorSet` parameters must
+be supplied explicitly unless the preceding argument constraints determine one
+exact normalized value. No unresolved variable is generalized, replaced by an
+anonymous Union, or guessed from source order.
+
 ## 31. Union, intersection, Option, and Result
 
 Anonymous unions are closed alternatives. Contract intersections combine compatible obligations. Option represents presence/absence; Result represents success/failure. A Result use always spells its error-channel argument as `Result<T, error E>`; the generic declaration may name `E: ErrorSet` without repeating the use-site role marker. Compact optional suffix denotes one layer. `?:` is the Option-coalescing operator and does not silently consume Result/error effects.
@@ -447,9 +525,44 @@ Function types include parameter channels, callable profile, ownership, effect/e
 
 Call compatibility checks each channel independently and then checks the combined responsibility profile. A function accepting named rest is not equivalent to a function accepting a Map.
 
+Call admission first resolves one declaration identity without consulting the
+return type. It then partitions actual arguments into positional, labeled,
+repeated positional, named unfold, explicit `context`, and explicit `using`
+evidence channels. Each ordinary actual is evaluated once from left to right;
+`*expr` can supply only a statically known tuple or the admitted `Sequence`
+residue and cannot satisfy fixed parameters when its arity is unknown.
+`context expr` supplies one declared context parameter and never performs an
+ambient lookup. `using evidence` supplies checker-visible, borrowed,
+nonescaping conformance evidence and cannot be replaced with an ordinary
+runtime value. Only after every channel, generic substitution, ownership mode,
+effect row, error set, isolation profile, and return obligation agrees is the
+call committed.
+
 ## 33. Ownership, borrowing, move, inout, and cleanup
 
 Values may carry move, borrow, inout, resource, isolation, and cleanup responsibilities. Borrowed values must not escape their admitted region. Inout requires exclusive mutable access. Move invalidates the source place according to the place-typing model.
+
+For an ordinary parameter, `mut name: T` creates a callee-owned mutable local
+place. The argument is acquired once; an affine owner moves into that place,
+the caller receives no write-back alias, and cleanup remains with the callee.
+This differs from `inout`, which borrows one caller place exclusively and
+commits observable writes back to that same place, and from explicit `move`,
+which emphasizes transfer without itself granting mutation. A `mut T` type
+qualifier denotes a unique mutable owner/view responsibility and is never an
+alternate spelling for an `inout` channel.
+
+Closure capture is independent from callable multiplicity. `borrow` captures a
+nonescaping shared observation, `inout` captures one exclusive nonescaping
+place, and `move` transfers the owner into the environment. `copy` requires
+the admitted bit/value-copy responsibility and leaves the source valid;
+`clone` invokes one explicit `Clone` witness and therefore retains that
+witness's declared effects and errors; `deep` requires a distinct deep-copy
+profile rather than recursively guessing cloneability. Capture `once` transfers
+an owner and makes reading that environment field a one-shot operation; it
+does not by itself turn a reusable closure into a `#once` callable. Capture
+acquisition is left-to-right and failure-atomic: before environment commit,
+acquired temporaries are cleaned in reverse order and no partial closure
+escapes.
 
 `defer` captures one admitted invocation and executes exactly once in deterministic LIFO cleanup order. Trailing closures, arbitrary inline callable construction, await, spawn, guards, and blocks are not silently converted into defer invocations. Cleanup during failure, cancellation, and normal return follows the cleanup budget algebra.
 
@@ -514,7 +627,7 @@ Suspension points preserve borrow/ownership rules, cleanup obligations, actor is
 
 An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. Message send is an asynchronous transfer operation, not an ordinary method call. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
 
-`ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way message expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies `await`. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family.
+`ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way message expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies `await`. Only that successfully admitted actor-request `Task<T>` spelling is accompanied in typed HIR, module API digest, and MIR by a non-forgeable `TaskResponsibility` descriptor containing the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and terminal transport failure; an ordinary async `Task<T>` carries no actor transport descriptor. The module API digest records the static `correlation_id = per_value_non_forgeable` policy marker rather than a concrete runtime identity; each committed request obtains its distinct value-level correlation identity in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Task` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family.
 
 The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. Its `next` channel throws the bound source failure set `E`; cancellation is a separate control outcome. `AsyncCollector::list<T, U, ES, ET>` accepts a finite `AsyncSequence<T, ES>` and a named asynchronous transform that throws `ET`, and the collection call exposes exactly the normalized error-set union `throws ES | ET`. It cannot erase either failure channel or fold cancellation into that union.
 

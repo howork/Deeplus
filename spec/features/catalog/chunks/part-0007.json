@@ -1708,7 +1708,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Parameter and capture modes are explicit. borrow creates a nonescaping shared region view; inout creates one exclusive mutable view for the dynamic call extent; move transfers ownership and invalidates the source. The narrow Stable profile permits replacement through an inout place but not moving the current value out of that borrowed place; definite reinitialization across every exit is not a current feature. Overlapping inout/borrow conflicts, use-after-move, escape across return/storage/capture, and crossing suspension or actor transfer without an admitted ownership proof are rejected.",
+    "notes": "Parameter and capture modes are explicit. An ordinary `mut name: T` parameter acquires its argument once and commits a callee-owned mutable local: it creates no caller alias or write-back edge, and a failure before commit retains the caller owner. `inout` instead borrows one caller place exclusively for the dynamic call extent and successful writes remain visible in that place. borrow creates a nonescaping shared region view; move transfers ownership and invalidates the source. The narrow Stable profile permits replacement through an inout place but not moving the current value out of that borrowed place; definite reinitialization across every exit is not a current feature. Overlapping inout/borrow conflicts, use-after-move, escape across return/storage/capture, and crossing suspension or actor transfer without an admitted ownership proof are rejected.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1737,7 +1737,11 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/type-flow-callable-coherence.json",
+      "spec/mir/semantics.md",
+      "tests/fixtures/current/type-flow-callable-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

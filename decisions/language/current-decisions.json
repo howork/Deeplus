@@ -215,30 +215,30 @@
     },
     {
       "id": "DSGN-CURRENT-CALLABLE-RESPONSIBILITY",
-      "law": "Functions, methods, local functions, closures, and lambdas preserve value/context/witness/rest channels together with ownership, capture, cleanup, effects, errors, cancellation, suspension, isolation, call-right, and lifetime. Public parameter decomposition is explicit in the body; return and local ret keep distinct owners.",
+      "law": "Functions, methods, local functions, closures, and lambdas preserve value/context/witness/rest channels together with ownership, capture, cleanup, effects, errors, cancellation, suspension, isolation, call-right, and lifetime. Phase-A generic inference is argument-driven, requires one unique normalized substitution, and uses an expected result only to verify an already solved substitution. Call admission resolves one declaration identity without return-type-directed overload selection and then checks positional, labeled, repeated, named-unfold, context, and using-evidence channels independently. An ordinary mut parameter is a callee-owned mutable local and is distinct from caller-place inout. Closure borrow/inout/move/copy/clone/deep/once captures have explicit acquisition, escape, witness, cleanup, and callable-multiplicity boundaries. Public parameter decomposition is explicit in the body; return and local ret keep distinct owners.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "cross-domain language coherence review and user canonicalization direction",
-      "effective_revision": "r51f3-current-language-coherence-r1"
+      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-ACTOR-CONCURRENCY",
-      "law": "Actors own isolated state and a mailbox with one mutating turn at a time. An omitted MailboxClause selects logical_unbounded_v1; #mailbox(capacity: N) selects bounded_reject_v1 and immediately returns ActorMessageError::mailboxFull when full. One-way message expressions have exact type Result<Unit, error ActorMessageError>; requests have exact immediate type Result<Task<T>, error ActorMessageError> and the Task is extracted before await. Rejection before enqueue commit retains moved owners and allocates no channel_sequence; commit transfers each owner exactly once and allocates a strictly increasing sequence in the exact sender/receiver/mailbox-profile FIFO key. Cancellation remains distinct before and after commit, request/reply remains correlated and single-terminal, tasks remain structurally scoped, and product execution remains NOT_RUN.",
+      "law": "Actors own isolated state and a mailbox with one mutating turn at a time. An omitted MailboxClause selects logical_unbounded_v1; #mailbox(capacity: N) selects bounded_reject_v1 and immediately returns ActorMessageError::mailboxFull when full. One-way message expressions have exact type Result<Unit, error ActorMessageError>; requests have exact immediate type Result<Task<T>, error ActorMessageError> and the Task is extracted before await. Only a successfully admitted actor-request Task<T> carries the non-forgeable typed-HIR/module-API/MIR TaskResponsibility descriptor, so its normalized result type, handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and receiverClosedBeforeReply terminal failure remain preserved without introducing a second visible Task type parameter; an ordinary async Task<T> carries no actor transport descriptor. Rejection before enqueue commit retains moved owners and allocates no channel_sequence; commit transfers each owner exactly once and allocates a strictly increasing sequence in the exact sender/receiver/mailbox-profile FIFO key. Cancellation remains distinct before and after commit, request/reply remains correlated and single-terminal, tasks remain structurally scoped, and product execution remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Issue #28 cross-role audit, spec/contracts/actor-concurrency-coherence.json, and user canonicalization direction",
-      "effective_revision": "r51f3-current-language-coherence-r1"
+      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
-      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default; null is recovery-only and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary and precedence table are closed with intrinsic-only glyph dispatch, while user extension uses named Trait methods or APIs and fixed/custom operator overloading remains nonactivatable. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
+      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default; null is recovery-only and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary and precedence table are closed with intrinsic-only glyph dispatch, while user extension uses named Trait methods or APIs and fixed/custom operator overloading remains nonactivatable. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/value-operator-indexing-coherence.json and user canonicalization direction",
-      "effective_revision": "r51f3-current-value-operator-index-coherence-r1"
+      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE",

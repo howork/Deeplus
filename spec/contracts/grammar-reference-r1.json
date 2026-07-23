@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.grammar-reference-contract/r1",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "reference_root": "docs/grammar-reference",
   "authority": {
     "kind": "CANONICAL_DOCUMENTATION_PROJECTION",
@@ -44,7 +44,30 @@
       "open_alternatives",
       "activation_prerequisites"
     ],
-    "required_review_card_count": 47
+    "required_review_card_count": 47,
+    "detail_chapter_paths": [
+      "docs/grammar-reference/20-preview-gated-reference.md",
+      "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
+      "docs/grammar-reference/22-preview-design-collections-context-and-control.md",
+      "docs/grammar-reference/23-preview-design-concurrency-ffi-and-runtime.md"
+    ],
+    "feature_example_marker": "deeplus-preview-feature-example",
+    "feature_anchor_prefix": "preview-feature-",
+    "required_feature_example_status_counts": {
+      "PREVIEW": 3,
+      "PREVIEW_DESIGN": 47
+    },
+    "required_feature_example_count": 50,
+    "feature_example_required_fields": [
+      "검토 목적",
+      "제안 표면",
+      "정적 판정과 상호작용",
+      "평가·소유권·오류",
+      "현행 대안과 이행",
+      "활성화 선행 조건"
+    ],
+    "minimum_feature_example_characters": 500,
+    "minimum_feature_example_deeplus_blocks": 1
   },
   "manual_quality_policy": {
     "forbidden_path_tokens": [
@@ -62,6 +85,7 @@
     "generated_link_targets_are_planned_valid": true
   },
   "governance": {
+    "source_mode": "VALIDATION_ONLY",
     "source_path": "current/current-pointer.json",
     "chapter_path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
     "semantic_p0": 0,
@@ -203,6 +227,51 @@
       "id": "15",
       "path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
       "title": "프리뷰, 복구 및 제거된 표면"
+    },
+    {
+      "id": "16",
+      "path": "docs/grammar-reference/16-contextual-syntax-and-production-guide.md",
+      "title": "문맥별 구문과 production 길잡이"
+    },
+    {
+      "id": "17",
+      "path": "docs/grammar-reference/17-name-resolution-type-inference-and-calls.md",
+      "title": "이름 해석, 타입 추론 및 호출 판정"
+    },
+    {
+      "id": "18",
+      "path": "docs/grammar-reference/18-evaluation-ownership-mir-and-backends.md",
+      "title": "평가, 소유권, MIR 및 백엔드"
+    },
+    {
+      "id": "19",
+      "path": "docs/grammar-reference/19-prelude-providers-diagnostics-and-conformance.md",
+      "title": "Prelude, 공급자, 진단 및 적합성"
+    },
+    {
+      "id": "20",
+      "path": "docs/grammar-reference/20-preview-gated-reference.md",
+      "title": "Preview Gated 상세 참조"
+    },
+    {
+      "id": "21",
+      "path": "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
+      "title": "Preview Design — 타입, 객체 및 Trait"
+    },
+    {
+      "id": "22",
+      "path": "docs/grammar-reference/22-preview-design-collections-context-and-control.md",
+      "title": "Preview Design — 컬렉션, 문맥 및 제어"
+    },
+    {
+      "id": "23",
+      "path": "docs/grammar-reference/23-preview-design-concurrency-ffi-and-runtime.md",
+      "title": "Preview Design — 동시성, FFI 및 런타임"
+    },
+    {
+      "id": "24",
+      "path": "docs/grammar-reference/24-integrated-worked-examples.md",
+      "title": "통합 예제로 읽는 현행 Deeplus"
     }
   ],
   "source_bindings": [
@@ -231,16 +300,44 @@
       "path": "spec/mir/semantics.md"
     },
     {
+      "id": "type_flow_callable_coherence",
+      "path": "spec/contracts/type-flow-callable-coherence.json"
+    },
+    {
+      "id": "value_operator_indexing_coherence",
+      "path": "spec/contracts/value-operator-indexing-coherence.json"
+    },
+    {
+      "id": "actor_concurrency_coherence",
+      "path": "spec/contracts/actor-concurrency-coherence.json"
+    },
+    {
+      "id": "shared_state_coherence",
+      "path": "spec/contracts/shared-state-coherence.json"
+    },
+    {
+      "id": "tooling_profiles",
+      "path": "spec/contracts/tooling-and-profiles.json"
+    },
+    {
+      "id": "provider_derive_via",
+      "path": "spec/contracts/provider-derive-via.json"
+    },
+    {
+      "id": "enum_derived_capabilities",
+      "path": "spec/contracts/enum-derived-capabilities.json"
+    },
+    {
+      "id": "literal_shaped_collection_design",
+      "path": "spec/contracts/literal-shaped-collection-design.json"
+    },
+    {
       "id": "prelude",
       "path": "library/prelude/prelude.md"
     },
     {
       "id": "current_decisions",
       "path": "decisions/language/current-decisions.json"
-    },
-    {
-      "id": "current_pointer",
-      "path": "current/current-pointer.json"
     },
     {
       "id": "coverage_schema",

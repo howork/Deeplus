@@ -426,19 +426,23 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MapUnfoldEntryAdmitted",
     "source_name": "MapUnfoldEntryAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and Map unfolds.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
+      "call_shape",
       "label_row",
       "source_role",
       "entry_kind",
       "projection_row",
       "projection_scope",
+      "conditional_responsibility",
       "element_types"
     ],
     "feature_refs": [
+      "map_literal_unfold",
+      "map_prefixed_literal",
       "map_unfold_double_star_current"
     ],
     "diagnostic_refs": [
@@ -449,7 +453,10 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "direct/unfold sources evaluate once in order and share one exact K/V pair",
+      "Keyable is preselected, nonconsuming, synchronous, throws Never, effects {}, cancellation-forbidden, authority-free",
+      "later equal keys replace with one displaced-owner cleanup",
+      "failure publishes zero and reverse-cleans; call **record is separate"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -457,25 +464,30 @@
     "rule_facets": [
       "source_kind",
       "normalized_type",
+      "call_shape",
       "label_row",
       "source_role",
       "entry_kind",
       "projection_row",
       "projection_scope",
+      "conditional_responsibility",
       "element_types"
     ],
     "formal_judgment_id": "J-MapUnfoldEntryAdmitted",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "entry kind/source order is closed and excludes call **record",
+      "each source evaluates once and has exact K/V",
+      "Keyable adds no hidden responsibility",
+      "replacement/cleanup/publication obey the failure-atomic plan"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize exact K/V, entry kind/order, responsibility, and one Keyable witness",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record MapUnfoldEntryAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the MapLiteralPlan owner; exclude call **record",
+      "evaluate each direct/unfold source once in order",
+      "require exact K/V and responsibility-free Keyable evidence",
+      "later key replaces/cleans once; failure publishes zero and reverse-cleans"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -487,8 +499,13 @@
     "negative_fixture_ids": [
       "PF-MapUnfoldEntryAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "descriptor -> K/V -> Keyable -> entries -> replacement -> publish/cleanup",
+    "dependency_predicates": [
+      "KeyableAdmissible"
+    ],
+    "dependency_input_projections": {
+      "KeyableAdmissible": "project K and its witness without importing responsibility"
+    },
     "execution_receipt": null,
     "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
     "predicate_maturity": "design_seed",

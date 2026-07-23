@@ -2,7 +2,7 @@
 
 이 저장소는 Deeplus 언어 설계와 그 검증 자료의 일상 작업 정본이다.
 현행 언어 버전은 `0.1.2-internal`, 명세 리비전은
-`r51f3-current-literal-shaped-collection-design-r1`이다. 정확한 값은
+`r51f3-current-grammar-reference-semantic-coherence-r1`이다. 정확한 값은
 [`current/language-version.toml`](current/language-version.toml)에서
 기계적으로 확인한다.
 

@@ -11574,7 +11574,7 @@ public def dispatch(worker: Worker, move job: Job)
 
 ```deeplus
 let cell = SharedCell::new(move state)
-let label = cell.withValue { borrow value => describe(value) }
+let label = cell.withValue() { borrow value => describe(value) }
 let previous = cell.replace(move nextState)
 ```
 
@@ -11591,7 +11591,7 @@ let previous = cell.replace(move nextState)
 
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock { inout value => value = update(value) }
+mutex.withLock() { inout value => value = update(value) }
 ```
 
 ## EX-R51VOI-001 — Unsuffixed and suffixed numeric values keep exact domains

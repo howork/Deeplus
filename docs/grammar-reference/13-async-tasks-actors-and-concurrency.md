@@ -151,6 +151,40 @@ task scope나 허용된 task group은 모든 child task의 owner다. scope는
 target-bound checker/runtime 증거가 필요한 미완료 제품 gate다. 문법이
 존재한다는 사실만으로 임의 기본 정책을 부여하지 않는다.
 
+### 현행 `AsyncCollector` 표준 라이브러리 프로필
+
+`AsyncCollector::list<T,U,ES,ET>`는 async comprehension을 대신하는
+정책 노출형 current stdlib 설계다. 입력은 **finite evidence가 있는**
+`AsyncSequence<T, ES>`, policy는 현재 `CollectPolicy::sequential`,
+transform은 이름 있는 `#async (T) -> U throws ET`다. 결과의 error channel은
+정확히 normalize된 `ES | ET`이고 Cancellation은 이 Union 밖의 별도
+제어 결과다.
+
+평가는 source order를 보존하고 buffer bound는 1이다. 첫 failure에서
+fail-fast하고 pending child가 있으면 취소한 뒤 cleanup barrier를 지난다.
+전체 성공 전에는 partial `List<U>`를 publish하지 않는다. source failure,
+transform failure, Cancellation을 서로 바꾸거나 지우지 않는다.
+
+현행 예제 `EX-R51a1-ACOLLECT-P-001`,
+원본 `examples/guide/review-corpus.md`:
+
+```deeplus
+public def#async collectProfiles(userIds: AsyncSequence<UserId, IOError>) -> List<Profile>
+    throws IOError | NetworkError = {
+    // checker evidence for `userIds` proves a finite source
+    // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
+    return await AsyncCollector::list(
+        source: userIds,
+        policy: CollectPolicy::sequential,
+        transform: loadProfileForCollect,
+    )
+}
+```
+
+같은 signature라도 source의 finiteness가 증명되지 않으면
+`ASYNC_COLLECTOR_POLICY_NOT_ADMITTED`로 거부된다. 이 프로필은 일반
+async callable literal이나 async comprehension 구문을 활성화하지 않는다.
+
 ### 액터 격리와 turn
 
 각 actor identity는 하나의 격리된 mutable state region과 mailbox를
@@ -208,6 +242,83 @@ reply type이 `T`인 request expression의 즉시 형식은
 request enqueue commit 뒤에 correlation identity가 한 번 만들어지며,
 reply, 선언된 failure, Cancellation 중 정확히 하나로 끝난다. request를
 ordinary method return처럼 취급하거나 암시적으로 기다리지 않는다.
+
+visible type spelling의 `Task<T>`가 handler의 declared ErrorSet을 지우지는
+않는다. typed HIR, module API digest와 MIR은 non-forgeable
+`TaskResponsibility`를 함께 보존한다. 이 descriptor는 result type,
+normalized handler ErrorSet, Cancellation axis, isolation owner,
+`correlation_id`와 terminal transport failure를 가진다. terminal
+transport failure 집합은 정확히
+`{receiverClosedBeforeReply}` 하나다. `mailboxFull`과
+`receiverClosedBeforeAdmission`은 enqueue commit 전 admission `Result`의
+오류이므로 이 descriptor에 들어가면 안 된다. 따라서
+`throws E`인 request handler의 task를 await하면 정확히
+`E | ActorMessageError::receiverClosedBeforeReply`가 노출된다. 이를
+`Task<T,E>`라는 새 source type으로 임의 재작성하거나 Error를
+Cancellation으로 접지 않는다.
+
+이 residue는 타입을 출력할 때만 붙이는 설명용 주석이 아니다.
+compatibility, control-flow join, collection이나 field storage, module API
+export/import가 모두 보존해야 하는 정적·값 책임이다. 기본 compatibility는
+`result_type`, normalized handler ErrorSet, Cancellation axis, isolation
+owner와 terminal transport failure의 정확한 normalized equality를
+요구한다. 서로 다른 request 값의 `correlation_id`는 같게 만들지 않고 각
+값에 그대로 따라간다. 오직 checker가 명시적으로 받아들인 ErrorSet
+subsumption proof가 있을 때만 handler ErrorSet을 더 넓은 집합으로 올릴 수
+있으며, 이 경우에도 나머지 field와 각 correlation identity는 지워지지
+않는다. bare `Task<T>`만 남기는 join/export는
+`RCTS_RESPONSIBILITY_AXIS_DROPPED`, 증명 없이 error set을 합치는 조합은
+`RCTS_RESPONSIBILITY_COMBINATION_INVALID` 계열로 거부한다.
+
+module API digest는 아직 존재하지 않는 runtime request ID를 미리 만들지
+않는다. 대신 actor-request result channel의 descriptor shape와
+`correlation_id = per_value_non_forgeable` 정책 marker를 canonical bytes에
+기록한다. 실제 enqueue commit이 일어나면 typed HIR/MIR의 value-level
+residue가 그 request만의 concrete correlation identity를 보존한다.
+
+이 규칙은 모든 `Task<T>`에 actor transport 의미를 붙이지 않는다.
+ordinary `def#async` 호출이나 structured `spawn`이 만든 task의
+`task_origin`은 `ordinary_async`이며 actor correlation이나
+`receiverClosedBeforeReply` descriptor를 가지면 오히려 거부된다. enqueue
+commit을 성공한 request가 만든 task만 `actor_request_admitted` origin을
+가지며 위 여섯 field descriptor가 필수다. 두 origin은 source type
+spelling을 바꾸지 않고 typed HIR/API/MIR residue로 구분한다.
+
+예를 들어 handler가 `throws LookupError`라면 admission 식 자체의 오류는
+여전히 `mailboxFull | receiverClosedBeforeAdmission`이고, 성공 branch에서
+꺼낸 task를 `await`할 때의 오류만
+`LookupError | receiverClosedBeforeReply`다. 두 시점의 오류를 하나의
+큰 `ActorMessageError` 집합으로 미리 합치면 commit 전·후 책임 경계와 owner
+보존 여부를 구별할 수 없으므로 현행 계약에 맞지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
+```deeplus
+public protocol DirectoryProtocol {
+    request find(id: Int) -> Status throws LookupError
+}
+
+actor Directory {
+    request find(id: Int) -> Status throws LookupError = {
+        return loadStatus(id)
+    }
+}
+
+def#async inspect(directory: Directory, id: Int) -> Status
+    throws ActorMessageError | LookupError = {
+    let Result::ok(task) = directory ~ find(id)
+    else Result::err(admissionError) => throw admissionError
+
+    return await task
+}
+```
+
+`directory ~ find(id)`가 실패하는 순간에는 task 자체가 아직 없으므로
+`mailboxFull` 또는 `receiverClosedBeforeAdmission`만 admission error로
+다룬다. `Result::ok(task)` 뒤에는 correlation이 존재하고, `await task`는
+handler의 `LookupError` 또는 유일한 terminal transport failure인
+`receiverClosedBeforeReply`로 끝날 수 있다. source에는 여전히
+`Task<Status>`만 보이지만 두 단계의 책임은 HIR/API/MIR descriptor가
+구별한다.
 
 handler spelling만으로 actor protocol conformance가 생기지 않는다.
 요구 사항과 handler identity의 결합은 checker가 별도 conformance
@@ -304,6 +415,14 @@ def#async fetch(url: String) -> Bytes
 }
 ```
 
+호출자는 `url`을 한 번 평가하고 이름 있는 `def#async` 호출로
+`Bytes` 성공 channel, `NetworkError` 오류 집합과 `io` effect를 가진 task
+책임을 얻는다. body의 `client ~ get(url)` message/call 결과를 `await`하는
+지점만 명시적 suspension point이며 성공하면 그 `Bytes`를 반환한다.
+failure나 Cancellation은 숨은 `Option`으로 바뀌지 않고 cleanup region을
+통과해 선언된 channel로 전파된다. 실제 task 생성·suspend·resume과 backend
+실행은 `NOT_RUN`이다.
+
 ### 비동기 순회
 
 현행 예제 `EX-R51a1-066`,
@@ -316,6 +435,14 @@ def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {
     }
 }
 ```
+
+`stream`은 item `Int`, source error `Never`인 `AsyncSequence`다. `for await`는
+다음 item 요청, suspension, resume, binder commit, body를 source order로
+반복하며 한 번에 한 item만 `value`에 결합한다. `print`의 `io` 책임은
+주변 callable contract가 별도로 보존해야 하고, loop 종료나 Cancellation은
+pending item과 body cleanup을 마친 뒤 terminal이 된다. sequence를
+`List<Int>`로 미리 수집하거나 재생 가능하다고 가정하지 않는다. 제품
+iterator/task 실행은 `NOT_RUN`이다.
 
 ### 구조화된 자식 태스크
 
@@ -330,6 +457,14 @@ task scope {
     await profile
 }
 ```
+
+`task scope`가 child owner다. `spawn async`는 `loadProfile(id)`를 수행할
+하나의 child task handle `profile`을 만들고, `await profile`은 그 handle의
+완료를 명시적으로 기다린다. scope 정상·오류·Cancellation 종료 모두에서
+admitted child가 terminal이 될 때까지 join/cleanup barrier를 통과하므로
+detached child나 숨은 background work가 남지 않는다. child failure는
+정해진 scope failure ordering을 따르며 실제 scheduler 실행은
+`NOT_RUN`이다.
 
 ### 용량 제한 액터, 전송과 요청
 
@@ -360,6 +495,15 @@ public def#async observe(counter: Counter) -> Int
 }
 ```
 
+두 `add` 전송과 한 `current` 요청은 source order로 준비된다. 각 `~`는
+receiver와 argument를 한 번 평가하고 mailbox capacity/admission을 통과한
+enqueue commit에서만 message와 이동 owner를 actor에 넘긴다. 전송의
+`Result::ok`는 성공 enqueue를, 요청의 `Result::ok(replyTask)`는 reply를
+기다릴 task handle을 뜻한다. 같은 sender/receiver/protocol key에서는
+두 add 뒤 current가 FIFO로 관측되어야 하며, rejection은
+`ActorMessageError`로 끝나고 다음 tier로 fallback하지 않는다. parser,
+checker, mailbox와 scheduler 실행은 모두 `NOT_RUN`이다.
+
 ### 취소 경계의 구조화된 정리
 
 현행 예제 `EX-R51f3-COH-011`,
@@ -374,6 +518,13 @@ public def#async supervise() -> Unit = {
     }
 }
 ```
+
+scope 진입 시 `defer cleanup()`을 현재 cleanup region에 등록한 뒤 child를
+spawn하고 명시적으로 await한다. child 성공·실패 또는 parent Cancellation
+어느 경우에도 child terminal/join 뒤 `cleanup()`이 정확히 한 번 실행되어
+scope barrier를 닫는다. primary failure와 cleanup failure가 함께 나면
+정해진 primary/suppressed 순서를 보존하고 Cancellation을 ordinary Error로
+접지 않는다. 실제 cancellation race와 cleanup trace 실행은 `NOT_RUN`이다.
 
 ### 사서함 절 생략
 
@@ -392,7 +543,13 @@ public def dispatch(worker: Worker, move job: Job)
 ```
 
 이 예제의 생략된 clause는 `logical_unbounded_v1`을 선택한다. `move job`의
-owner는 enqueue commit에서만 actor로 넘어간다.
+owner는 enqueue commit에서만 actor로 넘어간다. `worker ~ run(move job)`의
+정적 결과는 `Result<Unit, error ActorMessageError>`이고 receiver와 `job`을
+한 번씩 평가한다. admission이나 enqueue가 실패하면 `job`은 actor에
+부분 전달되지 않고 caller 쪽 실패 경계가 owner를 보존한다. 성공하면
+`job` owner가 mailbox message로 넘어가며 handler completion을 기다리는
+request task는 생성되지 않는다. logical-unbounded는 물리적 무한 메모리를
+보장하지 않고 제품 mailbox/runtime 실행은 `NOT_RUN`이다.
 
 ## 거부되거나 격리된 형식
 

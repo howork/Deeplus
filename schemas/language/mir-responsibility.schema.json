@@ -133,6 +133,13 @@
         ]
       }
     },
+    "actor_request_task_responsibilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/actorRequestTaskResponsibilityDescriptor"
+      }
+    },
     "actor_isolation": {
       "type": "array",
       "items": {
@@ -227,6 +234,57 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "actor_isolation": {
+            "contains": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "actor_lifecycle"
+                },
+                "phase": {
+                  "const": "enqueue_committed"
+                },
+                "correlation_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "kind",
+                "phase",
+                "correlation_id"
+              ]
+            }
+          }
+        },
+        "required": [
+          "actor_isolation"
+        ]
+      },
+      "then": {
+        "required": [
+          "actor_request_task_responsibilities"
+        ],
+        "properties": {
+          "actor_request_task_responsibilities": {
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "actor_request_task_responsibilities": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "evaluateEvent": {
       "type": "object",
@@ -1831,6 +1889,61 @@
         }
       ]
     },
+    "actorRequestTaskResponsibilityDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_type",
+        "normalized_handler_error_set",
+        "cancellation_axis",
+        "isolation_owner",
+        "correlation_id",
+        "terminal_transport_failure"
+      ],
+      "properties": {
+        "result_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "normalized_handler_error_set": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "enum": [
+                "mailboxFull",
+                "receiverClosedBeforeAdmission",
+                "ActorMessageError::mailboxFull",
+                "ActorMessageError::receiverClosedBeforeAdmission"
+              ]
+            }
+          },
+          "uniqueItems": true
+        },
+        "cancellation_axis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "isolation_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "correlation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "terminal_transport_failure": {
+          "type": "array",
+          "items": {
+            "const": "receiverClosedBeforeReply"
+          },
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
     "task_lifecycleEvent": {
       "type": "object",
       "additionalProperties": false,
@@ -2543,6 +2656,10 @@
     "actor_fifo": "actor_enqueue is an admitted ownership-commit event and assigns its non-null channel_sequence at that commit; the sequence is FIFO within the key sender_id, receiver_id, mailbox_profile_id, channel_id, and no cross-channel global order is promised",
     "actor_transfer": "a rejected precommit send is represented only by actor_lifecycle admission_rejected with null channel_sequence, ownership_commit_count zero, and sender_retained; a successful actor_enqueue has exactly one commit and receiver_owned or shared_evidence",
     "actor_reply": "one correlation_id has exactly one terminal reply, declared failure, or cancellation outcome",
+    "actor_request_task_responsibility": "an actor_lifecycle enqueue_committed event with non-null correlation_id requires actor_request_task_responsibilities; the descriptor correlation_id values form a one-to-one set with distinct admitted-request correlation_id values in the record, while a record without such an admitted request has zero actor-request descriptors; every descriptor has result_type, normalized_handler_error_set, cancellation_axis, isolation_owner, correlation_id, and terminal_transport_failure={receiverClosedBeforeReply}; an ordinary async Task<T> does not carry this actor transport descriptor; await exposes normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply), while mailboxFull and receiverClosedBeforeAdmission remain admission Result errors and are forbidden in the descriptor",
+    "task_responsibility_compatibility": "compatibility, join, storage, and API export preserve descriptor residue; static fields require exact normalized equality unless an explicit admitted error-set-subsumption proof widens normalized_handler_error_set, and each per-value correlation_id remains non-forgeable and unerased",
+    "task_responsibility_erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+    "task_responsibility_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
     "actor_turn": "for one actor_id/state_region_id the exact admitted lifecycle is turn_start, zero or more paired turn_suspend and turn_resume transitions that retain held state-region authority, then turn_finish/released before the next turn_start; overlapping turns are forbidden",
     "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
     "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id"

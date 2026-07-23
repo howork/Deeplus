@@ -39,15 +39,16 @@ MemberVisibility   ::= "+" | "-" | "#"
 
 ```ebnf
 TopLevelBindingDecl ::= TopLevelVisibility? ("let" | "var")
-                        Identifier TypeAnnotation? "=" Expr
+                        Identifier TypeAnnotation? "=" Expr StatementBoundary
 
 BindingCore         ::= ("let" | "var") BindingPattern "=" Expr
-LocalBindingStmt    ::= BindingCore
+LocalBindingStmt    ::= BindingCore StatementBoundary
                       | RightwardLocalBindingSurface
                       | LazyBindingStmt
                       | GuardedBindingStmt
 
 LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
+                        StatementBoundary
 ```
 
 `let`은 불변 바인딩, `var`는 가변 바인딩이다. 지연 바인딩의 현행 표기는
@@ -57,6 +58,7 @@ LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
 
 ```ebnf
 RightwardLocalBindingSurface ::= Expr "->" DollarLocalBinding
+                                  StatementBoundary
 DollarLocalBinding            ::= "$" Identifier TypeAnnotation?
                                 | "$$" Identifier TypeAnnotation?
 ```

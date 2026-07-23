@@ -126,6 +126,102 @@ literal, 정적 collection sample, NumericArray literal, measure literal의
 표면이다. associated type은 `<I as Iterator>::Item`처럼 Trait 문맥을
 명시해야 한다. `I.Item`은 associated projection 문법이 아니다.
 
+#### `any Trait`: existential package
+
+`any Trait` 값은 concrete payload type을 source type identity에서 숨기되,
+payload와 선택된 Trait witness, associated binding, ownership·cleanup
+책임을 하나의 existential package로 보존한다. package를 만들 때 checker는
+`ExistentialSafety`를 적용한다. 현재 binding으로 안전하지 않은 Trait는
+`TRAIT_NOT_EXISTENTIAL_SAFE`, 사용하려는 requirement가 아직 묶이지 않은
+associated type에 의존하면 `EXISTENTIAL_ASSOC_TYPE_UNBOUND`이다. packaging은
+drop을 없애거나 trivial cleanup으로 바꾸지 않으며 hidden downcast,
+reflection 또는 새로운 runtime provider를 만들지 않는다.
+
+현행 예제 `EX-R48C-089`의 annotation은 `Item == Int`를 existential
+identity에 묶으므로 `next`의 result domain을 정적으로 알 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+let it: any Iterator where Item == Int = IntRange!(start: 0, end: 10)
+let value = it ~ next
+```
+
+같은 operation을 associated binding 없이 사용하면 result type을 추측하거나
+anonymous Union으로 넓히지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+let it: any Iterator = IntRange!(start: 0, end: 10)
+let value = it ~ next
+// EXISTENTIAL_ASSOC_TYPE_UNBOUND
+```
+
+현행 예제 `EX-R48F-015`처럼 resource payload도 existential boundary에서
+deterministic drop 책임을 유지한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+let stream: any Readable = FileStream!(path: "data.txt")
+// scope exit는 숨겨진 FileStream owner의 정확한 drop을 보존한다.
+```
+
+#### `some Trait`: declaration-scoped opaque result
+
+`some Trait`는 caller가 concrete result type을 이름으로 관찰하지 못하게
+하면서 callee declaration 하나가 고른 concrete type identity를 보존한다.
+모든 성공 return path는 정확히 같은 normalized concrete type이어야 한다.
+caller는 선언된 Trait surface만 사용하며, branch별 concrete type을 합치기
+위해 existential이나 Union으로 자동 변환하지 않는다.
+
+현행 예제 `EX-R48E-022`의 single-concrete-return 형태다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+public def makeShape() -> some Drawable
+    throws Never
+    effects {}
+= {
+    return Circle!(radius: 10.0)
+}
+```
+
+현행 거부 예제 `EX-R48E-023`의 함수는 성공 경로가 `Circle`과 `Rect`로
+갈라지므로 opaque identity 하나를 정할 수 없다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+public def makeShape(flag: Bool) -> some Drawable
+    throws Never
+    effects {}
+= {
+    if flag {
+        return Circle!(radius: 10.0)
+    }
+    return Rect!(width: 4.0, height: 5.0)
+}
+// OPAQUE_RESULT_CONCRETE_TYPE_MISMATCH
+```
+
+현행 예제 `EX-R51a1-045`가 보이듯 `some Iterator where Item == Int`에서
+바로 뒤의 `where`는 opaque result의
+associated binding이다. 함수 자체의 generic constraint는 parameter와
+signature 뒤의 별도 outer `where`로 읽는다. 괄호는 이 경계를 명시적으로
+보여 줄 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+def constrained<T>(it: Iterator)
+    -> (some Iterator where Item == Int)
+    where T conforms Marker
+= {
+    return it
+}
+```
+
+이 법칙들은 current static design이다. parser/checker, deterministic drop,
+MIR packaging과 backend 실행은 모두 실제 target-bound receipt가 없으므로
+제품 지원 `NOT_RUN`이며, 설명과 fixture 존재만으로 PASS가 되지 않는다.
+
 현행 Facet source type은 정확히 `Facet<borrow any Trait ...>`이다.
 구체 payload 타입을 철자에 노출하거나 mode를 생략할 수 없다.
 owned/inout Facet 패키지는 현재 source route가 없는 비활성 설계이다.
@@ -170,6 +266,21 @@ cancellation, measure와 witness identity를 정규화한다. 정규화는
 의미 타입 identity는 저장 배치, serialization tag, runtime
 discriminant, ABI 및 backend layout과 별개이다. 추론은 bidirectional이고
 지역적이며 결과 타입이나 source order를 숨은 tie-breaker로 쓰지 않는다.
+
+Phase-A generic inference는 선택된 선언이 실제로 가진 parameter에만
+fresh variable을 만든다. 명시적 value argument를 왼쪽부터 읽어 constraint를
+모으고, 정규화·occurs check·kind check 뒤 정확히 하나의 substitution을
+요구한다. 이미 고정된 expected result type은 그 substitution을
+검증할 수 있지만 overload 선택이나 유일한 추론 근거가 될 수 없다.
+그 다음 `where` obligation과 explicit conformance evidence를 확인한다.
+
+`StaticInt`, `EffectRow`, `ErrorSet` kind도 ordinary type으로 뭉개지 않는다.
+argument constraint가 한 exact normalized 값을 정하지 못하면 해당
+generic argument를 명시해야 한다. 미결정 변수를 generalize하거나 source
+order로 고르거나 anonymous Union으로 채우는 fallback은 없다. 이 알고리즘
+덕분에 empty repeated-rest 호출, 결과로만 정해지는 parameter, 서로 다른
+width/signedness constraint는 조용히 추측되지 않고 결정적인
+underconstrained 또는 conflicting-constraint 진단을 낸다.
 
 ### closed Union
 
@@ -254,7 +365,7 @@ comparison-chain phase 위반인
 `TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION`, 정확한 단일 대안이 아닌 target의
 `UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT` 순서로 먼저 적용 가능한 항목을
 선택한다. 현행 positive/negative 원문 5개는
-[표현식 및 연산자](08-expressions-and-operators.md#closed-union-is-is-검증-예제)에
+[표현식 및 연산자](08-expressions-and-operators.md#closed-union-isis-검증-예제)에
 그대로 제시한다.
 
 이 판정은 subclass search, refinement 실행, reflection, Trait discovery

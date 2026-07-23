@@ -167,7 +167,9 @@
     "predicate_id": "OnceCallableAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "boundary_case": true
+      "parameter_mode": "mut",
+      "caller_writeback_count": 0,
+      "precommit_failure_caller_owner_retained": true
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1353,9 +1355,9 @@
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
+      "variant": "callable",
       "semantic_type": {
-        "kind": "nominal",
+        "kind": "function",
         "type_id": "PF-OwnershipModeAdmitted-BOUNDARY"
       },
       "responsibility": {
@@ -1367,10 +1369,13 @@
         "authorities": [],
         "suspends": false,
         "isolation": "local"
-      }
+      },
+      "call_shape": "(mut local: T) -> Unit",
+      "parameter_modes": [
+        "mut"
+      ],
+      "result_type": "Unit"
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 OwnershipModeAdmitted boundary fixture; product checker NOT_RUN.",
     "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",

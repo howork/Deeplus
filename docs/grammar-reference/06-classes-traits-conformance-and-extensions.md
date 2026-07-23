@@ -156,6 +156,64 @@ domain은 `TraitWitnessKind`이다. associated type/value/non-method function은
 method witness marker를 얻지 않는다. supertrait는 `requires` 뒤에
 명시한다.
 
+### 선언적 `law`의 정확한 범위
+
+`law`는 실행할 함수가 아니라 Trait·conformance·bitfield 계약에 붙는
+순수 선언적 tooling metadata다. 정확한 공통 production은 다음과 같다.
+
+```ebnf
+LawDecl      ::= "law" Identifier LawBody? StatementBoundary
+LawBody      ::= "{" LawBodyItem* "}"
+LawBodyItem  ::= LawAssertion StatementBoundary
+LawAssertion ::= ("requires" | "ensures" | "invariant")? PredicateExpr
+```
+
+body를 생략하면 이름이 있는 계약 항목만 선언한다. body가 있으면 각
+항목은 `requires`, `ensures`, `invariant` 중 하나를 명시하거나 맨
+Predicate를 쓸 수 있다. 이 세 단어는 여기서 실행 순서를 만드는 statement
+introducer가 아니라 assertion의 역할을 분류한다. `LawAdmission`은
+`PredicateExpr`가 현재의 restricted pure logic subset인지 정적으로
+검사한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+trait ReflexiveRelation {
+    law Reflexive {
+        requires true
+        ensures true
+        invariant 1 == 1
+    }
+}
+```
+
+위 law는 세 assertion의 역할, predicate text와 source identity를
+보존하지만 호출 가능한 method, runtime branch 또는 proof body를 만들지
+않는다. 실제 law가 이름을 참조한다면 그 이름은 enclosing owner의 정상
+정적 name-resolution으로 먼저 결합되어야 하며 law가 암시적 변수를
+합성하지 않는다. checker와 공식 tooling은 이 text에 property-generation
+evidence를 결합할 수 있다. 그러나 evidence가 없다는 사실은 law의
+문구를 바꾸거나 law를 자동 폐쇄·삭제하지 않는다. 반대로 evidence가
+있다는 사실도 conformance method나 witness를 합성하지 않는다.
+
+Law body는 ordinary statement block이 아니므로 mutation, I/O, `await`,
+`spawn`, `throw`, arbitrary call과 실행 cleanup을 넣을 수 없다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+trait InvalidAudit {
+    law BadLaw {
+        print("not a proposition")
+    }
+}
+// LAW_BODY_ITEM_NOT_ADMITTED
+```
+
+거부된 item은 assertion residue나 MIR event를 만들지 않는다. 허용된
+law도 executable MIR로 낮아지지 않으며 xVM·LLVM·제품 실행 PASS를
+주장하지 않는다. 향후 conformance proof block은 별도 Preview authority가
+필요하고, 현재 Stable law declaration을 proof 실행 표면으로 재해석할 수
+없다.
+
 ### Conformance와 evidence
 
 ```ebnf

@@ -1552,7 +1552,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Map literal `**base` unfold entry. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Map literal `**base` is one MapLiteralPlan entry kind. Direct entries and unfolds evaluate once in source order, normalize to one exact K/V domain, use a preselected nonconsuming synchronous Keyable operation contract with no hidden Error/effect/cancellation/authority, resolve equal keys by later-source replacement, clean each displaced owner once, and publish nothing on precommit failure. Call-site `**record` is a separate static-label channel.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1564,7 +1564,9 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [],
-      "predicates": [],
+      "predicates": [
+        "MapUnfoldEntryAdmitted"
+      ],
       "examples": [],
       "productions": [
         "MapLiteral",
@@ -1575,7 +1577,11 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/value-operator-indexing-coherence.json",
+      "spec/mir/semantics.md",
+      "tests/fixtures/current/value-operator-indexing-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1649,7 +1655,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Map prefixed literal. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "The prefixed Map literal owns one failure-atomic MapLiteralPlan. Every direct key/value and `**base` unfold evaluates once left-to-right, all entries share one exact normalized K/V domain, later equal keys replace earlier values with exactly-once displaced-owner cleanup, and only a completely successful plan publishes the immutable Map.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1661,7 +1667,9 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [],
-      "predicates": [],
+      "predicates": [
+        "MapUnfoldEntryAdmitted"
+      ],
       "examples": [
         "EX-R51a1-023"
       ],
@@ -1671,7 +1679,11 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/value-operator-indexing-coherence.json",
+      "spec/mir/semantics.md",
+      "tests/fixtures/current/value-operator-indexing-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

@@ -1213,12 +1213,20 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "TernarySpacingAndArmJoinAdmitted",
     "source_name": "TernarySpacingAndArmJoinAdmitted",
-    "summary": "Ternary spacing, lazy arm evaluation and normalized type/effect join; ? is owned by the spaced ternary surface.",
+    "summary": "Spaced ternary evaluates one strict-Bool condition once, evaluates exactly one lazy arm, and joins normalized type, place capability, ownership, effect row, recoverable errors, cancellation, and cleanup without synthesizing an anonymous Union.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "error_set",
       "effect_row",
+      "suspension",
+      "cancellation",
+      "isolation",
+      "authority",
       "call_shape",
       "source_role",
       "shape",
@@ -1239,7 +1247,11 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "condition normalizes exactly to Bool and evaluates once",
+      "exactly one selected arm evaluates and the unselected arm has zero runtime evaluation",
+      "reachable arm types are equal after normalization or each uniquely injects into one independently fixed expected type",
+      "no anonymous Union is synthesized",
+      "place capability, ownership, effect, recoverable error, cancellation, isolation, authority, and cleanup obligations are joined without loss"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1247,7 +1259,15 @@
     "rule_facets": [
       "source_kind",
       "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "error_set",
       "effect_row",
+      "suspension",
+      "cancellation",
+      "isolation",
+      "authority",
       "call_shape",
       "source_role",
       "shape",
@@ -1259,14 +1279,18 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "condition normalizes exactly to Bool and evaluates once",
+      "exactly one selected arm evaluates and the unselected arm has zero runtime evaluation",
+      "reachable arm types are equal after normalization or each uniquely injects into one independently fixed expected type",
+      "no anonymous Union is synthesized",
+      "place capability, ownership, effect, recoverable error, cancellation, isolation, authority, and cleanup obligations are joined without loss"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize the Bool condition and each arm's value type, place capability, ownership, effect row, error set, cancellation, isolation, authority, and cleanup contract before joining",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record TernarySpacingAndArmJoinAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed descriptor, spacing boundary, and strict Bool condition; record one condition evaluation",
+      "check both possible arm contracts statically, require one equal normalized type or one independently fixed expected type, and forbid anonymous Union synthesis",
+      "at runtime select and evaluate exactly one arm while recording zero evaluation for the unselected arm",
+      "join place capability, ownership, effects, recoverable errors, cancellation, isolation, authority, and cleanup without dropping an incoming obligation"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -1283,9 +1307,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "5e81cdbbcd2f56f7b89cfbdcb3558b5ae4cb2c77df5c06516a592c37c9d7883f",
