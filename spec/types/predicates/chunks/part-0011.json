@@ -512,48 +512,40 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "R0GuardSafe",
     "source_name": "R0GuardSafe",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "source_role",
-      "element_types"
-    ],
+    "summary": "Admit only a finite total, exact-Bool, responsibility-free R0 expression.",
+    "input_descriptor": "TRNCoherenceDescriptor",
+    "descriptor_axes": ["subject", "guard_result_type", "responsibilities", "proof_state"],
     "feature_refs": [
       "r0_guard_predicate_calculus"
     ],
     "diagnostic_refs": [
       "R0_GUARD_NOT_GUARD_SAFE"
     ],
-    "design_seed_diagnostic_refs": [
-      "R0_GUARD_NOT_GUARD_SAFE"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "expression syntax is in the finite R0 whitelist",
+      "the expression is total for every value in its normalized input domain",
+      "result is Bool and responsibilities are empty"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "source_role",
-      "element_types"
-    ],
+    "rule_facets": ["guard", "totality", "responsibility"],
     "formal_judgment_id": "J-R0GuardSafe",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "expression syntax is in the finite R0 whitelist",
+      "the expression is total over its input domain",
+      "result is Bool and responsibilities are empty"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record R0GuardSafe requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject nodes outside the finite R0 whitelist",
+      "prove totality over the input domain",
+      "require exact Bool and empty responsibilities",
+      "otherwise emit R0_GUARD_NOT_GUARD_SAFE before commit"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -568,9 +560,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "1d3ecb19b9dc0cfee1e7df893f9dbeeb5e8f0b640480bfccecf4dfc125b54180",
@@ -832,56 +824,54 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "RefinementCheckBoundaryAdmitted",
     "source_name": "RefinementCheckBoundaryAdmitted",
-    "summary": "R51a1 closed design algorithm for RefinementCheckBoundaryAdmitted; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "cleanup",
-      "source_role",
-      "element_types"
-    ],
+    "summary": "Apply three-valued proof at explicit refinement boundaries.",
+    "input_descriptor": "TRNCoherenceDescriptor",
+    "descriptor_axes": ["declared_type", "boundary_kind", "proof_state", "type_relation"],
     "feature_refs": [
       "refinement_checked_boundary"
     ],
     "diagnostic_refs": [
+      "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+      "REFINEMENT_PROOF_REQUIRED",
+      "REFINEMENT_LITERAL_OUT_OF_RANGE",
       "REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY"
     ],
-    "design_seed_diagnostic_refs": [
-      "REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "detailed recoverable validation uses Result boundary"
+      "classify the refinement boundary",
+      "obtain PROVED, DISPROVED, or UNKNOWN from Phi and the finite R0 relation",
+      "preserve the boundary outcome"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "cleanup",
-      "source_role",
-      "element_types"
-    ],
+    "rule_facets": ["type", "flow", "boundary"],
     "formal_judgment_id": "J-RefinementCheckBoundaryAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
     "preconditions": [
-      "detailed recoverable validation uses Result boundary"
+      "classify explicit boundary",
+      "obtain proof state from Phi and finite R0 relation",
+      "reject silent conversion outside an admitted boundary"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 input variant",
       "normalize every declared descriptor axis",
-      "detailed recoverable validation uses Result boundary",
-      "evaluate finite candidates in canonical identity order",
-      "return admit or the active primary diagnostic"
+      "outside an explicit boundary emit REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+      "at a static boundary PROVED admits, DISPROVED emits the contradiction, and UNKNOWN emits REFINEMENT_PROOF_REQUIRED",
+      "as? returns Option<T>; as! preserves the declared defect edge; T::check returns Result<T,error E>",
+      "opaque Bool and def#guard calls create no proof fact"
     ],
     "termination_metric": "finite descriptor size plus decreasing candidate count",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "REFINEMENT_PROOF_REQUIRED",
+    "secondary_diagnostics": [
+      "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+      "REFINEMENT_LITERAL_OUT_OF_RANGE",
+      "REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY"
+    ],
     "positive_fixture_ids": [
       "PF-RefinementCheckBoundaryAdmitted-POS",
       "PF-RefinementCheckBoundaryAdmitted-BOUNDARY"
@@ -890,11 +880,19 @@
       "PF-RefinementCheckBoundaryAdmitted-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "RefinementR0PredicateAdmitted"
+    ],
     "execution_receipt": null,
     "diagnostic_disposition": "design_algorithm_product_not_run",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_outside_explicit_boundary": "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+      "2_disproved_literal_or_range": "REFINEMENT_LITERAL_OUT_OF_RANGE",
+      "3_unknown_static_boundary": "REFINEMENT_PROOF_REQUIRED",
+      "4_check_result_used_without_explicit_boundary": "REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY"
+    },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "9787e301eaea88282fb6e3a2bcbf6236c1abee6d0589cedc9f2cccf013893a78",

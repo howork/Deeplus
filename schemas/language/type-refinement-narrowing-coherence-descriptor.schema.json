@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/type-refinement-narrowing-coherence-descriptor.schema.json",
+  "title": "Closed checker input for refinement, narrowing, guards, enum and match",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["subject", "declared_type", "current_alternatives", "pattern_coverage", "guard_origin", "boundary_kind", "proof_state", "type_relation", "responsibilities", "commit_count"],
+  "properties": {
+    "subject": {"type": "string", "minLength": 1},
+    "declared_type": {"type": "string", "minLength": 1},
+    "current_alternatives": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "pattern_coverage": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "arm_order": {"type": "array", "items": {"type": "string"}},
+    "arms": {"type": "array", "items": {"$ref": "#/$defs/arm"}},
+    "union_pairs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/union_pair"}},
+    "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_OPAQUE"]},
+    "guard_result_type": {"enum": ["Bool", "NON_BOOL", "NOT_APPLICABLE"]},
+    "boundary_kind": {"enum": ["NONE", "CONSTRUCTION", "TYPED_PATTERN", "ARGUMENT", "RETURN", "AS_OPTION", "AS_ASSERT", "CHECK_RESULT", "IMPLICIT"]},
+    "proof_state": {"enum": ["PROVED", "DISPROVED", "UNKNOWN", "NOT_APPLICABLE"]},
+    "type_relation": {"enum": ["DISJOINT", "EQUIVALENT", "IMPLIES", "OVERLAPS", "UNKNOWN", "NOT_APPLICABLE"]},
+    "responsibilities": {
+      "type": "object", "additionalProperties": false,
+      "required": ["errors", "effects", "suspends", "authorities", "mutates", "consumes", "control_transfer"],
+      "properties": {
+        "errors": {"type": "boolean"}, "effects": {"type": "boolean"}, "suspends": {"type": "boolean"}, "authorities": {"type": "boolean"},
+        "mutates": {"type": "boolean"}, "consumes": {"type": "boolean"}, "control_transfer": {"type": "boolean"}
+      }
+    },
+    "output_type_or_null": {"type": ["string", "null"]},
+    "commit_count": {"type": "integer", "minimum": 0, "maximum": 1}
+  },
+  "$defs": {
+    "arm": {
+      "type": "object", "additionalProperties": false,
+      "required": ["arm_id", "kind", "coverage_cells", "guard_origin", "binder_contract", "entry_place_state", "exit_place_state"],
+      "properties": {
+        "arm_id": {"type": "string"}, "kind": {"enum": ["PATTERN", "OTHERWISE"]},
+        "coverage_cells": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_OPAQUE"]},
+        "binder_contract": {"type": "array", "items": {"type": "string"}},
+        "entry_place_state": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "exit_place_state": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "union_pair": {
+      "type": "object", "additionalProperties": false,
+      "required": ["left", "right", "relation"],
+      "properties": {"left":{"type":"string"},"right":{"type":"string"},"relation":{"enum":["DISJOINT","EQUIVALENT","IMPLIES","OVERLAPS","UNKNOWN"]}}
+    }
+  }
+}

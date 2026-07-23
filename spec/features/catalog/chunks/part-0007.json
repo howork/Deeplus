@@ -1084,7 +1084,8 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
-      "r0_guard_predicate_calculus"
+      "r0_guard_predicate_calculus",
+      "guard_callable_profile"
     ],
     "display_name": "`def#guard` clause-predicate function",
     "feature_id": "guard_function_for_clause_predicates",
@@ -1104,9 +1105,15 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "DECL_CLAUSE_RESULT_TYPE_MISMATCH"
+        "DECL_CLAUSE_RESULT_TYPE_MISMATCH",
+        "GUARD_CALLABLE_RESULT_MUST_BE_BOOL",
+        "GUARD_CALLABLE_CONSUME_FORBIDDEN",
+        "R0_GUARD_NOT_GUARD_SAFE"
       ],
-      "predicates": [],
+      "predicates": [
+        "GuardCallableAdmitted",
+        "R0GuardSafe"
+      ],
       "examples": [
         "EX-R48-013",
         "EX-R51a1-NEW-018"

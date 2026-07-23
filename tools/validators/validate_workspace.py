@@ -20,7 +20,8 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-value-operator-index-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-value-operator-index-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -959,6 +960,7 @@ def main() -> int:
         "tests/fixtures/current/type-flow-callable-coherence-r1.json": ("fixture_schema", "schemas/language/type-flow-callable-coherence-fixtures.schema.json"),
         "tests/fixtures/current/destructuring-pattern-matching-r1.json": ("fixture_schema", "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"),
         "tests/fixtures/current/value-operator-indexing-coherence-r1.json": ("fixture_schema", "schemas/language/value-operator-indexing-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json": ("fixture_schema", "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
@@ -1175,6 +1177,174 @@ def main() -> int:
         f"missing={sorted(voi_example_ids - active_ids)} warning={warning_example.get('expected_warnings')}",
     )
 
+    trn_rel = "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json"
+    trn = parsed.get(root / trn_rel, {})
+    trn_contract = parsed.get(root / "spec/contracts/type-refinement-narrowing-coherence.json", {})
+    trn_rows = [row for row in trn.get("cases", []) if isinstance(row, dict)]
+    trn_ids = [row.get("fixture_id") for row in trn_rows]
+    trn_rule_ids = [
+        row.get("rule_id") for row in trn_contract.get("rules", []) if isinstance(row, dict)
+    ]
+    trn_counts = trn.get("expected_counts", {})
+    trn_admit = sum(row.get("expected") == "ADMIT" for row in trn_rows)
+    trn_reject = sum(row.get("expected") == "REJECT" for row in trn_rows)
+    check(
+        trn.get("revision") == revision
+        and trn_contract.get("revision") == revision
+        and trn_contract.get("semantic_p0") == 0
+        and trn_contract.get("current_binding") is False
+        and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and trn_contract.get("open_feature_p1", {}).get("total") == 22
+        and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 14)]
+        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 35
+        and trn_admit == trn_counts.get("admit") == 10
+        and trn_reject == trn_counts.get("reject") == 25
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(trn_rule_ids))
+            and row.get("commit_count") in {0, 1}
+            and (row.get("expected") == "ADMIT") == (row.get("diagnostic_or_null") is None)
+            for row in trn_rows
+        )
+        and len(trn.get("open_feature_p1", [])) == 22
+        and len(trn.get("product_lanes", {})) == 15
+        and set(trn.get("product_lanes", {}).values()) == {"NOT_RUN"}
+        and trn_counts.get("runtime_union_tests") == 2
+        and trn_counts.get("open_runtime_type_tests") == 0
+        and trn_counts.get("def_guard_narrowing_facts") == 0
+        and trn_counts.get("p1_closed") == 0
+        and trn_counts.get("p1_created") == 0,
+        "TRN_CONTRACT_FIXTURE_CLOSURE",
+        f"rules={trn_rule_ids} rows={len(trn_rows)} admit={trn_admit} reject={trn_reject} counts={trn_counts}",
+    )
+    trn_case_by_id = {row.get("fixture_id"): row for row in trn_rows}
+    trn_required_axes = {f"TRN-R1-{kind}-{index:03d}" for kind, index in (
+        [("NEG", value) for value in range(19, 30)] + [("POS", 30), ("POS", 31)]
+    )}
+    check(
+        trn_required_axes <= set(trn_case_by_id)
+        and all(trn_case_by_id[fixture_id].get("commit_count") == 0 for fixture_id in trn_required_axes)
+        and all(
+            trn_case_by_id[f"TRN-R1-NEG-{index:03d}"].get("diagnostic_or_null")
+            == "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH"
+            for index in range(19, 24)
+        )
+        and all(
+            trn_case_by_id[f"TRN-R1-NEG-{index:03d}"].get("diagnostic_or_null")
+            == "OR_PATTERN_BINDINGS_INCONSISTENT"
+            for index in range(24, 30)
+        ),
+        "TRN_ENUM_OR_PATTERN_AND_TRANSACTION_AXES",
+        f"required={len(trn_required_axes & set(trn_case_by_id))}/13",
+    )
+    pattern_kinds = parsed.get(root / "spec/patterns/pattern-kinds.json", {})
+    pattern_lowering = parsed.get(root / "spec/patterns/pattern-lowering.json", {})
+    union_kind = next(
+        (row for row in pattern_kinds.get("rows", []) if row.get("pattern_kind_id") == "PK-UNION-ALTERNATIVE-BINDER"),
+        {},
+    )
+    union_lowering = next(
+        (row for row in pattern_lowering.get("rows", []) if row.get("lowering_id") == "PL-UNION-ALTERNATIVE-BINDER"),
+        {},
+    )
+    pattern_policies = parsed.get(root / "spec/patterns/pattern-context-policies.json", {})
+    expected_union_contexts = {
+        "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-FOR-LET",
+        "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE", "PCTX-COMPREHENSION-IF-LET",
+    }
+    policy_union_contexts = {
+        row.get("context_id")
+        for row in pattern_policies.get("rows", [])
+        if "PK-UNION-ALTERNATIVE-BINDER" in row.get("allowed_pattern_kind_ids", [])
+    }
+    check(
+        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 19
+        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 19
+        and union_kind.get("normalized_variant") == "UnionAlternativeBindPattern"
+        and union_kind.get("coverage_contribution") == "SUBJECT_CONSTRUCTOR_CELL"
+        and set(union_kind.get("allowed_context_ids", [])) == expected_union_contexts
+        and "PK-UNION-ALTERNATIVE-BINDER" in pattern_policies.get("current_pattern_kind_ids", [])
+        and policy_union_contexts == expected_union_contexts
+        and union_lowering.get("test_kind") == "UNION_INJECTION_TAG_TEST"
+        and union_lowering.get("mir_disposition") == "TEST_PROBE_COMMIT_TRACE",
+        "TRN_UNION_PATTERN_LOWERING_BINDING",
+        f"kind={union_kind.get('normalized_variant')} contexts={sorted(policy_union_contexts)} lowering={union_lowering.get('test_kind')}",
+    )
+    trn_predicate_ids = {
+        "NarrowUnionByPattern", "NormalizeUnion", "MatchExhaustive",
+        "GuardPredicateAdmitted", "R0GuardSafe", "RefinementCheckBoundaryAdmitted",
+    }
+    trn_inputs = [
+        row for row in trn_contract.get("predicate_inputs", [])
+        if isinstance(row, dict) and row.get("predicate_id") in trn_predicate_ids
+    ]
+    trn_input_ids = [row.get("fixture_id") for row in trn_inputs]
+    trn_input_groups = {
+        predicate_id: [row for row in trn_inputs if row.get("predicate_id") == predicate_id]
+        for predicate_id in trn_predicate_ids
+    }
+    trn_predicate_rows = {
+        row.get("predicate_id"): row
+        for row in predicate_rows
+        if row.get("predicate_id") in trn_predicate_ids
+    }
+    trn_schema_rel = "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json"
+    descriptor_binding_ok = (
+        len(trn_inputs) == len(trn_input_ids) == len(set(trn_input_ids)) == 12
+        and all(
+            len(rows) == 2
+            and {row.get("expected") for row in rows} == {"admitted", "rejected"}
+            for rows in trn_input_groups.values()
+        )
+        and set(trn_predicate_rows) == trn_predicate_ids
+        and all(
+            row.get("input_descriptor") == "TRNCoherenceDescriptor"
+            and row.get("input_descriptor_schema") == trn_schema_rel
+            for row in trn_predicate_rows.values()
+        )
+    )
+    match_descriptors = [
+        row.get("descriptor", {}) for row in trn_input_groups["MatchExhaustive"]
+    ]
+    union_descriptors = [
+        row.get("descriptor", {}) for row in trn_input_groups["NormalizeUnion"]
+    ]
+    match_binding_ok = all(
+        descriptor.get("arms")
+        and len(descriptor.get("arms", [])) == len(descriptor.get("arm_order", []))
+        and all(
+            {"arm_id", "kind", "coverage_cells", "guard_origin", "binder_contract", "entry_place_state", "exit_place_state"}
+            <= set(arm)
+            for arm in descriptor.get("arms", [])
+        )
+        for descriptor in match_descriptors
+    )
+    union_pair_binding_ok = all(
+        len(descriptor.get("union_pairs", []))
+        == len(descriptor.get("current_alternatives", [])) * (len(descriptor.get("current_alternatives", [])) - 1) // 2
+        for descriptor in union_descriptors
+    )
+    check(
+        descriptor_binding_ok and match_binding_ok and union_pair_binding_ok,
+        "TRN_PREDICATE_DESCRIPTOR_BINDING",
+        f"inputs={len(trn_inputs)} predicates={sorted(trn_predicate_rows)} match={match_binding_ok} pairs={union_pair_binding_ok}",
+    )
+    opaque_guard = next(
+        (row for row in trn_inputs if row.get("fixture_id") == "TRN-DESC-REFINE-NEG"), {}
+    ).get("descriptor", {})
+    as_option_case = next(
+        (row for row in trn_rows if row.get("fixture_id") == "TRN-R1-POS-009"), {}
+    )
+    check(
+        opaque_guard.get("guard_origin") == "DEF_GUARD_OPAQUE"
+        and opaque_guard.get("proof_state") == "UNKNOWN"
+        and opaque_guard.get("commit_count") == 0
+        and as_option_case.get("flow_in") == as_option_case.get("flow_join"),
+        "TRN_OPAQUE_GUARD_AND_AS_OPTION_FLOW",
+        f"guard={opaque_guard.get('proof_state')} phi={as_option_case.get('flow_in')}->{as_option_case.get('flow_join')}",
+    )
+
     module_fixtures = parsed.get(root / "tests/fixtures/imported/module-api-digest-fixtures.json", {})
     module_positive = module_fixtures.get("positive_fixtures", [])
     callable_rows = [
@@ -1377,7 +1547,7 @@ def main() -> int:
         )
         predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
         if revision == LANGUAGE_COHERENCE_REVISION:
-            expected_predecessor = POST_PR16_REVISION
+            expected_predecessor = PREVIOUS_LANGUAGE_COHERENCE_REVISION
         elif revision == POST_PR16_REVISION:
             expected_predecessor = "r51f3-post-pr16-preview-design-r4"
         else:

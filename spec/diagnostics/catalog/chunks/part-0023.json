@@ -1,5 +1,47 @@
 [
   {
+    "diagnostic_id": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
+    "baseline": "0.1.2-baseline.r51f3", "diagnostic_status": "active", "diagnostic_maturity": "active", "diagnostic_class": "current_source", "emission_domain": "source",
+    "message": "Closed Union alternatives must be proven pairwise disjoint; this pair overlaps or its relation is unknown.",
+    "feature_refs": ["closed_anonymous_union_type_msp"], "related_feature_refs": ["refinement_type_phase_a"], "stage": "checker", "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json", "product_support": "NOT_RUN",
+    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"], "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review", "fixit_hint": "make the alternatives provably disjoint or use one common type", "fixit_policy": "never select a source-order or runtime winner",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3", "notes": "Current finite relation diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "UNION_PATTERN_ALTERNATIVE_NOT_EXACT",
+    "baseline": "0.1.2-baseline.r51f3", "diagnostic_status": "active", "diagnostic_maturity": "active", "diagnostic_class": "current_source", "emission_domain": "source",
+    "message": "A typed pattern over a closed Union must name exactly one declared alternative identity.",
+    "feature_refs": ["closed_anonymous_union_type_msp"], "related_feature_refs": ["pattern_decomposition"], "stage": "checker", "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json", "product_support": "NOT_RUN",
+    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"], "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review", "fixit_hint": "name one exact alternative or use an explicit structural pattern", "fixit_policy": "never infer a subtype test or open RTTI",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3", "notes": "Current closed-Union pattern admission diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "The Enum pattern case must belong to the subject Enum and its active payload arity, labels, positions, and child types must match exactly.",
+    "feature_refs": ["pattern_decomposition"],
+    "related_feature_refs": ["match_exhaustiveness_phase_a"],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "select a case from the subject Enum and match only its declared active payload",
+    "fixit_policy": "never reinterpret a foreign case, project inactive payload storage, or run the guard before this check",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current Enum-pattern admission diagnostic; product execution remains NOT_RUN."
+  },
+  {
     "diagnostic_id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_status": "active",

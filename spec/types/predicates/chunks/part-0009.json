@@ -7,16 +7,7 @@
     "summary": "Keep named evidence out of the automatic WitnessResolution candidate set.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": [
-      "semantic_type",
-      "ownership",
-      "effect",
-      "failure",
-      "authority",
-      "evidence",
-      "flow",
-      "api_digest"
-    ],
+    "descriptor_axes": ["semantic_type", "ownership", "effect", "failure", "authority", "evidence", "flow", "api_digest"],
     "feature_refs": [
       "named_conformance_selector_msp"
     ],
@@ -36,13 +27,7 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "type",
-      "ownership",
-      "effect",
-      "authority",
-      "evidence"
-    ],
+    "rule_facets": ["type", "ownership", "effect", "authority", "evidence"],
     "formal_judgment_id": "J-NamedEvidenceExcludedFromAutomaticResolution",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -412,62 +397,48 @@
     "predicate_id": "NarrowUnionByPattern",
     "source_name": "NarrowUnionByPattern",
     "summary": "Refine Phi by the alternatives selected by a pattern without changing the declared semantic type.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": [
-      "semantic_type",
-      "ownership",
-      "effect",
-      "failure",
-      "authority",
-      "evidence",
-      "flow",
-      "api_digest"
-    ],
+    "input_descriptor": "TRNCoherenceDescriptor",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "descriptor_axes": ["declared_type", "current_alternatives", "pattern_coverage", "arms", "proof_state"],
     "feature_refs": [
       "closed_anonymous_union_type_msp",
       "guarded_let_destructured_exit_msp"
     ],
     "diagnostic_refs": [
-      "UNION_VALUE_REQUIRES_NARROWING"
+      "MATCH_ARM_UNREACHABLE",
+      "UNION_VALUE_REQUIRES_NARROWING",
+      "UNION_PATTERN_ALTERNATIVE_NOT_EXACT"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
       "read current alternatives from Phi",
-      "normalize the pattern type",
-      "intersect the alternative set",
-      "reject empty coverage",
-      "record arm-local flow type"
+      "elaborate an exact typed arm only in a refutable closed-Union owner",
+      "intersect the selected alternative with the current Phi set",
+      "emit MATCH_ARM_UNREACHABLE for an empty intersection",
+      "record arm-local Phi without changing the declaration"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "type",
-      "ownership",
-      "effect",
-      "authority",
-      "evidence"
-    ],
+    "rule_facets": ["type", "flow", "pattern", "ownership"],
     "formal_judgment_id": "J-NarrowUnionByPattern",
     "algorithm_owner": "integrated_checker",
-    "preconditions": [
-      "read current alternatives from Phi",
-      "normalize the pattern type"
-    ],
-    "normalization": "read current alternatives from Phi",
+    "preconditions": ["read Phi", "normalize exact closed-union identities"],
+    "normalization": "normalize closed Union, Phi, and pattern coverage",
     "decision_procedure": [
-      "read current alternatives from Phi",
-      "normalize the pattern type",
-      "intersect the alternative set",
-      "reject empty coverage",
-      "record arm-local flow type"
+      "read Phi and reject non-exact alternatives",
+      "elaborate an exact member only in a refutable closed-Union owner",
+      "intersect coverage with Phi; empty means MATCH_ARM_UNREACHABLE",
+      "record arm-local Phi without declaration change or open RTTI"
     ],
     "termination_metric": "finite descriptor/tree size and finite candidate set",
     "success_result": "admit with normalized output",
-    "active_primary_diagnostic": "UNION_VALUE_REQUIRES_NARROWING",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "MATCH_ARM_UNREACHABLE",
+    "secondary_diagnostics": [
+      "UNION_VALUE_REQUIRES_NARROWING",
+      "UNION_PATTERN_ALTERNATIVE_NOT_EXACT"
+    ],
     "positive_fixture_ids": [
       "PF-NarrowUnionByPattern-POS",
       "PF-NarrowUnionByPattern-BOUNDARY"
@@ -476,11 +447,18 @@
       "PF-NarrowUnionByPattern-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "NormalizeUnion"
+    ],
     "execution_receipt": null,
     "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_pattern_alternative_not_exact_declared_member": "UNION_PATTERN_ALTERNATIVE_NOT_EXACT",
+      "2_exact_member_not_in_current_Phi": "MATCH_ARM_UNREACHABLE",
+      "3_union_value_used_without_refutable_pattern": "UNION_VALUE_REQUIRES_NARROWING"
+    },
     "predecessor_identity": null
   },
   {
@@ -583,16 +561,7 @@
     "summary": "Normalize one optional concrete base plus coherent Trait contracts.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": [
-      "semantic_type",
-      "ownership",
-      "effect",
-      "failure",
-      "authority",
-      "evidence",
-      "flow",
-      "api_digest"
-    ],
+    "descriptor_axes": ["semantic_type", "ownership", "effect", "failure", "authority", "evidence", "flow", "api_digest"],
     "feature_refs": [
       "closed_contract_intersection_type_msp"
     ],
@@ -611,13 +580,7 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "type",
-      "ownership",
-      "effect",
-      "authority",
-      "evidence"
-    ],
+    "rule_facets": ["type", "ownership", "effect", "authority", "evidence"],
     "formal_judgment_id": "J-NormalizeContractIntersection",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -688,13 +651,7 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": [
-      "type",
-      "ownership",
-      "effect",
-      "authority",
-      "evidence"
-    ],
+    "rule_facets": ["type", "finite_relation"],
     "formal_judgment_id": "J-NormalizeSemanticType",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -735,25 +692,17 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NormalizeUnion",
     "source_name": "NormalizeUnion",
-    "summary": "Flatten, sort, and validate a finite pairwise-disjoint closed union.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": [
-      "semantic_type",
-      "ownership",
-      "effect",
-      "failure",
-      "authority",
-      "evidence",
-      "flow",
-      "api_digest"
-    ],
+    "summary": "Admit a closed Union only when every finite R0 alternative pair is proven disjoint.",
+    "input_descriptor": "TRNCoherenceDescriptor",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "descriptor_axes": ["declared_type", "current_alternatives", "union_pairs", "type_relation"],
     "feature_refs": [
       "closed_anonymous_union_type_msp"
     ],
     "diagnostic_refs": [
       "UNION_MEMBER_SUBSUMED",
-      "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+      "UNION_AUTOMATIC_JOIN_FORBIDDEN",
+      "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
@@ -761,7 +710,8 @@
       "require an explicit expected union context",
       "flatten nested unions",
       "remove exact duplicates",
-      "reject subtype overlap and forbidden kinds",
+      "classify every pair by the finite R0 relation",
+      "reject every relation except DISJOINT",
       "sort by canonical type identity"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -776,23 +726,20 @@
     ],
     "formal_judgment_id": "J-NormalizeUnion",
     "algorithm_owner": "integrated_checker",
-    "preconditions": [
-      "require an explicit expected union context",
-      "flatten nested unions"
-    ],
+    "preconditions": ["require explicit expected union", "flatten nested unions"],
     "normalization": "require an explicit expected union context",
     "decision_procedure": [
-      "require an explicit expected union context",
-      "flatten nested unions",
-      "remove exact duplicates",
-      "reject subtype overlap and forbidden kinds",
-      "sort by canonical type identity"
+      "require explicit expected union; flatten and deduplicate",
+      "classify every canonical pair by nominal identity then finite R0 relation",
+      "EQUIVALENT or IMPLIES means subsumed; OVERLAPS or UNKNOWN means not proven disjoint",
+      "admit only DISJOINT pairs and sort by canonical identity"
     ],
     "termination_metric": "finite descriptor/tree size and finite candidate set",
     "success_result": "admit with normalized output",
     "active_primary_diagnostic": "UNION_MEMBER_SUBSUMED",
     "secondary_diagnostics": [
-      "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+      "UNION_AUTOMATIC_JOIN_FORBIDDEN",
+      "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"
     ],
     "positive_fixture_ids": [
       "PF-NormalizeUnion-POS",
@@ -807,6 +754,11 @@
     "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_equivalent_or_implied_pair": "UNION_MEMBER_SUBSUMED",
+      "2_overlapping_or_unknown_pair": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
+      "3_implicit_join_without_expected_union": "UNION_AUTOMATIC_JOIN_FORBIDDEN"
+    },
     "predecessor_identity": null
   },
   {

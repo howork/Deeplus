@@ -126,6 +126,14 @@ Pattern checking first normalizes the subject domain, then constructs disjoint p
 
 Exhaustiveness succeeds only when the finite current partition is covered. Redundant or unreachable arms are diagnosed deterministically. An unknown future child is not assumed impossible unless the sealed-family authority proves closure. Clause functions and declarative clauses reuse the same partition engine but preserve their own input-supply and return-totality rules.
 
+The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
+
+For a closed Union scrutinee only, a typed child binder naming exactly one declared alternative elaborates to `UnionAlternativeBindPattern`. Its test is the existing Union injection identity; it is not a subtype test or a refinement check. Union formation itself requires every normalized alternative pair to be proven disjoint by the finite R0 relation procedure. Equivalent or implying members are subsumed; overlap or an unknown relation rejects rather than choosing a runtime winner.
+
+Refinement admission at construction, typed-pattern, argument, return, and explicit cast boundaries is three-valued: `PROVED` admits, `DISPROVED` emits the exact literal/range contradiction, and `UNKNOWN` emits `REFINEMENT_PROOF_REQUIRED`. A silent conversion outside those boundaries emits `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN`. `as?`, `as!`, and `T::check` retain their distinct Option, defect, and Result outcomes.
+
+`def#guard` is an exact Bool, pure, total, terminating, nonsuspending, nonconsuming, authority-free callable profile. Because current source and API metadata contain no refinement-summary owner, calling one is opaque to `Phi`; only an inline admitted R0 guard may contribute a refinement fact. A guarded arm never subtracts from exhaustiveness coverage.
+
 ## 18. MIR responsibility projection and evidence boundary
 
 The checker hands MIR a normalized descriptor containing the selected static identities, call channels, labels, type arguments, ownership transitions, cleanup regions, effects/errors, failure edges, suspension/isolation, construction plan, and source provenance. MIR lowering must not repeat open-ended name, witness, extension, or provider lookup.

@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-value-operator-index-coherence-r1"
-PREVIOUS_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
+REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
+PREVIOUS_REVISION = "r51f3-current-value-operator-index-coherence-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"

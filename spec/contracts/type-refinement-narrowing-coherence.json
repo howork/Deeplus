@@ -1,0 +1,146 @@
+{
+  "schema": "deeplus.type-refinement-narrowing-coherence-contract/r1",
+  "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "new_surface_syntax": false,
+    "open_runtime_type_test": false,
+    "def_guard_narrowing_summary": false,
+    "implementation_authority": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "class": ["CE-C-P1-001", "CE-C-P1-002", "CE-C-P1-003", "CE-C-P1-004", "CE-C-P1-005", "CE-C-P1-006"],
+    "enumeration": ["CE-E-P1-001", "CE-E-P1-002", "CE-E-P1-003", "CE-E-P1-004", "CE-E-P1-005", "CE-E-P1-006", "CE-E-P1-007", "CE-E-P1-008"],
+    "trait_conformance": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "static_first_dynamic": ["SFD-P1-009"],
+    "total": 22
+  },
+  "separate_open_actions": ["M13-A002", "M13-A003", "M13-A004", "M13-A005"],
+  "flow_environment": {
+    "symbol": "Phi",
+    "declared_type_is_immutable": true,
+    "facts": ["remaining closed-union alternative identities", "finite R0 refinement facts", "enum case identity", "usable-place state"],
+    "true_edge": "add only facts proved by the current structural partition and admitted inline R0 guard",
+    "false_edge": "retain the complement only when the finite partition engine proves it",
+    "join": "intersection of facts true on every incoming edge",
+    "kill": ["assignment to the subject or an aliased place", "exclusive borrow", "escape or capture with possible mutation", "call whose responsibility summary may mutate or consume the subject"],
+    "ordinary_bool_call_adds_fact": false,
+    "def_guard_call_adds_fact": false
+  },
+  "rules": [
+    {
+      "rule_id": "TRN-R001",
+      "title": "narrowing changes flow facts, not the declared semantic type",
+      "contract": "Normalize the declared domain once; an arm-local type is the declared domain intersected with Phi and structural coverage. No branch rewrites the declaration."
+    },
+    {
+      "rule_id": "TRN-R002",
+      "title": "closed-union typed arm has one bounded elaboration",
+      "contract": "Inside a match-like refutable context whose subject is a normalized closed union, Identifier : TypeRef elaborates to UnionAlternativeBindPattern only when TypeRef is exactly one declared alternative identity. It performs UNION_INJECTION_TAG_TEST and binds that alternative. Everywhere else it remains the irrefutable static TypedBindPattern."
+    },
+    {
+      "rule_id": "TRN-R003",
+      "title": "union alternative selection is not an open runtime type test",
+      "contract": "The test reads only the discriminator of the already-declared closed union. Subtyping search, reflection, provider lookup, Trait witness discovery, arbitrary downcast and refinement-predicate execution are forbidden."
+    },
+    {
+      "rule_id": "TRN-R004",
+      "title": "union formation requires a finite disjoint relation",
+      "contract": "After flattening and exact deduplication, every alternative pair must be proven DISJOINT by the finite R0 relation engine. EQUIVALENT or IMPLIES emits UNION_MEMBER_SUBSUMED; OVERLAPS or UNKNOWN rejects formation without inventing a runtime choice."
+    },
+    {
+      "rule_id": "TRN-R005",
+      "title": "refinement proof is required at every narrowing boundary",
+      "contract": "At construction, typed pattern, argument, return, and explicit cast boundaries, PROVED admits, DISPROVED emits the exact literal/range diagnostic, and UNKNOWN emits REFINEMENT_PROOF_REQUIRED. A boundary-free conversion emits REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN."
+    },
+    {
+      "rule_id": "TRN-R006",
+      "title": "refinement operations have distinct outcomes",
+      "contract": "as? produces Option<T>; as! produces T with the declared failed-cast defect edge; T::check produces Result<T, error E>. None erases proof obligations or manufactures a Phi fact before success."
+    },
+    {
+      "rule_id": "TRN-R007",
+      "title": "def#guard is pure Bool but opaque for narrowing",
+      "contract": "A def#guard callable must be total, pure, terminating, nonsuspending, nonconsuming, authority-free and return exactly Bool. Until a separate canonical summary surface and API digest exist, a call to it creates no refinement or union fact."
+    },
+    {
+      "rule_id": "TRN-R008",
+      "title": "inline guards refine only an admitted structural partition",
+      "contract": "A guard runs after structural probe and before ownership commit. Only an inline finite R0 predicate may refine the true-edge Phi; a false guard commits no binding, move, borrow or authority."
+    },
+    {
+      "rule_id": "TRN-R009",
+      "title": "guarded arms are useful but never total coverage",
+      "contract": "Usefulness is checked against the structural partition, but guarded arms do not subtract from the exhaustiveness residual. A residual covered only by guarded arms emits MATCH_NONEXHAUSTIVE_AFTER_GUARDS."
+    },
+    {
+      "rule_id": "TRN-R010",
+      "title": "match usefulness and exhaustiveness are one ordered pass",
+      "contract": "For each arm compute structural coverage, diagnose an empty new set as MATCH_ARM_UNREACHABLE, subtract only unguarded coverage, diagnose otherwise after empty residual as OTHERWISE_UNREACHABLE, then emit MATCH_NOT_EXHAUSTIVE for a remaining witness."
+    },
+    {
+      "rule_id": "TRN-R011",
+      "title": "enum patterns resolve identity and payload before a guard",
+      "contract": "Resolve the VariantId in the subject Enum owner, then validate active payload arity, labels/positions and child pattern types. Unknown or foreign cases and inactive payload projections reject before guard evaluation and commit."
+    },
+    {
+      "rule_id": "TRN-R012",
+      "title": "or-pattern binders and ownership state must agree",
+      "contract": "Every alternative binds the same names with identical canonical type, mode, mutability, usable lifetime and capability. Projection path and source-field order may differ. Normally returning arms must join to the same usable-place state."
+    },
+    {
+      "rule_id": "TRN-R013",
+      "title": "probe and commit are transactional",
+      "contract": "Structural failure, an unreachable pattern, or a false guard produces zero committed bindings, moves, exclusive borrows and authorities; successful admission commits the precomputed plan atomically once."
+    }
+  ],
+  "diagnostic_order": [
+    "pattern syntax and owner admission",
+    "closed-union or enum identity",
+    "payload and child-pattern typing",
+    "or-pattern binder parity and ownership probe",
+    "cross-arm usable-place compatibility",
+    "guard callable profile and inline R0 safety",
+    "refinement boundary proof",
+    "arm usefulness and exhaustiveness residual",
+    "atomic commit"
+  ],
+  "required_diagnostics": [
+    "MATCH_ARM_UNREACHABLE",
+    "OTHERWISE_UNREACHABLE",
+    "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+    "MATCH_NOT_EXHAUSTIVE",
+    "OR_PATTERN_BINDINGS_INCONSISTENT",
+    "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
+    "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH",
+    "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
+    "GUARD_CALLABLE_RESULT_MUST_BE_BOOL",
+    "GUARD_CALLABLE_CONSUME_FORBIDDEN",
+    "REFINEMENT_PROOF_REQUIRED",
+    "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+    "UNION_MEMBER_SUBSUMED",
+    "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"
+  ],
+  "predicate_input_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+  "predicate_inputs": [
+    {"fixture_id":"TRN-DESC-NARROW-POS","predicate_id":"NarrowUnionByPattern","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"value","declared_type":"Int | String","current_alternatives":["Int","String"],"pattern_coverage":["Int"],"arm_order":["n: Int"],"arms":[{"arm_id":"n: Int","kind":"PATTERN","coverage_cells":["Int"],"guard_origin":"NONE","binder_contract":["n:Int"],"entry_place_state":["value:available"],"exit_place_state":["value:available"]}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"TYPED_PATTERN","proof_state":"PROVED","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Int","commit_count":1}},
+    {"fixture_id":"TRN-DESC-NARROW-NEG","predicate_id":"NarrowUnionByPattern","expected":"rejected","diagnostic_or_null":"MATCH_ARM_UNREACHABLE","descriptor":{"subject":"value","declared_type":"Int | String","current_alternatives":["String"],"pattern_coverage":["Int"],"arm_order":["n: Int"],"arms":[{"arm_id":"n: Int","kind":"PATTERN","coverage_cells":["Int"],"guard_origin":"NONE","binder_contract":["n:Int"],"entry_place_state":["value:available"],"exit_place_state":["value:available"]}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"TYPED_PATTERN","proof_state":"DISPROVED","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-UNION-POS","predicate_id":"NormalizeUnion","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"union formation","declared_type":"Int | String","current_alternatives":["Int","String"],"pattern_coverage":[],"arm_order":[],"union_pairs":[{"left":"Int","right":"String","relation":"DISJOINT"}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"NONE","proof_state":"NOT_APPLICABLE","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Int | String","commit_count":0}},
+    {"fixture_id":"TRN-DESC-UNION-NEG","predicate_id":"NormalizeUnion","expected":"rejected","diagnostic_or_null":"UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT","descriptor":{"subject":"union formation","declared_type":"A | B","current_alternatives":["A","B"],"pattern_coverage":[],"arm_order":[],"union_pairs":[{"left":"A","right":"B","relation":"OVERLAPS"}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"OVERLAPS","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-MATCH-POS","predicate_id":"MatchExhaustive","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"Bool","declared_type":"Bool","current_alternatives":["true","false"],"pattern_coverage":["true","false"],"arm_order":["true","false"],"arms":[{"arm_id":"true","kind":"PATTERN","coverage_cells":["true"],"guard_origin":"NONE","binder_contract":[],"entry_place_state":["subject:available"],"exit_place_state":["subject:available"]},{"arm_id":"false","kind":"PATTERN","coverage_cells":["false"],"guard_origin":"NONE","binder_contract":[],"entry_place_state":["subject:available"],"exit_place_state":["subject:available"]}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"NONE","proof_state":"NOT_APPLICABLE","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-MATCH-NEG","predicate_id":"MatchExhaustive","expected":"rejected","diagnostic_or_null":"MATCH_NONEXHAUSTIVE_AFTER_GUARDS","descriptor":{"subject":"Option<Int>","declared_type":"Option<Int>","current_alternatives":["some","none"],"pattern_coverage":["some"],"arm_order":["some if guard"],"arms":[{"arm_id":"some if guard","kind":"PATTERN","coverage_cells":["some"],"guard_origin":"INLINE_R0","binder_contract":["value:Int"],"entry_place_state":["subject:available"],"exit_place_state":["subject:available"]}],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-GUARD-POS","predicate_id":"GuardPredicateAdmitted","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"x > 0","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
+    {"fixture_id":"TRN-DESC-GUARD-NEG","predicate_id":"GuardPredicateAdmitted","expected":"rejected","diagnostic_or_null":"GUARD_CONDITION_SUSPEND_NOT_ALLOWED","descriptor":{"subject":"await ready()","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":true,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-R0-POS","predicate_id":"R0GuardSafe","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"this >= 1 and this <= 65535","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
+    {"fixture_id":"TRN-DESC-R0-NEG","predicate_id":"R0GuardSafe","expected":"rejected","diagnostic_or_null":"R0_GUARD_NOT_GUARD_SAFE","descriptor":{"subject":"1 / this > 0","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":true,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
+    {"fixture_id":"TRN-DESC-REFINE-POS","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"443","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"ARGUMENT","proof_state":"PROVED","type_relation":"IMPLIES","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Port","commit_count":1}},
+    {"fixture_id":"TRN-DESC-REFINE-NEG","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"rejected","diagnostic_or_null":"REFINEMENT_PROOF_REQUIRED","descriptor":{"subject":"dynamic Int x","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"DEF_GUARD_OPAQUE","guard_result_type":"Bool","boundary_kind":"RETURN","proof_state":"UNKNOWN","type_relation":"UNKNOWN","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}}
+  ]
+}

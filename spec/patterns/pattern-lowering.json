@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.pattern-lowering-registry/r1",
-  "revision": "r51f3-current-value-operator-index-coherence-r1",
+  "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
   "row_schema": "schemas/language/pattern-lowering-row.schema.json",
   "authority": "LANGUAGE / TYPE_SYSTEM / MIR",
   "evidence_level": "DESIGN_STATIC",
@@ -52,15 +52,15 @@
     "cross_arm_rule": "If the subject remains live after match, every normally returning arm exposes the same usable-place set; otherwise consume the whole subject, terminate the differing arms, or reject post-join use."
   },
   "counts": {
-    "rows": 18,
-    "current_lowering_contract": 13,
+    "rows": 19,
+    "current_lowering_contract": 14,
     "deferred_no_lowering": 3,
     "rejected_no_lowering": 2
   },
   "rows": [
     {
       "lowering_id": "PL-BINDER",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-BINDER",
       "cst_variant": "BinderPatternCst",
@@ -81,8 +81,32 @@
       "product_execution": "NOT_RUN"
     },
     {
+      "lowering_id": "PL-UNION-ALTERNATIVE-BINDER",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
+      "status": "CURRENT_LOWERING_CONTRACT",
+      "pattern_kind_id": "PK-UNION-ALTERNATIVE-BINDER",
+      "cst_variant": "TypedBinderPatternCst",
+      "ast_variant": "UnionAlternativeBindPattern",
+      "hir_variant": "TypedUnionAlternativeBindPattern",
+      "test_kind": "UNION_INJECTION_TAG_TEST",
+      "probe_binder_policy": "LIMITED_NONOWNING_VIEW",
+      "move_policy": "MOVE_DELAYED_UNTIL_COMMIT",
+      "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
+      "post_join_policy": "REQUIRE_SAME_USABLE_PLACE_SET_IF_SUBJECT_LIVE",
+      "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
+      "phase_profile": "R2_PATTERN_PHASE_V1",
+      "failure_profile": "R2_CONTEXT_FAILURE_V1",
+      "lifecycle_profile": "R2_LIFECYCLE_SPLIT_V1",
+      "constraints": [
+        "Elaboration is permitted only for an exact declared alternative of the normalized closed Union subject.",
+        "The test reads the existing injection identity and never performs RTTI, subtype search, refinement execution, reflection, Trait discovery, or provider lookup.",
+        "The declared semantic type remains unchanged; only arm-local Phi is narrowed."
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    {
       "lowering_id": "PL-TYPED-BINDER",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-TYPED-BINDER",
       "cst_variant": "TypedBinderPatternCst",
@@ -104,7 +128,7 @@
     },
     {
       "lowering_id": "PL-WILDCARD",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-WILDCARD",
       "cst_variant": "WildcardPatternCst",
@@ -126,7 +150,7 @@
     },
     {
       "lowering_id": "PL-UNIT",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-UNIT",
       "cst_variant": "UnitPatternCst",
@@ -148,7 +172,7 @@
     },
     {
       "lowering_id": "PL-LITERAL",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-LITERAL",
       "cst_variant": "LiteralPatternCst",
@@ -170,7 +194,7 @@
     },
     {
       "lowering_id": "PL-PARENTHESIZED",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-PARENTHESIZED",
       "cst_variant": "ParenthesizedPatternCst",
@@ -192,7 +216,7 @@
     },
     {
       "lowering_id": "PL-RECORD-SUBSET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-RECORD-SUBSET",
       "cst_variant": "RecordPatternCst",
@@ -216,7 +240,7 @@
     },
     {
       "lowering_id": "PL-LIST-EXACT",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-LIST-EXACT",
       "cst_variant": "ListPatternCst",
@@ -238,7 +262,7 @@
     },
     {
       "lowering_id": "PL-LIST-IGNORED-TAIL",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
       "cst_variant": "ListPatternCst",
@@ -260,7 +284,7 @@
     },
     {
       "lowering_id": "PL-VARIANT",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-VARIANT",
       "cst_variant": "VariantPatternCst",
@@ -282,7 +306,7 @@
     },
     {
       "lowering_id": "PL-OR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-OR",
       "cst_variant": "OrPatternCst",
@@ -305,7 +329,7 @@
     },
     {
       "lowering_id": "PL-ALIAS",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-ALIAS",
       "cst_variant": "AliasPatternCst",
@@ -328,7 +352,7 @@
     },
     {
       "lowering_id": "PL-MOVE",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "CURRENT_LOWERING_CONTRACT",
       "pattern_kind_id": "PK-MOVE",
       "cst_variant": "MovePatternCst",
@@ -350,7 +374,7 @@
     },
     {
       "lowering_id": "PL-TUPLE",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "DEFERRED_NO_LOWERING",
       "pattern_kind_id": "PK-TUPLE",
       "cst_variant": null,
@@ -372,7 +396,7 @@
     },
     {
       "lowering_id": "PL-RECORD-REST",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "DEFERRED_NO_LOWERING",
       "pattern_kind_id": "PK-RECORD-REST",
       "cst_variant": null,
@@ -394,7 +418,7 @@
     },
     {
       "lowering_id": "PL-LIST-CAPTURED-REST",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "DEFERRED_NO_LOWERING",
       "pattern_kind_id": "PK-LIST-CAPTURED-REST",
       "cst_variant": null,
@@ -416,7 +440,7 @@
     },
     {
       "lowering_id": "PL-EXTRACTOR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "REJECTED_NO_LOWERING",
       "pattern_kind_id": "PK-EXTRACTOR",
       "cst_variant": null,
@@ -438,7 +462,7 @@
     },
     {
       "lowering_id": "PL-BACKTRACKING",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "status": "REJECTED_NO_LOWERING",
       "pattern_kind_id": "PK-BACKTRACKING",
       "cst_variant": null,

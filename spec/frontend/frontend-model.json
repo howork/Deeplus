@@ -2038,6 +2038,27 @@
       "field_type": "NormalizedTypeIdentity | null",
       "contract": "the field constrains the independently evaluated subject before Pattern admission and never creates a second top-level TypedBindingPattern or runtime type test"
     },
+    "closed_union_typed_binder_elaboration": {
+      "surface_production": "TypedBindingPattern",
+      "precondition": "refutable Pattern owner and normalized subject is a closed Union and TypeRef is exactly one declared alternative identity",
+      "normalized_ast_variant": "UnionAlternativeBindPattern",
+      "hir_variant": "TypedUnionAlternativeBindPattern",
+      "test": "UNION_INJECTION_TAG_TEST",
+      "flow_result": "arm-local Phi contains only the selected alternative; declared semantic type is unchanged",
+      "open_runtime_type_test": false,
+      "subtype_search": false,
+      "refinement_predicate_execution": false,
+      "trait_or_provider_lookup": false,
+      "fallback": "ordinary irrefutable TypedBindPattern static admission"
+    },
+    "flow_proof_environment": {
+      "name": "Phi",
+      "join": "intersection of facts on all incoming edges",
+      "kill_events": ["subject assignment", "aliasing mutation", "exclusive borrow", "escape or mutable capture", "consume", "call with possible subject mutation"],
+      "ordinary_bool_call_adds_fact": false,
+      "def_guard_call_adds_fact": false,
+      "inline_r0_guard_may_add_fact": true
+    },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
     "tuple_pattern_current": false,

@@ -1,8 +1,8 @@
 {
   "schema": "deeplus.language-coherence-current-integrity-contract/r1",
-  "revision": "r51f3-current-value-operator-index-coherence-r1",
-  "previous_revision": "r51f3-post-pr16-preview-design-r4-cma-r1",
-  "materialization_timestamp": "2026-07-23T04:30:00+09:00",
+  "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
+  "previous_revision": "r51f3-current-value-operator-index-coherence-r1",
+  "materialization_timestamp": "2026-07-23T12:00:00+09:00",
   "evidence_boundary": "Repository-static canonical closure only; no product lane execution or current Git binding is claimed.",
   "semantic_p0": 0,
   "current_binding": false,
@@ -101,7 +101,7 @@
   ],
   "canonical_counts": {
     "features": 681,
-    "diagnostics": 1276,
+    "diagnostics": 1279,
     "predicates": 245,
     "predicate_fixtures": 764,
     "no_go": 150,
@@ -114,31 +114,31 @@
       "domain": "human_language",
       "path": "spec/language.md",
       "owner": "Spec_",
-      "sha256": "81067b4044d2dc4d244304a272ce24d4cb195449a055bdbd009241abccc18454"
+      "sha256": "30d03c2be78289f07a1428fff4da631972e5982b683d74e7088c213b76848d55"
     },
     {
       "domain": "exact_grammar",
       "path": "spec/grammar/deeplus.ebnf",
       "owner": "Spec_",
-      "sha256": "b281ab166e65871b90abeda70757ccefd6f4479d471c850713cf7f6477845fa5"
+      "sha256": "45677f65aeae9fad4f103851044d18603afa17e7e82ae05f504bd0a47d69f20a"
     },
     {
       "domain": "frontend_admission",
       "path": "spec/frontend/frontend-model.json",
       "owner": "Spec_ + Impl_",
-      "sha256": "7fd6dca0085a1d7d18180acd4d82c37a3e231e74d7f4c56bf94b812fceabdeb3"
+      "sha256": "75217e4b89da3c9fa8435274d345909f5ba779e506ad8beeec5b673da19e2628"
     },
     {
       "domain": "type_system",
       "path": "spec/types/type-system.md",
       "owner": "Spec_",
-      "sha256": "181a43cb5435c49680f0fd76b232da60fb6ddfb34b07f937f5b90d3ad29aa90d"
+      "sha256": "b3c28ae5a3c34c9838e4a8d9cb40a91a4b8d2283479a8b7a1ada962607316a5d"
     },
     {
       "domain": "mir_observable_semantics",
       "path": "spec/mir/semantics.md",
       "owner": "Spec_ + Impl_",
-      "sha256": "cd6bade9b3b6666d7033b0d66014b323ecb717c8eb70406af294c743151e7e53"
+      "sha256": "0574a5baf9457e62d6db4b6bbd2992155455f04a5758ec0f675adabe608faf9f"
     },
     {
       "domain": "prelude",
@@ -156,29 +156,29 @@
       "domain": "current_decisions",
       "path": "decisions/language/current-decisions.json",
       "owner": "Design_ + Spec_",
-      "sha256": "d2f4f7e3c0b2d47ea674bd6bd954521a758e14bf0b00747d3aae39baffd1e1a1"
+      "sha256": "9eca4bb14c7bf32561084ad982ba0e9f09aeefa11d4bdb6ec6b7dd76ca86e3fc"
     },
     {
       "domain": "features",
       "path": "spec/features/catalog",
       "owner": "Spec_",
-      "sha256": "d323b2ccc12c7023b5d43c7eee3e326038d3f23fdfee410418648b8ab1d92e75"
+      "sha256": "6ffa1b0630b08079f98f0fd55215403108810fac6d1a65fc0899718ac529939d"
     },
     {
       "domain": "diagnostics",
       "path": "spec/diagnostics/catalog",
       "owner": "Test_ + Spec_",
-      "sha256": "fca70cc3f0ec8df9c6ce46b5c3b0e63731e566fcf28f64e5119a7ade928aaa53"
+      "sha256": "40757bae5b1e5b1caa95b6d3fa9535e55492be02a9e0906fc35caa74597f2de5"
     },
     {
       "domain": "checker_predicates",
       "path": "spec/types/predicates",
       "owner": "Spec_ + Impl_",
-      "sha256": "1579e598d86e8223e7f5a52367670dc6f661c8bc71b8b2cfbf6b1668418d9b88"
+      "sha256": "2a5e665b497bf5536b4a45711682793c047340895d44d8f97c61d2854f2e744c"
     }
   ],
   "authority_non_owned_sha256": "84d22bd432bf8ec250c3d69e625258122a69b38753e2c6b9bfdf59cf3687301b",
-  "pointer_non_owned_canonical_sha256": "a67f65b36bae31650b2e38a50a7c5c78bfa3274d30915ec462449ce280f61ad3",
+  "pointer_non_owned_canonical_sha256": "544973892503b990dd8eade4739d8d38187d727461e2348826c9ebe7480eb406",
   "decision_law_ids": [
     "USR-NAMED-REST",
     "USR-LAZY",
@@ -204,20 +204,21 @@
     "DSGN-CURRENT-IDENTIFIER-TYPE-FLOW",
     "DSGN-CURRENT-CALLABLE-RESPONSIBILITY",
     "DSGN-CURRENT-ACTOR-CONCURRENCY",
-    "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE"
+    "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
+    "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE"
   ],
   "semantic_authority_files": [
     {
       "path": "spec/grammar/deeplus.ebnf",
-      "sha256": "b281ab166e65871b90abeda70757ccefd6f4479d471c850713cf7f6477845fa5"
+      "sha256": "45677f65aeae9fad4f103851044d18603afa17e7e82ae05f504bd0a47d69f20a"
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "7fd6dca0085a1d7d18180acd4d82c37a3e231e74d7f4c56bf94b812fceabdeb3"
+      "sha256": "75217e4b89da3c9fa8435274d345909f5ba779e506ad8beeec5b673da19e2628"
     },
     {
       "path": "spec/types/type-system.md",
-      "sha256": "181a43cb5435c49680f0fd76b232da60fb6ddfb34b07f937f5b90d3ad29aa90d"
+      "sha256": "b3c28ae5a3c34c9838e4a8d9cb40a91a4b8d2283479a8b7a1ada962607316a5d"
     },
     {
       "path": "library/prelude/prelude.md",
@@ -227,7 +228,7 @@
   "migration_identity_exemptions": [
     {
       "path": "decisions/language/current-decisions.json",
-      "sha256": "d2f4f7e3c0b2d47ea674bd6bd954521a758e14bf0b00747d3aae39baffd1e1a1"
+      "sha256": "9eca4bb14c7bf32561084ad982ba0e9f09aeefa11d4bdb6ec6b7dd76ca86e3fc"
     },
     {
       "path": "examples/manifests/by-outcome/catalog-metadata.json",
@@ -323,7 +324,7 @@
     },
     {
       "path": "spec/diagnostics/catalog/catalog-metadata.json",
-      "sha256": "86b85f182bb210d6a91f2f72520dfaf6bcea4583bc51cfde93c439cab23f0cc9"
+      "sha256": "ead3fbf42285a17c021de7cc596650d29d5bf98bf22e00821d8cce2d9262a329"
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0001.json",
@@ -347,7 +348,7 @@
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0010.json",
-      "sha256": "1df956fb095c9dbca28907028e07a01f8498c3e2dc46a161f83672cd7bd0f43c"
+      "sha256": "c93f3f6d188607f52776e9619c5742646d608c5091a4c3bb0bcdf2c4eb49dcf8"
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0011.json",
@@ -359,7 +360,7 @@
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0013.json",
-      "sha256": "9e6ddf0d9bc4642ee64f8f08df20eaf747ef58abcf3a07d98ca085eacd2ec278"
+      "sha256": "733acae3964842cf6cc305108163b1376bb29b6434d0ffba016b34013423142b"
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0016.json",
@@ -383,7 +384,7 @@
     },
     {
       "path": "spec/features/catalog/chunks/part-0003.json",
-      "sha256": "c1853c243188553757ad327348c5b5ae9d1bf58c709743c77e9ac7cc14b9f53a"
+      "sha256": "c6d08aa0867f30075ebc5fefadaa2d75479bc462e67ee52d37d36c482a4a9332"
     },
     {
       "path": "spec/features/catalog/chunks/part-0004.json",
@@ -395,7 +396,7 @@
     },
     {
       "path": "spec/features/catalog/chunks/part-0007.json",
-      "sha256": "366b0e0d22dd907079272150570bd0b2fecbf1279731dc0b460c39794af1ce80"
+      "sha256": "31f263b05593b43b64510cbf6d281ea8abf390359db5ec309e5a426a0b91d0e5"
     },
     {
       "path": "spec/features/catalog/chunks/part-0008.json",
@@ -403,7 +404,7 @@
     },
     {
       "path": "spec/features/catalog/chunks/part-0009.json",
-      "sha256": "d9b5cb9b2614817db91051bd4d9c60bb541469be3ab27781e91772b7b0f8d626"
+      "sha256": "85a1194aab056ecdfc9b98b66fec2b67ae4b60902db51ab343a7713037182ae0"
     },
     {
       "path": "spec/features/catalog/chunks/part-0010.json",
@@ -411,7 +412,7 @@
     },
     {
       "path": "spec/features/catalog/chunks/part-0011.json",
-      "sha256": "3b1bb617c1d6fcef1edabf2406abb471bc30d971add87d1db5b3de57d36079ba"
+      "sha256": "73fd8913cf54972fecc0d7e49337548d2d3cee982b04fe622c78ca013f3ddaec"
     },
     {
       "path": "spec/features/catalog/chunks/part-0013.json",
@@ -419,7 +420,7 @@
     },
     {
       "path": "spec/features/catalog/chunks/part-0014.json",
-      "sha256": "b439006f46adf8deef6eae29f4cb2b7303caadf016ce4943a3b104cc0c483245"
+      "sha256": "bb56b298690153e10c46991071c2d7f41a69ad795eefd73ca54ad42d3d7ed2d6"
     },
     {
       "path": "spec/features/catalog/chunks/part-0015.json",
@@ -435,11 +436,11 @@
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "7fd6dca0085a1d7d18180acd4d82c37a3e231e74d7f4c56bf94b812fceabdeb3"
+      "sha256": "75217e4b89da3c9fa8435274d345909f5ba779e506ad8beeec5b673da19e2628"
     },
     {
       "path": "spec/grammar/deeplus.ebnf",
-      "sha256": "b281ab166e65871b90abeda70757ccefd6f4479d471c850713cf7f6477845fa5"
+      "sha256": "45677f65aeae9fad4f103851044d18603afa17e7e82ae05f504bd0a47d69f20a"
     },
     {
       "path": "spec/grammar/keyword-vocabulary.json",
@@ -447,11 +448,11 @@
     },
     {
       "path": "spec/language.md",
-      "sha256": "81067b4044d2dc4d244304a272ce24d4cb195449a055bdbd009241abccc18454"
+      "sha256": "30d03c2be78289f07a1428fff4da631972e5982b683d74e7088c213b76848d55"
     },
     {
       "path": "spec/mir/semantics.md",
-      "sha256": "cd6bade9b3b6666d7033b0d66014b323ecb717c8eb70406af294c743151e7e53"
+      "sha256": "0574a5baf9457e62d6db4b6bbd2992155455f04a5758ec0f675adabe608faf9f"
     },
     {
       "path": "spec/types/predicates/chunks/part-0001.json",
@@ -466,16 +467,24 @@
       "sha256": "970a001343142120672a9e44ab31198b67ac2fb331b77aa144da9dfe23e8514c"
     },
     {
+      "path": "spec/types/predicates/chunks/part-0006.json",
+      "sha256": "70988b6b345247836b1f48b3d6f64bdd2d194ee4335222f9693d549dd4a35740"
+    },
+    {
       "path": "spec/types/predicates/chunks/part-0008.json",
-      "sha256": "eb733f47600147e8c044db7ffdfa248ca913a29fae670615b9c98ab65806ee37"
+      "sha256": "d6f44234fb5bf5183fc55db228118b199ec0fc231b322ae1cee3b68cc5a75449"
     },
     {
       "path": "spec/types/predicates/chunks/part-0009.json",
-      "sha256": "58defa6f7b7e866a1122793815f5eb178425d67d50dd4e66e9adc687f2b93f1f"
+      "sha256": "c29039c626bb7c34b422bffefc7a600c279cbf9c0617ebdabf957d19cf041649"
     },
     {
       "path": "spec/types/predicates/chunks/part-0010.json",
       "sha256": "3a8910c78cc488493b538ff4779479030d9240f9a6c622ac223c667a6242a37c"
+    },
+    {
+      "path": "spec/types/predicates/chunks/part-0011.json",
+      "sha256": "25ac521e83eeee03cb4f5fc34556e7c551ed75da75bb785084422fd8a6e04073"
     },
     {
       "path": "spec/types/predicates/chunks/part-0012.json",
@@ -483,7 +492,7 @@
     },
     {
       "path": "spec/types/type-system.md",
-      "sha256": "181a43cb5435c49680f0fd76b232da60fb6ddfb34b07f937f5b90d3ad29aa90d"
+      "sha256": "b3c28ae5a3c34c9838e4a8d9cb40a91a4b8d2283479a8b7a1ada962607316a5d"
     },
     {
       "path": "tests/conformance/checker-predicates/catalog-metadata.json",
@@ -511,15 +520,15 @@
       "path": "current/language-version.toml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 366,
-      "sha256": "a824e04edd43602ec144584bf5a964baaa1f5dc2b805119f2c1d0472bd2a6552"
+      "bytes": 371,
+      "sha256": "8a0c47bd4be27121e3cb36f18545ad943607c72f3ca54265033375dd36fe8fe7"
     },
     {
       "path": "current/implementation-status.yaml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 757,
-      "sha256": "44f0778f816b54d53a416e8db3cdee007ebc3c231bb5fd6923943553dbcdde47"
+      "bytes": 762,
+      "sha256": "f806a285dc6b5f064fe59979eb57a3e629a774a33fe24b2478d2bba366c4ff49"
     },
     {
       "path": "current/product-lanes.json",
@@ -532,8 +541,8 @@
       "path": "decisions/language",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 13910,
-      "sha256": "630c2f912c9d8366f159d0e3bed6cb423934e8241caebe87285b69df9e3172f4"
+      "bytes": 14799,
+      "sha256": "ccc5e5bf948bfad2fdf46175e7bdd4c636400bdb9d064f129666a55e818e108b"
     },
     {
       "path": "examples",
@@ -554,21 +563,21 @@
       "kind": "file",
       "file_count": 1,
       "bytes": 14954,
-      "sha256": "c998aa84fdea419589d994011989bdc29b77a75c81408efa1ead0ab69e9ea03f"
+      "sha256": "caa5224912879e263b41dd7a51d62a19c5f0c85846e815657daed2dc76b4e9e0"
     },
     {
       "path": "roles/current-memory",
       "kind": "directory",
       "file_count": 5,
-      "bytes": 27712,
-      "sha256": "db994b5c948b0e26a55c3cf5077d2563f918c406a3acb43f6ff2fc87a3c68c2f"
+      "bytes": 27737,
+      "sha256": "f83ccdcc0e561d448f8a64fbd5e569cc2c387d2500d7d40d58a71d3041bfc00c"
     },
     {
       "path": "schemas/language",
       "kind": "directory",
-      "file_count": 22,
-      "bytes": 180057,
-      "sha256": "b6ee028c5fd8ffdad127b94a8772c8396a7ef2038015aedba7e96dd2fc77b55c"
+      "file_count": 24,
+      "bytes": 186505,
+      "sha256": "0838870778b60f939fd29c7257bd482ac87f314e005f9e686c544630d3b7b7a4"
     },
     {
       "path": "spec/compatibility/no-go",
@@ -580,79 +589,79 @@
     {
       "path": "spec/contracts",
       "kind": "directory",
-      "file_count": 11,
-      "bytes": 99963,
-      "sha256": "c150f03007ae9eb2f7fcfc38e70ec5c2f55573fce24ff725d177925c5e523f96"
+      "file_count": 12,
+      "bytes": 116123,
+      "sha256": "194717670ae47532a85bbb868e561b2688c2aaeeaaa1c3cf4fc71389b4e1039e"
     },
     {
       "path": "spec/diagnostics",
       "kind": "directory",
       "file_count": 27,
-      "bytes": 1323527,
-      "sha256": "6021f04ab85434c88c350a471ea5f5777ed447839507538497687f3151b56df6"
+      "bytes": 1328934,
+      "sha256": "c1f2cfc4a2e96b4a55b5477eee3159aa5bcae2d5d775141aedfc44cbc3a30c12"
     },
     {
       "path": "spec/features",
       "kind": "directory",
       "file_count": 24,
-      "bytes": 1180147,
-      "sha256": "3f3851f36a1912ff641ea260aa2da8b8a717216d11dcb0c19d14c7c2add53099"
+      "bytes": 1180747,
+      "sha256": "ba343ef0e0547bc7a3228f1501f056ee62c77858414d1587806ee8978d4b734a"
     },
     {
       "path": "spec/frontend",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 55951,
-      "sha256": "d588590076e6ea77a4fe461f3713822c35eba8a5e9c820338b65dd52d85de26b"
+      "bytes": 57127,
+      "sha256": "3afe4863844ba4d49caf8ec41bbaec83a3cdddbd0adc1175918e61f41f74e2a2"
     },
     {
       "path": "spec/grammar",
       "kind": "directory",
       "file_count": 2,
-      "bytes": 56453,
-      "sha256": "886001472677ae127eccc1c90d0ff47990204dadda3ad968c5f4e4f9c2923875"
+      "bytes": 57004,
+      "sha256": "cc92c2f182314a31f54b81b28f463d41ff4920510424e63fe813ba02e5b3a49f"
     },
     {
       "path": "spec/language.md",
       "kind": "file",
       "file_count": 1,
-      "bytes": 378182,
-      "sha256": "81067b4044d2dc4d244304a272ce24d4cb195449a055bdbd009241abccc18454"
+      "bytes": 380160,
+      "sha256": "30d03c2be78289f07a1428fff4da631972e5982b683d74e7088c213b76848d55"
     },
     {
       "path": "spec/mir",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 27120,
-      "sha256": "c7bbc08395193999b6b6997bfc67332f6f80ba6b933cb4bffbb86e76fec845c8"
+      "bytes": 28291,
+      "sha256": "aebeb240aeef21af8b25ce78b61c48dd04fd964af78bc0da1b8e4841694f7159"
     },
     {
       "path": "spec/patterns",
       "kind": "directory",
       "file_count": 4,
-      "bytes": 74728,
-      "sha256": "75b2796c9cbb8658b08ad3e342ea0c343af527867cfcedb146cb1512bbd221f2"
+      "bytes": 78353,
+      "sha256": "fee8bf9817f3a41a7d399596f2948f5491d5ab5a4c642a7bd9d399338f54beb6"
     },
     {
       "path": "spec/types",
       "kind": "directory",
       "file_count": 18,
-      "bytes": 893741,
-      "sha256": "fe33aeb4fba74346f65d5ad2854dfe5fd862a754c710276d9aee84e71b6cf217"
+      "bytes": 899085,
+      "sha256": "072c1d8e32997b0f12a2b092285a8235d8694738329a7c2329ee9257ba5afc1e"
     },
     {
       "path": "tests/conformance",
       "kind": "directory",
       "file_count": 34,
-      "bytes": 1691307,
-      "sha256": "28e2c3636c6bcbd05b23a4e76dab65eafcfdb74ed7e7fa503e553bf9b7a7d82f"
+      "bytes": 1691294,
+      "sha256": "5eb49ae7b83eccddb3159c642b62ffa14da48d8f295c0e5d565cfadd38ed1bfe"
     },
     {
       "path": "tests/fixtures/current",
       "kind": "directory",
-      "file_count": 6,
-      "bytes": 105757,
-      "sha256": "a1e3d6ba71bc59625b7272c22331d9cd1a29167bc063b001659fb04c5a1dc967"
+      "file_count": 7,
+      "bytes": 119377,
+      "sha256": "e63a248095d89304427a3439616f47e31b874ab64b3da7953c9f7abf1b70e415"
     },
     {
       "path": "tests/fixtures/imported",
@@ -665,15 +674,15 @@
       "path": "tools/generators",
       "kind": "directory",
       "file_count": 13,
-      "bytes": 213349,
-      "sha256": "630eba865cc3f4296404289dd289078684290c01d69c0b4bd3468a69526d3365"
+      "bytes": 213361,
+      "sha256": "93a6dbfb05818a66fd77eecb3c1e91459b8aabbbd54d808e6b34eca6793c6231"
     },
     {
       "path": "tools/validators/validate_workspace.py",
       "kind": "file",
       "file_count": 1,
-      "bytes": 86546,
-      "sha256": "9fa1bb53bdcf3da355a0e07cb393dda4328a0e4a003ee285cab3655f0b88094c"
+      "bytes": 95245,
+      "sha256": "6511e1cf525dd0a14a5361089ae1c543677404a9308b4f4e527d228c3086edf9"
     }
   ]
 }
