@@ -1270,7 +1270,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "An attached CaretToken is owned only by NumericArrayTransposeSuffix on the postfix route.",
+    "notes": "An attached CaretToken is owned only by NumericArrayTransposeSuffix on the postfix route. Its semantic result is a nonowning owner-bounded readonly coordinate view: rank two swaps axes, rank one flips an admitted orientation witness, and an unoriented rank-one operand rejects. The law grants no implicit element copy, language-observable allocation, mutation, lifetime escape, isolation crossing, adjoint, or shareability inference.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1307,7 +1307,11 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/value-operator-indexing-coherence.json",
+      "spec/mir/semantics.md",
+      "tests/fixtures/current/value-operator-indexing-coherence-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

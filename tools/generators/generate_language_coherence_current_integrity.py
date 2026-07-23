@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-literal-shaped-collection-design-r1"
-PREVIOUS_REVISION = "r51f3-current-enum-derived-capabilities-r1"
+REVISION = "r51f3-current-grammar-reference-semantic-coherence-r1"
+PREVIOUS_REVISION = "r51f3-current-literal-shaped-collection-design-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"

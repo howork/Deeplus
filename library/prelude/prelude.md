@@ -16,6 +16,29 @@ Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fall
 
 `ActorMessageError` is the closed current actor admission/reply failure family: `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. One-way message expressions return `Result<Unit, error ActorMessageError>`. Request expressions immediately return `Result<Task<T>, error ActorMessageError>`; callers extract the task before `await`. Cancellation remains a distinct control outcome and is not an enum case.
 
+The stable source spelling `Task<T>` names a general structured asynchronous task;
+an ordinary async task does not thereby acquire actor transport failure. Only a
+task value produced after successful actor-request admission has origin
+`actor_request_admitted`, and that value is not identified by the nominal spelling
+alone. Typed HIR, module API digest, and MIR retain one non-forgeable
+`TaskResponsibility` descriptor for that admitted actor-request instance with the exact fields
+`result_type`, `normalized_handler_error_set`, `cancellation_axis`,
+`isolation_owner`, `correlation_id`, and `terminal_transport_failure`. The last
+field is exactly `{receiverClosedBeforeReply}`. Awaiting the task exposes
+`normalize(normalized_handler_error_set |
+ActorMessageError::receiverClosedBeforeReply)`. `mailboxFull` and
+`receiverClosedBeforeAdmission` belong only to the precommit admission `Result`
+and must never appear in the task descriptor. Compatibility, join, storage, and
+API export preserve the descriptor residue: the normalized static fields must
+match exactly unless an explicit admitted ErrorSet-subsumption proof widens the
+handler ErrorSet, and each value keeps its own non-forgeable `correlation_id`.
+The module API digest stores the static marker
+`correlation_id = per_value_non_forgeable`, never a concrete runtime request ID;
+typed HIR and MIR carry the distinct value-level identity created after commit.
+Erasing the residue to bare `Task<T>` is rejected with the existing
+`RCTS_RESPONSIBILITY_AXIS_DROPPED` family; an unproved combination uses the
+existing `RCTS_RESPONSIBILITY_COMBINATION_INVALID` family.
+
 ## 4. Fixed operators and protocols
 
 The operator vocabulary and precedence table are closed, and every current glyph dispatches as `INTRINSIC_ONLY`. Prelude Trait and protocol names expose named behavior only; conformance, extension, witness, provider, or source order cannot add or replace a glyph implementation. `Bitwise` and `Ord<T>` are named contract vocabulary, not punctuation hooks. Arbitrary custom operator declaration and fixed-operator conformance expansion remain `PREVIEW_DESIGN`/nonactivatable, and all `TCC-P1-002..008` remain OPEN.
@@ -95,7 +118,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `OwnedDowncast<Target,Source>` | core_type | `stable_design` | sum channel that preserves exactly one owner on both downcast outcomes |
 | `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded coordinate-preserving view |
 | `String` | core_type | `stable_design` | immutable Unicode scalar sequence with one-based Char indexing |
-| `Task<T>` | core_type | `stable_design` | structured asynchronous task handle |
+| `Task<T>` | core_type | `stable_design` | general structured asynchronous task handle; only an `actor_request_admitted` instance carries typed-HIR/API/MIR `TaskResponsibility` residue for request result, handler ErrorSet, Cancellation, isolation, correlation, and the sole post-admission transport failure |
 | `AsyncCollector` | stdlib_profile | `stable_design` | finite policy-visible async collection with no partial commit |
 | `AsyncSequence<T, E>` | protocol | `stable_design` | asynchronous element source with a bound error set and visible cancellation, isolation and cleanup responsibilities |
 | `ExitCode` | entry_result | `stable_design` | Launcher-facing result; ordinary calls do not map it to process termination. |

@@ -22,6 +22,16 @@
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
 | 제품 lane | 15/15 `NOT_RUN` | 정적 설계와 예제만으로 실행을 주장하지 않음 |
 
+이 장은 상태·governance·review-card의 단일 장부다. 각 기능의 동기,
+표면 후보, 판정, 평가·소유권·오류, 현행 대안, migration 및 활성화
+선행 조건과 예제는 다음 상세 장에서 읽는다.
+
+- [Preview Gated 상세 참조](20-preview-gated-reference.md): 실제
+  `#preview(...)` route가 있는 3개
+- [Preview Design — 타입, 객체 및 Trait](21-preview-design-types-objects-and-traits.md)
+- [Preview Design — 컬렉션, 문맥 및 제어](22-preview-design-collections-context-and-control.md)
+- [Preview Design — 동시성, FFI 및 런타임](23-preview-design-concurrency-ffi-and-runtime.md)
+
 semantic P0는 `0`이다. OPEN feature P1은 Class 6개,
 Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
 22개다. `M13-A002..005`는 이 22개에 합치지 않는 별도 OPEN action이다.

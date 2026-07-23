@@ -12,7 +12,24 @@ Operands, arguments, guards, interpolation segments, collection entries and clea
 
 Current operator glyphs lower only to closed intrinsic MIR operations chosen from the normalized built-in operand domain. Lowering performs no conformance, extension, witness, provider, import-order, source-order, or runtime dispatch. Named Trait methods lower as ordinary named calls and never become glyph hooks. Strict Boolean `and`/`or` evaluate both operands left-to-right; sequential `and then`/`otherwise` evaluate the right operand only when required. The existing `?:` Option law remains separately lazy.
 
+A ternary lowers to one Bool condition evaluation, one two-way branch, exactly
+one lazy arm evaluation, and one explicit responsibility join. It cannot
+evaluate both arms, synthesize a Union at the join, duplicate a place
+observation, or discard an effect, error, cancellation, ownership, or cleanup
+obligation that exists on either incoming edge.
+
 An assignment evaluates its target place once and its right operand once. A compound assignment evaluates the place, reads the original value, evaluates the right operand, completes one intrinsic operation, and commits at most one write, in that order. Every assignment returns `Unit`. Any failure before commit preserves the original owner and value; no compound-assignment MIR opcode may hide a second place evaluation or partial write.
+
+An ordinary `mut` parameter is lowered as one callee-owned mutable local place. The argument is evaluated and acquired once before that place is committed; an affine argument moves into it, no caller-place alias or write-back edge is created, and the callee owns its exactly-once cleanup. This is distinct from `inout`, which borrows one caller place exclusively and commits writes to that same place, and from a `mut T` responsibility, which denotes a unique mutable owner or view rather than a call channel. A failure before parameter commit retains the caller owner and publishes no callee local.
+
+Closure environments are built by one ordered capture plan. `borrow` and
+`inout` create bounded nonescaping observations, `move` transfers one owner,
+`copy` requires admitted value-copy responsibility, and `clone`/`deep` retain
+the selected witness operation's declared Error and EffectRow. A capture-level
+`once` field is one-shot but does not consume the closure's callable right
+unless the closure independently has `#once`. Before environment commit, a
+failed capture acquisition cleans acquired temporaries in reverse order and
+publishes no partial closure.
 
 ## 3. Ordinary and rightward local bindings
 
@@ -23,6 +40,13 @@ An ordinary local binding evaluates its initializer exactly once while the targe
 ## 4. Values, literals, strings, and bytes
 
 Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both LLVM backends observe the same String value.
+
+Interpolated strings lower to an ordered segment plan. Direct segments are
+constants; each hole retains one source evaluation and one preselected
+`Display` witness invocation. Shorthand projections are read-only and braced
+expressions use ordinary MIR. The plan commits one final String only after all
+segments succeed, carries no locale/provider/serialization/redaction
+observation, and performs reverse temporary cleanup on an earlier failure.
 
 MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating `%` and floating glyph power have no MIR operation. A statically rejected failure creates no MIR.
 
@@ -42,7 +66,7 @@ For `lhs ?: fallback`, `lhs` is evaluated first. When it is `some(v)`, `v` is re
 
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
-Message send is not a method call. Prepare-send evaluates the receiver and payload once without transferring ownership. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
+Message send is not a method call. Prepare-send evaluates the receiver and payload once without transferring ownership. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload plus its non-forgeable `TaskResponsibility` descriptor. That descriptor preserves the normalized result type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and terminal transport failure. Await restores exactly the normalized handler ErrorSet plus `ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the nominal `Task<T>` spelling. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
 
 The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound task lifecycle under the existing cancellation law.
 
@@ -51,6 +75,13 @@ Task scopes record ScopeId, ParentTaskId, ordered ChildTaskIds, cancellation sta
 ## 8. Objects, evidence and construction
 
 Nominal dispatch, Trait evidence, extension resolution, construction and materialization lower to explicit MIR identities. Runtime strings and Map keys never become static labels or witnesses. Tooling certificates and provider-derive sidecars are consumed before ordinary source checking and never become execution authority.
+
+One immutable Map literal lowers through `MapLiteralPlan`: direct entries and
+unfolded Map sources evaluate left-to-right once, later equal keys replace
+earlier values, displaced owners clean once, and publication occurs only after
+the complete plan succeeds. A failure before publication emits reverse cleanup
+for acquired temporaries and no partial Map result. Runtime Map unfold remains
+distinct from static-label call unfold.
 
 ## 9. Dynamic providers
 
@@ -64,6 +95,14 @@ The Rust xVM bytecode interpreter is the first development, validation and REPL 
 ## 11. Elaboration and evaluation preservation
 
 Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation.
+
+Postfix NumericArray transpose lowers to one semantic nonowning,
+owner-bounded readonly coordinate view. It swaps the two rank-two logical axes
+or flips an admitted rank-one orientation witness, preserves one-based
+coordinate provenance and source lifetime, and authorizes no implicit element
+copy, language-observable allocation, mutation, adjoint, shareability
+inference, or isolation crossing. Backend representation and incidental
+storage strategy remain unselected.
 
 A successful Pattern owner emits `subject_evaluate`, `subject_acquire`, `test_plan_build`, `structural_test`, `probe_bind`, optional `guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and `exit_or_join`. A structural mismatch terminates after `structural_test`; a false guard terminates after `guard_evaluate`. In both cases only the context-bound `exit_or_join` edge follows. TestPlan and probe events are nonconsuming. Failure before `atomic_commit` has zero ownership commit, `pattern_move_count`, irreversible borrow, authority, escape, suspension, partial binding, and final binders. Guarded-let failure transfers to its required `else`; `for let` mismatch or false guard filters exactly one candidate and emits no body event. Each phase carries the exact DPM fixture identity and attempt disposition so successful match commit, precommit mismatch, false guard, guarded-let transfer, for-let filtering, and plain-let destructuring remain independently auditable. Or-pattern branches expose one canonical binder interface, alias binding is a borrow event, and a place join retains only the intersection of incoming capabilities. A rejected quarantine design probe creates no MIR event.
 
@@ -96,21 +135,21 @@ This section classifies the frozen required 20-feature audit set without changin
 | `standalone_bang_not_current_not_word_law` | `NO_DISTINCT_MIR_OP` | This is a frontend spelling boundary and authorizes no standalone Boolean `!` operation. |
 | `rightward_flow_dollar_local_binding_msp` | `LAW_PRESENT` | §3 binds normalization to ordinary local binding and no distinct MIR operation. |
 | `optional_chaining_not_current_law` | `NOT_APPLICABLE(rejected current surface)` | Rejected source creates no MIR event under §12. |
-| `ternary_conditional_expression` | `DEFERRED_PRODUCT_HANDOFF` | Condition/arm evaluation and join observables are not closed. |
-| `ternary_short_expression_stable_profile` | `DEFERRED_PRODUCT_HANDOFF` | Formatter guidance does not authorize ternary evaluation behavior. |
+| `ternary_conditional_expression` | `LAW_PRESENT` | §2 binds condition-once, one lazy arm and the responsibility join. |
+| `ternary_short_expression_stable_profile` | `LAW_PRESENT` | The short spelling uses the same §2 law; formatter guidance adds no semantic route. |
 | `at_control_expression_family` | `GENERIC_LAW_PRESENT` | §§1, 2, and 11 supply generic ordered control-flow observations. |
 | `local_value_body_msp` | `NO_DISTINCT_MIR_OP` | The local body result uses ordinary control-flow/block normalization. |
 | `match_exhaustiveness_phase_a` | `NOT_APPLICABLE(checker-only rejection before MIR)` | Rejected non-exhaustive source creates no runtime MIR event. |
 | `match_arm_guard_msp` | `GENERIC_LAW_PRESENT` | §§2 and 11 bind subject-once evaluation and atomic binding after static admission. |
 | `bytes_literal_hash_bytes_msp` | `LAW_PRESENT` | §4 binds raw byte values and forbids hidden text conversion without selecting storage. |
-| `string_interpolation_braced_expr_core` | `DEFERRED_PRODUCT_HANDOFF` | Rendering, provider, and failure observables are not closed. |
-| `string_interpolation_format_spec_core` | `DEFERRED_PRODUCT_HANDOFF` | Formatting provider identity and failure behavior are not closed. |
-| `string_interpolation_shorthand_factor_msp` | `DEFERRED_PRODUCT_HANDOFF` | Shorthand lowering cannot infer rendering or provider behavior. |
-| `numeric_array_postfix_transpose_caret_msp` | `DEFERRED_PRODUCT_HANDOFF` | View/copy, ownership, representation, rank/orientation, and backend observables are not closed. |
+| `string_interpolation_braced_expr_core` | `LAW_PRESENT` | §4 binds ordered single evaluation, preselected Display evidence, final publication and cleanup. |
+| `string_interpolation_format_spec_core` | `DEFERRED_PRODUCT_HANDOFF` | The exact format-text grammar, argument mapping, width unit, padding/truncation and invalid-format outcome are not yet closed; no backend may invent them. |
+| `string_interpolation_shorthand_factor_msp` | `LAW_PRESENT` | §4 binds one root evaluation and read-only projection before the same Display plan. |
+| `numeric_array_postfix_transpose_caret_msp` | `LAW_PRESENT` | §11 binds an owner-bounded readonly view, axis/orientation transform, lifetime, and the no-implicit-element-copy boundary without selecting backend storage. |
 
 The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are `LAW_PRESENT` under §4; they do not replace or enlarge the required 20-feature set.
 
-For every remaining `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged and product lanes remain `NOT_RUN`. An implementer must not infer any still-unbound view/copy, ownership, conversion, rendering/provider/failure, representation, rank/orientation, opcode, or backend behavior. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim.
+Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set: `string_interpolation_format_spec_core`. Braced-expression and shorthand-hole evaluation remain `LAW_PRESENT`, but a colon format text supplies no runtime formatting authority until its grammar, mapping, width/padding/truncation rules and invalid-format outcome are separately ratified. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either LLVM backend implements ternary branching, interpolation planning, or transpose-view lowering.
 
 ## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
 

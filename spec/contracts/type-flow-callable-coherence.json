@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -220,7 +220,28 @@
         "formal_parameter_requirement": "the selected callable has a matching closure parameter in the trailing suffix",
         "bare_call_without_closure": "reject",
         "multiple_unlabeled_trailing_closures": "reject",
-        "message_owned_closure": "separate MessageSuffix owner"
+        "message_owned_closure": "separate MessageSuffix owner",
+        "ordinary_mut_parameter": {
+          "surface": "mut name: T",
+          "argument_evaluation_count": 1,
+          "callee_local_commit_count_on_success": 1,
+          "callee_local_mutable": true,
+          "caller_place_alias_count": 0,
+          "caller_writeback_count": 0,
+          "affine_argument_transfer": "move into the callee-owned local at commit",
+          "cleanup_owner_after_commit": "callee",
+          "precommit_failure_callee_local_count": 0,
+          "precommit_failure_caller_owner_retained": true
+        },
+        "inout_parameter": {
+          "surface": "inout name: T",
+          "argument_requirement": "one caller-owned mutable place",
+          "dynamic_extent": "one exclusive nonescaping borrow",
+          "caller_place_alias_count": 1,
+          "caller_writeback": true,
+          "cleanup_owner": "caller",
+          "ordinary_mut_equivalent": false
+        }
       }
     },
     {
@@ -476,9 +497,19 @@
         "ownership_state": "every reaching path yields a compatible place and ownership state",
         "effect_row": "deterministic normalized union of reachable effects",
         "error_set": "deterministic normalized union of reachable recoverable errors",
+        "cancellation": "deterministic join of the selected reachable arm's cancellation responsibility",
         "cleanup_state": "balanced before join",
         "unreachable_path_contribution": "none",
-        "source_order_type_selection": false
+        "source_order_type_selection": false,
+        "ternary": {
+          "condition_normalized_type": "Bool",
+          "condition_evaluation_count": 1,
+          "selected_arm_evaluation_count": 1,
+          "unselected_arm_evaluation_count": 0,
+          "automatic_anonymous_union": false,
+          "place_and_ownership_join": "same rule as every value-producing flow join",
+          "effect_error_cancellation_cleanup_join": "preserve the selected reachable arm and statically normalize both possible incoming contracts without discarding obligations"
+        }
       }
     },
     {
@@ -488,6 +519,8 @@
       "contract": {
         "expression_and_argument_order": "left-to-right exactly once",
         "pattern_binding": "transactional; failure commits no binding or partial move",
+        "ordinary_mut_parameter_commit": "acquire the argument once, then commit one callee-owned mutable local; a failure before commit leaves the caller owner intact and publishes no local",
+        "inout_parameter_commit": "borrow one caller place exclusively for the dynamic call extent and make successful writes observable in that same caller place",
         "branch_cleanup": "complete before control reaches a join or exits",
         "finally": "exactly once after the try body or selected catch on every exit",
         "defer": "deterministic LIFO and exactly once",
@@ -497,6 +530,66 @@
       }
     }
   ],
+  "parameter_mode_matrix": [
+    {
+      "mode": "ordinary",
+      "surface": "name: T",
+      "callee_local_mutable": false,
+      "caller_place_borrowed": false,
+      "caller_writeback": false,
+      "ownership": "ordinary value acquisition"
+    },
+    {
+      "mode": "mut",
+      "surface": "mut name: T",
+      "callee_local_mutable": true,
+      "caller_place_borrowed": false,
+      "caller_writeback": false,
+      "ownership": "callee-owned local after one failure-atomic acquisition"
+    },
+    {
+      "mode": "borrow",
+      "surface": "borrow name: T",
+      "callee_local_mutable": false,
+      "caller_place_borrowed": true,
+      "caller_writeback": false,
+      "ownership": "shared nonescaping borrow"
+    },
+    {
+      "mode": "move",
+      "surface": "move name: T",
+      "callee_local_mutable": false,
+      "caller_place_borrowed": false,
+      "caller_writeback": false,
+      "ownership": "explicit transfer to the callee"
+    },
+    {
+      "mode": "inout",
+      "surface": "inout name: T",
+      "callee_local_mutable": true,
+      "caller_place_borrowed": true,
+      "caller_writeback": true,
+      "ownership": "exclusive nonescaping borrow of the caller place"
+    }
+  ],
+  "ternary_join_contract": {
+    "condition_evaluation_count": 1,
+    "condition_type": "Bool",
+    "selected_arm_evaluation_count": 1,
+    "unselected_arm_evaluation_count": 0,
+    "automatic_anonymous_union_count": 0,
+    "joined_axes": [
+      "normalized value type",
+      "place capability",
+      "ownership",
+      "effects",
+      "recoverable errors",
+      "cancellation",
+      "cleanup"
+    ],
+    "runtime_join_discards_obligation": false,
+    "product_execution": "NOT_RUN"
+  },
   "machine_acceptance": {
     "rule_count": 20,
     "rule_ids_unique": true,
@@ -523,6 +616,14 @@
     "numeric_array_flatten_count": 0,
     "try_expression_statement_count": 0,
     "async_callable_literal_current_count": 0,
+    "parameter_mode_row_count": 5,
+    "ordinary_mut_caller_writeback_count": 0,
+    "ordinary_mut_precommit_owner_retention": true,
+    "inout_caller_writeback": true,
+    "ternary_condition_evaluation_count": 1,
+    "ternary_selected_arm_evaluation_count": 1,
+    "ternary_unselected_arm_evaluation_count": 0,
+    "ternary_automatic_anonymous_union_count": 0,
     "product_execution_receipt_count": 0
   }
 }

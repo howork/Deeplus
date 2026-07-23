@@ -28,10 +28,18 @@ TypePrefixParselet ::= OwnershipQualifier
 parameter mode는 호출 경계의 책임이고 type qualifier는 normalized type
 책임이다. 같은 단어를 사용해도 문법 owner와 identity field는 보존된다.
 
+parameter `mut x: T`는 argument를 한 번 얻어 callee-owned mutable local
+place에 넣는다. affine owner는 callee로 이전되고 caller에는 write-back
+alias가 없다. `inout x: T`는 caller의 정확한 place를 exclusive하게
+빌려 같은 place에 변경을 commit한다. `move x: T`는 transfer를 요구하되
+그 자체로 mutation 권한을 만들지 않는다. type-side `mut T`는 unique
+mutable owner/view 책임이며 `inout` channel의 다른 철자가 아니다.
+
 ### expression과 capture
 
 ```ebnf
-ExpressionPrefixParselet ::= ... | "move" | "borrow" | "&" | ...
+ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
+                           | "move" | "borrow" | "&" | "await"
 
 CaptureItem ::= ("let" | "var") Identifier "=" Expr
               | CaptureMode Identifier
@@ -44,11 +52,19 @@ CaptureMode ::= "borrow" | "inout" | "move" | "clone"
 만든다. closure capture descriptor는 lifetime, call-right, environment
 receiver, effect/error/isolation/suspension 책임의 일부다.
 
+capture `copy`는 admitted copy 책임, `clone`은 선택된 `Clone` witness,
+`deep`은 별도 deep-copy profile을 요구한다. `clone`/`deep`이 선언하는
+failure와 effect는 closure construction에 그대로 나타난다. capture
+`once`는 환경 field를 한 번만 소비하게 할 뿐 callable의 `#once`
+profile을 자동으로 만들지 않는다. 여러 capture는 왼쪽부터 얻고,
+environment publish 전 실패하면 temporary를 역순으로 정리해 partial
+closure가 escape하지 않게 한다.
+
 ### resource와 borrowed Facet
 
 ```ebnf
 ClassFlavor ::= "value" | "resource"
-CleanupDecl ::= "def#cleanup" "(" ")" ThrowsClause? EffectsClause? FunctionBody
+CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody
 
 FacetType ::= "Facet" "<" "borrow" "any" QualifiedTypeReference
               AssociatedTypeConstraintList? ">"
@@ -69,13 +85,17 @@ TypestateBody ::= "{" TypestateTransitionDecl* "}"
 TypestateTransitionDecl ::= Identifier "->" Identifier FunctionBody?
 ```
 
-`TypestateResourceDecl`은 현행 Phase A의 타입 생성 owner이므로
+`TypestateResourceDecl`은 현행 Phase A의 타입·도구 metadata owner이므로
 `public`, `common`, `private` 중 하나가 반드시 필요하다. 각 행은
 출발 상태와 도착 상태의 이름 및 선택적인 전이 본문을 기록한다. 이
 표면만으로 runtime Enum tag, layout/ABI, Trait witness, 권위 또는
-암시적 owner 복제가 생기지 않는다. 전이 본문은 기존 move/borrow/inout,
-resource cleanup 및 효과·오류 법칙을 그대로 보존하며 제품 실행은
-`NOT_RUN`이다.
+암시적 owner 복제가 생기지 않는다. Phase A에는 전이를 호출하는 별도
+source suffix, state-bearing generic type, branch narrowing, 실패 rollback
+또는 MIR transition event가 없다. 선택적 body는 ordinary checker 규칙으로
+정적 검토되는 계약 body이며, 선언만으로 실행 가능한 state mutation API가
+생기지 않는다. 실행 가능한 typestate activation에는 초기 state,
+명시적 호출 표면, linear owner 전이, 실패/cleanup/join과 MIR identity를
+별도 정본에서 닫아야 한다. 제품 실행은 `NOT_RUN`이다.
 
 ## 허용과 정적 의미
 
@@ -112,6 +132,14 @@ borrow는 escape/suspend할 수 없다. `replace`는 새 owner를 한 번 commit
 받지 않는다. `withLock`은 receiver-bound, non-reentrant, nonsuspending
 `#scoped inout T`를 하나 제공한다. unlock은 return, Error, Defect,
 Cancellation의 모든 경로에서 infallible exactly-once cleanup이다.
+
+MIR 관찰은 API 이름만 남기지 않는다. `SharedCell`의 관찰은 같은
+`sync_id`, 고유한 `operation_id`, `owner_id`, `cleanup_region_id`를 가진
+`observe_begin`/`observe_end` 쌍이고, `replace` 성공은 그 사이의 단 하나
+`replace_commit`이다. `SharedMutex`는 같은 식별자 묶음의
+`lock_acquire`/`lock_release`를 남기며 release는 모든 terminal edge에서
+정확히 한 번이다. xVM과 LLVM은 이 ordered trace와 owner/cleanup balance를
+같게 보존해야 하지만, 현재는 대상 실행 확인서가 없어 `NOT_RUN`이다.
 
 이 두 API는 표준 라이브러리 프로필이며 core source syntax가 아니다.
 
@@ -189,7 +217,7 @@ core 언어 실행 증거로 해석하지 않는다.
 
 ```deeplus
 let cell = SharedCell::new(move state)
-let label = cell.withValue { borrow value => describe(value) }
+let label = cell.withValue() { borrow value => describe(value) }
 let previous = cell.replace(move nextState)
 ```
 
@@ -197,7 +225,7 @@ let previous = cell.replace(move nextState)
 
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock { inout value => value = update(value) }
+mutex.withLock() { inout value => value = update(value) }
 ```
 
 두 예제 모두 제품 실행은 `NOT_RUN`이다.

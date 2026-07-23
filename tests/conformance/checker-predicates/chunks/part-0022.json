@@ -1253,12 +1253,20 @@
     "predicate_id": "TernarySpacingAndArmJoinAdmitted",
     "expected": "rejected",
     "expected_primary_diagnostic": "TERNARY_BRANCH_TYPE_MISMATCH",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "TernarySpacingAndArmJoinAdmitted"
+    "descriptor": {
+      "source_kind": "TernaryExpr",
+      "condition_normalized_type": "Bool",
+      "condition_evaluation_count": 1,
+      "left_normalized_type": "Int",
+      "right_normalized_type": "String",
+      "independently_fixed_expected_type": null,
+      "automatic_anonymous_union_count": 0
     },
-    "fixture_kind": "mutation_recipe",
+    "violated_condition": "the two reachable arm types differ and no independently fixed expected type accepts both",
+    "rule_seed": "one Bool condition, one lazy arm, no anonymous Union; product NOT_RUN",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -1285,48 +1293,46 @@
     "predicate_id": "TernarySpacingAndArmJoinAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
+      "source_kind": "TernaryExpr",
+      "normalized_type": "Int",
+      "ownership": "reusable",
+      "cleanup": {
+        "balanced_before_join": true
+      },
+      "error_set": [
+        "LeftError",
+        "RightError"
+      ],
+      "effect_row": [
+        "leftEffect",
+        "rightEffect"
+      ],
+      "cancellation": "propagate",
       "product_evidence": {
         "fixture": true
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "conditional_responsibility": {
+        "condition_normalized_type": "Bool",
+        "condition_evaluation_count": 1,
+        "selected_arm_evaluation_count": 1,
+        "unselected_arm_evaluation_count": 0,
+        "automatic_anonymous_union_count": 0,
+        "joined_axes": [
+          "normalized_type",
+          "place_capability",
+          "ownership",
+          "effects",
+          "recoverable_errors",
+          "cancellation",
+          "cleanup"
+        ],
+        "discarded_obligation_count": 0
+      },
+      "source_role": "value_expression"
     },
-    "rule_seed": "Design seed for ternary spacing, lazy arm evaluation and type/effect join.",
+    "rule_seed": "one Bool condition, one lazy arm, lossless responsibility join; product NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1795,81 +1801,6 @@
       "semantic_type": {
         "kind": "nominal",
         "type_id": "PF-TrailingClosureSuffixAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-TrailingClosureSuffixAdmitted-POS-MESSAGE-OWNED",
-    "predicate_id": "TrailingClosureSuffixAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Call",
-      "normalized_type": "MessageResult",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "parameters": [
-          "Int"
-        ],
-        "trailing_closure_parameter_admitted": false,
-        "message_owned_closure": true
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "admitted_condition": "the brace remains owned by the message parse and is not reinterpreted as an ordinary trailing suffix",
-    "fixture_kind": "concrete_positive",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-TrailingClosureSuffixAdmitted-POS-MESSAGE-OWNED"
       },
       "responsibility": {
         "ownership": "reusable",

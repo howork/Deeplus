@@ -24,7 +24,7 @@ FunctionTail       ::= ReturnClause? ThrowsClause? EffectsClause?
                        ContractClause* WhereClause? FunctionBody
 FunctionBody       ::= "=" FunctionBodyContent
 FunctionBodyContent ::= Block | ReturnShorthand | ClauseFunctionBody
-ReturnShorthand    ::= "return" Expr
+ReturnShorthand    ::= "return" Expr StatementBoundary
 ```
 
 이름 있는 함수의 값 본문은 block, `= return Expr`, 또는 `{{ ... }}`의
@@ -48,23 +48,34 @@ ReturnShorthand    ::= "return" Expr
 ### 매개변수 채널
 
 ```ebnf
-Parameter ::= ContextParameter
+Parameter ::= StoredParameter
+            | ContextParameter
             | WitnessParameter
             | RepeatedParameter
             | NamedRestParameter
             | ValueParameter
 
-ValueParameter    ::= ParameterMode? Identifier TypeAnnotation
+ValueParameter    ::= ParameterMode? ParameterPatternSlot TypeAnnotation
+ParameterPatternSlot ::= Identifier
 ParameterMode     ::= "borrow" | "mut" | "move" | "inout"
 ContextParameter  ::= "context" Identifier ":" TypeRef
 WitnessParameter  ::= "using" Identifier ":" "witness" TypeRef
 RepeatedParameter ::= Identifier "..." TypeAnnotation
 NamedRestParameter ::= Identifier "***" TypeAnnotation
+StoredParameter   ::= MemberVisibility? ("let" | "var") Identifier
+                      TypeAnnotation?
 ```
 
 일반 parameter와 lambda parameter는 identifier를 bind하며 refutable
 Pattern을 받지 않는다. 반복 positional channel은 `values...: T`, named
 rest channel은 유일하고 마지막인 `options***: Record`다.
+
+`mut x: T`는 callee가 소유하는 mutable local place다. argument를 한 번
+얻고, affine owner라면 그 place로 이전하며, caller에 write-back alias를
+남기지 않는다. 반대로 `inout x: T`는 caller의 정확한 한 place를
+exclusive하게 빌리고 같은 place에 변경이 관측된다. `move x: T`는
+ownership transfer를 강조하지만 그 표기만으로 mutation 권한을 새로
+만들지는 않는다.
 
 함수 type은 두 residue를 그대로 보존한다.
 
@@ -101,7 +112,7 @@ dispatch marker가 없고 associated nonmethod에도 witness marker가 없다.
 ```ebnf
 ClosureExpr       ::= CaptureList? HashTag* "{" ClosureContent "}"
 ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody
-LambdaParameterList ::= LambdaParameter ("," LambdaParameter)*
+LambdaParameterList ::= LambdaParameter ("," LambdaParameter)* ","?
 LambdaParameter   ::= ParameterMode? Identifier TypeAnnotation?
 
 CaptureItem       ::= ("let" | "var") Identifier "=" Expr
@@ -151,6 +162,29 @@ NamedUnfoldArgument      ::= "**" Expr
   callable이지만 호출했다는 사실만으로 flow narrowing proof가 생기지는
   않는다.
 
+호출 판정은 다음 순서를 고정한다.
+
+1. return type을 tie-breaker로 쓰지 않고 한 declaration identity를
+   선택한다.
+2. actual을 positional, label, `*` repeated, `**` named unfold,
+   `context`, `using` evidence channel로 분리한다.
+3. generic constraint를 ordinary argument의 source order로 모아 하나의
+   exact substitution을 만든다.
+4. 고정 parameter의 arity를 먼저 확인한다. `*expr`은 statically known
+   Tuple 또는 admitted `Sequence` residue에만 쓰며 unknown length로 fixed
+   parameter를 채우지 않는다.
+5. `context expr`은 선언된 context parameter 하나를 명시적으로
+   공급한다. 이름을 보고 ambient lookup하지 않는다.
+6. `using evidence`는 non-forgeable, borrowed, nonescaping witness를
+   공급한다. ordinary runtime value로 대체할 수 없다.
+7. ownership, effects, ErrorSet, cancellation, isolation, return obligation을
+   확인한 뒤에만 call을 commit한다.
+
+lambda의 contextual shorthand `@`는 이 모든 판정이 먼저 끝나 정확히
+하나의 ordinary one-value parameter가 남을 때만 생긴다. context,
+witness, repeated 또는 named-rest channel이 있거나 overload가 남아
+있으면 shorthand를 만들지 않는다.
+
 ## 평가·소유권·효과
 
 호출 인자는 source order로 정확히 한 번 평가된다. positional unfold와
@@ -161,6 +195,21 @@ closure capture mode는 실제 owner/borrow 책임이다. borrow capture는 regi
 밖으로 escape할 수 없고 inout capture는 겹칠 수 없다. move capture는
 원본 owner를 이전한다. resource capture에는 모든 종료 경로를 합쳐 정확히
 하나의 cleanup path가 필요하다.
+
+나머지 capture도 이름뿐인 hint가 아니다.
+
+- `copy`는 admitted value/bit-copy 책임을 요구하고 source를 계속 valid로
+  둔다.
+- `clone`은 선택된 `Clone` witness를 한 번 호출하므로 그 witness의
+  effects와 errors를 그대로 노출한다.
+- `deep`은 별도의 deep-copy profile을 요구하며 자식이 clone 가능해
+  보인다는 이유로 재귀 복사를 추측하지 않는다.
+- capture `once`는 환경 field owner를 한 번만 읽을 수 있게 한다.
+  callable 자체의 `#once` profile과는 별도 축이다.
+
+capture acquisition은 왼쪽부터 한 번씩 수행한다. 환경 publish 전에
+어느 capture가 실패하면 이미 얻은 temporary를 역순으로 cleanup하고
+partial closure를 외부에 노출하지 않는다.
 
 `return`은 이름 있는 함수·메서드·handler·local function의 control
 transfer다. `ret`는 lambda와 `@if/@match/@try/@scope`의 로컬 value body에만

@@ -99,6 +99,26 @@ def copy_manual_link_targets(
                         )
 
 
+def copy_manual_authority_sources(
+    source_root: Path, target_root: Path, contract: dict
+) -> None:
+    marker_re = re.compile(
+        r"<!--\s*deeplus-example:\s*illustrative;\s*"
+        r"status:\s*[A-Z0-9_]+;\s*authority-source:\s*([^\s]+)\s*-->"
+    )
+    copied: set[str] = set()
+    for document in contract["manual_documents"]:
+        path = safe_test_path(
+            source_root, document["path"], must_exist=True
+        )
+        text = path.read_text(encoding="utf-8")
+        for relative in marker_re.findall(text):
+            if relative in copied:
+                continue
+            copy_file(source_root, target_root, relative)
+            copied.add(relative)
+
+
 def prepare_root(source_root: Path, target_root: Path) -> dict:
     contract_path = safe_test_path(
         source_root, CONTRACT_REL, must_exist=True
@@ -110,7 +130,13 @@ def prepare_root(source_root: Path, target_root: Path) -> dict:
     copy_file(source_root, target_root, contract["vocabulary"]["path"])
     for row in contract["manual_documents"]:
         copy_file(source_root, target_root, row["path"])
+    copy_manual_authority_sources(source_root, target_root, contract)
     copy_manual_link_targets(source_root, target_root, contract)
+    copy_file(
+        source_root,
+        target_root,
+        contract["governance"]["source_path"],
+    )
     for row in contract["source_bindings"]:
         copy_file(source_root, target_root, row["path"])
     for definition in contract["registries"].values():
@@ -311,6 +337,78 @@ def mutate_preview_review_card_duplicate(root: Path, contract: dict) -> None:
     )
 
 
+def mutate_preview_feature_example_id(root: Path, contract: dict) -> None:
+    policy = contract["preview_documentation_policy"]
+    marker_re = re.compile(
+        r"(<!--\s*deeplus-preview-feature-example:\s*)"
+        r"([a-z][a-z0-9_]*)(\s*;\s*registry-status:\s*"
+        r"(?:PREVIEW|PREVIEW_DESIGN)\s*-->)"
+    )
+    for relative in policy["detail_chapter_paths"]:
+        path = root / relative
+        text = path.read_text(encoding="utf-8")
+        match = marker_re.search(text)
+        if match is not None:
+            original_id = match.group(2)
+            original_anchor = (
+                f'<a id="{policy["feature_anchor_prefix"]}{original_id}"></a>'
+            )
+            mutated_anchor = (
+                f'<a id="{policy["feature_anchor_prefix"]}'
+                "unknown_preview_feature\"></a>"
+            )
+            mutated = (
+                text[: match.start()]
+                + match.group(1)
+                + "unknown_preview_feature"
+                + match.group(3)
+                + text[match.end() :]
+            )
+            if original_anchor not in mutated:
+                raise TestFailure(
+                    "PREVIEW_FEATURE_EXAMPLE_MUTATION_NEEDLE: anchor"
+                )
+            mutated = mutated.replace(
+                original_anchor,
+                mutated_anchor,
+                1,
+            )
+            path.write_text(mutated, encoding="utf-8")
+            return
+    raise TestFailure("PREVIEW_FEATURE_EXAMPLE_MUTATION_NEEDLE: marker")
+
+
+def mutate_preview_feature_example_field(root: Path, contract: dict) -> None:
+    policy = contract["preview_documentation_policy"]
+    required = policy["feature_example_required_fields"][0]
+    needle = f"**{required}**"
+    for relative in policy["detail_chapter_paths"]:
+        path = root / relative
+        text = path.read_text(encoding="utf-8")
+        if needle in text:
+            path.write_text(text.replace(needle, required, 1), encoding="utf-8")
+            return
+    raise TestFailure("PREVIEW_FEATURE_EXAMPLE_MUTATION_NEEDLE: field")
+
+
+def mutate_preview_feature_anchor(root: Path, contract: dict) -> None:
+    policy = contract["preview_documentation_policy"]
+    anchor_re = re.compile(
+        r'<a id="preview-feature-[a-z][a-z0-9_]*"></a>'
+    )
+    for relative in policy["detail_chapter_paths"]:
+        path = root / relative
+        text = path.read_text(encoding="utf-8")
+        match = anchor_re.search(text)
+        if match is not None:
+            path.write_text(
+                text[: match.start()] + text[match.end() :],
+                encoding="utf-8",
+            )
+            return
+    raise TestFailure("PREVIEW_FEATURE_ANCHOR_MUTATION_NEEDLE")
+
+
 def mutate_governance_p1_block(root: Path, contract: dict) -> None:
     governance = contract["governance"]
     path = root / governance["chapter_path"]
@@ -394,6 +492,21 @@ def mutate_revision_parity(root: Path, contract: dict) -> None:
     path = root / contract["governance"]["source_path"]
     value = json.loads(path.read_text(encoding="utf-8"))
     value["spec_revision"] = "r-mutated-stale-reference"
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def mutate_governance_digest_binding(root: Path, contract: dict) -> None:
+    path = root / CONTRACT_REL
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["source_bindings"].append(
+        {
+            "id": "forbidden_governance_digest",
+            "path": contract["governance"]["source_path"],
+        }
+    )
     path.write_text(
         json.dumps(value, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -608,6 +721,54 @@ def run_determinism_test(source_root: Path, generator: Path) -> int:
     return len(snapshots[0])
 
 
+def run_governance_validation_only_test(
+    source_root: Path, generator: Path
+) -> int:
+    with tempfile.TemporaryDirectory(
+        prefix="deeplus-grammar-reference-governance-"
+    ) as raw:
+        root = Path(raw).resolve()
+        contract = prepare_root(source_root, root)
+        expect_pass(
+            invoke(generator, root, "--write"),
+            "governance-validation-only:write",
+        )
+        manifest_path = safe_test_path(
+            root,
+            "docs/grammar-reference/coverage-manifest.json",
+            must_exist=True,
+        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        governance_path = contract["governance"]["source_path"]
+        bound_paths = [
+            row.get("path")
+            for row in manifest.get("source_bindings", [])
+            if isinstance(row, dict)
+        ]
+        if governance_path in bound_paths:
+            raise TestFailure(
+                "GOVERNANCE_VALIDATION_ONLY_DIGEST_BOUND"
+            )
+        if manifest.get("governance", {}).get("source_path") != governance_path:
+            raise TestFailure(
+                "GOVERNANCE_VALIDATION_ONLY_IDENTITY_MISSING"
+            )
+        pointer_path = safe_test_path(
+            root, governance_path, must_exist=True
+        )
+        pointer = json.loads(pointer_path.read_text(encoding="utf-8"))
+        pointer["updated_at"] = "2099-12-31T23:59:59Z"
+        pointer_path.write_text(
+            json.dumps(pointer, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        expect_pass(
+            invoke(generator, root, "--check"),
+            "governance-validation-only:pointer-byte-drift",
+        )
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -680,6 +841,21 @@ def main() -> int:
             "GRAMMAR_REFERENCE_PREVIEW_REVIEW_CARD_IDS",
         ),
         (
+            "preview-feature-example-id-drift",
+            mutate_preview_feature_example_id,
+            "GRAMMAR_REFERENCE_PREVIEW_FEATURE_EXAMPLE_SET",
+        ),
+        (
+            "preview-feature-example-field-missing",
+            mutate_preview_feature_example_field,
+            "GRAMMAR_REFERENCE_PREVIEW_FEATURE_EXAMPLE_DEPTH",
+        ),
+        (
+            "preview-feature-anchor-missing",
+            mutate_preview_feature_anchor,
+            "GRAMMAR_REFERENCE_PREVIEW_FEATURE_ANCHOR",
+        ),
+        (
             "governance-p1-block-drift",
             mutate_governance_p1_block,
             "GRAMMAR_REFERENCE_GOVERNANCE_CHAPTER_BLOCK",
@@ -713,6 +889,11 @@ def main() -> int:
             "revision-parity",
             mutate_revision_parity,
             "GRAMMAR_REFERENCE_REVISION_PARITY",
+        ),
+        (
+            "governance-digest-binding",
+            mutate_governance_digest_binding,
+            "GRAMMAR_REFERENCE_GOVERNANCE_DIGEST_BINDING",
         ),
         (
             "coverage-schema-registry-count",
@@ -770,6 +951,9 @@ def main() -> int:
             raise TestFailure(f"GENERATOR_MISSING: {generator}")
         harness_guard_cases = run_harness_path_guard_tests(root)
         deterministic_output_count = run_determinism_test(root, generator)
+        governance_validation_only_cases = (
+            run_governance_validation_only_test(root, generator)
+        )
         for label, mutation, expected_code in cases:
             run_case(root, generator, label, mutation, expected_code)
         receipt = {
@@ -780,6 +964,9 @@ def main() -> int:
             "harness_guard_cases": harness_guard_cases,
             "deterministic_roots": 2,
             "deterministic_output_count": deterministic_output_count,
+            "governance_validation_only_cases": (
+                governance_validation_only_cases
+            ),
             "repository_write": False,
             "product_support": "NOT_RUN",
         }

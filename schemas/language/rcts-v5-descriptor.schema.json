@@ -739,8 +739,16 @@
         "parameter_modes": {
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "enum": [
+              "ordinary",
+              "borrow",
+              "mut",
+              "move",
+              "inout",
+              "consume"
+            ]
+          },
+          "uniqueItems": false
         },
         "result_type": {
           "type": "string"

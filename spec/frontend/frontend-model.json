@@ -2410,6 +2410,7 @@
       "CorrelationId",
       "ReplyId",
       "TaskId",
+      "TaskResponsibilityId",
       "TaskScopeId",
       "CancellationId",
       "FailureId"
@@ -2431,6 +2432,40 @@
         "receiverClosedBeforeAdmission",
         "receiverClosedBeforeReply"
       ]
+    },
+    "task_responsibility_descriptor": {
+      "source_type_spelling": "Task<T>",
+      "task_origin": "actor_request_admitted",
+      "ordinary_async_task_actor_transport_descriptor": "FORBIDDEN",
+      "typed_hir_identity": "TaskResponsibilityId",
+      "required_fields": [
+        "result_type",
+        "normalized_handler_error_set",
+        "cancellation_axis",
+        "isolation_owner",
+        "correlation_id",
+        "terminal_transport_failure"
+      ],
+      "terminal_transport_failure": [
+        "receiverClosedBeforeReply"
+      ],
+      "await_error_set": "normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply)",
+      "admission_result_only_errors": [
+        "mailboxFull",
+        "receiverClosedBeforeAdmission"
+      ],
+      "admission_result_only_errors_in_descriptor": false,
+      "compatibility_join_storage_and_api_export": {
+        "descriptor_residue_preserved": true,
+        "erasure_to_nominal_Task_T": false,
+        "exact_normalized_static_field_equality": true,
+        "explicit_admitted_error_set_subsumption_only": true,
+        "per_value_correlation_id_preserved": true,
+        "module_api_correlation_id_policy": "per_value_non_forgeable",
+        "module_api_contains_runtime_correlation_value": false
+      },
+      "existing_erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "existing_incompatible_join_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
     },
     "enqueue_commit_contract": {
       "precommit_owner": "sender",

@@ -37,8 +37,33 @@
     "signatures": [
       "prelude intrinsic Task<T>"
     ],
-    "responsibility": "structured asynchronous task handle",
-    "notes": "R51b core identity closure",
+    "responsibility": "general structured asynchronous task handle; only a value with task_origin=actor_request_admitted preserves the actor-request TaskResponsibility descriptor across typed HIR, compatibility, join, storage, module API export, and MIR without changing the source spelling Task<T>",
+    "notes": "R51b core identity closure. An ordinary_async Task<T> has no actor transport descriptor. For actor_request_admitted only, await error set is normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply); mailboxFull and receiverClosedBeforeAdmission remain admission-Result-only.",
+    "task_responsibility_contract": {
+      "source_type_spelling": "Task<T>",
+      "applies_only_to_task_origin": "actor_request_admitted",
+      "ordinary_async_actor_transport_descriptor": "forbidden",
+      "required_fields": [
+        "result_type",
+        "normalized_handler_error_set",
+        "cancellation_axis",
+        "isolation_owner",
+        "correlation_id",
+        "terminal_transport_failure"
+      ],
+      "terminal_transport_failure": [
+        "receiverClosedBeforeReply"
+      ],
+      "await_error_set": "normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply)",
+      "admission_result_only_errors": [
+        "mailboxFull",
+        "receiverClosedBeforeAdmission"
+      ],
+      "descriptor_erasure": false,
+      "compatibility_join_storage_api_export": "exact normalized static-field equality, or explicit admitted error-set subsumption for normalized_handler_error_set only; preserve each per-value correlation_id",
+      "erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
+    },
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -51,7 +76,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "c0b30852fdc1b051f8332a55e280ed3d72817ceb5acfdc054f63c22cb09763a7"
+    "normalized_contract_sha256": "d9cfa081620c15d84e76ac963ba41296c6ef686c19720a58e626c770dec18003"
   },
   {
     "entry_id": "unitcatalog",

@@ -49,6 +49,11 @@ ILLUSTRATIVE_EXAMPLE_RE = re.compile(
     r"status:\s*([A-Z0-9_]+);\s*"
     r"authority-source:\s*([^\s]+)\s*-->"
 )
+PREVIEW_FEATURE_EXAMPLE_RE = re.compile(
+    r"<!--\s*deeplus-preview-feature-example:\s*"
+    r"([a-z][a-z0-9_]*)\s*;\s*"
+    r"registry-status:\s*(PREVIEW|PREVIEW_DESIGN)\s*-->"
+)
 PROFILE_MARKER_RE = re.compile(
     r"(?m)^[ \t]*PROFILE:[ \t]*(LEXICAL|STABLE|PREVIEW|RECOVERY)[ \t]*$"
 )
@@ -110,6 +115,29 @@ EXPECTED_PREVIEW_POLICY = {
         "activation_prerequisites",
     ],
     "required_review_card_count": 47,
+    "detail_chapter_paths": [
+        "docs/grammar-reference/20-preview-gated-reference.md",
+        "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
+        "docs/grammar-reference/22-preview-design-collections-context-and-control.md",
+        "docs/grammar-reference/23-preview-design-concurrency-ffi-and-runtime.md",
+    ],
+    "feature_example_marker": "deeplus-preview-feature-example",
+    "feature_anchor_prefix": "preview-feature-",
+    "required_feature_example_status_counts": {
+        "PREVIEW": 3,
+        "PREVIEW_DESIGN": 47,
+    },
+    "required_feature_example_count": 50,
+    "feature_example_required_fields": [
+        "검토 목적",
+        "제안 표면",
+        "정적 판정과 상호작용",
+        "평가·소유권·오류",
+        "현행 대안과 이행",
+        "활성화 선행 조건",
+    ],
+    "minimum_feature_example_characters": 500,
+    "minimum_feature_example_deeplus_blocks": 1,
 }
 EXPECTED_MANUAL_QUALITY_POLICY = {
     "forbidden_path_tokens": ["candidate/", "candidate\\"],
@@ -160,6 +188,7 @@ EXPECTED_PRODUCT_LANE_IDS = [
     "actual_user_team_study",
 ]
 EXPECTED_GOVERNANCE = {
+    "source_mode": "VALIDATION_ONLY",
     "source_path": "current/current-pointer.json",
     "chapter_path": (
         "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md"
@@ -329,7 +358,7 @@ def validate_contract(root: Path) -> dict[str, Any]:
         raise GeneratorError("GRAMMAR_REFERENCE_GRAMMAR_TARGET", repr(grammar))
 
     documents = contract.get("manual_documents", [])
-    expected_ids = ["landing", *(f"{index:02d}" for index in range(16))]
+    expected_ids = ["landing", *(f"{index:02d}" for index in range(25))]
     if (
         not isinstance(documents, list)
         or [row.get("id") for row in documents if isinstance(row, dict)]
@@ -351,6 +380,14 @@ def validate_contract(root: Path) -> dict[str, Any]:
             "GRAMMAR_REFERENCE_PREVIEW_POLICY",
             EXPECTED_PREVIEW_POLICY["chapter_path"],
         )
+    missing_detail_paths = sorted(
+        set(EXPECTED_PREVIEW_POLICY["detail_chapter_paths"]) - set(paths)
+    )
+    if missing_detail_paths:
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_PREVIEW_POLICY",
+            f"missing detail chapters={missing_detail_paths}",
+        )
 
     bindings = contract.get("source_bindings", [])
     binding_ids = [row.get("id") for row in bindings if isinstance(row, dict)]
@@ -361,8 +398,18 @@ def validate_contract(root: Path) -> dict[str, Any]:
         or len(binding_paths) != len(set(binding_paths))
     ):
         raise GeneratorError("GRAMMAR_REFERENCE_SOURCE_BINDINGS", repr(bindings))
-    for path in binding_paths:
-        safe_path(root, path)
+    binding_files = [safe_path(root, path) for path in binding_paths]
+    governance_source = safe_path(
+        root, contract["governance"]["source_path"]
+    )
+    if any(
+        binding_file.resolve() == governance_source.resolve()
+        for binding_file in binding_files
+    ):
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_GOVERNANCE_DIGEST_BINDING",
+            f"{contract['governance']['source_path']} is validation-only",
+        )
     coverage_schema_rows = [
         row
         for row in bindings
@@ -537,10 +584,10 @@ def strip_ebnf_comments(text: str) -> str:
     return "".join(output)
 
 
-def has_unquoted_terminator(text: str) -> bool:
+def unquoted_terminator_offset(text: str) -> int | None:
     quote = False
     escaped = False
-    for char in text:
+    for index, char in enumerate(text):
         if quote:
             if escaped:
                 escaped = False
@@ -552,8 +599,12 @@ def has_unquoted_terminator(text: str) -> bool:
         if char == '"':
             quote = True
         elif char == ";":
-            return True
-    return False
+            return index
+    return None
+
+
+def has_unquoted_terminator(text: str) -> bool:
+    return unquoted_terminator_offset(text) is not None
 
 
 def parse_grammar(
@@ -577,7 +628,9 @@ def parse_grammar(
             if match_index + 1 < len(matches)
             else len(stripped)
         )
-        if not has_unquoted_terminator(stripped[match.end() : next_start]):
+        production_tail = stripped[match.end() : next_start]
+        terminator_offset = unquoted_terminator_offset(production_tail)
+        if terminator_offset is None:
             raise GeneratorError(
                 "GRAMMAR_REFERENCE_EBNF_TERMINATOR",
                 f"{match.group(1)} at line "
@@ -590,12 +643,18 @@ def parse_grammar(
         else:
             profile = markers[marker_index][1]
         name = match.group(1)
+        definition = re.sub(
+            r"\s+",
+            " ",
+            production_tail[:terminator_offset].strip(),
+        )
         names.append(name)
         productions.append(
             {
                 "name": name,
                 "profile": profile,
                 "line": grammar_text.count("\n", 0, match.start()) + 1,
+                "definition": definition,
             }
         )
     duplicate_names = sorted(
@@ -901,6 +960,106 @@ def validate_preview_registry_documentation(
             "GRAMMAR_REFERENCE_PREVIEW_REVIEW_CARD_FENCE",
             "review card block crosses a status fence",
         )
+
+    detail_markers: list[dict[str, Any]] = []
+    required_fields = policy["feature_example_required_fields"]
+    minimum_characters = policy["minimum_feature_example_characters"]
+    minimum_blocks = policy["minimum_feature_example_deeplus_blocks"]
+    for detail_path in policy["detail_chapter_paths"]:
+        detail_text = safe_path(root, detail_path).read_text(encoding="utf-8")
+        matches = list(PREVIEW_FEATURE_EXAMPLE_RE.finditer(detail_text))
+        for index, match in enumerate(matches):
+            segment_end = (
+                matches[index + 1].start()
+                if index + 1 < len(matches)
+                else len(detail_text)
+            )
+            segment = detail_text[match.end() : segment_end]
+            feature_id, registry_status = match.groups()
+            expected_anchor = (
+                f'<a id="{policy["feature_anchor_prefix"]}{feature_id}"></a>'
+            )
+            if segment.count(expected_anchor) != 1:
+                raise GeneratorError(
+                    "GRAMMAR_REFERENCE_PREVIEW_FEATURE_ANCHOR",
+                    f"{detail_path}:{feature_id}:"
+                    f"count={segment.count(expected_anchor)}",
+                )
+            active_fence = status_at_offset(detail_text, match.start()) or "CURRENT"
+            expected_fence = {
+                "PREVIEW": "PREVIEW_GATED",
+                "PREVIEW_DESIGN": "PREVIEW_NONACTIVATABLE",
+            }[registry_status]
+            missing_fields = [
+                field for field in required_fields if f"**{field}**" not in segment
+            ]
+            block_count = len(DEEPLUS_BLOCK_RE.findall(segment))
+            if (
+                active_fence != expected_fence
+                or len(segment.strip()) < minimum_characters
+                or block_count < minimum_blocks
+                or missing_fields
+            ):
+                raise GeneratorError(
+                    "GRAMMAR_REFERENCE_PREVIEW_FEATURE_EXAMPLE_DEPTH",
+                    f"{detail_path}:{feature_id}:"
+                    f"fence={active_fence}:expected={expected_fence}:"
+                    f"characters={len(segment.strip())}:blocks={block_count}:"
+                    f"missing_fields={missing_fields}",
+                )
+            detail_markers.append(
+                {
+                    "feature_id": feature_id,
+                    "registry_status": registry_status,
+                    "path": detail_path,
+                }
+            )
+
+    marker_ids = [row["feature_id"] for row in detail_markers]
+    duplicate_marker_ids = sorted(
+        identifier
+        for identifier, count in Counter(marker_ids).items()
+        if count != 1
+    )
+    expected_status_by_id = {
+        feature_id: registry_status
+        for registry_status, feature_ids in feature_ids_by_status.items()
+        for feature_id in feature_ids
+    }
+    observed_status_by_id = {
+        row["feature_id"]: row["registry_status"] for row in detail_markers
+    }
+    wrong_status = sorted(
+        feature_id
+        for feature_id, registry_status in observed_status_by_id.items()
+        if expected_status_by_id.get(feature_id) != registry_status
+    )
+    expected_marker_ids = set(expected_status_by_id)
+    if (
+        len(detail_markers) != policy["required_feature_example_count"]
+        or duplicate_marker_ids
+        or set(marker_ids) != expected_marker_ids
+        or wrong_status
+    ):
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_PREVIEW_FEATURE_EXAMPLE_SET",
+            f"count={len(detail_markers)}:"
+            f"duplicates={duplicate_marker_ids}:"
+            f"missing={sorted(expected_marker_ids - set(marker_ids))}:"
+            f"extra={sorted(set(marker_ids) - expected_marker_ids)}:"
+            f"wrong_status={wrong_status}",
+        )
+    observed_example_status_counts = dict(
+        Counter(row["registry_status"] for row in detail_markers)
+    )
+    if (
+        observed_example_status_counts
+        != policy["required_feature_example_status_counts"]
+    ):
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_PREVIEW_FEATURE_EXAMPLE_COUNT",
+            repr(observed_example_status_counts),
+        )
     return {
         "preview_gated_feature_count": len(feature_ids_by_status["PREVIEW"]),
         "preview_design_feature_count": len(
@@ -908,6 +1067,14 @@ def validate_preview_registry_documentation(
         ),
         "preview_review_card_count": len(cards),
         "preview_review_card_field_violation_count": 0,
+        "preview_feature_example_count": len(detail_markers),
+        "preview_gated_feature_example_count": observed_example_status_counts[
+            "PREVIEW"
+        ],
+        "preview_design_feature_example_count": observed_example_status_counts[
+            "PREVIEW_DESIGN"
+        ],
+        "preview_feature_example_violation_count": 0,
         "status_fence_scope": policy["status_fence_scope"],
         "status_fence_violation_count": 0,
     }
@@ -1350,7 +1517,29 @@ def load_registry(
     return rows, binding
 
 
-def render_summary(contract: dict[str, Any]) -> bytes:
+def collect_preview_detail_links(
+    root: Path, contract: dict[str, Any]
+) -> dict[str, str]:
+    links: dict[str, str] = {}
+    policy = contract["preview_documentation_policy"]
+    for detail_path in policy["detail_chapter_paths"]:
+        text = safe_path(root, detail_path).read_text(encoding="utf-8")
+        relative = Path(detail_path).relative_to(contract["reference_root"])
+        for match in PREVIEW_FEATURE_EXAMPLE_RE.finditer(text):
+            feature_id = match.group(1)
+            links[feature_id] = (
+                f"{relative.as_posix()}#"
+                f"{policy['feature_anchor_prefix']}"
+                f"{feature_id}"
+            )
+    return links
+
+
+def render_summary(
+    contract: dict[str, Any],
+    feature_rows: list[dict[str, Any]],
+    preview_detail_links: dict[str, str],
+) -> bytes:
     lines = [
         GENERATED_BANNER.rstrip(),
         "# Deeplus 문법 명세 및 참조서",
@@ -1363,6 +1552,47 @@ def render_summary(contract: dict[str, Any]) -> bytes:
     for document in contract["manual_documents"]:
         relative = Path(document["path"]).relative_to(contract["reference_root"])
         lines.append(f"- [{document['id']} — {document['title']}]({relative.as_posix()})")
+    lines.extend(
+        [
+            "",
+            "## 긴 장을 빠르게 찾는 경로",
+            "",
+            "- exact production과 contextual admission: "
+            "[16 — 문맥별 구문과 production 길잡이]"
+            "(16-contextual-syntax-and-production-guide.md)",
+            "- 이름·generic·overload·call channel 결정: "
+            "[17 — 이름 해석, 타입 추론 및 호출 결정]"
+            "(17-name-resolution-type-inference-and-calls.md)",
+            "- 평가 순서·소유권·MIR·backend 관찰: "
+            "[18 — 평가, 소유권, MIR 및 backend]"
+            "(18-evaluation-ownership-mir-and-backends.md)",
+            "- Prelude·provider·진단·conformance evidence: "
+            "[19 — Prelude, 공급자, 진단 및 적합성]"
+            "(19-prelude-providers-diagnostics-and-conformance.md)",
+            "- 여러 기능을 함께 추적하는 완성 예제: "
+            "[24 — 통합 예제로 읽는 현행 Deeplus]"
+            "(24-integrated-worked-examples.md)",
+            "",
+            "## Preview와 Preview Design 상세 카드",
+            "",
+            "아래 50개 행은 registry identity에서 상태 fence, 상세 설명, "
+            "양성·음성·경계 시나리오와 예제로 직접 연결됩니다. "
+            "카드가 존재한다는 사실은 source activation 또는 제품 지원을 뜻하지 않습니다.",
+            "",
+            "| Feature ID | 상태 | 설명 |",
+            "|---|---|---|",
+        ]
+    )
+    feature_by_id = {
+        str(row.get("feature_id")): row for row in feature_rows
+    }
+    for feature_id, link in sorted(preview_detail_links.items()):
+        row = feature_by_id[feature_id]
+        lines.append(
+            f"| [`{markdown(feature_id)}`]({link}) | "
+            f"`{markdown(row.get('status_enum'))}` | "
+            f"{markdown(row.get('display_name'))} |"
+        )
     lines.extend(
         [
             "",
@@ -1384,18 +1614,29 @@ def render_summary(contract: dict[str, Any]) -> bytes:
 def render_productions(productions: list[dict[str, Any]], grammar_path: str) -> bytes:
     lines = [
         GENERATED_BANNER.rstrip(),
-        "# 부록 A — 정확한 문법 production 색인",
+        "# 부록 A — 정확한 문법 production 참조",
         "",
-        f"권위 원천은 `{grammar_path}`입니다. 모든 production을 정확히 한 번씩 나열합니다.",
+        f"권위 원천은 `{grammar_path}`입니다. 이름만 나열하지 않고 모든 production의 "
+        "정확한 오른쪽 항을 주석을 제외한 정규화된 EBNF로 한 번씩 투영합니다. "
+        "줄 번호는 원천을 찾아가기 위한 보조 정보이며 이 부록 자체가 별도 문법 권위는 아닙니다.",
         "",
-        "| 문법 production | 프로파일 | 원천 줄 |",
-        "|---|---|---:|",
     ]
-    lines.extend(
-        f"| `{row['name']}` | `{row['profile']}` | {row['line']} |"
-        for row in productions
-    )
-    lines.append("")
+    for profile in ("LEXICAL", "STABLE", "PREVIEW", "RECOVERY"):
+        profile_rows = [row for row in productions if row["profile"] == profile]
+        lines.extend(
+            [
+                f"## `{profile}` 프로파일 — {len(profile_rows)}개",
+                "",
+                "| 문법 production | 정확한 EBNF 오른쪽 항 | 원천 줄 |",
+                "|---|---|---:|",
+            ]
+        )
+        lines.extend(
+            f"| `{markdown(row['name'])}` | `{markdown(row['definition'])}` | "
+            f"{row['line']} |"
+            for row in profile_rows
+        )
+        lines.append("")
     return ("\n".join(lines)).encode("utf-8")
 
 
@@ -1470,23 +1711,94 @@ def render_vocabulary(
     return ("\n".join(lines)).encode("utf-8")
 
 
-def render_features(rows: list[dict[str, Any]]) -> bytes:
+def render_features(
+    rows: list[dict[str, Any]], preview_detail_links: dict[str, str]
+) -> bytes:
     lines = [
         GENERATED_BANNER.rstrip(),
-        "# 부록 C — 기능 및 상태 색인",
+        "# 부록 C — 기능 상태와 추적 상세 참조",
         "",
-        "| 기능 ID | 표시 이름 | 상태 | 활성화 | 권위 |",
-        "|---|---|---|---|---|",
+        "각 행은 기능의 상태뿐 아니라 활성화 경로, 권위, 의존성, 문법·진단·술어·"
+        "예제 결합과 설명을 함께 보인다. `NOT_RUN`은 설계 또는 정적 자료가 제품 "
+        "구현 증거를 대신하지 않는다는 뜻이다.",
+        "",
     ]
-    for row in rows:
-        lines.append(
-            f"| `{markdown(row.get('feature_id'))}` | "
-            f"{markdown(row.get('display_name'))} | "
-            f"`{markdown(row.get('status_enum'))}` | "
-            f"`{markdown(row.get('source_activation'))}` | "
-            f"{markdown(row.get('authority'))} |"
+    status_order = [
+        "STABLE_DESIGN",
+        "STABLE_GROUP",
+        "STDLIB_PROFILE",
+        "OFFICIAL_TOOLING",
+        "TOOLING_ONLY",
+        "INTERNAL_DESIGN",
+        "CONFORMANCE_ONLY",
+        "PREVIEW",
+        "PREVIEW_DESIGN",
+        "RECOVERY",
+        "RECOVERY_ONLY",
+        "REMOVED",
+        "ABSORBED_ALIAS",
+        "SUPERSEDED",
+    ]
+    observed_statuses = sorted(
+        set(str(row.get("status_enum")) for row in rows)
+        - set(status_order)
+    )
+    for status in [*status_order, *observed_statuses]:
+        status_rows = sorted(
+            (row for row in rows if row.get("status_enum") == status),
+            key=lambda row: str(row.get("feature_id")),
         )
-    lines.append("")
+        if not status_rows:
+            continue
+        lines.extend(
+            [
+                f"## `{status}` — {len(status_rows)}개",
+                "",
+                "| 기능 | 종류·활성화·권위 | 의존성 | 규범 추적 | 설명 및 제품 경계 |",
+                "|---|---|---|---|---|",
+            ]
+        )
+        for row in status_rows:
+            feature_id = str(row.get("feature_id"))
+            detail_link = preview_detail_links.get(feature_id)
+            detail = (
+                f"<br>[상세 설명·시나리오·예제](../{detail_link})"
+                if detail_link
+                else ""
+            )
+            trace = row.get("normative_trace_refs")
+            if not isinstance(trace, dict):
+                trace = {}
+            trace_parts = []
+            for label, key in (
+                ("문법", "productions"),
+                ("의미 문법", "semantic_reference_productions"),
+                ("진단", "diagnostics"),
+                ("술어", "predicates"),
+                ("예제", "examples"),
+            ):
+                values = trace.get(key)
+                if isinstance(values, list) and values:
+                    trace_parts.append(
+                        f"{label}: "
+                        + ", ".join(f"`{markdown(value)}`" for value in values)
+                    )
+            dependencies = row.get("depends_on")
+            if not isinstance(dependencies, list):
+                dependencies = []
+            notes = str(row.get("notes") or "")
+            product_support = row.get("product_support")
+            lines.append(
+                f"| `{markdown(feature_id)}`{detail}<br>"
+                f"{markdown(row.get('display_name'))} | "
+                f"`{markdown(row.get('feature_kind'))}`<br>"
+                f"활성화: `{markdown(row.get('source_activation'))}`<br>"
+                f"권위: {markdown(row.get('authority'))} | "
+                f"{'<br>'.join(f'`{markdown(value)}`' for value in dependencies) or '없음'} | "
+                f"{'<br>'.join(trace_parts) or '명시 추적 없음'} | "
+                f"{markdown(notes)}<br>제품: `{markdown(product_support)}` |"
+            )
+        lines.append("")
     return ("\n".join(lines)).encode("utf-8")
 
 
@@ -1539,15 +1851,25 @@ def render_prelude_examples(
         "",
         "## Prelude",
         "",
-        "| 항목 ID | 심볼 | 종류 | 상태 | 제품 지원 |",
+        "| 항목 | 종류·상태 | 시그니처 | 책임·기능 추적 | 제품 지원 |",
         "|---|---|---|---|---|",
     ]
     for row in prelude:
+        signatures = row.get("signatures")
+        if not isinstance(signatures, list):
+            signatures = []
+        feature_refs = row.get("feature_refs")
+        if not isinstance(feature_refs, list):
+            feature_refs = []
         lines.append(
-            f"| `{markdown(row.get('entry_id'))}` | "
+            f"| `{markdown(row.get('entry_id'))}`<br>"
             f"`{markdown(row.get('symbol'))}` | "
-            f"`{markdown(row.get('kind'))}` | "
+            f"`{markdown(row.get('kind'))}`<br>"
             f"`{markdown(row.get('status'))}` | "
+            f"{'<br>'.join(f'`{markdown(value)}`' for value in signatures) or '없음'} | "
+            f"{markdown(row.get('responsibility'))}<br>"
+            f"기능: "
+            f"{', '.join(f'`{markdown(value)}`' for value in feature_refs) or '없음'} | "
             f"`{markdown(row.get('product_support'))}` |"
         )
     lines.extend(
@@ -1555,17 +1877,29 @@ def render_prelude_examples(
             "",
             "## 예제",
             "",
-            "| 예제 ID | 제목 | 결과 | 원천 역할 | 증거 |",
+            "| 예제 | 결과·진단 | 기능 추적 | 소스 위치 | 증거 경계 |",
             "|---|---|---|---|---|",
         ]
     )
     for row in examples:
+        feature_ids = row.get("feature_ids")
+        if not isinstance(feature_ids, list):
+            feature_ids = []
+        source_location = (
+            f"`{markdown(row.get('source_file'))}` "
+            f"{markdown(row.get('card_line_start'))}–"
+            f"{markdown(row.get('card_line_end'))}"
+        )
         lines.append(
-            f"| `{markdown(row.get('example_id'))}` | "
+            f"| `{markdown(row.get('example_id'))}`<br>"
             f"{markdown(row.get('title'))} | "
-            f"`{markdown(row.get('expected_outcome'))}` | "
-            f"`{markdown(row.get('source_role'))}` | "
-            f"`{markdown(row.get('certification_status'))}` |"
+            f"`{markdown(row.get('expected_outcome'))}`<br>"
+            f"진단: `{markdown(row.get('primary_diagnostic'))}` | "
+            f"{'<br>'.join(f'`{markdown(value)}`' for value in feature_ids) or '없음'} | "
+            f"{source_location}<br>루트: `{markdown(row.get('source_root'))}` | "
+            f"`{markdown(row.get('certification_status'))}`<br>"
+            f"parser/checker: `{markdown(row.get('parser_status'))}`/"
+            f"`{markdown(row.get('checker_status'))}` |"
         )
     lines.append("")
     return ("\n".join(lines)).encode("utf-8")
@@ -1663,6 +1997,7 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
     preview_quality = validate_preview_registry_documentation(
         root, contract, registries["features"]
     )
+    preview_detail_links = collect_preview_detail_links(root, contract)
     governance = validate_governance(root, contract)
     manual_quality = validate_manual_quality(
         root,
@@ -1694,7 +2029,9 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
         )
 
     outputs: dict[str, bytes] = {
-        "docs/grammar-reference/SUMMARY.md": render_summary(contract),
+        "docs/grammar-reference/SUMMARY.md": render_summary(
+            contract, registries["features"], preview_detail_links
+        ),
         "docs/grammar-reference/appendices/a-production-index.md": render_productions(
             productions, contract["grammar"]["path"]
         ),
@@ -1702,7 +2039,7 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
             vocabulary, frontend, productions
         ),
         "docs/grammar-reference/appendices/c-feature-status-index.md": render_features(
-            registries["features"]
+            registries["features"], preview_detail_links
         ),
         "docs/grammar-reference/appendices/d-diagnostic-predicate-index.md": render_diagnostics_predicates(
             registries["diagnostics"], registries["predicates"]
@@ -1796,6 +2133,9 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
         "manual_quality": {
             "preview_review_cards": manual_quality[
                 "preview_review_card_count"
+            ],
+            "preview_feature_examples": manual_quality[
+                "preview_feature_example_count"
             ],
             "registry_bound_examples": manual_quality[
                 "registry_bound_example_block_count"

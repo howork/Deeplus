@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-fixtures/r1",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "contract": "spec/contracts/actor-concurrency-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -12,6 +12,14 @@
     "checker_status": "NOT_RUN",
     "mir_status": "NOT_RUN",
     "runtime_status": "NOT_RUN",
+    "module_api_digest_status": "DESIGN_STATIC_SCHEMA_BOUND",
+    "task_responsibility_source_spelling": "Task<T>",
+    "task_origin_values": [
+      "ordinary_async",
+      "actor_request_admitted"
+    ],
+    "task_responsibility_descriptor_field_count": 6,
+    "task_responsibility_admission_only_error_count": 0,
     "null_existing_diagnostic": "the rejection rule is fixed but no new final diagnostic registry identity is created by this fixture",
     "static_acceptance_is_product_pass": false
   },
@@ -283,6 +291,55 @@
       },
       "expected_outcome": "accept_design_static",
       "assertion": "post-admission receiver closure terminates the correlated Task without rewriting its earlier admission result"
+    },
+    {
+      "fixture_id": "ACC-P-017-TASK-RESPONSIBILITY-AWAIT-ERROR-SET",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "task_origin": "actor_request_admitted",
+        "result_type": "Status",
+        "normalized_handler_error_set": [
+          "LookupError",
+          "PermissionError"
+        ],
+        "cancellation_axis": "propagate_distinct_control_outcome",
+        "isolation_owner": "Worker::status",
+        "correlation_id": "corr-017",
+        "terminal_transport_failure": [
+          "receiverClosedBeforeReply"
+        ],
+        "normalized_await_error_set": [
+          "ActorMessageError::receiverClosedBeforeReply",
+          "LookupError",
+          "PermissionError"
+        ]
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "Task<T> retains the exact handler ErrorSet and the sole post-admission transport failure while Cancellation remains a separate axis"
+    },
+    {
+      "fixture_id": "ACC-P-018-TASK-STORAGE-PRESERVES-CORRELATION",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "storage_type": "List<Task<Status>>",
+        "task_origin": "actor_request_admitted",
+        "normalized_static_fields_equal": true,
+        "stored_correlation_ids": [
+          "corr-018-a",
+          "corr-018-b"
+        ],
+        "correlation_ids_preserved_after_load": [
+          "corr-018-a",
+          "corr-018-b"
+        ],
+        "descriptor_erased": false
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "storage compatibility compares normalized static descriptor fields but preserves every task value's non-forgeable correlation identity"
     }
   ],
   "negative": [
@@ -555,6 +612,83 @@
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": null,
       "violated_condition": "await is applied to the request admission Result instead of an extracted Task<Int>"
+    },
+    {
+      "fixture_id": "ACC-N-018-TASK-RESPONSIBILITY-ERASED",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "source_type_spelling": "Task<Status>",
+        "task_responsibility_before": "present",
+        "task_responsibility_after_join": null
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "violated_condition": "a join retains only the nominal Task<T> spelling and erases handler errors, cancellation, isolation, correlation, and terminal transport responsibility"
+    },
+    {
+      "fixture_id": "ACC-N-019-ADMISSION-ERROR-IN-TASK-DESCRIPTOR",
+      "rule_ids": [
+        "ACC-R004",
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "normalized_handler_error_set": [
+          "ActorMessageError::mailboxFull"
+        ],
+        "terminal_transport_failure": [
+          "receiverClosedBeforeReply"
+        ]
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "mailboxFull is a precommit admission Result error and cannot enter an admitted task descriptor"
+    },
+    {
+      "fixture_id": "ACC-N-020-IMPLICIT-TASK-ERROR-SET-UNION",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "left_normalized_handler_error_set": [
+          "LookupError"
+        ],
+        "right_normalized_handler_error_set": [
+          "PermissionError"
+        ],
+        "explicit_admitted_error_set_subsumption": false,
+        "attempted_join_error_set": [
+          "LookupError",
+          "PermissionError"
+        ]
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "a join invents an implicit ErrorSet union without an explicit admitted subsumption proof"
+    },
+    {
+      "fixture_id": "ACC-N-021-ORDINARY-ASYNC-HAS-ACTOR-TRANSPORT-DESCRIPTOR",
+      "rule_ids": [
+        "ACC-R008"
+      ],
+      "descriptor": {
+        "source_type_spelling": "Task<Status>",
+        "task_origin": "ordinary_async",
+        "actor_request_task_responsibility": {
+          "result_type": "Status",
+          "normalized_handler_error_set": [],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "task-scope-1",
+          "correlation_id": "forged-correlation",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      },
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "an ordinary async task is incorrectly assigned actor-request correlation and transport-failure responsibility"
     }
   ],
   "boundary": [
@@ -780,11 +914,318 @@
       "boundary": "the enqueue commit is the unique phase boundary between admission failure and correlated task failure"
     }
   ],
+  "cross_module": [
+    {
+      "fixture_id": "ACC-XM-001-EXACT-DESCRIPTOR-EXPORT-IMPORT",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R018"
+      ],
+      "task_origin": "actor_request_admitted",
+      "exported_descriptor": {
+        "result_type": "Status",
+        "normalized_handler_error_set": [
+          "LookupError"
+        ],
+        "cancellation_axis": "propagate_distinct_control_outcome",
+        "isolation_owner": "worker.api::Worker::status",
+        "correlation_id": "per_value_non_forgeable",
+        "terminal_transport_failure": [
+          "receiverClosedBeforeReply"
+        ]
+      },
+      "imported_descriptor": {
+        "result_type": "Status",
+        "normalized_handler_error_set": [
+          "LookupError"
+        ],
+        "cancellation_axis": "propagate_distinct_control_outcome",
+        "isolation_owner": "worker.api::Worker::status",
+        "correlation_id": "per_value_non_forgeable",
+        "terminal_transport_failure": [
+          "receiverClosedBeforeReply"
+        ]
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "module API export and import preserve exact normalized descriptor residue"
+    },
+    {
+      "fixture_id": "ACC-XM-002-EXPLICIT-ERROR-SET-SUBSUMPTION",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R018"
+      ],
+      "task_origin": "actor_request_admitted",
+      "exported_handler_error_set": [
+        "LookupError"
+      ],
+      "import_context_error_set": [
+        "LookupError",
+        "ServiceError"
+      ],
+      "explicit_admitted_error_set_subsumption": {
+        "source": [
+          "LookupError"
+        ],
+        "target": [
+          "LookupError",
+          "ServiceError"
+        ],
+        "proof_identity": "errorsub::Lookup_to_Service"
+      },
+      "other_static_fields_exact": true,
+      "correlation_id_preserved_per_value": true,
+      "expected_outcome": "accept_design_static",
+      "assertion": "only an explicit admitted ErrorSet-subsumption proof may widen the handler error component across a module boundary"
+    },
+    {
+      "fixture_id": "ACC-XM-003-API-EXPORT-DROPS-DESCRIPTOR",
+      "rule_ids": [
+        "ACC-R008",
+        "ACC-R018"
+      ],
+      "task_origin": "actor_request_admitted",
+      "exported_signature": "public def statusTask() -> Task<Status>",
+      "exported_task_responsibility": null,
+      "source_value_has_task_responsibility": true,
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_API_DIGEST_INCOMPLETE",
+      "violated_condition": "a public API digest exports only Task<T> and drops observable task responsibility residue"
+    },
+    {
+      "fixture_id": "ACC-XM-004-ORDINARY-ASYNC-TASK-EXPORT",
+      "rule_ids": [
+        "ACC-R009",
+        "ACC-R018"
+      ],
+      "exported_result_channel": {
+        "type_identity": "Task<Status>",
+        "task_origin": "ordinary_async"
+      },
+      "imported_result_channel": {
+        "type_identity": "Task<Status>",
+        "task_origin": "ordinary_async"
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "an ordinary async Task<T> preserves its origin across the module boundary without acquiring actor correlation or transport-failure responsibility"
+    }
+  ],
+  "mir_task_responsibility_binding_cases": [
+    {
+      "fixture_id": "ACC-MIR-TR-001-SINGLE-REQUEST-BIJECTION",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-001"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [
+            "LookupError"
+          ],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::find",
+          "correlation_id": "corr-mir-001",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null,
+      "assertion": "one admitted request correlation has exactly one normalized descriptor"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-002-TWO-REQUEST-BIJECTION",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-002-a"
+        },
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-002-b"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [
+            "LookupError",
+            "PermissionError"
+          ],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::find",
+          "correlation_id": "corr-mir-002-b",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        },
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::status",
+          "correlation_id": "corr-mir-002-a",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null,
+      "assertion": "descriptor order is irrelevant but the distinct correlation sets are exactly equal"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-003-ORDINARY-ASYNC-ZERO-ACTOR-DESCRIPTORS",
+      "actor_isolation": [],
+      "actor_request_task_responsibilities": [],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null,
+      "assertion": "a record with no admitted actor request has zero actor-request descriptors"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-004-MISSING-SECOND-DESCRIPTOR",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-004-a"
+        },
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-004-b"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::status",
+          "correlation_id": "corr-mir-004-a",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "bijection",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "violated_condition": "two admitted request correlations have only one descriptor"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-005-DUPLICATE-DESCRIPTOR-CORRELATION",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-005"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::status",
+          "correlation_id": "corr-mir-005",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        },
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [
+            "LookupError"
+          ],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::status",
+          "correlation_id": "corr-mir-005",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "bijection",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "unique JSON objects still duplicate one correlation identity"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-006-UNNORMALIZED-HANDLER-ERROR-SET",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-006"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [
+            "PermissionError",
+            "LookupError",
+            "LookupError"
+          ],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::find",
+          "correlation_id": "corr-mir-006",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "normalization",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "the handler ErrorSet is neither sorted nor duplicate-free"
+    },
+    {
+      "fixture_id": "ACC-MIR-TR-007-ADMISSION-ERROR-IN-HANDLER-SET",
+      "actor_isolation": [
+        {
+          "kind": "actor_lifecycle",
+          "phase": "enqueue_committed",
+          "correlation_id": "corr-mir-007"
+        }
+      ],
+      "actor_request_task_responsibilities": [
+        {
+          "result_type": "Status",
+          "normalized_handler_error_set": [
+            "ActorMessageError::mailboxFull"
+          ],
+          "cancellation_axis": "propagate_distinct_control_outcome",
+          "isolation_owner": "Directory::find",
+          "correlation_id": "corr-mir-007",
+          "terminal_transport_failure": [
+            "receiverClosedBeforeReply"
+          ]
+        }
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "normalization",
+      "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
+      "violated_condition": "a precommit admission-only error appears in the admitted task descriptor"
+    }
+  ],
   "expected_counts": {
-    "positive": 16,
-    "negative": 17,
+    "positive": 18,
+    "negative": 21,
     "boundary": 12,
-    "total": 45,
+    "cross_module": 4,
+    "total": 55,
+    "mir_task_responsibility_binding": 7,
+    "mir_task_responsibility_binding_admit": 3,
+    "mir_task_responsibility_binding_reject": 4,
     "product_executed": 0
   }
 }

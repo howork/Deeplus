@@ -50,6 +50,15 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 | 비동기 또는 액터 코드 사용 | [비동기, 태스크, 액터 및 동시성](13-async-tasks-actors-and-concurrency.md) |
 | 외부 경계 이해 | [FFI, unsafe, 컴파일러 트리 및 프로필](14-ffi-unsafe-metaprogramming-and-profiles.md) |
 | 제안되었거나 거부된 표기 확인 | [Preview, 복구 및 제거된 표면](15-preview-recovery-and-removed-surfaces.md) |
+| 정확한 production이 쓰이는 문맥 찾기 | [문맥별 구문과 production 길잡이](16-contextual-syntax-and-production-guide.md) |
+| 이름·generic·호출 판정 순서 추적 | [이름 해석, 타입 추론 및 호출 판정](17-name-resolution-type-inference-and-calls.md) |
+| 평가·소유권·MIR·백엔드 관찰 추적 | [평가, 소유권, MIR 및 백엔드](18-evaluation-ownership-mir-and-backends.md) |
+| Prelude·공급자·진단·검증 증거 이해 | [Prelude, 공급자, 진단 및 적합성](19-prelude-providers-diagnostics-and-conformance.md) |
+| 실제 gate가 있는 Preview 3건 검토 | [Preview Gated 상세 참조](20-preview-gated-reference.md) |
+| 타입·객체·Trait Preview Design 검토 | [Preview Design — 타입, 객체 및 Trait](21-preview-design-types-objects-and-traits.md) |
+| 컬렉션·문맥·제어 Preview Design 검토 | [Preview Design — 컬렉션, 문맥 및 제어](22-preview-design-collections-context-and-control.md) |
+| 동시성·FFI·런타임 Preview Design 검토 | [Preview Design — 동시성, FFI 및 런타임](23-preview-design-concurrency-ffi-and-runtime.md) |
+| 여러 기능이 만나는 전체 예제 읽기 | [통합 예제로 읽는 현행 Deeplus](24-integrated-worked-examples.md) |
 
 생성된 [`SUMMARY.md`](SUMMARY.md)와 [`appendices/`](appendices/)는 모든
 문법 생성 규칙, 기능 행, 진단, 검사기 술어, Prelude 항목과 검토된
@@ -124,3 +133,10 @@ def#entry launch(args: Sequence<String>) -> ExitCode
 부록을 직접 수정하면 참조서 생성기는 실패한다. 생성된
 [`coverage-manifest.json`](coverage-manifest.json)은 현행 소스 트리의
 정확한 바이트 식별값과 커버리지 기수를 기록한다.
+
+기수 일치와 해시 결합은 “모든 행이 투영되었다”는 완전성 증거이지,
+각 기능의 의미가 충분히 설명되었거나 제품에서 실행된다는 증거가
+아니다. 이 판본은 그 차이를 줄이기 위해 production의 정확한 EBNF,
+기능별 의존성·진단·예제 추적, 판정 알고리즘, 평가·실패·cleanup 추적과
+Preview 50개 각각의 설명 예제를 별도로 제공한다. 그래도 대상 실행
+확인서가 없는 구현·백엔드·도구 레인은 계속 `NOT_RUN`이다.

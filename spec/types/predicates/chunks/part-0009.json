@@ -1181,14 +1181,14 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericArrayPostfixTransposeAdmitted",
     "source_name": "NumericArray postfix transpose",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Admit owner-bounded readonly NumericArray view.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
       "ownership",
       "borrow_region",
-      "effect_row",
+      "isolation",
       "source_role",
       "numeric_literal_kind",
       "shape",
@@ -1210,9 +1210,10 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "rank2 matrix or oriented rank1 vector",
-      "view does not outlive owner",
-      "not adjoint"
+      "one NumericArray operand evaluates once",
+      "rank2 swaps axes; rank1 requires/flips orientation",
+      "the bounded readonly view preserves lifetime/provenance",
+      "copy/allocation/mutation/adjoint/shareability/escape/isolation-cross counts are zero"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1222,7 +1223,7 @@
       "normalized_type",
       "ownership",
       "borrow_region",
-      "effect_row",
+      "isolation",
       "source_role",
       "numeric_literal_kind",
       "shape",
@@ -1234,16 +1235,17 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "rank2 matrix or oriented rank1 vector",
-      "view does not outlive owner",
-      "not adjoint"
+      "one NumericArray operand evaluates once",
+      "rank2 or oriented-rank1 route is exact",
+      "result preserves owner lifetime and coordinates",
+      "implicit copy/allocation/escape/isolation counts are zero"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize NumericArray axes/rank/orientation and owner region before route selection",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericArrayPostfixTransposeAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "require one NumericArray operand evaluation",
+      "swap rank2 axes or require/flip rank1 orientation",
+      "construct only the owner-bounded readonly coordinate view",
+      "reject implicit copy/allocation/mutation/adjoint/shareability/escape/isolation crossing"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -1260,9 +1262,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "69ea1060a243628ee2a90a0d8ad69a26c738e92e45831be2fdcb7bdc0b3369b0",

@@ -21,7 +21,7 @@
   "properties": {
     "schema": {"const": "deeplus.type-flow-callable-coherence-fixtures/r1"},
     "fixture_schema": {"const": "schemas/language/type-flow-callable-coherence-fixtures.schema.json"},
-    "revision": {"const": "r51f3-current-literal-shaped-collection-design-r1"},
+    "revision": {"const": "r51f3-current-grammar-reference-semantic-coherence-r1"},
     "contract": {"const": "spec/contracts/type-flow-callable-coherence.json"},
     "evidence_status": {"const": "DESIGN_STATIC_NOT_RUN"},
     "product_support": {"const": "NOT_RUN"},
@@ -91,7 +91,8 @@
         "rule_ids": {"$ref": "#/$defs/ruleIds"},
         "source": {"type": "string", "minLength": 1},
         "expected_outcome": {"const": "accept"},
-        "expected_existing_diagnostic": {"type": "null"}
+        "expected_existing_diagnostic": {"type": "null"},
+        "assertions": {"type": "object", "minProperties": 1}
       }
     },
     "negativeFixture": {
@@ -105,6 +106,7 @@
         "expected_outcome": {"const": "reject"},
         "expected_rejection_reason": {"type": "string", "minLength": 1},
         "expected_existing_diagnostic": {"$ref": "#/$defs/diagnosticOrNull"},
+        "assertions": {"type": "object", "minProperties": 1},
         "responsibility_descriptor": {
           "type": "object",
           "additionalProperties": false,
@@ -130,6 +132,7 @@
         "source": {"type": "string", "minLength": 1},
         "expected_outcome": {"enum": ["accept", "reject"]},
         "descriptor": {"type": "object"},
+        "assertions": {"type": "object", "minProperties": 1},
         "paired_outcomes": {"type": "object", "minProperties": 2},
         "paired_profiles": {"type": "object", "minProperties": 2},
         "paired_sources": {"type": "object", "minProperties": 2},

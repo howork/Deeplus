@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-contract/r1",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -197,6 +197,58 @@
           "declared failure",
           "cancellation"
         ],
+        "task_responsibility_descriptor": {
+          "source_type_spelling": "Task<T>",
+          "task_origin": "actor_request_admitted",
+          "ordinary_async_task_actor_transport_descriptor": "FORBIDDEN",
+          "identity": "non-forgeable typed-HIR/module-API/MIR responsibility",
+          "fields": [
+            "result_type",
+            "normalized_handler_error_set",
+            "cancellation_axis",
+            "isolation_owner",
+            "correlation_id",
+            "terminal_transport_failure"
+          ],
+          "field_contract": {
+            "result_type": "the selected request reply type T after normalization",
+            "normalized_handler_error_set": "the handler's exact normalized declared ErrorSet; Never is represented as the empty set",
+            "cancellation_axis": "a distinct non-Error control axis and never an ActorMessageError case",
+            "isolation_owner": "the selected actor/request isolation owner identity",
+            "correlation_id": "the non-forgeable per-admitted-request value identity created after enqueue commit; a module API digest records only the static per_value_non_forgeable policy marker",
+            "terminal_transport_failure": [
+              "receiverClosedBeforeReply"
+            ]
+          },
+          "await_error_set": "normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply)",
+          "admission_only_errors_forbidden": [
+            "mailboxFull",
+            "receiverClosedBeforeAdmission"
+          ],
+          "visible_second_task_type_parameter": false,
+          "error_erasure": false,
+          "compatibility_and_join": {
+            "source_spelling_change": false,
+            "descriptor_residue_required": true,
+            "default_rule": "exact normalized static-field equality while preserving each value's non-forgeable correlation_id",
+            "only_admitted_variance": "an explicit admitted error-set-subsumption proof may widen normalized_handler_error_set; result_type, cancellation_axis, isolation_owner and terminal_transport_failure remain exact",
+            "implicit_error_union": false,
+            "correlation_erasure_or_forgery": false
+          },
+          "storage_and_api_export": {
+            "descriptor_residue_required": true,
+            "task_value_keeps_its_correlation_id": true,
+            "module_api_digest_keeps_static_descriptor_shape": true,
+            "module_api_correlation_id_field": "per_value_non_forgeable",
+            "module_api_contains_runtime_correlation_value": false,
+            "typed_hir_and_mir_keep_full_value_descriptor": true,
+            "nominal_Task_T_only_identity_is_insufficient": true
+          },
+          "reused_diagnostics": {
+            "erasure_or_dropped_axis": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+            "unadmitted_subsumption_or_incompatible_join": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
+          }
+        },
         "terminal_outcome_count": 1,
         "reply_type": "must match the selected request requirement",
         "ordinary_method_return": false,
@@ -421,6 +473,13 @@
     "actor_message_error_case_count": 3,
     "one_way_result_shape_count": 1,
     "request_admission_result_shape_count": 1,
+    "task_responsibility_descriptor_count": 1,
+    "task_responsibility_actor_request_origin_count": 1,
+    "ordinary_async_actor_transport_descriptor_count": 0,
+    "task_responsibility_descriptor_field_count": 6,
+    "task_responsibility_terminal_transport_failure_count": 1,
+    "task_responsibility_admission_only_error_count": 0,
+    "task_responsibility_implicit_erasure_count": 0,
     "rejected_attempt_channel_sequence_count": 0,
     "closed_feature_p1_count": 0,
     "new_feature_p1_count": 0,

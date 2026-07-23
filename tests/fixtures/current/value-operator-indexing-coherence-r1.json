@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/value-operator-indexing-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "contract": "spec/contracts/value-operator-indexing-coherence.json",
   "authority": "CURRENT_DESIGN_STATIC_CONTRACT",
   "evidence_level": "DESIGN_STATIC_NOT_RUN",
@@ -324,6 +324,70 @@
         "full_axis_spelling": "*",
         "empty_axis_spelling": false,
         "owner_provenance_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-017",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R007", "VOI-R012"],
+      "domain": "map_literal",
+      "source": "let result: Map<String, Owner> = #map{ directKey(): directValue(), **baseMap(), directKey(): replacementValue() }",
+      "subject_profile": "MAP_LITERAL_PLAN_DIRECT_UNFOLD_LATER_KEY",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "plan_identity": "MapLiteralPlan<String,Owner>",
+        "entry_kinds": ["direct_key_value", "map_unfold"],
+        "direct_key_evaluation_count_per_entry": 1,
+        "direct_value_evaluation_count_per_entry": 1,
+        "unfold_source_evaluation_count": 1,
+        "evaluation_order": "left_to_right_source_order",
+        "normalized_key_domain_count": 1,
+        "normalized_value_domain_count": 1,
+        "later_equal_key_wins": true,
+        "displaced_owner_cleanup_count": 1,
+        "publication_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-018",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R010", "VOI-R011"],
+      "domain": "transpose",
+      "source": "let transposed = matrix^",
+      "subject_profile": "NUMERIC_ARRAY_RANK_TWO_TRANSPOSE_VIEW",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "operand_evaluation_count": 1,
+        "input_rank": 2,
+        "axis_transform": "swap_axis_1_axis_2",
+        "result_kind": "semantic_nonowning_owner_bounded_readonly_coordinate_view",
+        "coordinate_provenance_preserved": true,
+        "implicit_element_copy_count": 0,
+        "language_observable_allocation_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-019",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R010", "VOI-R011"],
+      "domain": "transpose",
+      "source": "let column = rowVector^",
+      "subject_profile": "NUMERIC_ARRAY_ORIENTED_RANK_ONE_TRANSPOSE_VIEW",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "operand_evaluation_count": 1,
+        "input_rank": 1,
+        "input_orientation": "row",
+        "result_orientation": "column",
+        "orientation_witness_required": true,
+        "result_kind": "semantic_nonowning_owner_bounded_readonly_coordinate_view",
+        "implicit_element_copy_count": 0
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
@@ -654,6 +718,45 @@
         "implicit_remaining_axis_count": 0
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-021",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R001", "VOI-R007", "VOI-R012"],
+      "domain": "map_literal",
+      "source": "let result: Map<String, Int> = #map{ \"one\": 1, **wrongDomains }",
+      "subject_profile": "MAP_LITERAL_PLAN_UNFOLD_KV_DOMAIN_MISMATCH",
+      "expected": "REJECT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "plan_key_domain": "String",
+        "plan_value_domain": "Int",
+        "unfold_key_domain": "Token",
+        "unfold_value_domain": "String",
+        "implicit_key_conversion_count": 0,
+        "implicit_value_conversion_count": 0,
+        "publication_count": 0,
+        "reverse_cleanup_required": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-022",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R001", "VOI-R010", "VOI-R011"],
+      "domain": "transpose",
+      "source": "let ambiguous = unorientedVector^",
+      "subject_profile": "NUMERIC_ARRAY_UNORIENTED_RANK_ONE_TRANSPOSE",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION",
+      "assertions": {
+        "input_rank": 1,
+        "orientation_witness_count": 0,
+        "result_view_count": 0,
+        "implicit_orientation_inference_count": 0,
+        "implicit_copy_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
   "boundary": [
@@ -892,13 +995,81 @@
         "product_pass_claim": false
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-015",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R001", "VOI-R007", "VOI-R012"],
+      "domain": "map_literal",
+      "source": "let result = #map{ firstKey(): firstOwner(), **fallibleBase(), laterKey(): laterOwner() }",
+      "subject_profile": "MAP_LITERAL_PLAN_PREPUBLICATION_FAILURE",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "first_key_evaluation_count": 1,
+        "first_value_evaluation_count": 1,
+        "failing_unfold_evaluation_count": 1,
+        "later_entry_evaluation_count": 0,
+        "publication_count_on_failure": 0,
+        "partial_map_escape_count": 0,
+        "temporary_cleanup_order": "reverse_acquisition",
+        "temporary_cleanup_count_per_owner": 1,
+        "keyable_operation_errors": [],
+        "keyable_operation_effects": [],
+        "keyable_operation_cancellation": "forbidden",
+        "keyable_operation_authorities": []
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-016",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R001", "VOI-R012"],
+      "domain": "map_literal",
+      "source": "let map = #map{ **runtimeMap }\ninvoke(**staticRecord)",
+      "subject_profile": "MAP_LITERAL_UNFOLD_VS_CALL_RECORD_UNFOLD",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "map_unfold_owner": "MapLiteralPlan",
+        "map_unfold_identity": "runtime_key_value_entries",
+        "call_unfold_owner": "ArgumentList",
+        "call_unfold_identity": "static_Record_labels",
+        "map_as_named_argument_source": false,
+        "record_as_map_literal_entry": false,
+        "owner_identity_merge_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-017",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R001", "VOI-R010", "VOI-R011", "VOI-R012"],
+      "domain": "transpose",
+      "source": "let view = localMatrix^\nobserve(view)",
+      "subject_profile": "NUMERIC_ARRAY_TRANSPOSE_OWNER_LIFETIME_AND_ISOLATION",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "result_kind": "semantic_nonowning_owner_bounded_readonly_coordinate_view",
+        "owner_region_preserved": true,
+        "owner_lifetime_escape_count": 0,
+        "isolation_crossing_count": 0,
+        "mutation_authority_count": 0,
+        "shareability_inference_count": 0,
+        "adjoint_count": 0,
+        "implicit_element_copy_count": 0,
+        "language_observable_allocation_count": 0,
+        "backend_representation_selected": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
   "expected_counts": {
-    "positive": 16,
-    "negative": 20,
-    "boundary": 14,
-    "total": 50,
+    "positive": 19,
+    "negative": 22,
+    "boundary": 17,
+    "total": 58,
     "semantic_p0": 0,
     "open_feature_p1": 22,
     "closed_feature_p1": 0,

@@ -1499,12 +1499,18 @@
     "predicate_id": "NumericArrayPostfixTransposeAdmitted",
     "expected": "rejected",
     "expected_primary_diagnostic": "NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "NumericArrayPostfixTransposeAdmitted"
+    "descriptor": {
+      "source_kind": "PostfixTransposeExpr",
+      "normalized_type": "List<Int>",
+      "rank": 1,
+      "orientation": "unoriented",
+      "ownership": "reusable"
     },
-    "fixture_kind": "mutation_recipe",
+    "violated_condition": "the operand is not a NumericArray, so no transpose view route exists",
+    "rule_seed": "NumericArray operand and bounded readonly view required; product NOT_RUN",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -1531,17 +1537,17 @@
     "predicate_id": "NumericArrayPostfixTransposeAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
+      "source_kind": "PostfixTransposeExpr",
+      "normalized_type": "NumericArray<Int,rank 2>",
+      "ownership": "borrow",
+      "borrow_region": "owner#matrix",
+      "cleanup": "view_release",
+      "error_set": [],
+      "effect_row": [],
+      "suspension": "none",
+      "cancellation": "forbidden",
+      "isolation": "local",
+      "authority": [],
       "construction_domain": null,
       "call_shape": null,
       "lookup_domain": null,
@@ -1563,16 +1569,27 @@
       "projection_row": null,
       "projection_scope": null,
       "option_coalesce_path": null,
-      "conditional_responsibility": null,
+      "conditional_responsibility": {
+        "operand_evaluation_count": 1,
+        "result_kind": "semantic_nonowning_owner_bounded_readonly_coordinate_view",
+        "coordinate_provenance_preserved": true,
+        "implicit_element_copy_count": 0,
+        "owner_lifetime_escape_count": 0
+      },
       "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "shape": [
+        2,
+        3
+      ],
+      "rank": 2,
+      "orientation": "matrix",
+      "element_types": [
+        "Int"
+      ]
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "rule_seed": "rank2 swaps axes into a bounded readonly view; product NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",

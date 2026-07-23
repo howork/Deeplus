@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-contract/r1",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -462,6 +462,57 @@
     {"form": "value[i..>j]", "status": "REJECT", "meaning": "reserved spelling has no current range identity"},
     {"form": "value[i...j]", "status": "REJECT", "meaning": "three dots have only repeated-positional and comprehension-unfold structural owners, never a range owner"}
   ],
+  "map_literal_plan_contract": {
+    "plan_identity": "MapLiteralPlan<K,V>",
+    "entry_kinds": [
+      "direct_key_value",
+      "map_unfold"
+    ],
+    "evaluation_order": "all direct key/value expressions and every unfolded Map source evaluate once, left-to-right in source order",
+    "direct_key_evaluation_count": 1,
+    "direct_value_evaluation_count": 1,
+    "unfold_source_evaluation_count": 1,
+    "normalized_key_domain_count": 1,
+    "normalized_value_domain_count": 1,
+    "implicit_key_or_value_conversion_count": 0,
+    "equal_key_resolution": "later source occurrence replaces the earlier value",
+    "displaced_owner_cleanup_count": 1,
+    "publication_count_on_success": 1,
+    "publication_count_on_failure": 0,
+    "failure_cleanup_order": "reverse acquisition order",
+    "keyable_operation_contract": {
+      "witness_selected_before_evaluation": true,
+      "consumes_key": false,
+      "suspends": false,
+      "errors": [],
+      "effects": [],
+      "cancellation": "forbidden",
+      "authorities": []
+    },
+    "entry_expression_responsibility": "ordinary declared Error, Defect, effect, cancellation, authority, ownership, and cleanup channels remain visible and trigger the failure-atomic plan boundary",
+    "call_record_unfold": {
+      "surface": "**record in an argument list",
+      "identity": "static label unfold",
+      "map_literal_plan_entry": false
+    }
+  },
+  "numeric_array_transpose_contract": {
+    "surface": "attached postfix A^",
+    "result": "semantic nonowning owner-bounded readonly coordinate view",
+    "operand_evaluation_count": 1,
+    "rank_two": "swap the two logical axes and their typed coordinate identities",
+    "rank_one": "flip one independently admitted row/column orientation witness",
+    "unoriented_rank_one": "reject with NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION",
+    "implicit_element_copy_count": 0,
+    "language_observable_allocation_count": 0,
+    "mutation_authority_count": 0,
+    "adjoint_count": 0,
+    "implicit_shareability_inference_count": 0,
+    "owner_lifetime_escape_count": 0,
+    "isolation_crossing_count": 0,
+    "coordinate_provenance_preserved": true,
+    "backend_representation_selected": false
+  },
   "new_rejection_diagnostic_matrix": [
     {
       "diagnostic_id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
@@ -511,6 +562,15 @@
     "slice_form_row_count": 8,
     "new_rejection_diagnostic_count": 6,
     "implicit_rebase_count": 0,
+    "map_literal_entry_kind_count": 2,
+    "map_literal_failure_publish_count": 0,
+    "map_literal_displaced_owner_cleanup_count": 1,
+    "map_literal_hidden_keyable_error_or_effect_count": 0,
+    "call_record_unfold_is_map_literal_entry": false,
+    "transpose_implicit_element_copy_count": 0,
+    "transpose_language_observable_allocation_count": 0,
+    "transpose_owner_lifetime_escape_count": 0,
+    "transpose_isolation_crossing_count": 0,
     "semantic_p0": 0,
     "open_feature_p1_count": 22,
     "closed_feature_p1_count": 0,

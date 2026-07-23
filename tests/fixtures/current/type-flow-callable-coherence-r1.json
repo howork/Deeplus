@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/type-flow-callable-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
   "contract": "spec/contracts/type-flow-callable-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -204,6 +204,60 @@
       "source": "type Value = Int | String\nlet value: Value = @if flag { 1 } else { \"one\" }",
       "expected_outcome": "accept",
       "expected_existing_diagnostic": null
+    },
+    {
+      "fixture_id": "TFC-P-021-TERNARY-ONE-LAZY-ARM",
+      "rule_ids": [
+        "TFC-R007",
+        "TFC-R019",
+        "TFC-R020"
+      ],
+      "source": "let selected: Int = ready() ? left() : right()",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "condition_normalized_type": "Bool",
+        "condition_evaluation_count": 1,
+        "selected_arm_evaluation_count": 1,
+        "unselected_arm_evaluation_count": 0,
+        "joined_normalized_type": "Int",
+        "automatic_anonymous_union_count": 0
+      }
+    },
+    {
+      "fixture_id": "TFC-P-022-ORDINARY-MUT-CALLEE-LOCAL",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R020"
+      ],
+      "source": "def adjust(mut local: Box) -> Int = {\n  local.value = local.value + 1\n  return local.value\n}\nlet observed = adjust(owner)",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "parameter_mode": "mut",
+        "argument_evaluation_count": 1,
+        "callee_local_mutable": true,
+        "caller_place_alias_count": 0,
+        "caller_writeback_count": 0,
+        "cleanup_owner_after_commit": "callee"
+      }
+    },
+    {
+      "fixture_id": "TFC-P-023-INOUT-CALLER-WRITEBACK",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R020"
+      ],
+      "source": "def adjust(inout place: Box) -> Unit = {\n  place.value = place.value + 1\n}\nadjust(owner)",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "parameter_mode": "inout",
+        "caller_place_borrowed_exclusively": true,
+        "caller_place_alias_count": 1,
+        "caller_writeback": true,
+        "cleanup_owner": "caller"
+      }
     }
   ],
   "negative": [
@@ -466,6 +520,22 @@
         "cleanup": "drop_exactly_once",
         "reservation": "defer close(resource)"
       }
+    },
+    {
+      "fixture_id": "TFC-N-026-TERNARY-AUTOMATIC-UNION",
+      "rule_ids": [
+        "TFC-R019"
+      ],
+      "source": "let value = ready ? 1 : \"one\"",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "ternary arms do not synthesize an anonymous Union without one independently fixed expected type",
+      "expected_existing_diagnostic": "TERNARY_BRANCH_TYPE_MISMATCH",
+      "assertions": {
+        "left_normalized_type": "Int",
+        "right_normalized_type": "String",
+        "independently_fixed_expected_type": false,
+        "automatic_anonymous_union_count": 0
+      }
     }
   ],
   "boundary": [
@@ -650,13 +720,110 @@
         "hash_async_closure_literal": "reject in current source"
       },
       "boundary": "named declaration activation does not activate async callable literals"
+    },
+    {
+      "fixture_id": "TFC-B-016-TERNARY-RESPONSIBILITY-JOIN",
+      "rule_ids": [
+        "TFC-R019",
+        "TFC-R020"
+      ],
+      "descriptor": {
+        "condition_evaluation_count": 1,
+        "selected_arm_evaluation_count": 1,
+        "unselected_arm_evaluation_count": 0,
+        "joined_axes": [
+          "normalized_type",
+          "place_capability",
+          "ownership",
+          "effects",
+          "recoverable_errors",
+          "cancellation",
+          "cleanup"
+        ],
+        "discarded_obligation_count": 0
+      },
+      "assertions": {
+        "automatic_anonymous_union_count": 0,
+        "source_order_type_selection": false,
+        "branch_cleanup_balanced_before_join": true
+      },
+      "boundary": "static checking normalizes both possible incoming contracts, while runtime evaluates only the selected arm and loses no responsibility axis"
+    },
+    {
+      "fixture_id": "TFC-B-017-TERNARY-UNSELECTED-ARM",
+      "rule_ids": [
+        "TFC-R019",
+        "TFC-R020"
+      ],
+      "descriptor": {
+        "source": "let value = true ? acquire() : forbiddenSideEffect()",
+        "condition_value": true,
+        "selected_arm": "acquire()",
+        "unselected_arm": "forbiddenSideEffect()"
+      },
+      "assertions": {
+        "condition_evaluation_count": 1,
+        "selected_arm_evaluation_count": 1,
+        "unselected_arm_evaluation_count": 0,
+        "unselected_arm_effect_count": 0,
+        "unselected_arm_error_count": 0,
+        "unselected_arm_cleanup_count": 0
+      },
+      "boundary": "an unselected arm is type-checked but contributes no runtime effect, error, cancellation, ownership transfer, or cleanup event"
+    },
+    {
+      "fixture_id": "TFC-B-018-MUT-VS-INOUT",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R020"
+      ],
+      "descriptor": {
+        "mut": {
+          "local_owner": "callee",
+          "mutable_local": true,
+          "caller_alias_count": 0,
+          "caller_writeback": false
+        },
+        "inout": {
+          "local_owner": "caller",
+          "exclusive_borrow": true,
+          "caller_alias_count": 1,
+          "caller_writeback": true
+        }
+      },
+      "assertions": {
+        "parameter_modes_equal": false,
+        "mut_is_inout_alias": false,
+        "mut_type_qualifier_is_inout_channel": false
+      },
+      "boundary": "mut controls a new callee-owned local; inout controls the caller place for one exclusive dynamic extent"
+    },
+    {
+      "fixture_id": "TFC-B-019-MUT-PRECOMMIT-FAILURE",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R020"
+      ],
+      "descriptor": {
+        "source": "consumeBeforeParameterCommit() -> failure",
+        "parameter_mode": "mut",
+        "phase": "argument_acquisition_before_callee_local_commit"
+      },
+      "assertions": {
+        "argument_evaluation_count": 1,
+        "callee_local_commit_count": 0,
+        "callee_local_cleanup_count": 0,
+        "caller_owner_retained": true,
+        "caller_writeback_count": 0
+      },
+      "boundary": "failure before the mut local's commit publishes no callee place and leaves ownership with the caller"
     }
   ],
   "expected_counts": {
-    "positive": 20,
-    "negative": 25,
-    "boundary": 15,
-    "total": 60,
+    "positive": 23,
+    "negative": 26,
+    "boundary": 19,
+    "total": 68,
     "product_executed": 0
   }
 }

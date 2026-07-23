@@ -1,5 +1,70 @@
 [
   {
+    "fixture_id": "PF-UnitOperationPolicyCoreAdmitted-BOUNDARY",
+    "predicate_id": "UnitOperationPolicyCoreAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnitOperationPolicyCoreAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 UnitOperationPolicyCoreAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnitOperationPolicyCoreAdmitted-NEG",
+    "predicate_id": "UnitOperationPolicyCoreAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor_mutation": {
+      "local_violation": "UnitOperationPolicyCoreAdmitted"
+    },
+    "fixture_kind": "mutation_recipe",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnitOperationPolicyCoreAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
     "fixture_id": "PF-UnitOperationPolicyCoreAdmitted-POS",
     "predicate_id": "UnitOperationPolicyCoreAdmitted",
     "expected": "admitted",
@@ -1757,107 +1822,6 @@
       "semantic_type": {
         "kind": "nominal",
         "type_id": "PF-WitnessResponsibilityCompatibility-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-WitnessResponsibilityCompatibility-POS",
-    "predicate_id": "WitnessResponsibilityCompatibility",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "FunctionType",
-      "normalized_type": "() -> Unit",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": [
-        "IOError"
-      ],
-      "effect_row": [
-        "io"
-      ],
-      "suspension": "none",
-      "cancellation": null,
-      "isolation": "local",
-      "authority": [
-        "filesystem"
-      ],
-      "construction_domain": null,
-      "call_shape": {
-        "required_error_families": [
-          "IOError",
-          "ParseError"
-        ],
-        "implementation_error_families": [
-          "IOError"
-        ],
-        "required_effects": [
-          "io",
-          "log"
-        ],
-        "implementation_effects": [
-          "io"
-        ],
-        "required_authorities": [
-          "filesystem",
-          "clock"
-        ],
-        "implementation_authorities": [
-          "filesystem"
-        ],
-        "required_isolation": "local",
-        "implementation_isolation": "local",
-        "required_suspension": "none",
-        "implementation_suspension": "none"
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "witness method responsibility must not be wider than requirement",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-WitnessResponsibilityCompatibility-POS"
       },
       "responsibility": {
         "ownership": "reusable",
