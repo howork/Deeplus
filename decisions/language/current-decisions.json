@@ -2,8 +2,17 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 27,
+  "law_count": 28,
   "laws": [
+    {
+      "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
+      "law": "Literal-shaped type-position spellings [T], #mut[T], #set{T}, #map{K:V}, and ${label:T,...} are accepted only as PREVIEW_DESIGN sugar for existing canonical identities and remain nonactivatable. Parser goals, one-based indexing, the current bracket matrix, Union formation, Map/Record domains, and current Prelude signatures are unchanged. Collection ownership is immutable-first with explicit mutable owners; Sequence stays traversal-only. Current FrozenList and ListSnapshot identities remain distinct. Freeze is shallow, failure-atomic, and supplies no shareability proof; snapshot preserves its source and yields an independent point-in-time value; a view is owner-bounded and coordinate/provenance preserving. Semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Supp Deeplus Literal-Shaped Type Surface and Collection Naming Proposal R1; spec/contracts/literal-shaped-collection-design.json",
+      "effective_revision": "r51f3-current-literal-shaped-collection-design-r1"
+    },
     {
       "id": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-PREVIEW",
       "law": "Enum declaration-order Ord derivation, case-owned Display mapping, and payload-free exact-variant subset aliases are accepted only as PREVIEW_DESIGN and remain nonactivatable. The order profile uses exactly one of enum#increasing or enum#decreasing, forms one whole-Enum Ord witness, and keeps SemanticOrderRank separate from VariantId, raw, serialization, layout, ABI, match priority, and operator glyph routing. A case-owned ~> mapping is all-or-none, uses a restricted read-only String template, and forms one whole-Enum Display witness. An enum-associated subset uses explicit type syntax, finite same-owner VariantId membership, owner representation and witnesses, lossless owner widening, and checked narrowing. Current Enum syntax and markers remain unchanged; semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",

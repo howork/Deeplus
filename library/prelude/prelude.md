@@ -143,3 +143,19 @@ must select every nested `Display` witness before evaluation. The accepted Enum
 case-mapping proposal may synthesize one whole-Enum witness only after its
 nonactivatable feature gates close; it creates no case- or alias-local witness.
 | `Iterator` | trait_profile | `stable_design` | for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN. |
+
+## 11. Nonactivatable collection ownership design note
+
+The accepted literal-shaped collection proposal is a design projection and
+adds no current Prelude entry or signature. Immutable-first naming is the
+successor rule, but current `FrozenList<T>` and `ListSnapshot<T>` remain
+distinct identities and are not aliases of `List<T>`. Freeze is shallow and
+failure-atomic and supplies no implicit shareability proof; snapshot is an
+independent point-in-time value; any collection view remains owner-bounded and
+coordinate/provenance preserving.
+
+`MutableMap`, `MutableSet`, `StringBuilder`, and `ByteBuffer` are reserved
+successor names only. `MutableSequence`, `MutableTuple`, general
+`MutableRecord`, and `MutableString` remain absent or deferred, and
+`Sequence<T>` remains traversal-only. This note is `PREVIEW_DESIGN`,
+`nonactivatable`, and closes no P1 or product lane.

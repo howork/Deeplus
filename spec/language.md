@@ -2028,6 +2028,76 @@ Payload ordering, payload-bearing exact-variant types, generic conditional
 synthesis, automatic reverse parsing, subset iteration/ranges, and bundled Trait
 derivation remain deferred.
 
+### Literal-shaped collection types and immutable-first ownership: accepted Preview design
+
+The Library proposal's Markdown entry and ZIP member carry the same report. Its
+two design axes are accepted once, with bounded repairs, as
+`PREVIEW_DESIGN` and `nonactivatable`. The current grammar contains none of the
+following type-position productions and remains authoritative. No parser,
+checker, MIR, runtime, formatter/LSP, Prelude-signature, diagnostic-registry, or
+product route is activated by this section.
+
+In a future type parser goal only, `[T]`, `#mut[T]`, `#set{T}`, `#map{K: V}`,
+and `${label: T, ...}` may be lossless source sugar for `List<T>`,
+`MutableList<T>`, `Set<T>`, `Map<K,V>`, and a closed required-label structural
+Record row. The source spelling belongs to CST and formatting identity; HIR,
+type identity, API digest, ABI, and serialization use the canonical named or
+row identity. The sigils are attached with no intervening trivia. `#N[T]`
+remains the NumericArray `SharpShapeType` owner. Type, value, pattern, and index
+parser goals never repair or reinterpret one another. `[T | U]` contains the
+already explicit Union `T | U`; it does not infer a heterogeneous Union.
+
+The minimum Record type profile has closed, required, static Identifier labels,
+deterministic duplicate rejection, and the current order-normalized row
+identity. Open or optional rows, rest, string labels, row variance, and empty
+row identity remain deferred. A Map key is a runtime exact `K`; a Record label
+is a static Identifier. Neither converts to the other, and the sugar introduces
+no Map dot-key projection or named unfold.
+
+The spelling of a type grants no operation or capability. In particular it
+does not activate brackets, mutation, operator glyphs, Trait witnesses, Copy,
+deep freeze, shareability, transferability, or actor crossing. The current
+one-based List/String/Bytes domains, bounded coordinates, slice provenance,
+Map exact-key lookup, Tuple and Record projections, NumericArray axes, and
+closed bracket-carrier matrix are unchanged. `MutableList`, `FrozenList`, and
+`ListSnapshot` remain outside that matrix.
+
+Owned collection naming is immutable-first: `List`, `Map`, `Set`, `String`,
+`Bytes`, Tuple, and Record denote immutable owners; mutation uses a distinct
+explicit mutable owner and never an implicit subtype conversion. `Sequence`
+remains a traversal protocol only and creates no bracket, mutation, freeze,
+snapshot, or view route. `MutableMap`, `MutableSet`, `StringBuilder`, and
+`ByteBuffer` are reserved successor owner names without a current Prelude
+identity. `MutableSequence`, `MutableTuple`, general `MutableRecord`, and
+`MutableString` remain absent or deferred.
+
+Current `MutableList<T>::freeze` and `snapshot` continue to return the distinct
+current identities `FrozenList<T>` and `ListSnapshot<T>`. Replacing either with
+ordinary `List<T>` would change indexing, public API, ABI, serialization, and
+actor-shareability residue and therefore requires an explicit successor
+migration; no alias or automatic rewrite is admitted here.
+
+The successor responsibility split is nevertheless fixed. `freeze` moves a
+mutable owner but consumes it exactly once only after a successful commit. It
+rejects an outstanding borrow or view, preserves the exact owner and value
+state on failure, is shallow with respect to payload capabilities, and never
+proves `ShareSafe` or `Transferable`. `snapshot` borrows and preserves its
+source and produces an independent point-in-time immutable result; later source
+mutation cannot change it, while allocation and representation cost remain
+visible and implementation-dependent. A `view` is a borrowed, owner-bounded,
+nonowning projection that preserves logical domain, coordinates, and
+provenance; it cannot escape or cross isolation and conflicts with owner
+mutation, move, or freeze. No common or collection-specific successor view
+carrier name is selected by this decision. These three message surfaces use
+the no-argument receiver form without parentheses only after separate source
+activation authority.
+
+All 22 feature P1 items and the four separate M13 actions retain their current
+status. The grammar/type-system/implementation/test/tooling/migration work
+listed in `spec/contracts/literal-shaped-collection-design.json` is an internal
+activation-gate ledger, not a new P1 set. Semantic P0 is zero and every product
+lane remains `NOT_RUN`.
+
 <!-- POST_PR16_UNIT_BEGIN:X-01 -->
 ```json
 {

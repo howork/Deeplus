@@ -222,6 +222,43 @@ The current bounded range forms are inclusive `i..j` and explicit exclusive end 
 
 > Status fence: this section is governed by Part XII's current preimplementation Preview boundary. Current type-system behavior remains authoritative; the successor material is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, and this text closes no P1 or product lane.
 
+### Literal-shaped canonicalization and collection ownership
+
+The accepted literal-shaped collection spellings are design-only type-position
+sugar. Normalization maps `[T]`, `#mut[T]`, `#set{T}`, and `#map{K:V}` to
+`List<T>`, `MutableList<T>`, `Set<T>`, and `Map<K,V>` respectively, and maps
+`${label:T,...}` to the existing closed structural Record-row identity.
+Normalization creates no wrapper, subtype, ABI identity, serialization
+identity, witness, or operation. It runs only after an independently ratified
+type-goal parse; it cannot use type information to reinterpret a value,
+pattern, index, or NumericArray token stream.
+
+The Record minimum profile is closed and required-label-only. Labels are static
+Identifiers, duplicate labels reject, and canonical row identity keeps the
+current order-normalization law. Map keys remain runtime `K` values. No
+conversion, named unfold, or dot-key projection relates these domains. An
+explicit Union inside a collection type remains an ordinary Union and the
+sugar neither relaxes disjointness nor creates implicit heterogeneous-List
+inference.
+
+Immutable and mutable collection owners are distinct, non-subtyping
+identities. A shallow freeze changes the outer owner state only; payload
+ownership, alias, `ShareSafe`, `Transferable`, and witness obligations remain
+separate proofs. Freeze is a prepare/commit transaction: a live borrow rejects,
+failure returns the exact original owner and value state, and success consumes
+exactly once. Snapshot borrows and preserves its source while producing a
+point-in-time result whose later value is independent of source mutation.
+A view borrows its owner, preserves logical coordinates and provenance, and
+cannot overlap mutation, move, freeze, escape, suspension without an admitted
+region proof, or actor-isolation crossing.
+
+The current result identities `FrozenList<T>` and `ListSnapshot<T>` remain
+distinct from `List<T>`. Any successor unification is an observable migration
+because the current bracket matrix and shareability statements differ; it
+requires explicit API, ABI, serialization, indexing, and actor-evidence review.
+No representation complexity, copy-on-write strategy, common view carrier, or
+new mutable Prelude family is selected by this contract.
+
 <!-- POST_PR16_UNIT_BEGIN:SFD-N002 -->
 ```json
 {
