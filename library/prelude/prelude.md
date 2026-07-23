@@ -127,4 +127,35 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `LogicalIndexDomain<Index>` | trait | `stable_design` | named logical-domain contract; built-in brackets remain closed-owner syntax |
 | `Ord<T>` | trait | `stable_design` | nominal named ordering evidence, never an operator-glyph hook |
 | `Display` | trait/profile | `stable_design` | string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed |
+
+`Ord<T>.compare(lhs, rhs)` borrows both operands, is deterministic, pure,
+synchronous, non-consuming, authority-free, `throws Never`, and returns an `Int`
+whose sign alone is contractually meaningful and stable. It must be total for every admitted ground `T`;
+zero is the ground type's equality relation, and transitivity, antisymmetry and
+trichotomy are required. This named evidence never activates `<`, `<=`, `>`, or
+`>=`; the design-only example `EX-R48H-002` illustrates witness-slot markers and
+does not replace this generic Prelude signature.
+
+`Display.display()` borrows its receiver, is deterministic, synchronous,
+non-consuming, authority-free, `throws Never`, and performs no hidden locale,
+provider, serialization, parsing, or redaction operation. String interpolation
+must select every nested `Display` witness before evaluation. The accepted Enum
+case-mapping proposal may synthesize one whole-Enum witness only after its
+nonactivatable feature gates close; it creates no case- or alias-local witness.
 | `Iterator` | trait_profile | `stable_design` | for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN. |
+
+## 11. Nonactivatable collection ownership design note
+
+The accepted literal-shaped collection proposal is a design projection and
+adds no current Prelude entry or signature. Immutable-first naming is the
+successor rule, but current `FrozenList<T>` and `ListSnapshot<T>` remain
+distinct identities and are not aliases of `List<T>`. Freeze is shallow and
+failure-atomic and supplies no implicit shareability proof; snapshot is an
+independent point-in-time value; any collection view remains owner-bounded and
+coordinate/provenance preserving.
+
+`MutableMap`, `MutableSet`, `StringBuilder`, and `ByteBuffer` are reserved
+successor names only. `MutableSequence`, `MutableTuple`, general
+`MutableRecord`, and `MutableString` remain absent or deferred, and
+`Sequence<T>` remains traversal-only. This note is `PREVIEW_DESIGN`,
+`nonactivatable`, and closes no P1 or product lane.

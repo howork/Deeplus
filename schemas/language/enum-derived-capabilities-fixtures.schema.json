@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/enum-derived-capabilities-fixtures.schema.json",
+  "title": "Deeplus Enum derived capability Preview-design fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "fixture_schema", "revision", "contract", "semantic_p0", "current_binding", "open_feature_p1", "product_lanes", "cases", "expected_counts"],
+  "properties": {
+    "schema": {"const": "deeplus.enum-derived-capabilities-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/enum-derived-capabilities-fixtures.schema.json"},
+    "revision": {"const": "r51f3-current-literal-shaped-collection-design-r1"},
+    "contract": {"const": "spec/contracts/enum-derived-capabilities.json"},
+    "semantic_p0": {"const": 0},
+    "current_binding": {"const": false},
+    "open_feature_p1": {"type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true, "items": {"type": "string"}},
+    "product_lanes": {"type": "object", "minProperties": 15, "maxProperties": 15, "additionalProperties": {"const": "NOT_RUN"}},
+    "cases": {"type": "array", "minItems": 35, "maxItems": 35, "items": {"$ref": "#/$defs/case"}},
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cases", "design_admit", "design_reject", "boundary", "current_source_activated", "p1_closed", "p1_created", "product_executed"],
+      "properties": {
+        "cases": {"const": 35},
+        "design_admit": {"const": 15},
+        "design_reject": {"const": 15},
+        "boundary": {"const": 5},
+        "current_source_activated": {"const": 0},
+        "p1_closed": {"const": 0},
+        "p1_created": {"const": 0},
+        "product_executed": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "fixture_class", "rule_ids", "facet", "source", "expected_design", "current_source_outcome", "diagnostic_family_or_null", "assertions", "execution_state"],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^EDC-R1-(POS|NEG|BOUND)-[0-9]{3}$"},
+        "fixture_class": {"enum": ["positive", "negative", "boundary"]},
+        "rule_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"pattern": "^EDC-R[0-9]{3}$"}},
+        "facet": {"enum": ["ORDER", "DISPLAY", "SUBSET", "CROSS_LANE"]},
+        "source": {"type": "string", "minLength": 1},
+        "expected_design": {"enum": ["ADMIT", "REJECT", "BOUNDARY"]},
+        "current_source_outcome": {"const": "NONACTIVATABLE_NOT_CURRENT"},
+        "diagnostic_family_or_null": {"type": ["string", "null"]},
+        "assertions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

@@ -1291,8 +1291,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GuardPredicateAdmitted",
     "source_name": "GuardPredicateAdmitted",
-    "summary": "guard must be Bool, pure, no-throw, no-suspend",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "A guard is exact Bool, pure, no-throw, nonsuspending, authority-free and cannot transfer control.",
+    "input_descriptor": "TRNCoherenceDescriptor",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
@@ -1317,16 +1317,16 @@
     "diagnostic_refs": [
       "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
       "GUARD_CONDITION_NOT_BOOL",
-      "GUARD_CONDITION_THROWS_NOT_ALLOWED"
+      "GUARD_CONDITION_THROWS_NOT_ALLOWED",
+      "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
+      "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
     ],
-    "design_seed_diagnostic_refs": [
-      "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
-      "GUARD_CONDITION_NOT_BOOL",
-      "GUARD_CONDITION_THROWS_NOT_ALLOWED"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "guard must be Bool, pure, no-throw, no-suspend"
+      "normalize the guard expression result and responsibility summary",
+      "require exact Bool before control-flow use",
+      "require empty ErrorSet and EffectRow, no suspension, no authority, and no external control transfer"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1347,23 +1347,30 @@
     ],
     "formal_judgment_id": "J-GuardPredicateAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
     "preconditions": [
-      "guard must be Bool, pure, no-throw, no-suspend"
+      "normalize the guard expression result and responsibility summary",
+      "require exact Bool before control-flow use",
+      "require empty ErrorSet and EffectRow, no suspension, no authority, and no external control transfer"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record GuardPredicateAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate and normalize the guard descriptor",
+      "if result type is not exact Bool emit GUARD_CONDITION_NOT_BOOL",
+      "else if ErrorSet is nonempty emit GUARD_CONDITION_THROWS_NOT_ALLOWED",
+      "else if EffectRow, authority, or mutation is present emit GUARD_CONDITION_EFFECT_NOT_ALLOWED",
+      "else if suspension is present emit GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
+      "else if external control transfer is present emit GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED",
+      "otherwise admit without creating a narrowing fact for an opaque callable"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
     "secondary_diagnostics": [
       "GUARD_CONDITION_NOT_BOOL",
-      "GUARD_CONDITION_THROWS_NOT_ALLOWED"
+      "GUARD_CONDITION_THROWS_NOT_ALLOWED",
+      "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
+      "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
     ],
     "positive_fixture_ids": [
       "PF-GuardPredicateAdmitted-POS"
@@ -1374,9 +1381,16 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_incomplete_dispatch",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_ordered_dispatch",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_result_not_exact_Bool": "GUARD_CONDITION_NOT_BOOL",
+      "2_nonempty_ErrorSet": "GUARD_CONDITION_THROWS_NOT_ALLOWED",
+      "3_effect_authority_or_mutation": "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
+      "4_suspension": "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
+      "5_external_control_transfer": "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
+    },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "8a07fe3a947a5e10e208278946c9874ea56f9aa7c137d400bcc4b4ef6673b769",

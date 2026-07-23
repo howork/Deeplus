@@ -504,8 +504,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MatchExhaustive",
     "source_name": "match exhaustiveness and usefulness",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "Compute match-arm usefulness and final exhaustiveness over one finite structural partition.",
+    "input_descriptor": "TRNCoherenceDescriptor",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
@@ -518,14 +518,18 @@
       "match_exhaustiveness_phase_a"
     ],
     "diagnostic_refs": [
+      "MATCH_ARM_UNREACHABLE",
+      "OTHERWISE_UNREACHABLE",
+      "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
       "MATCH_NOT_EXHAUSTIVE"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "sealed domain model",
-      "guard treatment",
-      "ownership binding mode"
+      "normalize the finite closed subject partition",
+      "compute each arm's structural cells before evaluating its guard",
+      "subtract coverage only for unguarded reachable arms",
+      "preserve canonical residual witnesses"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -540,26 +544,32 @@
     ],
     "formal_judgment_id": "J-MatchExhaustive",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
     "preconditions": [
-      "sealed domain model",
-      "guard treatment",
-      "ownership binding mode"
+      "normalize the finite closed subject partition",
+      "compute each arm's structural cells before evaluating its guard",
+      "subtract coverage only for unguarded reachable arms",
+      "preserve canonical residual witnesses"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
-      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
+      "validate the closed TRN coherence descriptor and its arm records",
       "normalize the finite constructor/type domain",
-      "subtract each unguarded reachable arm pattern",
-      "guarded arms never remove coverage",
-      "reject the first canonical uncovered witness",
+      "for each arm compute new structural cells relative to prior unguarded coverage; emit MATCH_ARM_UNREACHABLE when the set is empty",
+      "guarded arms participate in usefulness but never remove coverage",
+      "emit OTHERWISE_UNREACHABLE when otherwise follows an empty residual",
+      "emit MATCH_NONEXHAUSTIVE_AFTER_GUARDS when every remaining witness was structurally mentioned only by guarded arms",
+      "otherwise emit MATCH_NOT_EXHAUSTIVE with the first canonical uncovered witness",
       "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
     ],
     "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "MATCH_NOT_EXHAUSTIVE",
-    "secondary_diagnostics": [],
+    "secondary_diagnostics": [
+      "MATCH_ARM_UNREACHABLE",
+      "OTHERWISE_UNREACHABLE",
+      "MATCH_NONEXHAUSTIVE_AFTER_GUARDS"
+    ],
     "positive_fixture_ids": [
       "PF-MatchExhaustive-POS",
       "PF-MatchExhaustive-BOUNDARY"
@@ -579,10 +589,10 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "MATCHEXHAUSTIVE_NOT_ADMITTED",
-      "branch_02": "MATCHEXHAUSTIVE_NOT_ADMITTED",
-      "branch_03": "MATCHEXHAUSTIVE_NOT_ADMITTED",
-      "branch_04": "MATCHEXHAUSTIVE_NOT_ADMITTED"
+      "1_arm_structural_new_set_empty": "MATCH_ARM_UNREACHABLE",
+      "2_otherwise_after_empty_residual": "OTHERWISE_UNREACHABLE",
+      "3_residual_mentioned_only_by_guarded_arms": "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+      "4_other_nonempty_residual": "MATCH_NOT_EXHAUSTIVE"
     }
   },
   {
@@ -590,7 +600,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MatchGuardPurityAdmitted",
     "source_name": "match arm guard purity",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -673,9 +683,9 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
-      "branch_02": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
-      "branch_03": "MATCH_GUARD_CONSUME_NOT_ALLOWED"
+      "1_probe_binder_consume_or_move_before_commit": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
+      "2_effect_throw_suspend_authority_mutation_or_escape": "MATCH_GUARD_EFFECT_NOT_ALLOWED",
+      "3_result_not_exact_Bool": "MATCH_GUARD_NOT_BOOL"
     }
   },
   {

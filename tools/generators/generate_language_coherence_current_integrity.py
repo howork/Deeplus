@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-value-operator-index-coherence-r1"
-PREVIOUS_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
+REVISION = "r51f3-current-literal-shaped-collection-design-r1"
+PREVIOUS_REVISION = "r51f3-current-enum-derived-capabilities-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
@@ -328,7 +328,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "product lanes")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 681,
+        "features": 688,
         "predicates": 245,
         "predicate_fixtures": 764,
         "no_go": 150,

@@ -193,11 +193,11 @@
         "suspends": false,
         "isolation": "local"
       },
-      "call_shape": "(value: T) -> String",
+      "call_shape": "(value: T) -> Bool",
       "parameter_modes": [
         "borrow"
       ],
-      "result_type": "String"
+      "result_type": "Bool"
     },
     "admitted_condition": "minimum closed boundary of the declared decision procedure",
     "rule_seed": "R51a1 GuardCallableAdmitted boundary fixture; product checker NOT_RUN.",
@@ -420,11 +420,11 @@
         "suspends": false,
         "isolation": "local"
       },
-      "call_shape": "(value: T) -> String",
+      "call_shape": "(consume value: T) -> Bool",
       "parameter_modes": [
-        "borrow"
+        "consume"
       ],
-      "result_type": "String"
+      "result_type": "Bool"
     },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
@@ -528,11 +528,11 @@
         "suspends": false,
         "isolation": "local"
       },
-      "call_shape": "(value: T) -> String",
+      "call_shape": "(value: T) -> Bool",
       "parameter_modes": [
         "borrow"
       ],
-      "result_type": "String"
+      "result_type": "Bool"
     },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
@@ -541,7 +541,7 @@
     "fixture_id": "PF-GuardPredicateAdmitted-NEG",
     "predicate_id": "GuardPredicateAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
+    "expected_primary_diagnostic": "GUARD_CONDITION_NOT_BOOL",
     "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor": {

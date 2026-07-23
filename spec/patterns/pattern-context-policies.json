@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.pattern-context-policy-registry/r1",
-  "revision": "r51f3-current-value-operator-index-coherence-r1",
+  "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
   "row_schema": "schemas/language/pattern-context-policy-row.schema.json",
   "authority": "LANGUAGE / TYPE_SYSTEM",
   "evidence_level": "DESIGN_STATIC",
@@ -15,6 +15,7 @@
   "current_pattern_kind_ids": [
     "PK-BINDER",
     "PK-TYPED-BINDER",
+    "PK-UNION-ALTERNATIVE-BINDER",
     "PK-WILDCARD",
     "PK-UNIT",
     "PK-LITERAL",
@@ -41,7 +42,7 @@
   "rows": [
     {
       "context_id": "PCTX-ORDINARY-PARAMETER",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ValueParameter",
       "admitted_form": "IDENTIFIER_ONLY",
@@ -61,7 +62,7 @@
     },
     {
       "context_id": "PCTX-LAMBDA-PARAMETER",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "LambdaParameter",
       "admitted_form": "IDENTIFIER_ONLY",
@@ -81,7 +82,7 @@
     },
     {
       "context_id": "PCTX-PLAIN-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "BindingCore.let",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -113,7 +114,7 @@
     },
     {
       "context_id": "PCTX-PLAIN-VAR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "BindingCore.var",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -145,13 +146,14 @@
     },
     {
       "context_id": "PCTX-GUARDED-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GuardedBindingStmt",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -177,7 +179,7 @@
     },
     {
       "context_id": "PCTX-GUARDED-LET-RESIDUAL",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GuardedBindingFailure.Pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -209,13 +211,14 @@
     },
     {
       "context_id": "PCTX-IF-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "PatternControlCondition.if-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -241,13 +244,14 @@
     },
     {
       "context_id": "PCTX-WHILE-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "PatternControlCondition.while-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -273,7 +277,7 @@
     },
     {
       "context_id": "PCTX-BARE-FOR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForLoop.bare-pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -305,13 +309,14 @@
     },
     {
       "context_id": "PCTX-FOR-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForLoop.for-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -337,7 +342,7 @@
     },
     {
       "context_id": "PCTX-ASYNC-BARE-FOR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "AsyncForLoop.bare-pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -369,13 +374,14 @@
     },
     {
       "context_id": "PCTX-ASYNC-FOR-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "AsyncForLoop.for-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -401,13 +407,14 @@
     },
     {
       "context_id": "PCTX-STATEMENT-MATCH",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "MatchStatement",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -433,13 +440,14 @@
     },
     {
       "context_id": "PCTX-VALUE-MATCH",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "MatchExpr",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -465,13 +473,14 @@
     },
     {
       "context_id": "PCTX-DECLARATIVE-CLAUSE",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ClauseFunctionBody",
       "admitted_form": "DECLARATIVE_DISJOINT_PARTITION",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -497,7 +506,7 @@
     },
     {
       "context_id": "PCTX-CATCH",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "CatchClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -529,7 +538,7 @@
     },
     {
       "context_id": "PCTX-VALUE-CATCH",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ValueCatchClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -561,7 +570,7 @@
     },
     {
       "context_id": "PCTX-GENERATOR-FOR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GeneratorCore",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -593,7 +602,7 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-FOR",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -625,13 +634,14 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-IF-LET",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "IfLetClause",
       "admitted_form": "EXPLICIT_REFUTABLE",
       "allowed_pattern_kind_ids": [
         "PK-BINDER",
         "PK-TYPED-BINDER",
+        "PK-UNION-ALTERNATIVE-BINDER",
         "PK-WILDCARD",
         "PK-UNIT",
         "PK-LITERAL",
@@ -657,7 +667,7 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-UNFOLD",
-      "revision": "r51f3-current-value-operator-index-coherence-r1",
+      "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "UnfoldClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",

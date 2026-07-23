@@ -1086,6 +1086,18 @@
     "relation": "secondary"
   },
   {
+    "violation_id": null,
+    "predicate_id": "GuardPredicateAdmitted",
+    "diagnostic_id": "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "GuardPredicateAdmitted",
+    "diagnostic_id": "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED",
+    "relation": "secondary"
+  },
+  {
     "violation_id": "GuardedBindingCommitAdmitted:default",
     "predicate_id": "GuardedBindingCommitAdmitted",
     "diagnostic_id": "GUARDED_LET_EXIT_MUST_BE_UNCONDITIONAL",
@@ -1320,6 +1332,24 @@
     "relation": "primary"
   },
   {
+    "violation_id": null,
+    "predicate_id": "MatchExhaustive",
+    "diagnostic_id": "MATCH_ARM_UNREACHABLE",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "MatchExhaustive",
+    "diagnostic_id": "OTHERWISE_UNREACHABLE",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "MatchExhaustive",
+    "diagnostic_id": "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+    "relation": "secondary"
+  },
+  {
     "violation_id": "MatchGuardPurityAdmitted:default",
     "predicate_id": "MatchGuardPurityAdmitted",
     "diagnostic_id": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
@@ -1496,8 +1526,20 @@
   {
     "violation_id": "NarrowUnionByPattern:default",
     "predicate_id": "NarrowUnionByPattern",
-    "diagnostic_id": "UNION_VALUE_REQUIRES_NARROWING",
+    "diagnostic_id": "MATCH_ARM_UNREACHABLE",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NarrowUnionByPattern",
+    "diagnostic_id": "UNION_VALUE_REQUIRES_NARROWING",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NarrowUnionByPattern",
+    "diagnostic_id": "UNION_PATTERN_ALTERNATIVE_NOT_EXACT",
+    "relation": "secondary"
   },
   {
     "violation_id": "NominalPrototypeDerivationAdmitted:default",
@@ -1533,6 +1575,12 @@
     "violation_id": null,
     "predicate_id": "NormalizeUnion",
     "diagnostic_id": "UNION_AUTOMATIC_JOIN_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NormalizeUnion",
+    "diagnostic_id": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
     "relation": "secondary"
   },
   {

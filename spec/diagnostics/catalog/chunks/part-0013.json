@@ -272,24 +272,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "OR_PATTERN_BINDINGS_INCONSISTENT",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
       "pattern_match_ownership_split"
     ],
     "fixit_hint": "make bindings consistent across alternatives",
     "fixit_kind": "suggestion",
     "fixit_policy": "make bindings consistent across alternatives",
-    "message": "All alternatives of an or-pattern must bind the same names with compatible ownership modes.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "message": "All alternatives of an or-pattern must bind the same names with identical canonical types, modes, mutability, usable lifetimes, and capabilities.",
+    "notes": "Current pre-commit binder-contract diagnostic; differing projection paths remain permitted. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
@@ -356,7 +356,8 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "match_otherwise_default_arm"
+      "match_otherwise_default_arm",
+      "match_exhaustiveness_phase_a"
     ],
     "fixit_hint": "remove the unreachable otherwise arm",
     "fixit_kind": "suggestion",

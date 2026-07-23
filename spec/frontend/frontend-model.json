@@ -2038,6 +2038,27 @@
       "field_type": "NormalizedTypeIdentity | null",
       "contract": "the field constrains the independently evaluated subject before Pattern admission and never creates a second top-level TypedBindingPattern or runtime type test"
     },
+    "closed_union_typed_binder_elaboration": {
+      "surface_production": "TypedBindingPattern",
+      "precondition": "refutable Pattern owner and normalized subject is a closed Union and TypeRef is exactly one declared alternative identity",
+      "normalized_ast_variant": "UnionAlternativeBindPattern",
+      "hir_variant": "TypedUnionAlternativeBindPattern",
+      "test": "UNION_INJECTION_TAG_TEST",
+      "flow_result": "arm-local Phi contains only the selected alternative; declared semantic type is unchanged",
+      "open_runtime_type_test": false,
+      "subtype_search": false,
+      "refinement_predicate_execution": false,
+      "trait_or_provider_lookup": false,
+      "fallback": "ordinary irrefutable TypedBindPattern static admission"
+    },
+    "flow_proof_environment": {
+      "name": "Phi",
+      "join": "intersection of facts on all incoming edges",
+      "kill_events": ["subject assignment", "aliasing mutation", "exclusive borrow", "escape or mutable capture", "consume", "call with possible subject mutation"],
+      "ordinary_bool_call_adds_fact": false,
+      "def_guard_call_adds_fact": false,
+      "inline_r0_guard_may_add_fact": true
+    },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
     "tuple_pattern_current": false,
@@ -2213,6 +2234,54 @@
       "recognized_only_in": "RECOVERY",
       "source_activation": "nonactivatable",
       "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open"
+    },
+    "enum_declaration_order_ord_derivation": {
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "CE-E-P1-007 and TCC gates remain open; current EnumDecl and intrinsic comparison glyph routing are unchanged"
+    },
+    "enum_case_display_mapping": {
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "the enum-owned token, restricted template calculus, witness manifest, diagnostics, and execution evidence remain open"
+    },
+    "enum_exact_variant_subset_alias": {
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "exact-variant identity, associated alias ownership, subset-pattern judgment, API residue, and execution evidence remain open"
+    },
+    "literal_shaped_list_type_surface": {
+      "represented_in": "spec/contracts/literal-shaped-collection-design.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "type-goal token ownership, CST preservation, HIR normalization, diagnostics, formatter behavior, and execution evidence are not activated"
+    },
+    "literal_shaped_set_map_type_surface": {
+      "represented_in": "spec/contracts/literal-shaped-collection-design.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "attached sigil dispatch and Map/Set type-goal productions remain design-only"
+    },
+    "literal_shaped_closed_record_type_surface": {
+      "represented_in": "spec/contracts/literal-shaped-collection-design.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "the minimum closed required-label row is accepted in design, but no parser or checker route is current"
+    },
+    "immutable_first_collection_ownership": {
+      "represented_in": "spec/contracts/literal-shaped-collection-design.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "current Prelude identities and signatures are preserved while successor ownership naming and transition responsibility remain design-only"
+    },
+    "freeze_snapshot_view_successor": {
+      "represented_in": "spec/contracts/literal-shaped-collection-design.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "reason": "transactional MIR, borrow conflict, migration, actor evidence, diagnostics, and execution gates are not activated"
     }
   },
   "accepted_surface_families_current": {

@@ -373,6 +373,14 @@ The current destructuring carriers are nominal variant payloads, statically know
 
 Ordinary `match` chooses the first admitted arm in source order after structural admission and its optional guard; source order never repairs overlap in a declarative callable-clause family. Sealed-family exhaustiveness uses the complete current family. Option, Result, union, enum, List exactness, and loop outcome each use their explicit current alternatives. An undecidable or incomplete partition is rejected rather than assumed exhaustive. Pattern opening does not directly inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never performs backtracking.
 
+`Identifier : TypeRef` remains an irrefutable static typed binder except in a refutable owner over an already normalized closed Union. There, and only when `TypeRef` is exactly one declared alternative identity, the checker elaborates it to a union-alternative binder and tests the Union's stored injection identity. This bounded discriminator read is not a general runtime type test: it performs no subtyping search, refinement execution, reflection, provider lookup, or Trait discovery.
+
+The checker maintains a flow-proof environment `Phi` separately from each binding's declared semantic type. A successful structural pattern intersects `Phi` with its exact enum case or union alternative; an inline admitted R0 guard may add finite facts on its true edge. Ordinary Bool calls, including calls to `def#guard`, add no narrowing fact. Joins retain only facts present on every incoming edge, and assignment, aliasing mutation, exclusive borrow, escape, capture, consume, or a call permitted to mutate the subject kills affected facts.
+
+Usefulness and exhaustiveness are one ordered finite-partition pass. An arm with no new structural cell is `MATCH_ARM_UNREACHABLE`. A guard is checked for usefulness but never subtracts coverage; a witness left only because all covering arms are guarded is `MATCH_NONEXHAUSTIVE_AFTER_GUARDS`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`; any other final residual is `MATCH_NOT_EXHAUSTIVE`.
+
+Enum pattern admission resolves the `VariantId` in the scrutinee's Enum owner and checks the active payload arity, labels or positions, and child-pattern types before any guard or ownership commit. A foreign or unknown case and any inactive-payload projection reject at that boundary. Or-pattern alternatives must bind identical names, canonical types, modes, mutability, usable lifetimes, and capabilities; projection paths may differ. Structural failure and false guards commit no binding, move, exclusive borrow, or authority.
+
 ## 36. RCTS-V5 and dynamic boundary
 
 RCTS-V5 is the closed design descriptor family for checker/reference handoff. It records source kind, normalized type, call shape, ownership, effects, errors, cancellation, labels, shape/rank/orientation, evidence, and MIR responsibility as required by each predicate. Static validator PASS is design-static evidence only.
@@ -1955,6 +1963,140 @@ Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is 
 <!-- POST_PR16_UNIT_BEGIN:E-13 -->
 13. `E-13`: logical owner diagnostic families and their field contract are materialized without inventing final registry IDs. Recovery creates zero admitted AST/HIR/MIR/API residue.
 <!-- POST_PR16_UNIT_END:E-13 -->
+
+### Enum-derived capabilities: accepted Preview design, not current syntax
+
+The following three facilities are accepted as one coordinated `PREVIEW_DESIGN`
+contract under `CE-E-P1-004`, `CE-E-P1-007`, `CE-E-P1-008`, and the open TCC
+gates. They are canonical design decisions but are `nonactivatable`: the current
+`EnumDecl`, current `.`, `+`, `*.`, `*+` reachability, current lowercase `via`,
+and current parser/checker/runtime behavior do not change. Static files or
+fixtures close no P1 and establish no product support.
+
+1. A future declaration may select exactly one owner-specific order role,
+   `enum#increasing` or `enum#decreasing`. The first form means declaration
+   order is strictly increasing; the second means it is strictly decreasing.
+   The minimum profile is nominal, nonempty, payload-free, and nongeneric. It
+   synthesizes exactly one whole-Enum `Ord<E>` witness. `SemanticOrderRank` and
+   the ordered `VariantId` vector are not source-visible ordinals and are
+   independent of raw values, tags, discriminants, serialization, layout, ABI,
+   match priority, ranges, iteration, or transitions. Comparison observes only
+   sign, borrows both operands, is pure, synchronous, `throws Never`, consumes
+   nothing, and returns zero exactly for the same `EnumId` and `VariantId`.
+   An explicit same-ground `Ord<E>` conformance conflicts; no priority,
+   specialization, provider lookup, fallback, or comparison-glyph activation is
+   inferred.
+2. A future enum case may own `~>` followed by a restricted String template.
+   If one inhabitable case maps, every inhabitable case maps exactly once. Named
+   payload fields are read-only borrowed binders inside that case's template;
+   an unlabeled payload gets no invented `$1` or `it` name. Every interpolation
+   hole requires one already selected `Display` witness. The template cannot
+   move, mutate, throw, suspend, spawn, escape a binder, call an arbitrary
+   provider, or perform hidden locale lookup. The complete mapping synthesizes
+   exactly one whole-Enum `Display` witness and zero case witnesses. It is not
+   serialization, parsing, localization, redaction, raw identity, or a reverse
+   map. Partial mapping has no case-name fallback, and an explicit same-ground
+   `Display` conformance conflicts.
+3. A future enum body may contain an explicit associated alias such as
+   `+type Weekend = Sat | Sun`; the bare spelling `Weekend = ...` is not
+   admitted. A payload-free exact variant is the finite identity
+   `(EnumId, VariantId)`, not an open runtime subtype. A named subset is a frozen
+   same-owner `VariantId` set plus an enum-universe digest. It creates no case,
+   constructor, wrapper, storage, allocation, tag, raw mapping, layout, or Trait
+   witness. An exact variant or subset widens to its owner by a bounded
+   `VariantOwnerWidening` proof; owner-to-subset and unrelated subset narrowing
+   require `as?`, an admitted pattern, or another explicit checked boundary.
+   Exhaustiveness and unreachability operate on the frozen allowed-variant set,
+   not general subtyping search. Alias order is semantically irrelevant, subset
+   inclusion is the only implicit subset conversion, and aliases reuse the
+   owner's one nominal witness. If a normalized subset contains the complete
+   frozen variant universe, its canonical type is the nominal owner Enum; the
+   associated alias remains a non-identifying source spelling.
+
+PC-10 keeps exactly eight independent top-level records: `source`, `resolution`,
+`behavior`, `serialization`, `runtime_layout`, `foreign_ABI`,
+`tooling_reflection`, and `product`. Order and Display are independent
+subrecords of `behavior`; subset membership and owner widening are independent
+subrecords of `resolution`; raw identity is a `serialization` subrecord and
+never aliases semantic identity. Reordering preserves stable `VariantId` values
+but changes the order vector and order-behavior digest. Changing a display
+template changes only Display behavior residue. Adding a case does not silently
+expand an explicit subset. Incompatible order, generated-witness, subset, or
+enum-universe summaries reject at import/link validation instead of choosing by
+source order. No sibling status propagation or `overall_pass` is introduced.
+Payload ordering, payload-bearing exact-variant types, generic conditional
+synthesis, automatic reverse parsing, subset iteration/ranges, and bundled Trait
+derivation remain deferred.
+
+### Literal-shaped collection types and immutable-first ownership: accepted Preview design
+
+The Library proposal's Markdown entry and ZIP member carry the same report. Its
+two design axes are accepted once, with bounded repairs, as
+`PREVIEW_DESIGN` and `nonactivatable`. The current grammar contains none of the
+following type-position productions and remains authoritative. No parser,
+checker, MIR, runtime, formatter/LSP, Prelude-signature, diagnostic-registry, or
+product route is activated by this section.
+
+In a future type parser goal only, `[T]`, `#mut[T]`, `#set{T}`, `#map{K: V}`,
+and `${label: T, ...}` may be lossless source sugar for `List<T>`,
+`MutableList<T>`, `Set<T>`, `Map<K,V>`, and a closed required-label structural
+Record row. The source spelling belongs to CST and formatting identity; HIR,
+type identity, API digest, ABI, and serialization use the canonical named or
+row identity. The sigils are attached with no intervening trivia. `#N[T]`
+remains the NumericArray `SharpShapeType` owner. Type, value, pattern, and index
+parser goals never repair or reinterpret one another. `[T | U]` contains the
+already explicit Union `T | U`; it does not infer a heterogeneous Union.
+
+The minimum Record type profile has closed, required, static Identifier labels,
+deterministic duplicate rejection, and the current order-normalized row
+identity. Open or optional rows, rest, string labels, row variance, and empty
+row identity remain deferred. A Map key is a runtime exact `K`; a Record label
+is a static Identifier. Neither converts to the other, and the sugar introduces
+no Map dot-key projection or named unfold.
+
+The spelling of a type grants no operation or capability. In particular it
+does not activate brackets, mutation, operator glyphs, Trait witnesses, Copy,
+deep freeze, shareability, transferability, or actor crossing. The current
+one-based List/String/Bytes domains, bounded coordinates, slice provenance,
+Map exact-key lookup, Tuple and Record projections, NumericArray axes, and
+closed bracket-carrier matrix are unchanged. `MutableList`, `FrozenList`, and
+`ListSnapshot` remain outside that matrix.
+
+Owned collection naming is immutable-first: `List`, `Map`, `Set`, `String`,
+`Bytes`, Tuple, and Record denote immutable owners; mutation uses a distinct
+explicit mutable owner and never an implicit subtype conversion. `Sequence`
+remains a traversal protocol only and creates no bracket, mutation, freeze,
+snapshot, or view route. `MutableMap`, `MutableSet`, `StringBuilder`, and
+`ByteBuffer` are reserved successor owner names without a current Prelude
+identity. `MutableSequence`, `MutableTuple`, general `MutableRecord`, and
+`MutableString` remain absent or deferred.
+
+Current `MutableList<T>::freeze` and `snapshot` continue to return the distinct
+current identities `FrozenList<T>` and `ListSnapshot<T>`. Replacing either with
+ordinary `List<T>` would change indexing, public API, ABI, serialization, and
+actor-shareability residue and therefore requires an explicit successor
+migration; no alias or automatic rewrite is admitted here.
+
+The successor responsibility split is nevertheless fixed. `freeze` moves a
+mutable owner but consumes it exactly once only after a successful commit. It
+rejects an outstanding borrow or view, preserves the exact owner and value
+state on failure, is shallow with respect to payload capabilities, and never
+proves `ShareSafe` or `Transferable`. `snapshot` borrows and preserves its
+source and produces an independent point-in-time immutable result; later source
+mutation cannot change it, while allocation and representation cost remain
+visible and implementation-dependent. A `view` is a borrowed, owner-bounded,
+nonowning projection that preserves logical domain, coordinates, and
+provenance; it cannot escape or cross isolation and conflicts with owner
+mutation, move, or freeze. No common or collection-specific successor view
+carrier name is selected by this decision. These three message surfaces use
+the no-argument receiver form without parentheses only after separate source
+activation authority.
+
+All 22 feature P1 items and the four separate M13 actions retain their current
+status. The grammar/type-system/implementation/test/tooling/migration work
+listed in `spec/contracts/literal-shaped-collection-design.json` is an internal
+activation-gate ledger, not a new P1 set. Semantic P0 is zero and every product
+lane remains `NOT_RUN`.
 
 <!-- POST_PR16_UNIT_BEGIN:X-01 -->
 ```json

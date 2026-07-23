@@ -1176,24 +1176,25 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "MATCH_ARM_UNREACHABLE",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "match_otherwise_default_arm"
+      "match_otherwise_default_arm",
+      "match_exhaustiveness_phase_a"
     ],
-    "fixit_hint": "remove or reorder the arm",
-    "fixit_kind": "suggestion",
-    "fixit_policy": "remove or reorder the arm",
+    "fixit_hint": "remove the arm or make its structural coverage distinct",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never use source order, a guard, or a runtime test to make an empty structural partition reachable",
     "message": "This match arm is unreachable because an earlier arm already covers it.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "notes": "Current finite-partition usefulness diagnostic; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "warning",
+    "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / PARSER",
@@ -1342,7 +1343,8 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "match_arm_guard_msp"
+      "match_arm_guard_msp",
+      "match_exhaustiveness_phase_a"
     ],
     "fixit_hint": "",
     "fixit_kind": "none",
@@ -1368,7 +1370,8 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "source_truth_projection_unification"
+      "source_truth_projection_unification",
+      "match_exhaustiveness_phase_a"
     ],
     "fixit_hint": "add missing arms or a permitted wildcard arm",
     "fixit_kind": "suggestion",

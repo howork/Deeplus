@@ -620,6 +620,14 @@ PatternPrimary ::= TypedBindingPattern
 TypedBindingPattern ::= Identifier ":" TypeRef ;
 ParenthesizedPattern ::= "(" Pattern ")" ;
 
+(* TypedBindingPattern has two checker-owned elaborations without adding syntax.
+   It is an irrefutable static annotation by default. In a refutable owner whose
+   normalized subject is a closed Union, an exact declared alternative TypeRef
+   elaborates to UnionAlternativeBindPattern and tests only that Union's stored
+   injection identity. It is never an open runtime type test, subtype search,
+   refinement test, or Trait query. The parser gives TypeRef its normal complete
+   parse before the enclosing OrPattern may claim a following `|`. *)
+
 (* BindingPattern gives `let pattern : Type = value` one unambiguous colon
    owner while Record/List/Variant/parenthesized children keep full Pattern. *)
 BindingPattern ::= BindingOrPattern TypeAnnotation? ;

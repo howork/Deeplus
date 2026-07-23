@@ -20,7 +20,9 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-value-operator-index-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-literal-shaped-collection-design-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-enum-derived-capabilities-r1"
+PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -266,7 +268,7 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 681
+                and fixed_counts.get("features") == 688
                 and fixed_counts.get("predicates") == 245
                 and fixed_counts.get("predicate_fixtures") == 764
                 and fixed_counts.get("no_go") == 150
@@ -959,6 +961,9 @@ def main() -> int:
         "tests/fixtures/current/type-flow-callable-coherence-r1.json": ("fixture_schema", "schemas/language/type-flow-callable-coherence-fixtures.schema.json"),
         "tests/fixtures/current/destructuring-pattern-matching-r1.json": ("fixture_schema", "schemas/language/destructuring-pattern-matching-static-fixtures.schema.json"),
         "tests/fixtures/current/value-operator-indexing-coherence-r1.json": ("fixture_schema", "schemas/language/value-operator-indexing-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json": ("fixture_schema", "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/enum-derived-capabilities-r1.json": ("fixture_schema", "schemas/language/enum-derived-capabilities-fixtures.schema.json"),
+        "tests/fixtures/current/literal-shaped-collection-design-r1.json": ("fixture_schema", "schemas/language/literal-shaped-collection-design-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
@@ -1175,6 +1180,448 @@ def main() -> int:
         f"missing={sorted(voi_example_ids - active_ids)} warning={warning_example.get('expected_warnings')}",
     )
 
+    trn_rel = "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json"
+    trn = parsed.get(root / trn_rel, {})
+    trn_contract = parsed.get(root / "spec/contracts/type-refinement-narrowing-coherence.json", {})
+    trn_rows = [row for row in trn.get("cases", []) if isinstance(row, dict)]
+    trn_ids = [row.get("fixture_id") for row in trn_rows]
+    trn_rule_ids = [
+        row.get("rule_id") for row in trn_contract.get("rules", []) if isinstance(row, dict)
+    ]
+    trn_counts = trn.get("expected_counts", {})
+    trn_admit = sum(row.get("expected") == "ADMIT" for row in trn_rows)
+    trn_reject = sum(row.get("expected") == "REJECT" for row in trn_rows)
+    check(
+        trn.get("revision") == revision
+        and trn_contract.get("revision") == revision
+        and trn_contract.get("semantic_p0") == 0
+        and trn_contract.get("current_binding") is False
+        and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and trn_contract.get("open_feature_p1", {}).get("total") == 22
+        and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 14)]
+        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 35
+        and trn_admit == trn_counts.get("admit") == 10
+        and trn_reject == trn_counts.get("reject") == 25
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(trn_rule_ids))
+            and row.get("commit_count") in {0, 1}
+            and (row.get("expected") == "ADMIT") == (row.get("diagnostic_or_null") is None)
+            for row in trn_rows
+        )
+        and len(trn.get("open_feature_p1", [])) == 22
+        and len(trn.get("product_lanes", {})) == 15
+        and set(trn.get("product_lanes", {}).values()) == {"NOT_RUN"}
+        and trn_counts.get("runtime_union_tests") == 2
+        and trn_counts.get("open_runtime_type_tests") == 0
+        and trn_counts.get("def_guard_narrowing_facts") == 0
+        and trn_counts.get("p1_closed") == 0
+        and trn_counts.get("p1_created") == 0,
+        "TRN_CONTRACT_FIXTURE_CLOSURE",
+        f"rules={trn_rule_ids} rows={len(trn_rows)} admit={trn_admit} reject={trn_reject} counts={trn_counts}",
+    )
+
+    edc_rel = "tests/fixtures/current/enum-derived-capabilities-r1.json"
+    edc = parsed.get(root / edc_rel, {})
+    edc_contract = parsed.get(
+        root / "spec/contracts/enum-derived-capabilities.json", {}
+    )
+    edc_rows = [row for row in edc.get("cases", []) if isinstance(row, dict)]
+    edc_ids = [row.get("fixture_id") for row in edc_rows]
+    edc_rule_ids = [
+        row.get("rule_id")
+        for row in edc_contract.get("rules", [])
+        if isinstance(row, dict)
+    ]
+    edc_counts = edc.get("expected_counts", {})
+    edc_expected_p1 = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    edc_feature_ids = {
+        "enum_declaration_order_ord_preview_design",
+        "enum_case_display_mapping_preview_design",
+        "enum_exact_variant_subset_alias_preview_design",
+    }
+    edc_features = [feature_by_id.get(feature_id, {}) for feature_id in edc_feature_ids]
+    edc_frontend = parsed.get(root / "spec/frontend/frontend-model.json", {}).get(
+        "preview_design_nonactivatable", {}
+    )
+    edc_frontend_ids = {
+        "enum_declaration_order_ord_derivation",
+        "enum_case_display_mapping",
+        "enum_exact_variant_subset_alias",
+    }
+    edc_pc10_lanes = [
+        "source", "resolution", "behavior", "serialization",
+        "runtime_layout", "foreign_ABI", "tooling_reflection", "product",
+    ]
+    edc_serialized = json.dumps(edc_contract, ensure_ascii=False)
+    grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
+    check(
+        edc.get("revision") == revision
+        and edc_contract.get("revision") == revision
+        and edc_contract.get("semantic_p0") == 0
+        and edc_contract.get("current_binding") is False
+        and edc_contract.get("source_activation") == "nonactivatable"
+        and edc_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and edc_contract.get("open_feature_p1", {}).get("total") == 22
+        and edc_contract.get("compatibility_lanes") == edc_pc10_lanes
+        and edc_contract.get("compatibility_lane_subrecords") == {
+            "resolution": ["subset_membership", "variant_owner_widening"],
+            "behavior": ["order_behavior", "display_behavior"],
+            "serialization": ["raw_identity"],
+        }
+        and "overall_pass" not in edc_serialized
+        and "sibling_status_propagation" not in edc_serialized
+        and edc_contract.get("trait_contracts", {}).get("Ord<T>", {}).get(
+            "canonical_signature"
+        ) == "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
+        and edc_contract.get("trait_contracts", {}).get("Display", {}).get(
+            "canonical_signature"
+        ) == "public trait Display { +def display.() -> String throws Never effects {}; }"
+        and edc.get("open_feature_p1") == edc_expected_p1
+        and edc_rule_ids == [f"EDC-R{index:03d}" for index in range(1, 19)]
+        and len(edc_rows) == len(edc_ids) == len(set(edc_ids)) == 35
+        and sum(row.get("expected_design") == "ADMIT" for row in edc_rows)
+        == edc_counts.get("design_admit") == 15
+        and sum(row.get("expected_design") == "REJECT" for row in edc_rows)
+        == edc_counts.get("design_reject") == 15
+        and sum(row.get("expected_design") == "BOUNDARY" for row in edc_rows)
+        == edc_counts.get("boundary") == 5
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(edc_rule_ids))
+            and row.get("current_source_outcome") == "NONACTIVATABLE_NOT_CURRENT"
+            and row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in edc_rows
+        )
+        and set(edc_rule_ids)
+        == {rule_id for row in edc_rows for rule_id in row.get("rule_ids", [])}
+        and len(edc.get("product_lanes", {})) == 15
+        and set(edc.get("product_lanes", {}).values()) == {"NOT_RUN"}
+        and edc_counts.get("current_source_activated") == 0
+        and edc_counts.get("p1_closed") == 0
+        and edc_counts.get("p1_created") == 0
+        and edc_counts.get("product_executed") == 0,
+        "EDC_CONTRACT_FIXTURE_CLOSURE",
+        f"rules={edc_rule_ids} rows={len(edc_rows)} counts={edc_counts}",
+    )
+    check(
+        all(
+            feature.get("status_enum") == "PREVIEW_DESIGN"
+            and feature.get("source_activation") == "nonactivatable"
+            and feature.get("product_support") == "NOT_RUN"
+            and feature.get("production_lexer") == "NOT_RUN"
+            and feature.get("production_parser") == "NOT_RUN"
+            and feature.get("integrated_checker") == "NOT_RUN"
+            and feature.get("runtime_xvm") == "NOT_RUN"
+            and feature.get("artifact_trace_refs")
+            == ["spec/contracts/enum-derived-capabilities.json"]
+            and feature.get("normative_trace_refs", {}).get("productions") == []
+            for feature in edc_features
+        )
+        and all(
+            edc_frontend.get(feature_id, {}).get("parser_cover_grammar") is False
+            and edc_frontend.get(feature_id, {}).get("source_activation")
+            == "nonactivatable"
+            for feature_id in edc_frontend_ids
+        )
+        and "enum#increasing" not in grammar
+        and "enum#decreasing" not in grammar
+        and "~>" not in grammar,
+        "EDC_NONACTIVATABLE_FEATURE_FENCE",
+        f"features={sorted(edc_feature_ids)} frontend={sorted(edc_frontend_ids)}",
+    )
+
+    lstc = parsed.get(
+        root / "tests/fixtures/current/literal-shaped-collection-design-r1.json",
+        {},
+    )
+    lstc_contract = parsed.get(
+        root / "spec/contracts/literal-shaped-collection-design.json", {}
+    )
+    lstc_rows = [row for row in lstc.get("cases", []) if isinstance(row, dict)]
+    lstc_ids = [row.get("fixture_id") for row in lstc_rows]
+    lstc_rule_ids = [
+        row.get("rule_id")
+        for row in lstc_contract.get("rules", [])
+        if isinstance(row, dict)
+    ]
+    lstc_counts = lstc.get("expected_counts", {})
+    lstc_expected_p1 = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    lstc_feature_ids = {
+        "literal_shaped_collection_type_surface_preview_design",
+        "literal_shaped_closed_record_type_surface_preview_design",
+        "immutable_first_collection_ownership_preview_design",
+        "freeze_snapshot_view_responsibility_preview_design",
+    }
+    lstc_features = [
+        feature_by_id.get(feature_id, {}) for feature_id in lstc_feature_ids
+    ]
+    lstc_frontend = parsed.get(
+        root / "spec/frontend/frontend-model.json", {}
+    ).get("preview_design_nonactivatable", {})
+    lstc_frontend_ids = {
+        "literal_shaped_list_type_surface",
+        "literal_shaped_set_map_type_surface",
+        "literal_shaped_closed_record_type_surface",
+        "immutable_first_collection_ownership",
+        "freeze_snapshot_view_successor",
+    }
+    lstc_serialized = json.dumps(lstc_contract, ensure_ascii=False)
+    check(
+        lstc.get("revision") == revision
+        and lstc_contract.get("revision") == revision
+        and lstc_contract.get("semantic_p0") == 0
+        and lstc_contract.get("current_binding") is False
+        and lstc_contract.get("source_activation") == "nonactivatable"
+        and lstc_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and lstc_contract.get("open_feature_p1", {}).get("total") == 22
+        and lstc.get("open_feature_p1") == lstc_expected_p1
+        and lstc_rule_ids == [f"LSTC-R{index:03d}" for index in range(1, 17)]
+        and len(lstc_rows) == len(lstc_ids) == len(set(lstc_ids)) == 30
+        and sum(row.get("expected_design") == "ADMIT" for row in lstc_rows)
+        == lstc_counts.get("design_admit") == 12
+        and sum(row.get("expected_design") == "REJECT" for row in lstc_rows)
+        == lstc_counts.get("design_reject") == 12
+        and sum(row.get("expected_design") == "BOUNDARY" for row in lstc_rows)
+        == lstc_counts.get("boundary") == 6
+        and all(
+            row.get("rule_ids")
+            and set(row["rule_ids"]).issubset(set(lstc_rule_ids))
+            and row.get("current_source_outcome")
+            == "NONACTIVATABLE_NOT_CURRENT"
+            and row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in lstc_rows
+        )
+        and set(lstc_rule_ids)
+        == {
+            rule_id
+            for row in lstc_rows
+            for rule_id in row.get("rule_ids", [])
+        }
+        and len(lstc.get("product_lanes", {})) == 15
+        and set(lstc.get("product_lanes", {}).values()) == {"NOT_RUN"}
+        and lstc_counts.get("current_source_activated") == 0
+        and lstc_counts.get("p1_closed") == 0
+        and lstc_counts.get("p1_created") == 0
+        and lstc_counts.get("product_executed") == 0
+        and lstc_contract.get("machine_acceptance", {}).get(
+            "current_identity_rewrite_count"
+        )
+        == 0
+        and lstc_contract.get("machine_acceptance", {}).get(
+            "implicit_shareability_proof_count"
+        )
+        == 0
+        and lstc_contract.get("machine_acceptance", {}).get(
+            "sequence_operation_activation_count"
+        )
+        == 0
+        and lstc_contract.get("machine_acceptance", {}).get(
+            "final_diagnostic_id_count"
+        )
+        == 0
+        and "overall_pass" not in lstc_serialized,
+        "LSTC_CONTRACT_FIXTURE_CLOSURE",
+        f"rules={lstc_rule_ids} rows={len(lstc_rows)} counts={lstc_counts}",
+    )
+    check(
+        all(
+            feature.get("status_enum") == "PREVIEW_DESIGN"
+            and feature.get("source_activation") == "nonactivatable"
+            and feature.get("product_support") == "NOT_RUN"
+            and feature.get("production_lexer") == "NOT_RUN"
+            and feature.get("production_parser") == "NOT_RUN"
+            and feature.get("integrated_checker") == "NOT_RUN"
+            and feature.get("runtime_xvm") == "NOT_RUN"
+            and feature.get("artifact_trace_refs")
+            == ["spec/contracts/literal-shaped-collection-design.json"]
+            and feature.get("normative_trace_refs", {}).get("productions") == []
+            for feature in lstc_features
+        )
+        and all(
+            lstc_frontend.get(feature_id, {}).get("parser_cover_grammar") is False
+            and lstc_frontend.get(feature_id, {}).get("source_activation")
+            == "nonactivatable"
+            for feature_id in lstc_frontend_ids
+        )
+        and 'TypePrimary ::= "[" TypeRef "]"' not in grammar
+        and '"#mut["' not in grammar
+        and '"#set{"' not in grammar
+        and '"#map{"' not in grammar
+        and '"${" RecordType' not in grammar,
+        "LSTC_NONACTIVATABLE_FEATURE_FENCE",
+        f"features={sorted(lstc_feature_ids)} frontend={sorted(lstc_frontend_ids)}",
+    )
+    lstc_prelude_rows = rows(
+        "deeplus-0.1.2-baseline-r51f3-prelude-signature-catalog.json",
+        "entries",
+    )
+    current_prelude = {
+        row.get("symbol"): row
+        for row in lstc_prelude_rows
+        if isinstance(row, dict)
+    }
+    check(
+        current_prelude.get("MutableList<T>", {}).get("signatures")
+        == [
+            "prelude intrinsic mutable resource type MutableList<T>",
+            "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
+            "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}",
+        ]
+        and "MutableMap<K,V>" not in current_prelude
+        and "MutableSet<T>" not in current_prelude
+        and "StringBuilder" not in current_prelude
+        and "ByteBuffer" not in current_prelude,
+        "LSTC_CURRENT_PRELUDE_IDENTITY_FENCE",
+        f"entries={len(current_prelude)}",
+    )
+    trn_case_by_id = {row.get("fixture_id"): row for row in trn_rows}
+    trn_required_axes = {f"TRN-R1-{kind}-{index:03d}" for kind, index in (
+        [("NEG", value) for value in range(19, 30)] + [("POS", 30), ("POS", 31)]
+    )}
+    check(
+        trn_required_axes <= set(trn_case_by_id)
+        and all(trn_case_by_id[fixture_id].get("commit_count") == 0 for fixture_id in trn_required_axes)
+        and all(
+            trn_case_by_id[f"TRN-R1-NEG-{index:03d}"].get("diagnostic_or_null")
+            == "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH"
+            for index in range(19, 24)
+        )
+        and all(
+            trn_case_by_id[f"TRN-R1-NEG-{index:03d}"].get("diagnostic_or_null")
+            == "OR_PATTERN_BINDINGS_INCONSISTENT"
+            for index in range(24, 30)
+        ),
+        "TRN_ENUM_OR_PATTERN_AND_TRANSACTION_AXES",
+        f"required={len(trn_required_axes & set(trn_case_by_id))}/13",
+    )
+    pattern_kinds = parsed.get(root / "spec/patterns/pattern-kinds.json", {})
+    pattern_lowering = parsed.get(root / "spec/patterns/pattern-lowering.json", {})
+    union_kind = next(
+        (row for row in pattern_kinds.get("rows", []) if row.get("pattern_kind_id") == "PK-UNION-ALTERNATIVE-BINDER"),
+        {},
+    )
+    union_lowering = next(
+        (row for row in pattern_lowering.get("rows", []) if row.get("lowering_id") == "PL-UNION-ALTERNATIVE-BINDER"),
+        {},
+    )
+    pattern_policies = parsed.get(root / "spec/patterns/pattern-context-policies.json", {})
+    expected_union_contexts = {
+        "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-FOR-LET",
+        "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH",
+        "PCTX-DECLARATIVE-CLAUSE", "PCTX-COMPREHENSION-IF-LET",
+    }
+    policy_union_contexts = {
+        row.get("context_id")
+        for row in pattern_policies.get("rows", [])
+        if "PK-UNION-ALTERNATIVE-BINDER" in row.get("allowed_pattern_kind_ids", [])
+    }
+    check(
+        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 19
+        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 19
+        and pattern_kinds.get("revision") == PATTERN_COMPONENT_REVISION
+        and pattern_lowering.get("revision") == PATTERN_COMPONENT_REVISION
+        and pattern_policies.get("revision") == PATTERN_COMPONENT_REVISION
+        and all(
+            row.get("revision") == PATTERN_COMPONENT_REVISION
+            for row in pattern_kinds.get("rows", [])
+            + pattern_lowering.get("rows", [])
+            + pattern_policies.get("rows", [])
+        )
+        and union_kind.get("normalized_variant") == "UnionAlternativeBindPattern"
+        and union_kind.get("coverage_contribution") == "SUBJECT_CONSTRUCTOR_CELL"
+        and set(union_kind.get("allowed_context_ids", [])) == expected_union_contexts
+        and "PK-UNION-ALTERNATIVE-BINDER" in pattern_policies.get("current_pattern_kind_ids", [])
+        and policy_union_contexts == expected_union_contexts
+        and union_lowering.get("test_kind") == "UNION_INJECTION_TAG_TEST"
+        and union_lowering.get("mir_disposition") == "TEST_PROBE_COMMIT_TRACE",
+        "TRN_UNION_PATTERN_LOWERING_BINDING",
+        f"kind={union_kind.get('normalized_variant')} contexts={sorted(policy_union_contexts)} lowering={union_lowering.get('test_kind')}",
+    )
+    trn_predicate_ids = {
+        "NarrowUnionByPattern", "NormalizeUnion", "MatchExhaustive",
+        "GuardPredicateAdmitted", "R0GuardSafe", "RefinementCheckBoundaryAdmitted",
+    }
+    trn_inputs = [
+        row for row in trn_contract.get("predicate_inputs", [])
+        if isinstance(row, dict) and row.get("predicate_id") in trn_predicate_ids
+    ]
+    trn_input_ids = [row.get("fixture_id") for row in trn_inputs]
+    trn_input_groups = {
+        predicate_id: [row for row in trn_inputs if row.get("predicate_id") == predicate_id]
+        for predicate_id in trn_predicate_ids
+    }
+    trn_predicate_rows = {
+        row.get("predicate_id"): row
+        for row in predicate_rows
+        if row.get("predicate_id") in trn_predicate_ids
+    }
+    trn_schema_rel = "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json"
+    descriptor_binding_ok = (
+        len(trn_inputs) == len(trn_input_ids) == len(set(trn_input_ids)) == 12
+        and all(
+            len(rows) == 2
+            and {row.get("expected") for row in rows} == {"admitted", "rejected"}
+            for rows in trn_input_groups.values()
+        )
+        and set(trn_predicate_rows) == trn_predicate_ids
+        and all(
+            row.get("input_descriptor") == "TRNCoherenceDescriptor"
+            and row.get("input_descriptor_schema") == trn_schema_rel
+            for row in trn_predicate_rows.values()
+        )
+    )
+    match_descriptors = [
+        row.get("descriptor", {}) for row in trn_input_groups["MatchExhaustive"]
+    ]
+    union_descriptors = [
+        row.get("descriptor", {}) for row in trn_input_groups["NormalizeUnion"]
+    ]
+    match_binding_ok = all(
+        descriptor.get("arms")
+        and len(descriptor.get("arms", [])) == len(descriptor.get("arm_order", []))
+        and all(
+            {"arm_id", "kind", "coverage_cells", "guard_origin", "binder_contract", "entry_place_state", "exit_place_state"}
+            <= set(arm)
+            for arm in descriptor.get("arms", [])
+        )
+        for descriptor in match_descriptors
+    )
+    union_pair_binding_ok = all(
+        len(descriptor.get("union_pairs", []))
+        == len(descriptor.get("current_alternatives", [])) * (len(descriptor.get("current_alternatives", [])) - 1) // 2
+        for descriptor in union_descriptors
+    )
+    check(
+        descriptor_binding_ok and match_binding_ok and union_pair_binding_ok,
+        "TRN_PREDICATE_DESCRIPTOR_BINDING",
+        f"inputs={len(trn_inputs)} predicates={sorted(trn_predicate_rows)} match={match_binding_ok} pairs={union_pair_binding_ok}",
+    )
+    opaque_guard = next(
+        (row for row in trn_inputs if row.get("fixture_id") == "TRN-DESC-REFINE-NEG"), {}
+    ).get("descriptor", {})
+    as_option_case = next(
+        (row for row in trn_rows if row.get("fixture_id") == "TRN-R1-POS-009"), {}
+    )
+    check(
+        opaque_guard.get("guard_origin") == "DEF_GUARD_OPAQUE"
+        and opaque_guard.get("proof_state") == "UNKNOWN"
+        and opaque_guard.get("commit_count") == 0
+        and as_option_case.get("flow_in") == as_option_case.get("flow_join"),
+        "TRN_OPAQUE_GUARD_AND_AS_OPTION_FLOW",
+        f"guard={opaque_guard.get('proof_state')} phi={as_option_case.get('flow_in')}->{as_option_case.get('flow_join')}",
+    )
+
     module_fixtures = parsed.get(root / "tests/fixtures/imported/module-api-digest-fixtures.json", {})
     module_positive = module_fixtures.get("positive_fixtures", [])
     callable_rows = [
@@ -1377,7 +1824,7 @@ def main() -> int:
         )
         predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
         if revision == LANGUAGE_COHERENCE_REVISION:
-            expected_predecessor = POST_PR16_REVISION
+            expected_predecessor = PREVIOUS_LANGUAGE_COHERENCE_REVISION
         elif revision == POST_PR16_REVISION:
             expected_predecessor = "r51f3-post-pr16-preview-design-r4"
         else:
@@ -1550,6 +1997,8 @@ def main() -> int:
     arithmetic_defect = prelude_by_id.get("arithmetic_defect", {})
     index_error = prelude_by_id.get("index_error", {})
     indexable = prelude_by_id.get("indexable", {})
+    display_entry = prelude_by_id.get("display", {})
+    ord_entry = prelude_by_id.get("ord_t", {})
     check(
         arithmetic_defect.get("symbol") == "ArithmeticDefect"
         and arithmetic_defect.get("kind") == "language_intrinsic_defect"
@@ -1562,6 +2011,10 @@ def main() -> int:
         == ["public enum IndexError { outOfLogicalDomain; keyNotFound; }"]
         and index_error.get("product_support") == "NOT_RUN"
         and "conformance does not activate []" in indexable.get("notes", "")
+        and display_entry.get("signatures")
+        == ["public trait Display { +def display.() -> String throws Never effects {}; }"]
+        and ord_entry.get("signatures")
+        == ["public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"]
         and all(
             diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
             == "active"

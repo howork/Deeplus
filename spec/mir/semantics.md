@@ -112,6 +112,14 @@ The supplemental features `no_string_char_bytes_implicit_conversion_law` and `te
 
 For every remaining `DEFERRED_PRODUCT_HANDOFF` row, design status is unchanged and product lanes remain `NOT_RUN`. An implementer must not infer any still-unbound view/copy, ownership, conversion, rendering/provider/failure, representation, rank/orientation, opcode, or backend behavior. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim.
 
+## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
+
+The checker lowers an admitted closed-union typed arm to `UnionAlternativeTest(UnionTypeId, AlternativeTypeId)` followed by nonowning probe bindings. This operation reads only the discriminator already required by the closed Union representation. MIR must not replace it with RTTI, subtype search, reflection, a Trait query, or evaluation of a refinement predicate.
+
+`Phi` is compile-time evidence and is not a runtime value. MIR receives only the selected structural test, the admitted guard evaluation, a delayed commit plan, and explicit failure edges. False structural tests, false guards, and statically unreachable arms commit zero bindings, moves, exclusive borrows, or authorities. Guarded arms do not become exhaustive in MIR merely because their predicate returns Bool.
+
+Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. A `def#guard` call carries no hidden narrowing summary and cannot erase a later refinement check.
+
 ## 15. Post-PR16 nonactivatable Preview operational contracts
 
 > Status fence: this section is governed by Part XII's current preimplementation Preview boundary. Current MIR behavior remains authoritative; the successor material is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, and this text closes no P1 or product lane.

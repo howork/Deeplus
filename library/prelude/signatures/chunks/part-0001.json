@@ -420,17 +420,17 @@
       "trait_witness_formal_judgment_core"
     ],
     "signatures": [
-      "public trait Display { +def display.() -> String; }"
+      "public trait Display { +def display.() -> String throws Never effects {}; }"
     ],
-    "responsibility": "string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed",
-    "notes": "",
+    "responsibility": "borrowed deterministic synchronous non-consuming string interpolation rendering/display with throws Never and no hidden authority; not serialization, parsing, localization, provider lookup, or redaction authority",
+    "notes": "Enum case display mapping is PREVIEW_DESIGN/nonactivatable and may synthesize only one whole-Enum witness after its gates close; case and alias witnesses remain zero.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Display { +def display.() -> String; }",
+        "text": "public trait Display { +def display.() -> String throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
@@ -439,7 +439,7 @@
     "absorbed_entry_ids": [
       "display_025"
     ],
-    "normalized_contract_sha256": "75163653db16dcae276e86315adeb339ca0811fa63805643714427db4abba8ab"
+    "normalized_contract_sha256": "780457fa8b6d663b6fe01721d2792a1c8e3c8fdea33f81c795be38523c00f50f"
   },
   {
     "entry_id": "exit_code",
@@ -1190,23 +1190,23 @@
       "r51a1_fully_merged_current_canonical_single_source_truth"
     ],
     "signatures": [
-      "public trait Ord<T> { +def compare.(lhs: T, rhs: T) -> Int; }"
+      "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
     ],
-    "responsibility": "nominal named ordering evidence for T; never an operator-glyph hook",
-    "notes": "Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence.",
+    "responsibility": "nominal total-order evidence for T; compare borrows both operands, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign contractually meaningful and stable; never an operator-glyph hook",
+    "notes": "Zero is the ground equality relation and trichotomy, transitivity, and antisymmetry are required. Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence. Enum declaration-order derivation is PREVIEW_DESIGN/nonactivatable.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Ord<T> { +def compare.(lhs: T, rhs: T) -> Int; }",
+        "text": "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "242b40124c99863f23b325aed709f73e05923683c137fdb247eb994e9faa9f64"
+    "normalized_contract_sha256": "4a47e2cd9a9f71f1d92a00fcda0a35615219ecf53f1fc4e74a03b6621082dc4c"
   },
   {
     "entry_id": "owned_downcast_op",

@@ -1,0 +1,130 @@
+{
+  "schema": "deeplus.literal-shaped-collection-design-contract/r1",
+  "revision": "r51f3-current-literal-shaped-collection-design-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_PREVIEW_DESIGN_CONTRACT",
+  "design_verdict": "ACCEPTED_BOUNDED_PREVIEW_DESIGN_WITH_REPAIRS",
+  "source_activation": "nonactivatable",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "controlling_authority": {
+    "decision": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
+    "source_report": "Supp_Deeplus_Literal_Shaped_Type_Surface_And_Collection_Naming_Proposal_R1",
+    "library_member_sha256": "dafd34414383030750c4843d7a03ed595a482760db9926dc020f7bae22e81135",
+    "library_intake": "the Markdown entry and ZIP entry contain the same report; semantic content was evaluated once",
+    "adoption_scope": "design contract only; no grammar, parser, checker, MIR, runtime, Prelude signature, tooling, publication, or product activation"
+  },
+  "authority_fence": {
+    "current_grammar_changed": false,
+    "current_prelude_identity_changed": false,
+    "current_bracket_matrix_changed": false,
+    "implementation_authority": false,
+    "final_diagnostic_id_created": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "class": ["CE-C-P1-001", "CE-C-P1-002", "CE-C-P1-003", "CE-C-P1-004", "CE-C-P1-005", "CE-C-P1-006"],
+    "enumeration": ["CE-E-P1-001", "CE-E-P1-002", "CE-E-P1-003", "CE-E-P1-004", "CE-E-P1-005", "CE-E-P1-006", "CE-E-P1-007", "CE-E-P1-008"],
+    "trait_conformance": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "static_first_dynamic": ["SFD-P1-009"],
+    "total": 22
+  },
+  "separate_open_actions": ["M13-A002", "M13-A003", "M13-A004", "M13-A005"],
+  "accepted_type_surfaces": [
+    {"surface": "[T]", "canonical_type": "List<T>"},
+    {"surface": "#mut[T]", "canonical_type": "MutableList<T>"},
+    {"surface": "#set{T}", "canonical_type": "Set<T>"},
+    {"surface": "#map{K: V}", "canonical_type": "Map<K,V>"},
+    {"surface": "${label: T, ...}", "canonical_type": "closed required-label structural Record row"}
+  ],
+  "deferred_type_surfaces": [
+    "#mut#set{T}",
+    "#mut#map{K: V}",
+    "open or optional Record rows",
+    "Record rest or string labels",
+    "empty Record row identity"
+  ],
+  "collection_identity_profile": {
+    "immutable_owned_defaults": ["List", "Map", "Set", "String", "Bytes", "Tuple", "Record"],
+    "explicit_mutable_owners": ["MutableList"],
+    "reserved_successor_mutable_owners": ["MutableMap", "MutableSet", "StringBuilder", "ByteBuffer"],
+    "forbidden_or_deferred_general_mutable_owners": ["MutableSequence", "MutableTuple", "MutableRecord", "MutableString"],
+    "sequence_role": "traversal protocol only; conformance activates no brackets, mutation, freeze, snapshot, or view route",
+    "subtyping_between_mutable_and_immutable": false
+  },
+  "current_identity_preservation": {
+    "MutableList<T>::freeze_result": "FrozenList<T>",
+    "MutableList<T>::snapshot_result": "ListSnapshot<T>",
+    "legacy_identity_status": "current stable design preserved",
+    "automatic_alias_or_rewrite": false,
+    "successor_unification": "deferred pending public API, ABI, serialization, indexing, and actor-shareability residue review"
+  },
+  "ownership_operations": {
+    "freeze": {
+      "surface": "receiver.freeze",
+      "receiver": "move mutable owner",
+      "success": "consume exactly once after commit and produce the declared immutable result",
+      "failure": "preserve and return the exact original owner and value state",
+      "depth": "shallow structural transition; payload identity and capability evidence are unchanged",
+      "live_borrow_policy": "reject",
+      "shareability_inference": false
+    },
+    "snapshot": {
+      "surface": "receiver.snapshot",
+      "receiver": "borrow mutable owner",
+      "success": "independent point-in-time immutable result",
+      "source_after_success": "preserved and may later mutate without changing the snapshot",
+      "cost": "allocation and representation cost remain explicit and implementation-dependent"
+    },
+    "view": {
+      "surface": "receiver.view",
+      "status": "design responsibility only; no new collection view carrier is selected",
+      "receiver": "borrow owner",
+      "result": "owner-bounded nonowning projection preserving logical domain, coordinates, and provenance",
+      "conflicts": ["mutation", "move", "freeze", "owner escape", "isolation crossing"]
+    }
+  },
+  "rules": [
+    {"rule_id":"LSTC-R001","title":"accepted design remains nonactivatable","contract":"Every accepted surface and collection responsibility is PREVIEW_DESIGN with parser_cover_grammar false and no current source, implementation, publication, P1, or product-lane effect."},
+    {"rule_id":"LSTC-R002","title":"type-position sugar normalizes to canonical identity","contract":"An accepted literal-shaped type spelling is CST-preserved sugar only; HIR, API digest, type identity, ABI, and serialization use the named canonical type and create no wrapper or subtype."},
+    {"rule_id":"LSTC-R003","title":"parser goals remain disjoint","contract":"Type, value, pattern, and index parser goals have distinct owners; the Preview type spellings do not reinterpret any current value literal, pattern, or index expression."},
+    {"rule_id":"LSTC-R004","title":"attached sigils are exact","contract":"#mut[, #set{, #map{, and ${ are attached no-trivia type-goal candidates; whitespace mutants are not equivalent, and #N[T] remains the separate NumericArray SharpShapeType owner."},
+    {"rule_id":"LSTC-R005","title":"union formation is explicit","contract":"[T | U] means List<T | U>; the sugar neither synthesizes an implicit heterogeneous Union nor changes Union injection, normalization, or disjointness laws."},
+    {"rule_id":"LSTC-R006","title":"Record and Map domains never collapse","contract":"Map keys are runtime exact K values; Record labels are static Identifiers. No Map-to-Record conversion, Record-to-Map conversion, Map dot-key projection, or named unfold is inferred."},
+    {"rule_id":"LSTC-R007","title":"minimum Record type profile is closed","contract":"The accepted Record type shape has closed required static Identifier labels, deterministic duplicate rejection, and current order-normalized row identity; open, optional, rest, string-label, variance, and empty-row profiles remain deferred."},
+    {"rule_id":"LSTC-R008","title":"type sugar grants no operation","contract":"A type spelling grants no bracket, mutation, ownership, Copy, deep-freeze, ShareSafe, Transferable, actor-crossing, Trait-witness, or operator-glyph evidence."},
+    {"rule_id":"LSTC-R009","title":"one-based current domains remain authoritative","contract":"List, String, Bytes, bounded List, slice, ReadonlyView, Map, Tuple, Record, and NumericArray retain their current distinct domains and operations; MutableList, FrozenList, and ListSnapshot remain outside the current bracket matrix."},
+    {"rule_id":"LSTC-R010","title":"immutable-first naming is ownership-explicit","contract":"Owned collection defaults are immutable; mutation requires a distinct explicit mutable owner and never an implicit subtype conversion. Tuple and Record remain immutable-only, and Sequence remains traversal-only."},
+    {"rule_id":"LSTC-R011","title":"current transition result identities remain distinct","contract":"Current MutableList freeze and snapshot continue to return FrozenList and ListSnapshot. Successor unification with List is a semantic migration, not an alias, and remains deferred until indexing, API, ABI, serialization, and shareability residue close."},
+    {"rule_id":"LSTC-R012","title":"freeze is failure-atomic and shallow","contract":"Freeze consumes only after successful commit, rejects an outstanding borrow, preserves the exact owner on failure, performs no implicit deep freeze, and supplies no ShareSafe or Transferable proof."},
+    {"rule_id":"LSTC-R013","title":"snapshot preserves source and independence","contract":"Snapshot borrows and preserves the source, produces an independent point-in-time immutable result, and exposes allocation or representation responsibility without promising O(1), O(n), or copy-on-write."},
+    {"rule_id":"LSTC-R014","title":"view is owner-bounded","contract":"A view preserves logical coordinates and provenance, cannot outlive or cross isolation from its owner, and conflicts with owner mutation, move, or freeze; no general collection view carrier name is selected here."},
+    {"rule_id":"LSTC-R015","title":"builder and mutable family expansion is deferred","contract":"MutableMap, MutableSet, StringBuilder, and ByteBuffer are reserved successor owner names but create no Prelude identity or source route; MutableString, MutableSequence, MutableTuple, and general MutableRecord remain absent or deferred."},
+    {"rule_id":"LSTC-R016","title":"current surface and evidence stay closed","contract":"Current via, Enum markers, operators, literals, grammar, diagnostics, formatter/LSP, Prelude signatures, product support, feature P1, and separate M13 actions are unchanged; no final diagnostic registry ID is invented."}
+  ],
+  "activation_gates": [
+    {"gate_id":"LSTC-G001","owner":"Spec/Grammar","condition":"exact type-goal productions, no-trivia token ownership, and error recovery are ratified"},
+    {"gate_id":"LSTC-G002","owner":"TypeSystem","condition":"canonical identity, closed Record row, Union, variance, ownership, and actor-evidence judgments are ratified"},
+    {"gate_id":"LSTC-G003","owner":"Impl","condition":"CST/HIR/API normalization and freeze/snapshot transactional lowering have an approved vertical slice"},
+    {"gate_id":"LSTC-G004","owner":"Test","condition":"positive, negative, boundary, metamorphic, and migration evidence is executed"},
+    {"gate_id":"LSTC-G005","owner":"Devel","condition":"formatter/LSP lossless spelling and rename/migration behavior is implemented after source activation authority"},
+    {"gate_id":"LSTC-G006","owner":"Design","condition":"current-to-successor identity migration and any new collection carriers receive explicit activation authority"}
+  ],
+  "machine_acceptance": {
+    "rule_count": 16,
+    "fixture_count": 30,
+    "accepted_type_surface_count": 5,
+    "deferred_type_surface_count": 5,
+    "source_activation_count": 0,
+    "current_identity_rewrite_count": 0,
+    "implicit_shareability_proof_count": 0,
+    "sequence_operation_activation_count": 0,
+    "final_diagnostic_id_count": 0,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "product_execution_receipt_count": 0
+  }
+}
