@@ -7,13 +7,18 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "Statement `try` requires a block body; `try Expr` is not current Deeplus.",
-    "feature_refs": ["at_control_expression_family"],
+    "feature_refs": [
+      "at_control_expression_family"
+    ],
     "related_feature_refs": [],
     "stage": "parser",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "PARSER"],
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
     "authority": "LANGUAGE / PARSER",
     "fixit_kind": "manual_review",
     "fixit_hint": "use try { ... } followed by catch or finally",
@@ -29,13 +34,20 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress.",
-    "feature_refs": ["actor_protocol_family", "async_task_control"],
+    "feature_refs": [
+      "actor_protocol_family",
+      "async_task_control"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "break the dependency cycle or await outside the active actor turn",
@@ -51,13 +63,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "SharedCell<T> requires normalized Plain payload responsibility; Plain does not imply raw or lock-free representation.",
-    "feature_refs": ["shared_cell_plain_payload_profile"],
+    "feature_refs": [
+      "shared_cell_plain_payload_profile"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "none",
     "fixit_hint": "",
@@ -73,13 +91,22 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A SharedCell observation or SharedMutex exclusive-access closure cannot suspend or escape its scoped access.",
-    "feature_refs": ["shared_cell_plain_payload_profile", "shared_mutex_no_drop_minimum_profile"],
-    "related_feature_refs": ["scoped_callable_lifetime_profile"],
+    "feature_refs": [
+      "shared_cell_plain_payload_profile",
+      "shared_mutex_no_drop_minimum_profile"
+    ],
+    "related_feature_refs": [
+      "scoped_callable_lifetime_profile"
+    ],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "complete asynchronous work outside the scoped shared-state closure",
@@ -95,13 +122,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "The current SharedMutex profile is non-reentrant; an owner cannot acquire the same mutex while its scoped lock is active.",
-    "feature_refs": ["shared_mutex_no_drop_minimum_profile"],
+    "feature_refs": [
+      "shared_mutex_no_drop_minimum_profile"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "release the scoped lock before reacquiring the same mutex",
@@ -117,13 +150,21 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "Shared, SharedCell, and SharedMutex wrappers do not synthesize Transferable evidence for their payload.",
-    "feature_refs": ["shared_cell_plain_payload_profile", "shared_mutex_no_drop_minimum_profile", "shared_owner_handle_minimum_profile"],
+    "feature_refs": [
+      "shared_cell_plain_payload_profile",
+      "shared_mutex_no_drop_minimum_profile",
+      "shared_owner_handle_minimum_profile"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "none",
     "fixit_hint": "",
@@ -139,13 +180,20 @@
     "diagnostic_class": "tooling",
     "emission_domain": "release_verifier",
     "message": "Actor dequeue order does not preserve channel_sequence within one sender/receiver/mailbox-profile channel.",
-    "feature_refs": ["actor_protocol_family"],
-    "related_feature_refs": ["actor_mailbox_capacity"],
+    "feature_refs": [
+      "actor_protocol_family"
+    ],
+    "related_feature_refs": [
+      "actor_mailbox_capacity"
+    ],
     "stage": "runtime",
     "severity": "error",
     "primary_source": "spec/mir/semantics.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "VERIFIER"],
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
     "authority": "LANGUAGE / VERIFIER",
     "fixit_kind": "none",
     "fixit_hint": "",

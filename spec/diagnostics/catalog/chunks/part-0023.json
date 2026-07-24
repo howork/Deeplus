@@ -1,39 +1,87 @@
 [
   {
     "diagnostic_id": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
-    "baseline": "0.1.2-baseline.r51f3", "diagnostic_status": "active", "diagnostic_maturity": "active", "diagnostic_class": "current_source", "emission_domain": "source",
-    "message": "Closed Union alternatives must be proven pairwise disjoint; this pair overlaps or its relation is unknown.",
-    "feature_refs": ["closed_anonymous_union_type_msp"], "related_feature_refs": ["refinement_type_phase_a"], "stage": "checker", "severity": "error",
-    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json", "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"], "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
-    "fixit_kind": "manual_review", "fixit_hint": "make the alternatives provably disjoint or use one common type", "fixit_policy": "never select a source-order or runtime winner",
-    "row_schema_version": "deeplus.diagnostic-row/r51f3", "notes": "Current finite relation diagnostic; product execution remains NOT_RUN."
-  },
-  {
-    "diagnostic_id": "UNION_PATTERN_ALTERNATIVE_NOT_EXACT",
-    "baseline": "0.1.2-baseline.r51f3", "diagnostic_status": "active", "diagnostic_maturity": "active", "diagnostic_class": "current_source", "emission_domain": "source",
-    "message": "A typed pattern over a closed Union must name exactly one declared alternative identity.",
-    "feature_refs": ["closed_anonymous_union_type_msp"], "related_feature_refs": ["pattern_decomposition"], "stage": "checker", "severity": "error",
-    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json", "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"], "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
-    "fixit_kind": "manual_review", "fixit_hint": "name one exact alternative or use an explicit structural pattern", "fixit_policy": "never infer a subtype test or open RTTI",
-    "row_schema_version": "deeplus.diagnostic-row/r51f3", "notes": "Current closed-Union pattern admission diagnostic; product execution remains NOT_RUN."
-  },
-  {
-    "diagnostic_id": "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_status": "active",
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
+    "message": "Closed Union alternatives must be proven pairwise disjoint; this pair overlaps or its relation is unknown.",
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "related_feature_refs": [
+      "refinement_type_phase_a"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "make the alternatives provably disjoint or use one common type",
+    "fixit_policy": "never select a source-order or runtime winner",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current finite relation diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "UNION_PATTERN_ALTERNATIVE_NOT_EXACT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "A typed pattern over a closed Union must name exactly one declared alternative identity.",
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "name one exact alternative or use an explicit structural pattern",
+    "fixit_policy": "never infer a subtype test or open RTTI",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Current closed-Union pattern admission diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "historical",
+    "emission_domain": "source",
     "message": "The Enum pattern case must belong to the subject Enum and its active payload arity, labels, positions, and child types must match exactly.",
-    "feature_refs": ["pattern_decomposition"],
-    "related_feature_refs": ["match_exhaustiveness_phase_a"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
+    "related_feature_refs": [
+      "match_exhaustiveness_phase_a"
+    ],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "select a case from the subject Enum and match only its declared active payload",
@@ -102,11 +150,11 @@
   {
     "diagnostic_id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "historical",
     "emission_domain": "source",
-    "message": "A Trait conformance, extension, or witness cannot activate a fixed operator glyph in the current profile.",
+    "message": "Retired pre-promotion boundary: use the exact Stable fixed-operator conformance diagnostic.",
     "feature_refs": [
       "fixed_operator_conformance_overloading",
       "closed_operator_symbols_open_named_extensions",
@@ -114,7 +162,7 @@
     ],
     "related_feature_refs": [],
     "stage": "checker",
-    "severity": "error",
+    "severity": "note",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "authority_set": [
@@ -124,10 +172,279 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "call the named Trait method or API explicitly",
-    "fixit_policy": "do not synthesize operator evidence, provider lookup, specialization, or fallback",
+    "fixit_hint": "recheck against the Stable +, -, and * admitted profile",
+    "fixit_policy": "do not emit this retired identity for current source",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "notes": "TCC-P1-002..008 remain OPEN; fixed-operator conformance overloading remains nonactivatable."
+    "notes": "Retired when the exact bounded +,-,* fixed-operator profile became STABLE_DESIGN; retained only for immutable historical evidence."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_MISSING",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "closed_operator_symbols_open_named_extensions"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "declare one admitted left-owner DIRECT_GLOBAL Add, Subtract, or Multiply conformance, or call a named API",
+    "fixit_policy": "never synthesize fallback, conversion, or alternate evidence",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable bounded fixed-glyph diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_AMBIGUOUS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "More than one admitted direct-global conformance matches the normalized fixed-operator key.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "trait_conformance_coherence_core"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "remove the overlap so exactly one normalized conformance remains",
+    "fixit_policy": "source, import, dependency, or declaration order never selects a winner",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Terminal coherence diagnostic; no lower-tier fallback."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "This normalized operand pair is reserved to intrinsic dispatch and cannot declare a user operator conformance.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading",
+      "numeric_operator_core"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "remove the declaration; the built-in operand pair has one language-owned implementation",
+    "fixit_policy": "never override or fall back from an intrinsic pair",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "The intrinsic/user-domain intersection count is zero."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "A fixed-operator conformance must be declared by the package defining the normalized left nominal operand type.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "trait_conformance_coherence_core"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "move the declaration to the left type owner or use a named API",
+    "fixit_policy": "never admit a foreign-left orphan",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "The operator orphan rule is intentionally stricter than ordinary conformance ownership."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Fixed-operator conformance accepts only left-owner DIRECT_GLOBAL evidence.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "trait_conformance_coherence_core"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use one ordinary global conformance owned by the left nominal type",
+    "fixit_policy": "via, VIA, AUTO, local/case, extension, provider, specialization, and source-order routes are forbidden",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "No route fallback is performed."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "The selected fixed-operator witness violates the borrowed, pure, total, synchronous responsibility profile.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "responsibility_type_system_retained_law"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "borrow both operands and use throws Never effects {} with no mutation, consume, suspension, or authority",
+    "fixit_policy": "never erase responsibility to make the witness fit",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "The checker validates responsibility before HIR/MIR residue is admitted."
+  },
+  {
+    "diagnostic_id": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "The expected result type cannot create, distinguish, or rank a fixed-operator conformance candidate.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "trait_conformance_coherence_core"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "make the operand types and conformance obligation exact before result checking",
+    "fixit_policy": "derive Output only after witness selection",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Operand-only selection prevents result-context ambiguity."
+  },
+  {
+    "diagnostic_id": "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Fixed-operator selection never inserts an implicit operand conversion.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "numeric_operator_core"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "convert the operand explicitly before applying the operator",
+    "fixit_policy": "never synthesize a widening, narrowing, signedness, or user conversion candidate",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Conversion closure remains explicit."
+  },
+  {
+    "diagnostic_id": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Only existing binary +, -, and * are admitted for fixed-glyph conformance overloading.",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "related_feature_refs": [
+      "closed_operator_symbols_open_named_extensions"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use a named Trait method or API for this operator family",
+    "fixit_policy": "never expand the Stable admitted set implicitly",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Division, remainder, logical, comparison, assignment, range, and short-circuit families remain excluded."
   },
   {
     "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
@@ -245,5 +562,249 @@
     "fixit_policy": "never widen the test to a supertype, refinement, subset, Trait, or open family",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Current closed-Union expression-test target diagnostic; product execution remains NOT_RUN."
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "scope#static is admitted only in a supported synchronous named callable owner.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "scope#static must follow the optional block import/use prologue and precede the first runtime semantic item.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A callable body may contain at most one scope#static activation prologue.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "This callable kind cannot own function static activation.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Function static activation cannot observe receiver, parameters, defaults, Context, or caller execution identity.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Function static activation must be effect-free, authority-free, and nonthrowing.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [
+      "effectful_static_activation"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Function static activation cannot await, yield, suspend, or observe cancellation.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [
+      "effectful_static_activation"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Function static activation cannot publish a Resource, mutable persistent state, or needsDrop residue.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [
+      "static_once_value"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Function static activation may call only statically selected activation-safe helpers.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The initial Stable profile forbids a function static activation from calling another activation-bearing owner.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_OWNER_ID_COLLISION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Distinct function static owner recipes produced the same identity.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "runtime",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_METADATA_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Imported function static activation metadata does not match the selected implementation contract.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "runtime",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_REENTRANCY",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A function static activation re-entered its own owner; the activation transitions to one canonical failed state.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "runtime",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_ACTIVATION_FAILED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The function static activation failed; all callers observe the same cached failure identity and no implicit retry occurs.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "runtime",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
   }
 ]

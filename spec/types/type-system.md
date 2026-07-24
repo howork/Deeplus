@@ -12,6 +12,24 @@ Aliases, option layers, closed unions/intersections, associated projections, row
 
 A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `IntN`, `UIntN`, `ISize`, and `USize` are separate domains; contextual adaptation of a signless unsuffixed integer succeeds only for one exact representable `IntN` or `UIntN` target. A sign remains an AST prefix operator. With an independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated magnitude fact, compute `-magnitude`, and test that signed candidate against the exact target domain. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. `ISize`/`USize` require an exact suffix or explicit checked conversion. An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
 
+`Rational` normalizes to one opaque `(BigInt numerator, BigInt denominator)`
+identity with positive denominator, relatively prime magnitudes, and canonical
+zero `0/1`. A `<p/q>` CST retains both unsigned source magnitudes, while the
+typed HIR value stores the normalized pair. The literal is never integer
+division and cannot be selected by a type-parser goal. Exact integer/Rational
+mixed `+`, `-`, and `*` use sealed Prelude fixed-glyph evidence; Decimal,
+Float, and Complex conversions are explicit named conversions. Rational has
+strong `Eq`, `Ord`, `Hash`, and `Keyable` laws.
+
+The initial `Complex<Rep>` profile admits exactly invariant
+`Complex<Float32>` and `Complex<Float64>`; bare `Complex` is the closed alias
+of the latter. Its semantic identity contains exact real and imaginary
+component values but no public layout or ABI identity. An attached `4.0i`
+literal has real component positive zero and Float64 imaginary component;
+`4.0f32i` selects Float32. Integer `4i`, separated or radix forms do not enter
+this judgment. Float-profile Complex uses partial IEEE equality and supplies
+no implicit strong `Eq`, `Ord`, `Hash`, or `Keyable` evidence.
+
 ## 3. Named rest, function-type residue, and unfold
 
 Named-rest parameters use attached triple-star `***`: `options***: Record`. Function types and public API digests preserve the exact `Record***` named-rest residue. Call/materialization named unfold uses attached prefix `**record`. Parameter/type `**` and unfold-prefix `***` are rejected. The collector is unique, final, and exactly canonical structural `Record`; Map is not admissible.
@@ -23,6 +41,25 @@ Subclassing, Trait conformance, extension activation, containment/association, a
 ## 5. Generics and function types
 
 Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet; rows and labels are checker identities, not further user generic kinds. Generic constructors are invariant by default. Function compatibility preserves value/context/witness/rest channels, ownership, callable profile, effect/error rows, cancellation, suspension, isolation, capture, and return type. Return type and source order are not overload tie-breakers. Ordinary callable parameters contain identifiers, modes, labels, and types rather than refutable Patterns; decomposition occurs in the body or an exhaustive declarative clause family.
+
+Ordinary and message calls share one trailing-closure binding judgment. One
+trailing closure may be unlabeled or labeled; two or more are well formed only
+when every item has a unique label. Labeled items bind by the visible
+function-typed parameter label. An unlabeled item binds only when ordinary
+channel matching leaves exactly one compatible trailing function parameter.
+Defaults cannot be skipped through trailing syntax, and the spelling changes
+none of the capture, ownership, effect, error, cancellation, isolation, or
+cleanup judgments.
+
+Message call typing uses one payload aggregate rather than an ordinary
+argument list. Absence supplies no value parameter, a scalar supplies one, a
+Tuple projects in order to positional value parameters, and a structural
+Record projects its static unique labels to named value parameters.
+Parenthesized positional source therefore creates one Tuple payload even when
+it projects to several handler parameters. Parenthesized all-named source
+creates one Record payload. Mixed positional/named payload entries, duplicate
+labels, unknown labels, and arity mismatches reject before overload ranking.
+Context and witness channels cannot be synthesized from payload fields.
 
 ## 6. Union, intersection, Option, Result, and Facet
 
@@ -77,6 +114,17 @@ publishing a partial Map.
 ## 10. RCTS-V5 and MIR handoff
 
 RCTS-V5 descriptors are closed discriminated inputs to design predicates and preserve cancellation independently from effects and errors. Static validation is E2 evidence only. Dyn-RCTS is nonactivatable. Every admitted surface lowers to Deeplus MIR with call shape, labels, ownership, effects/errors/cancellation, cleanup, evidence, and evaluation order preserved.
+
+The typed frontend boundary is
+`HirSkeleton -> CheckSession -> TypedHirDraft ->
+Verified<CanonicalHirH1> -> ExecutableHirH1`. Only the verified form may be a
+MIR input. It contains no unresolved/recovery type, name, operator, witness,
+extension, responsibility, or capability field. The verifier independently
+recomputes every selected declaration, conformance and intrinsic operation from
+the normalized input residue. `ExecutableHirH1` adds a target capability
+receipt; it cannot add a language feature or reinterpret the verified HIR.
+HIR-H1 is backend-neutral and does not make the noncanonical MIR-X1 proposal
+current.
 
 ## 11. Core judgment notation
 
@@ -135,6 +183,13 @@ preview-executable, and preview-script roots. Omission is checker recovery
 only: it emits `TYPE_DECL_VISIBILITY_REQUIRED` and produces zero admitted HIR
 type nodes, type identities, and API-digest entries.
 
+Package and Module identity remain separate type/linking axes. PackageId is
+owned by the resolved build/dependency graph and scopes distribution,
+dependencies, artifact provenance, orphan coherence, and `common` visibility.
+ModuleId is `(PackageId, ModulePath)` and scopes namespace, `private`
+visibility, name lookup, and source composition. A filesystem path is not a
+ModulePath and cannot participate in type identity or coherence comparison.
+
 For every other top-level owner whose Grammar production carries
 `TopLevelVisibility?`, omission normalizes to `private`; this default never
 applies to the nine type-producing owners. After that normalization, wider API
@@ -144,7 +199,60 @@ only through a separately admitted export or module interface.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
-Operator glyph selection is not a conformance goal in the current profile. The closed operator table uses `INTRINSIC_ONLY` dispatch over built-in admitted operand domains. A Trait method may expose equivalent named behavior, but conformance, extension, witness, provider, or source order cannot add an operator candidate. Arbitrary custom operators and fixed-operator conformance overloading remain nonactivatable, and `TCC-P1-002..008` remain OPEN.
+Static capability selection is domain-directed. `Type::item` checks only the
+nominal/type-side domain; `Type::extension::item` checks only that exact named
+extension; `<T as Trait>::item` checks one already-selected conformance/witness
+and emits the exact Trait requirement identity; runtime service/Actor/shared
+state begins from an explicit value owner. The checker must not make
+`T::item` search imported Traits. A selected Trait-associated value/function
+retains `TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, substitution and responsibility through HIR/API/MIR.
+Initial associated `let::` values must be immutable, Shareable, no-drop,
+authority-free, acyclic and statically materializable. No companion object,
+metatype value, activation trigger, fallback, provider order, or runtime lookup
+is synthesized.
+
+The operator token and precedence table is closed. Arbitrary custom
+glyph/fixity/precedence declarations are rejected rather than Preview. Stable
+fixed-glyph conformance selection is a conformance goal only for exact binary
+`+`, `-`, and `*`, mapped respectively to `Add<Rhs>`, `Subtract<Rhs>`, and
+`Multiply<Rhs>` with one associated `Output`.
+
+Intrinsic-reserved normalized operand pairs use `INTRINSIC_ONLY` and perform no
+conformance lookup. Every other admitted pair must select exactly one
+left-nominal-owner `DIRECT_GLOBAL` conformance from
+`(OperatorId, LeftType, RightType)`. Expected result, implicit conversion,
+extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization evidence,
+source/import order, runtime relookup, and fallback neither create nor rank a
+candidate. The selected conformance, witness, method, substitution, output type,
+and responsibility profile are static identity. Its method borrows both
+operands, is synchronous, non-consuming and non-mutating, and has
+`throws Never effects {}`. Other glyph families remain intrinsic-only or
+excluded from conformance overloading. `TCC-P1-002..008` remain OPEN product and
+independent-conformance evidence gates.
+
+The Stable `&&`, `||`, `^^`, and prefix `~~` family has a pointwise logical
+type rule. A packed known-width integer or identical bitfield/flags pair returns
+that same domain. A binary pair of exact same-shape `NumericArray<I>` values
+returns the same shape and element domain when `I` is one exact known-width
+integer type; unary complement preserves the same shaped carrier. Scalar
+`Bool`, `NumericArray<Bool>`, differing shapes or element domains, implicit
+broadcast/conversion, dynamic shape, generic collections, and user carriers
+are not admitted. The result is never implicitly convertible to a Bool
+predicate and contributes no flow fact.
+
+Function static activation is not a value or effect captured from the first
+caller. The checker assigns one `FunctionStaticOwnerId` to the exact
+`CallableImplementationId`, normalized owner/callable substitutions, activation
+contract digest, and sorted actually-used Witness/Conformance/helper identities
+and safety digests. The activation body has `throws Never`, `effects {}`, no
+caller capture, no authority, suspension, Resource or persistent `needsDrop`
+residue, and no dynamic/provider/activation-bearing callee. Receiver and
+arguments are staged first; parameter ownership commits only after the
+activation reaches `Ready`. `Failed` is terminal and cached, and reentry is a
+canonical cause rather than a second type/effect channel. The callable type
+does not gain a parameter or effect, but exported metadata and link identity
+retain the activation profile and digest.
 
 ## 14. Rows, labels, Records, and schema materialization
 
@@ -160,7 +268,7 @@ Closure capture, async suspension, actor isolation, Facet packaging, defer regis
 
 `SharedCell<T>` admits only normalized Plain payload and exposes sequentially consistent `withValue` scoped observation plus `replace` owner exchange. The borrow cannot escape or suspend, and `replace` commits one new owner while returning the old owner; Plain supplies neither raw layout nor lock-free representation. `SharedMutex<T>` admits the no-lifecycle-payload minimum profile and grants one receiver-bound, non-reentrant, non-suspending scoped inout place to `withLock`. Unlock is an infallible exactly-once cleanup on every terminal path and establishes the mutex handoff edge to the next successful lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering, actor transferability, or hidden cleanup.
 
-Actor message typing has one closed admission family. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. Only a successfully admitted actor-request Task value carries a non-forgeable `TaskResponsibility` descriptor in typed HIR, module API digest, and MIR; an ordinary async Task has no actor transport descriptor. The actor-request descriptor records the normalized result type, handler ErrorSet, cancellation axis, isolation owner, correlation identity, and terminal transport failure. Module API identity stores the static `correlation_id = per_value_non_forgeable` policy marker, while each committed request keeps its concrete correlation identity only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second Task type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
+Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the one-payload projection above. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. Only a successfully admitted actor-request Task value carries a non-forgeable `TaskResponsibility` descriptor in typed HIR, module API digest, and MIR; an ordinary async Task has no actor transport descriptor. The actor-request descriptor records the normalized result type, handler ErrorSet, cancellation axis, isolation owner, correlation identity, and terminal transport failure. Module API identity stores the static `correlation_id = per_value_non_forgeable` policy marker, while each committed request keeps its concrete correlation identity only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second Task type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
 
 `AsyncSequence<T, E: ErrorSet>` binds its source failure set instead of leaving a free terminal type. Its `next` operation throws `E`, while cancellation remains a distinct control outcome. For `AsyncCollector::list<T, U, ES, ET>`, the source is `AsyncSequence<T, ES>`, the named asynchronous transform throws `ET`, and the result throws exactly `normalize(ES | ET)`. Neither source nor transform errors may be erased or converted to cancellation.
 
@@ -185,7 +293,28 @@ relevant context/witness channels.
 
 Errors, defects, and cancellation are distinct control outcomes. Propagation operators consume only their declared family. Cleanup executes under a deterministic budget before the outcome escapes. Async suspension preserves live-place and cleanup obligations, and cancellation cannot silently bypass a registered cleanup. Callable compatibility is contravariant/covariant only where the declared responsibility profile permits; default inference remains invariant and conservative.
 
-Checked integer overflow and integer division or remainder by zero produce deterministic `ArithmeticDefect`, not a recoverable ErrorSet member. Integer quotient truncates toward zero; remainder obeys `a == trunc(a / b) * b + r`, with `r == 0` or the dividend sign and `|r| < |b|`. Signed `MIN / -1` and `MIN % -1` are overflow. If the checker proves failure statically it rejects the expression; otherwise the Defect edge occurs before an enclosing assignment commit. Floating remainder and floating glyph power are not current, and wrapping, saturating, or alternate remainder behavior is available only through explicitly named APIs. Integer `^` requires one exact integer domain, a statically proven nonnegative exponent in that domain, and a checked same-domain result; negative or proof-unknown exponents reject with `NUMERIC_OPERATOR_CORE_REQUIRED`. Measure power and linear-algebra operators use their separate intrinsic judgments.
+Checked integer overflow and integer division or remainder by zero produce
+deterministic `ArithmeticDefect`, not a recoverable ErrorSet member. Integer
+quotient truncates toward zero; remainder obeys
+`a == trunc(a / b) * b + r`, with `r == 0` or the dividend sign and
+`|r| < |b|`. Signed `MIN / -1` and `MIN % -1` are overflow. If the checker
+proves failure statically it rejects the expression; otherwise the Defect edge
+occurs before an enclosing assignment commit. Floating and Complex remainder
+are absent; wrapping, saturating, or alternate remainder behavior is available
+only through explicitly named APIs.
+
+`CaretPowerAdmitted(Base, Exponent)` is a finite static-domain judgment and
+never a conformance query. It selects one of `CheckedIntPow`, `FloatPowInt`,
+`FloatPow`, `ComplexPowInt`, `ComplexPowPrincipal`, or
+`MeasurePowStatic`, fixes the result type, and produces a closed operand
+adaptation plan. Expected-result type, runtime sign/integrality, import order
+and Trait evidence participate zero times. Integer power requires a statically
+nonnegative exact exponent. Float power stays Float; a negative finite base and
+nonintegral finite exponent yields canonical quiet NaN. Complex power uses the
+principal branch. The exact plan and its numeric/special-value profile
+identities become HIR-H1 residue and are recomputed by the verifier before MIR.
+NumericArray infix power, transpose and linear algebra retain their separate
+intrinsic judgments.
 
 ## 17. Pattern partition and exhaustiveness
 
@@ -236,7 +365,7 @@ There is no `FlowBinding` semantic type or responsibility. Coroutine response bi
 
 ## 20. Raw String and official tooling boundaries
 
-`raw"..."` has type `String`; body scalars are not escape-decoded and `$` has no interpolation role. The only semantic payload is the exact scalar sequence, lowered to `ConstString`.
+`#raw"..."` has type `String`; body scalars are not escape-decoded and `$` has no interpolation role. The only semantic payload is the exact scalar sequence, lowered to `ConstString`.
 
 R2 proof certificates and provider derive-via sidecars are tooling evidence, never types, witnesses, authorities or MIR values. A certificate is accepted only after deterministic checker validation or reduction to an R0/R1 obligation. Generated derive source is checked from scanner through MIR like handwritten source.
 

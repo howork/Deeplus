@@ -222,6 +222,24 @@
     "relation": "secondary"
   },
   {
+    "violation_id": null,
+    "predicate_id": "BitwiseDomainAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_NOT_NUMERIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "BitwiseDomainAdmitted",
+    "diagnostic_id": "NUMERIC_ARRAY_ELEMENTWISE_SHAPE_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "BitwiseDomainAdmitted",
+    "diagnostic_id": "NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST",
+    "relation": "secondary"
+  },
+  {
     "violation_id": "BlockLocalImportAdmitted:default",
     "predicate_id": "BlockLocalImportAdmitted",
     "diagnostic_id": "LOCAL_IMPORT_RUNTIME_LOADING_FORBIDDEN",
@@ -332,8 +350,26 @@
   {
     "violation_id": "CaretPowerAdmitted:default",
     "predicate_id": "CaretPowerAdmitted",
-    "diagnostic_id": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_id": "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "CaretPowerAdmitted",
+    "diagnostic_id": "POWER_INTEGER_EXPONENT_NONNEGATIVE_PROOF_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "CaretPowerAdmitted",
+    "diagnostic_id": "POWER_LITERAL_ADAPTATION_NOT_EXACT",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "CaretPowerAdmitted",
+    "diagnostic_id": "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN",
+    "relation": "secondary"
   },
   {
     "violation_id": "CharScalarAdmitted:default",
@@ -1682,7 +1718,55 @@
   {
     "violation_id": null,
     "predicate_id": "NumericOperatorCoreAdmitted",
-    "diagnostic_id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_AMBIGUOUS",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_MISSING",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "NumericOperatorCoreAdmitted",
+    "diagnostic_id": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
     "relation": "secondary"
   },
   {
@@ -1864,23 +1948,5 @@
     "predicate_id": "PreviewFeatureGateAdmitted",
     "diagnostic_id": "PREVIEW_GATE_PLACEMENT_INVALID",
     "relation": "secondary"
-  },
-  {
-    "violation_id": "ClosedUnionTypeTestAdmitted:subject_not_one_closed_union",
-    "predicate_id": "ClosedUnionTypeTestAdmitted",
-    "diagnostic_id": "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "ClosedUnionTypeTestAdmitted",
-    "diagnostic_id": "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "TopLevelTypeVisibilityAdmitted:missing_required_visibility",
-    "predicate_id": "TopLevelTypeVisibilityAdmitted",
-    "diagnostic_id": "TYPE_DECL_VISIBILITY_REQUIRED",
-    "relation": "primary"
   }
 ]

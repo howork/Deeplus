@@ -2721,7 +2721,7 @@ let window = xs[i..<j]
 
 ```deeplus
 let z = u *+ v
-// For Complex Rep, *+ uses the current inner-product convention specified by std.numeric.complex.
+// For Complex Rep, *+ uses the current Prelude left-conjugating inner-product law.
 ```
 ## EX-R48F-015 — Drop-preserving existential packaging
 
@@ -7814,7 +7814,7 @@ def incrementCount() -> Int = {
 ```deeplus
 let names = users ~ map { user => user.name }
 ```
-## EX-R51a1-NEW-008 — multiple callbacks are ordinary named arguments
+## EX-R51a1-NEW-008 — multiple trailing callbacks are all named
 
 - **source_feature_ids:** `trailing_closure_argument_msp`
 - **checker_trace_ids:** `none`
@@ -7826,7 +7826,9 @@ let names = users ~ map { user => user.name }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let value = transaction(onCommit: { => logCommit() }, onRollback: { error => log(error) })
+let value = transaction()
+    onCommit:{ => logCommit() }
+    onRollback:{ error => log(error) }
 ```
 ## EX-R51a1-NEW-009 — explicit nullary lambda without expected callable
 
@@ -10444,7 +10446,11 @@ let deep = graph!!{ root: replacement }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let due = calendar ~ addUsing(policy, 3[business_day], from: referenceDate)
+let due = calendar ~ addUsing(
+    policy: policy,
+    amount: 3[business_day],
+    from: referenceDate,
+)
 ```
 ## EX-R51c-019 — Dynamic RCTS source activation remains unavailable
 
@@ -10568,7 +10574,7 @@ public type Configure = (Record**) -> Unit
 ```deeplus
 configure(***options)
 ```
-## EX-R51d-001 — Raw String Phase A preserves body text
+## EX-R51d-001 — Stable #raw String preserves body text
 
 - **source_feature_ids:** `raw_string_prefixed_literal`, `r51e_package_current_canonical_authority`
 - **checker_trace_ids:** `none`
@@ -10580,7 +10586,7 @@ configure(***options)
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let path = raw"C:\temp\$name"
+let path = #raw"C:\temp\$name"
 ```
 ## EX-R51d-002 — Alternate raw delimiter family is not current
 
@@ -10595,7 +10601,22 @@ let path = raw"C:\temp\$name"
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let path = raw#"C:\temp"#
+let path = #raw#"C:\temp"#
+```
+## EX-R51d-002A — Prefixless legacy raw String is not current
+
+- **source_feature_ids:** `raw_string_prefixed_literal`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `RAW_STRING_DELIMITER_INVALID`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let path = raw"C:\temp"
 ```
 ## EX-R51d-003 — Rightward immutable binding normalizes to let
 
@@ -11168,7 +11189,7 @@ public def#tailrec sumTo(n: Int) -> Int = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let patternText = raw"[A-Z]+"
+let patternText = #raw"[A-Z]+"
 ```
 
 ## EX-R51f-008 — Regex literal prefix is not current
@@ -11783,46 +11804,60 @@ operator <+> precedence 130
 // CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT
 ```
 
-## EX-R51VOI-NG-003 — Trait conformance cannot activate a fixed glyph
+## EX-R51VOI-NG-003 — fixed operator rejects an alternate evidence route
 
 - **source_feature_ids:** `fixed_operator_conformance_overloading`, `closed_operator_symbols_open_named_extensions`
 - **checker_trace_ids:** `NumericOperatorCoreAdmitted`
 - **expected_outcome:** `reject`
-- **source_activation:** `nonactivatable`
+- **source_activation:** `none`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `library`
 - **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT`
+- **primary_diagnostic:** `OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 public class Amount {
     +let value: Int
+}
 
-    +def! new(value: Int)
-        : super!()
-    = {
-        self.value = value
+public conformance Amount conforms Add<Amount> via Helpers::addition {
+    type Output = Amount
+    +def add.(borrow rhs: Amount) -> Amount throws Never effects {} = {
+        return self
     }
 }
 
-public trait Additive {
-    +def add+(rhs: Self) -> Self
-        throws Never
-        effects {}
+let total = Amount!(value: 1) + Amount!(value: 2)
+// OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED
+```
+
+## EX-R51FOC-P-001 — Stable left-owner fixed addition conformance
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`, `closed_operator_symbols_open_named_extensions`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public class Vec2 {
+    +let x: Int
+    +let y: Int
 }
 
-public conformance Amount conforms Additive {
-    +def add+(rhs: Self) -> Self
-        throws Never
-        effects {}
-    = {
-        return Amount!(self.value + rhs.value)
+public conformance Vec2 conforms Add<Vec2> {
+    type Output = Vec2
+
+    +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {
+        return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)
     }
 }
 
-let total = Amount!(1) + Amount!(2)
-// FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT
+let combined: Vec2 = left + right
 ```
 
 ## EX-R51VOI-NG-004 — descending range glyph is not current
@@ -12095,4 +12130,206 @@ def helper() -> Unit = { }
 actor Worker {}
 // TYPE_DECL_VISIBILITY_REQUIRED
 // Recovery admits 0 HIR type nodes, type identities, and API-digest entries.
+```
+
+## EX-R51FSA-P-001 — 함수 static activation은 첫 실제 호출 전에 한 번 실행된다
+
+- **source_feature_ids:** `function_static_activation`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def decode(bytes: Bytes) -> Packet = {
+    scope#static {
+        verifyDecoderTables()
+    }
+
+    return decodePacket(bytes)
+}
+```
+
+## EX-R51f3-NUM-RAT-001 — Rational compound literal normalization
+
+- **source_feature_ids:** `rational_exact_numeric_value`
+- **checker_trace_ids:** `RationalLiteralAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let ratio: Rational = <6/8>
+let negative: Rational = -<2/3>
+// ratio has canonical value 3/4; source provenance retains <6/8>.
+```
+
+## EX-R51f3-NUM-RAT-NG-001 — Rational zero denominator rejects
+
+- **source_feature_ids:** `rational_exact_numeric_value`
+- **checker_trace_ids:** `RationalLiteralAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `RATIONAL_LITERAL_DENOMINATOR_ZERO`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid: Rational = <2/0>
+// RATIONAL_LITERAL_DENOMINATOR_ZERO
+```
+
+## EX-R51f3-NUM-CPLX-001 — Canonical Cartesian Complex expression
+
+- **source_feature_ids:** `complex_core_numeric_value`, `fixed_operator_conformance_overloading`
+- **checker_trace_ids:** `ComplexLiteralAndOperatorAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let z: Complex = 3.0 + 4.0i
+let small: Complex<Float32> = 1.5f32 - 0.25f32i
+let unit: Complex = Complex::i
+```
+
+## EX-R51f3-NUM-CPLX-NG-001 — Integer-shaped imaginary literal rejects
+
+- **source_feature_ids:** `complex_core_numeric_value`
+- **checker_trace_ids:** `ComplexLiteralAndOperatorAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = 4i
+// IMAGINARY_LITERAL_FORM_NOT_ADMITTED
+```
+
+## EX-R51f3-NUM-POWER-001 — Static real and Complex power
+
+- **source_feature_ids:** `caret_power_operator_msp`, `scalar_real_complex_power`
+- **checker_trace_ids:** `CaretPowerAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let inverse = 2.0 ^ -3
+let precedence = -2.0 ^ 2
+let principal = (3.0 + 4.0i) ^ (0.5 + 0.0i)
+// precedence is parsed as -(2.0 ^ 2).
+```
+
+## EX-R51f3-NUM-POWER-NG-001 — Expected result cannot activate power
+
+- **source_feature_ids:** `scalar_real_complex_power`
+- **checker_trace_ids:** `CaretPowerAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid: Complex = 2 ^ -3
+// The expected Complex result cannot create a power-domain cell.
+// POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN
+```
+
+## EX-R51f3-STATIC-TRAIT-001 — Explicit Trait-associated static selection
+
+- **source_feature_ids:** `trait_qualified_associated_static_selection`, `companion_capability_decomposition`
+- **checker_trace_ids:** `TraitAssociatedStaticSelectionAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let format = <Packet as Codec>::defaultFormat
+let canonical = <Packet as Codec>::Format::canonical
+```
+
+## EX-R51f3-STATIC-TRAIT-NG-001 — Nominal selector does not search Traits
+
+- **source_feature_ids:** `trait_qualified_associated_static_selection`
+- **checker_trace_ids:** `TraitAssociatedStaticSelectionAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = Packet::defaultFormat
+// Use <Packet as Codec>::defaultFormat.
+// TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION
+```
+
+## EX-R51f3-HIR-H1-001 — Verified HIR-H1 boundary
+
+- **source_feature_ids:** `hir_h1_current_mir_bridge_design`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def energy(base: Float64, exponent: Float64) -> Float64 = {
+    return base ^ exponent
+}
+// Design evidence: CanonicalHirH1 fixes FloatPow and both profile identities.
+// This example is not an implementation or MIR-X1 activation receipt.
+```
+
+## EX-R51FSA-NG-001 — 함수 static activation은 첫 runtime item 뒤에 올 수 없다
+
+- **source_feature_ids:** `function_static_activation`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def decode(bytes: Bytes) -> Packet = {
+    traceDecoderUse()
+    scope#static {
+        verifyDecoderTables()
+    }
+    // FUNCTION_STATIC_ACTIVATION_POSITION_INVALID
+
+    return decodePacket(bytes)
+}
 ```

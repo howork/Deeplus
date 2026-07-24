@@ -1,0 +1,97 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "move/borrow/inout mode surface",
+    "feature_id": "inout_borrow_move_modes",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Parameter and capture modes are explicit. An ordinary `mut name: T` parameter acquires its argument once and commits a callee-owned mutable local: it creates no caller alias or write-back edge, and a failure before commit retains the caller owner. `inout` instead borrows one caller place exclusively for the dynamic call extent and successful writes remain visible in that place. borrow creates a nonescaping shared region view; move transfers ownership and invalidates the source. The narrow Stable profile permits replacement through an inout place but not moving the current value out of that borrowed place; definite reinitialization across every exit is not a current feature. Overlapping inout/borrow conflicts, use-after-move, escape across return/storage/capture, and crossing suspension or actor transfer without an admitted ownership proof are rejected.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "OWNERSHIP_MODE_ADMISSION_FAILED"
+      ],
+      "predicates": [
+        "OwnershipModeAdmitted"
+      ],
+      "examples": [
+        "EX-R51a1-059",
+        "EX-R51a1-NG-072"
+      ],
+      "productions": [
+        "CaptureItem",
+        "ExpressionPrefixParselet",
+        "ParameterMode"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/type-flow-callable-coherence.json",
+      "spec/mir/semantics.md",
+      "tests/fixtures/current/type-flow-callable-coherence-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / DIAGNOSTICS",
+    "authority_set": [
+      "LANGUAGE",
+      "DIAGNOSTICS"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Old dotted bitwise operators removed",
+    "feature_id": "old_dotted_bitwise_operator_removed",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": ".&. .|. .^.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "rejection",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "OLD_DOTTED_BITWISE_OPERATOR_REMOVED"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R51a1-AUD-NG-033"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  }
+]

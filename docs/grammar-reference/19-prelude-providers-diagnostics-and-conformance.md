@@ -30,6 +30,7 @@ language-facing identity의 전체 계약을 설명할 수 없다.
 특히 다음 항목을 상세히 설명한다.
 
 - Prelude lookup과 signature authority
+- nominal/extension/Trait-associated/runtime owner capability 분해
 - `AsyncSequence`, `AsyncCollector`, `CollectPolicy::sequential`
 - explicit pattern-engine library
 - xVM agent framework
@@ -45,6 +46,7 @@ language-facing identity의 전체 계약을 설명할 수 없다.
 [`library/prelude/prelude.md`](../../library/prelude/prelude.md),
 [`library/prelude/signatures`](../../library/prelude/signatures),
 [`spec/contracts/tooling-and-profiles.json`](../../spec/contracts/tooling-and-profiles.json),
+[`spec/contracts/companion-capability-coherence.json`](../../spec/contracts/companion-capability-coherence.json),
 [`spec/contracts/provider-derive-via.json`](../../spec/contracts/provider-derive-via.json),
 [`spec/contracts/proof-r2-tooling.json`](../../spec/contracts/proof-r2-tooling.json),
 [`spec/types/predicates`](../../spec/types/predicates),
@@ -164,28 +166,33 @@ identity를 대체하지 않는다.
 이름 충돌이 있으면
 정본의 qualification과 visibility 규칙으로 해소해야 한다.
 
-### 3.3 operator는 Prelude overload가 아니다
+### 3.3 Prelude fixed-glyph contract
 
 current operator glyph vocabulary는 닫혀 있고
-모든 glyph dispatch는 `INTRINSIC_ONLY`다.
+primitive와 언어 예약 operand pair는 `INTRINSIC_ONLY`다.
 
 Prelude의 `Bitwise`, `Ord<T>` 같은 이름은
 named contract vocabulary다.
-conformance, extension, witness, provider가
-`+`, `^`, `[]`의 새 glyph candidate를
-추가하거나 바꾸지 못한다.
+다만 `Add<Rhs>`, `Subtract<Rhs>`, `Multiply<Rhs>`는 각각 exact binary
+`+`, `-`, `*`의 Stable fixed-glyph contract다. intrinsic 예약 pair
+밖에서 left nominal owner의 유일한 `DIRECT_GLOBAL` conformance만
+선택한다. extension, local/case witness, provider, `via`/`VIA`/`AUTO`,
+specialization과 source/import order는 후보를 만들지 못한다. `^`, `[]`,
+`/`, `%`, 비교·논리 glyph는 이 계약으로 확장되지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: library/prelude/prelude.md -->
 ```deeplus
-private def combine(left: Custom, right: Custom) -> Custom = {
-    return left ~ combineWith(right)
+public conformance Vec2 conforms Add<Vec2> {
+    type Output = Vec2
+    +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {
+        return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)
+    }
 }
 ```
 
-사용자-defined behavior는
-named method 또는 named API를 사용한다.
-같은 behavior를 `left + right`의 hidden Trait hook으로
-등록하지 않는다.
+이 세 Trait 밖의 사용자-defined behavior는 named method 또는 named
+API를 사용한다. Stable contract도 hidden runtime hook이 아니라
+checker가 identity를 고정하는 정적 conformance다.
 
 ### 3.4 conformance가 bracket을 활성화하지 않는다
 
@@ -206,6 +213,134 @@ private let item = customSequence[1]
 
 사용자 type은
 정본이 허용한 named selector를 제공해야 한다.
+
+### 3.5 Prelude는 universal companion registry가 아니다
+
+Prelude에 `Pattern::compile`, `CollectPolicy::sequential` 같은 정적 표면이
+있다는 사실은 모든 타입이 암시적 companion object를 가진다는 뜻이
+아니다. Deeplus의 companion capability 계약은 다음 네 domain을
+분해한다.
+
+| domain | canonical surface | identity source | runtime state |
+|---|---|---|---|
+| nominal type-side | `Type::item` | exact nominal owner declaration | type name 자체에는 없음 |
+| named type-side extension | `Type::extension::item` | exact `ExtensionSetId`와 item identity | lexical activation일 뿐 runtime loading 아님 |
+| Trait-qualified associated static | `<T as Trait>::item` | selected conformance의 exact requirement/implementation | runtime witness/provider search 없음 |
+| explicit runtime owner | `owner.item(...)` | ordinary constructed/injected value identity | owner의 명시적 lifecycle과 responsibility를 따름 |
+
+이 분해의 feature identity는
+`companion_capability_decomposition`이고, Trait-qualified 직접 선택은
+`trait_qualified_associated_static_selection`이다. 둘 다 type 이름을
+first-class metatype value로 만들거나 `companion` keyword/singleton을
+도입하지 않는다.
+
+`Type::item` lookup은 그 명목 owner와 Enum namespace에서 끝난다.
+`Type::extension::item`은 가운데 이름으로 exact extension set을
+고정한다. `<T as Trait>::item`은 exact Trait를 쓴 뒤 하나의 conformance
+evidence를 고정한다. 어느 domain도 실패했을 때 Prelude catalog,
+dynamic provider registry, import order 또는 다른 domain을 fallback으로
+순회하지 않는다.
+
+### 3.6 Associated 값·함수와 explicit runtime service
+
+Trait associated static은 세 kind를 갖는다.
+
+- type 문맥의 `<T as Trait>::Item`: associated type
+- expression 문맥의 `<T as Trait>::value`: immutable associated value
+- `<T as Trait>::make(...)`: associated function 선택 뒤 ordinary call
+
+associated `let::`의 최초 Stable profile은 const-evaluable 또는
+deterministic static-materializable이고 immutable이어야 한다. 내부
+graph도 deeply immutable이거나 명시적으로 `Shareable`이어야 하며,
+초기화는 pure/synchronous/safe-publication이어야 한다. Resource,
+drop/finalizer, ambient authority, escaping borrow, dependency cycle,
+persistent mutable cache와 runtime registry는 허용되지 않는다.
+
+상태가 필요하면 숨은 associated value나 type singleton에 넣지 않는다.
+ordinary service value, Actor 또는 shared-state owner를 명시적으로
+구성·주입하고 그 값의 ownership, isolation, effect, error, cancellation,
+cleanup 계약을 보존한다. compile-time provider도 이 runtime owner를
+암시적으로 주입할 수 없다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/companion-capability-coherence.json -->
+```deeplus
+public final class HexNumber {
+}
+
+public trait RadixProfile {
+    let ::base: Int
+}
+
+public conformance HexNumber conforms RadixProfile {
+    let ::base = 16
+}
+
+private let radix = <HexNumber as RadixProfile>::base
+```
+
+`radix`는 selected conformance의 immutable associated binding이다.
+`HexNumber::base`나 Prelude global `base`를 검색하지 않고, 실행 중
+registry에서 같은 문자열을 다시 찾지도 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/companion-capability-coherence.json -->
+```deeplus
+public trait TextDecodable {
+    def ::decode(text: String) -> Result<Self, error DecodeError>
+        throws Never
+        effects {}
+}
+
+private def decodeValue<T>(text: String) -> Result<T, error DecodeError>
+    where T conforms TextDecodable
+= {
+    return <T as TextDecodable>::decode(text)
+}
+```
+
+associated function의 선택은 call-shape 검사보다 먼저 exact
+`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, normalized `SubstitutionId`, normalized
+`ResponsibilityId`의 일곱 축을 만든다. MIR은 이 record를 소비하고
+provider/default/fallback search를 재실행하지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/companion-capability-coherence.json -->
+```deeplus
+private def readVersion(
+    context service: VersionService,
+    package: String,
+) -> Int
+    throws ServiceError
+    effects {network}
+= {
+    return service.version(package)
+}
+```
+
+`service`는 호출자가 explicit context channel로 공급한 ordinary runtime
+owner다. `VersionService::version` 같은 정적 lookup으로 바꾸거나 type
+이름에서 singleton을 합성하지 않는다. network authority, declared effect,
+error와 service lifetime이 호출 signature에 드러난다.
+
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/companion-capability-coherence.json -->
+```deeplus
+private def invalidDecode<T>(text: String) -> Result<T, error DecodeError>
+    where T conforms TextDecodable
+= {
+    return T::decode(text)
+}
+// TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION
+```
+
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/companion-capability-coherence.json -->
+```deeplus
+private let decoder = TextDecodable
+private let value = decoder.decode("2a")
+// COMPANION_OBJECT_NOT_CURRENT
+```
+
+Trait identity는 runtime decoder value가 아니다. 동적 decoder가 필요하면
+그 service의 concrete type, construction/injection, capability와 effect를
+ordinary program value로 드러내야 한다.
 
 ## 4. Option, Result 및 failure identity
 
@@ -581,7 +716,7 @@ compile failure와 no-match는 다르다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/tooling-and-profiles.json -->
 ```deeplus
 private let compiled = Pattern::compile(
-    raw"[A-Z]+",
+    #raw"[A-Z]+",
     engine: PatternEngine::default,
     budget: PatternBudget::standard,
 )
@@ -1216,6 +1351,34 @@ associated requirement는
 same-name nested item이
 associated binding을 자동 합성하지 않는다.
 
+#### 18.3.1 direct associated static selection
+
+`<T as Trait>::item`은 associated type projection에만 한정되지 않는다.
+type context에서는 associated type, expression context에서는 associated
+immutable value 또는 associated function을 exact Trait-qualified
+selector로 선택한다. function은 selection 뒤 ordinary CallSuffix와
+call-responsibility 검사를 받는다.
+
+`T::item`은 nominal type-side lookup이며 visible Trait를 암시적으로
+검색하지 않는다. exact Trait를 쓰지 않은 associated static 의도는
+`TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION`이다. exact Trait
+안에 이름이 없으면 `TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND`, 선언 kind가
+문맥과 다르면 `TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH`다. 두 경우 모두
+nominal member, extension, Prelude, provider로 fallback하지 않는다.
+
+#### 18.3.2 owner authority와 value admission
+
+명목 owner body의 lexical `def::`만 그 owner의 private construction
+authority를 사용할 수 있다. top-level qualified helper, named extension,
+외부 conformance의 associated function은 ordinary visibility만 가진다.
+같은 package/module이나 같은 `::` spelling은 권한을 전이하지 않는다.
+
+associated `let::`는 immutable/static-safe minimum profile을 먼저 통과한
+뒤에만 binding graph에 들어간다. mutable cell, cache, resource/finalizer,
+ambient authority, escaping borrow, cycle을 가진 값은
+`ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED`이고 selected candidate가
+되지 않는다.
+
 ### 18.4 parent evidence
 
 supertrait parent는
@@ -1289,8 +1452,18 @@ requirement, associated binding,
 parent link identity는
 HIR/MIR 또는 lossless equivalent에 남는다.
 
+Trait-qualified associated static record는 최소한
+`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, normalized `SubstitutionId`, normalized
+`ResponsibilityId`를 모두 보존한다.
+associated type 뒤 `::member`가 이어지면 앞의 projection identity와
+정규화된 결과 nominal member identity를 별도 단계로 남긴다.
+
 lowering은 source/provider/default/fallback search를
-다시 하지 않는다.
+다시 하지 않는다. 일곱 축이 완성되지 않으면
+`TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE`이고 MIR을 만들지
+않는다. runtime witness table, provider registry 또는 symbol string으로
+복원하려 하면 `TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN`이다.
 
 ## 20. API conformance receipt
 
@@ -1505,6 +1678,27 @@ MIR artifact count가 0임을 확인해야 한다.
 recovery AST를 Stable HIR로 낮추지 않았다는
 증거가 필요하다.
 
+### 24.5 Companion capability 진단군
+
+이 진단군은 정적 owner/selection 경계를 설명한다. registry가 소유하는
+exact ID와 의미는 다음과 같다.
+
+| diagnostic ID | 판정 |
+|---|---|
+| `TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION` | generic/abstract target의 associated item 의도에는 `<T as Trait>::item`이 필요하다 |
+| `TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND` | selected exact Trait에 해당 requirement가 없다 |
+| `TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH` | type/value/function 문맥과 requirement kind가 다르다 |
+| `TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE` | 일곱 identity/responsibility 축이 HIR/API에 완전히 결합되지 않았다 |
+| `TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN` | lowering/runtime이 static decision을 provider/table/string lookup으로 재구성하려 한다 |
+| `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN` | owner-local nominal `def::`가 아닌 declaration이 private construction 권한을 요구한다 |
+| `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` | associated `let::`가 immutable/static-safe 최소 profile을 위반한다 |
+| `COMPANION_OBJECT_NOT_CURRENT` | 암시적/명시적 companion object 또는 type-as-runtime-value 표면을 사용한다 |
+
+receipt는 failure가 난 domain, exact owner/Trait/item, expected/observed
+kind, selected conformance가 있었다면 그 identity, fallback count 0과
+MIR artifact count 0을 기록해야 한다. diagnostic row가 존재한다는
+사실만으로 parser/checker emission이 실행되었다고 주장하지 않는다.
+
 ## 25. 예제: pattern compile과 진단
 
 ### 25.1 compile success
@@ -1512,7 +1706,7 @@ recovery AST를 Stable HIR로 낮추지 않았다는
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: library/prelude/prelude.md -->
 ```deeplus
 private let patternResult = Pattern::compile(
-    raw"[a-z]+",
+    #raw"[a-z]+",
     engine: PatternEngine::default,
     budget: PatternBudget::standard,
 )
@@ -1529,7 +1723,7 @@ engine/version/flags/Unicode/budget identity를 기록해야 한다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/tooling-and-profiles.json -->
 ```deeplus
 private let invalidPattern = Pattern::compile(
-    raw"[",
+    #raw"[",
     engine: PatternEngine::default,
     budget: PatternBudget::standard,
 )
@@ -1698,12 +1892,40 @@ selected witness identity를 받는다.
 runtime iteration이나 registration order로
 다시 선택하지 않는다.
 
+### 28.8 Capability owner와 provider
+
+compile-time provider가 source 또는 sidecar를 생성할 수는 있지만,
+`Type::item`, `Type::extension::item`, `<T as Trait>::item`의 정적 owner를
+runtime registry로 바꾸지 못한다. generated source도 ordinary
+scanner→parser→checker→HIR/MIR 경로에서 exact identity를 얻어야 한다.
+dynamic provider가 별도로 승인된 operation을 수행하더라도 그 provider
+value가 Trait associated static 또는 nominal type-side member로
+소급 변환되지는 않는다.
+
+### 28.9 함수 static과 Class static Preview
+
+이름 있는 허용 동기 함수의 `scope#static { ... }`은 Stable
+`FunctionStaticOwnerId` activation이다. 최초 실제 invocation에서
+argument/default staging 뒤 기존 `ownership_commit` 앞에 실행되며,
+caller-input-free, pure, synchronous, authority/resource-free 조건을
+지킨다. static value cache나 type singleton이 아니다.
+
+Class의 `scope#static`은 별도 `PREVIEW_NONACTIVATABLE` family다. current
+source acceptance, AST/HIR/MIR operation과 product execution 수는 0이며,
+함수 owner identity를 재사용하거나 새 `CALL_INPUT_COMMIT` event를 만들 수
+없다. Prelude catalog row나 provider가 이 Preview를 활성화하지도 않는다.
+
 ## 29. 흔한 오해와 정확한 판정
 
 | 오해 | 정확한 판정 |
 |---|---|
 | Prelude row가 있으면 keyword다 | 아니다. language-facing identity와 scanner keyword는 별도다 |
-| Trait를 만들면 operator를 overload할 수 있다 | current glyph는 intrinsic-only다 |
+| 아무 Trait나 만들면 operator를 overload할 수 있다 | 정확한 `Add`/`Subtract`/`Multiply`와 left-owner `DIRECT_GLOBAL`만 가능하다 |
+| `T::item`이 visible Trait의 associated item을 찾는다 | 아니다. `<T as Trait>::item`으로 exact Trait를 써야 한다 |
+| 모든 type에는 암시적 companion singleton이 있다 | 아니다. nominal/extension/Trait-associated/runtime owner를 분리한다 |
+| `let::`이면 mutable cache도 associated value로 안전하다 | 아니다. immutable/static-safe 최소 profile을 모두 만족해야 한다 |
+| conformance의 `def::`는 nominal private constructor를 부를 수 있다 | 아니다. private construction 권한은 owner-local nominal `def::`에만 있다 |
+| 함수 `scope#static`이 Class static cache를 뜻한다 | 아니다. 함수 activation은 Stable이지만 Class 표면은 Preview nonactivatable이다 |
 | Sequence conformance가 `[]`를 준다 | built-in bracket matrix만 current다 |
 | pattern engine은 regex literal이다 | explicit String/Bytes library call이다 |
 | compile failure와 no-match는 같다 | 서로 다른 result다 |
@@ -1843,6 +2065,25 @@ receipt는 null이다.
 7. witness identity가 API/MIR에 남는가.
 8. whole-image link verification이 있는가.
 
+### 32.7 Companion capability decomposition
+
+1. `Type::item`, `Type::extension::item`, `<T as Trait>::item`, explicit
+   runtime owner를 서로 다른 domain으로 유지하는가.
+2. generic associated static이 exact Trait qualification을 요구하는가.
+3. selected associated item의 type/value/function kind가 문맥과 맞는가.
+4. exact 일곱 identity/responsibility 축이 HIR/API/MIR handoff에 남는가.
+5. runtime/provider/import/source-order lookup과 cross-domain fallback이
+   모두 0인가.
+6. associated `let::`가 const-evaluable/static-materializable,
+   immutable/Shareable, pure/synchronous, no-drop/no-authority/no-borrow/no-cycle
+   profile을 만족하는가.
+7. private construction 권한이 owner-local nominal `def::` 밖으로
+   전이되지 않는가.
+8. companion object, metatype runtime value, hidden singleton을 만들지
+   않는가.
+9. 함수 `scope#static` Stable owner와 Class Preview owner를 분리하는가.
+10. product receipt 없이 지원 또는 실행 PASS를 주장하지 않는가.
+
 ## 33. 정본 근거
 
 - [`library/prelude/prelude.md`](../../library/prelude/prelude.md)
@@ -1851,6 +2092,8 @@ receipt는 null이다.
   - machine-readable signature, responsibility, digest
 - [`spec/types/type-system.md`](../../spec/types/type-system.md)
   - Option/Result, collection, async, effects/errors
+- [`spec/contracts/companion-capability-coherence.json`](../../spec/contracts/companion-capability-coherence.json)
+  - 네 capability domain, explicit Trait-qualified selection, owner/value/runtime fence
 - [`spec/mir/semantics.md`](../../spec/mir/semantics.md)
   - library/tooling observability와 backend boundary
 - [`spec/contracts/tooling-and-profiles.json`](../../spec/contracts/tooling-and-profiles.json)

@@ -58,7 +58,7 @@ lossless CST는 토큰, delimiter, 줄바꿈,
 - raw String body와 ordinary String body 구분
 - numeric literal token과 prefix sign 분리
 - attached postfix `A^`와 spaced infix `a ^ b` 경계
-- `#map`, `#set`, `#mut`, `#bytes` prefixed goal
+- `#map`, `#set`, `#mut`, `#raw`, `#bytes` prefixed goal
 - Stable, Preview, Recovery entry point 분리
 - 문장 경계와 layout separator 보존
 
@@ -98,6 +98,147 @@ HIR은 runtime 문자열을
 정적 label, member, witness, provider로 바꾸지 않는다.
 이름 해석 결과는 MIR lowering 전에 고정된다.
 
+### 2.3.1 HIR-H1의 단계 타입
+
+`hir_h1_current_mir_bridge_design`은 위 원칙을 기계적으로 검사할 수 있게
+만드는 bounded 설계다. fully typed/resolved/responsibility-closed
+verifier boundary의 상태는 `STABLE_DESIGN`이고
+`source_activation: none`이다. current 설계 파이프라인과 RFC draft
+확장 경계는 다음과 같다.
+
+`STABLE_DESIGN`은 구현 receipt가 아니다. 관련 제품 lane은
+`15/15 NOT_RUN`이며, source activation과 구현·실행 authority는 없다.
+
+이 문서화로 semantic P0가 새로 생기거나 닫히지 않으며 현재 값은 0이다.
+기존 OPEN feature P1도 Class 6개, Enumeration 8개, Trait Conformance
+7개, SFD 1개로 정확히 22개다. HIR schema나 fixture의 존재는 그중 어느
+항목도 폐쇄하지 않는다.
+
+```text
+LosslessCST
+  -> NormalizedAST
+  -> HirSkeleton
+  -> CheckSession
+  -> TypedHirDraft
+  -> Verified<CanonicalHirH1>
+  -> ExecutableHirH1
+  -- DP-RFC-0002 draft only --> Verified<ProposedMirX1>
+```
+
+각 이름은 동일한 struct의 phase flag가 아니다. 역할이 다른 값을 서로
+다른 타입으로 나눠, 미해결 analysis 값이 canonical 또는 executable
+권위로 잘못 직렬화되는 일을 막는다.
+
+| 단계 | 할 수 있는 일 | 아직 권위가 아닌 것 |
+|---|---|---|
+| `LosslessCST` | token, trivia, 원 spelling, recovery provenance 보존 | type·witness·ownership 선택 |
+| `NormalizedAST` | surface sugar를 구조적으로 정규화 | overload나 backend representation 선택 |
+| `HirSkeleton` | owner/body/scope/generated declaration의 뼈대 구성 | unresolved slot을 canonical로 저장 |
+| `CheckSession` | name, type, call, label, evidence, ownership, effect, error, cancellation, isolation, cleanup을 fixed point로 폐쇄 | 실행 |
+| `TypedHirDraft` | 모든 결정을 담되 verifier 전 상태로 유지 | canonical seal |
+| `Verified<CanonicalHirH1>` | 닫힌 의미와 identity의 검증된 표현 | target 실행 가능성 |
+| `ExecutableHirH1` | exact target capability receipt를 결합 | 의미 재선택이나 backend 전환 |
+| `Verified<ProposedMirX1>` | DP-RFC-0002가 제안한 비정규 MIR-X1 결과 | current MIR authority·activation |
+
+`CanonicalHirH1`은 모든 expression, binder, capture, payload에 normalized
+type이 있고, 이름과 선택이 resolved되며, responsibility가 닫혀 있어야
+한다. 구체적으로 declaration/member/label, conformance/witness/requirement,
+extension, substitution, construction target, ownership/place, effect,
+ErrorSet, Defect, cancellation, suspension, isolation, authority, cleanup
+identity를 보존한다.
+
+반대로 다음 값의 canonical variant 수는 정확히 0이다.
+
+- recovery node
+- unresolved lookup 또는 candidate set
+- inference variable와 placeholder/error type
+- missing expression
+- generic operator dispatch
+- runtime string을 static identity로 바꾸는 node
+- backend layout 또는 ABI identity
+
+verifier는 “나중에 MIR에서 해결한다”는 TODO를 허용하지 않는다. 이 경계를
+통과하지 못한 source는 진단을 위한 analysis provenance로 남을 수 있지만
+MIR event나 executable value를 만들지 않는다.
+
+### 2.3.2 canonical과 executable 사이의 capability receipt
+
+`Verified<CanonicalHirH1>`이 의미적으로 완전하다는 사실만으로 특정 MIR
+schema가 모든 reachable variant를 내릴 수 있다고 결론 내리지 않는다.
+`ExecutableHirH1`을 만들려면 `MirCapabilityReceipt`가 적어도 다음을
+결합해야 한다.
+
+```text
+hir_semantic_digest
+mir_schema_digest
+lowering_rules_digest
+required_capabilities
+provided_capabilities
+unsupported_reachable_variant_count
+```
+
+required와 provided capability 집합은 정확히 같고,
+`unsupported_reachable_variant_count`는 0이어야 한다. receipt는 누락된
+variant를 opaque runtime callback이나 TODO pseudo-operation으로 덮지
+못한다. 또한 receipt 자체는 실행, 구현, MIR-X1 채택, backend switch,
+publication 또는 promotion 권위를 주지 않는다.
+
+### 2.3.3 Rational·Complex constant residue
+
+Rational source `<p/q>`는 canonical HIR에서 `RationalConst`가 된다. payload
+`ConstRational`은 부호와 최단 unsigned big-endian numerator/denominator
+magnitude를 보존하고, 분모 양수·기약분수·positive `0/1` invariant를
+만족한다. CST의 `<6/8>` spelling과 canonical `3/4` 값은 서로 다른
+provenance 층이다. backend가 고정 폭 integer나 `Float64`를 거쳐 값을
+근사해서는 안 된다.
+
+붙은 `i` literal의 `Complex<Float64>` profile은 canonical HIR의
+`ComplexLiteral`과 `ConstComplex64` payload로 간다. 두 component는 real
+먼저, imaginary 다음 순서의 정확한 IEEE binary64 bit identity를 갖고,
+`+0.0`과 `-0.0` bit를 보존한다. `Complex<Float32>` source profile을
+일반적으로 `Float64`로 넓혀도 된다는 뜻은 아니다. 이 payload는 principal
+power의 branch side를 보존하기 위한 수치 의미이지, struct field offset,
+SIMD layout 또는 foreign ABI를 정하는 계약도 아니다.
+
+### 2.3.4 닫힌 power plan
+
+`^`는 generic call이 아니라 `HirPowerPlan`이다. base를 먼저 한 번,
+exponent를 다음에 한 번 평가한 뒤, checker가 이미 선택한 다음 여섯
+operation 중 하나를 기록한다.
+
+1. `CheckedIntPow`
+2. `FloatPowInt`
+3. `FloatPow`
+4. `ComplexPowInt`
+5. `ComplexPowPrincipal`
+6. `MeasurePowStatic`
+
+operand adaptation도 `Identity`, `DirectLiteralToF64Exact`, `F32ToF64`,
+`F32ToComplex64`, `F64ToComplex64` 다섯 개로 닫힌다. plan에는 원래와
+적응 후의 base/exponent type, result type, selected identity,
+responsibility profile, `math_profile_id`, `special_value_profile_id`,
+source origin이 함께 들어간다.
+
+MIR lowerer는 이 plan을 보고 operation을 다시 고르지 않는다. expected
+result, runtime 부호나 exponent 정수성, Trait/witness, provider,
+source/import order, backend helper availability로 operation을 바꾸는
+경로는 0개다. `POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN`은 특히 result
+annotation으로 이 결정을 바꾸려는 시도를 seal 전에 막는다.
+
+### 2.3.5 DP-RFC-0002 구현 제안 경계
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+`DP-RFC-0002`의 구체 Rust HIR 구현, capability-aware lowering 코드,
+`Verified<ProposedMirX1>` 생성 및 MIR-X1 activation은
+`DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE`이다. 이 구현 제안은 앞의
+`STABLE_DESIGN` verifier invariant를 구현 대상으로 소비하지만, 그
+invariant와 같은 authority 상태를 갖지 않는다. 반대로 verifier boundary가
+current라는 이유만으로 이 RFC의 schema, lowering, backend path가
+구현되었거나 활성화되었다고 해석해서도 안 된다.
+
+<!-- deeplus-status-fence: CURRENT -->
+
 ### 2.4 MIR
 
 MIR은 source-observable 의미의 정본이다.
@@ -130,6 +271,12 @@ ordered observable trace,
 place/cleanup balance,
 provider replay identity를 비교한
 target-bound differential receipt가 필요하다.
+
+current backend authority는 정확히 `xVM initial execution`, `LLVM AOT`,
+`LLVM ORC JIT`다. Cranelift는 current backend가 아니며, xVM-only
+architecture로 전환되지도 않았다. `ProposedMirX1`은
+noncanonical/nonactivatable 설계 대상이므로 current Deeplus MIR을
+대체하지 않는다.
 
 ## 3. 무엇이 관찰 가능한가
 
@@ -233,6 +380,19 @@ context, witness, repeated positional,
 named-rest channel도 source order identity를 보존한다.
 witness identity는 runtime lookup을 하지 않지만
 그 channel이 signature와 MIR call descriptor에서 사라지지 않는다.
+
+ordinary call과 message call은 ordered trailing-closure channel을 공유한다.
+closure capture environment는 payload/ordinary argument 뒤 source order로
+획득되고, 각 label과 선택된 function-typed formal identity가 HIR/MIR에
+남는다. surface brace attachment만 지울 수 있고 evaluation order나
+selected dispatch identity는 지우지 않는다.
+
+message는 ordinary argument vector가 아니라 payload aggregate를 0개 또는
+1개 갖는다. Tuple payload는 positional projection map, Record payload는
+static-label projection map과 함께 lowering한다. 예를 들어
+`receiver ~ moveTo (x, y)`는 `x`, `y`를 순서대로 한 번 평가해 Tuple
+하나를 만들고, selector resolution 뒤 그 Tuple field를 positional
+formal에 결합한다.
 
 ### 4.4 collection entry
 
@@ -456,6 +616,73 @@ implicit `Ord` 또는 `Keyable` evidence를 만들지 않는다.
 positive zero와 negative zero는 source comparison에서 같다.
 payload bit identity나 backend NaN representation은
 source value identity가 아니다.
+
+### 8.4 Rational과 Complex value
+
+`Rational`은 `BigInt` numerator와 strictly positive `BigInt`
+denominator로 이루어진 exact value다. 두 값은 항상 기약분수이고 zero는
+`0/1` 하나로 정규화된다. 리터럴 정규화는 compile-time exact arithmetic
+이므로 overflow wrap, saturation, float approximation이 없다. resource
+budget을 초과하면 값을 축약해 받는 것이 아니라 정적 진단으로 끝난다.
+
+ordinary constructor `Rational!(numerator, denominator)`와
+`numerator ~ over denominator` message는 두 operand를 왼쪽에서 오른쪽으로
+정확히 한 번 평가한 뒤 0 denominator를 검사하고, 성공할 때만 canonical
+value를 publish한다. 실패 전에 임시 numerator owner를 소비하거나
+부분적으로 만들어진 Rational을 관찰 가능하게 해서는 안 된다.
+
+`Complex<Rep>`은 `real`, `imag` 두 IEEE component의 immutable semantic
+value다. admitted initial Rep은 `Float32`, `Float64`이고 두 component는
+같은 exact Rep을 가진다. signed zero, infinity, NaN classification은
+component별로 보존된다. 단, source value 법칙이 storage layout이나
+foreign complex ABI를 자동으로 정하지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/rational-complex-numeric-coherence.json -->
+```deeplus
+let ratio: Rational = <6/8>  // exact canonical 3/4
+let z: Complex = 3.0 + 4.0i
+let belowCut: Complex = Complex!(real: -1.0, imag: -0.0)
+```
+
+마지막 값의 imaginary `-0.0`은 equality에서 `+0.0`과 같더라도 principal
+Complex function의 branch side를 보존할 때 지워서는 안 된다.
+
+### 8.5 power의 평가와 실패 경계
+
+`base ^ exponent`의 관찰 순서는 다음으로 고정된다.
+
+1. checker가 두 operand의 normalized static type으로 operation과 result를
+   닫는다.
+2. base expression을 정확히 한 번 평가한다.
+3. exponent expression을 정확히 한 번 평가한다.
+4. 두 operand adaptation을 plan에 기록된 순서로 적용한다.
+5. 선택된 operation을 정확히 한 번 실행한다.
+6. 성공하면 enclosing expression에 result를 전달하고, Defect면 enclosing
+   place commit 전에 끝난다.
+
+integer `CheckedIntPow`는 same-domain checked result를 만들고 dynamic
+overflow는 `ArithmeticDefect`다. `FloatPow`의 real profile은 runtime
+negative base를 보고 Complex로 route를 바꾸지 않는다.
+`ComplexPowPrincipal`은 signed-zero-aware principal log/power profile을
+사용한다. 두 profile 모두 `math_profile_id`와
+`special_value_profile_id`가 semantic identity에 결합되어야 하며, host
+libm 선택이 이 identity를 대신할 수 없다.
+
+ordinary computational power는 각 결과 domain에서 `0 ^ 0`을 one으로
+정의한다. 두 operand가 정적으로 0이면
+`ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION` warning을 낼 수 있지만
+MIR에서 별도 failure edge를 만들지 않는다. indeterminate 처리가 필요한
+수치 알고리즘은 named checked API를 선택해야 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/rational-complex-numeric-coherence.json -->
+```deeplus
+let inverseCube: Float64 = 2.0 ^ -3
+let principal: Complex = Complex!(real: -1.0, imag: +0.0) ^ 0.5
+let one: Int = 0 ^ 0
+```
+
+이 예는 source-observable 설계 trace다. 실제 HIR/MIR/xVM/LLVM 실행
+receipt는 없으며 제품 상태는 `NOT_RUN`이다.
 
 ## 9. pattern transaction
 
@@ -870,8 +1097,14 @@ full이면 precommit에서 즉시
 ### 15.3 prepare와 enqueue commit
 
 message send는 method call이 아니다.
-prepare 단계는 receiver와 payload를 한 번 평가하지만
-owner를 아직 넘기지 않는다.
+prepare 단계는 receiver를 한 번 평가하고, 0/1 payload aggregate의
+child를 왼쪽에서 오른쪽으로 한 번씩 평가하지만 owner를 아직 넘기지
+않는다. trailing closure가 있으면 payload 다음에 capture environment를
+source order로 획득한다.
+
+actor isolation을 건너는 closure는 독립적으로 transfer 가능해야 한다.
+borrow/inout escape, 허용되지 않은 suspension, 숨은 effect/error/cleanup을
+trailing 표면이 합법화하지 않는다.
 
 precommit rejection은 다음을 보장한다.
 
@@ -1462,6 +1695,10 @@ source-observable 법칙을 다음처럼 고정한다.
 | Map unfold | later key wins, exact cleanup, failure-atomic plan | hash representation·성능 |
 | actor request declared failure | `TaskResponsibility`에 ErrorSet·correlation·terminal failure 보존 | actor runtime 실행 PASS |
 | `mut` | callee-owned local, no write-back alias, exact cleanup | compiler/backend 구현 PASS |
+| Rational | transactional `<p/q>`, BigInt 기약분수, `RationalConst` residue | parser/checker/HIR/MIR/runtime 실행 PASS |
+| Complex | 붙은 float-`i`, exact Rep, signed-zero-aware component residue | layout·ABI·stdlib/runtime 실행 PASS |
+| scalar power | static matrix, base-then-exponent once, closed operation/profile identity | HIR/MIR/backend 실행 PASS |
+| HIR-H1 bridge | closed verified phase types와 capability receipt 설계 | source activation·MIR-X1 채택·구현 |
 
 정적 closure는 feature P1을 닫거나
 15개 제품 lane을 실행한 것으로 해석되지 않는다.
@@ -1487,6 +1724,30 @@ opcode·layout·ABI·최적화는 그 관찰을 바꾸지 않는 범위에서만
 - shared-state synchronization trace가 존재하는지
 - ABI layout이 target에서 검증됐는지
 - independent conformance runner가 통과하는지
+
+15개 lane을 생략 없이 적으면 다음과 같다.
+
+| # | product lane | 상태 |
+|---:|---|---|
+| 1 | Rust frontend lexer | `NOT_RUN` |
+| 2 | Rust frontend parser | `NOT_RUN` |
+| 3 | Rust HIR lowering | `NOT_RUN` |
+| 4 | Rust integrated checker | `NOT_RUN` |
+| 5 | Deeplus MIR lowering | `NOT_RUN` |
+| 6 | xVM bytecode emitter | `NOT_RUN` |
+| 7 | xVM interpreter | `NOT_RUN` |
+| 8 | LLVM AOT backend | `NOT_RUN` |
+| 9 | LLVM ORC JIT backend | `NOT_RUN` |
+| 10 | formatter/LSP | `NOT_RUN` |
+| 11 | stdlib/provider runner | `NOT_RUN` |
+| 12 | official tooling | `NOT_RUN` |
+| 13 | independent conformance | `NOT_RUN` |
+| 14 | cross-backend conformance | `NOT_RUN` |
+| 15 | actual user/team study | `NOT_RUN` |
+
+즉 “15/15”는 15개 중 15개가 성공했다는 뜻이 아니라, **15개 모두
+실행하지 않았다**는 뜻이다. 문서 parse나 static fixture 검증을 어느
+lane의 target-bound PASS로 바꾸어 기록해서는 안 된다.
 
 문서의 단계별 trace는
 normative design을 설명하는 conceptual trace다.
@@ -1525,6 +1786,17 @@ normative design을 설명하는 conceptual trace다.
 28. xVM/AOT/ORC trace를 같은 기준으로 비교하는가.
 29. tooling side receipt가 program event를 바꾸지 않는가.
 30. product claim이 target-bound receipt를 갖는가.
+31. canonical HIR에 recovery, unresolved, candidate 또는 placeholder가
+    남지 않는가.
+32. Rational constant가 BigInt 기약분수와 positive denominator를
+    보존하는가.
+33. Complex constant와 principal power가 component signed zero를
+    보존하는가.
+34. power base와 exponent를 그 순서로 정확히 한 번 평가하는가.
+35. power operation/profile을 expected result나 runtime 값으로 다시
+    고르지 않는가.
+36. MIR-X1 또는 backend helper availability를 current semantic authority나
+    HIR dispatch로 오해하지 않는가.
 
 ## 28. 정본 근거
 
@@ -1539,6 +1811,10 @@ normative design을 설명하는 conceptual trace다.
   - numeric, Pattern, flow proof
 - [`spec/contracts/value-operator-indexing-coherence.json`](../../spec/contracts/value-operator-indexing-coherence.json)
   - integer/float/operator/assignment/index/slice
+- [`spec/contracts/rational-complex-numeric-coherence.json`](../../spec/contracts/rational-complex-numeric-coherence.json)
+  - Rational/Complex value, fixed arithmetic와 scalar power
+- [`spec/contracts/hir-h1-current-mir-bridge.json`](../../spec/contracts/hir-h1-current-mir-bridge.json)
+  - closed HIR-H1 phase, literal/power plan, capability receipt
 - [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
   - evaluation, flow join, cleanup
 - [`spec/contracts/type-refinement-narrowing-coherence.json`](../../spec/contracts/type-refinement-narrowing-coherence.json)

@@ -29,11 +29,11 @@
     "negative_fixture_ids": [
       "EX-R51a1-AUD-NG-005"
     ],
-    "replacement_or_no_fix": "move every callback into ordinary named arguments",
+    "replacement_or_no_fix": "keep the trailing group and give every closure a unique visible parameter label",
     "feature_gate_policy": "no current gate",
-    "recognition_stage": "parser",
-    "current_ast_created": false,
-    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+    "recognition_stage": "ast_structural_validation",
+    "current_ast_created": true,
+    "recognition_contract": "parse one ordered TrailingClosureGroup, preserve labels and spans, then reject when a group of two or more contains any unlabeled item"
   },
   {
     "rejection_id": "NG-NAMED-REST-DOUBLE-STAR",
@@ -680,14 +680,15 @@
     "feature_ids": [
       "raw_string_prefixed_literal"
     ],
-    "surface_family": "raw String delimiter family other than raw double quote",
+    "surface_family": "raw String delimiter other than exact attached #raw double quote, including legacy prefixless raw",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
     "primary_diagnostic": "RAW_STRING_DELIMITER_INVALID",
     "negative_fixture_ids": [
-      "EX-R51d-002"
+      "EX-R51d-002",
+      "EX-R51d-002A"
     ],
-    "replacement_or_no_fix": "use raw\"...\"",
+    "replacement_or_no_fix": "use #raw\"...\"",
     "feature_gate_policy": "no current gate",
     "recognition_stage": "lexer",
     "current_ast_created": false,

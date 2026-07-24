@@ -1,0 +1,252 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "RationalLiteralAdmitted",
+    "source_name": "Rational compound literal",
+    "summary": "Admit one expression-prefix transactional <p/q> literal and normalize it to an exact BigInt pair.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind"
+    ],
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "diagnostic_refs": [
+      "RATIONAL_LITERAL_MALFORMED",
+      "RATIONAL_LITERAL_COMPONENT_NOT_DECIMAL_INTEGER",
+      "RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX",
+      "RATIONAL_LITERAL_TRIVIA_FORBIDDEN",
+      "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+      "RATIONAL_LITERAL_RESOURCE_LIMIT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(normalized RationalConst) | reject(diagnostic_id)",
+    "requires": [
+      "the lexical goal is expression prefix",
+      "both components are contiguous unsigned decimal magnitudes",
+      "the denominator is nonzero",
+      "normalization completes within the deterministic budget"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind"
+    ],
+    "formal_judgment_id": "J-RationalLiteralAdmitted",
+    "algorithm_owner": "transactional_scanner_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "expression-prefix goal is active",
+      "the candidate begins with < followed by a decimal digit"
+    ],
+    "normalization": "preserve raw CST magnitudes; reduce the mathematical BigInt pair by gcd, make the denominator positive, and canonicalize zero to 0/1",
+    "decision_procedure": [
+      "probe the complete contiguous candidate without consuming on shape failure",
+      "validate unsigned decimal component spelling and absence of internal trivia",
+      "reject a zero denominator",
+      "normalize within the declared resource budget",
+      "emit one RationalConst with the normalized Rational TypeId"
+    ],
+    "termination_metric": "finite candidate byte length plus strictly decreasing Euclidean gcd magnitudes",
+    "success_result": "RationalConst",
+    "active_primary_diagnostic": "RATIONAL_LITERAL_MALFORMED",
+    "secondary_diagnostics": [
+      "RATIONAL_LITERAL_COMPONENT_NOT_DECIMAL_INTEGER",
+      "RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX",
+      "RATIONAL_LITERAL_TRIVIA_FORBIDDEN",
+      "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+      "RATIONAL_LITERAL_RESOURCE_LIMIT"
+    ],
+    "positive_fixture_ids": [
+      "PF-RationalLiteralAdmitted-POS",
+      "PF-RationalLiteralAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-RationalLiteralAdmitted-NEG"
+    ],
+    "evaluation_order": "goal -> transactional scan -> spelling -> denominator -> normalization -> HIR",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ComplexLiteralAndOperatorAdmitted",
+    "source_name": "Complex literal and closed numeric operation",
+    "summary": "Admit attached floating i literals and the closed Float32/Float64 Complex numeric profile without implicit Rep conversion.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "element_types",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "diagnostic_refs": [
+      "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+      "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+      "COMPLEX_REP_PROFILE_NOT_ADMITTED",
+      "COMPLEX_COMPONENT_REP_MISMATCH",
+      "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+      "COMPLEX_IEEE_VALUE_NOT_STRONG_EQ"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(Complex plan) | reject(diagnostic_id)",
+    "requires": [
+      "Rep is exactly Float32 or Float64",
+      "imaginary literal marker is attached to one decimal floating token",
+      "operator pair is intrinsic or has one sealed Prelude +,-,* witness",
+      "no hidden mixed-Rep or integer conversion"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "numeric_literal_kind",
+      "element_types",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-ComplexLiteralAndOperatorAdmitted",
+    "algorithm_owner": "numeric_scanner_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the literal or operator has one closed Complex owner",
+      "every component and operand TypeId is normalized"
+    ],
+    "normalization": "normalize bare Complex to Complex<Float64>; preserve exact Rep and IEEE component values including signed zero",
+    "decision_procedure": [
+      "classify an attached i candidate before splitting a numeric suffix",
+      "require Float32 or Float64 and create a positive-zero real component",
+      "for +,-,* select the unique intrinsic-reserved pair or sealed direct-global Prelude witness",
+      "for / select the language-owned same-Rep intrinsic",
+      "reject remainder, total ordering, strong Eq/Keyable, mixed Rep, and implicit typed-integer adaptation"
+    ],
+    "termination_metric": "finite token and finite closed operator-domain matrix",
+    "success_result": "Complex literal or operation plan",
+    "active_primary_diagnostic": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+      "COMPLEX_REP_PROFILE_NOT_ADMITTED",
+      "COMPLEX_COMPONENT_REP_MISMATCH",
+      "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+      "COMPLEX_IEEE_VALUE_NOT_STRONG_EQ"
+    ],
+    "positive_fixture_ids": [
+      "PF-ComplexLiteralAndOperatorAdmitted-POS",
+      "PF-ComplexLiteralAndOperatorAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ComplexLiteralAndOperatorAdmitted-NEG"
+    ],
+    "evaluation_order": "scan -> normalize Rep -> classify operator -> select intrinsic/witness -> HIR",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TraitAssociatedStaticSelectionAdmitted",
+    "source_name": "Trait-qualified associated static selection",
+    "summary": "Resolve <T as Trait>::item through exactly one static conformance and preserve all identity and responsibility residue.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "source_role",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "trait_qualified_associated_static_selection",
+      "companion_capability_decomposition"
+    ],
+    "diagnostic_refs": [
+      "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+      "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+      "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+      "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+      "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+      "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(selected associated item) | reject(diagnostic_id)",
+    "requires": [
+      "the source uses an explicit <T as Trait>::item selector",
+      "one exact ConformanceId and TraitWitnessId are selected statically",
+      "the item kind agrees with the type or expression goal",
+      "all required identity and responsibility residue is complete"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "source_role",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-TraitAssociatedStaticSelectionAdmitted",
+    "algorithm_owner": "resolver_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "T and Trait are normalized static identities",
+      "the associated selector is structurally complete"
+    ],
+    "normalization": "normalize T, Trait and substitution; retain RequirementId, ConformanceId, TraitWitnessId, ImplementationId and ResponsibilityId",
+    "decision_procedure": [
+      "resolve only the explicitly named Trait domain",
+      "require one exact conformance/witness and one associated requirement identity",
+      "check item kind and the minimum associated let:: value profile where applicable",
+      "reject runtime lookup, provider/source order, fallback and companion-object synthesis",
+      "emit the complete HIR/API selection residue"
+    ],
+    "termination_metric": "finite explicitly named Trait requirement set",
+    "success_result": "TraitAssociatedStaticSelection",
+    "active_primary_diagnostic": "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+    "secondary_diagnostics": [
+      "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+      "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+      "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+      "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+      "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED"
+    ],
+    "positive_fixture_ids": [
+      "PF-TraitAssociatedStaticSelectionAdmitted-POS",
+      "PF-TraitAssociatedStaticSelectionAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-TraitAssociatedStaticSelectionAdmitted-NEG"
+    ],
+    "evaluation_order": "normalize -> exact domain -> conformance/witness -> item kind -> residue -> HIR",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
+  }
+]

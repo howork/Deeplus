@@ -1,0 +1,324 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "numeric_operator_core"
+    ],
+    "display_name": "Rational exact numeric value and compound literal",
+    "feature_id": "rational_exact_numeric_value",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Rational is the always-available stdlib-backed exact value type over a normalized BigInt pair. <p/q> is an expression-prefix transactional compound literal and never integer division.",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "RATIONAL_LITERAL_MALFORMED",
+        "RATIONAL_LITERAL_DENOMINATOR_ZERO"
+      ],
+      "predicates": [
+        "RationalLiteralAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-NUM-RAT-001",
+        "EX-R51f3-NUM-RAT-NG-001"
+      ],
+      "productions": [
+        "RATIONAL_LITERAL",
+        "RationalLiteralExpr"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/rational-complex-numeric-coherence.json",
+      "tests/fixtures/current/rational-complex-numeric-coherence-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "fixed_operator_conformance_overloading",
+      "linear_algebra_complex_inner_product_law"
+    ],
+    "display_name": "Complex Float32 and Float64 core numeric values",
+    "feature_id": "complex_core_numeric_value",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Complex<Float32|Float64> is an immutable stdlib-backed core numeric value. Attached floating i literals, sealed +,-,* conformances, intrinsic division, principal named functions and the left-conjugating NumericArray law are one bounded profile; no public ABI follows.",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+        "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+        "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+        "COMPLEX_IEEE_VALUE_NOT_STRONG_EQ"
+      ],
+      "predicates": [
+        "ComplexLiteralAndOperatorAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-NUM-CPLX-001",
+        "EX-R51f3-NUM-CPLX-NG-001"
+      ],
+      "productions": [
+        "IMAGINARY_LITERAL",
+        "ImaginaryLiteralExpr"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/rational-complex-numeric-coherence.json",
+      "tests/fixtures/current/rational-complex-numeric-coherence-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / MIR",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "MIR"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "caret_power_operator_msp",
+      "caret_power_right_associative_math_law"
+    ],
+    "display_name": "Closed scalar real and Complex exponentiation",
+    "feature_id": "scalar_real_complex_power",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Spaced ^ is a language-owned static intrinsic with a closed integer, Float and Complex domain matrix. Numeric signs use rbp 159, power uses lbp 160/rbp 159, real results never auto-promote to Complex, and Complex uses the signed-zero-aware principal branch.",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+        "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN",
+        "ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION"
+      ],
+      "predicates": [
+        "CaretPowerAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-NUM-POWER-001",
+        "EX-R51f3-NUM-POWER-NG-001"
+      ],
+      "productions": [
+        "PrattExpr",
+        "ExpressionPrefixParselet"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/rational-complex-numeric-coherence.json",
+      "spec/contracts/hir-h1-current-mir-bridge.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Explicit Trait-qualified associated static selection",
+    "feature_id": "trait_qualified_associated_static_selection",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "<T as Trait>::item selects one associated value or function through exact static conformance evidence. T::item never searches Traits and runtime/provider order never participates.",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+        "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE"
+      ],
+      "predicates": [
+        "TraitAssociatedStaticSelectionAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-STATIC-TRAIT-001",
+        "EX-R51f3-STATIC-TRAIT-NG-001"
+      ],
+      "productions": [
+        "TraitQualifiedAssociatedSelector",
+        "QualifiedStaticExpr"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/companion-capability-coherence.json",
+      "tests/fixtures/current/companion-capability-coherence-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "display_name": "Companion capability decomposition without companion objects",
+    "feature_id": "companion_capability_decomposition",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Nominal type-side, exact named extension, explicit Trait-associated static, and explicit runtime owner domains remain disjoint. No companion singleton, metatype value, class activation or runtime lookup is introduced.",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "COMPANION_OBJECT_NOT_CURRENT",
+        "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED"
+      ],
+      "predicates": [
+        "TraitAssociatedStaticSelectionAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-STATIC-TRAIT-001"
+      ],
+      "productions": [
+        "QualifiedStaticExpr"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/companion-capability-coherence.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / HIR / MIR",
+    "authority_set": [
+      "LANGUAGE",
+      "HIR",
+      "MIR"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Verified HIR-H1 current-to-MIR bridge design",
+    "feature_id": "hir_h1_current_mir_bridge_design",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "The verified fully typed/resolved/responsibility-closed HIR boundary is the current design handoff, while implementation and MIR-X1 activation remain unauthorized. Current xVM plus LLVM AOT/ORC authority is unchanged.",
+    "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "tooling",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "HIR_POWER_OPERATION_UNRESOLVED",
+        "HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH"
+      ],
+      "predicates": [],
+      "examples": [
+        "EX-R51f3-HIR-H1-001"
+      ],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "rfcs/DP-RFC-0002-current-hir-h1.md",
+      "spec/contracts/hir-h1-current-mir-bridge.json",
+      "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  }
+]

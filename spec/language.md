@@ -32,13 +32,25 @@ Deeplus distinguishes library, executable, and script roots. Every selected root
 - A library source contains declarations and no implicit top-level execution.
 - An executable source identifies exactly one eligible `def#entry` or `def#entry#async` after target configuration.
 - A script source may contain top-level executable statements under the script root contract.
-- Module and package identity is static. Runtime strings never become static module paths, labels, witnesses, or type names.
+- Package and Module identities are static but distinct. A Package is the unit of distribution, dependency resolution, build configuration, and artifact provenance. A Module is the unit of namespace, visibility, static name resolution, and source composition. Runtime strings become neither identity.
 
 The implementation must preserve source role through CST, AST/HIR, module API digest, and diagnostic reporting. Entry selection is a checker/linker responsibility; source order is not a tie-breaker.
 
+A resolved Module identity is the pair `(PackageId, ModulePath)`. `PackageId`
+comes from the build manifest and resolved dependency graph; Deeplus has no
+source-level package namespace declaration. `ModulePath` has one or more
+identifier segments joined by `::`. A build manifest or deterministic project
+convention maps each source contribution to one ModulePath. The filesystem
+directory path may be used as a project convention, but it is not language
+identity and need not equal the ModulePath. An explicit `module` declaration
+must agree with that mapping; an omitted declaration receives the mapped path.
+One Module may have multiple admitted source contributions, but duplicate or
+conflicting declarations are rejected before API-digest construction and source
+order never creates identity.
+
 ## 2. Unicode, identifiers, and escaped names
 
-Source text is Unicode. Ordinary identifiers follow the lexical XID policy of the exact Grammar. Hard keywords are reserved only where the scanner must commit. Contextual words remain identifiers outside their admitting owner.
+Source text is Unicode. Ordinary identifiers follow the lexical XID policy of the exact Grammar. Hard keywords are reserved only where the scanner must commit. Contextual words remain identifiers outside their admitting owner. `array` and `case` are emitted as `IDENTIFIER` and are absent from the hard-keyword, contextual-word, sigil-role, intrinsic-token, and parser-special-case vocabularies.
 
 An escaped member name is permitted only after member access:
 
@@ -54,7 +66,7 @@ No whitespace, newline, or comment may appear between `.`, `\`, and the escaped 
 
 Whitespace and comments are trivia except where a boundary policy requires attachment. Line comments, block comments, documentation comments, and word comments follow scanner priority; comment openers win over operator decompositions.
 
-The parser may admit horizontal whitespace and comments between `#` and a role word only on the same physical line. A physical line break is rejected. The formatter rehomes comments safely and prints canonical attached spelling such as `#get`, `#pure`, and `#entry`. Literal sigils are different: `#bytes`, collection literal sigils, and NumericArray literal sigils require the boundary declared for that literal and must not be reconstructed from a separated `#` plus identifier.
+The parser may admit horizontal whitespace and comments between `#` and a role word only on the same physical line. A physical line break is rejected. The formatter rehomes comments safely and prints canonical attached spelling such as `#get`, `#pure`, and `#entry`. Literal sigils are different: `#raw`, `#bytes`, collection literal sigils, and NumericArray literal sigils are attached scanner/parser owners and must not be reconstructed from a separated `#` plus identifier.
 
 ## 4. Numeric, character, string, and bytes literals
 
@@ -64,7 +76,57 @@ The lexical authority includes decimal and supported radix integers, digit separ
 
 `Float32` and `Float64` have IEEE-754 binary32 and binary64 value behavior. Ordinary arithmetic rounds to nearest with ties to even. Non-finite values are type-side constants rather than numeric literal spellings. NaN is unordered and supplies neither implicit `Ord` nor `Keyable` evidence; signed zero compares equal. These value laws do not prescribe a backend storage or calling convention.
 
-Character literals use single quotes and contain exactly one Unicode scalar value after escape processing. `''` is invalid. `Char` is not a byte and not a UTF-16 code unit. Plain strings use double quotes. A multiline Unicode String uses triple quotes: the opener is followed by a newline, the closer is on its own line, and the longest exact common indentation prefix of nonblank content lines is removed. Tabs and spaces are distinct prefix bytes; escapes and interpolation behave as in an ordinary String. One-line triple quotes and raw multiline strings are not current. Raw String Phase A has exactly one delimiter family, `raw"..."`; its body has no escape interpretation and no interpolation, produces `String`, preserves exact body text in the CST, lowers to `StringLiteral(raw=true)` and then `MIR::ConstString`, and invokes no provider or authority. Bytes literals produce byte sequences rather than text. Deeplus has no regex literal token or scanner mode; pattern engines are explicit library APIs receiving String or Bytes values.
+### 4.1 Rational과 Complex의 정본 리터럴
+
+`Rational`은 임의 정밀도 `BigInt` 분자와 양의 분모로 이루어진 불변의
+정확 수 값 타입이다. 컴파일러 원시 타입은 아니지만 Prelude에서 항상
+보이는 표준 수 타입이며, 소스 리터럴과 정규화 HIR/MIR을 위한 제한된
+컴파일러 훅을 가진다. 정본 복합 리터럴은 식 prefix 위치의 `<p/q>`이다.
+`p`와 `q`는 부호·기수 prefix·suffix·내부 공백이 없는 10진 크기이고,
+부호는 바깥 prefix 연산자가 소유한다.
+
+```deeplus
+let twoThirds: Rational = <2/3>
+let same: Rational = <6/8>       // 값은 3/4, CST에는 6/8 보존
+let negative: Rational = -<2/3>
+```
+
+분모가 0인 `<2/0>`은 리터럴 후보로 인식된 뒤
+`RATIONAL_LITERAL_DENOMINATOR_ZERO`로 거부된다. 스캐너는 이 형태를
+식 prefix goal에서만 transactional하게 탐사한다. 탐사에 실패하면
+아무 토큰도 소비하지 않으므로 `a < 2 / 3 > b`의 비교·나눗셈이나
+`Box<Int>`의 제네릭 구문을 침범하지 않는다. 타입 parser에서는 이
+리터럴 goal이 꺼져 있으므로 `Box<2/3>`은 Rational 인자가 아니라 잘못된
+타입 구문이다. HIR의 값은 `denominator > 0`,
+`gcd(abs(numerator), denominator) = 1`, `0 == 0/1`을 만족한다.
+`Display`의 `2/3`과 다시 읽을 수 있는 source representation `<2/3>`은
+서로 다른 API 책임이다.
+
+`Complex<Rep>`은 두 IEEE 부동소수 성분 `real`과 `imag`를 가진 불변
+stdlib-backed core numeric value이다. 최초 정본 profile은
+`Complex<Float32>`와 `Complex<Float64>`뿐이고, bare `Complex`는 닫힌
+Prelude 약칭 `Complex<Float64>`로 정규화된다. 이 타입 이름만으로
+메모리 배치, C/C++ complex ABI, SIMD 폭, allocation 전략은 정해지지
+않는다.
+
+허수 리터럴은 **10진 부동소수 리터럴과 ASCII `i`가 붙은 하나의 scanner
+token**이다. `4.0i`는 `Complex<Float64>(real: +0.0, imag: 4.0)`이고
+`4.0f32i`는 `Complex<Float32>`이다. 그러므로 정본 직교형 예는 다음과
+같다.
+
+```deeplus
+let z: Complex = 3.0 + 4.0i
+let small: Complex<Float32> = 1.5f32 - 0.25f32i
+let unit = Complex::i
+```
+
+`i` 자체는 일반 식별자이고 전역 허수 상수가 아니다. `4.0 * i`는 그
+식별자를 곱하는 평범한 식이다. 정수형 `4i`, 분리된 `4.0 i`, `4.0j`,
+radix 허수, suffix를 연쇄한 `4.0f64i`, 그리고 `4.0index`를 유효 prefix와
+식별자로 분할하는 행위는 허용하지 않는다. 음수 허수는
+`-4.0i`처럼 언어 예약 prefix 부호를 사용한다.
+
+Character literals use single quotes and contain exactly one Unicode scalar value after escape processing. `''` is invalid. `Char` is not a byte and not a UTF-16 code unit. Plain strings use double quotes. A multiline Unicode String uses triple quotes: the opener is followed by a newline, the closer is on its own line, and the longest exact common indentation prefix of nonblank content lines is removed. Tabs and spaces are distinct prefix bytes; escapes and interpolation behave as in an ordinary String. One-line triple quotes and raw multiline strings are not current. The Stable raw String has exactly one delimiter family, `#raw"..."`; its body has no escape interpretation and no interpolation, produces `String`, preserves exact body text in the CST, lowers to `StringLiteral(raw=true)` and then `MIR::ConstString`, and invokes no provider or authority. The legacy prefixless `raw"..."` spelling and alternate delimiter families are rejected. Bytes literals produce byte sequences rather than text. Deeplus has no regex literal token or scanner mode; pattern engines are explicit library APIs receiving String or Bytes values.
 
 An ordinary String direct segment admits Unicode scalars except the quote,
 backslash, dollar, physical line terminators, and disallowed controls. Its
@@ -97,7 +159,7 @@ The same glyph may have several roles only when the Grammar owner determines the
 | `*.` / `*+` | override-final / override-open class dispatch markers |
 | `::` | static qualification, associated projection, enum case qualification, type-side declaration |
 | `^` | attached NumericArray transpose suffix or spaced infix power |
-| `#` | role/modifier introducer or an attached literal owner |
+| `#` | role/modifier introducer or an attached literal owner such as `#raw`, `#bytes`, and collection/NumericArray sigils |
 | `@` | annotations, exact value-control introducers, implicit-lambda placeholder, and current pseudo-keywords |
 
 The scanner uses maximal munch, but maximal munch does not by itself admit a token in every grammar owner.
@@ -174,6 +236,65 @@ Function signatures preserve parameter order, labels, context/witness channels, 
 
 An ordinary parameter is always a named parameter slot, optionally with an explicit ownership mode; it is not a refutable Pattern. Decomposition belongs in the function body or in an exhaustive declarative clause head. Local functions have lexical visibility only after their declaration and must list every captured outer local explicitly. Closure literals have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`), lifetime (`#scoped` where required), effects, errors, and isolation responsibilities. Lambda parameter lists contain identifiers, not general Patterns. Named-function `return` and local lambda/value-body `ret` remain different control owners.
 
+### Function static activation
+
+`scope#static { ... }` is a Stable function-body activation prologue. It occurs
+at most once after an optional block `use`/`import` prologue and before the first
+runtime semantic item of an admitted synchronous named function. The common
+hash-role trivia law applies: same-line horizontal trivia or comments may be
+accepted, while canonical formatting prints `scope#static`. It is not admitted
+on an expression body or clause body.
+
+The admitted owner set is synchronous module and extension functions,
+instance/type-side members, Trait defaults with bodies, and explicit conformance
+methods. A `def#pure` owner is admitted only when the activation body satisfies
+the same pure proof. Entry and local functions, constructors, cleanup/drop,
+lambdas and anonymous closures, actor handlers/requests, async/generator/FFI
+owners, recovery declarations, and `def#guard` are excluded.
+
+Activation is triggered only by an actual invocation after final
+`CallableImplementationId` selection and receiver/argument/default staging, but
+before the single parameter `ownership_commit` and ordinary callable body.
+Failure therefore performs zero parameter commits and zero body entries,
+retains caller-owned places, and cleans staged and activation-local temporaries
+exactly once.
+
+`FunctionStaticOwnerId` deterministically binds the activation semantics
+version, the selected `CallableImplementationId`, normalized owner/callable
+substitutions, the activation contract digest, and the sorted actually-used
+Witness/Conformance/helper identities and helper safety digests. The runtime
+state key is `(RuntimeInstanceId, FunctionStaticOwnerId)`. Overloads, selected
+overrides, and distinct specializations have distinct owners; inlining, LTO and
+JIT recompilation may share machine code but must reference the same semantic
+owner state.
+
+The body is safe, synchronous, non-suspending, `throws Never`, `effects {}`,
+caller-input-free, authority-free, resource-free, and has no persistent
+`needsDrop` residue. It may use constants, normalized generic arguments,
+activation-local temporaries, and statically selected activation-free pure
+helpers. It may not observe receiver/parameters/default results, caller
+`Context` or execution identity, time/random/environment, mutable global state,
+ambient providers, I/O/FFI, actors, cancellation, dynamic/provider/indirect
+calls, or another activation-bearing callable.
+
+The exact state machine is `Dormant -> Initializing -> Ready | Failed`. There is
+one winner; waiters cross a synchronous non-cancellable barrier. Both terminal
+states use release publication and acquire observation. There is no reset or
+implicit retry. An underlying Defect or same-owner reentry is recorded as the
+cause of one canonical `FUNCTION_STATIC_ACTIVATION_FAILED` identity observed by
+the winner, waiters, and later callers; reentry never deadlocks or becomes
+undefined behavior. The initial Stable profile statically excludes
+activation-bearing/dynamic/provider callees, so a cross-owner activation cycle
+is not constructible.
+
+Adding, removing, or changing activation metadata is a relink-relevant
+API-digest change. It does not introduce source-level parameters or effects.
+Top-level `static def` remains recovery-only
+`STATIC_FUNCTION_DECLARATION_NOT_CURRENT`, with no automatic rewrite.
+`static_once_value`, effectful activation, module activation, and class
+activation remain separate Preview families. Product parser/checker/MIR/runtime
+and tooling support remain `NOT_RUN`.
+
 ## 9. Parameter channels
 
 Ordinary value parameters, explicit context parameters, explicit witness parameters, repeated positional parameters, and one named-rest parameter are distinct channels.
@@ -218,7 +339,11 @@ Named unfold requires a structural Record whose label set is statically known. A
 
 ## 11. Calls, labels, and callable compatibility
 
-Ordinary calls use parentheses. A bare parenless ordinary call is not current except for the one exact trailing-closure CallSuffix: one atomic argument followed by exactly one closure. This exception does not admit a general bare argument list and does not relax capture, ownership, effect, error, or overload rules. Positional unfold and named unfold are checked in separate channels. Labels are static identity, not strings. A runtime key cannot be materialized into a compile-time argument label.
+Ordinary calls use parentheses. A bare parenless ordinary call is not current except for the exact trailing-closure CallSuffix: one atomic argument followed by a `TrailingClosureGroup`. A group of one closure may be unlabeled or labeled. A group of two or more closures is admitted only when every closure is labeled and every label is unique. Each closure must bind to exactly one function-typed formal; an unlabeled closure is admitted only when exactly one trailing formal remains after ordinary channel binding. This exception does not admit a general bare argument list and does not relax capture, ownership, effect, error, isolation, cleanup, or overload rules. Positional unfold and named unfold are checked in separate channels. Labels are static identity, not strings. A runtime key cannot be materialized into a compile-time argument label.
+
+Ordinary calls and `~` message calls share that trailing-closure group, but they do not share their preceding value carrier. A `MessageSuffix` has exactly zero or one normalized payload node rather than an ordinary `ArgumentList`. A bare atomic expression is one scalar payload. Parenthesized positional expressions form one Tuple payload; parenthesized all-named entries form one structural Record payload. Thus `receiver ~ selector (x, y)` carries one Tuple payload, while `function(x, y)` has two ordinary call arguments. Empty message parentheses remain a source-compatibility spelling for no payload and the canonical formatter omits them. Mixed positional/named message payload entries are rejected.
+
+A message selector preserves its complete qualified path. Current admitted shapes include `selector`, `TraitOrProtocol::selector`, and `Type::ExtensionSet::selector`. Grammar preserves the path; name resolution decides whether it denotes a nominal member, Trait requirement, extension-set member, actor protocol message, or reserved HIR selector. An actor message resolves only in its actor/protocol domain and never falls back to an ordinary method. Payload projection to a selected declaration is closed: none supplies zero ordinary value parameters, a scalar supplies one, a Tuple supplies ordered positional parameters, and a Record supplies statically labeled named parameters. Context and witness channels are never synthesized from message payload data.
 
 Overload preference is fixed-arity before repeated positional before named rest. A remaining tie is an error. Callable compatibility includes effect, error, ownership, isolation, context, witness, and rest-residue profiles; arity and return type alone are insufficient.
 
@@ -257,6 +382,31 @@ Traits define behavioral contracts and associated requirements. `any Trait` is t
 
 Conformance declarations supply evidence. Evidence selection is deterministic and coherence-safe. Extensions cannot silently manufacture witness evidence. Dynamic Trait attach/detach, local Witness values, and first-class Witness values remain nonactivatable design families unless separately promoted.
 
+정적 capability lookup은 서로 섞이지 않는 네 domain으로 나뉜다.
+
+1. `Type::item`은 nominal type-side 또는 Enum case domain만 탐색한다.
+2. `Type::extension::item`은 정확히 이름 붙인 extension identity만 본다.
+3. `<T as Trait>::item`은 정적으로 선택된 하나의
+   `ConformanceId`/`TraitWitnessId`를 통해 Trait associated 값 또는
+   함수를 선택한다.
+4. service, Actor, 공유 상태는 명시적인 runtime owner 값으로 접근한다.
+
+`T::item`이 보이는 Trait들을 암묵적으로 탐색하는 단축 규칙은 없다.
+Trait associated type 뒤의 정적 member는
+`<T as Trait>::Assoc::member`로 계속 표현한다. HIR과 module API는
+`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, substitution과 responsibility를 보존하며, 런타임
+검색·import 순서·provider fallback으로 다시 결정하지 않는다.
+
+초기 associated `let::` profile은 immutable, Shareable, no-drop,
+authority-free, acyclic이며 const-evaluable/static-materializable한 값만
+허용한다. nominal owner 안에 lexical하게 선언된 `def::`만 그 owner의
+private 생성 권한을 사용할 수 있다. 외부 `def Type::`, extension,
+conformance는 private 생성 권한을 새로 얻지 않는다. 이 분해는 companion
+singleton이나 metatype value를 만들지 않는다. 함수의 `scope#static`은
+별개의 Stable activation owner이고, class의 `scope#static`은 계속
+Preview nonactivatable이다.
+
 ## 15. Extensions and member resolution
 
 Extensions are statically identified sets. Activation is lexical/module scoped. A scoped group uses `use a, b in { ... }` or `import a, b in { ... }`; it creates one compile-time frame for the block, does not leak, and never becomes runtime loading. Extension members use plain `def` inside the extension set unless another owner explicitly requires a marker. Member identity includes the extension-set identity; import/source order is not a tie-breaker.
@@ -267,14 +417,37 @@ Resolution considers nominal members, active extension sets, and conformance evi
 
 ## 16. Operator policy
 
-The operator token vocabulary and precedence table are closed. Every current
-glyph is selected by the Grammar and Frontend Model and dispatches as
-`INTRINSIC_ONLY`. A conformance, extension, witness, provider, import, source
-order, or runtime lookup cannot create a glyph candidate or change its meaning.
-User-defined behavior is expressed through named Trait methods and named APIs.
-Arbitrary custom operator declarations and fixed-operator Trait/conformance
-overloading remain `PREVIEW_DESIGN` and nonactivatable; this current closure
-neither activates them nor closes any of `TCC-P1-002..008`.
+The operator token vocabulary, fixity, binding power and associativity table are
+closed. Arbitrary custom operator declarations are not a Deeplus Preview
+family: the recovery grammar recognizes old `operator <glyph> precedence N`
+only to emit `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`, and no AST/HIR/MIR
+operator declaration is created. Named Trait methods, functions, messages and
+APIs are the explicit alternative.
+
+Fixed-glyph conformance overloading is Stable design for exactly the existing
+strict binary `+`, `-`, and `*` glyphs. It adds no glyph, fixity, binding power,
+associativity, or operator declaration syntax. The exact mapping is
+`BinaryAdd -> Add<Rhs>.add / Output`,
+`BinarySubtract -> Subtract<Rhs>.subtract / Output`, and
+`BinaryMultiply -> Multiply<Rhs>.multiply / Output`.
+
+Built-in and otherwise language-reserved normalized operand pairs remain
+`INTRINSIC_ONLY`; conformance lookup for those pairs is zero. For any admitted
+non-intrinsic pair, selection considers at most one left-nominal-owner
+`DIRECT_GLOBAL` conformance under the current
+`conformance T conforms Trait` surface. Expected-result selection, implicit
+conversion, extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization
+evidence, import or source ordering, fallback, and runtime relookup are
+forbidden. The selected `OperatorId`, `ConformanceId`, `WitnessId`, `MethodId`,
+substitution, `OutputTypeId`, and responsibility profile become typed HIR/MIR
+and public API identity. The witness borrows both operands, is synchronous,
+non-consuming and non-mutating, and has `throws Never effects {}`.
+
+`/`, `%`, strict logical, equality/ordering, assignment, range and
+short-circuit operators are outside this Stable admitted set. Arbitrary custom
+operators remain rejected. The design promotion creates or closes no feature
+P1: `TCC-P1-002..008` remain exactly seven OPEN implementation/conformance
+evidence gates, and all product lanes remain `NOT_RUN`.
 
 `subject is Alternative` and adjacent `subject !is Alternative` are current
 only when the subject's static type is one normalized closed Union and
@@ -303,9 +476,81 @@ mutation through an alias, exclusive borrow, escape or capture with possible
 mutation, consume, or a call whose responsibility summary may mutate or
 consume the subject. These flow facts never rewrite the declared type.
 
-Scalar `+`, `-`, `*`, `/`, and integer `%` require one exact normalized operand domain after the bounded contextual adaptation of an unsuffixed integer. Hidden widening, narrowing, mixed signedness, mixed width, and witness-based mixed-domain dispatch are forbidden. Integer division truncates toward zero. Integer remainder exists only for integer domains and satisfies `a == trunc(a / b) * b + (a % b)`; the remainder is zero or has the dividend sign and its magnitude is less than the divisor magnitude. A zero divisor and the signed `MIN / -1` or `MIN % -1` cases raise `ArithmeticDefect` before commit. Floating `%` and floating glyph power are not current; a library may expose explicit named APIs.
+Primitive scalar `+`, `-`, `*`, `/`, and integer `%` require one exact
+normalized operand domain after the bounded contextual adaptation of an
+unsuffixed integer. The Stable fixed-glyph conformance corridor adds only
+binary `+`, `-`, and `*`. Prelude owns sealed, direct-global conformances for
+same-domain Rational values, exact integer/Rational pairs in both directions,
+same-Rep Complex pairs, and same-Rep real/Complex pairs. For example,
+`3.0 + 4.0i` selects exactly
+`Add<Complex<Float64>> for Float64`; it is not a general Float-to-Complex
+conversion. The selected witness is unique before evaluation. Hidden
+widening/narrowing, mixed width, result-directed choice, import/source order,
+VIA/AUTO, fallback and runtime lookup remain forbidden.
 
-Spaced infix `^` admits one exact integer domain on both operands only when the checker proves the exponent nonnegative, returns that domain, and checks overflow. A negative or not-statically-proven-nonnegative exponent is rejected with `NUMERIC_OPERATOR_CORE_REQUIRED`; it does not create a dynamic failure route. `Measure<Rep, Dim> ^ StaticInt` delegates to the separate exact measure-power law. NumericArray infix power remains Preview, while `**` and `*+` delegate to their closed shape-specific intrinsic laws. Float arithmetic and comparison otherwise use the IEEE value law from §4; a NaN comparison is unordered, and `+0.0 == -0.0` is true. Equality, ordering, bitwise, membership, identity, cast, Boolean, Option-coalescing, and range tokens are admitted only by their current built-in laws and checker predicates; a similarly named Trait does not activate punctuation.
+Integer division truncates toward zero. Integer remainder exists only for
+integer domains and satisfies
+`a == trunc(a / b) * b + (a % b)`; the remainder is zero or has the dividend
+sign and its magnitude is less than the divisor magnitude. A zero divisor and
+the signed `MIN / -1` or `MIN % -1` cases raise `ArithmeticDefect` before
+commit. Complex `/` is a closed language-owned intrinsic over one exact Rep
+profile. Rational division uses the checked named API `dividedBy`, so neither
+type widens the fixed conformance corridor. Floating and Complex remainder are
+not defined.
+
+Spaced infix `^` is a closed language intrinsic, not a `Power`/`Pow` Trait
+hook. It evaluates the base once and exponent once, selects a result entirely
+from their static types, and never uses the expected result, a runtime sign,
+integrality test, witness, provider, or source order. Its initial matrix admits:
+
+- exact integer power when the exact integer exponent is statically
+  nonnegative, with checked same-domain result;
+- `Float32`/`Float64` with an exact signed integer exponent, and same-width
+  floating base/exponent;
+- `Complex<Float64>` with exact integer, `Float64`, or
+  `Complex<Float64>` exponent, and `Float64` with `Complex<Float64>`;
+- the separately owned `Measure<Rep, Dim> ^ StaticInt` law.
+
+The closed matrix records any exact `Float32 -> Float64` or real-to-Complex
+operand adaptation inside the intrinsic HIR plan. That adaptation cannot leak
+into other operators. Unsupported integer/float/Complex mixing requires an
+explicit conversion. NumericArray infix power remains Preview; attached `A^`
+remains transpose.
+
+Power has binding power 160 and is right-associative. Numeric prefix `+` and
+`-` parse their operand at binding power 159, while all other prefix owners
+retain 170. Thus `-2 ^ 2` means `-(2 ^ 2)`, `(-2) ^ 2` retains the negative
+base, `2 ^ -3` means `2 ^ (-3)`, and `2 ^ 3 ^ 2` means
+`2 ^ (3 ^ 2)`.
+
+The real route always returns a real value. A finite negative real base with a
+finite nonintegral floating exponent produces the profile's canonical quiet
+NaN rather than silently producing Complex. The Complex route uses the
+principal value `exp(w * Log0(z))`; `Arg0` is in `(-pi,+pi]` and the signed-zero
+side of the negative-real branch cut is preserved. Every admitted result
+domain defines `0 ^ 0` as one for ordinary computation; a compiler may warn
+when both operands are statically zero, while named `powChecked` may return
+`PowerError::indeterminate`. Alternate branches, roots, and analytic
+conventions are explicit named APIs and never alter infix dispatch.
+
+Float arithmetic and comparison otherwise use the IEEE value law from §4; a
+NaN comparison is unordered, and `+0.0 == -0.0` is true. Equality, ordering,
+membership, identity, cast, Boolean, Option-coalescing, and range tokens are
+admitted only by their current built-in laws and checker predicates; a
+similarly named Trait does not activate punctuation.
+
+The `&&`, `||`, `^^`, and prefix `~~` family is pointwise logical. On one exact
+known-width integer or identical finite bitfield/flags domain, logical
+coordinates are bit positions and current bitwise behavior is unchanged. The
+Stable shaped built-in route additionally admits same-shape
+`NumericArray<I>` operands where `I` is one exact known-width integer domain,
+applies the scalar bitwise law at each coordinate, and returns the same shape
+and element domain. Binary operands evaluate left-to-right exactly once; the
+family never short-circuits and creates no flow-narrowing fact. Implicit
+broadcasting, shape/width/signedness/element conversion, heterogeneous or
+dynamic-shape operands, generic Collection/Sequence lifting, user-defined
+carrier lookup, and scalar `Bool` are excluded. `NumericArray<Bool>` remains
+deferred until its element-domain identity is separately admitted.
 
 Strict Boolean `and` and `or` evaluate both operands left-to-right. Sequential `and then` and `otherwise` evaluate the right operand only when required. `not` is the sole Boolean negation spelling; a standalone `!` is not a Boolean prefix operator. `?:` preserves its separate lazy one-layer Option law.
 
@@ -473,6 +718,12 @@ coordinates, provenance, effects, and lifetime and cannot outlive or cross the
 isolation boundary of its source. Backend representation and incidental
 storage strategy remain unselected. Transpose is not complex adjoint.
 
+Complex 원소의 `u *+ v`는 왼쪽 피연산자를 켤레화하는 내적
+`Σ conjugate(u[i]) * v[i]`이다. 켤레화하지 않는 연산은 명시적인
+`dotu` named API가 소유한다. `A^`는 여전히 transpose이고, 켤레전치는
+`A ~ adjoint`이다. 이 셋은 서로 대체되거나 formatter에 의해 다시
+쓰이지 않는다.
+
 Broadcasting, fill/repeat, slicing, and matrix-like operations must produce deterministic shape diagnostics. NumericArray coordinate domains are not ordinary labels or runtime map keys.
 
 Current range slicing is admitted only for the closed built-in slice carriers. `List`, `String`, `Bytes`, and `ReadonlyView` accept exactly one bounded range axis; semicolon-separated multi-axis selection and the full-axis `*` wildcard are NumericArray-only. `MutableList`, `FrozenList`, and `ListSnapshot` are outside this closed bracket matrix and do not acquire `[]` from a family resemblance or Trait conformance. An axis range is canonical inclusive `i..j` or explicit exclusive-end `i..<j`. `^` and `$` are slice-only first/last anchors. Empty `[]`, omitted range bounds, descending ranges, and step syntax are not current. The half-open spelling is accepted but reports `SLICE_HALF_OPEN_RANGE_NONCANONICAL`; canonical source uses inclusive bounds.
@@ -625,7 +876,7 @@ Suspension points preserve borrow/ownership rules, cleanup obligations, actor is
 
 ## 38. Actors and messages
 
-An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. Message send is an asynchronous transfer operation, not an ordinary method call. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
+An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. Message send is an asynchronous transfer operation, not an ordinary method call. Its `MessageCallExpr` evaluates one receiver and exactly zero or one normalized payload aggregate. Tuple and Record payload children evaluate left-to-right exactly once before the aggregate is committed. Trailing closures are separate call channels: the shared surface does not make a closure transferable. Any closure crossing actor isolation must independently satisfy capture, transfer, suspension, effect, error, and cleanup admission. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
 
 `ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way message expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies `await`. Only that successfully admitted actor-request `Task<T>` spelling is accompanied in typed HIR, module API digest, and MIR by a non-forgeable `TaskResponsibility` descriptor containing the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and terminal transport failure; an ordinary async `Task<T>` carries no actor transport descriptor. The module API digest records the static `correlation_id = per_value_non_forgeable` policy marker rather than a concrete runtime identity; each committed request obtains its distinct value-level correlation identity in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Task` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family.
 
@@ -654,7 +905,10 @@ The implementation architecture is fixed:
 ```text
 Deeplus source
   -> Rust scanner / handwritten recursive-descent + Pratt parser / lossless CST
-  -> Rust AST, HIR, name/type/responsibility checker
+  -> Rust AST
+  -> HirSkeleton / CheckSession / TypedHirDraft
+  -> Verified<CanonicalHirH1>
+  -> ExecutableHirH1 (capability receipt)
   -> Deeplus MIR (canonical Deeplus semantic authority)
   -> Rust xVM bytecode + xVM interpreter for initial development, validation, and REPL
   -> LLVM AOT for the initial native backend
@@ -663,17 +917,58 @@ Deeplus source
 
 Rust source, xVM bytecode, and LLVM IR are not semantic authorities. Every backend must preserve MIR-observable evaluation order, failure, cleanup, suspension, message, provider, ownership, and result behavior.
 
+HIR-H1은 소스에 가까운 마지막 닫힌 의미 표현이다. 느슨한 AST에 phase
+flag를 붙이는 대신 분석 중간 상태와 MIR 입력 권위를 서로 다른 타입으로
+분리한다. `CanonicalHirH1`은 모든 타입, declaration/member/label,
+conformance/witness/extension, substitution, ownership, effect/error,
+cancellation, isolation, cleanup 및 responsibility identity가 해결된 뒤에만
+`Verified`가 될 수 있다. recovery, unresolved lookup, generic operator,
+placeholder type은 이 경계를 통과하지 못한다. `ExecutableHirH1`은 target
+capability receipt를 추가할 뿐 의미를 다시 결정하지 않는다.
+
+현재 정본은 이 HIR-H1 경계와 검증 법칙을 채택하지만, xVM-only MIR-X1
+RFC 자체는 noncanonical proposal로 남는다. 현재 backend authority는
+xVM initial, LLVM AOT, LLVM ORC JIT이며 Cranelift나 xVM-only 전환을
+추론하지 않는다.
+
 ## 42. MIR handoff
 
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.
 
 Named rest lowers with `***` declaration/type residue identity; named unfold lowers from `**record`. The lowered call shape must retain static labels and must never convert runtime Map keys into labels.
 
+HIR-H1에서 MIR로 내리는 단계는 구조 확장만 수행한다. resolver나
+overload/conformance lookup을 다시 실행하거나 expected result로 연산을
+바꾸지 않는다. Rational 리터럴은 `RationalConst`에서 정규화 BigInt
+쌍을 보존하고 MIR의 `ConstRational`로 간다. 허수 리터럴은 source
+spelling을 debug origin에 남기면서 두 정확한 IEEE component 값과
+`ComplexTypeId`/`RepTypeId`를 보존한다.
+
+Power는 generic `Pow` call이 아니라 닫힌 `HirIntrinsicPlan`이다. 이
+plan은 base/exponent source evaluation order, 원래/적응 후 operand type,
+정확한 `CheckedIntPow`, `FloatPowInt`, `FloatPow`,
+`ComplexPowInt`, `ComplexPowPrincipal`, `MeasurePowStatic` operation,
+result type, responsibility, numeric-semantics profile 및 special-value
+profile identity를 보존한다. 허용되는 adaptation도 `Identity`,
+`DirectLiteralToF64Exact`, `F32ToF64`, `F32ToComplex64`,
+`F64ToComplex64`의 닫힌 집합이다. backend helper symbol은 projection일
+뿐 semantic callee나 dispatch authority가 아니다.
+
 ## 43. Prelude and standard library
 
 Prelude supplies canonical identities for primitive numbers, `Bool`, `Char`, `String`, bytes, collections, `Record`, Option, Result, iterator protocols, callable/protocol surfaces, measures, and fixed operator contracts. Prelude names are not hard keywords unless the lexical authority says so.
 
 Public Prelude signatures use current syntax, including `Record***` function-type residue where named rest is present. Calendar support belongs to an explicit stdlib/provider profile. Prelude and stdlib artifacts do not claim implementation until target receipts exist.
+
+`BigInt`, `Rational`, `Complex<Float32>`, `Complex<Float64>`와 bare
+`Complex` 약칭은 항상 보이는 Prelude numeric identity이다. `Rational`
+은 정확한 `Eq`/`Ord`/`Hash`/`Keyable` 계약을 가질 수 있지만,
+Float 성분의 `Complex`는 IEEE NaN 때문에 `PartialEq`만 가지며 암묵적인
+strong `Eq`, `Ord`, `Hash`, `Keyable`을 얻지 않는다. `Complex::zero`,
+`Complex::one`, `Complex::i`와 constructor/helper는 type-side member이지
+companion singleton이 아니다. parsing, source representation, checked
+division, alternate power branches, transcendental 함수는 명시적인 named
+API이고 glyph dispatch 후보를 추가하지 않는다.
 
 ## 44. Tooling profiles
 
@@ -693,13 +988,13 @@ R51f3 promotes four narrowly owned contracts without claiming product execution:
 
 The exact minimum contracts and negative boundaries are in the tooling/profile contract artifact. Every related product lane remains `NOT_RUN`.
 
-`session_protocol_lite_provider`, fixed operator conformance overloading, generic extension-set targets and sealed multimethods remain Preview design. The current actor admission contract is design-closed, but actor parser/checker/MIR/xVM execution remains `NOT_RUN`; no product promotion follows from the static contract.
+`session_protocol_lite_provider`, generic extension-set targets and sealed multimethods remain Preview design. Fixed operator conformance overloading and function static activation are Stable design under their exact bounded contracts, while product execution remains `NOT_RUN`. The current actor admission contract is design-closed, but actor parser/checker/MIR/xVM execution remains `NOT_RUN`; no product promotion follows from the static contract.
 
 ## 45. Preview and noncurrent boundaries
 
 Five families are removed without a compatibility gate: Map String-key dot projection, increment/decrement expressions, the `#tailrec` callable kind, regex literals, and automatic heterogeneous-List Union inference. Their current replacements are explicit Map indexing or APIs, explicit assignment, ordinary recursive functions, explicit pattern-library construction from String/Bytes, and an explicit expected `List<A | B>` type. No removed family has a feature row, Preview gate, scanner mode, special AST/HIR/MIR node, or callable residue. Rejected examples exist only to pin diagnostics.
 
-The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, arbitrary custom operators, static activation, Dyn-RCTS, and fixed operator conformance overloading.
+The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, effectful/module/class activation, static-once values, and Dyn-RCTS. Fixed operator conformance overloading is Stable only for its exact `+`/`-`/`*` profile. Arbitrary custom operators are rejected rather than Preview.
 
 Removed surfaces have no implicit compatibility entitlement because Deeplus has not yet had a public 0.3.x release. Recovery recognition is permitted only where the Recovery profile and active diagnostic explicitly require it. Recovery syntax never becomes current AST or MIR.
 
@@ -950,12 +1245,12 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BITFIELD_REQUIRED_FIELD_MISSING` [error]: A required bitfield materialization field is missing.
 - `BITFIELD_WIDTH_MUST_BE_POSITIVE_STATIC_INT` [error]: Bitfield slot width must be a positive compile-time integer.
 - `BITWISE_COMPLEMENT_IS_PREFIX_ONLY` [error]: Bitwise complement is prefix-only: write `~~x`.
-- `BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH` [error]: `~~` requires a known-width or finite-domain operand.
-- `BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL` [error]: Bool is not a bitwise operand domain.
-- `BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION` [error]: Bitwise operands require one exact normalized integer or finite-domain identity; use an explicit conversion.
-- `BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST` [error]: Mixed-width bitwise operands require explicit width conversion.
-- `BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS` [error]: Bitwise operators require known-width or finite-domain bitwise operands.
-- `BITWISE_RESULT_USED_AS_BOOL` [error]: Bitwise operators produce bitwise values, not Bool; compare explicitly or use a flag query.
+- `BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH` [error]: `~~` requires a packed known-width/finite-domain value or an admitted exact-integer NumericArray carrier.
+- `BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL` [error]: Scalar Bool is not a pointwise glyph operand domain; use not, and, or, and then, or otherwise.
+- `BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION` [error]: Pointwise logical operands require one exact normalized packed domain or the same NumericArray shape and integer element domain; use an explicit conversion.
+- `BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST` [error]: Mixed-width pointwise logical operands require explicit width conversion before the operation.
+- `BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS` [error]: Pointwise logical glyphs require a packed known-width/finite-domain value or an exact same-shape NumericArray of one known-width integer element domain.
+- `BITWISE_RESULT_USED_AS_BOOL` [error]: Pointwise logical glyphs preserve their packed or shaped carrier and do not produce a Bool predicate; compare or query explicitly.
 - `BODYLESS_MEMBER_MUST_BE_OPEN` [error]: Body-less member declaration must be an open slot and use the + suffix.
 - `BORROW_ESCAPE_OWNER_REGION` [error]: Borrowed view escapes the owner region.
 - `BOUNDED_INDEX_LENGTH_MISMATCH` [error]: The bounded list element count must equal the asserted closed logical-domain cardinality.
@@ -1122,7 +1417,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FFI_MSP_REQUIRES_PREVIEW_GATE` [error]: Safe FFI MSP requires preview gate.
 - `FFI_SIGNATURE_UNREPRESENTABLE` [error]: This type is not representable in the selected FFI profile.
 - `FILL_REPEAT_ADMISSIBILITY_FAILED` [error]: The fill/repeat expression is not admissible for this shaped target and element responsibility.
-- `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT` [error]: Current operator glyph dispatch is intrinsic-only; a Trait, conformance, witness, extension, or provider cannot supply a glyph implementation.
+- `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT` [note]: Retired boundary diagnostic from the pre-promotion profile; current code must use the exact Stable `+`/`-`/`*` diagnostics instead.
 - `FLAGS_OPERATION_REQUIRES_SAME_NOMINAL_TYPE` [error]: Flags operands must have the same nominal bitfield#flags type.
 - `FLAGS_RESULT_IS_NOT_BOOL` [error]: A flags bitwise result is a flags value, not Bool.
 - `FLAGS_SHIFT_OPERATOR_FORBIDDEN` [error]: Shift operations are forbidden on semantic flags values.
@@ -1138,6 +1433,20 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FOR_GUARD_PATTERN_BINDING_NOT_AVAILABLE` [note]: Retired diagnostic; a `for let` guard may read its nonowning probe bindings, while move, escape, suspension, mutation-through, and authority acquisition remain forbidden before commit.
 - `FOR_LET_FILTER_GUARD_NOT_BOOL` [error]: The optional `for let` GuardClause must have type Bool.
 - `FULL_ENUM_CASE_USES_COLON_COLON` [error]: Fully qualified enum cases use `::`. Expected-type shorthand also uses leading `::case`; dot-prefixed `.case` is not current Deeplus.
+- `FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED` [error]: This callable kind cannot own function static activation.
+- `FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN` [error]: Function static activation cannot observe receiver, parameters, defaults, Context, or caller execution identity.
+- `FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN` [error]: The initial Stable profile forbids a function static activation from calling another activation-bearing owner.
+- `FUNCTION_STATIC_ACTIVATION_DUPLICATE` [error]: A callable body may contain at most one scope#static activation prologue.
+- `FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN` [error]: Function static activation may call only statically selected activation-safe helpers.
+- `FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN` [error]: Function static activation must be effect-free, authority-free, and nonthrowing.
+- `FUNCTION_STATIC_ACTIVATION_FAILED` [error]: The function static activation failed; all callers observe the same cached failure identity and no implicit retry occurs.
+- `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` [error]: scope#static is admitted only in a supported synchronous named callable owner.
+- `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` [error]: scope#static must follow the optional block import/use prologue and precede the first runtime semantic item.
+- `FUNCTION_STATIC_ACTIVATION_REENTRANCY` [error]: A function static activation re-entered its own owner; the activation transitions to one canonical failed state.
+- `FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN` [error]: Function static activation cannot publish a Resource, mutable persistent state, or needsDrop residue.
+- `FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN` [error]: Function static activation cannot await, yield, suspend, or observe cancellation.
+- `FUNCTION_STATIC_METADATA_MISMATCH` [error]: Imported function static activation metadata does not match the selected implementation contract.
+- `FUNCTION_STATIC_OWNER_ID_COLLISION` [error]: Distinct function static owner recipes produced the same identity.
 - `FUNCTION_SIGNATURE_MUST_PRESERVE_CONTROL_AXES` [note]: Function signatures must preserve throws/effects/suspension/call-domain axes; do not erase them into a bare callable façade.
 - `FUNCTION_TYPE_REQUIRES_THIN_ARROW` [error]: Function/result/signature arrows use ->.
 - `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` [error]: Function types and public API digests must preserve `T...` and `Record***` call-shape residues; neither may be erased to `Sequence<T>` or `Record`.
@@ -1310,6 +1619,14 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMERIC_OPERATOR_CORE_REQUIRED` [error]: Numeric operator use requires the current profile numeric operator core law.
 - `OPAQUE_RESULT_CONCRETE_TYPE_MISMATCH` [error]: some Trait function must return one hidden concrete type on all success paths.
 - `OPEN_MEMBER_REQUIRES_INHERITABLE_TYPE` [error]: Open member requires an open, sealed, or abstract containing type.
+- `OPERATOR_CONFORMANCE_AMBIGUOUS` [error]: More than one admitted direct-global conformance matches the normalized fixed-operator key; source or import order cannot select a winner.
+- `OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED` [error]: Fixed-operator conformance accepts only left-owner DIRECT_GLOBAL evidence; via, VIA, AUTO, local/case, extension, provider and specialization routes are forbidden.
+- `OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED` [error]: This normalized operand pair is reserved to intrinsic dispatch and cannot declare or select a user operator conformance.
+- `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` [error]: A fixed-operator conformance must be declared by the package defining the normalized left nominal operand type.
+- `OPERATOR_CONFORMANCE_MISSING` [error]: No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair.
+- `OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION` [error]: Fixed-operator selection never inserts an implicit operand conversion; convert explicitly before applying the operator.
+- `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` [error]: The selected fixed-operator witness must borrow both operands, throw Never, have no effects, and be synchronous, non-consuming and non-mutating.
+- `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` [error]: Only existing binary `+`, `-`, and `*` are admitted for fixed-glyph conformance overloading.
 - `OPERATOR_PRECEDENCE_TABLE_REQUIRED` [error]: Operator parsing requires the current profile operator precedence table.
 - `OPTION_BARE_NONE_REMOVED` [error]: Bare None is not current Deeplus source; use `::none` with expected Option type or `Option<T>::none`.
 - `OPTION_BARE_SOME_REMOVED` [error]: Bare Some(value) is not current Deeplus source; use `::some(value)` with expected Option type or `Option<T>::some(value)`.
@@ -1354,7 +1671,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `POSTFIX_TRANSPOSE_MUST_BE_ATTACHED` [error]: NumericArray postfix transpose is written attached as `A^`.
 - `PREFER_AT_IF_FOR_MULTILINE_TERNARY` [warning]: Long or multiline ternary is clearer as @if.
 - `PREFIXED_LITERAL_NO_WHITESPACE` [error]: No whitespace is allowed between #, prefix, and literal opener.
-- `PREFIXED_LITERAL_PREFIX_REQUIRED` [error]: Stable prefixed literal families require their exact `#` prefix; the current prefix set is `#map`, `#set`, `#mut`, and `#bytes`.
+- `PREFIXED_LITERAL_PREFIX_REQUIRED` [error]: Stable prefixed literal families require their exact `#` prefix; the current prefix set is `#map`, `#set`, `#mut`, `#raw`, and `#bytes`.
 - `PRIMARY_CONSTRUCTOR_BARE_PARAM_NOT_MEMBER` [error]: Bare primary constructor parameter is not a promoted member.
 - `PRIMARY_CTOR_DOLLAR_PROMOTION_REMOVED_USE_LET_VAR` [error]: Primary constructor promotion uses let/var; $ and $* promotion are removed.
 - `PRIMARY_CTOR_LAYOUT_REQUIRES_PROMOTED_FIELD` [error]: Primary-constructor layout separator is limited to promoted let/var fields.
@@ -1418,6 +1735,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `REDUNDANT_FINAL_VALUELESS_RETURN` [lint]: The final valueless return is redundant; normal Unit completion is canonical.
 - `REFINEMENT_ASSERTION_MAY_DEFECT` [warning]: `as!` may raise RefinementAssertionDefect if the predicate fails.
 - `REFINEMENT_DETAILED_CHECK_RETURNS_RESULT` [info]: Detailed validation uses `T::check(value)` or a named factory returning `Result<T, error E>`; `as?` returns `Option<T>`.
+- `RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN` [error]: The expected result type cannot create, distinguish or rank a fixed-operator conformance candidate.
 - `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN` [error]: Implicit narrowing to a refinement type is forbidden.
 - `REFINEMENT_LITERAL_OUT_OF_RANGE` [error]: The literal value is outside the refinement range.
 - `REFINEMENT_PREDICATE_EFFECT_FORBIDDEN` [error]: Refinement predicates must have effects {}.
@@ -1632,7 +1950,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNIT_PROVIDER_REQUIRES_UNIT_WITNESS_CARRIER` [error]: Provider endpoints must use unit witness carriers such as `1[USD]`.
 - `UNIT_SYMBOL_NOT_ACTIVE` [error]: Unit symbol is known but no active catalog authority is in scope. Use the catalog, do not merely import it.
 - `UNIT_WITNESS_LITERAL_MUST_BE_ONE` [error]: Unit witness argument must be `1[unit]`.
-- `UNKNOWN_PREFIXED_LITERAL` [error]: Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, and #bytes.
+- `UNKNOWN_PREFIXED_LITERAL` [error]: Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes.
 - `UNKNOWN_UNIT_SYMBOL` [error]: Unit symbol cannot be resolved in active unit catalogs.
 - `UNSAFE_AUTHORITY_NOT_EFFECT` [error]: Unsafe authority must not be hidden as an ordinary runtime effect.
 - `UNSAFE_REQUIRES_UNSAFE_BOUNDARY` [error]: Raw pointer, FFI, provider, or agent authority requires an explicit unsafe/authority boundary.
@@ -1726,8 +2044,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMERIC_SUFFIX_KIND_MISMATCH` [error]: The numeric suffix kind does not match the integer or decimal-float literal.
 - `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE` [error]: `null` is reserved recovery spelling, not a Deeplus value; use `::none` in an expected `Option` context or `Option<T>::none` explicitly.
 - `OPTION_COALESCE_TOKEN_MUST_BE_ADJACENT` [error]: Option coalescing uses the adjacent compound token `?:`; separated `? :` belongs to ternary syntax.
-- `RAW_MULTILINE_STRING_NOT_CURRENT` [error]: Raw multiline String syntax is not current; use the Unicode multiline String or `raw"..."`.
-- `RAW_STRING_DELIMITER_INVALID` [error]: Raw String Phase A uses exactly the raw"..." delimiter family.
+- `RAW_MULTILINE_STRING_NOT_CURRENT` [error]: Raw multiline String syntax is not current; use the Unicode multiline String or `#raw"..."`.
+- `RAW_STRING_DELIMITER_INVALID` [error]: Stable raw String uses exactly the attached `#raw"..."` delimiter family.
 - `RAW_STRING_UNTERMINATED` [error]: A raw String literal must end with its closing double quote.
 - `TYPE_TOKEN_HAS_NO_CONSTRUCTION_AUTHORITY` [error]: Type<T> token has no construction or metaclass invocation authority.
 - `UNICODE_ESCAPE_INVALID_DIGIT` [error]: Unicode escape contains an invalid hex digit.
@@ -1765,7 +2083,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONSTRUCTOR_OR_CLEANUP_DISPATCH_MARKER_FORBIDDEN` [error]: Constructors and def#cleanup declarations cannot use dispatch markers.
 - `CONSTRUCTOR_REQUIRES_NAME` [error]: Constructor declarations require a name: write `def! new(...)` or `def! name(...)`.
 - `CONSTRUCTOR_SPELLING_REMOVED_USE_DEF_BANG` [error]: Constructors use def! only; def#ctor, def#constructor, and $! are removed.
-- `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT` [error]: Custom operator declarations are nonactivatable Preview-design; express user-defined behavior with a named Trait method or API.
+- `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT` [error]: Arbitrary custom operator declarations are rejected; express behavior with the admitted fixed-glyph conformance profile or a named Trait method/API.
 - `DECLARATION_TILDE_FORBIDDEN` [error]: A declared body selector has no leading tilde; retain tilde only on receiver calls or the top-level target separator.
 - `DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL` [error]: A defer block is not current; register exactly one cleanup invocation.
 - `DEFER_REQUIRES_SINGLE_INVOCATION` [error]: Defer requires exactly one direct, message, or type-side invocation.
@@ -1807,7 +2125,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `MODIFIER_NOT_ADMITTED_FOR_OWNER` [error]: This modifier or role sequence is not admitted for the owning declaration or expression.
 - `MODULE_STATIC_INITIALIZER_NOT_CURRENT` [error]: Module-level `static {}` is nonactivatable Preview-design; use static-admissible top-level let or an explicit lifecycle API.
 - `MULTIPLE_GUARD_CLAUSES_NOT_CURRENT` [error]: This owner admits at most one `if` or `!if` GuardClause.
-- `MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT` [error]: At most one closure may appear as an unlabeled trailing suffix.
+- `MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT` [error]: A trailing-closure group with two or more closures requires every closure to have a unique explicit label.
 - `NAMED_ARGUMENT_EQUALS_REMOVED_USE_COLON` [error]: Named arguments use `label: value`; `label = value` is not current call syntax.
 - `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR` [error]: Double-star is not a named-rest parameter or function-type residue; use attached `***`. Double-star remains the named-unfold prefix.
 - `NEGATED_RELATION_MUST_BE_ADJACENT` [error]: The `!` prefix must be adjacent to `in`, `is`, or `if` in a negated relation or guard.

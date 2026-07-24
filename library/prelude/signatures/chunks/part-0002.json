@@ -27,6 +27,33 @@
     "normalized_contract_sha256": "d676ff05bb79e63b598eff255fdbce59d708d03d6aadc8c8fdb27889ac689ca2"
   },
   {
+    "entry_id": "subtract_rhs",
+    "symbol": "Subtract<Rhs>",
+    "kind": "trait",
+    "status": "stable_design",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "signatures": [
+      "public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"
+    ],
+    "responsibility": "Stable BinarySubtract evidence for an admitted non-intrinsic operand pair under the exact borrowed, pure, total, synchronous fixed-glyph responsibility profile",
+    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved pair or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; product support NOT_RUN.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "1381fe1a7977ebf0f3541b4a052bc8755669c98eabf7afce05d0005206ea2e6c"
+  },
+  {
     "entry_id": "task_t",
     "symbol": "Task<T>",
     "kind": "core_type",
@@ -76,7 +103,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "d9cfa081620c15d84e76ac963ba41296c6ef686c19720a58e626c770dec18003"
+    "normalized_contract_sha256": "ae67e5b3e66a1b95674ebd8b4e6bd27a60810afcd9b230522ca99e084ebe2a02"
   },
   {
     "entry_id": "unitcatalog",

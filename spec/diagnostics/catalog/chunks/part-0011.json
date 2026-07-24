@@ -752,11 +752,11 @@
     "feature_refs": [
       "trailing_closure_argument_msp"
     ],
-    "fixit_hint": "move two or more callbacks into parenthesized named arguments",
+    "fixit_hint": "give every closure in a group of two or more a unique trailing label",
     "fixit_kind": "suggestion",
-    "fixit_policy": "move two or more callbacks into parenthesized named arguments",
-    "message": "At most one closure may appear as an unlabeled trailing suffix.",
-    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "fixit_policy": "preserve closure source order and insert a visible formal label before each closure",
+    "message": "A trailing-closure group with two or more closures requires every closure to have a unique explicit label.",
+    "notes": "Historical diagnostic identity retained for compatibility; current structural validation runs after the ordered group is parsed. Product emission receipt NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],

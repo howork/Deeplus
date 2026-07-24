@@ -1,0 +1,998 @@
+{
+  "schema": "deeplus.rational-complex-numeric-coherence/r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "DESIGN_STATIC_ACCEPTED_NO_PRODUCT_EXECUTION",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_support": "NOT_RUN",
+  "product_lanes_summary": "15/15_NOT_RUN",
+  "product_lanes": {
+    "rust_frontend_lexer": "NOT_RUN",
+    "rust_frontend_parser": "NOT_RUN",
+    "rust_hir_lowering": "NOT_RUN",
+    "rust_integrated_checker": "NOT_RUN",
+    "deeplus_mir_lowering": "NOT_RUN",
+    "xvm_bytecode_emitter": "NOT_RUN",
+    "xvm_interpreter": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "official_tooling": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "cross_backend_conformance": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN"
+  },
+  "authority_fence": {
+    "semantic_contract_authorized": true,
+    "new_source_syntax_contract_authorized": true,
+    "compiler_or_runtime_implementation_authorized": false,
+    "product_support_claim_authorized": false,
+    "publication_or_promotion_claim_authorized": false,
+    "arbitrary_custom_operator_activation": false,
+    "fixed_glyph_conformance_operator_count": 3,
+    "fixed_glyph_conformance_operator_ids": [
+      "BinaryAdd",
+      "BinarySubtract",
+      "BinaryMultiply"
+    ],
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "status": "EXACTLY_22_OPEN",
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_contract": 0,
+    "new_by_contract": 0
+  },
+  "separate_open_actions": [
+    "M13-A002",
+    "M13-A003",
+    "M13-A004",
+    "M13-A005"
+  ],
+  "rule_index": [
+    {
+      "rule_id": "RCN-R001",
+      "title": "authority, evidence, and product honesty"
+    },
+    {
+      "rule_id": "RCN-R002",
+      "title": "Rational and Complex core-versus-library classification"
+    },
+    {
+      "rule_id": "RCN-R003",
+      "title": "Rational exact BigInt canonical value invariant"
+    },
+    {
+      "rule_id": "RCN-R004",
+      "title": "expression-prefix transactional Rational literal"
+    },
+    {
+      "rule_id": "RCN-R005",
+      "title": "Rational literal CST, HIR, and MIR residue"
+    },
+    {
+      "rule_id": "RCN-R006",
+      "title": "Rational construction, named division, conversion, and rendering"
+    },
+    {
+      "rule_id": "RCN-R007",
+      "title": "closed Complex Float32 and Float64 family"
+    },
+    {
+      "rule_id": "RCN-R008",
+      "title": "attached floating imaginary literal"
+    },
+    {
+      "rule_id": "RCN-R009",
+      "title": "Complex literal and semantic profile residue"
+    },
+    {
+      "rule_id": "RCN-R010",
+      "title": "exact Stable fixed-glyph conformance boundary"
+    },
+    {
+      "rule_id": "RCN-R011",
+      "title": "closed language-intrinsic power profile"
+    },
+    {
+      "rule_id": "RCN-R012",
+      "title": "division, unary, custom operator, and absent Rational power boundary"
+    },
+    {
+      "rule_id": "RCN-R013",
+      "title": "equality, ordering, hashing, and key capability boundary"
+    },
+    {
+      "rule_id": "RCN-R014",
+      "title": "Complex NumericArray inner-product and adjoint boundary"
+    },
+    {
+      "rule_id": "RCN-R015",
+      "title": "typed identity and source-to-MIR preservation"
+    },
+    {
+      "rule_id": "RCN-R016",
+      "title": "exact P1 and NOT_RUN preservation"
+    }
+  ],
+  "classification": {
+    "Rational": {
+      "source_user_classification": "STANDARD_EXACT_NUMERIC_VALUE_TYPE",
+      "type_id": "std.numeric.Rational",
+      "type_kind": "canonical_standard_numeric_value_type",
+      "source_availability": "PRELUDE_ALWAYS_AVAILABLE",
+      "implementation_model": "STDLIB_BACKED",
+      "compiler_primitive": false,
+      "representation_status": "OPAQUE_NORMALIZED_BIGINT_PAIR",
+      "runtime_allocation_required": "IMPLEMENTATION_DEPENDENT",
+      "backend_abi": "UNSPECIFIED",
+      "language_owned_responsibilities": [
+        "well-known type identity",
+        "expression-prefix literal recognition",
+        "literal validation and normalization",
+        "typed HIR and MIR constant residue",
+        "fixed-glyph mapping for exact binary plus, minus, and multiply"
+      ],
+      "prelude_stdlib_owned_responsibilities": [
+        "public BigInt carrier",
+        "checked construction",
+        "canonical normalization",
+        "arithmetic bodies",
+        "named comparison and hashing capabilities",
+        "explicit conversions",
+        "display and source rendering"
+      ]
+    },
+    "BigInt": {
+      "type_id": "std.numeric.BigInt",
+      "type_kind": "canonical_standard_exact_integer_carrier",
+      "source_availability": "PRELUDE_ALWAYS_AVAILABLE",
+      "implementation_model": "STDLIB_BACKED",
+      "compiler_primitive": false,
+      "fixed_width_substitute_admitted": false,
+      "backend_abi": "UNSPECIFIED"
+    },
+    "Complex": {
+      "source_user_classification": "BASIC_NUMERIC_TYPE",
+      "type_constructor_id": "std.numeric.Complex<Rep>",
+      "type_kind": "core_numeric_value_type",
+      "source_availability": "PRELUDE_ALWAYS_AVAILABLE",
+      "implementation_model": "STDLIB_BACKED",
+      "compiler_primitive": false,
+      "representation_status": "ABSTRACT_SEMANTIC_CARTESIAN_PAIR",
+      "runtime_allocation_required_for_admitted_profile": false,
+      "backend_abi": "UNSPECIFIED",
+      "language_owned_responsibilities": [
+        "type identity and admitted Rep",
+        "bare Complex normalization",
+        "attached floating imaginary literal",
+        "same-Rep scalar compatibility",
+        "closed fixed-glyph and power mapping",
+        "equality and ordering capability boundary",
+        "NumericArray conjugation law",
+        "typed HIR and MIR semantic residue"
+      ],
+      "prelude_stdlib_owned_responsibilities": [
+        "constructor and constants",
+        "sealed standard conformances",
+        "named numeric capabilities",
+        "complex elementary functions",
+        "parse, display, and codec profiles",
+        "robust division and signed-zero branch behavior"
+      ]
+    }
+  },
+  "rational_profile": {
+    "rule_refs": [
+      "RCN-R003",
+      "RCN-R004",
+      "RCN-R005",
+      "RCN-R006"
+    ],
+    "value_invariant": {
+      "canonical_components": [
+        "numerator: BigInt",
+        "denominator: BigInt"
+      ],
+      "denominator_positive": true,
+      "gcd_abs_numerator_denominator": 1,
+      "zero": [
+        "0",
+        "1"
+      ],
+      "negative_denominator_normalization": "MOVE_SIGN_TO_NUMERATOR",
+      "raw_field_construction": false,
+      "overflow_wrap_saturate_or_approximation_count": 0,
+      "representation_and_abi": "OPAQUE"
+    },
+    "literal": {
+      "surface": "<p/q>",
+      "scanner_kind": "TRANSACTIONAL_CONTEXTUAL_COMPOUND_SCANNER",
+      "scanner_entry": "EXPRESSION_PREFIX_OR_PRIMARY_ONLY",
+      "type_parser_enabled": false,
+      "failed_shape_consumed_token_count": 0,
+      "component_grammar": "UNSIGNED_DECIMAL_INTEGER_MAGNITUDE_WITH_EXISTING_UNDERSCORE_RULES",
+      "component_value_domain": "BigInt",
+      "sign_inside_literal": false,
+      "suffix_inside_literal": false,
+      "radix_prefix_inside_literal": false,
+      "trivia_or_comment_inside_literal": false,
+      "negative_surface": "-<p/q>",
+      "negative_route": "LANGUAGE_INTRINSIC_LITERAL_PREFIX_NEGATION_NOT_CONFORMANCE",
+      "denominator_zero_phase": "PARSE_THEN_STATIC_CHECK_REJECT_BEFORE_HIR",
+      "raw_spelling_preserved": true,
+      "canonical_value_normalized": true,
+      "formatter_value_rewrite_count": 0,
+      "regression_matrix": [
+        {
+          "source": "a<2/3>b",
+          "owner": "EXISTING_COMPARISON_AND_DIVISION_GRAMMAR",
+          "rational_literal_count": 0
+        },
+        {
+          "source": "Box<Int>",
+          "owner": "EXISTING_TYPE_ARGUMENT_GRAMMAR",
+          "rational_literal_count": 0
+        },
+        {
+          "source": "Box<2/3>",
+          "owner": "TYPE_ARGUMENT_ERROR",
+          "rational_recovery_count": 0
+        },
+        {
+          "source": "<2/3>>x",
+          "owner": "RATIONAL_LITERAL_THEN_OUTER_GREATER_THAN",
+          "rational_literal_count": 1
+        }
+      ]
+    },
+    "construction_and_api": {
+      "constructor_surface": "Rational!(numerator, denominator)",
+      "message_surface": "numerator ~ over denominator",
+      "message_selector_is_keyword": false,
+      "operand_evaluation": "LEFT_TO_RIGHT_ONCE_EACH",
+      "constructor_zero_error": "RationalError::zeroDenominator",
+      "named_division": "Rational.dividedBy(rhs)",
+      "named_division_zero_error": "RationalError::divisionByZero",
+      "glyph_division_admitted": false,
+      "named_negation": "Rational.negated()",
+      "named_equality": "Rational.equals(rhs)",
+      "named_order": "Rational.compare(rhs)",
+      "named_power_initial_profile": false,
+      "display_examples": {
+        "2/3": "2/3",
+        "-2/3": "-2/3",
+        "2/1": "2",
+        "0/1": "0"
+      },
+      "source_repr_examples": {
+        "2/3": "<2/3>",
+        "-2/3": "-<2/3>",
+        "2/1": "<2/1>",
+        "0/1": "<0/1>"
+      },
+      "source_round_trip_law": "parseSource(sourceRepr(x)) == x"
+    },
+    "conversion_boundary": {
+      "implicit_inexact_conversion_count": 0,
+      "finite_decimal_to_rational": "NAMED_EXACT_CONVERSION",
+      "finite_float_to_rational": "NAMED_EXACT_BINARY_RATIONAL_CONVERSION",
+      "nonfinite_float_to_rational": "CHECKED_FAILURE",
+      "rational_to_float": "NAMED_DIRECT_SINGLE_ROUND_TO_DESTINATION",
+      "intermediate_float64_double_rounding": false,
+      "rational_to_integer": "EXPLICIT_CHECKED_CONVERSION"
+    }
+  },
+  "complex_profile": {
+    "rule_refs": [
+      "RCN-R007",
+      "RCN-R008",
+      "RCN-R009",
+      "RCN-R013",
+      "RCN-R014"
+    ],
+    "type_family": {
+      "admitted_ground_types": [
+        "std.numeric.Complex<Float32>",
+        "std.numeric.Complex<Float64>"
+      ],
+      "bare_source_type": "Complex",
+      "bare_normalized_type": "std.numeric.Complex<Float64>",
+      "bare_type_is_distinct_nominal": false,
+      "variance": "INVARIANT",
+      "user_defined_rep_activation": false,
+      "component_fields": [
+        "real: Rep",
+        "imag: Rep"
+      ],
+      "component_visibility": "SOURCE_VISIBLE_READ_ONLY",
+      "value_kind": "IMMUTABLE_SEMANTIC_VALUE",
+      "hidden_allocation_in_admitted_profile": false,
+      "storage_layout_is_semantic_identity": false,
+      "foreign_abi_is_semantic_identity": false
+    },
+    "literal": {
+      "grammar": "ImaginaryLiteral := FloatLiteral ATTACHED_i",
+      "marker": "i",
+      "marker_must_be_attached": true,
+      "floating_literal_only": true,
+      "integer_imaginary_literal_count": 0,
+      "global_i_binding_count": 0,
+      "global_j_binding_count": 0,
+      "global_im_binding_count": 0,
+      "bare_i_role": "ORDINARY_IDENTIFIER",
+      "longest_match_invalid_suffix_tail": true,
+      "forms": [
+        {
+          "source": "4.0i",
+          "normalized_type": "std.numeric.Complex<Float64>",
+          "real": "+0.0",
+          "imag": "4.0"
+        },
+        {
+          "source": "4.0f32i",
+          "normalized_type": "std.numeric.Complex<Float32>",
+          "real": "+0.0f32",
+          "imag": "4.0f32"
+        },
+        {
+          "source": "3.0 + 4.0i",
+          "normalized_type": "std.numeric.Complex<Float64>",
+          "resolution": "SEALED_PRELUDE_DIRECT_GLOBAL_BINARY_ADD"
+        }
+      ],
+      "rejections": [
+        {
+          "source": "4i",
+          "reason": "INTEGER_MAGNITUDE_NOT_ADMITTED"
+        },
+        {
+          "source": "4.0 i",
+          "reason": "MARKER_NOT_ATTACHED_AND_NO_IMPLICIT_MULTIPLICATION"
+        },
+        {
+          "source": "4.0index",
+          "reason": "WHOLE_INVALID_NUMERIC_SUFFIX_CANDIDATE_NOT_TOKEN_SPLIT"
+        }
+      ],
+      "explicit_imaginary_unit_api": "Complex::i"
+    },
+    "value_and_special_values": {
+      "signed_zero_preserved": true,
+      "infinity_preserved_per_component": true,
+      "nan_classification_preserved_per_component": true,
+      "nan_payload_is_semantic_identity": false,
+      "principal_phase_range": "[-pi,+pi]",
+      "negative_real_axis_side_selected_by_imaginary_signed_zero": true,
+      "real_axis_or_imaginary_axis_branch_profile": "PRINCIPAL_SIGNED_ZERO"
+    },
+    "prelude_stdlib_api": {
+      "constructor": "Complex!(real:, imag:)",
+      "constants": [
+        "Complex::zero",
+        "Complex::one",
+        "Complex::i"
+      ],
+      "observations": [
+        "real",
+        "imag",
+        "conjugate",
+        "magnitude",
+        "normSquared",
+        "phase",
+        "toPolar",
+        "project"
+      ],
+      "construction_helpers": [
+        "Complex::polar",
+        "Complex::cis"
+      ],
+      "classification": [
+        "isFinite",
+        "isInfinite",
+        "isNaN",
+        "isZero",
+        "hasFiniteMagnitude"
+      ],
+      "elementary_functions": [
+        "exp",
+        "log",
+        "log2",
+        "log10",
+        "sqrt",
+        "cbrt",
+        "powInteger",
+        "powReal",
+        "powComplex",
+        "sin",
+        "cos",
+        "tan",
+        "asin",
+        "acos",
+        "atan",
+        "sinh",
+        "cosh",
+        "tanh",
+        "asinh",
+        "acosh",
+        "atanh"
+      ],
+      "checked_and_approximate_helpers": [
+        "checkedReciprocal",
+        "checkedDivide",
+        "isClose"
+      ],
+      "parsing": [
+        "Complex::parseCartesian",
+        "Complex::parseSourceForm"
+      ],
+      "implicit_json_mapping_count": 0
+    }
+  },
+  "fixed_operator_conformance": {
+    "rule_ref": "RCN-R010",
+    "status": "STABLE_DESIGN",
+    "glyph_vocabulary": "CLOSED",
+    "precedence_table": "CLOSED",
+    "admitted_operator_ids": [
+      "BinaryAdd",
+      "BinarySubtract",
+      "BinaryMultiply"
+    ],
+    "mapping": [
+      {
+        "operator_id": "BinaryAdd",
+        "glyph": "+",
+        "trait_id": "Add<Rhs>",
+        "method_id": "Add.add",
+        "output_projection": "Add<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinarySubtract",
+        "glyph": "-",
+        "trait_id": "Subtract<Rhs>",
+        "method_id": "Subtract.subtract",
+        "output_projection": "Subtract<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinaryMultiply",
+        "glyph": "*",
+        "trait_id": "Multiply<Rhs>",
+        "method_id": "Multiply.multiply",
+        "output_projection": "Multiply<Rhs>::Output"
+      }
+    ],
+    "selection": {
+      "key": [
+        "OperatorId",
+        "normalized_left_type",
+        "normalized_right_type"
+      ],
+      "route": "UNIQUE_LEFT_OWNER_DIRECT_GLOBAL",
+      "success_witness_count": 1,
+      "implicit_conversion_count": 0,
+      "expected_result_is_selection_key": false,
+      "source_import_provider_order_is_selection_key": false,
+      "VIA_AUTO_local_case_specialization_candidate_count": 0,
+      "fallback_count": 0,
+      "runtime_lookup_count": 0,
+      "responsibility_profile": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+    },
+    "sealed_standard_row_families": [
+      {
+        "left": "Rational",
+        "right": "Rational",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Rational"
+      },
+      {
+        "left": "Rational",
+        "right": "ExactBuiltinInteger",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Rational"
+      },
+      {
+        "left": "ExactBuiltinInteger",
+        "right": "Rational",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Rational"
+      },
+      {
+        "left": "Complex<Rep>",
+        "right": "Complex<same Rep>",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Complex<Rep>"
+      },
+      {
+        "left": "Complex<Rep>",
+        "right": "same exact Rep",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Complex<Rep>"
+      },
+      {
+        "left": "same exact Rep",
+        "right": "Complex<Rep>",
+        "operator_ids": [
+          "BinaryAdd",
+          "BinarySubtract",
+          "BinaryMultiply"
+        ],
+        "output": "Complex<Rep>"
+      }
+    ],
+    "arbitrary_custom_operator_count": 0,
+    "arbitrary_custom_glyph_count": 0,
+    "user_override_of_sealed_standard_row_count": 0,
+    "trait_successor_guard": "TCC-P1-002..008_REMAIN_OPEN",
+    "implementation_receipt_count": 0
+  },
+  "power_profile": {
+    "rule_ref": "RCN-R011",
+    "operator_id": "BinaryPower",
+    "glyph": "^",
+    "dispatch": "LANGUAGE_INTRINSIC_ONLY",
+    "fixed_operator_conformance_member": false,
+    "trait_id": null,
+    "conformance_lookup_count": 0,
+    "witness_lookup_count": 0,
+    "provider_lookup_count": 0,
+    "runtime_lookup_count": 0,
+    "fallback_count": 0,
+    "expected_result_candidate_count": 0,
+    "source_order_winner_count": 0,
+    "static_domain_and_result_required": true,
+    "precedence": {
+      "power_lbp": 160,
+      "power_rbp": 159,
+      "numeric_unary_plus_minus_rbp": 159,
+      "associativity": "RIGHT",
+      "parse_examples": [
+        {
+          "source": "2.0 ^ 3.0 ^ 2.0",
+          "parse": "2.0 ^ (3.0 ^ 2.0)"
+        },
+        {
+          "source": "-2.0 ^ 2.0",
+          "parse": "-(2.0 ^ 2.0)"
+        },
+        {
+          "source": "2.0 ^ -3.0",
+          "parse": "2.0 ^ (-3.0)"
+        }
+      ]
+    },
+    "closed_domain_matrix": [
+      {
+        "left": "ExactBuiltinInteger",
+        "right": "ExactBuiltinInteger",
+        "result": "EXISTING_EXACT_INTEGER_INTRINSIC_RULE"
+      },
+      {
+        "left": "Float32",
+        "right": "Float32",
+        "result": "Float32"
+      },
+      {
+        "left": "Float64",
+        "right": "Float64",
+        "result": "Float64"
+      },
+      {
+        "left": "Float32",
+        "right": "ExactBuiltinInteger",
+        "result": "Float32"
+      },
+      {
+        "left": "Float64",
+        "right": "ExactBuiltinInteger",
+        "result": "Float64"
+      },
+      {
+        "left": "Complex<Rep>",
+        "right": "ExactBuiltinInteger",
+        "result": "Complex<Rep>"
+      },
+      {
+        "left": "Complex<Rep>",
+        "right": "same exact Rep",
+        "result": "Complex<Rep>"
+      },
+      {
+        "left": "Complex<Rep>",
+        "right": "Complex<same Rep>",
+        "result": "Complex<Rep>"
+      },
+      {
+        "left": "same exact Rep",
+        "right": "Complex<Rep>",
+        "result": "Complex<Rep>"
+      }
+    ],
+    "complex_semantics": {
+      "profile_id": "deeplus.numeric.power.complex-principal/r1",
+      "principal_log_branch": true,
+      "signed_zero_branch_side_preserved": true
+    },
+    "real_semantics": {
+      "profile_id": "deeplus.numeric.power.real/r1",
+      "automatic_complex_result_count": 0,
+      "negative_real_fractional_power_route": "REAL_PROFILE_RESULT_NEVER_AUTO_COMPLEX"
+    },
+    "zero_to_zero": {
+      "result": "ONE_IN_STATIC_RESULT_DOMAIN",
+      "diagnostic": "POWER_ZERO_TO_ZERO_DEFINED_ONE",
+      "diagnostic_severity": "warning"
+    },
+    "owner_separation": {
+      "Measure ^ StaticInt": "MEASURE_STATIC_POWER_LAW_UNCHANGED",
+      "NumericArray ^ exponent": "PREVIEW_NONACTIVATABLE_SEPARATE_OWNER",
+      "Rational ^ exponent": "ABSENT_FROM_INITIAL_PROFILE"
+    },
+    "implementation_receipt_count": 0
+  },
+  "operator_and_capability_boundary": {
+    "rule_refs": [
+      "RCN-R012",
+      "RCN-R013"
+    ],
+    "division": {
+      "primitive_integer_and_float": "EXISTING_LANGUAGE_INTRINSIC",
+      "Rational": "NAMED_CHECKED_API_ONLY",
+      "Complex": "NAMED_API_ONLY_WITH_CHECKED_VARIANT",
+      "fixed_operator_conformance_member": false
+    },
+    "unary_plus_minus": {
+      "conformance_member": false,
+      "numeric_rbp": 159,
+      "Rational_literal_negative": "LANGUAGE_INTRINSIC_LITERAL_PREFIX_NEGATION",
+      "Complex_literal_negative": "LANGUAGE_INTRINSIC_LITERAL_PREFIX_NEGATION"
+    },
+    "equality_and_order": {
+      "glyph_conformance_member": false,
+      "Rational": {
+        "named_partial_or_strong_equality": "STRONG_EQ",
+        "named_total_order": true,
+        "named_hash": true,
+        "named_keyable": true
+      },
+      "Complex<Float32|Float64>": {
+        "named_partial_equality": true,
+        "strong_eq": false,
+        "ord": false,
+        "hash": false,
+        "keyable": false
+      }
+    },
+    "Rational_remainder": false,
+    "Complex_remainder": false,
+    "Complex_ordering_glyph": false,
+    "Complex_bitwise": false
+  },
+  "numeric_array_complex_boundary": {
+    "rule_ref": "RCN-R014",
+    "admitted_elements": [
+      "Complex<Float32>",
+      "Complex<Float64>"
+    ],
+    "inner_product": "u *+ v = sum_i(conjugate(u[i]) * v[i])",
+    "unconjugated_named_api": "dotu",
+    "postfix_caret": "TRANSPOSE_ONLY",
+    "named_adjoint": "CONJUGATE_TRANSPOSE",
+    "implicit_broadcast_count": 0,
+    "hidden_host_device_transfer_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "identity_and_residue": {
+    "rule_ref": "RCN-R015",
+    "Rational_literal": {
+      "type_id": "std.numeric.Rational",
+      "value_profile_id": "deeplus.numeric.rational.exact-bigint/r1",
+      "cst_node": "RationalLiteralCst",
+      "cst_fields": [
+        "raw_spelling",
+        "numerator_span",
+        "slash_span",
+        "denominator_span",
+        "close_span",
+        "trivia_boundary_facts"
+      ],
+      "ast_node": "RationalLiteralExpr",
+      "hir_node": "RationalConst",
+      "hir_fields": [
+        "canonical_numerator: BigInt",
+        "canonical_positive_denominator: BigInt",
+        "type_id: std.numeric.Rational",
+        "value_profile_id: deeplus.numeric.rational.exact-bigint/r1"
+      ],
+      "mir_node": "ConstRational",
+      "mir_fields": [
+        "canonical_numerator",
+        "canonical_positive_denominator",
+        "type_id",
+        "value_profile_id",
+        "representation_contract_version: r1"
+      ],
+      "integer_division_lowering_count": 0
+    },
+    "Complex_literal": {
+      "type_constructor_id": "std.numeric.Complex<Rep>",
+      "numeric_semantics_profile_id": "deeplus.numeric.complex.ieee-cartesian/r1",
+      "branch_profile_id": "deeplus.numeric.complex.principal-signed-zero/r1",
+      "cst_node": "ImaginaryLiteralCst",
+      "ast_node": "ImaginaryLiteralExpr",
+      "hir_node": "ComplexLiteral",
+      "hir_fields": [
+        "rep_type_id",
+        "real_component",
+        "imag_component",
+        "source_form: attached_i",
+        "numeric_semantics_profile_id",
+        "branch_profile_id"
+      ],
+      "mir_node": "ComplexConstruct",
+      "mir_fields": [
+        "complex_type_id",
+        "rep_type_id",
+        "real_component",
+        "imag_component",
+        "numeric_semantics_profile_id",
+        "branch_profile_id"
+      ],
+      "erase_to_anonymous_pair_before_semantic_selection": false
+    },
+    "fixed_operator_call": {
+      "hir_and_mir_node": "FixedOperatorConformanceCall",
+      "required_fields": [
+        "operator_id",
+        "normalized_left_type_id",
+        "normalized_right_type_id",
+        "conformance_id",
+        "witness_id",
+        "method_id",
+        "substitution_id",
+        "output_type_id",
+        "responsibility_profile_id",
+        "dispatch_route"
+      ],
+      "implementation_or_execution_receipt_field_count": 0,
+      "selected_identity_erased_before_mir": false
+    },
+    "power_call": {
+      "hir_node": "IntrinsicPowerExpr",
+      "mir_node": "IntrinsicNumericPower",
+      "required_fields": [
+        "operator_id: BinaryPower",
+        "normalized_left_type_id",
+        "normalized_right_type_id",
+        "output_type_id",
+        "power_semantics_profile_id",
+        "branch_profile_id_or_null"
+      ],
+      "conformance_id_count": 0,
+      "witness_id_count": 0,
+      "runtime_lookup_count": 0
+    },
+    "api_digest": {
+      "preserve": [
+        "canonical Rational and BigInt TypeId",
+        "normalized Complex TypeId and RepTypeId",
+        "sealed fixed-operator ConformanceId and WitnessId",
+        "named capability identities",
+        "numeric and branch profile IDs"
+      ],
+      "forbid": [
+        "backend pair layout",
+        "machine address",
+        "runtime lookup table index",
+        "C or C++ value ABI assumption",
+        "product execution claim"
+      ]
+    }
+  },
+  "diagnostic_contract": [
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_MALFORMED",
+      "stage": "parser",
+      "condition": "prefix-context candidate does not complete the exact compound literal shape"
+    },
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_COMPONENT_NOT_DECIMAL_INTEGER",
+      "stage": "lexer_or_parser",
+      "condition": "a component uses a radix prefix, suffix, or non-decimal magnitude"
+    },
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX",
+      "stage": "parser",
+      "condition": "a sign occurs inside the compound literal"
+    },
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_TRIVIA_FORBIDDEN",
+      "stage": "parser",
+      "condition": "whitespace or comment occurs inside the compound literal"
+    },
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+      "stage": "checker",
+      "condition": "the literal denominator magnitude is zero"
+    },
+    {
+      "diagnostic_id": "RATIONAL_LITERAL_RESOURCE_LIMIT",
+      "stage": "lexer_or_constant_evaluator",
+      "condition": "the configured exact-literal digit or bit budget is exceeded"
+    },
+    {
+      "diagnostic_id": "RATIONAL_OVER_REQUIRES_EXACT_INTEGERS",
+      "stage": "checker",
+      "condition": "the over message receives a non-exact-integer component"
+    },
+    {
+      "diagnostic_id": "RATIONAL_INEXACT_MIX_REQUIRES_EXPLICIT_CONVERSION",
+      "stage": "checker",
+      "condition": "Rational is mixed implicitly with Float, Decimal, or Complex"
+    },
+    {
+      "diagnostic_id": "RATIONAL_POWER_NOT_IN_INITIAL_PROFILE",
+      "stage": "checker",
+      "condition": "Rational is used as a power operand in the initial profile"
+    },
+    {
+      "diagnostic_id": "IMAGINARY_LITERAL_REQUIRES_FLOATING_MAGNITUDE",
+      "stage": "lexer",
+      "condition": "the attached i marker follows an integer literal"
+    },
+    {
+      "diagnostic_id": "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+      "stage": "parser",
+      "condition": "whitespace separates a floating literal and i"
+    },
+    {
+      "diagnostic_id": "INVALID_NUMERIC_LITERAL_SUFFIX",
+      "stage": "lexer",
+      "condition": "a maximal numeric candidate has an invalid attached suffix tail"
+    },
+    {
+      "diagnostic_id": "COMPLEX_REP_PROFILE_NOT_ADMITTED",
+      "stage": "checker",
+      "condition": "Complex Rep is not Float32 or Float64"
+    },
+    {
+      "diagnostic_id": "COMPLEX_COMPONENT_REP_MISMATCH",
+      "stage": "checker",
+      "condition": "real and imaginary components have different exact Rep"
+    },
+    {
+      "diagnostic_id": "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+      "stage": "checker",
+      "condition": "an operation mixes Float32 and Float64 Complex profiles"
+    },
+    {
+      "diagnostic_id": "COMPLEX_TYPED_INTEGER_REQUIRES_EXPLICIT_CONVERSION",
+      "stage": "checker",
+      "condition": "a typed integer is used as an implicit Complex scalar"
+    },
+    {
+      "diagnostic_id": "COMPLEX_REMAINDER_NOT_DEFINED",
+      "stage": "checker",
+      "condition": "remainder is requested for Complex"
+    },
+    {
+      "diagnostic_id": "COMPLEX_ORDERING_NOT_DEFINED",
+      "stage": "checker",
+      "condition": "ordering is requested for Complex"
+    },
+    {
+      "diagnostic_id": "COMPLEX_BITWISE_NOT_DEFINED",
+      "stage": "checker",
+      "condition": "bitwise behavior is requested for Complex"
+    },
+    {
+      "diagnostic_id": "COMPLEX_IEEE_VALUE_NOT_STRONG_EQ",
+      "stage": "checker",
+      "condition": "strong Eq, Hash, or Keyable evidence is requested for an IEEE Complex profile"
+    },
+    {
+      "diagnostic_id": "COMPLEX_FOREIGN_VALUE_ABI_REQUIRES_TARGET_PROFILE",
+      "stage": "ffi_checker",
+      "condition": "a foreign Complex value ABI is assumed without a target receipt"
+    },
+    {
+      "diagnostic_id": "POWER_ZERO_TO_ZERO_DEFINED_ONE",
+      "stage": "checker",
+      "severity": "warning",
+      "condition": "both statically known power operands are zero"
+    },
+    {
+      "diagnostic_id": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+      "stage": "checker",
+      "condition": "an expected result type is used to create or rank a fixed-operator candidate"
+    },
+    {
+      "diagnostic_id": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+      "stage": "checker_or_link",
+      "condition": "a provider, fallback, local, VIA, AUTO, or runtime route is proposed"
+    }
+  ],
+  "machine_acceptance": {
+    "fixture_schema": "schemas/language/rational-complex-numeric-coherence-fixtures.schema.json",
+    "fixture_data": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+    "fixture_case_count": 64,
+    "fixture_categories": {
+      "positive": 24,
+      "negative": 24,
+      "boundary": 8,
+      "mutation": 8
+    },
+    "exact_open_feature_p1_count": 22,
+    "feature_p1_closed_by_contract": 0,
+    "feature_p1_created_by_contract": 0,
+    "fixed_conformance_operator_count": 3,
+    "fixed_conformance_operator_ids": [
+      "BinaryAdd",
+      "BinarySubtract",
+      "BinaryMultiply"
+    ],
+    "arbitrary_custom_operator_count": 0,
+    "power_conformance_witness_count": 0,
+    "Rational_power_initial_profile_count": 0,
+    "integer_imaginary_literal_count": 0,
+    "runtime_operator_lookup_count": 0,
+    "product_lane_count": 15,
+    "product_lane_not_run_count": 15,
+    "product_executed_case_count": 0,
+    "semantic_p0": 0
+  }
+}

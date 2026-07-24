@@ -1,0 +1,443 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/function-static-activation-fixtures-r1.json",
+  "title": "Deeplus Function Static Activation R1 static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "status",
+    "source_activation",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "p1_delta",
+    "product_lanes",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.function-static-activation-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/function-static-activation-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/function-static-activation.json"
+    },
+    "status": {
+      "const": "STABLE_DESIGN"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": true
+    },
+    "open_feature_p1": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "CE-C-P1-001",
+          "CE-C-P1-002",
+          "CE-C-P1-003",
+          "CE-C-P1-004",
+          "CE-C-P1-005",
+          "CE-C-P1-006",
+          "CE-E-P1-001",
+          "CE-E-P1-002",
+          "CE-E-P1-003",
+          "CE-E-P1-004",
+          "CE-E-P1-005",
+          "CE-E-P1-006",
+          "CE-E-P1-007",
+          "CE-E-P1-008",
+          "TCC-P1-002",
+          "TCC-P1-003",
+          "TCC-P1-004",
+          "TCC-P1-005",
+          "TCC-P1-006",
+          "TCC-P1-007",
+          "TCC-P1-008",
+          "SFD-P1-009"
+        ]
+      }
+    },
+    "p1_delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created",
+        "closed"
+      ],
+      "properties": {
+        "created": {
+          "const": 0
+        },
+        "closed": {
+          "const": 0
+        }
+      }
+    },
+    "product_lanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {
+          "const": "NOT_RUN"
+        },
+        "rust_frontend_parser": {
+          "const": "NOT_RUN"
+        },
+        "rust_hir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "rust_integrated_checker": {
+          "const": "NOT_RUN"
+        },
+        "deeplus_mir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "xvm_bytecode_emitter": {
+          "const": "NOT_RUN"
+        },
+        "xvm_interpreter": {
+          "const": "NOT_RUN"
+        },
+        "llvm_aot_backend": {
+          "const": "NOT_RUN"
+        },
+        "llvm_orc_jit_backend": {
+          "const": "NOT_RUN"
+        },
+        "formatter_lsp": {
+          "const": "NOT_RUN"
+        },
+        "stdlib_provider_runner": {
+          "const": "NOT_RUN"
+        },
+        "official_tooling": {
+          "const": "NOT_RUN"
+        },
+        "independent_conformance": {
+          "const": "NOT_RUN"
+        },
+        "cross_backend_conformance": {
+          "const": "NOT_RUN"
+        },
+        "actual_user_team_study": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 40,
+      "maxItems": 40,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fixture_id",
+          "fixture_class",
+          "rule_ids",
+          "facet",
+          "source_or_scenario",
+          "expected_design",
+          "diagnostic_family_or_null",
+          "assertions",
+          "oracle",
+          "p1_delta",
+          "execution_state",
+          "product_support",
+          "product_receipt"
+        ],
+        "properties": {
+          "fixture_id": {
+            "type": "string",
+            "pattern": "^FSA-R1-(POS|NEG|BOUND|MUT)-[0-9]{3}$"
+          },
+          "fixture_class": {
+            "enum": [
+              "positive",
+              "negative",
+              "boundary",
+              "mutation"
+            ]
+          },
+          "rule_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^FSA-R0(?:0[1-9]|1[0-9]|20)$"
+            }
+          },
+          "facet": {
+            "enum": [
+              "SURFACE",
+              "OWNER",
+              "BODY",
+              "IDENTITY",
+              "ORDERING",
+              "STATE",
+              "FAILURE",
+              "PUBLICATION",
+              "LINK",
+              "COMPATIBILITY"
+            ]
+          },
+          "source_or_scenario": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_design": {
+            "enum": [
+              "ADMIT",
+              "REJECT",
+              "BOUNDARY",
+              "MUTANT_KILLED"
+            ]
+          },
+          "diagnostic_family_or_null": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assertions": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "oracle": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "activation_count",
+              "ordinary_body_count",
+              "ownership_commit_count",
+              "retry_count",
+              "reset_count",
+              "partial_observation_count"
+            ],
+            "properties": {
+              "activation_count": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "ordinary_body_count": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "ownership_commit_count": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "retry_count": {
+                "const": 0
+              },
+              "reset_count": {
+                "const": 0
+              },
+              "partial_observation_count": {
+                "const": 0
+              }
+            }
+          },
+          "p1_delta": {
+            "const": 0
+          },
+          "execution_state": {
+            "const": "DESIGN_STATIC_NOT_RUN"
+          },
+          "product_support": {
+            "const": "NOT_RUN"
+          },
+          "product_receipt": {
+            "type": "null"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "fixture_class": {
+                  "const": "positive"
+                }
+              },
+              "required": [
+                "fixture_class"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected_design": {
+                  "const": "ADMIT"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "fixture_class": {
+                  "const": "negative"
+                }
+              },
+              "required": [
+                "fixture_class"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected_design": {
+                  "const": "REJECT"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "fixture_class": {
+                  "const": "boundary"
+                }
+              },
+              "required": [
+                "fixture_class"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected_design": {
+                  "const": "BOUNDARY"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "fixture_class": {
+                  "const": "mutation"
+                }
+              },
+              "required": [
+                "fixture_class"
+              ]
+            },
+            "then": {
+              "properties": {
+                "expected_design": {
+                  "const": "MUTANT_KILLED"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "positive",
+        "negative",
+        "boundary",
+        "mutation",
+        "semantic_p0",
+        "open_feature_p1",
+        "p1_closed",
+        "p1_created",
+        "product_lanes",
+        "product_executed",
+        "new_CALL_INPUT_COMMIT_event_count"
+      ],
+      "properties": {
+        "cases": {
+          "const": 40
+        },
+        "positive": {
+          "const": 12
+        },
+        "negative": {
+          "const": 12
+        },
+        "boundary": {
+          "const": 8
+        },
+        "mutation": {
+          "const": 8
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "open_feature_p1": {
+          "const": 22
+        },
+        "p1_closed": {
+          "const": 0
+        },
+        "p1_created": {
+          "const": 0
+        },
+        "product_lanes": {
+          "const": 15
+        },
+        "product_executed": {
+          "const": 0
+        },
+        "new_CALL_INPUT_COMMIT_event_count": {
+          "const": 0
+        }
+      }
+    }
+  }
+}

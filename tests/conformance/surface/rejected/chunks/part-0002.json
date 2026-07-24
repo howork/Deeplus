@@ -511,7 +511,15 @@
   },
   {
     "example_id": "EX-R51d-002",
-    "code_sha256": "51a051b4e0363fd72848c55b62949ab1599af0602e5c678c33a99a72311e76fe",
+    "code_sha256": "e7b0ab7163bc4f02987d7e256c89f4952f7c9cdda435ebf96b75aa1058f422cb",
+    "feature_ids": [
+      "raw_string_prefixed_literal"
+    ],
+    "primary_diagnostic": "RAW_STRING_DELIMITER_INVALID"
+  },
+  {
+    "example_id": "EX-R51d-002A",
+    "code_sha256": "ae2cf07883a9401056b7a9bff6ac08ac3de31f0f11cbea36becf694a02f82566",
     "feature_ids": [
       "raw_string_prefixed_literal"
     ],
@@ -789,12 +797,12 @@
   },
   {
     "example_id": "EX-R51VOI-NG-003",
-    "code_sha256": "f15813654fddef81fe98bb42ac178ece0462e2dc5085e053a02bf03eb71ca718",
+    "code_sha256": "d8bc02fa826386c854491b3b5f1a34669e1b5af85d569283937e8d825aa85519",
     "feature_ids": [
       "fixed_operator_conformance_overloading",
       "closed_operator_symbols_open_named_extensions"
     ],
-    "primary_diagnostic": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+    "primary_diagnostic": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED"
   },
   {
     "example_id": "EX-R51VOI-NG-004",
@@ -885,5 +893,45 @@
       "numeric_array_elementwise_power_msp"
     ],
     "primary_diagnostic": "TYPE_DECL_VISIBILITY_REQUIRED"
+  },
+  {
+    "example_id": "EX-R51f3-NUM-RAT-NG-001",
+    "code_sha256": "248f021cd280779dce34b81d66ddaa182b00d1c6f2cc388dcf4300a4c8592859",
+    "feature_ids": [
+      "rational_exact_numeric_value"
+    ],
+    "primary_diagnostic": "RATIONAL_LITERAL_DENOMINATOR_ZERO"
+  },
+  {
+    "example_id": "EX-R51f3-NUM-CPLX-NG-001",
+    "code_sha256": "d5c61a64f4c3ed4f3698e406b38f235dc4a727a242ccb403677e7c5d7356e12e",
+    "feature_ids": [
+      "complex_core_numeric_value"
+    ],
+    "primary_diagnostic": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED"
+  },
+  {
+    "example_id": "EX-R51f3-NUM-POWER-NG-001",
+    "code_sha256": "820b8af3e9c3dbea6aa7cf06873a2906f0f037ec94c3eb52ca037bdf6017c215",
+    "feature_ids": [
+      "scalar_real_complex_power"
+    ],
+    "primary_diagnostic": "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN"
+  },
+  {
+    "example_id": "EX-R51f3-STATIC-TRAIT-NG-001",
+    "code_sha256": "9838195112d650569d7e229fbbe2faf3d7e0c1800d6c3f92a19d71ea720072c2",
+    "feature_ids": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "primary_diagnostic": "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION"
+  },
+  {
+    "example_id": "EX-R51FSA-NG-001",
+    "code_sha256": "6dfa5fe1e417317193dd2ba5a101bfba5f5884eb0c3b7bec74b26a795d06ed5b",
+    "feature_ids": [
+      "function_static_activation"
+    ],
+    "primary_diagnostic": "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID"
   }
 ]

@@ -399,7 +399,7 @@
     "fixit_hint": "use a current prefixed literal or an explicit library constructor",
     "fixit_kind": "none",
     "fixit_policy": "use a current prefixed literal or an explicit library constructor",
-    "message": "Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, and #bytes.",
+    "message": "Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1411,13 +1411,18 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A List pattern may contain at most one rest form.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "parser",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "PARSER"],
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
     "authority": "LANGUAGE / PARSER",
     "fixit_kind": "manual_review",
     "fixit_hint": "retain only one final ignored .._ rest",
@@ -1433,13 +1438,18 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "The only current List-pattern rest is one ignored `.._` in final position.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "parser",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "PARSER"],
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
     "authority": "LANGUAGE / PARSER",
     "fixit_kind": "manual_review",
     "fixit_hint": "move one ignored .._ rest to the end or remove it",
@@ -1455,13 +1465,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A Record pattern names the same required label more than once.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "keep exactly one occurrence of the label",
@@ -1477,13 +1493,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A Record pattern names a label outside the subject's statically known Record row.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "use a statically known label of the Record subject",
@@ -1499,13 +1521,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A Record pattern cannot project a label that is not visible in the current authority domain.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "none",
     "fixit_hint": "",
@@ -1521,13 +1549,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "Pattern decomposition cannot open a Class, Dyn, Facet, FFI, or opaque private representation.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "none",
     "fixit_hint": "",
@@ -1543,13 +1577,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "This context requires the checker to prove the Pattern irrefutable for its admitted subject type.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "use a checker-proven-irrefutable binder, wildcard, or pattern",
@@ -1565,13 +1605,21 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "A Pattern alias cannot coexist with a moved or exclusively borrowed descendant of the same subject.",
-    "feature_refs": ["or_alias_pattern"],
-    "related_feature_refs": ["pattern_match_ownership_split"],
+    "feature_refs": [
+      "or_alias_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_match_ownership_split"
+    ],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "choose the whole-subject alias or the conflicting descendant ownership operation",
@@ -1587,13 +1635,21 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "Normally returning Pattern arms leave incompatible usable-place states at the join.",
-    "feature_refs": ["pattern_match_ownership_split"],
-    "related_feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_match_ownership_split"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "make every returning arm preserve the same usable-place set, consume the whole subject, or terminate",
@@ -1609,13 +1665,19 @@
     "diagnostic_class": "current_source",
     "emission_domain": "source",
     "message": "Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness.",
-    "feature_refs": ["pattern_decomposition"],
+    "feature_refs": [
+      "pattern_decomposition"
+    ],
     "related_feature_refs": [],
     "stage": "checker",
     "severity": "error",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "authority_set": ["LANGUAGE", "TYPE_SYSTEM", "CHECKER"],
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
     "fixit_hint": "simplify or split the Pattern decision space",

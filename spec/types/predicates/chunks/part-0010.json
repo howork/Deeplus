@@ -100,8 +100,16 @@
       "numeric_operator_core"
     ],
     "diagnostic_refs": [
-      "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
-      "NUMERIC_OPERATOR_CORE_REQUIRED"
+      "NUMERIC_OPERATOR_CORE_REQUIRED",
+      "OPERATOR_CONFORMANCE_AMBIGUOUS",
+      "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+      "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+      "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+      "OPERATOR_CONFORMANCE_MISSING",
+      "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+      "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+      "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
@@ -126,13 +134,15 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "closed intrinsic family",
-      "no provider/witness lookup",
+      "closed operator family and exact +,-,* fixed-conformance subset",
+      "intrinsic reservation or one left-owner DIRECT_GLOBAL witness",
       "one place/RHS/commit slot"
     ],
     "normalization": "consume NumericLiteralAdmitted results; preserve domain, owner, and place",
     "decision_procedure": [
-      "reject nonintrinsic glyph dispatch with FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "for intrinsic-reserved normalized operand pairs select intrinsic and perform zero conformance lookup",
+      "for non-intrinsic +,-,* keys select exactly one left-owner DIRECT_GLOBAL Add/Subtract/Multiply conformance and derive Output only after selection",
+      "reject missing, ambiguous, foreign-left, reserved-overlap, excluded-glyph, alternate-evidence, responsibility, implicit-conversion, and expected-result-directed cases with the exact OPERATOR_* diagnostic",
       "delegate literals to NumericLiteralAdmitted first and propagate its diagnostic",
       "scalar +,-,*,/ require one exact Int/Float domain; integer results are checked and / truncates toward zero",
       "% integer-only: a=q*b+r, q toward zero, r zero/dividend-signed, |r|<|b|; float % is named",
@@ -145,7 +155,15 @@
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "NUMERIC_OPERATOR_CORE_REQUIRED",
     "secondary_diagnostics": [
-      "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+      "OPERATOR_CONFORMANCE_AMBIGUOUS",
+      "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+      "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+      "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+      "OPERATOR_CONFORMANCE_MISSING",
+      "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+      "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+      "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN"
     ],
     "positive_fixture_ids": [
       "PF-NumericOperatorCoreAdmitted-POS"
@@ -1310,80 +1328,6 @@
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "81e4a9317e67d2c92d168a7bedd294388318b52231df11d311a46f8a9d13f805",
-      "disposition": "superseded_by_current_r51a1_row"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
-    "source_name": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
-    "summary": "R51a1 design predicate; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "element_types"
-    ],
-    "feature_refs": [
-      "primary_ctor_promoted_field_visibility_sigil_msp"
-    ],
-    "diagnostic_refs": [
-      "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE"
-    ],
-    "design_seed_diagnostic_refs": [
-      "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE"
-    ],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
-    ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-PrimaryCtorPromotedFieldVisibilityMemberOnly",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record PrimaryCtorPromotedFieldVisibilityMemberOnly requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE",
-    "secondary_diagnostics": [],
-    "positive_fixture_ids": [
-      "PF-PrimaryCtorPromotedFieldVisibilityMemberOnly-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-PrimaryCtorPromotedFieldVisibilityMemberOnly-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "ae76683159306a4d61ee32960ed79b6533552c4111c8fbefb8e5328dd8a7d09c",
       "disposition": "superseded_by_current_r51a1_row"
     }
   }

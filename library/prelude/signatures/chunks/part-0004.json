@@ -1,0 +1,181 @@
+[
+  {
+    "entry_id": "bigint",
+    "symbol": "BigInt",
+    "kind": "exact_numeric_value",
+    "status": "stable_design",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "signatures": [
+      "prelude intrinsic BigInt: arbitrary-precision signed integer"
+    ],
+    "responsibility": "public exact integer dependency for Rational normalization and explicit large-integer APIs; opaque storage and foreign ABI",
+    "notes": "BigInt is not an Int64 substitute and grants no implicit mixed-domain operator conversion.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic BigInt: arbitrary-precision signed integer",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "9b7942bf138874e47c476e39fd1e869c4c633552c3b5d80cedb338baf536bcd8"
+  },
+  {
+    "entry_id": "rational",
+    "symbol": "Rational",
+    "kind": "exact_numeric_value",
+    "status": "stable_design",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "signatures": [
+      "prelude intrinsic Rational: normalized opaque BigInt numerator and positive denominator",
+      "public def Rational!(numerator: BigInt, denominator: BigInt) -> Rational throws RationalError",
+      "public def Rational.dividedBy.(borrow rhs: Rational) -> Rational throws RationalError"
+    ],
+    "responsibility": "canonical exact rational value with eager normalization, strong Eq/Ord/Hash/Keyable, sealed +,-,* evidence and explicit checked division/conversion APIs",
+    "notes": "Display 2/3 and sourceRepr <2/3> are distinct; no public layout or ABI is promised.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Rational: normalized opaque BigInt numerator and positive denominator",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "public def Rational!(numerator: BigInt, denominator: BigInt) -> Rational throws RationalError",
+        "dialect": "deeplus",
+        "grammar_root": "ConstructorDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Rational.dividedBy.(borrow rhs: Rational) -> Rational throws RationalError",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "f3c52ca0fb5a3873aa399dfb3823f29971b09dfe1ecf1912de424998ec40b5b5"
+  },
+  {
+    "entry_id": "complex_rep",
+    "symbol": "Complex<Rep>",
+    "kind": "core_numeric_value",
+    "status": "stable_design",
+    "feature_refs": [
+      "complex_core_numeric_value",
+      "scalar_real_complex_power"
+    ],
+    "signatures": [
+      "prelude intrinsic Complex<Rep in {Float32, Float64}> { real: Rep; imag: Rep; }",
+      "prelude intrinsic type Complex = Complex<Float64>",
+      "public def Complex!(real: Rep, imag: Rep) -> Complex<Rep>",
+      "public def Complex::i -> Complex<Float64>",
+      "public def Complex<Rep>.conjugate.() -> Complex<Rep>",
+      "public def Complex<Rep>.dividedBy.(borrow rhs: Complex<Rep>) -> Complex<Rep>",
+      "public def Complex<Rep>.powInteger.(exponent: Int) -> Complex<Rep>",
+      "public def Complex<Float64>.powReal.(exponent: Float64) -> Complex<Float64>",
+      "public def Complex<Float64>.powComplex.(borrow exponent: Complex<Float64>) -> Complex<Float64>"
+    ],
+    "responsibility": "immutable two-component IEEE value with partial equality, sealed same-Rep +,-,* evidence, intrinsic division, principal named transcendental operations and no strong Eq/Ord/Hash/Keyable",
+    "notes": "Attached 4.0i and 4.0f32i create exact component values; Complex::i is type-side and no companion singleton or public foreign ABI is implied.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Complex<Rep in {Float32, Float64}> { real: Rep; imag: Rep; }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic type Complex = Complex<Float64>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "public def Complex!(real: Rep, imag: Rep) -> Complex<Rep>",
+        "dialect": "deeplus",
+        "grammar_root": "ConstructorDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex::i -> Complex<Float64>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex<Rep>.conjugate.() -> Complex<Rep>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex<Rep>.dividedBy.(borrow rhs: Complex<Rep>) -> Complex<Rep>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex<Rep>.powInteger.(exponent: Int) -> Complex<Rep>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex<Float64>.powReal.(exponent: Float64) -> Complex<Float64>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      },
+      {
+        "text": "public def Complex<Float64>.powComplex.(borrow exponent: Complex<Float64>) -> Complex<Float64>",
+        "dialect": "deeplus",
+        "grammar_root": "FunctionDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "d9fa26ad6da4f987b3de7636122b3be2d55899759297b7c00ca63f1a94f9ea4d"
+  },
+  {
+    "entry_id": "power_error",
+    "symbol": "PowerError",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "signatures": [
+      "public enum PowerError { indeterminate; domain; profileMismatch; }"
+    ],
+    "responsibility": "checked named analytic power outcome; ordinary infix zero-to-zero follows the computational one convention",
+    "notes": "PowerError is not an infix dispatch channel and does not convert IEEE NaN or infinity values into exceptions.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum PowerError { indeterminate; domain; profileMismatch; }",
+        "dialect": "deeplus",
+        "grammar_root": "EnumDecl",
+        "schema": "deeplus.public-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "3c57338b1d31a02438e411596ed7c3e630941cf6b123dc2ea2f3ea0b27e7478d"
+  }
+]

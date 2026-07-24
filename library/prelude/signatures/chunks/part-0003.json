@@ -1,0 +1,83 @@
+[
+  {
+    "entry_id": "sharedcell_t",
+    "symbol": "SharedCell<T>",
+    "kind": "synchronization",
+    "status": "stable_design",
+    "feature_refs": [
+      "shared_cell_plain_payload_profile"
+    ],
+    "signatures": [
+      "prelude intrinsic SharedCell<T: Plain> { new(move T) -> SharedCell<T>; withValue(#scoped (borrow T) -> R throws E effects ε) -> R throws E effects ε; replace(move T) -> T }"
+    ],
+    "responsibility": "sequentially consistent scoped observation and owner replacement for Plain payloads; observation cannot escape or suspend, replacement commits once and returns the old owner, and Plain implies no raw layout, lock-free, blocking-progress, or fairness property",
+    "notes": "Current minimum stdlib profile; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic SharedCell<T: Plain> { new(move T) -> SharedCell<T>; withValue(#scoped (borrow T) -> R throws E effects ε) -> R throws E effects ε; replace(move T) -> T }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "b63817a7696c2da333d7bdf5032b2349ef84c24c4787af3d181e9994f9c47356"
+  },
+  {
+    "entry_id": "sharedmutex_t",
+    "symbol": "SharedMutex<T>",
+    "kind": "synchronization",
+    "status": "stable_design",
+    "feature_refs": [
+      "shared_mutex_no_drop_minimum_profile"
+    ],
+    "signatures": [
+      "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }"
+    ],
+    "responsibility": "receiver-bound non-reentrant scoped exclusive mutation; the closure cannot suspend or escape, unlock executes exactly once on every outcome and happens-before the next successful lock; no lifecycle payload, poisoning, fairness, or lock-order inference",
+    "notes": "Current minimum stdlib profile; product support NOT_RUN",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "52fa164e4bb61ca475bc447c5e37f815797ed0ac1244f0155132677ca6f71519"
+  },
+  {
+    "entry_id": "string",
+    "symbol": "String",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "prelude intrinsic String: immutable Unicode scalar sequence"
+    ],
+    "responsibility": "immutable Unicode scalar sequence with one-based Char indexing",
+    "notes": "The built-in logical domain is 1..scalarCount with offset index - 1; indexing never selects bytes, UTF-16 units, or graphemes.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic String: immutable Unicode scalar sequence",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "f02948d8763b21a8292e20ef585ea014b45143a7092a55e318ce8b5c1e92a0c4"
+  }
+]

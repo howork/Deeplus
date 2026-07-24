@@ -1,0 +1,377 @@
+{
+  "schema": "deeplus.companion-capability-coherence-contract/r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_STABLE_CAPABILITY_CONTRACT_WITH_PREVIEW_FENCE",
+  "design_verdict": "ACCEPT_CAPABILITY_DECOMPOSITION_WITH_BOUNDED_REPAIR",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": true,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "controlling_evidence": [
+    {
+      "artifact": "Design_Deeplus_Companion_Capabilities_and_Type_Static_Scope_Review_R1.md",
+      "integrity": "VERIFIED_AT_AUTHORITY_INTAKE_NO_RECHECK",
+      "disposition": "ACCEPT_CAPABILITY_DECOMPOSITION_WITH_CURRENT_SOURCE_REPAIRS"
+    }
+  ],
+  "authority_fence": {
+    "type_side_def_and_let": "CURRENT_STABLE",
+    "trait_associated_type_value_function_requirements": "CURRENT_STABLE",
+    "trait_qualified_associated_static_expression": "STABLE_DESIGN_BOUNDED_REPAIR",
+    "companion_object": "REJECTED_NOT_CURRENT",
+    "class_scope_static": "PREVIEW_NONACTIVATABLE",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "hir_lowering": "NOT_RUN",
+    "mir_lowering": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "product_support": "NOT_RUN",
+    "implementation_or_publication_claim": false
+  },
+  "open_feature_p1": {
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_this_contract": 0,
+    "created_by_this_contract": 0
+  },
+  "surface_contract": {
+    "nominal_type_side": "Type::item",
+    "named_type_side_extension": "Type::extension::item",
+    "trait_qualified_associated_static": "<T as Trait>::item",
+    "explicit_runtime_value": "ordinary explicitly constructed or injected service, Actor, or shared-state value",
+    "generic_associated_static_requires_explicit_trait_qualification": true,
+    "unqualified_T_colon_colon_item_trait_search_count": 0,
+    "type_name_as_runtime_value_conversion_count": 0,
+    "companion_keyword_count": 0,
+    "companion_singleton_count": 0
+  },
+  "lookup_domains": [
+    {
+      "domain_id": "NOMINAL_TYPE_SIDE",
+      "surface": "Type::item",
+      "selects": [
+        "nominal type-side let::",
+        "nominal type-side def::",
+        "enum case where that namespace owns the item"
+      ],
+      "never_selects": [
+        "Trait associated item",
+        "named extension item",
+        "runtime service value"
+      ]
+    },
+    {
+      "domain_id": "NAMED_TYPE_SIDE_EXTENSION",
+      "surface": "Type::extension::item",
+      "selects": [
+        "one exact statically named type-side extension item"
+      ],
+      "never_selects": [
+        "nominal fallback",
+        "Trait witness",
+        "private owner authority",
+        "runtime service value"
+      ]
+    },
+    {
+      "domain_id": "TRAIT_QUALIFIED_ASSOCIATED_STATIC",
+      "surface": "<T as Trait>::item",
+      "selects": [
+        "one exact associated type in type context",
+        "one exact associated value in expression context",
+        "one exact associated function before call checking"
+      ],
+      "never_selects": [
+        "nominal type-side fallback",
+        "named extension fallback",
+        "runtime provider lookup",
+        "source-order winner"
+      ]
+    },
+    {
+      "domain_id": "EXPLICIT_RUNTIME_VALUE",
+      "surface": "ordinary value expression",
+      "selects": [
+        "explicit service value",
+        "explicit Actor handle",
+        "explicit shared-state owner",
+        "explicit context or provider value with visible authority"
+      ],
+      "never_selects": [
+        "type token converted to a value",
+        "implicit companion singleton",
+        "Trait evidence converted to a storable value"
+      ]
+    }
+  ],
+  "trait_qualified_associated_static_contract": {
+    "canonical_surface": "<T as Trait>::item",
+    "explicit_only": true,
+    "unqualified_shortcut": "REJECT",
+    "type_context_kind": "associated_type",
+    "expression_context_kinds": [
+      "associated_value",
+      "associated_function"
+    ],
+    "call_suffix_requires_kind": "associated_function",
+    "associated_type_static_member_surface": "<T as Trait>::Assoc::member",
+    "candidate_domain_mixing_count": 0,
+    "source_import_use_link_order_tie_break_count": 0,
+    "expected_result_selection_count": 0,
+    "implicit_conversion_selection_count": 0,
+    "runtime_lookup_count": 0,
+    "fallback_count": 0,
+    "provider_search_count": 0,
+    "activation_trigger_count": 0
+  },
+  "identity_residue": {
+    "required_fields": [
+      "TraitId",
+      "RequirementId",
+      "ConformanceId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
+    ],
+    "required_field_count": 7,
+    "selected_identity_erased_before_mir": false,
+    "runtime_reconstruction_count": 0,
+    "source_order_identity_input_count": 0,
+    "machine_address_identity_input_count": 0
+  },
+  "private_authority_contract": {
+    "owner_local_nominal_def_colon_colon": "MAY_USE_DECLARING_OWNER_PRIVATE_CONSTRUCTION_AUTHORITY",
+    "top_level_qualified_type_side_function": "ORDINARY_VISIBILITY_ONLY",
+    "named_type_side_extension": "ORDINARY_VISIBILITY_ONLY",
+    "external_conformance_associated_function": "ORDINARY_VISIBILITY_ONLY",
+    "same_module_or_package_grants_owner_private_authority": false,
+    "external_private_authority_escalation_count": 0,
+    "conformance_def_colon_colon_creates_nominal_member_count": 0
+  },
+  "associated_value_contract": {
+    "surface": "let::",
+    "mutable_var_colon_colon_admitted": false,
+    "initial_stable_initializer_class": "CONST_EVALUABLE_OR_STATIC_MATERIALIZABLE",
+    "required_properties": [
+      "immutable",
+      "deeply immutable or explicitly Shareable",
+      "pure and synchronous initialization",
+      "safe publication",
+      "no Resource, drop, finalizer, or unload responsibility",
+      "no ambient authority",
+      "no escaping borrow",
+      "acyclic initialization"
+    ],
+    "runtime_cache_or_registry_admitted": false,
+    "persistent_mutable_state_admitted": false,
+    "runtime_allocation_requiring_unspecified_lifecycle_admitted": false,
+    "invalid_profile_admitted_count": 0
+  },
+  "runtime_state_contract": {
+    "stateful_factory_or_provider": "EXPLICIT_ORDINARY_VALUE_OR_ACTOR_OR_SHARED_STATE_OWNER",
+    "hidden_state_in_trait_conformance": false,
+    "hidden_state_in_type_token": false,
+    "first_class_witness_value_activated": false,
+    "ambient_provider_lookup_count": 0,
+    "implicit_singleton_lifecycle_count": 0
+  },
+  "class_scope_static_preview_fence": {
+    "status": "PREVIEW_NONACTIVATABLE",
+    "current_source_acceptance_count": 0,
+    "current_ast_node_count": 0,
+    "current_hir_node_count": 0,
+    "current_mir_operation_count": 0,
+    "product_execution_count": 0,
+    "removed_static_class_spelling_remains_rejected": true,
+    "diagnostic": "STATIC_CLASS_DECLARATION_NOT_CURRENT",
+    "candidate_owner_minimum": "future final non-generic concrete ordinary class only",
+    "deferred_owners": [
+      "data class with synthesized construction routes",
+      "inheriting or inheritable class",
+      "generic class or specialization",
+      "Enum",
+      "Trait",
+      "Actor",
+      "conformance",
+      "extension",
+      "alias",
+      "module"
+    ],
+    "companion_object_created": false
+  },
+  "activation_and_commit_fence": {
+    "trait_evidence_selection_activation_trigger_count": 0,
+    "type_side_lookup_activation_trigger_count": 0,
+    "class_scope_static_current_activation_trigger_count": 0,
+    "new_CALL_INPUT_COMMIT_event_count": 0,
+    "existing_commit_event": "ownership_commit",
+    "function_scope_static_identity": "FunctionStaticOwnerId",
+    "future_class_scope_static_identity_must_be_distinct": true,
+    "function_scope_static_persistent_value_cache": false
+  },
+  "diagnostic_families": [
+    "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+    "TRAIT_ASSOCIATED_STATIC_AMBIGUOUS",
+    "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+    "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+    "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+    "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+    "TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN",
+    "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED",
+    "COMPANION_OBJECT_NOT_CURRENT",
+    "TYPE_TOKEN_RUNTIME_AUTHORITY_FORBIDDEN",
+    "STATIC_CLASS_DECLARATION_NOT_CURRENT"
+  ],
+  "rules": [
+    {
+      "rule_id": "CCC-R001",
+      "title": "Capability decomposition replaces a companion object",
+      "contract": "Factories and constants use nominal type-side members, generic static behavior uses Trait associated requirements, extensions remain named, and runtime state has an explicit ordinary owner; no companion object or singleton is created."
+    },
+    {
+      "rule_id": "CCC-R002",
+      "title": "The four lookup domains are disjoint",
+      "contract": "Nominal type-side, named extension, Trait-qualified associated static, and explicit runtime value lookup never enter one another as fallback or ranking candidates."
+    },
+    {
+      "rule_id": "CCC-R003",
+      "title": "Generic associated static selection is explicit",
+      "contract": "A generic associated type, value, or function is selected only by <T as Trait>::item; T::item never searches visible Traits even when exactly one candidate appears visible."
+    },
+    {
+      "rule_id": "CCC-R004",
+      "title": "Syntactic context fixes associated item kind",
+      "contract": "Type context requires an associated type, expression context requires a value or function, and a call suffix requires a function; kind mismatch is terminal and never reinterpreted through another lookup domain."
+    },
+    {
+      "rule_id": "CCC-R005",
+      "title": "Associated type static selection composes explicitly",
+      "contract": "<T as Trait>::Assoc::member first selects one associated type and then performs nominal type-side selection on that normalized type without Trait or extension fallback."
+    },
+    {
+      "rule_id": "CCC-R006",
+      "title": "Static evidence identity survives lowering",
+      "contract": "TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, and ResponsibilityId remain exact HIR, MIR, and API residue."
+    },
+    {
+      "rule_id": "CCC-R007",
+      "title": "Selection is compile-time and order independent",
+      "contract": "Source, import, use, and link order, expected result, implicit conversion, runtime lookup, provider search, and fallback neither create nor rank an associated static candidate."
+    },
+    {
+      "rule_id": "CCC-R008",
+      "title": "Owner-local factories keep bounded private authority",
+      "contract": "Only a def:: lexically declared in the nominal owner may receive that owner's private construction privilege."
+    },
+    {
+      "rule_id": "CCC-R009",
+      "title": "External capability code gains no private authority",
+      "contract": "Top-level qualified type-side functions, named extensions, and external conformances use ordinary visibility and cannot manufacture an owner-local private construction route."
+    },
+    {
+      "rule_id": "CCC-R010",
+      "title": "Associated values are immutable static material",
+      "contract": "The initial Stable let:: profile is const-evaluable or static-materializable, deeply immutable or Shareable, pure, safely publishable, acyclic, authority-free, borrow-safe, and free of Resource, drop, finalizer, and unload responsibility."
+    },
+    {
+      "rule_id": "CCC-R011",
+      "title": "Stateful capabilities require explicit values",
+      "contract": "A stateful factory, provider, registry, connection, allocator, or service is an explicit ordinary value, Actor, shared-state owner, or context value rather than hidden Trait or type-token state."
+    },
+    {
+      "rule_id": "CCC-R012",
+      "title": "Type tokens and witnesses are not implicit runtime values",
+      "contract": "A type name and a static conformance witness do not convert to a storable companion, metatype, factory, or provider value."
+    },
+    {
+      "rule_id": "CCC-R013",
+      "title": "Trait selection causes no activation",
+      "contract": "Associated requirement selection and witness materialization trigger neither function static activation nor any proposed class static activation."
+    },
+    {
+      "rule_id": "CCC-R014",
+      "title": "Class scope static remains fenced",
+      "contract": "Class scope#static has zero current source acceptance and remains PREVIEW_NONACTIVATABLE; removed static class source remains rejected."
+    },
+    {
+      "rule_id": "CCC-R015",
+      "title": "Function and class activation identities remain distinct",
+      "contract": "Stable function scope#static is owned by FunctionStaticOwnerId and is not a type field cache or class-wide barrier; a future type owner must use a separate identity and authority."
+    },
+    {
+      "rule_id": "CCC-R016",
+      "title": "No commit event is invented",
+      "contract": "This contract introduces zero CALL_INPUT_COMMIT events and refers only to the existing atomic ownership_commit where a future activation ordering needs a call boundary."
+    },
+    {
+      "rule_id": "CCC-R017",
+      "title": "Conformance implementations do not become nominal members",
+      "contract": "A def:: in a conformance implements one exact associated function requirement and does not add an ordinary Type::member or extension member."
+    },
+    {
+      "rule_id": "CCC-R018",
+      "title": "Existing P-level and product boundaries remain invariant",
+      "contract": "Semantic P0 remains zero, the exact existing feature P1 set remains 22 OPEN, this contract closes or creates no P1, and all 15 product lanes remain NOT_RUN."
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 18,
+    "lookup_domain_count": 4,
+    "identity_residue_field_count": 7,
+    "fixture_count": 28,
+    "positive_fixture_count": 7,
+    "negative_fixture_count": 7,
+    "boundary_fixture_count": 7,
+    "mutation_fixture_count": 7,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "runtime_lookup_count": 0,
+    "activation_trigger_count": 0,
+    "companion_object_count": 0,
+    "type_name_runtime_value_conversion_count": 0,
+    "external_private_authority_escalation_count": 0,
+    "invalid_associated_value_profile_admitted_count": 0,
+    "class_scope_static_current_acceptance_count": 0,
+    "new_CALL_INPUT_COMMIT_event_count": 0,
+    "product_lane_count": 15,
+    "product_executed_count": 0
+  }
+}

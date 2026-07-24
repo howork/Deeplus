@@ -7,7 +7,16 @@
     "summary": "Keep named evidence out of the automatic WitnessResolution candidate set.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": ["semantic_type", "ownership", "effect", "failure", "authority", "evidence", "flow", "api_digest"],
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
     "feature_refs": [
       "named_conformance_selector_msp"
     ],
@@ -27,7 +36,13 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["type", "ownership", "effect", "authority", "evidence"],
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
     "formal_judgment_id": "J-NamedEvidenceExcludedFromAutomaticResolution",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -399,7 +414,13 @@
     "summary": "Refine Phi by the alternatives selected by a pattern without changing the declared semantic type.",
     "input_descriptor": "TRNCoherenceDescriptor",
     "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
-    "descriptor_axes": ["declared_type", "current_alternatives", "pattern_coverage", "arms", "proof_state"],
+    "descriptor_axes": [
+      "declared_type",
+      "current_alternatives",
+      "pattern_coverage",
+      "arms",
+      "proof_state"
+    ],
     "feature_refs": [
       "closed_anonymous_union_type_msp",
       "guarded_let_destructured_exit_msp"
@@ -421,10 +442,18 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["type", "flow", "pattern", "ownership"],
+    "rule_facets": [
+      "type",
+      "flow",
+      "pattern",
+      "ownership"
+    ],
     "formal_judgment_id": "J-NarrowUnionByPattern",
     "algorithm_owner": "integrated_checker",
-    "preconditions": ["read Phi", "normalize exact closed-union identities"],
+    "preconditions": [
+      "read Phi",
+      "normalize exact closed-union identities"
+    ],
     "normalization": "normalize closed Union, Phi, and pattern coverage",
     "decision_procedure": [
       "read Phi and reject non-exact alternatives",
@@ -561,7 +590,16 @@
     "summary": "Normalize one optional concrete base plus coherent Trait contracts.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": ["semantic_type", "ownership", "effect", "failure", "authority", "evidence", "flow", "api_digest"],
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
     "feature_refs": [
       "closed_contract_intersection_type_msp"
     ],
@@ -580,7 +618,13 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["type", "ownership", "effect", "authority", "evidence"],
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
     "formal_judgment_id": "J-NormalizeContractIntersection",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -651,7 +695,10 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["type", "finite_relation"],
+    "rule_facets": [
+      "type",
+      "finite_relation"
+    ],
     "formal_judgment_id": "J-NormalizeSemanticType",
     "algorithm_owner": "integrated_checker",
     "preconditions": [
@@ -695,7 +742,12 @@
     "summary": "Admit a closed Union only when every finite R0 alternative pair is proven disjoint.",
     "input_descriptor": "TRNCoherenceDescriptor",
     "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
-    "descriptor_axes": ["declared_type", "current_alternatives", "union_pairs", "type_relation"],
+    "descriptor_axes": [
+      "declared_type",
+      "current_alternatives",
+      "union_pairs",
+      "type_relation"
+    ],
     "feature_refs": [
       "closed_anonymous_union_type_msp"
     ],
@@ -726,7 +778,10 @@
     ],
     "formal_judgment_id": "J-NormalizeUnion",
     "algorithm_owner": "integrated_checker",
-    "preconditions": ["require explicit expected union", "flatten nested unions"],
+    "preconditions": [
+      "require explicit expected union",
+      "flatten nested unions"
+    ],
     "normalization": "require an explicit expected union context",
     "decision_procedure": [
       "require explicit expected union; flatten and deduplicate",
@@ -1350,108 +1405,6 @@
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "dac9b3ffc1552a52e3d939a4aa7d5055326bed54043cb2f5c523f6899e400f11",
-      "disposition": "superseded_by_current_r51a1_row"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "NumericFillSliceIndexAdmitted",
-    "source_name": "NumericFillSliceIndexAdmitted",
-    "summary": "NumericArray fill/index/slice has exact rank and typed one-based axes; slices preserve owner and coordinates",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "cleanup",
-      "call_shape",
-      "source_role",
-      "numeric_literal_kind",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
-    ],
-    "feature_refs": [
-      "fill_repeat_admissibility_law",
-      "index_operator",
-      "numeric_array_multiaxis_slice_readonly_view_msp",
-      "shaped_fill_initializer_msp"
-    ],
-    "diagnostic_refs": [
-      "LOGICAL_INDEX_DOMAIN_MISMATCH",
-      "SLICE_AXIS_COUNT_MISMATCH",
-      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "the operation kind is fill, scalar_index, or slice",
-      "the normalized receiver is NumericArray with exact rank, shape, orientation, and typed axis identities",
-      "readonly views retain owner provenance and cannot outlive or cross isolation"
-    ],
-    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "cleanup",
-      "call_shape",
-      "source_role",
-      "numeric_literal_kind",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-NumericFillSliceIndexAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "the descriptor selects one closed NumericArray operation kind",
-      "rank, shape, selected axes, and owner provenance are explicit",
-      "default source-visible axis coordinates are typed Int domains 1..dimension"
-    ],
-    "normalization": "normalize the NumericArray identity, rank, shape, orientation, ordered typed axes and owner provenance; never import an ordinary Sequence index witness",
-    "decision_procedure": [
-      "reject a non-NumericArray receiver with SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY",
-      "for scalar_index require exactly rank ordered scalar axes and evaluate each against its typed 1..dimension domain",
-      "for slice require exactly rank ordered scalar, range, or * axes; reject a mismatch with SLICE_AXIS_COUNT_MISMATCH",
-      "evaluate every scalar with LogicalIndexDomainAdmitted and every range with SliceRangeAdmitted left-to-right",
-      "evaluate SliceViewLifetimeAdmitted for the readonly result and admit only when owner provenance and all axes admit",
-      "for fill require exact shape cardinality and element-domain agreement under its existing fill laws; create no product receipt"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SLICE_AXIS_COUNT_MISMATCH",
-    "secondary_diagnostics": [
-      "LOGICAL_INDEX_DOMAIN_MISMATCH",
-      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
-    ],
-    "positive_fixture_ids": [
-      "PF-NumericFillSliceIndexAdmitted-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-NumericFillSliceIndexAdmitted-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [
-      "LogicalIndexDomainAdmitted",
-      "SliceRangeAdmitted",
-      "SliceViewLifetimeAdmitted"
-    ],
-    "execution_receipt": null,
-    "diagnostic_disposition": "active_primary",
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "451762aa0190643330acdda2c5c827f0f799b03034e7706caa7dbe4e4e3bfa65",
       "disposition": "superseded_by_current_r51a1_row"
     }
   }

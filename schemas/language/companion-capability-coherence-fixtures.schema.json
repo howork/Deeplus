@@ -1,0 +1,553 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/companion-capability-coherence-fixtures-r1.json",
+  "title": "Deeplus companion capability coherence R1 static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "status",
+    "source_activation",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "p1_delta",
+    "product_lanes",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.companion-capability-coherence-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/companion-capability-coherence-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/companion-capability-coherence.json"
+    },
+    "status": {
+      "const": "STABLE_CAPABILITY_WITH_PREVIEW_FENCE"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": true
+    },
+    "open_feature_p1": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "CE-C-P1-001",
+          "CE-C-P1-002",
+          "CE-C-P1-003",
+          "CE-C-P1-004",
+          "CE-C-P1-005",
+          "CE-C-P1-006",
+          "CE-E-P1-001",
+          "CE-E-P1-002",
+          "CE-E-P1-003",
+          "CE-E-P1-004",
+          "CE-E-P1-005",
+          "CE-E-P1-006",
+          "CE-E-P1-007",
+          "CE-E-P1-008",
+          "TCC-P1-002",
+          "TCC-P1-003",
+          "TCC-P1-004",
+          "TCC-P1-005",
+          "TCC-P1-006",
+          "TCC-P1-007",
+          "TCC-P1-008",
+          "SFD-P1-009"
+        ]
+      }
+    },
+    "p1_delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closed",
+        "created"
+      ],
+      "properties": {
+        "closed": {
+          "const": 0
+        },
+        "created": {
+          "const": 0
+        }
+      }
+    },
+    "product_lanes": {
+      "$ref": "#/$defs/productLanes"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 28,
+      "maxItems": 28,
+      "items": {
+        "$ref": "#/$defs/case"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "fixture_class"
+            ],
+            "properties": {
+              "fixture_class": {
+                "const": "positive"
+              }
+            }
+          },
+          "minContains": 7,
+          "maxContains": 7
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "fixture_class"
+            ],
+            "properties": {
+              "fixture_class": {
+                "const": "negative"
+              }
+            }
+          },
+          "minContains": 7,
+          "maxContains": 7
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "fixture_class"
+            ],
+            "properties": {
+              "fixture_class": {
+                "const": "boundary"
+              }
+            }
+          },
+          "minContains": 7,
+          "maxContains": 7
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": [
+              "fixture_class"
+            ],
+            "properties": {
+              "fixture_class": {
+                "const": "mutation"
+              }
+            }
+          },
+          "minContains": 7,
+          "maxContains": 7
+        }
+      ]
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "positive",
+        "negative",
+        "boundary",
+        "mutation",
+        "lookup_domains",
+        "identity_residue_fields",
+        "semantic_p0",
+        "open_feature_p1",
+        "p1_closed",
+        "p1_created",
+        "product_lanes",
+        "product_executed",
+        "runtime_lookup_count",
+        "activation_trigger_count",
+        "companion_object_count",
+        "class_scope_static_current_acceptance_count",
+        "new_CALL_INPUT_COMMIT_event_count"
+      ],
+      "properties": {
+        "cases": {
+          "const": 28
+        },
+        "positive": {
+          "const": 7
+        },
+        "negative": {
+          "const": 7
+        },
+        "boundary": {
+          "const": 7
+        },
+        "mutation": {
+          "const": 7
+        },
+        "lookup_domains": {
+          "const": 4
+        },
+        "identity_residue_fields": {
+          "const": 7
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "open_feature_p1": {
+          "const": 22
+        },
+        "p1_closed": {
+          "const": 0
+        },
+        "p1_created": {
+          "const": 0
+        },
+        "product_lanes": {
+          "const": 15
+        },
+        "product_executed": {
+          "const": 0
+        },
+        "runtime_lookup_count": {
+          "const": 0
+        },
+        "activation_trigger_count": {
+          "const": 0
+        },
+        "companion_object_count": {
+          "const": 0
+        },
+        "class_scope_static_current_acceptance_count": {
+          "const": 0
+        },
+        "new_CALL_INPUT_COMMIT_event_count": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "productLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {
+          "const": "NOT_RUN"
+        },
+        "rust_frontend_parser": {
+          "const": "NOT_RUN"
+        },
+        "rust_hir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "rust_integrated_checker": {
+          "const": "NOT_RUN"
+        },
+        "deeplus_mir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "xvm_bytecode_emitter": {
+          "const": "NOT_RUN"
+        },
+        "xvm_interpreter": {
+          "const": "NOT_RUN"
+        },
+        "llvm_aot_backend": {
+          "const": "NOT_RUN"
+        },
+        "llvm_orc_jit_backend": {
+          "const": "NOT_RUN"
+        },
+        "formatter_lsp": {
+          "const": "NOT_RUN"
+        },
+        "stdlib_provider_runner": {
+          "const": "NOT_RUN"
+        },
+        "official_tooling": {
+          "const": "NOT_RUN"
+        },
+        "independent_conformance": {
+          "const": "NOT_RUN"
+        },
+        "cross_backend_conformance": {
+          "const": "NOT_RUN"
+        },
+        "actual_user_team_study": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "fixture_class",
+        "rule_ids",
+        "facet",
+        "source_or_scenario",
+        "expected_design",
+        "diagnostic_family_or_null",
+        "assertions",
+        "oracle",
+        "p1_delta",
+        "execution_state",
+        "product_support",
+        "product_receipt"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^CCC-R1-(POS|NEG|BOUND|MUT)-[0-9]{3}$"
+        },
+        "fixture_class": {
+          "enum": [
+            "positive",
+            "negative",
+            "boundary",
+            "mutation"
+          ]
+        },
+        "rule_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CCC-R0(0[1-9]|1[0-8])$"
+          }
+        },
+        "facet": {
+          "enum": [
+            "SURFACE",
+            "LOOKUP",
+            "KIND",
+            "IDENTITY",
+            "AUTHORITY",
+            "VALUE_STATE",
+            "RUNTIME_STATE",
+            "ACTIVATION",
+            "ORDERING",
+            "EVIDENCE"
+          ]
+        },
+        "source_or_scenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_design": {
+          "enum": [
+            "ACCEPT",
+            "REJECT",
+            "BOUNDARY",
+            "MUTANT_KILLED"
+          ]
+        },
+        "diagnostic_family_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "oracle": {
+          "$ref": "#/$defs/oracle"
+        },
+        "p1_delta": {
+          "const": 0
+        },
+        "execution_state": {
+          "const": "DESIGN_STATIC_NOT_RUN"
+        },
+        "product_support": {
+          "const": "NOT_RUN"
+        },
+        "product_receipt": {
+          "const": null
+        }
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lookup_domain",
+        "lookup_domain_count",
+        "associated_item_kind",
+        "selected_trait_id_count",
+        "selected_requirement_id_count",
+        "selected_conformance_id_count",
+        "selected_trait_witness_id_count",
+        "selected_implementation_id_count",
+        "selected_substitution_id_count",
+        "selected_responsibility_id_count",
+        "identity_residue_complete",
+        "owner_local_private_authority_granted",
+        "runtime_lookup_count",
+        "fallback_count",
+        "activation_trigger_count",
+        "companion_object_count",
+        "type_name_runtime_value_conversion_count",
+        "private_authority_escalation_count",
+        "invalid_associated_value_profile_admitted_count",
+        "class_scope_static_current_acceptance_count",
+        "new_CALL_INPUT_COMMIT_event_count",
+        "ownership_commit_count",
+        "product_execution_count"
+      ],
+      "properties": {
+        "lookup_domain": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "NOMINAL_TYPE_SIDE",
+            "NAMED_TYPE_SIDE_EXTENSION",
+            "TRAIT_QUALIFIED_ASSOCIATED_STATIC",
+            "EXPLICIT_RUNTIME_VALUE",
+            null
+          ]
+        },
+        "lookup_domain_count": {
+          "const": 4
+        },
+        "associated_item_kind": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "type",
+            "value",
+            "function",
+            null
+          ]
+        },
+        "selected_trait_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_requirement_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_conformance_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_trait_witness_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_implementation_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_substitution_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected_responsibility_id_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "identity_residue_complete": {
+          "type": "boolean"
+        },
+        "owner_local_private_authority_granted": {
+          "type": "boolean"
+        },
+        "runtime_lookup_count": {
+          "const": 0
+        },
+        "fallback_count": {
+          "const": 0
+        },
+        "activation_trigger_count": {
+          "const": 0
+        },
+        "companion_object_count": {
+          "const": 0
+        },
+        "type_name_runtime_value_conversion_count": {
+          "const": 0
+        },
+        "private_authority_escalation_count": {
+          "const": 0
+        },
+        "invalid_associated_value_profile_admitted_count": {
+          "const": 0
+        },
+        "class_scope_static_current_acceptance_count": {
+          "const": 0
+        },
+        "new_CALL_INPUT_COMMIT_event_count": {
+          "const": 0
+        },
+        "ownership_commit_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "product_execution_count": {
+          "const": 0
+        }
+      }
+    }
+  }
+}

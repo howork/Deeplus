@@ -1370,10 +1370,10 @@
     "feature_refs": [
       "linear_algebra_complex_inner_product_law"
     ],
-    "fixit_hint": "document complex profile or use dotu/dotc named API",
+    "fixit_hint": "retain *+ for the current left-conjugating inner product, or use dotu for an explicitly unconjugated dot product",
     "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "document complex profile or use dotu/dotc named API",
-    "message": "Complex dot-product convention is not part of Phase A; future profile may conjugate the left operand.",
+    "fixit_policy": "use current *+ left-conjugating law or explicit dotu without changing transpose or adjoint",
+    "message": "Complex NumericArray *+ conjugates the left operand under the current law; dotu is explicitly unconjugated, A^ is transpose, and A ~ adjoint is conjugate transpose.",
     "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

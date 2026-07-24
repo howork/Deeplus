@@ -1,0 +1,637 @@
+[
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_MALFORMED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Rational literal must have the exact expression-prefix form <unsigned-decimal/unsigned-decimal>.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_COMPONENT_NOT_DECIMAL_INTEGER",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Each Rational literal component must be an unsigned decimal magnitude with no radix prefix or suffix.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Write a Rational sign outside the literal, for example -<2/3>.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_TRIVIA_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Rational literal delimiters, numerator, slash, and denominator must be contiguous.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A Rational literal denominator must be nonzero.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_LITERAL_RESOURCE_LIMIT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Rational literal normalization exceeded the declared deterministic compile-time resource budget.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_OVER_REQUIRES_EXACT_INTEGERS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Rational construction through over requires two exact integer operands.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_INEXACT_MIX_REQUIRES_EXPLICIT_CONVERSION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Mixing Rational with Decimal, Float, or Complex requires an explicit named conversion.",
+    "feature_refs": [
+      "rational_exact_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The imaginary marker i must be attached to its decimal floating literal.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An imaginary literal requires an attached decimal floating form such as 4.0i or 4.0f32i.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "HISTORICAL_IMAGINARY_J_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The historical imaginary marker j is not current; use an attached i marker.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_REP_PROFILE_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The initial Complex profile admits only Float32 and Float64 component representations.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_COMPONENT_REP_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Complex real and imaginary components must use one exact admitted Rep.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Mixed Complex<Float32> and Complex<Float64> operands require an explicit conversion.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_TYPED_INTEGER_REQUIRES_EXPLICIT_CONVERSION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A typed integer operand does not implicitly become a Complex component; convert it explicitly.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_REMAINDER_NOT_DEFINED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Complex remainder is not defined; use an explicitly named domain operation.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_ORDERING_NOT_DEFINED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Complex values have no intrinsic total ordering.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_BITWISE_NOT_DEFINED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Bitwise and pointwise-logical glyphs are not defined for Complex values.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_IEEE_VALUE_NOT_STRONG_EQ",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A Float-profile Complex value cannot supply strong Eq because NaN remains unordered.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_KEY_REQUIRES_EXPLICIT_POLICY",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Using Complex as a key requires an explicit equality and hashing policy.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPLEX_FOREIGN_VALUE_ABI_REQUIRES_TARGET_PROFILE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Passing Complex through a foreign ABI requires an explicit target ABI profile.",
+    "feature_refs": [
+      "complex_core_numeric_value"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The operand types do not select one cell of the closed scalar power-domain matrix.",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [
+      "caret_power_operator_msp"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "POWER_INTEGER_EXPONENT_NONNEGATIVE_PROOF_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An integer-result power requires a statically proven nonnegative exact integer exponent.",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "POWER_LITERAL_ADAPTATION_NOT_EXACT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The power-local literal adaptation is not exact in the selected result domain.",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An expected result type cannot create or choose a power operation.",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Infix zero to the zero power evaluates to one; use powChecked for an analytic indeterminate outcome.",
+    "feature_refs": [
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "warning",
+    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "POWER_MATH_PROFILE_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Imported power semantics or special-value profile does not match the verified HIR-H1 plan.",
+    "feature_refs": [
+      "scalar_real_complex_power",
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "linker",
+    "severity": "error",
+    "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Trait-associated static selection must use <T as Trait>::item.",
+    "feature_refs": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The explicitly qualified Trait has no associated item with this identity.",
+    "feature_refs": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The selected Trait-associated item kind does not match the type or expression goal.",
+    "feature_refs": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Trait-associated static HIR/API residue is missing a required requirement, conformance, witness, implementation, substitution, or responsibility identity.",
+    "feature_refs": [
+      "trait_qualified_associated_static_selection",
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "verifier",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Trait-associated static selection is resolved before execution and cannot perform runtime lookup or fallback.",
+    "feature_refs": [
+      "trait_qualified_associated_static_selection"
+    ],
+    "related_feature_refs": [],
+    "stage": "verifier",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Only a type-side function declared lexically inside the nominal owner may use that owner's private construction authority.",
+    "feature_refs": [
+      "companion_capability_decomposition"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The initial associated static value profile requires immutable, Shareable, no-drop, authority-free, acyclic, statically materializable data.",
+    "feature_refs": [
+      "companion_capability_decomposition"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMPANION_OBJECT_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Deeplus has no implicit companion object or singleton; use the exact nominal, extension, Trait-associated, or runtime owner domain.",
+    "feature_refs": [
+      "companion_capability_decomposition"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/companion-capability-coherence.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "HIR_POWER_OPERATION_UNRESOLVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Canonical HIR-H1 cannot contain an unresolved or generic power operation.",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design",
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "verifier",
+    "severity": "error",
+    "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The HIR-H1 power result or operand adaptation does not match the closed static-domain matrix.",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design",
+      "scalar_real_complex_power"
+    ],
+    "related_feature_refs": [],
+    "stage": "verifier",
+    "severity": "error",
+    "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  }
+]

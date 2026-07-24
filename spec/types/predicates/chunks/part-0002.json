@@ -4,12 +4,15 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "BitwiseDomainAdmitted",
     "source_name": "BitwiseDomainAdmitted",
-    "summary": "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; ordered branch 4: unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; ordered branch 5: same-width operands with different signedness or distinct finite-domain identity emit BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION; ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL; admission requires one exact normalized operand domain and never yields Bool",
+    "summary": "Historical predicate identity for the Stable built-in pointwise logical family. It preserves packed known-width integer and finite bitfield/#flags behavior and additionally admits exact same-shape NumericArray operands over one exact known-width integer element domain. Scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast or conversion, user-defined carriers, and result-as-control use reject deterministically. Binary operands evaluate left-to-right once with zero short circuit or flow narrowing.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
       "call_shape",
+      "shape",
+      "rank",
+      "orientation",
       "element_types"
     ],
     "feature_refs": [
@@ -23,7 +26,10 @@
       "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
       "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
       "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "BITWISE_RESULT_USED_AS_BOOL"
+      "BITWISE_RESULT_USED_AS_BOOL",
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMERIC_ARRAY_ELEMENTWISE_SHAPE_MISMATCH",
+      "NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST"
     ],
     "design_seed_diagnostic_refs": [
       "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
@@ -32,14 +38,13 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL",
-      "ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
-      "ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
-      "ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "ordered branch 5: same-width signedness mismatch or distinct finite-domain identity emits BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
-      "ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
-      "an admitted result stays in the exact normalized operand bitwise domain and is never Bool"
+      "packed route admits one exact known-width integer domain or one identical finite bitfield/#flags domain and preserves that domain",
+      "shaped route admits only NumericArray<I, rank R, shape S, orientation O> where I is one exact known-width integer domain and all binary operands have exactly I/R/S/O",
+      "binary operands evaluate left-to-right once; unary complement evaluates its operand once",
+      "short_circuit_count and flow_narrowing_fact_count are zero",
+      "implicit broadcast, shape conversion, element conversion, width conversion, signedness conversion, Trait/witness/provider lookup, and runtime fallback counts are zero",
+      "scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, and arbitrary user carriers are not admitted",
+      "packed results are never Bool and a shaped result preserves exact element domain, rank, shape, and orientation"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -48,27 +53,28 @@
       "source_kind",
       "normalized_type",
       "call_shape",
+      "shape",
+      "rank",
+      "orientation",
       "element_types"
     ],
     "formal_judgment_id": "J-BitwiseDomainAdmitted",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "ordered branch 1: Bool operands with `&&` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with `||` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL",
-      "ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
-      "ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
-      "ordered branch 4: binary operands with unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "ordered branch 5: same-width signedness mismatch or distinct finite-domain identity emits BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
-      "ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL",
-      "an admitted result stays in the exact normalized operand bitwise domain and is never Bool"
+      "operator token is exactly binary &&, ||, ^^ or prefix ~~",
+      "packed route supplies one exact known-width integer or identical finite bitfield/#flags identity",
+      "shaped route supplies NumericArray with statically exact integer element domain, rank, shape, and orientation",
+      "no user-defined glyph dispatch, runtime lookup, implicit conversion, or broadcast is attempted"
     ],
-    "normalization": "normalize exact integer signedness/width or finite bitfield/#flags nominal identity before decision",
+    "normalization": "classify packed versus shaped carrier; normalize exact integer signedness/width or finite bitfield/#flags identity; for NumericArray normalize exact element domain, rank, shape, orientation, and visible result-owner responsibility before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
-      "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
+      "classify scalar Bool, packed, NumericArray, generic collection, and unsupported/user-defined carrier before any dispatch lookup",
+      "on the shaped route require a current numeric element domain, then exact rank/shape/orientation, then exact element width/signedness/domain in that order",
       "evaluate BitwiseDomainAdmitted diagnostic_dispatch conditions once in their declared deterministic order",
-      "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
+      "on success fix the intrinsic operation and exact result carrier before MIR construction; evaluate binary operands left-to-right once or the unary operand once",
+      "emit only the diagnostic selected by the first matching condition, never the entire secondary_diagnostics list; otherwise return success with zero short circuit, flow narrowing, implicit conversion, broadcast, witness lookup, or runtime fallback"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -80,7 +86,10 @@
       "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
       "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
       "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "BITWISE_RESULT_USED_AS_BOOL"
+      "BITWISE_RESULT_USED_AS_BOOL",
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMERIC_ARRAY_ELEMENTWISE_SHAPE_MISMATCH",
+      "NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST"
     ],
     "positive_fixture_ids": [
       "PF-BitwiseDomainAdmitted-POS"
@@ -105,11 +114,14 @@
       "1_bool_operand_with_and_token": "LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL",
       "1_bool_operand_with_or_token": "LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL",
       "2_bool_operand_with_other_bitwise_token": "BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL",
-      "3_nonbitwise_operand_domain": "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
-      "4_binary_operand_width_mismatch": "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
-      "5_binary_exact_domain_mismatch": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
-      "6_complement_unknown_width": "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
-      "7_valid_bitwise_result_consumed_as_bool": "BITWISE_RESULT_USED_AS_BOOL"
+      "3_numeric_array_bool_element_not_admitted": "NUMARR_ELEMENT_NOT_NUMERIC",
+      "4_nonpointwise_or_generic_collection_carrier": "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
+      "5_numeric_array_rank_shape_or_orientation_mismatch": "NUMERIC_ARRAY_ELEMENTWISE_SHAPE_MISMATCH",
+      "6_numeric_array_broadcast_or_shape_conversion_attempt": "NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST",
+      "7_binary_operand_or_element_width_mismatch": "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
+      "8_binary_exact_domain_or_element_domain_mismatch": "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
+      "9_complement_unknown_width": "BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH",
+      "10_valid_pointwise_result_consumed_as_bool": "BITWISE_RESULT_USED_AS_BOOL"
     },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
@@ -948,7 +960,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "CaretPowerAdmitted",
     "source_name": "Caret power",
-    "summary": "R51a1 closed design algorithm for CaretPowerAdmitted; product checker NOT_RUN.",
+    "summary": "Closed static integer, Float, Complex, and Measure power-domain algorithm; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -964,14 +976,17 @@
       "caret_power_operator_msp"
     ],
     "diagnostic_refs": [
-      "RCTS_V5_VARIANT_MISMATCH"
+      "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+      "POWER_INTEGER_EXPONENT_NONNEGATIVE_PROOF_REQUIRED",
+      "POWER_LITERAL_ADAPTATION_NOT_EXACT",
+      "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "scalar/value power only in Phase A",
-      "no XOR",
-      "no transpose"
+      "one exact cell of the closed integer, Float, Complex, or Measure power-domain matrix",
+      "static result type and closed operand adaptation",
+      "no XOR, transpose, Trait witness, expected-result selection, or runtime lookup"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -990,24 +1005,27 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "scalar/value power only in Phase A",
-      "no XOR",
-      "no transpose"
+      "all operand types and exact literal facts are normalized",
+      "the caret has spaced infix power ownership rather than attached transpose ownership",
+      "the expected result has no candidate-selection role"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize operand aliases and exact numeric domains; preserve literal exactness, signed exponent facts, Measure StaticInt identity, and Complex Rep without performing a general conversion",
     "decision_procedure": [
-      "validate the closed RCTS-V5 input variant",
-      "normalize every declared descriptor axis",
-      "scalar/value power only in Phase A",
-      "no XOR",
-      "no transpose",
-      "evaluate finite candidates in canonical identity order",
-      "return admit or the active primary diagnostic"
+      "validate and normalize both operand descriptors without consulting the expected result",
+      "select exactly one CheckedIntPow, FloatPowInt, FloatPow, ComplexPowInt, ComplexPowPrincipal, or MeasurePowStatic cell",
+      "require the exact integer exponent proof where the result is an integer",
+      "select only Identity, DirectLiteralToF64Exact, F32ToF64, F32ToComplex64, or F64ToComplex64 adaptation",
+      "reject every generic Pow/witness/provider/runtime/source-order route",
+      "emit the statically fixed result, responsibility, numeric-semantics profile, and special-value profile"
     ],
     "termination_metric": "finite descriptor size plus decreasing candidate count",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "POWER_INTEGER_EXPONENT_NONNEGATIVE_PROOF_REQUIRED",
+      "POWER_LITERAL_ADAPTATION_NOT_EXACT",
+      "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN"
+    ],
     "positive_fixture_ids": [
       "PF-CaretPowerAdmitted-POS",
       "PF-CaretPowerAdmitted-BOUNDARY"

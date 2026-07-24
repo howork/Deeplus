@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 29,
+  "law_count": 32,
   "laws": [
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
@@ -220,7 +220,7 @@
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "cross-domain language coherence review and user canonicalization direction",
-      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-ACTOR-CONCURRENCY",
@@ -229,16 +229,16 @@
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Issue #28 cross-role audit, spec/contracts/actor-concurrency-coherence.json, and user canonicalization direction",
-      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
-      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default; null is recovery-only and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary and precedence table are closed with intrinsic-only glyph dispatch, while user extension uses named Trait methods or APIs and fixed/custom operator overloading remains nonactivatable. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
+      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default; null is recovery-only and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary, fixity, binding power, and associativity are closed. Arbitrary custom operators are rejected and recovery-only. Fixed existing-glyph conformance dispatch is Stable only for exact binary +, -, and * under intrinsic reservation plus one left-owner DIRECT_GLOBAL conformance with no conversion, order ranking, fallback, or runtime relookup. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/value-operator-indexing-coherence.json and user canonicalization direction",
-      "effective_revision": "r51f3-current-grammar-reference-semantic-coherence-r1"
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE",
@@ -257,6 +257,42 @@
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/language.md section 6 and spec/frontend/frontend-model.json visibility_admission",
       "effective_revision": "r51f3-current-top-level-type-visibility-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-MESSAGE-CALL-TRAILING-CLOSURE-COHERENCE",
+      "law": "A MessageSuffix preserves a plain or statically qualified selector and carries exactly zero or one normalized payload aggregate, never an ordinary ArgumentList. Positional parenthesized content is one Tuple payload, all-named content is one structural Record payload, empty parentheses are a no-payload compatibility spelling, and mixed positional/named payload is rejected. Ordinary and message calls share one ordered TrailingClosureGroup: one closure may be unlabeled or labeled, while two or more must all have unique labels and bind exact function-typed formals. Qualified selector resolution is static and terminal in its selected nominal, Trait, extension, actor, or actor-protocol domain; actor dispatch has no ordinary-method fallback. HIR/MIR preserve selected identity, payload projection, closure labels, source evaluation order, ownership, effects, errors, isolation, and cleanup. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Design_Deeplus_Message_Call_and_Trailing_Closure_Consistency_Report_R1.md and current cross-artifact reconciliation",
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-VOCABULARY-RAW-PATH-PACKAGE-MODULE-COHERENCE",
+      "law": "array and case are ordinary IDENTIFIER spellings and occur in no keyword or sigil-role vocabulary. Stable raw String uses exactly the attached #raw\"...\" surface; prefixless raw\"...\" and alternate delimiter families are rejected while exact body scalars remain uninterpreted. QualifiedPath contains one or more identifier segments joined by ::. Learner-facing material teaches this positive path model without repeatedly foregrounding invalid punctuation, while exact diagnostics and negative fixtures remain available when an error occurs. Package is the distribution, dependency, build, artifact, and provenance unit; Module is the namespace, visibility, name-resolution, and source-composition unit. ModuleId combines PackageId and ModulePath, and filesystem layout is not language identity. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "User vocabulary, raw String, qualified-path, and package/module coherence direction",
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-OPERATOR-FUNCTION-STATIC-INTAKE",
+      "law": "Arbitrary glyph/fixity/precedence custom operators are not a Deeplus feature and are retained only as recovery/no-go evidence. Existing fixed-glyph conformance overloading is STABLE_DESIGN for exact binary +, -, and *: it freezes a direct-global, left-owner, intrinsic-reserved, pure borrowed, no-fallback/no-relookup profile without closing TCC-P1-002..008. The Stable &&/||/^^/~~ family is described as pointwise logical: current packed-bit behavior is preserved and exact same-shape NumericArray values over one known-width integer element domain gain the pure total built-in lift, while scalar Bool, NumericArray<Bool>, broadcast, dynamic/heterogeneous/generic collections and user carriers remain excluded or deferred. Stable scope#static is an exact function-body prologue owned by an admitted synchronous named CallableImplementationId; it runs once per normalized specialization at first actual invocation after input staging and before ownership commit, observes no caller input/authority, calls no activation-bearing or dynamic target, publishes exactly Ready or one cached Failed identity with release/acquire, never retries or deadlocks on reentry, and carries exact HIR/MIR/API identity while every product lane remains NOT_RUN. The older Trait shared-design report contributes only identity/coherence/no-order/no-runtime-relookup principles already represented by TC-R001..R016 and TCC-DG; its alternate type/derives/auto/conform/local-witness/specialization surfaces do not replace current conformance/requires/lowercase-via authority. Semantic P0 remains 0 and the existing feature P1 set remains exactly 22 OPEN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Eight attached Trait/operator/function-static design reports, explicit user rejection of arbitrary custom operators, and current authority reconciliation",
+      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-EXACT-NUMERIC-COMPANION-HIR-H1-COHERENCE",
+      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep in the initial profile, bare Complex normalizes to Complex<Float64>, and an attached floating i token makes 3.0 + 4.0i canonical without creating a global i binding or public ABI. Stable fixed-glyph conformance remains exactly binary +,-,*; scalar real/Complex ^ is a closed static language intrinsic with mathematical unary precedence, right associativity, a real-preserving route and signed-zero-aware principal Complex route. Static capability lookup separates Type::item, Type::extension::item, <T as Trait>::item and explicit runtime owners without a companion object or runtime Trait search. The verified fully typed/resolved/responsibility-closed HIR-H1 boundary is adopted as the current design bridge, while its RFC, MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Five attached companion, Complex/Rational and exponentiation authority proposals; explicit user i-literal/HIR-H1/canonicalization direction; bounded multi-role reconciliation",
+      "effective_revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
     }
   ],
   "authority_policy": "USER_DIRECT records current user direction and receives strong presumptive weight, but remains reviewable against contradictions and evidence; no decision row is immutable constitutional law. Explicit decisions adopted for this release control its projections until revised. DESIGNER_ACCEPTED decisions are reviewable; DERIVED_PROJECTION rows have no independent authority."

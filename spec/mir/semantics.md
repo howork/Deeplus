@@ -10,7 +10,53 @@ A step state contains the current MIR frame, ordered operand stack, places and o
 
 Operands, arguments, guards, interpolation segments, collection entries and cleanup registrations evaluate left-to-right unless a named law fixes another order. Calls preserve value, context, witness, repeated positional and named channels. `options***: Record` declares a named-rest channel; `**record` supplies static labels. Labels, witness ids, extension ids and providers are fixed before MIR execution.
 
-Current operator glyphs lower only to closed intrinsic MIR operations chosen from the normalized built-in operand domain. Lowering performs no conformance, extension, witness, provider, import-order, source-order, or runtime dispatch. Named Trait methods lower as ordinary named calls and never become glyph hooks. Strict Boolean `and`/`or` evaluate both operands left-to-right; sequential `and then`/`otherwise` evaluate the right operand only when required. The existing `?:` Option law remains separately lazy.
+An ordinary `CallExpr` and a `MessageCallExpr` share the ordered
+`TrailingClosureArg` channel but retain distinct value carriers. An ordinary
+call lowers its argument channels directly. A message lowers exactly zero or
+one payload aggregate: absent, scalar, Tuple, or structural Record. The
+payload projection map is fixed before MIR (`none -> zero value formals`,
+`scalar -> one`, `Tuple -> positional`, `Record -> statically named`).
+Trailing closure labels and selected function-typed formal identities are
+preserved through lowering. Surface attachment is erased, but source
+evaluation order and the selected call or dispatch identity are not.
+
+Operator syntax and precedence remain closed. An intrinsic-reserved normalized
+operand pair lowers to its closed intrinsic MIR operation and performs no
+conformance lookup. A non-intrinsic exact binary `+`, `-`, or `*` may instead
+lower to `FixedOperatorConformanceCall`. That node preserves
+`OperatorId`, normalized left/right type IDs, `ConformanceId`, `WitnessId`,
+`MethodId`, normalized substitution, `OutputTypeId`, and
+`ResponsibilityProfileId` selected statically by the checker.
+
+Both operands evaluate once, left-to-right, before the borrowed, pure, total,
+synchronous witness call. The node has no implicit conversion, expected-result
+selection, provider/extension/local/case/`via`/`VIA`/`AUTO`/specialization
+route, source/import-order winner, runtime lookup, or fallback edge. Its
+`throws Never effects {}` responsibility cannot introduce mutation,
+consumption, suspension, or authority. Other glyph families remain intrinsic
+or rejected. Strict Boolean `and`/`or` evaluate both operands left-to-right;
+sequential `and then`/`otherwise` evaluate the right operand only when required.
+The existing `?:` Option law remains separately lazy.
+
+Spaced infix `^` lowers only from a verified closed
+`HirIntrinsicPlan`. Its operation is one of `CheckedIntPow`,
+`FloatPowInt`, `FloatPow`, `ComplexPowInt`, `ComplexPowPrincipal`, or
+`MeasurePowStatic`; there is no generic `Pow` call and no conformance/runtime
+lookup. The plan preserves source evaluation order `[base, exponent]`,
+source/adapted operand types, result type, `ImplementationId`,
+`ResponsibilityProfileId`, `NumericSemanticsProfileId`, and
+`SpecialValueProfileId`. Its operand adaptation is one of `Identity`,
+`DirectLiteralToF64Exact`, `F32ToF64`, `F32ToComplex64`, or
+`F64ToComplex64` and never becomes a selected call.
+
+`CheckedIntPow` is a checked operation whose overflow Defect occurs before an
+enclosing commit. Float and Complex power are pure total value operations:
+NaN, infinity, signed zero and branch-cut results are ordinary values under
+the bound special-value profile. Real power never changes its static result to
+Complex at runtime. Principal Complex power uses the signed-zero-aware
+principal logarithm. Constant evaluation and every backend bind the same
+profile identity and canonical NaN policy. A backend math helper symbol is a
+projection detail rather than semantic callee identity.
 
 A ternary lowers to one Bool condition evaluation, one two-way branch, exactly
 one lazy arm evaluation, and one explicit responsibility join. It cannot
@@ -21,6 +67,92 @@ obligation that exists on either incoming edge.
 An assignment evaluates its target place once and its right operand once. A compound assignment evaluates the place, reads the original value, evaluates the right operand, completes one intrinsic operation, and commits at most one write, in that order. Every assignment returns `Unit`. Any failure before commit preserves the original owner and value; no compound-assignment MIR opcode may hide a second place evaluation or partial write.
 
 An ordinary `mut` parameter is lowered as one callee-owned mutable local place. The argument is evaluated and acquired once before that place is committed; an affine argument moves into it, no caller-place alias or write-back edge is created, and the callee owns its exactly-once cleanup. This is distinct from `inout`, which borrows one caller place exclusively and commits writes to that same place, and from a `mut T` responsibility, which denotes a unique mutable owner or view rather than a call channel. A failure before parameter commit retains the caller owner and publishes no callee local.
+
+### 2.1 Function static activation
+
+An admitted synchronous named callable may own one `scope#static { ... }`
+prologue. It is a dedicated callable-body declaration, not an ordinary block
+item. Optional compile-time `use`/`import` block prologue directives precede
+it, and it precedes every runtime semantic item. The exact admitted owner and
+profile matrix is fixed by
+`spec/contracts/function-static-activation.json`; entry/local functions,
+constructors, cleanup declarations, actor handlers and requests, closures,
+async or generator callables, FFI/recovery declarations, bodyless Trait
+requirements, and `def#guard` do not acquire this route.
+
+The selected implementation has one typed `CallableImplementationId`.
+`FunctionStaticOwnerId` is the deterministic hash-domain identity of the
+activation semantics version, that implementation identity, normalized owner
+and callable generic instantiations, and one canonical activation-contract
+digest. The contract digest binds the normalized activation HIR plus sorted
+actually used `WitnessId`, `ConformanceId`, and statically selected helper
+records; every helper record carries its `CallableImplementationId`,
+`activation_present=false`, and safety-summary digest. Trivia, source path,
+import/use/source order, runtime address, machine-code sharing, inlining, LTO,
+and JIT compilation identity are excluded. Runtime state is keyed by
+`(RuntimeInstanceId, FunctionStaticOwnerId)`. Equal hash IDs with unequal
+canonical recipes are a terminal link collision, never an order-selected
+winner.
+
+Only actual invocation of the final selected `CallableImplementationId`
+triggers the barrier. Name lookup, overload candidate collection, Trait
+checking, function-value creation or copying, reflection, inlining, and
+compilation are not triggers. For an activation-bearing call, MIR preserves
+this order:
+
+```text
+evaluate callee or receiver
+evaluate explicit arguments left-to-right
+evaluate defaults under the current call law
+validate and acquire staged temporaries
+ensure (RuntimeInstanceId, FunctionStaticOwnerId)
+perform the existing atomic ownership_commit for callee input channels
+emit callable_invoke and enter the ordinary contract/body
+```
+
+No new `CALL_INPUT_COMMIT` event is invented. If evaluation or staging fails,
+the ensure does not run. If ensure fails, `ownership_commit` and ordinary-body
+entry counts are zero, caller-owned places remain with the caller, and staged
+temporaries and reservations clean exactly once in reverse acquisition order.
+The Ready/Failed fast path remains after argument/default evaluation, so an
+optimizer may not move it earlier across observable evaluation.
+
+The state machine is closed:
+
+```text
+Dormant -> Initializing -> Ready
+                     -> Failed(FailureRecord)
+Ready  -> Ready
+Failed -> Failed
+```
+
+Exactly one entrant claims `Initializing`. Other entrants may wait
+internally, but that wait is neither source-level suspension nor a
+cancellation point and promises no fairness. `Ready` or `Failed` publication
+happens-before every caller that leaves the ensure barrier; a backend may use
+release/acquire or stronger ordering, but this grants no weak-atomic source
+surface. Partial publication is forbidden.
+
+Activation normal completion is `Unit`. Its checked body is safe,
+synchronous, nonsuspending, noncancelling, `throws Never`, `effects {}`, and
+authority-free. It observes no receiver, parameter, evaluated default,
+`Context`, caller task/actor/thread identity, time, random, environment,
+ambient provider, or mutable global state. It creates no persistent mutable
+publication, Resource escape, or `needsDrop` residue; performs no outward
+control transfer, local-function declaration, lazy force, dynamic/indirect/
+provider call, or call whose metadata has `activation_present=true`. Pure
+statically selected helpers are admitted only through the closed dependency
+records above.
+
+Any initiating Defect is captured as the cause of one owner-bound
+`FUNCTION_STATIC_ACTIVATION_FAILED` record. The winner, every waiter, and every
+later caller observe that same terminal failure identity and cause chain;
+there is no scheduler-dependent “original for the winner, wrapper for
+waiters” split, implicit retry, or reset. Same-owner reentry records
+`FUNCTION_STATIC_ACTIVATION_REENTRANCY` as the canonical cause and transitions
+the owner to the same terminal `Failed` state; deadlock and undefined behavior
+are forbidden. Product lexer/parser/checker, MIR lowering, xVM, LLVM,
+formatter/LSP, and executable concurrency evidence remain `NOT_RUN`.
 
 Closure environments are built by one ordered capture plan. `borrow` and
 `inout` create bounded nonescaping observations, `move` transfers one owner,
@@ -48,9 +180,27 @@ expressions use ordinary MIR. The plan commits one final String only after all
 segments succeed, carries no locale/provider/serialization/redaction
 observation, and performs reverse temporary cleanup on an earlier failure.
 
-MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating `%` and floating glyph power have no MIR operation. A statically rejected failure creates no MIR.
+MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating and Complex `%` have no MIR operation. A statically rejected failure creates no MIR.
 
 `Float32` and `Float64` operations preserve IEEE-754 binary32/binary64 behavior and round to nearest with ties to even. NaN is unordered and signed zero compares equal. Char constants contain exactly one Unicode scalar. String indexing observes Unicode scalar position; Bytes indexing observes one `UInt8`. Neither lowering implies UTF-16, grapheme, text/byte conversion, or a public representation. The recovery spelling `null` creates no MIR constant; Option absence lowers only from the explicit `none` alternative.
+
+A Rational literal lowers as `ConstRational` containing one normalized
+arbitrary-precision numerator and positive denominator. Its raw `<p/q>` source
+spelling is debug/source provenance and is never evaluated as integer
+division. Construction and checked named division distinguish
+`zeroDenominator` from `divisionByZero`; both preserve failure-before-commit.
+
+An imaginary literal lowers as one Complex constant with exact
+`ComplexTypeId`, `RepTypeId`, positive-zero real component and validated
+imaginary component. `4.0i` therefore has exact Float64 component values and
+`4.0f32i` exact Float32 values. Complex arithmetic preserves
+`OperatorId`, selected `ConformanceId`/`WitnessId`/`MethodId` where the
+Stable `+`/`-`/`*` corridor is used, `ImplementationId`, substitutions,
+responsibility and numeric-semantics profile. It must not erase the value to
+an anonymous pair before those identities are represented. Complex division
+is a closed intrinsic; named transcendental functions may project to a shared
+runtime implementation without inventing one MIR opcode per API. No public
+foreign ABI follows from the semantic pair.
 
 ## 5. Failure and cleanup
 
@@ -66,7 +216,7 @@ For `lhs ?: fallback`, `lhs` is evaluated first. When it is `some(v)`, `v` is re
 
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
-Message send is not a method call. Prepare-send evaluates the receiver and payload once without transferring ownership. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload plus its non-forgeable `TaskResponsibility` descriptor. That descriptor preserves the normalized result type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and terminal transport failure. Await restores exactly the normalized handler ErrorSet plus `ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the nominal `Task<T>` spelling. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
+Message send is not a method call. Prepare-send evaluates the receiver once and then evaluates exactly zero or one normalized payload aggregate without transferring ownership; Tuple or Record children evaluate left-to-right once. A message trailing-closure channel is prepared after the payload in source order. A closure crossing actor isolation is admitted only when its capture environment independently satisfies transfer, suspension, effect, error, and cleanup rules; the trailing spelling never creates that evidence. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload plus its non-forgeable `TaskResponsibility` descriptor. That descriptor preserves the normalized result type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and terminal transport failure. Await restores exactly the normalized handler ErrorSet plus `ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the nominal `Task<T>` spelling. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
 
 The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound task lifecycle under the existing cancellation law.
 
@@ -86,6 +236,21 @@ distinct from static-label call unfold.
 ## 9. Dynamic providers
 
 A dynamic unit conversion MIR event exists only after stdlib profile, provider and policy checks. It records provider identity/version, observation timestamp, rounding and failure/effect policy, cache key and replay token. No source Preview gate activates this event.
+
+## 9.1 HIR-H1 verification boundary
+
+The only admitted high-level input is
+`ExecutableHirH1(Verified<CanonicalHirH1>, CapabilityReceipt)`.
+`HirSkeleton`, `CheckSession`, and `TypedHirDraft` are analysis states and
+cannot lower. Canonical HIR contains no recovery node, unresolved type/name,
+candidate set, generic operator, deferred witness, or missing responsibility.
+The verifier recomputes selected declarations, substitutions, conformances,
+intrinsics and result types and binds deterministic semantic/API/debug
+projections. MIR lowering expands that closed structure into control flow,
+places and outcomes; it performs no lookup or semantic choice.
+
+This bridge is backend-neutral. It does not activate the noncanonical MIR-X1
+xVM-only proposal and does not change the current backend set.
 
 ## 10. xVM and LLVM preservation
 
@@ -109,7 +274,7 @@ A successful Pattern owner emits `subject_evaluate`, `subject_acquire`, `test_pl
 
 ## 12. Removed-surface MIR boundary
 
-Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Custom operator declarations and fixed-operator Trait dispatch create no MIR operation. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
+Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Arbitrary custom operator declarations and fixed-glyph conformance attempts outside exact binary `+`, `-`, `*` create no MIR operation; admitted fixed-glyph calls use the sealed node defined in §2. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
 
 Built-in indexing evaluates the owner and each index once, left-to-right, then validates the declared logical domain before projecting storage. `List`, `String`, and `Bytes` use `1..length` with offset `index - 1`; an explicitly bounded List retains `L..U`. Every `ReadonlyView` carries its source owner's declared logical domain, coordinate-to-storage mapping, and provenance, so no view construction independently rebases it. A missing Map key emits `IndexError::keyNotFound`; any type-correct dynamic built-in positional or NumericArray coordinate outside its logical domain emits `IndexError::outOfLogicalDomain`. Both are precommit failures. Map uses the exact key type; tuple ordinals and Record labels are resolved before MIR and never become dynamic bracket lookup. Conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not add a lowering route.
 
