@@ -734,7 +734,60 @@
           "type": "string"
         },
         "call_shape": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "call_kind",
+                "payload_kind",
+                "payload_count",
+                "payload_to_formal_bindings",
+                "trailing_closure_labels"
+              ],
+              "properties": {
+                "call_kind": {
+                  "enum": [
+                    "ordinary",
+                    "message",
+                    "actor_message"
+                  ]
+                },
+                "payload_kind": {
+                  "enum": [
+                    "none",
+                    "scalar",
+                    "tuple",
+                    "record"
+                  ]
+                },
+                "payload_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "payload_to_formal_bindings": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "trailing_closure_labels": {
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         },
         "parameter_modes": {
           "type": "array",

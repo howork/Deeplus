@@ -20,8 +20,8 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-grammar-reference-semantic-coherence-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-literal-shaped-collection-design-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-operator-function-static-coherence-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
@@ -34,8 +34,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 681, "diagnostics": 1250, "predicates": 245,
-    "predicate_fixtures": 763, "no_go": 150,
+    "features": 694, "diagnostics": 1341, "predicates": 250,
+    "predicate_fixtures": 780, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
 REQUIRED_FEATURE_IDS = (
@@ -274,9 +274,9 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 688
-                and fixed_counts.get("predicates") == 247
-                and fixed_counts.get("predicate_fixtures") == 771
+                and fixed_counts.get("features") == 694
+                and fixed_counts.get("predicates") == 250
+                and fixed_counts.get("predicate_fixtures") == 780
                 and fixed_counts.get("no_go") == 150
                 and fixed_counts.get("hard_keywords") == 30
                 and fixed_counts.get("contextual_words") == 101,
@@ -701,6 +701,46 @@ def main() -> int:
     feature_by_id = {row.get("feature_id"): row for row in feature_rows}
     diagnostic_by_id = {row.get("diagnostic_id"): row for row in diagnostic_rows}
     predicate_by_id = {row.get("predicate_id"): row for row in predicate_rows}
+    frontend_surface = parsed.get(
+        root / "spec/frontend/frontend-model.json", {}
+    )
+    keyword_model = frontend_surface.get("keyword_model", {})
+    identifier_model = frontend_surface.get("identifier_model", {})
+    ordinary_identifier_seeds = {"array", "case"}
+    keyword_projection = {
+        "hard_keywords": keyword_model.get("hard_reserved", []),
+        "contextual_words": keyword_model.get("contextual", []),
+        "sigil_role_subset": keyword_model.get("sigil_role_subset", []),
+    }
+    check(
+        "ordinary_identifiers" not in vocabulary
+        and "ordinary_identifiers" not in keyword_model
+        and ordinary_identifier_seeds.isdisjoint(
+            set(vocabulary.get("hard_keywords", []))
+            | set(vocabulary.get("contextual_words", []))
+            | set(vocabulary.get("sigil_role_subset", []))
+        )
+        and ordinary_identifier_seeds.isdisjoint(
+            set(keyword_model.get("hard_reserved", []))
+            | set(keyword_model.get("contextual", []))
+            | set(keyword_model.get("sigil_role_subset", []))
+        )
+        and set(
+            identifier_model.get("ordinary_identifier_regression_seeds", [])
+        )
+        == ordinary_identifier_seeds
+        and identifier_model.get("regression_seed_token_kind") == "IDENTIFIER"
+        and identifier_model.get("regression_seed_special_role_count") == 0
+        and vocabulary.get("hard_keywords") == keyword_projection["hard_keywords"]
+        and vocabulary.get("contextual_words")
+        == keyword_projection["contextual_words"]
+        and vocabulary.get("sigil_role_subset")
+        == keyword_projection["sigil_role_subset"]
+        and vocabulary.get("projection_sha256")
+        == canonical_sha(keyword_projection),
+        "ORDINARY_IDENTIFIER_KEYWORD_SEPARATION",
+        f"vocabulary={sorted(ordinary_identifier_seeds & (set(vocabulary.get('hard_keywords', [])) | set(vocabulary.get('contextual_words', [])) | set(vocabulary.get('sigil_role_subset', []))))}",
+    )
     predicate_relation_rows = rows(
         "deeplus-0.1.2-baseline-r51f3-diagnostic-relation-registry.json",
         "relations",
@@ -850,13 +890,84 @@ def main() -> int:
             "set_prefixed_literal",
             "r51f_removed_surface_boundary_law",
         ]
-        and unknown_prefixed.get("message") == "Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, and #bytes."
+        and unknown_prefixed.get("message") == "Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes."
         and unknown_prefixed.get("stage") == "checker"
         and unknown_prefixed.get("severity") == "error"
         and unknown_prefixed.get("diagnostic_status") == "active"
         and unknown_prefixed.get("product_support") == "NOT_RUN",
         "SUPPLEMENTAL_UNKNOWN_PREFIXED_LITERAL_ZERO_DELTA",
         str(unknown_prefixed),
+    )
+    raw_feature = feature_by_id.get("raw_string_prefixed_literal", {})
+    raw_delimiter_diagnostic = diagnostic_by_id.get(
+        "RAW_STRING_DELIMITER_INVALID", {}
+    )
+    raw_scanner = frontend_surface.get("scanner", {})
+    raw_phase = raw_scanner.get("raw_string_stable", {})
+    raw_terminal = raw_scanner.get("external_terminals", {}).get(
+        "ScannerRawStringLiteral", {}
+    )
+    raw_hash_policy = next(
+        (
+            row
+            for row in frontend_surface.get("boundary_policies", [])
+            if row.get("id") == "HASH_LITERAL_SIGILS"
+        ),
+        {},
+    )
+    raw_no_go = next(
+        (
+            row
+            for row in rows(
+                "deeplus-0.1.2-baseline-r51f3-current-no-go-registry.json",
+                "entries",
+            )
+            if row.get("rejection_id") == "NG-RAW-ALT-DELIMITER"
+        ),
+        {},
+    )
+    check(
+        raw_feature.get("status_enum") == "STABLE_DESIGN"
+        and raw_feature.get("language_status") == "Stable design"
+        and raw_phase.get("surface") == '#raw"..."'
+        and raw_phase.get("design_maturity") == "STABLE"
+        and raw_terminal.get("surface") == '#raw"..."'
+        and "#raw\"" in raw_hash_policy.get("owners", [])
+        and raw_delimiter_diagnostic.get("fixit_policy") == 'use #raw"..."'
+        and raw_delimiter_diagnostic.get("message")
+        == 'Stable raw String uses exactly the attached `#raw"..."` delimiter family.'
+        and set(raw_no_go.get("negative_fixture_ids", []))
+        == {"EX-R51d-002", "EX-R51d-002A"}
+        and raw_no_go.get("replacement_or_no_fix") == 'use #raw"..."',
+        "STABLE_RAW_STRING_SURFACE_CLOSURE",
+        f"feature={raw_feature.get('status_enum')} surface={raw_phase.get('surface')} no_go={raw_no_go.get('negative_fixture_ids')}",
+    )
+    package_module = frontend_surface.get("package_module_model", {})
+    package_model = package_module.get("package", {})
+    module_model = package_module.get("module", {})
+    source_mapping = package_module.get("source_mapping", {})
+    package_module_grammar = (
+        root / "spec/grammar/deeplus.ebnf"
+    ).read_text(encoding="utf-8")
+    check(
+        package_model.get("identity_owner")
+        == "build manifest and resolved dependency graph"
+        and package_model.get("source_declaration") is None
+        and package_model.get("may_contain_multiple_modules") is True
+        and module_model.get("identity") == "ModuleId = (PackageId, ModulePath)"
+        and module_model.get("path_shape")
+        == "one-or-more Identifier segments joined by ::"
+        and source_mapping.get("filesystem_path_equals_module_path") is False
+        and source_mapping.get(
+            "explicit_module_decl_must_equal_mapped_module_path"
+        )
+        is True
+        and source_mapping.get("omitted_module_decl_uses_mapped_module_path")
+        is True
+        and 'QualifiedPath ::= Identifier ("::" Identifier)* ;'
+        in package_module_grammar,
+        "PACKAGE_MODULE_IDENTITY_SEPARATION",
+        f"package={package_model.get('role')} module={module_model.get('role')}",
     )
 
     coverage_rows = {
@@ -1027,10 +1138,177 @@ def main() -> int:
         "tests/fixtures/current/type-refinement-narrowing-coherence-r1.json": ("fixture_schema", "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"),
         "tests/fixtures/current/enum-derived-capabilities-r1.json": ("fixture_schema", "schemas/language/enum-derived-capabilities-fixtures.schema.json"),
         "tests/fixtures/current/literal-shaped-collection-design-r1.json": ("fixture_schema", "schemas/language/literal-shaped-collection-design-fixtures.schema.json"),
+        "tests/fixtures/current/companion-capability-coherence-r1.json": ("fixture_schema", "schemas/language/companion-capability-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/rational-complex-numeric-coherence-r1.json": ("fixture_schema", "schemas/language/rational-complex-numeric-coherence-fixtures.schema.json"),
+        "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json": ("fixture_schema", "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json"),
     }
     for rel, (field, expected) in operational.items():
         value = parsed.get(root / rel, {})
         check(value.get(field) == expected and (root / expected).exists(), "OPERATIONAL_POINTER", f"{rel}:{field}")
+
+    numeric_contract = parsed.get(
+        root / "spec/contracts/rational-complex-numeric-coherence.json", {}
+    )
+    numeric_fixture = parsed.get(
+        root / "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+        {},
+    )
+    numeric_machine = numeric_contract.get("machine_acceptance", {})
+    numeric_counts = numeric_fixture.get("expected_counts", {})
+    numeric_cases = numeric_fixture.get("cases", [])
+    check(
+        numeric_contract.get("revision") == revision
+        and numeric_fixture.get("revision") == revision
+        and numeric_contract.get("semantic_p0") == 0
+        and numeric_fixture.get("semantic_p0") == 0
+        and numeric_machine.get("fixture_case_count") == len(numeric_cases) == 64
+        and numeric_counts.get("cases") == 64
+        and numeric_machine.get("exact_open_feature_p1_count")
+        == numeric_counts.get("open_feature_p1")
+        == 22
+        and numeric_machine.get("feature_p1_closed_by_contract")
+        == numeric_counts.get("p1_closed")
+        == 0
+        and numeric_machine.get("feature_p1_created_by_contract")
+        == numeric_counts.get("p1_created")
+        == 0
+        and numeric_machine.get("fixed_conformance_operator_ids")
+        == numeric_counts.get("fixed_conformance_operator_ids")
+        == ["BinaryAdd", "BinarySubtract", "BinaryMultiply"]
+        and numeric_machine.get("arbitrary_custom_operator_count") == 0
+        and numeric_machine.get("power_conformance_witness_count") == 0
+        and numeric_machine.get("Rational_power_initial_profile_count") == 0
+        and numeric_machine.get("integer_imaginary_literal_count") == 0
+        and numeric_machine.get("runtime_operator_lookup_count") == 0
+        and numeric_machine.get("product_lane_count")
+        == numeric_machine.get("product_lane_not_run_count")
+        == numeric_counts.get("product_lanes")
+        == numeric_counts.get("product_not_run_lanes")
+        == 15
+        and numeric_counts.get("product_executed") == 0,
+        "EXACT_NUMERIC_CONTRACT_AND_FIXTURE_CLOSURE",
+        f"cases={len(numeric_cases)} counts={numeric_counts}",
+    )
+    check(
+        all(
+            feature_by_id.get(feature_id, {}).get("status_enum")
+            == "STABLE_DESIGN"
+            for feature_id in (
+                "rational_exact_numeric_value",
+                "complex_core_numeric_value",
+                "scalar_real_complex_power",
+            )
+        )
+        and all(
+            predicate_id in predicate_by_id
+            for predicate_id in (
+                "RationalLiteralAdmitted",
+                "ComplexLiteralAndOperatorAdmitted",
+                "CaretPowerAdmitted",
+            )
+        )
+        and all(
+            diagnostic_id in diagnostic_by_id
+            for diagnostic_id in (
+                "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+                "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+                "COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION",
+                "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+                "POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN",
+            )
+        ),
+        "EXACT_NUMERIC_REGISTRY_BINDING",
+        "Rational/Complex/power feature, predicate, or diagnostic missing",
+    )
+
+    companion_contract = parsed.get(
+        root / "spec/contracts/companion-capability-coherence.json", {}
+    )
+    companion_fixture = parsed.get(
+        root / "tests/fixtures/current/companion-capability-coherence-r1.json",
+        {},
+    )
+    companion_machine = companion_contract.get("machine_acceptance", {})
+    companion_counts = companion_fixture.get("expected_counts", {})
+    check(
+        companion_contract.get("revision") == revision
+        and companion_fixture.get("revision") == revision
+        and companion_contract.get("semantic_p0") == 0
+        and companion_machine.get("rule_count") == 18
+        and companion_machine.get("lookup_domain_count") == 4
+        and companion_machine.get("identity_residue_field_count") == 7
+        and companion_machine.get("fixture_count")
+        == companion_counts.get("cases")
+        == len(companion_fixture.get("cases", []))
+        == 28
+        and companion_machine.get("open_feature_p1")
+        == companion_counts.get("open_feature_p1")
+        == 22
+        and companion_machine.get("runtime_lookup_count") == 0
+        and companion_machine.get("activation_trigger_count") == 0
+        and companion_machine.get("companion_object_count") == 0
+        and companion_machine.get("class_scope_static_current_acceptance_count")
+        == 0
+        and companion_machine.get("new_CALL_INPUT_COMMIT_event_count") == 0
+        and companion_machine.get("product_lane_count")
+        == companion_counts.get("product_lanes")
+        == 15
+        and companion_machine.get("product_executed_count")
+        == companion_counts.get("product_executed")
+        == 0
+        and feature_by_id.get(
+            "trait_qualified_associated_static_selection", {}
+        ).get("status_enum")
+        == "STABLE_DESIGN"
+        and feature_by_id.get("companion_capability_decomposition", {}).get(
+            "status_enum"
+        )
+        == "STABLE_DESIGN"
+        and "TraitAssociatedStaticSelectionAdmitted" in predicate_by_id,
+        "COMPANION_CAPABILITY_MACHINE_CLOSURE",
+        f"machine={companion_machine} counts={companion_counts}",
+    )
+
+    hir_contract = parsed.get(
+        root / "spec/contracts/hir-h1-current-mir-bridge.json", {}
+    )
+    hir_fixture = parsed.get(
+        root / "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json", {}
+    )
+    hir_machine = hir_contract.get("machine_acceptance", {})
+    hir_counts = hir_fixture.get("expected_counts", {})
+    check(
+        hir_contract.get("revision") == revision
+        and hir_fixture.get("revision") == revision
+        and hir_contract.get("semantic_p0") == 0
+        and hir_machine.get("pipeline_stage_count") == 7
+        and hir_machine.get("power_operation_count") == 6
+        and hir_machine.get("power_adaptation_count") == 5
+        and hir_machine.get("fixture_count")
+        == hir_counts.get("cases")
+        == len(hir_fixture.get("cases", []))
+        == 48
+        and hir_machine.get("generic_pow_node_count") == 0
+        and hir_machine.get("recovery_or_unresolved_canonical_count") == 0
+        and hir_machine.get("implementation_or_execution_count")
+        == hir_counts.get("implementation_or_execution")
+        == 0
+        and hir_machine.get("backend_switch_count")
+        == hir_counts.get("backend_switches")
+        == 0
+        and hir_machine.get("open_feature_p1_count")
+        == hir_counts.get("open_feature_p1")
+        == 22
+        and hir_machine.get("product_lanes") == "15/15_NOT_RUN"
+        and hir_counts.get("product_lanes") == 15
+        and hir_counts.get("product_executed") == 0
+        and feature_by_id.get("hir_h1_current_mir_bridge_design", {}).get(
+            "status_enum"
+        )
+        == "STABLE_DESIGN",
+        "HIR_H1_CURRENT_MIR_BRIDGE_CLOSURE",
+        f"machine={hir_machine} counts={hir_counts}",
+    )
 
     tfc_rel = "tests/fixtures/current/type-flow-callable-coherence-r1.json"
     tfc = parsed.get(root / tfc_rel, {})
@@ -1059,8 +1337,8 @@ def main() -> int:
     tfc_contract = parsed.get(root / "spec/contracts/type-flow-callable-coherence.json", {})
     tfc_rule_ids = [row.get("rule_id") for row in tfc_contract.get("rules", []) if isinstance(row, dict)]
     check(
-        len(tfc_rule_ids) == 20
-        and len(set(tfc_rule_ids)) == 20
+        len(tfc_rule_ids) == 21
+        and len(set(tfc_rule_ids)) == 21
         and all(
             isinstance(row.get("rule_ids"), list)
             and row["rule_ids"]
@@ -1087,6 +1365,148 @@ def main() -> int:
     tfc_parameter_modes = tfc_contract.get("parameter_mode_matrix", [])
     tfc_ternary = tfc_contract.get("ternary_join_contract", {})
     tfc_by_id = {row.get("fixture_id"): row for row in tfc_rows}
+    tfc_rule_by_id = {
+        row.get("rule_id"): row
+        for row in tfc_contract.get("rules", [])
+        if isinstance(row, dict)
+    }
+    trailing_contract = tfc_rule_by_id.get("TFC-R011", {}).get("contract", {})
+    message_call_contract = tfc_rule_by_id.get("TFC-R021", {}).get("contract", {})
+    call_frontend = parsed.get(
+        root / "spec/frontend/frontend-model.json", {}
+    ).get("call_frontend_contract", {})
+    message_ast = (
+        call_frontend.get("normalized_ast_nodes", {})
+        .get("MessageCallExpr", {})
+    )
+    message_grammar = (
+        root / "spec/grammar/deeplus.ebnf"
+    ).read_text(encoding="utf-8")
+    check(
+        trailing_contract.get("trailing_closure_owner")
+        == "TrailingClosureGroup shared by CallSuffix and MessageSuffix"
+        and "every closure is labeled" in trailing_contract.get(
+            "multiple_trailing_closures", ""
+        )
+        and message_call_contract.get("payload_cardinality") == "zero_or_one"
+        and message_call_contract.get("ordinary_argument_list_owner_reused")
+        is False
+        and message_call_contract.get("trailing_closure_contract")
+        == "TFC-R011"
+        and tfc_contract.get("machine_acceptance", {}).get(
+            "message_payload_max_count"
+        )
+        == 1
+        and tfc_contract.get("machine_acceptance", {}).get(
+            "message_argument_list_reuse_count"
+        )
+        == 0
+        and tfc_contract.get("machine_acceptance", {}).get(
+            "multiple_trailing_closures_require_all_named"
+        )
+        is True,
+        "MESSAGE_CALL_CONTRACT_MACHINE_CLOSURE",
+        f"payload={message_call_contract.get('payload_cardinality')} trailing={trailing_contract.get('multiple_trailing_closures')}",
+    )
+    check(
+        'CallSuffix ::= ArgumentList TrailingClosureGroup?' in message_grammar
+        and 'MessageSuffix ::= "~" MessageSelector MessagePayload? TrailingClosureGroup?' in message_grammar.replace("\n", " ")
+        and 'TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr ;'
+        in message_grammar
+        and "MessageArguments" not in message_grammar
+        and 'DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessagePayload? ;'
+        in message_grammar
+        and message_ast.get("payload_kind") == "none | scalar | tuple | record"
+        and call_frontend.get("message_payload_normalization", {}).get(
+            "ordinary_argument_list_reuse_count"
+        )
+        == 0
+        and parsed.get(
+            root / "spec/frontend/frontend-model.json", {}
+        ).get("control_frontend_contract", {}).get(
+            "parenless_call_exception"
+        )
+        == "one AtomicCallArgument followed by one TrailingClosureGroup",
+        "MESSAGE_CALL_GRAMMAR_FRONTEND_PARITY",
+        "MessageSuffix payload=0|1 shared-trailing-group",
+    )
+    rcts_schema = parsed.get(
+        root / "schemas/language/rcts-v5-descriptor.schema.json", {}
+    )
+    callable_variants = [
+        row
+        for row in rcts_schema.get("oneOf", [])
+        if isinstance(row, dict)
+        and row.get("properties", {}).get("variant", {}).get("const")
+        == "callable"
+    ]
+    callable_call_shape = (
+        callable_variants[0].get("properties", {}).get("call_shape", {})
+        if len(callable_variants) == 1
+        else {}
+    )
+    mir_schema = parsed.get(
+        root / "schemas/language/mir-responsibility.schema.json", {}
+    )
+    module_schema = parsed.get(
+        root / "schemas/language/module-api-digest.schema.json", {}
+    )
+    module_channel_properties = (
+        module_schema.get("$defs", {})
+        .get("responsibilityChannel", {})
+        .get("properties", {})
+    )
+    check(
+        len(callable_call_shape.get("oneOf", [])) == 2
+        and mir_schema.get("properties", {})
+        .get("call_responsibilities", {})
+        .get("items", {})
+        .get("$ref")
+        == "#/$defs/callResponsibilityDescriptor"
+        and mir_schema.get("$defs", {})
+        .get("callResponsibilityDescriptor", {})
+        .get("properties", {})
+        .get("payload_count", {})
+        .get("maximum")
+        == 1
+        and "visible_label" in module_channel_properties
+        and "trailing_closure"
+        in module_channel_properties.get("call_channel_kind", {}).get("enum", []),
+        "MESSAGE_CALL_RCTS_MIR_API_BINDING",
+        "RCTS call_shape + MIR call responsibility + API channel label",
+    )
+    check(
+        tfc_by_id.get(
+            "TFC-P-025-MULTIPLE-ALL-NAMED-TRAILING-CLOSURES", {}
+        )
+        .get("assertions", {})
+        .get("all_named")
+        is True
+        and tfc_by_id.get(
+            "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-PAYLOAD", {}
+        )
+        .get("assertions", {})
+        .get("payload_kind")
+        == "tuple"
+        and tfc_by_id.get(
+            "TFC-P-027-MESSAGE-RECORD-PAYLOAD-MULTIPLE-CLOSURES", {}
+        )
+        .get("assertions", {})
+        .get("payload_kind")
+        == "record"
+        and tfc_by_id.get(
+            "TFC-N-027-MIXED-NAMED-UNNAMED-TRAILING-CLOSURES", {}
+        )
+        .get("expected_existing_diagnostic")
+        == "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT"
+        and tfc_by_id.get(
+            "TFC-N-029-MIXED-MESSAGE-PAYLOAD-CHANNELS", {}
+        )
+        .get("expected_existing_diagnostic")
+        == "STATIC_CALL_SHAPE_NOT_ADMITTED",
+        "MESSAGE_CALL_FIXTURE_MATRIX",
+        "positive=tuple|record|multiple-named negative=mixed-group|mixed-payload",
+    )
     check(
         [row.get("mode") for row in tfc_parameter_modes]
         == ["ordinary", "mut", "borrow", "move", "inout"]
@@ -1185,9 +1605,9 @@ def main() -> int:
     check(
         set(voi) == voi_top_keys
         and all(set(row) == voi_row_keys for row in voi_rows)
-        and len(voi_rows) == len(voi_ids) == len(set(voi_ids)) == 58
+        and len(voi_rows) == len(voi_ids) == len(set(voi_ids)) == 67
         and all(voi_counts.get(group) == len(rows) for group, rows in voi_groups.items())
-        and voi_counts.get("total") == 58
+        and voi_counts.get("total") == 67
         and voi_counts.get("semantic_p0") == 0
         and voi_counts.get("open_feature_p1") == 22
         and voi_counts.get("closed_feature_p1") == 0
@@ -1275,7 +1695,15 @@ def main() -> int:
     expected_voi_diagnostics = [
         "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
         "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+        "OPERATOR_CONFORMANCE_MISSING",
+        "OPERATOR_CONFORMANCE_AMBIGUOUS",
+        "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+        "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+        "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+        "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+        "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+        "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
         "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
         "INDEX_SUFFIX_REQUIRES_AXIS",
         "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
@@ -1288,24 +1716,30 @@ def main() -> int:
         and voi_contract.get("open_feature_p1", {}).get("total") == 22
         and voi_machine.get("rule_count") == 12
         and voi_machine.get("literal_domain_row_count")
-        == len(voi_contract.get("literal_domain_matrix", [])) == 11
+        == len(voi_contract.get("literal_domain_matrix", [])) == 13
         and voi_machine.get("expression_precedence_row_count")
         == len(voi_contract.get("expression_operator_precedence_matrix", [])) == 19
         and voi_machine.get("index_carrier_row_count")
         == len(voi_contract.get("index_carrier_matrix", [])) == 10
         and voi_machine.get("slice_form_row_count")
         == len(voi_contract.get("slice_form_matrix", [])) == 8
-        and voi_machine.get("operator_dispatch_mode") == "INTRINSIC_ONLY"
+        and voi_machine.get("operator_dispatch_mode")
+        == "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE"
         and voi_machine.get("custom_operator_current_count") == 0
-        and voi_machine.get("fixed_operator_conformance_overloading_current_count") == 0
-        and voi_machine.get("trait_operator_lookup_count") == 0
+        and voi_machine.get("fixed_operator_conformance_overloading_current_count") == 1
+        and voi_machine.get("fixed_operator_stable_profile_count") == 1
+        and voi_machine.get("fixed_operator_stable_operator_count") == 3
+        and voi_machine.get(
+            "trait_operator_lookup_max_per_nonintrinsic_admitted_expression"
+        )
+        == 1
         and voi_machine.get("structural_bracket_activation_count") == 0
         and voi_machine.get("ordinary_sequence_first_index") == 1
         and voi_machine.get("negative_from_end_rewrite_count") == 0
         and voi_machine.get("implicit_rebase_count") == 0
         and voi_machine.get("product_execution_receipt_count") == 0
         and voi_machine.get("new_rejection_diagnostic_count")
-        == len(voi_new_diagnostics) == 6
+        == len(voi_new_diagnostics) == 14
         and voi_new_diagnostics == expected_voi_diagnostics
         and set(voi_new_diagnostics).issubset(set(diagnostic_by_id)),
         "VOI_CONTRACT_MACHINE_ACCEPTANCE",
@@ -1845,6 +2279,22 @@ def main() -> int:
     )
     actor_fixtures = parsed.get(
         root / "tests/fixtures/current/actor-concurrency-coherence-r1.json", {}
+    )
+    actor_fixture_groups = {
+        name: actor_fixtures.get(name, [])
+        for name in ("positive", "negative", "boundary", "cross_module")
+    }
+    actor_fixture_counts = actor_fixtures.get("expected_counts", {})
+    check(
+        all(
+            actor_fixture_counts.get(name) == len(rows)
+            for name, rows in actor_fixture_groups.items()
+        )
+        and actor_fixture_counts.get("total")
+        == sum(len(rows) for rows in actor_fixture_groups.values())
+        and actor_fixture_counts.get("product_executed") == 0,
+        "ACTOR_FIXTURE_COUNT_CLOSURE",
+        str(actor_fixture_counts),
     )
     module_api_schema = parsed.get(
         root / "schemas/language/module-api-digest.schema.json", {}
@@ -2631,6 +3081,9 @@ def main() -> int:
     indexable = prelude_by_id.get("indexable", {})
     display_entry = prelude_by_id.get("display", {})
     ord_entry = prelude_by_id.get("ord_t", {})
+    add_entry = prelude_by_id.get("add_rhs", {})
+    subtract_entry = prelude_by_id.get("subtract_rhs", {})
+    multiply_entry = prelude_by_id.get("multiply_rhs", {})
     check(
         arithmetic_defect.get("symbol") == "ArithmeticDefect"
         and arithmetic_defect.get("kind") == "language_intrinsic_defect"
@@ -2647,13 +3100,27 @@ def main() -> int:
         == ["public trait Display { +def display.() -> String throws Never effects {}; }"]
         and ord_entry.get("signatures")
         == ["public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"]
+        and add_entry.get("signatures")
+        == ["public trait Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
+        and subtract_entry.get("signatures")
+        == ["public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
+        and multiply_entry.get("signatures")
+        == ["public trait Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
         and all(
             diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
             == "active"
             for diagnostic_id in (
                 "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
                 "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-                "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+                "OPERATOR_CONFORMANCE_MISSING",
+                "OPERATOR_CONFORMANCE_AMBIGUOUS",
+                "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+                "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+                "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+                "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+                "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+                "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+                "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
                 "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
                 "INDEX_SUFFIX_REQUIRES_AXIS",
             )

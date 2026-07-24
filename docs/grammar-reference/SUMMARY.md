@@ -42,7 +42,7 @@
 
 ## Preview와 Preview Design 상세 카드
 
-아래 50개 행은 registry identity에서 상태 fence, 상세 설명, 양성·음성·경계 시나리오와 예제로 직접 연결됩니다. 카드가 존재한다는 사실은 source activation 또는 제품 지원을 뜻하지 않습니다.
+아래 47개 행은 registry identity에서 상태 fence, 상세 설명, 양성·음성·경계 시나리오와 예제로 직접 연결됩니다. 카드가 존재한다는 사실은 source activation 또는 제품 지원을 뜻하지 않습니다.
 
 | Feature ID | 상태 | 설명 |
 |---|---|---|
@@ -55,7 +55,6 @@
 | [`class_static_activation`](21-preview-design-types-objects-and-traits.md#preview-feature-class_static_activation) | `PREVIEW_DESIGN` | Class static activation |
 | [`conformance_law_proof_block_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-conformance_law_proof_block_preview_design) | `PREVIEW_DESIGN` | Conformance law proof block preview-design |
 | [`contextual_operation_anchor_dmad`](22-preview-design-collections-context-and-control.md#preview-feature-contextual_operation_anchor_dmad) | `PREVIEW_DESIGN` | \`&expr\` contextual operation anchor D-MAD |
-| [`custom_operator`](21-preview-design-types-objects-and-traits.md#preview-feature-custom_operator) | `PREVIEW_DESIGN` | Custom operator |
 | [`dependent_refinement_value_capture`](21-preview-design-types-objects-and-traits.md#preview-feature-dependent_refinement_value_capture) | `PREVIEW_DESIGN` | Dependent refinement value capture |
 | [`directed_coroutine_group`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-directed_coroutine_group) | `PREVIEW_DESIGN` | Directed coroutine group |
 | [`dyn_inspection`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-dyn_inspection) | `PREVIEW_DESIGN` | Dyn inspection |
@@ -74,9 +73,7 @@
 | [`ffi_c_extern_unsafe_surface_msp`](20-preview-gated-reference.md#preview-feature-ffi_c_extern_unsafe_surface_msp) | `PREVIEW` | FFI C extern unsafe surface disposition |
 | [`ffi_minimum_sound_profile`](20-preview-gated-reference.md#preview-feature-ffi_minimum_sound_profile) | `PREVIEW` | Safe FFI minimum sound profile |
 | [`first_class_witness_value_not_current`](21-preview-design-types-objects-and-traits.md#preview-feature-first_class_witness_value_not_current) | `PREVIEW_DESIGN` | First-class Witness value not current |
-| [`fixed_operator_conformance_overloading`](21-preview-design-types-objects-and-traits.md#preview-feature-fixed_operator_conformance_overloading) | `PREVIEW_DESIGN` | Fixed operator conformance overloading |
 | [`freeze_snapshot_view_responsibility_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-freeze_snapshot_view_responsibility_preview_design) | `PREVIEW_DESIGN` | Freeze snapshot view responsibility Preview design |
-| [`function_static_activation`](21-preview-design-types-objects-and-traits.md#preview-feature-function_static_activation) | `PREVIEW_DESIGN` | Function static activation |
 | [`generic_named_extension_set_target`](21-preview-design-types-objects-and-traits.md#preview-feature-generic_named_extension_set_target) | `PREVIEW_DESIGN` | Generic named extension set target |
 | [`immutable_first_collection_ownership_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-immutable_first_collection_ownership_preview_design) | `PREVIEW_DESIGN` | Immutable-first collection ownership Preview design |
 | [`literal_shaped_closed_record_type_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-literal_shaped_closed_record_type_surface_preview_design) | `PREVIEW_DESIGN` | Literal-shaped closed Record type surface Preview design |

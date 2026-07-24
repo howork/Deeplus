@@ -63,6 +63,16 @@ DocBlockComment ::= "//!!" DocBlockCommentScalar* "!!//" ;
 WordComment ::= "`" WordCommentScalar+ ;
 
 NUMERIC_LITERAL ::= FLOAT_LITERAL | INTEGER_LITERAL ;
+(* Attached imaginary literals are scanner-owned single tokens. The marker is
+   admitted only after a decimal floating literal: `4.0i`, `4.0f32i`.
+   An integer-looking `4i`, separated `4.0 i`, bare `i`, radix spelling, and
+   chained suffix such as `4.0f64i` are not imaginary literals. *)
+IMAGINARY_LITERAL ::= ScannerImaginaryFloatLiteral ;
+(* A Rational compound literal is recognized transactionally only at an
+   expression-prefix goal. Its two unsigned decimal magnitudes contain no
+   internal trivia, suffix, radix prefix, or sign. On failed recognition the
+   scanner consumes nothing, preserving ordinary `<`, `/`, and `>` parsing. *)
+RATIONAL_LITERAL ::= ScannerRationalLiteralAtExpressionPrefix ;
 INTEGER_LITERAL ::= BinaryInteger IntegerSuffix?
                   | OctalInteger IntegerSuffix?
                   | HexInteger IntegerSuffix?
@@ -108,7 +118,8 @@ INTERPOLATION_CLOSE ::= ScannerInterpolationClose ;
 INTERPOLATION_FORMAT_TEXT ::= ScannerInterpolationFormatText ;
 STRING_END ::= ScannerInterpolatedStringEnd ;
 
-(* True lexical mode openers; these are not parser compounds. *)
+(* True lexical mode openers; these are not parser compounds. The stable raw
+   String opener is the attached `#raw"` sequence owned by the raw scanner. *)
 RAW_STRING_LITERAL ::= ScannerRawStringLiteral ;
 MULTILINE_STRING_LITERAL ::= ScannerMultilineStringLiteral ;
 BYTES_LITERAL ::= ScannerBytesLiteral ;
@@ -164,6 +175,8 @@ EOF ::= ScannerEndOfInput ;
 (* Common syntax components. *)
 
 Identifier ::= IDENTIFIER ;
+(* A qualified path has one or more identifier segments. `::` joins adjacent
+   segments; one segment is still a valid path. *)
 QualifiedPath ::= Identifier ("::" Identifier)* ;
 
 TopLevelVisibility ::= "public" | "private" | "common" ;
@@ -335,7 +348,14 @@ FunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* Wher
 TraitFunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* WhereClause? (FunctionBody | StatementBoundary) ;
 
 FunctionBody ::= "=" FunctionBodyContent ;
-FunctionBodyContent ::= Block | ReturnShorthand | ClauseFunctionBody ;
+FunctionBodyContent ::= CallableBlock | ReturnShorthand | ClauseFunctionBody ;
+(* A function-static activation is a dedicated callable-body prologue, not a
+   BlockItem. Optional compile-time use/import directives precede it; no
+   runtime semantic item may do so. Owner/profile admission is checked by the
+   Frontend Model and the function-static activation contract. *)
+CallableBlock ::= "{" BlockPrologue? FunctionStaticActivation? BlockSequence "}" ;
+FunctionStaticActivation ::= "scope" FunctionStaticRole Block ;
+FunctionStaticRole ::= "#" "static" ;
 ReturnShorthand ::= "return" Expr StatementBoundary ;
 ClauseFunctionBody ::= "{{" LineBreakBoundary? MatchArmSequence "}}" ;
 
@@ -764,7 +784,7 @@ DeferStmt ::= "defer" DeferredCleanupInvocation StatementBoundary ;
    inline callable, await, spawn, guard or block is admitted. *)
 DeferredCleanupInvocation ::= DeferredDirectCall | DeferredMessageCall ;
 DeferredDirectCall ::= DeferredReceiver ArgumentList ;
-DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessageArguments? ;
+DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessagePayload? ;
 DeferredReceiver ::= DeferredPrimary DeferTargetSuffix* ;
 DeferredPrimary ::= Identifier | QualifiedStaticExpr ;
 DeferTargetSuffix ::= IndexSuffix | MemberSuffix ;
@@ -787,6 +807,10 @@ Expr ::= PrattExpr ;
 PredicateExpr ::= PrattPredicateExpr ;
 SliceIndexExpr ::= PrattSliceIndexExpr ;
 
+(* Numeric `+` and `-` enter the power operand at rbp 159. Every other prefix
+   parselet keeps its independently registered rbp 170. This makes power
+   right-associative and gives `-2 ^ 2` the mathematical parse `-(2 ^ 2)`,
+   while `2 ^ -3` remains `2 ^ (-3)`. *)
 ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
                            | "move" | "borrow" | "&" | "await" ;
 ExpressionPostfixParselet ::= CallSuffix
@@ -836,8 +860,8 @@ ExpectedVariantExpr ::= "::" Identifier ;
 
 (* ---------- Invocation and postfix syntax ---------- *)
 
-CallSuffix ::= ArgumentList ClosureExpr?
-             | AtomicCallArgument ClosureExpr ;
+CallSuffix ::= ArgumentList TrailingClosureGroup?
+             | AtomicCallArgument TrailingClosureGroup ;
 
 ArgumentList ::= "(" ")"
                | "(" CommaArgumentSequence ")"
@@ -860,6 +884,11 @@ NamedArgument ::= Identifier ":" Expr ;
 PositionalUnfoldArgument ::= "*" Expr ;
 NamedUnfoldArgument ::= "**" Expr ;
 AtomicCallArgument ::= Literal | Identifier | QualifiedStaticExpr | ExpectedVariantExpr ;
+(* Ordinary and message calls share one trailing-closure surface. The parser
+   preserves the ordered list and optional labels. Structural validation
+   requires every item to be labeled when the list has two or more items. *)
+TrailingClosureGroup ::= TrailingClosureArgument+ ;
+TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr ;
 
 (* An index suffix always supplies at least one axis. `[]` is recovery-only and
    diagnoses INDEX_SUFFIX_REQUIRES_AXIS; a full slice axis is written `*`. *)
@@ -875,10 +904,22 @@ AxisWildcard ::= "*" ;
 
 TupleOrdinalSuffix ::= "." StaticIntLiteral ;
 MemberSuffix ::= "." Identifier | "." "\\" NAME_TOKEN ;
-MessageSuffix ::= "~" MessageSelector MessageArguments? ClosureExpr? ;
-MessageSelector ::= Identifier | QualifiedExtensionSelector ;
+(* A message has zero or one payload node, never an ordinary ArgumentList.
+   Parenthesized positional content normalizes to one Tuple payload; all-named
+   content normalizes to one structural Record payload. Empty parentheses are
+   accepted as a compatibility spelling for no payload and are canonically
+   omitted by the formatter. *)
+MessageSuffix ::= "~" MessageSelector MessagePayload? TrailingClosureGroup? ;
+MessageSelector ::= Identifier | QualifiedMessageSelector ;
+QualifiedMessageSelector ::= TypeRef "::" Identifier ("::" Identifier)? ;
 QualifiedExtensionSelector ::= TypeRef "::" Identifier "::" Identifier ;
-MessageArguments ::= ArgumentList | AtomicCallArgument ;
+MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope ;
+MessagePayloadEnvelope ::= "(" ")"
+                         | "(" Expr ")"
+                         | "(" Expr "," Expr ("," Expr)* ","? ")"
+                         | "(" MessageNamedPayloadEntry
+                               ("," MessageNamedPayloadEntry)* ","? ")" ;
+MessageNamedPayloadEntry ::= Identifier ":" Expr ;
 
 NumericArrayTransposeSuffix ::= "^" ;
 ConstructorCallSuffix ::= "!" ArgumentList ;
@@ -888,8 +929,11 @@ DerivationBody ::= "{" MaterializationEntryList? "}" ;
 (* "as" and the modifier are separate lexer tokens but form an attached parser operator. *)
 CastSuffix ::= "as" "?" TypeRef | "as" "!" TypeRef ;
 
-QualifiedStaticExpr ::= StaticQualifier "::" Identifier ;
+QualifiedStaticExpr ::= StaticQualifier "::" Identifier
+                      | TraitQualifiedAssociatedSelector ;
 StaticQualifier ::= QualifiedTypeReference | AssociatedProjection ;
+TraitQualifiedAssociatedSelector ::= "<" TypeRef "as" QualifiedTypeReference ">"
+                                     "::" Identifier ;
 
 (* ---------- Value control and value match ---------- *)
 
@@ -953,9 +997,17 @@ PrattSliceIndexExpr ::= SLICE_INDEX_PRATT_ENTRY ;
    ================================================================== *)
 (* Literal and collection syntax. *)
 
-Literal ::= BoolLiteral | NumericLiteral | StringLiteralExpr | CharLiteralExpr | BytesLiteral ;
+Literal ::= BoolLiteral
+          | NumericLiteral
+          | ImaginaryLiteralExpr
+          | RationalLiteralExpr
+          | StringLiteralExpr
+          | CharLiteralExpr
+          | BytesLiteral ;
 BoolLiteral ::= "true" | "false" ;
 NumericLiteral ::= NUMERIC_LITERAL ;
+ImaginaryLiteralExpr ::= IMAGINARY_LITERAL ;
+RationalLiteralExpr ::= RATIONAL_LITERAL ;
 CharLiteralExpr ::= CHAR_LITERAL ;
 BytesLiteral ::= BYTES_LITERAL ;
 

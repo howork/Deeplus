@@ -1,0 +1,490 @@
+{
+  "schema": "deeplus.function-static-activation-contract/r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "feature_id": "function_static_activation",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "design_verdict": "STABLE_DESIGN_ACCEPTED_WITH_EXACT_GUARDS",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": true,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "controlling_evidence": [
+    {
+      "artifact": "Design_Deeplus_Function_Static_Activation_Stable_Promotion_Plan_R2.md",
+      "sha256": "45ea122936fef87cc20b6aa382a4e263721bf882c88b17bb91014a166a0f91dd",
+      "disposition": "ACCEPT_WITH_REPAIRS"
+    },
+    {
+      "artifact": "Design_Deeplus_Function_Static_Activation_Stable_Promotion_Blockers_R1.md",
+      "sha256": "199a8c90ce957dabc143f93775e54ad7d654880dc8e38873cd4ba3a3a702d561",
+      "disposition": "CURRENT_GAPS_RECONCILED_BY_THIS_CONTRACT"
+    },
+    {
+      "artifact": "Deeplus_Function_Static_Activation_Explained_R1.md",
+      "sha256": "3b4c05054bb9ab3271c9eae1ddae1fad386eb51ce315af7a5ec4d80dcf830194",
+      "disposition": "EXPLANATORY_EVIDENCE_RECONSTRUCTED_WITH_CURRENT_GUARDS"
+    }
+  ],
+  "authority_fence": {
+    "language_design": "STABLE_DESIGN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "hir_lowering": "NOT_RUN",
+    "mir_lowering": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "product_support": "NOT_RUN",
+    "implementation_or_publication_claim": false
+  },
+  "open_feature_p1": {
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_this_contract": 0,
+    "created_by_this_contract": 0
+  },
+  "separate_open_actions": [
+    "M13-A002",
+    "M13-A003",
+    "M13-A004",
+    "M13-A005"
+  ],
+  "surface_contract": {
+    "canonical_surface": "scope#static { ... }",
+    "grammar_owner": "CallableBlock",
+    "placement": "after optional BlockPrologue and before the first runtime semantic item",
+    "maximum_per_callable_body": 1,
+    "normal_result": "Unit",
+    "expression_body_route": false,
+    "ordinary_block_item": false,
+    "hash_role": {
+      "token_sequence": [
+        "scope",
+        "#",
+        "static"
+      ],
+      "trivia_policy": "the existing hash-role policy admits horizontal whitespace and comments on the same physical line; a physical line break is rejected",
+      "formatter_output": "scope#static",
+      "special_no_trivia_rule": false
+    }
+  },
+  "admitted_synchronous_named_owner_matrix": [
+    {
+      "owner": "ModuleFunctionDecl",
+      "profiles": [
+        "def",
+        "def#pure"
+      ]
+    },
+    {
+      "owner": "ExtensionFunctionDecl",
+      "profiles": [
+        "def"
+      ]
+    },
+    {
+      "owner": "nominal MemberFunctionDecl",
+      "profiles": [
+        "def",
+        "def#mut",
+        "def#consume",
+        "def#pure"
+      ]
+    },
+    {
+      "owner": "TypeSideMemberFunctionDecl",
+      "profiles": [
+        "def"
+      ]
+    },
+    {
+      "owner": "TraitMethodDecl with body",
+      "profiles": [
+        "def",
+        "def#pure"
+      ]
+    },
+    {
+      "owner": "ConformanceMethodDecl",
+      "profiles": [
+        "def",
+        "def#mut",
+        "def#consume",
+        "def#pure"
+      ]
+    },
+    {
+      "owner": "ExtensionSetFunctionDecl",
+      "profiles": [
+        "def"
+      ]
+    }
+  ],
+  "excluded_owners_and_profiles": [
+    "EntryFunctionDecl",
+    "LocalFunctionDecl",
+    "ConstructorDecl",
+    "CleanupDecl",
+    "ActorOnDecl",
+    "ActorRequestDecl",
+    "AccessorDecl",
+    "ClosureExpr",
+    "lambda",
+    "async or suspending named callable",
+    "generator",
+    "PreviewFfiFunctionDecl",
+    "recovery declaration",
+    "bodyless Trait requirement",
+    "def#guard"
+  ],
+  "body_admission": {
+    "predicate": "FunctionStaticActivationBodyAdmitted",
+    "allowed_inputs": [
+      "literal",
+      "compile-time constant",
+      "fully committed immutable module or type constant with stable identity",
+      "normalized generic type or static argument",
+      "activation-local temporary whose cleanup is fully discharged",
+      "statically selected activation-free pure helper"
+    ],
+    "forbidden_inputs": [
+      "self or receiver",
+      "callable parameter",
+      "evaluated default result",
+      "caller Context",
+      "caller task, actor, thread, or isolation identity",
+      "time, random, environment, locale, or ambient provider",
+      "mutable global state",
+      "lazy force"
+    ],
+    "normalized_error_set": [],
+    "normalized_effect_row": [],
+    "authority_count": 0,
+    "suspends": false,
+    "cancellation_observation": false,
+    "persistent_mutable_publication_count": 0,
+    "persistent_needs_drop_residue_count": 0,
+    "resource_escape_count": 0,
+    "dynamic_indirect_provider_call_count": 0,
+    "activation_bearing_callee_count": 0,
+    "outward_control_transfer_count": 0,
+    "local_function_declaration_count": 0
+  },
+  "identity_contract": {
+    "callable_identity_type": "CallableImplementationId",
+    "compile_identity": "FunctionStaticOwnerId",
+    "runtime_state_key": "(RuntimeInstanceId, FunctionStaticOwnerId)",
+    "owner_recipe": [
+      "function-static-activation/r1",
+      "package identity",
+      "module identity",
+      "CallableImplementationId",
+      "normalized owner generic instantiation",
+      "normalized callable generic instantiation",
+      "activation contract digest"
+    ],
+    "activation_contract_digest_inputs": [
+      "canonical normalized activation HIR",
+      "sorted actually used WitnessId values",
+      "sorted actually used ConformanceId values",
+      "sorted helper CallableImplementationId and safety-summary digest records"
+    ],
+    "helper_requirement": "every helper is statically selected, activation-free, pure, synchronous, nonthrowing, authority-free, resource-safe, and bound to its exact safety-summary digest",
+    "excluded_identity_inputs": [
+      "trivia",
+      "source path",
+      "source, import, use, or link order",
+      "unused ambient Witness or Context",
+      "runtime address",
+      "machine-code identity",
+      "inlining, LTO, or JIT compilation identity"
+    ],
+    "overload_state_separated": true,
+    "override_state_separated": true,
+    "generic_instantiation_state_separated": true,
+    "effective_trait_or_conformance_state_separated": true,
+    "machine_code_sharing_may_share_state": false,
+    "hash_collision_policy": "equal hash with unequal canonical owner recipe is a terminal link error"
+  },
+  "trigger_and_ordering": {
+    "triggers": [
+      "actual invocation of the final selected CallableImplementationId"
+    ],
+    "non_triggers": [
+      "name lookup",
+      "overload candidate collection",
+      "Trait requirement checking",
+      "function value creation, copy, or move",
+      "reflection or tooling inspection",
+      "inlining, AOT compilation, or JIT compilation"
+    ],
+    "ordered_events": [
+      "evaluate callee or receiver",
+      "evaluate explicit arguments left-to-right",
+      "evaluate defaults under current rules",
+      "validate inputs and acquire staging temporaries",
+      "ensure FunctionStaticOwnerId",
+      "existing atomic ownership_commit",
+      "callable_invoke and ordinary contract/body"
+    ],
+    "new_CALL_INPUT_COMMIT_event_count": 0,
+    "failure_before_ensure_runs_activation": false,
+    "ensure_failure": {
+      "ownership_commit_count": 0,
+      "ordinary_body_entry_count": 0,
+      "caller_owner_retained": true,
+      "staged_temporary_cleanup": "exactly once in reverse acquisition order"
+    }
+  },
+  "state_machine": {
+    "states": [
+      "Dormant",
+      "Initializing",
+      "Ready",
+      "Failed"
+    ],
+    "transitions": [
+      "Dormant -> Initializing",
+      "Initializing -> Ready",
+      "Initializing -> Failed",
+      "Ready -> Ready",
+      "Failed -> Failed"
+    ],
+    "forbidden_transitions": [
+      "Ready -> Dormant",
+      "Ready -> Initializing",
+      "Failed -> Dormant",
+      "Failed -> Initializing",
+      "Ready -> Failed"
+    ],
+    "winner_count": 1,
+    "implicit_retry_count": 0,
+    "implicit_reset_count": 0,
+    "wait_is_source_suspension": false,
+    "wait_is_cancellation_point": false,
+    "fairness_promise": false
+  },
+  "publication_contract": {
+    "language_edge": "Ready or Failed publication happens-before every caller that leaves the ensure barrier",
+    "partial_observation_count": 0,
+    "backend_minimum": "release/acquire or stronger",
+    "weak_atomic_source_surface_activated": false
+  },
+  "failure_contract": {
+    "profile": "terminal_cached_uniform_failure_no_retry_v1",
+    "failure_identity": "one FunctionStaticFailureId per RuntimeInstanceId and FunctionStaticOwnerId terminal failure",
+    "primary_surface": "FUNCTION_STATIC_ACTIVATION_FAILED",
+    "cause": "the initiating Defect identity and cause chain",
+    "winner_waiter_later_identity_equal": true,
+    "scheduler_winner_changes_observable_failure": false,
+    "same_owner_reentry": {
+      "cause": "FUNCTION_STATIC_ACTIVATION_REENTRANCY",
+      "terminal_state": "Failed",
+      "deadlock": false,
+      "undefined_behavior": false
+    }
+  },
+  "module_api_residue": {
+    "public_semantic_fields": [
+      "activation_present",
+      "activation_semantics_version",
+      "CallableImplementationId",
+      "owner recipe digest",
+      "activation contract digest",
+      "safety-summary digest",
+      "dependency digest",
+      "sorted used WitnessId values",
+      "sorted used ConformanceId values",
+      "sorted helper identity and safety-summary records",
+      "terminal failure profile",
+      "happens-before publication profile"
+    ],
+    "backend_local_fields_forbidden_in_public_digest": [
+      "initializer symbol",
+      "bytecode entry",
+      "runtime state-cell address",
+      "owner table index",
+      "machine-code address"
+    ],
+    "activation_add_remove_or_contract_change": "public API digest delta requiring compatible consumer rebuild or terminal stale-metadata rejection",
+    "missing_or_mismatched_dependency": "terminal link error"
+  },
+  "separate_or_rejected_families": {
+    "top_level_static_def": "NOT_CURRENT; retain STATIC_FUNCTION_DECLARATION_NOT_CURRENT and no automatic rewrite",
+    "static_once_value": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "effectful_static_activation": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "module_static_entrance": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "class_static_activation": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "trait_successor_via_auto_specialization_or_local_witness": "NOT_ACTIVATED"
+  },
+  "diagnostic_families": [
+    "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
+    "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
+    "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
+    "FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED",
+    "FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN",
+    "FUNCTION_STATIC_OWNER_ID_COLLISION",
+    "FUNCTION_STATIC_METADATA_MISMATCH",
+    "FUNCTION_STATIC_ACTIVATION_REENTRANCY",
+    "FUNCTION_STATIC_ACTIVATION_FAILED"
+  ],
+  "rules": [
+    {
+      "rule_id": "FSA-R001",
+      "title": "Stable design and product evidence remain separate",
+      "contract": "The bounded language semantics are STABLE_DESIGN and source_activation none; every product lane remains NOT_RUN until a target-bound receipt exists."
+    },
+    {
+      "rule_id": "FSA-R002",
+      "title": "The surface is one current hash-role composition",
+      "contract": "Canonical source prints scope#static; parsing follows the existing same-line hash-role trivia law and rejects a physical line break without inventing a stricter lexical owner."
+    },
+    {
+      "rule_id": "FSA-R003",
+      "title": "Placement and cardinality are structural",
+      "contract": "CallableBlock admits at most one activation after optional compile-time BlockPrologue and before every runtime semantic item."
+    },
+    {
+      "rule_id": "FSA-R004",
+      "title": "Named synchronous owner admission is closed",
+      "contract": "Only the exact admitted_synchronous_named_owner_matrix owns the activation field; no family resemblance grants it to another declaration."
+    },
+    {
+      "rule_id": "FSA-R005",
+      "title": "Excluded callables remain excluded",
+      "contract": "Entry/local/constructor/cleanup/actor/closure/async/generator/FFI/recovery/bodyless-Trait/guard owners create no admitted activation HIR."
+    },
+    {
+      "rule_id": "FSA-R006",
+      "title": "Activation is not ordinary body control flow",
+      "contract": "The CST and AST retain a dedicated callable-body field and lowering never executes the block once per ordinary body traversal."
+    },
+    {
+      "rule_id": "FSA-R007",
+      "title": "First-caller data are unobservable",
+      "contract": "Receiver, parameters, defaults, Context, execution identity, ambient authority, nondeterminism, mutable globals, and lazy force are unavailable to the activation body."
+    },
+    {
+      "rule_id": "FSA-R008",
+      "title": "The body profile is closed and residue-free",
+      "contract": "The activation body is safe, synchronous, nonsuspending, noncancelling, throws Never, effects {}, authority-free, Unit-valued, and leaves zero persistent mutable, Resource, or needsDrop residue."
+    },
+    {
+      "rule_id": "FSA-R009",
+      "title": "Static helper closure is exact",
+      "contract": "Only statically selected activation-free safe helpers are callable and each helper identity and safety-summary digest is bound in a sorted dependency record."
+    },
+    {
+      "rule_id": "FSA-R010",
+      "title": "CallableImplementationId is the sole callable identity name",
+      "contract": "Every owner recipe, HIR record, API residue, fixture, and diagnostic trace uses CallableImplementationId rather than competing semantic-callable aliases."
+    },
+    {
+      "rule_id": "FSA-R011",
+      "title": "Owner identity is semantic and reproducible",
+      "contract": "FunctionStaticOwnerId separates overload, implementation, generic instantiation, and effective static evidence while excluding source order, unused context, machine address, and backend code identity."
+    },
+    {
+      "rule_id": "FSA-R012",
+      "title": "Only final actual invocation triggers",
+      "contract": "Lookup, candidate collection, function-value operations, reflection, and compilation are non-triggers; one actual invocation ensures only its final selected implementation owner."
+    },
+    {
+      "rule_id": "FSA-R013",
+      "title": "Activation precedes the existing ownership commit",
+      "contract": "Callee/receiver and arguments/defaults stage once before ensure; ensure succeeds before the existing atomic ownership_commit and body, and no invented CALL_INPUT_COMMIT event exists."
+    },
+    {
+      "rule_id": "FSA-R014",
+      "title": "The once state machine is terminal",
+      "contract": "One winner moves Dormant to Initializing and exactly one Ready or Failed terminal state; reset and retry counts remain zero."
+    },
+    {
+      "rule_id": "FSA-R015",
+      "title": "Publication has one language happens-before edge",
+      "contract": "Ready and Failed publication happens-before each released caller, forbids partial observation, and grants no user weak-atomic surface or fairness promise."
+    },
+    {
+      "rule_id": "FSA-R016",
+      "title": "Failure identity is uniform",
+      "contract": "Winner, waiters, and later callers observe the same owner-bound FUNCTION_STATIC_ACTIVATION_FAILED identity; the initiating Defect is a cause rather than a scheduler-dependent alternative primary."
+    },
+    {
+      "rule_id": "FSA-R017",
+      "title": "Reentry and activation dependencies cannot deadlock",
+      "contract": "Activation-bearing callees are statically forbidden and same-owner runtime reentry terminally fails with the canonical reentry cause, never deadlock, undefined behavior, retry, or reset."
+    },
+    {
+      "rule_id": "FSA-R018",
+      "title": "Separate compilation binds semantic residue",
+      "contract": "Module API digest records semantic owner, contract, safety, dependency, failure, and publication residue; backend-local symbols, entries, addresses, and table indices remain outside public canonical bytes."
+    },
+    {
+      "rule_id": "FSA-R019",
+      "title": "Removed and Preview families do not inherit activation",
+      "contract": "Top-level static def remains rejected without automatic rewrite, and value/effectful/module/class static plus Trait VIA/AUTO/specialization/local-witness successors remain nonactivated."
+    },
+    {
+      "rule_id": "FSA-R020",
+      "title": "Existing P-level and product boundaries are invariant",
+      "contract": "Semantic P0 stays zero, the exact existing feature P1 set stays 22 OPEN, this contract creates or closes no P1, M13 actions stay separate, and 15 product lanes stay NOT_RUN."
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 20,
+    "fixture_count": 40,
+    "positive_fixture_count": 12,
+    "negative_fixture_count": 12,
+    "boundary_fixture_count": 8,
+    "mutation_fixture_count": 8,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "product_lane_count": 15,
+    "product_executed_count": 0,
+    "new_CALL_INPUT_COMMIT_event_count": 0,
+    "implicit_retry_count": 0,
+    "implicit_reset_count": 0,
+    "weak_atomic_source_surface_count": 0,
+    "top_level_static_def_activation_count": 0
+  }
+}

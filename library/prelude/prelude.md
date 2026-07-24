@@ -1,6 +1,6 @@
 # Deeplus Prelude 0.1.2 — R51f3 Current Canonical
 
-Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 56 rows.
+Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 63 rows.
 
 ## 1. Core domains
 
@@ -41,7 +41,15 @@ existing `RCTS_RESPONSIBILITY_COMBINATION_INVALID` family.
 
 ## 4. Fixed operators and protocols
 
-The operator vocabulary and precedence table are closed, and every current glyph dispatches as `INTRINSIC_ONLY`. Prelude Trait and protocol names expose named behavior only; conformance, extension, witness, provider, or source order cannot add or replace a glyph implementation. `Bitwise` and `Ord<T>` are named contract vocabulary, not punctuation hooks. Arbitrary custom operator declaration and fixed-operator conformance expansion remain `PREVIEW_DESIGN`/nonactivatable, and all `TCC-P1-002..008` remain OPEN.
+The operator vocabulary and precedence table are closed. Primitive and otherwise
+language-reserved operand pairs dispatch as `INTRINSIC_ONLY`. Stable
+fixed-glyph conformance adds exactly the existing binary `+`, `-`, and `*`
+through `Add<Rhs>`, `Subtract<Rhs>`, and `Multiply<Rhs>` for non-intrinsic pairs.
+Selection admits only one left-owner `DIRECT_GLOBAL` conformance and never uses
+conversion, result context, order, alternate evidence, fallback, or runtime
+lookup. `Bitwise` and `Ord<T>` remain named contract vocabulary, not punctuation
+hooks. Arbitrary custom operator declarations are rejected. Product execution
+is `NOT_RUN`, and all `TCC-P1-002..008` remain OPEN evidence gates.
 
 ## 4A. Current numeric and indexing boundary
 
@@ -50,6 +58,54 @@ The operator vocabulary and precedence table are closed, and every current glyph
 `ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers both integer division and remainder by zero. It is neither an `ErrorSet` member nor an enum-as-error. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
 
 NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. No Prelude operation silently rebases, copies, makes the view mutable, crosses isolation, or extends its owner lifetime. An independent value or rebased coordinate domain requires an explicit named operation.
+
+### 4B. BigInt, Rational, Complex, and power
+
+`BigInt` is the public arbitrary-precision signed integer dependency of the
+exact-number profile. It is not an alias for `Int`, and its storage and foreign
+ABI are opaque.
+
+`Rational` is an always-available exact value represented semantically by a
+normalized BigInt numerator and positive denominator. Construction enforces
+`gcd(abs(n), d) = 1` and canonical zero `0/1`. The compound source literal
+`<p/q>` and the checked `Rational!` constructor produce the same value
+contract. `Rational` supplies strong named equality, ordering, hashing, and
+keyability. The sealed Prelude provides direct-global `+`, `-`, and `*`
+evidence for Rational/Rational and exact integer/Rational pairs in both
+directions. Division is the named checked `dividedBy`; Decimal, Float and
+Complex conversions are explicit. `display()` may return `2/3`, while
+`sourceRepr()` returns the parseable `<2/3>`.
+
+`Complex<Rep>` is an immutable two-component core numeric value whose initial
+Rep set is exactly Float32 and Float64. Bare `Complex` is the closed alias
+`Complex<Float64>`. The values `Complex::zero`, `Complex::one`, and
+`Complex::i` are type-side constants, not fields of an implicit companion
+object. The canonical Cartesian source is:
+
+```deeplus
+let z: Complex = 3.0 + 4.0i
+let w: Complex<Float32> = 1.0f32 - 2.0f32i
+```
+
+The `i` marker belongs only to an attached floating literal. Complex supplies
+partial IEEE equality but no implicit strong Eq, total ordering, Hash, or
+Keyable. Prelude owns sealed same-Rep Complex and real/Complex `+`, `-`, `*`
+conformances. Complex `/` and scalar `^` are closed language intrinsics, not
+additional conformance glyphs. Named APIs cover conjugate, magnitude, phase,
+polar construction, robust checked division, principal exp/log/sqrt/cbrt,
+integer/real/Complex power, alternate branches, trigonometric and hyperbolic
+families, parsing, codecs, and explicit conversion.
+
+NumericArray Complex dot product conjugates the left operand. `dotu` is the
+explicit unconjugated operation. Attached `A^` is transpose and
+`A ~ adjoint` is conjugate transpose.
+
+Infix `^` has one closed static type matrix and uses no `Power` Trait,
+expected-result selection, runtime sign/integrality test, provider, fallback or
+runtime lookup. Real power remains real; Complex power uses the principal
+branch. Ordinary `0 ^ 0` returns one in the selected result domain; named
+`powChecked` may instead report `PowerError::indeterminate`. All of these are
+language/Prelude design contracts; every product lane remains `NOT_RUN`.
 
 ## 5. Profile boundaries
 
@@ -90,7 +146,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 55 canonical Prelude entries
+## 10. Human index of the 63 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -101,6 +157,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `FillRepeatAdmissibilityProfile` | checker_known_protocol | `stable_design` | Stable checker law for shaped fill/repeat/generator initializer admissibility. |
 | `Indexable` | checker_known_protocol | `stable_design` | built-in owner indexing descriptor; conformance does not activate brackets |
 | `ArithmeticDefect` | language_intrinsic_defect | `stable_design` | closed nonrecoverable checked-integer failure family: overflow or division/remainder by zero |
+| `Add<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryAdd` evidence with associated `Output` |
 | `IndexError` | enum | `stable_design` | closed recoverable out-of-domain and missing-key indexing failure family |
 | `MembershipProtocol` | checker_known_protocol | `stable_design` | Current Prelude design vocabulary; product support NOT_RUN. |
 | `List<T>` | collection | `stable_design` | ordered owned collection with one-based built-in indexing |
@@ -133,6 +190,10 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `ModuleSignature` | language_surface | `stable_design` | public API boundary surface; stable design; not separate compilation receipt |
 | `Float32` | numeric_type_side_constants | `stable_design` | IEEE binary32 value behavior; non-finite values are type-side constants. |
 | `Float64` | numeric_type_side_constants | `stable_design` | IEEE binary64 value behavior; NaN supplies no implicit ordering/key evidence. |
+| `BigInt` | exact_numeric_value | `stable_design` | arbitrary-precision signed integer dependency; no implicit Int or ABI equivalence |
+| `Rational` | exact_numeric_value | `stable_design` | normalized exact BigInt ratio with strong equality/order/hash/key laws |
+| `Complex<Rep>` | core_numeric_value | `stable_design` | immutable Float32/Float64 complex value with partial equality and principal numeric APIs |
+| `PowerError` | enum | `stable_design` | checked named analytic power outcome; ordinary infix 0^0 remains one |
 | `Actor` | protocol | `stable_design` | isolated mailbox execution root |
 | `ActorMessageError` | enum | `stable_design` | closed actor admission/reply failure family; cancellation excluded |
 | `Sequence<T>` | protocol | `stable_design` | named ordered-sequence contract; conformance alone does not activate brackets |
@@ -150,6 +211,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `BitfieldRaw<Backing>` | trait | `stdlib` | checked raw carrier contract |
 | `LogicalIndexDomain<Index>` | trait | `stable_design` | named logical-domain contract; built-in brackets remain closed-owner syntax |
 | `Ord<T>` | trait | `stable_design` | nominal named ordering evidence, never an operator-glyph hook |
+| `Multiply<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryMultiply` evidence with associated `Output` |
+| `Subtract<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinarySubtract` evidence with associated `Output` |
 | `Display` | trait/profile | `stable_design` | string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed |
 
 `Ord<T>.compare(lhs, rhs)` borrows both operands, is deterministic, pure,

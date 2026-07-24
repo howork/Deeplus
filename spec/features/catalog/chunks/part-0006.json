@@ -1564,32 +1564,43 @@
     ],
     "display_name": "Fixed operator conformance overloading",
     "feature_id": "fixed_operator_conformance_overloading",
-    "feature_kind": "design_proposal",
+    "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Preview design",
-    "notes": "Nonactivatable design. Current fixed-glyph dispatch is intrinsic-only and rejects Trait/conformance/extension/witness activation with FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT. TCC-P1-002..008 remain OPEN; no operator-to-Trait registry or fallback is current.",
+    "language_status": "Stable design",
+    "notes": "Stable bounded existing-glyph conformance profile: the closed token, fixity, binding-power and associativity table is unchanged; exactly BinaryAdd, BinarySubtract and BinaryMultiply map to Add<Rhs>.add, Subtract<Rhs>.subtract and Multiply<Rhs>.multiply with associated Output. Built-in normalized operand pairs are intrinsic-reserved with zero conformance lookup. A non-intrinsic pair selects exactly one left-nominal-owner DIRECT_GLOBAL conformance by OperatorId and normalized operand types; expected result, implicit conversion, via/VIA/AUTO/local/case/extension/provider/specialization evidence, source/import order, fallback and runtime relookup are forbidden. Witnesses borrow both operands and are throws Never, effects {}, synchronous, non-consuming and non-mutating. Other glyph families and arbitrary custom operators remain excluded. TCC-P1-002..008 stay exactly seven OPEN implementation/conformance evidence gates and every product lane remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
-    "source_activation": "nonactivatable",
-    "status_display": "Preview design",
-    "status_enum": "PREVIEW_DESIGN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "productions": [],
       "semantic_reference_productions": [],
       "diagnostics": [
-        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+        "OPERATOR_CONFORMANCE_AMBIGUOUS",
+        "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+        "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+        "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+        "OPERATOR_CONFORMANCE_MISSING",
+        "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+        "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+        "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN"
       ],
       "predicates": [
         "NumericOperatorCoreAdmitted"
       ],
-      "examples": []
+      "examples": [
+        "EX-R51FOC-P-001",
+        "EX-R51VOI-NG-003"
+      ]
     },
-    "trace_class": "design_only",
+    "trace_class": "semantic",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

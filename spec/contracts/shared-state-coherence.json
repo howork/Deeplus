@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.shared-state-coherence-contract/r1",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -43,6 +43,7 @@
       "domain": "shared_cell_observation",
       "contract": {
         "operation": "withValue",
+        "call_surface": "ordinary CallSuffix with the shared TrailingClosureGroup; not a MessageSuffix",
         "access": "one #scoped borrow T",
         "suspension": "forbidden",
         "borrow_escape": "forbidden",
@@ -88,6 +89,7 @@
       "domain": "shared_mutex_access",
       "contract": {
         "operation": "receiver-bound withLock",
+        "call_surface": "ordinary CallSuffix with the shared TrailingClosureGroup; not a MessageSuffix",
         "access": "one #scoped inout T",
         "suspension": "forbidden",
         "place_escape": "forbidden",

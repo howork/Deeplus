@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/value-operator-indexing-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "contract": "spec/contracts/value-operator-indexing-coherence.json",
   "authority": "CURRENT_DESIGN_STATIC_CONTRACT",
   "evidence_level": "DESIGN_STATIC_NOT_RUN",
@@ -390,6 +390,90 @@
         "implicit_element_copy_count": 0
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-020",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R005", "VOI-R006", "VOI-R012"],
+      "domain": "operator",
+      "source": "let left: UInt8 = 0b1010\nlet right: UInt8 = 0b1100\nlet combined: UInt8 = left && right",
+      "subject_profile": "POINTWISE_LOGICAL_PACKED_EXACT_UINT8",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "semantic_family": "POINTWISE_LOGICAL",
+        "carrier_route": "PACKED_EXACT_INTEGER",
+        "left_evaluation_count": 1,
+        "right_evaluation_count": 1,
+        "evaluation_order": "LEFT_THEN_RIGHT",
+        "short_circuit_count": 0,
+        "flow_narrowing_fact_count": 0,
+        "normalized_operand_domain_count": 1,
+        "result_domain": "UInt8",
+        "implicit_conversion_count": 0,
+        "trait_or_runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-021",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R001", "VOI-R005", "VOI-R006", "VOI-R012"],
+      "domain": "operator",
+      "source": "let left: #2,2[UInt8] = #2,2[1, 2; 3, 4]\nlet right: #2,2[UInt8] = #2,2[4, 3; 2, 1]\nlet combined: #2,2[UInt8] = left || right",
+      "subject_profile": "POINTWISE_LOGICAL_NUMERIC_ARRAY_EXACT_SAME_SHAPE_UINT8",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "semantic_family": "POINTWISE_LOGICAL",
+        "carrier_route": "NUMERIC_ARRAY_EXACT_INTEGER",
+        "left_evaluation_count": 1,
+        "right_evaluation_count": 1,
+        "evaluation_order": "LEFT_THEN_RIGHT",
+        "short_circuit_count": 0,
+        "flow_narrowing_fact_count": 0,
+        "input_rank": 2,
+        "input_shape": [2, 2],
+        "input_orientation": "rank_two_exact",
+        "element_domain": "UInt8",
+        "result_rank": 2,
+        "result_shape": [2, 2],
+        "result_element_domain": "UInt8",
+        "implicit_broadcast_count": 0,
+        "implicit_shape_conversion_count": 0,
+        "implicit_element_conversion_count": 0,
+        "trait_or_runtime_lookup_count": 0,
+        "visible_numeric_array_result_responsibility_preserved": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-POS-022",
+      "fixture_class": "positive",
+      "rule_ids": ["VOI-R005"],
+      "domain": "fixed_operator_conformance",
+      "source": "public conformance Vec2 conforms Add<Vec2> {\n    type Output = Vec2\n    +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {\n        return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)\n    }\n}\nlet total: Vec2 = left + right",
+      "subject_profile": "STABLE_FIXED_OPERATOR_LEFT_OWNER_DIRECT_GLOBAL_ADD",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "feature_status": "STABLE_DESIGN",
+        "operator_id": "BinaryAdd",
+        "trait_id": "Add<Vec2>",
+        "method_id": "Add.add",
+        "associated_output": "Vec2",
+        "selection_key": ["BinaryAdd", "Vec2", "Vec2"],
+        "evidence_route": "DIRECT_GLOBAL",
+        "left_nominal_owner": true,
+        "intrinsic_reserved_pair": false,
+        "selected_conformance_count": 1,
+        "runtime_relookup_or_fallback_count": 0,
+        "operand_evaluation_order": "LEFT_THEN_RIGHT",
+        "operand_evaluation_count_each": 1,
+        "responsibility_profile": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+        "TCC_P1_002_through_008": "OPEN"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
   "negative": [
@@ -421,7 +505,10 @@
       "diagnostic_or_null": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
       "assertions": {
         "custom_operator_current_count": 0,
+        "custom_operator_preview_design_count": 0,
+        "custom_operator_disposition": "REJECTED_NOT_CURRENT_HISTORICAL_TRACE_ONLY",
         "recovery_operator_identity_count": 0,
+        "recovery_diagnostic_trace_preserved": true,
         "named_method_alternative_required": true
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
@@ -431,13 +518,17 @@
       "fixture_class": "negative",
       "rule_ids": ["VOI-R005"],
       "domain": "trait_guard",
-      "source": "public trait Additive {\n    +def add+(rhs: Self) -> Self throws Never effects {}\n}\npublic conformance Amount conforms Additive {\n    +def add+(rhs: Self) -> Self throws Never effects {} = { return self }\n}\nlet total = left + right",
-      "subject_profile": "FIXED_OPERATOR_TRAIT_DISPATCH",
+      "source": "public conformance Amount conforms Add<Amount> via Helper::addition {\n    type Output = Amount\n    +def add.(borrow rhs: Amount) -> Amount throws Never effects {} = { return self }\n}\nlet total = left + right",
+      "subject_profile": "FIXED_OPERATOR_ALTERNATE_EVIDENCE_ROUTE",
       "expected": "REJECT",
-      "diagnostic_or_null": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "diagnostic_or_null": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
       "assertions": {
-        "source_activation": "NONACTIVATABLE",
-        "trait_lookup_count": 0,
+        "feature_status": "STABLE_DESIGN",
+        "admitted_operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply"],
+        "attempted_route": "via",
+        "admitted_route": "DIRECT_GLOBAL",
+        "selected_conformance_count": 0,
+        "runtime_relookup_or_fallback_count": 0,
         "TCC_P1_002_through_008": "OPEN"
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
@@ -757,6 +848,101 @@
         "implicit_copy_count": 0
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-023",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005", "VOI-R006"],
+      "domain": "operator",
+      "source": "let invalid = true && false",
+      "subject_profile": "POINTWISE_LOGICAL_SCALAR_BOOL_REMAINS_REJECTED",
+      "expected": "REJECT",
+      "diagnostic_or_null": "LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL",
+      "assertions": {
+        "scalar_bool_glyph_admission_count": 0,
+        "replacement_strict": "and",
+        "replacement_sequential": "and then",
+        "short_circuit_inferred_from_double_glyph": false,
+        "flow_narrowing_fact_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-024",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005", "VOI-R006", "VOI-R012"],
+      "domain": "operator",
+      "source": "let left: #2,2[Bool] = #2,2[true, false; false, true]\nlet right: #2,2[Bool] = #2,2[false, true; true, false]\nlet invalid = left && right",
+      "subject_profile": "POINTWISE_LOGICAL_NUMERIC_ARRAY_BOOL_DEFERRED",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMARR_ELEMENT_NOT_NUMERIC",
+      "assertions": {
+        "numeric_array_bool_current_admission_count": 0,
+        "deferred_nonactivatable": true,
+        "operator_candidate_count": 0,
+        "result_array_count": 0,
+        "product_execution_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-025",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005", "VOI-R006", "VOI-R012"],
+      "domain": "operator",
+      "source": "let row: #1,2[UInt8] = #1,2[1, 2]\nlet matrix: #2,2[UInt8] = #2,2[1, 2; 3, 4]\nlet invalid = row || matrix",
+      "subject_profile": "POINTWISE_LOGICAL_NUMERIC_ARRAY_NO_IMPLICIT_BROADCAST",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST",
+      "assertions": {
+        "left_shape": [1, 2],
+        "right_shape": [2, 2],
+        "shape_identity_equal": false,
+        "implicit_broadcast_count": 0,
+        "implicit_shape_conversion_count": 0,
+        "operand_value_evaluation_count_before_static_rejection": 0,
+        "result_array_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-026",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005", "VOI-R006", "VOI-R012"],
+      "domain": "operator",
+      "source": "let left: #2,2[UInt8] = #2,2[1, 2; 3, 4]\nlet right: #2,2[UInt16] = #2,2[1, 2; 3, 4]\nlet invalid = left ^^ right",
+      "subject_profile": "POINTWISE_LOGICAL_NUMERIC_ARRAY_ELEMENT_WIDTH_MISMATCH",
+      "expected": "REJECT",
+      "diagnostic_or_null": "BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST",
+      "assertions": {
+        "shape_identity_equal": true,
+        "left_element_domain": "UInt8",
+        "right_element_domain": "UInt16",
+        "element_width_equal": false,
+        "implicit_width_conversion_count": 0,
+        "implicit_element_conversion_count": 0,
+        "result_array_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-NEG-027",
+      "fixture_class": "negative",
+      "rule_ids": ["VOI-R005", "VOI-R012"],
+      "domain": "operator",
+      "source": "let left: List<UInt8> = [1, 2]\nlet right: List<UInt8> = [3, 4]\nlet invalid = left && right",
+      "subject_profile": "POINTWISE_LOGICAL_GENERIC_COLLECTION_NOT_ADMITTED",
+      "expected": "REJECT",
+      "diagnostic_or_null": "BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS",
+      "assertions": {
+        "generic_collection_lift_count": 0,
+        "dynamic_length_policy_selected": false,
+        "allocation_policy_selected": false,
+        "failure_policy_selected": false,
+        "named_api_required": true,
+        "trait_or_runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
   "boundary": [
@@ -1063,13 +1249,34 @@
         "backend_representation_selected": false
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "VOI-R1-BND-018",
+      "fixture_class": "boundary",
+      "rule_ids": ["VOI-R005", "VOI-R012"],
+      "domain": "operator",
+      "source": "let pointwise: UInt8 = makeLeftBits() && makeRightBits()\nlet sequential: Bool = ready() and then consumeIfReady()",
+      "subject_profile": "POINTWISE_STRICT_VS_SEQUENTIAL_CONTROL_BOUNDARY",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "pointwise_left_evaluation_count": 1,
+        "pointwise_right_evaluation_count": 1,
+        "pointwise_right_evaluation_is_conditional": false,
+        "pointwise_short_circuit_count": 0,
+        "pointwise_flow_narrowing_fact_count": 0,
+        "sequential_right_evaluation_is_conditional": true,
+        "sequential_control_owner": "and_then",
+        "operator_family_identity_merge_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
   "expected_counts": {
-    "positive": 19,
-    "negative": 22,
-    "boundary": 17,
-    "total": 58,
+    "positive": 22,
+    "negative": 27,
+    "boundary": 18,
+    "total": 67,
     "semantic_p0": 0,
     "open_feature_p1": 22,
     "closed_feature_p1": 0,

@@ -240,7 +240,6 @@ production을 발명해서는 안 된다.
 |---|---|---|
 | `class_static_activation` | 과거 후보 `static class`; exact successor 미선정 | declaration identity, initialization, inheritance, authority 및 API residue가 열려 있어 현행 grammar에서 제거 |
 | `effectful_static_activation` | exact surface/API 미선정 | compile-time과 runtime effect, failure, ordering, cache 및 authority를 분리해야 함 |
-| `function_static_activation` | 과거 후보 `static def`; exact successor 미선정 | type-side `def::`와 충돌하지 않는 owner 및 initialization law 필요 |
 | `module_static_entrance` | 후보 `static { ... }` | storage identity, multi-file order/cycle, failure 및 cleanup이 열려 있음 |
 | `static_once_value` | once-initialized static value API 미선정 | publication, retry/failure, thread/actor isolation, drop 및 module lifecycle 필요 |
 | `prototype_delta` | exact rooted syntax 미선정 | 현행 same-type `!{}`/`!!{}` derivation과 별개이며 ownership/rollback이 닫히지 않음 |
@@ -251,10 +250,8 @@ production을 발명해서는 안 된다.
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
 | `conformance_law_proof_block_preview_design` | proof-language block surface 미선정 | proof calculus, termination, checker trust 및 diagnostic가 필요 |
-| `custom_operator` | Recovery 후보 `operator <symbol> precedence N` | 임의 glyph/precedence/dispatch는 비활성; named Trait method/function/API 사용 |
 | `extension_dot_call_sugar` | extension을 `value.member(...)`처럼 부르는 후보 | dot/member와 tilde/message domain을 합치지 않으며 ambiguity/coherence 필요 |
 | `first_class_witness_value_not_current` | raw Witness value surface 미선정 | evidence는 checker-visible, non-forgeable이며 runtime 값/권위가 아님 |
-| `fixed_operator_conformance_overloading` | 현행 glyph를 Trait witness에 연결하는 후보 | intrinsic-only dispatch 유지; TCC P1 7개와 deterministic no-fallback registry가 열려 있음 |
 | `generic_named_extension_set_target` | generic target form 미선정 | Phase A는 exact nominal target뿐이며 normalization/overlap/API residue 필요 |
 | `local_witness_preview_design` | local evidence surface 미선정 | scope-dependent program meaning, separate compilation 및 coherence 위험 |
 | `negative_impl_preview_design` | general negative impl surface 미선정 | compiler-known closed-world fact 밖에서는 overlap/evolution을 안정적으로 증명할 수 없음 |
@@ -473,15 +470,6 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "closed phase model, reproducibility/supply-chain review, MIR semantics와 clean-build receipts가 필요하다."
   },
   {
-    "feature_id": "function_static_activation",
-    "motivation": "함수 owner에 결합된 정적 초기화 또는 정적 callable을 표현하려는 과거 제안이다.",
-    "surface_or_api": "과거 static def는 제거되었고 def::와 충돌하지 않는 successor는 미선정이다.",
-    "static_semantics_and_interactions": "function identity, initialization, capture 금지, visibility, generic instantiation과 type-side dispatch를 분리해야 한다.",
-    "diagnostics_migration_tooling": "static def를 자동 def::로 바꾸지 않으며 owner-sensitive migration 진단이 필요하다.",
-    "open_alternatives": "ordinary def, module binding과 type-side def::가 대안이고 모호한 dual owner는 거부한다.",
-    "activation_prerequisites": "owner 선택, exact EBNF, API digest, initialization cycle algorithm과 linker receipt가 필요하다."
-  },
-  {
     "feature_id": "module_static_entrance",
     "motivation": "모듈 적재 시 한 번 수행되는 명시적 초기화 영역을 표현하려는 제안이다.",
     "surface_or_api": "후보 static { ... }가 있으나 current source route와 exact contract는 미선정이다.",
@@ -527,15 +515,6 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "formal calculus ratification, deterministic checker, artifact provenance와 independent proof corpus가 필요하다."
   },
   {
-    "feature_id": "custom_operator",
-    "motivation": "도메인별 표기 편의성을 위해 새 glyph와 precedence를 선언하려는 과거 제안이다.",
-    "surface_or_api": "Recovery는 operator <symbol> precedence N을 진단하지만 activatable declaration surface는 없다.",
-    "static_semantics_and_interactions": "glyph vocabulary, precedence, associativity, overload resolution, Trait evidence와 formatter ownership을 닫아야 한다.",
-    "diagnostics_migration_tooling": "현행은 CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT를 내고 named API로 수동 이행하며 blind rewrite는 금지한다.",
-    "open_alternatives": "named function, method와 닫힌 intrinsic operator가 대안이고 module-local precedence 변경은 거부한다.",
-    "activation_prerequisites": "새 glyph authority, exact parser table, deterministic resolution, formatting 및 ambiguity corpus가 필요하다."
-  },
-  {
     "feature_id": "extension_dot_call_sugar",
     "motivation": "활성화된 extension 함수를 ordinary member처럼 간결하게 호출하려는 제안이다.",
     "surface_or_api": "value.member(...) 후보가 있으나 selector와 activation 경계의 exact surface는 미선정이다.",
@@ -552,15 +531,6 @@ actor crossing을 암시하지 않는다.
     "diagnostics_migration_tooling": "using parameter를 raw value로 자동 노출하지 않으며 forged/stale witness 진단과 identity navigation이 필요하다.",
     "open_alternatives": "현행 using witness parameter와 static conformance가 대안이고 reflection으로 witness 생성은 거부한다.",
     "activation_prerequisites": "canonical witness ABI, construction authority, HIR/MIR metadata, separate compilation과 target receipt가 필요하다."
-  },
-  {
-    "feature_id": "fixed_operator_conformance_overloading",
-    "motivation": "현행 닫힌 glyph의 의미를 Trait conformance로 확장하면서 결정성을 유지하려는 제안이다.",
-    "surface_or_api": "기존 glyph를 canonical Trait witness에 연결하는 후보이며 exact source route는 미선정이다.",
-    "static_semantics_and_interactions": "intrinsic-only current를 유지하고 unique ground witness, no specialization, no priority, no fallback과 operator domain 분리를 요구한다.",
-    "diagnostics_migration_tooling": "final registry code는 미선정이고 current intrinsic call을 rewrite하지 않으며 TCC rank와 formatter provenance가 필요하다.",
-    "open_alternatives": "named Trait method와 intrinsic operator가 대안이고 AUTO/VIA, case-local witness 및 order winner는 거부한다.",
-    "activation_prerequisites": "TCC-P1-002..008, deterministic registry, closed MIR dispatch, permutation corpus와 Design_ activation이 필요하다."
   },
   {
     "feature_id": "generic_named_extension_set_target",
@@ -973,8 +943,9 @@ formatter나 migration option이 다시 활성화해서는 안 된다.
   따른다.
 - refinement, solver, use-site projection 및 Dyn-RCTS는 [타입, 제네릭 및
   리파인먼트](04-types-generics-and-refinement.md)을 따른다.
-- custom/fixed operator와 NumericArray power는 [표현식 및
-  연산자](08-expressions-and-operators.md)을 따른다.
+- 임의 custom operator 거부, Stable fixed-glyph conformance와
+  NumericArray power 경계는 [표현식 및 연산자](08-expressions-and-operators.md)을
+  따른다.
 
 Preview promotion은 다음 순서를 건너뛸 수 없다.
 

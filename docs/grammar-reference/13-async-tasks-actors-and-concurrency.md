@@ -102,15 +102,48 @@ one-way handler이고 `request`는 응답형을 갖는 handler다. protocol의
 ### 메시지 접미 구문
 
 ```ebnf
-MessageSuffix ::= "~" MessageSelector MessageArguments? ClosureExpr? ;
-MessageSelector ::= Identifier | QualifiedExtensionSelector ;
-MessageArguments ::= ArgumentList | AtomicCallArgument ;
+MessageSuffix ::= "~" MessageSelector MessagePayload?
+                  TrailingClosureGroup? ;
+MessageSelector ::= Identifier | QualifiedMessageSelector ;
+QualifiedMessageSelector ::= TypeRef "::" Identifier
+                             ("::" Identifier)? ;
+MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope ;
+TrailingClosureGroup ::= TrailingClosureArgument+ ;
 ```
 
-액터 메시지도 일반 `MessageSuffix`를 사용하지만 ordinary method
-호출로 폴백하지 않는다. selector는 enqueue 전에 actor 또는 actor
-protocol domain에서 정적으로 결정된다. 런타임 문자열 lookup이나
-source order에 따른 overload 승자는 없다.
+`MessageSuffix`는 ordinary function의 `ArgumentList`를 재사용하지 않는다.
+메시지는 payload가 없거나 하나만 있다.
+
+- `worker ~ ping`: payload 없음.
+- `worker ~ run job`: scalar payload 하나.
+- `worker ~ moveTo (x, y)`: Tuple payload 하나.
+- `worker ~ configure(name: "Ada", retries: 3)`: Record payload 하나.
+
+괄호 안이 전부 positional이면 Tuple이고 전부 named이면 static-label
+Record다. positional과 named를 섞지 않는다. 예전의 빈 괄호
+`worker ~ ping()`은 payload 없음으로 정규화하는 호환 표기지만 canonical
+formatter는 `worker ~ ping`으로 쓴다.
+
+selector는 plain identifier, `SomeProtocol::selector`,
+`Type::ExtensionSet::selector`를 보존할 수 있다. grammar는 경로만
+보존하고, enqueue 전에 actor 또는 actor-protocol domain의 declaration
+identity를 정적으로 결정한다. 런타임 문자열 lookup, source order에
+따른 overload 승자, ordinary method fallback은 없다.
+
+ordinary call과 message call은 trailing closure 구조만 공유한다.
+closure가 하나면 unnamed/named가 모두 가능하고, 둘 이상이면 모두
+서로 다른 label을 가져야 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
+```deeplus
+worker ~ process job
+    success:{ value => publish(value) }
+    failure:{ error => recover(error) }
+```
+
+이 표면은 closure를 actor-safe로 만들지 않는다. actor isolation을
+건너면 capture environment가 transfer 가능하고 borrow/inout가 escape하지
+않으며 effect, error, suspension, cleanup 책임을 모두 만족해야 한다.
 
 ### 비동기 범위 한정자
 
@@ -347,9 +380,11 @@ fairness, distributed delivery, exactly-once delivery는 보장하지 않는다.
 
 ### 메시지 평가와 커밋
 
-메시지 전송은 receiver를 정확히 한 번 평가하고, 인수를 왼쪽에서
-오른쪽으로 정확히 한 번 평가한다. prepare 단계에서는 아직 owner를
-넘기지 않는다. 성공한 enqueue commit이 유일한 소유권 이전점이다.
+메시지 전송은 receiver를 정확히 한 번 평가하고, 0/1 payload aggregate의
+child expression을 왼쪽에서 오른쪽으로 정확히 한 번 평가한다. 그 뒤
+trailing closure environment를 source order로 획득한다. prepare
+단계에서는 아직 owner를 넘기지 않는다. 성공한 enqueue commit이 유일한
+소유권 이전점이다.
 
 - precommit 실패에서는 sender가 모든 moved owner를 유지한다.
 - 성공한 commit에서는 receiver actor가 각 moved owner를 정확히 한 번

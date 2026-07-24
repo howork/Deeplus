@@ -36,13 +36,52 @@ ScriptSourceFile ::= Shebang? ModuleDecl? ScriptSourceItem* ;
 
 ## 모듈과 경로
 
-한정 경로는 하나 이상의 식별자를 `::`로 연결한 것이다. 모듈 선언이
-있다면 나머지 소스 항목보다 앞에 와야 한다.
+한정 경로는 하나 이상의 식별자 segment로 이루어지고, 둘 이상의
+segment는 `::`로 연결한다. 따라서 `core`와 `acme::commerce::orders`는
+모두 `QualifiedPath`다. 모듈 선언이 있다면 나머지 소스 항목보다 앞에
+와야 한다.
 
 ```ebnf
 ModuleDecl ::= "module" QualifiedPath StatementBoundary ;
 QualifiedPath ::= Identifier ("::" Identifier)* ;
 ```
+
+학습 경로에서는 위의 유효한 형태를 중심으로 설명한다. 잘못된 구두점
+형태를 장마다 반복해 암기시키지 않으며, 실제 오류가 발생했을 때만
+진단 카탈로그가 해당 source span과 정정안을 제시한다.
+
+### Package와 Module은 다른 단위다
+
+| 개념 | 소유하는 책임 |
+|---|---|
+| Package | 배포, 의존성 해석, build 설정, 산출물 및 supply-chain identity |
+| Module | 이름 공간, 가시성 경계, 정적 이름 해석, source 구성 |
+
+Package identity는 build manifest와 해석된 dependency graph가 부여한다.
+소스의 `module` 선언은 Package를 선언하거나 배포 단위를 만들지 않는다.
+반대로 하나의 Package는 여러 Module을 포함할 수 있다. 완전히 해석된
+Module identity는 `(PackageId, ModulePath)`이므로, 서로 다른 Package가
+같은 `ModulePath` 철자를 사용해도 같은 Module이 아니다.
+
+ModulePath와 파일 시스템 경로는 별개다. 예를 들어 build manifest가
+다음과 같이 대응시킬 수 있다.
+
+```text
+파일: src/network/client.dp
+PackageId: acme.transport@2
+ModulePath: transport::http
+```
+
+이때 파일의 directory가 `transport/http`와 같을 필요는 없다. 프로젝트는
+directory convention을 기본 mapping으로 사용할 수 있지만 그것은 build
+규칙이지 언어의 이름 동등성 규칙이 아니다. 파일 이동만으로 Module
+identity가 바뀌어서도 안 된다.
+
+한 Module은 build graph가 허용한 여러 source contribution으로 구성될 수
+있다. 각 파일의 명시적 `module` 선언은 mapping된 ModulePath와 같아야
+하고, 선언을 생략하면 mapping된 path를 사용한다. 여러 contribution의
+중복 선언이나 충돌은 public API digest를 만들기 전에 거부하며 source
+순서를 identity나 충돌 해소 규칙으로 사용하지 않는다.
 
 `array`와 `case`는 일반 식별자다. 이를 키워드로 어휘 분석하거나
 가르쳐서는 안 된다. `String`, `Record`, `Sequence`와 같은 Prelude 이름은

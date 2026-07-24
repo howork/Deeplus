@@ -1,0 +1,537 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/rational-complex-numeric-coherence-fixtures.schema.json",
+  "title": "Deeplus Rational, Complex, fixed operator, and intrinsic power coherence fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "authority",
+    "evidence_level",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "separate_open_actions",
+    "product_lanes_summary",
+    "product_lanes",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.rational-complex-numeric-coherence-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/rational-complex-numeric-coherence-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/rational-complex-numeric-coherence.json"
+    },
+    "authority": {
+      "const": "DESIGN_STATIC_CONTROLLING_DECISION"
+    },
+    "evidence_level": {
+      "const": "DESIGN_STATIC_NOT_RUN"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": false
+    },
+    "open_feature_p1": {
+      "const": [
+        "CE-C-P1-001",
+        "CE-C-P1-002",
+        "CE-C-P1-003",
+        "CE-C-P1-004",
+        "CE-C-P1-005",
+        "CE-C-P1-006",
+        "CE-E-P1-001",
+        "CE-E-P1-002",
+        "CE-E-P1-003",
+        "CE-E-P1-004",
+        "CE-E-P1-005",
+        "CE-E-P1-006",
+        "CE-E-P1-007",
+        "CE-E-P1-008",
+        "TCC-P1-002",
+        "TCC-P1-003",
+        "TCC-P1-004",
+        "TCC-P1-005",
+        "TCC-P1-006",
+        "TCC-P1-007",
+        "TCC-P1-008",
+        "SFD-P1-009"
+      ]
+    },
+    "separate_open_actions": {
+      "const": [
+        "M13-A002",
+        "M13-A003",
+        "M13-A004",
+        "M13-A005"
+      ]
+    },
+    "product_lanes_summary": {
+      "const": "15/15_NOT_RUN"
+    },
+    "product_lanes": {
+      "$ref": "#/$defs/productLanes"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 64,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "positive",
+        "negative",
+        "boundary",
+        "mutation",
+        "admit",
+        "reject",
+        "warnings",
+        "semantic_p0",
+        "open_feature_p1",
+        "p1_closed",
+        "p1_created",
+        "fixed_conformance_operator_ids",
+        "arbitrary_custom_operator_count",
+        "power_conformance_witness_count",
+        "rational_power_initial_profile_count",
+        "integer_imaginary_literal_count",
+        "runtime_operator_lookup_count",
+        "product_lanes",
+        "product_not_run_lanes",
+        "product_executed"
+      ],
+      "properties": {
+        "cases": {
+          "const": 64
+        },
+        "positive": {
+          "const": 24
+        },
+        "negative": {
+          "const": 24
+        },
+        "boundary": {
+          "const": 8
+        },
+        "mutation": {
+          "const": 8
+        },
+        "admit": {
+          "const": 36
+        },
+        "reject": {
+          "const": 28
+        },
+        "warnings": {
+          "const": 1
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "open_feature_p1": {
+          "const": 22
+        },
+        "p1_closed": {
+          "const": 0
+        },
+        "p1_created": {
+          "const": 0
+        },
+        "fixed_conformance_operator_ids": {
+          "const": [
+            "BinaryAdd",
+            "BinarySubtract",
+            "BinaryMultiply"
+          ]
+        },
+        "arbitrary_custom_operator_count": {
+          "const": 0
+        },
+        "power_conformance_witness_count": {
+          "const": 0
+        },
+        "rational_power_initial_profile_count": {
+          "const": 0
+        },
+        "integer_imaginary_literal_count": {
+          "const": 0
+        },
+        "runtime_operator_lookup_count": {
+          "const": 0
+        },
+        "product_lanes": {
+          "const": 15
+        },
+        "product_not_run_lanes": {
+          "const": 15
+        },
+        "product_executed": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "productLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {
+          "const": "NOT_RUN"
+        },
+        "rust_frontend_parser": {
+          "const": "NOT_RUN"
+        },
+        "rust_hir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "rust_integrated_checker": {
+          "const": "NOT_RUN"
+        },
+        "deeplus_mir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "xvm_bytecode_emitter": {
+          "const": "NOT_RUN"
+        },
+        "xvm_interpreter": {
+          "const": "NOT_RUN"
+        },
+        "llvm_aot_backend": {
+          "const": "NOT_RUN"
+        },
+        "llvm_orc_jit_backend": {
+          "const": "NOT_RUN"
+        },
+        "formatter_lsp": {
+          "const": "NOT_RUN"
+        },
+        "stdlib_provider_runner": {
+          "const": "NOT_RUN"
+        },
+        "official_tooling": {
+          "const": "NOT_RUN"
+        },
+        "independent_conformance": {
+          "const": "NOT_RUN"
+        },
+        "cross_backend_conformance": {
+          "const": "NOT_RUN"
+        },
+        "actual_user_team_study": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "category",
+        "profile",
+        "rule_ids",
+        "subject",
+        "expected",
+        "diagnostic_or_null",
+        "normalized_type_or_null",
+        "token_or_owner",
+        "hir_residue_or_null",
+        "mir_residue_or_null",
+        "dispatch_route",
+        "operator_id_or_null",
+        "witness_count",
+        "runtime_lookup_count",
+        "return_context_candidate_count",
+        "product_execution"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^RCN-R1-(POS|NEG|BOUND|MUT)-[0-9]{3}$"
+        },
+        "category": {
+          "enum": [
+            "positive",
+            "negative",
+            "boundary",
+            "mutation"
+          ]
+        },
+        "profile": {
+          "enum": [
+            "RATIONAL",
+            "COMPLEX",
+            "FIXED_OPERATOR",
+            "POWER",
+            "NUMERIC_ARRAY",
+            "SHARED"
+          ]
+        },
+        "rule_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^RCN-R(00[1-9]|01[0-6])$"
+          }
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected": {
+          "enum": [
+            "ADMIT",
+            "REJECT"
+          ]
+        },
+        "diagnostic_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "normalized_type_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "token_or_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hir_residue_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mir_residue_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dispatch_route": {
+          "enum": [
+            "CONTEXTUAL_LITERAL",
+            "LANGUAGE_INTRINSIC_ONLY",
+            "DIRECT_GLOBAL",
+            "NAMED_API",
+            "IDENTIFIER",
+            "EXISTING_GRAMMAR",
+            "RECOVERY_REJECT",
+            "NONE"
+          ]
+        },
+        "operator_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "witness_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "runtime_lookup_count": {
+          "const": 0
+        },
+        "return_context_candidate_count": {
+          "const": 0
+        },
+        "product_execution": {
+          "const": "NOT_RUN"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "dispatch_route": {
+                "const": "DIRECT_GLOBAL"
+              },
+              "expected": {
+                "const": "ADMIT"
+              }
+            },
+            "required": [
+              "dispatch_route",
+              "expected"
+            ]
+          },
+          "then": {
+            "properties": {
+              "witness_count": {
+                "const": 1
+              },
+              "operator_id_or_null": {
+                "enum": [
+                  "BinaryAdd",
+                  "BinarySubtract",
+                  "BinaryMultiply"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "dispatch_route": {
+                "const": "LANGUAGE_INTRINSIC_ONLY"
+              }
+            },
+            "required": [
+              "dispatch_route"
+            ]
+          },
+          "then": {
+            "properties": {
+              "witness_count": {
+                "const": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "positive"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "properties": {
+              "fixture_id": {
+                "pattern": "^RCN-R1-POS-"
+              },
+              "expected": {
+                "const": "ADMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "negative"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "properties": {
+              "fixture_id": {
+                "pattern": "^RCN-R1-NEG-"
+              },
+              "expected": {
+                "const": "REJECT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "boundary"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "properties": {
+              "fixture_id": {
+                "pattern": "^RCN-R1-BOUND-"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "mutation"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "properties": {
+              "fixture_id": {
+                "pattern": "^RCN-R1-MUT-"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "x-deeplus-invariants": {
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "fixed_conformance_operator_ids": [
+      "BinaryAdd",
+      "BinarySubtract",
+      "BinaryMultiply"
+    ],
+    "arbitrary_custom_operator_count": 0,
+    "power_dispatch": "LANGUAGE_INTRINSIC_ONLY",
+    "power_conformance_witness_count": 0,
+    "runtime_operator_lookup_count": 0,
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

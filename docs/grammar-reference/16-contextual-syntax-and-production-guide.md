@@ -582,13 +582,24 @@ postfix와 infix 해석이 동시에 가능하도록 섞으면
 
 `MessageSuffix`는 receiver를 Pratt left에서 공급받고
 `MessageSelector`를 읽는다.
-selector는 identifier 또는 `QualifiedExtensionSelector`다.
+selector는 identifier 또는 정적으로 제한된 `QualifiedMessageSelector`다.
+qualified 경로는 `TraitOrProtocol::selector` 또는
+`Type::ExtensionSet::selector` 형태를 보존하고, 실제 Trait, extension,
+actor protocol identity는 name resolution이 결정한다.
 HIR은 `spawn` selector를 예약해 concurrency 의미를 부여하지만,
 parser가 별도의 `SpawnMessageSyntax`를 만들지는 않는다.
 
-`receiver ~ f arg { ... }`의 parenless call 예외는 정확히 하나의
-`AtomicCallArgument`와 정확히 하나의 closure로 제한된다.
-일반적인 다중 positional argument 생략 문법으로 확장하지 않는다.
+selector 다음에는 ordinary `ArgumentList`가 아니라 0/1
+`MessagePayload`가 온다. `receiver ~ f (x, y)`의 괄호는 Tuple payload
+하나를 만들며 ordinary `f(x, y)`의 두 argument와 다르다. all-named
+괄호는 하나의 Record payload이고 mixed positional/named는 structural
+error다. 기존 빈 `()`는 no-payload 호환 철자이며 formatter가 생략한다.
+
+payload 뒤의 `TrailingClosureGroup`은 ordinary call과 같은 구조를
+사용한다. 한 closure는 label을 생략할 수 있지만 둘 이상이면 모두
+서로 다른 label을 가져야 한다. group은 바로 앞의 call/message suffix가
+최대로 소비하고, 그 뒤의 다음 postfix는 완성된 호출 결과에 붙는다.
+줄바꿈이나 indentation은 이 attachment를 바꾸지 않는다.
 
 ## 8. 괄호와 hash prefix의 parser commitment
 

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-fixtures/r1",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "contract": "spec/contracts/actor-concurrency-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -340,6 +340,47 @@
       },
       "expected_outcome": "accept_design_static",
       "assertion": "storage compatibility compares normalized static descriptor fields but preserves every task value's non-forgeable correlation identity"
+    },
+    {
+      "fixture_id": "ACC-P-019-QUALIFIED-PROTOCOL-TUPLE-PAYLOAD",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R006"
+      ],
+      "source": "let outcome = worker ~ WorkerProtocol::moveTo (x, y)",
+      "descriptor": {
+        "selector_kind": "actor_protocol",
+        "selector_segment_count": 2,
+        "payload_count": 1,
+        "payload_kind": "tuple",
+        "payload_element_count": 2,
+        "ordinary_method_fallback": false
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "the qualified actor-protocol identity and one Tuple payload are fixed before enqueue admission"
+    },
+    {
+      "fixture_id": "ACC-P-020-RECORD-PAYLOAD-NAMED-TRAILING-GROUP",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R006"
+      ],
+      "source": "let outcome = worker ~ process(job: move job, priority: priority)\n  success:[move successToken] #once { value => publish(successToken, value) }\n  failure:[move failureToken] #once { error => recover(failureToken, error) }",
+      "descriptor": {
+        "payload_count": 1,
+        "payload_kind": "record",
+        "payload_labels": [
+          "job",
+          "priority"
+        ],
+        "trailing_closure_labels": [
+          "success",
+          "failure"
+        ],
+        "closure_transfer_evidence_required": true
+      },
+      "expected_outcome": "accept_design_static",
+      "assertion": "one Record payload and two uniquely labeled independently transferable closure environments preserve source order"
     }
   ],
   "negative": [
@@ -689,6 +730,27 @@
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
       "violated_condition": "an ordinary async task is incorrectly assigned actor-request correlation and transport-failure responsibility"
+    },
+    {
+      "fixture_id": "ACC-N-022-MIXED-MESSAGE-PAYLOAD-CHANNELS",
+      "rule_ids": [
+        "ACC-R005"
+      ],
+      "source": "let outcome = worker ~ process(job, priority: priority)",
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
+      "violated_condition": "one message payload envelope mixes positional Tuple content and named Record content"
+    },
+    {
+      "fixture_id": "ACC-N-023-BORROWED-TRAILING-CLOSURE-CROSSES-ACTOR",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R006"
+      ],
+      "source": "let outcome = worker ~ process job completion:[borrow local] { value => use(local, value) }",
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "BORROW_ESCAPE_OWNER_REGION",
+      "violated_condition": "the trailing surface does not make a borrowed closure environment transferable across actor isolation"
     }
   ],
   "boundary": [
@@ -912,6 +974,28 @@
       },
       "expected_outcome": "bounded_design_assertion",
       "boundary": "the enqueue commit is the unique phase boundary between admission failure and correlated task failure"
+    },
+    {
+      "fixture_id": "ACC-B-013-PAYLOAD-AGGREGATE-EVALUATION-ORDER",
+      "rule_ids": [
+        "ACC-R005",
+        "ACC-R006"
+      ],
+      "descriptor": {
+        "source": "worker ~ moveTo (traceX(), traceY()) completion:{ => done() }",
+        "receiver_evaluation_count": 1,
+        "payload_aggregate_count": 1,
+        "payload_child_order": [
+          "traceX",
+          "traceY"
+        ],
+        "trailing_closure_environment_order": [
+          "completion"
+        ],
+        "ownership_commit_count": 1
+      },
+      "expected_outcome": "bounded_design_assertion",
+      "boundary": "receiver, one payload aggregate, and trailing closure environment prepare in source order before the single enqueue ownership commit"
     }
   ],
   "cross_module": [
@@ -1218,11 +1302,11 @@
     }
   ],
   "expected_counts": {
-    "positive": 18,
-    "negative": 21,
-    "boundary": 12,
+    "positive": 20,
+    "negative": 23,
+    "boundary": 13,
     "cross_module": 4,
-    "total": 55,
+    "total": 60,
     "mir_task_responsibility_binding": 7,
     "mir_task_responsibility_binding_admit": 3,
     "mir_task_responsibility_binding_reject": 4,

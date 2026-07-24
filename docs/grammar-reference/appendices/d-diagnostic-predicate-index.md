@@ -48,6 +48,7 @@
 | `ASSOCIATED_PROJECTION_REQUIRES_BOUND` | `checker` | `error` | `active` | Associated projection requires a trait bound declaring that associated requirement. |
 | `ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED` | `checker` | `error` | `active` | Associated requirement projection cannot be resolved under the current witness/conformance environment. |
 | `ASSOCIATED_REQUIREMENT_UNRESOLVED` | `checker` | `error` | `active` | Associated type/value requirement cannot be resolved in this witness or constraint environment. |
+| `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | The initial associated static value profile requires immutable, Shareable, no-drop, authority-free, acyclic, statically materializable data. |
 | `ASYNC_CALLABLE_LITERAL_NOT_CURRENT` | `parser` | `error` | `active` | #async callable literals are PREVIEW_DESIGN/nonactivatable. |
 | `ASYNC_CAPTURE_DESCRIPTOR_REQUIRES_ASYNC_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` | `checker` | `error` | `active` | the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + exact result throws ES \| ET + sequential/source/failFast/cancelPending/buffer1. |
@@ -94,12 +95,12 @@
 | `BITFIELD_RESERVED_BITS_NONZERO` | `runtime` | `error` | `active` | Checked raw conversion rejected nonzero reserved bits. |
 | `BITFIELD_WIDTH_MUST_BE_POSITIVE_STATIC_INT` | `checker` | `error` | `active` | Bitfield slot width must be a positive compile-time integer. |
 | `BITWISE_COMPLEMENT_IS_PREFIX_ONLY` | `checker` | `error` | `active` | Bitwise complement is prefix-only: write \`~~x\`. |
-| `BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH` | `checker` | `error` | `active` | \`~~\` requires a known-width or finite-domain operand. |
-| `BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL` | `checker` | `error` | `active` | Bool is not a bitwise operand domain. |
-| `BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Bitwise operands require one exact normalized integer or finite-domain identity; use an explicit conversion. |
-| `BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST` | `checker` | `error` | `active` | Mixed-width bitwise operands require explicit width conversion. |
-| `BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS` | `checker` | `error` | `active` | Bitwise operators require known-width or finite-domain bitwise operands. |
-| `BITWISE_RESULT_USED_AS_BOOL` | `checker` | `error` | `active` | Bitwise operators produce bitwise values, not Bool; compare explicitly or use a flag query. |
+| `BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH` | `checker` | `error` | `active` | \`~~\` requires a packed known-width/finite-domain value or an admitted exact-integer NumericArray carrier. |
+| `BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL` | `checker` | `error` | `active` | Scalar Bool is not a pointwise glyph operand domain; use not, and, or, and then, or otherwise. |
+| `BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Pointwise logical operands require one exact normalized packed domain or the same NumericArray shape and integer element domain; use an explicit conversion. |
+| `BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST` | `checker` | `error` | `active` | Mixed-width pointwise logical operands require explicit width conversion before the operation. |
+| `BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS` | `checker` | `error` | `active` | Pointwise logical glyphs require a packed known-width/finite-domain value or an exact same-shape NumericArray of one known-width integer element domain. |
+| `BITWISE_RESULT_USED_AS_BOOL` | `checker` | `error` | `active` | Pointwise logical glyphs preserve their packed or shaped carrier and do not produce a Bool predicate; compare or query explicitly. |
 | `BLOCK_COMMENT_DASH_RUN_STYLE_MISMATCH` | `lexer` | `warning` | `active` | The nested block comment closes correctly, but its dash-run length differs from the corresponding opener. |
 | `BLOCK_COMMENT_NESTING_UNCLOSED` | `lexer` | `error` | `active` | Nested block comment was not completely closed. |
 | `BLOCK_COMMENT_UNTERMINATED` | `lexer` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -191,10 +192,21 @@
 | `COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | snapshot must produce an independent value with explicit copy or copy-on-write responsibility. |
 | `COLLECTION_TRAVERSAL_ROLE_MISMATCH` | `checker` | `error` | `active` | A collection value and a traversal handle are distinct responsibilities and are not automatically interchangeable. |
 | `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` | `checker` | `error` | `active` | Column-vector semicolon form must follow the current profile orientation law: \`#[a,b]\` is rank-1 \`#N[T]\`; \`#[a;b]\` is column \`#N,1[T]\`; explicit row matrix is \`#1,N[...]\`. |
+| `COMPANION_OBJECT_NOT_CURRENT` | `checker` | `error` | `active` | Deeplus has no implicit companion object or singleton; use the exact nominal, extension, Trait-associated, or runtime owner domain. |
 | `COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND` | `checker` | `error` | `active` | Mixed-direction comparison chains require explicit \`and\`. |
 | `COMPARISON_CHAIN_OPERAND_HAS_EFFECTS` | `checker` | `error` | `active` | Comparison chain operands should not hide effects inside mathematical-looking predicates. |
 | `COMPARISON_CHAIN_OPERATOR_MUST_BE_PURE` | `checker` | `error` | `active` | Comparison chain operators must be pure and no-throw. |
 | `COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Comparison chains allow only <, <=, >, >= in the current profile. |
+| `COMPLEX_BITWISE_NOT_DEFINED` | `checker` | `error` | `active` | Bitwise and pointwise-logical glyphs are not defined for Complex values. |
+| `COMPLEX_COMPONENT_REP_MISMATCH` | `checker` | `error` | `active` | Complex real and imaginary components must use one exact admitted Rep. |
+| `COMPLEX_FOREIGN_VALUE_ABI_REQUIRES_TARGET_PROFILE` | `checker` | `error` | `active` | Passing Complex through a foreign ABI requires an explicit target ABI profile. |
+| `COMPLEX_IEEE_VALUE_NOT_STRONG_EQ` | `checker` | `error` | `active` | A Float-profile Complex value cannot supply strong Eq because NaN remains unordered. |
+| `COMPLEX_KEY_REQUIRES_EXPLICIT_POLICY` | `checker` | `error` | `active` | Using Complex as a key requires an explicit equality and hashing policy. |
+| `COMPLEX_MIXED_REP_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Mixed Complex<Float32> and Complex<Float64> operands require an explicit conversion. |
+| `COMPLEX_ORDERING_NOT_DEFINED` | `checker` | `error` | `active` | Complex values have no intrinsic total ordering. |
+| `COMPLEX_REMAINDER_NOT_DEFINED` | `checker` | `error` | `active` | Complex remainder is not defined; use an explicitly named domain operation. |
+| `COMPLEX_REP_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | The initial Complex profile admits only Float32 and Float64 component representations. |
+| `COMPLEX_TYPED_INTEGER_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | A typed integer operand does not implicitly become a Complex component; convert it explicitly. |
 | `COMPREHENSION_FOR_AWAIT_REQUIRES_ASYNC_ITERATION` | `checker` | `error` | `active` | \`for await\` requires the async iteration design profile and does not imply general async task support. |
 | `CONDITION_HAS_EFFECTFUL_OPERAND` | `checker` | `error` | `active` | A condition operand has effects; use explicit sequencing or a pure guard. |
 | `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` | `lexer` | `error` | `active` | Conformance declarations use \`conformance Type conforms Trait\`, not \`impl Trait for Type\` or \`T: Trait\`. |
@@ -323,7 +335,7 @@
 | `ENUM_CASE_PATTERN_USES_COLON_COLON` | `checker` | `error` | `active` | Enum case patterns use \`::case\` or \`EnumType::case\`, not \`.case\`. |
 | `ENUM_CASE_SEPARATOR_MIXED` | `parser` | `error` | `active` | An enum body may not mix comma-list and layout separators for cases. |
 | `ENUM_MEMBER_KIND_NOT_ADMITTED` | `parser` | `error` | `active` | An enum body may contain cases followed by methods, accessors, and type-side members; stored fields, constructors, and lifecycle cleanup declarations are not admitted. |
-| `ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH` | `checker` | `error` | `active` | The Enum pattern case must belong to the subject Enum and its active payload arity, labels, positions, and child types must match exactly. |
+| `ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH` | `checker` | `error` | `retired` | The Enum pattern case must belong to the subject Enum and its active payload arity, labels, positions, and child types must match exactly. |
 | `ERRORVALUE_REQUIRED_FOR_ERRORSET_PAYLOAD` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `ERROR_ROW_PRIVATE_TYPE_LEAK` | `checker` | `error` | `seed` | Error row inference leaks a private error type into a public signature. |
 | `ERROR_SET_UNION_TOKEN_REQUIRED` | `lexer` | `error` | `active` | Error-set alternatives require the visible \| token. |
@@ -404,7 +416,7 @@
 | `FILL_REPEAT_ADMISSIBILITY_FAILED` | `checker` | `error` | `active` | The fill/repeat expression is not admissible for this shaped target and element responsibility. |
 | `FILL_VALUE_REUSE_NOT_ADMISSIBLE` | `checker` | `error` | `seed` | Fill value reuse not admissible |
 | `FIRST_CLASS_WITNESS_NOT_STABLE` | `checker` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
-| `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT` | `checker` | `error` | `active` | A Trait conformance, extension, or witness cannot activate a fixed operator glyph in the current profile. |
+| `FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT` | `checker` | `note` | `retired` | Retired pre-promotion boundary: use the exact Stable fixed-operator conformance diagnostic. |
 | `FLAGS_OPERATION_REQUIRES_SAME_NOMINAL_TYPE` | `checker` | `error` | `active` | Flags operands must have the same nominal bitfield#flags type. |
 | `FLAGS_REQUIRES_PREVIEW` | `parser` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `FLAGS_RESULT_IS_NOT_BOOL` | `checker` | `error` | `active` | A flags bitwise result is a flags value, not Bool. |
@@ -436,6 +448,20 @@
 | `FUNCTION_EXPRESSION_BODY_FORBIDDEN_IN_STABLE` | `design_static` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN` | `parser` | `error` | `active` | One-line named function body must use = return expr, not = expr. |
 | `FUNCTION_SIGNATURE_MUST_PRESERVE_CONTROL_AXES` | `checker` | `note` | `active` | Function signatures must preserve throws/effects/suspension/call-domain axes; do not erase them into a bare callable façade. |
+| `FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED` | `checker` | `error` | `active` | This callable kind cannot own function static activation. |
+| `FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot observe receiver, parameters, defaults, Context, or caller execution identity. |
+| `FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN` | `checker` | `error` | `active` | The initial Stable profile forbids a function static activation from calling another activation-bearing owner. |
+| `FUNCTION_STATIC_ACTIVATION_DUPLICATE` | `parser` | `error` | `active` | A callable body may contain at most one scope#static activation prologue. |
+| `FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN` | `checker` | `error` | `active` | Function static activation may call only statically selected activation-safe helpers. |
+| `FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN` | `checker` | `error` | `active` | Function static activation must be effect-free, authority-free, and nonthrowing. |
+| `FUNCTION_STATIC_ACTIVATION_FAILED` | `runtime` | `error` | `active` | The function static activation failed; all callers observe the same cached failure identity and no implicit retry occurs. |
+| `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` | `checker` | `error` | `active` | scope#static is admitted only in a supported synchronous named callable owner. |
+| `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` | `parser` | `error` | `active` | scope#static must follow the optional block import/use prologue and precede the first runtime semantic item. |
+| `FUNCTION_STATIC_ACTIVATION_REENTRANCY` | `runtime` | `error` | `active` | A function static activation re-entered its own owner; the activation transitions to one canonical failed state. |
+| `FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot publish a Resource, mutable persistent state, or needsDrop residue. |
+| `FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot await, yield, suspend, or observe cancellation. |
+| `FUNCTION_STATIC_METADATA_MISMATCH` | `runtime` | `error` | `active` | Imported function static activation metadata does not match the selected implementation contract. |
+| `FUNCTION_STATIC_OWNER_ID_COLLISION` | `runtime` | `error` | `active` | Distinct function static owner recipes produced the same identity. |
 | `FUNCTION_TYPE_REQUIRES_THIN_ARROW` | `checker` | `error` | `active` | Function/result/signature arrows use ->. |
 | `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` | `checker` | `error` | `active` | Function types and public API digests must preserve \`T...\` and \`Record***\` call-shape residues; neither may be erased to \`Sequence<T>\` or \`Record\`. |
 | `GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED` | `design_static` | `error` | `active` | GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
@@ -478,8 +504,13 @@
 | `GUARD_EVALUATION_CONTRACT_VIOLATION` | `checker` | `error` | `active` | Guard evaluation must precede ownership commit and payload evaluation; a false guard leaves payload responsibilities unobserved. |
 | `HARD_KEYWORD_MEMBER_REQUIRES_ESCAPE` | `lexer` | `error` | `active` | A hard keyword used as a data member name must use the member-only escape, for example obj.\\\\class. |
 | `HASH_ROLE_PHYSICAL_LINE_BREAK_FORBIDDEN` | `parser` | `error` | `active` | A role marker may contain horizontal trivia but cannot cross a physical line break between \`#\` and its role word. |
+| `HIR_POWER_OPERATION_UNRESOLVED` | `verifier` | `error` | `active` | Canonical HIR-H1 cannot contain an unresolved or generic power operation. |
+| `HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH` | `verifier` | `error` | `active` | The HIR-H1 power result or operand adaptation does not match the closed static-domain matrix. |
+| `HISTORICAL_IMAGINARY_J_NOT_CURRENT` | `lexer` | `error` | `active` | The historical imaginary marker j is not current; use an attached i marker. |
 | `IDENTITY_OPERATION_REQUIRES_IDENTITY_BEARING` | `checker` | `error` | `active` | The operation requires an identity-bearing descriptor. |
 | `IF_EXPR_REQUIRES_ELSE` | `checker` | `error` | `active` | A value-producing \`@if\` requires an \`else\` branch; the optional grammar tail exists only so recovery can emit this diagnostic. |
+| `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` | `lexer` | `error` | `active` | An imaginary literal requires an attached decimal floating form such as 4.0i or 4.0f32i. |
+| `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED` | `lexer` | `error` | `active` | The imaginary marker i must be attached to its decimal floating literal. |
 | `IMPLICIT_AT_OUTSIDE_SINGLE_PARAMETER_CLOSURE` | `checker` | `error` | `active` | Implicit @ requires the nearest omitted-parameter closure to have one expected parameter. |
 | `IMPLICIT_AT_WITH_EXPLICIT_PARAMETER` | `checker` | `error` | `active` | An explicit closure parameter cannot be mixed with the implicit @ parameter. |
 | `IMPLICIT_LAMBDA_ARG_OUTSIDE_LAMBDA` | `checker` | `error` | `active` | Standalone \`@\` placeholder is allowed only inside implicit one-argument lambda bodies. |
@@ -541,7 +572,7 @@
 | `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` | `checker` | `error` | `active` | A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/task/actor free, acyclic, and committed once. |
 | `LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT` | `checker` | `error` | `active` | A library target cannot contain script computation; split declarations into a library or select an executable script target. |
 | `LINALG_BACKEND_TRANSFER_REQUIRES_NAMED_API` | `checker` | `error` | `seed` | Linear algebra operators cannot hide backend transfer. |
-| `LINALG_COMPLEX_DOT_CONJUGATES_LEFT` | `checker` | `info` | `seed` | Complex dot-product convention is not part of Phase A; future profile may conjugate the left operand. |
+| `LINALG_COMPLEX_DOT_CONJUGATES_LEFT` | `checker` | `info` | `seed` | Complex NumericArray *+ conjugates the left operand under the current law; dotu is explicitly unconjugated, A^ is transpose, and A ~ adjoint is conjugate transpose. |
 | `LINALG_CONTRACT_REQUIRES_NAMED_AXES` | `checker` | `error` | `seed` | Tensor contraction must use named axes, not an operator. |
 | `LINALG_CROSS_REQUIRES_VEC3` | `checker` | `error` | `seed` | cross requires two rank-1 vectors of length 3. |
 | `LINALG_DOT_ELEMENT_TYPE_MISMATCH` | `checker` | `error` | `seed` | Dot product element types do not match. |
@@ -638,7 +669,7 @@
 | `MULTIPLE_REPEATED_POSITIONAL_PARAMETERS` | `checker` | `error` | `active` | A callable may declare at most one repeated positional parameter. |
 | `MULTIPLE_ROOT_NEW_CONSTRUCTORS` | `checker` | `error` | `active` | Phase A permits only one root \`new\` per class profile. |
 | `MULTIPLE_UNIT_CONTEXT_ANCHORS_IN_OPERATION` | `checker` | `error` | `active` | Only one unit context anchor is allowed in one operation frame. |
-| `MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT` | `parser` | `error` | `active` | At most one closure may appear as an unlabeled trailing suffix. |
+| `MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT` | `parser` | `error` | `active` | A trailing-closure group with two or more closures requires every closure to have a unique explicit label. |
 | `MUTABLE_ALIAS_REQUIRES_SHARED_WRAPPER` | `checker` | `error` | `active` | Mutable aliasing requires an admitted wrapper such as SharedMutex<T> or SharedCell<T>. |
 | `MUTABLE_MEMBER_FORBIDS_VARIANT_TYPE_PARAM` | `checker` | `error` | `active` | Mutable storage or write access makes this parameter invariant. |
 | `MUT_LITERAL_IS_FRESH_OWNER` | `checker` | `note` | `active` | #mut[...] constructs a fresh mutable collection owner. |
@@ -720,6 +751,14 @@
 | `OLD_DOTTED_BITWISE_OPERATOR_REMOVED` | `parser` | `error` | `active` | Old dotted bitwise operators .&. .\|. .^. .~. are not current source; use && \|\| ^^ ~~. |
 | `OPAQUE_RESULT_CONCRETE_TYPE_MISMATCH` | `checker` | `error` | `active` | some Trait function must return one hidden concrete type on all success paths. |
 | `OPEN_MEMBER_REQUIRES_INHERITABLE_TYPE` | `checker` | `error` | `active` | Open member requires an open, sealed, or abstract containing type. |
+| `OPERATOR_CONFORMANCE_AMBIGUOUS` | `checker` | `error` | `active` | More than one admitted direct-global conformance matches the normalized fixed-operator key. |
+| `OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED` | `checker` | `error` | `active` | Fixed-operator conformance accepts only left-owner DIRECT_GLOBAL evidence. |
+| `OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED` | `checker` | `error` | `active` | This normalized operand pair is reserved to intrinsic dispatch and cannot declare a user operator conformance. |
+| `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` | `checker` | `error` | `active` | A fixed-operator conformance must be declared by the package defining the normalized left nominal operand type. |
+| `OPERATOR_CONFORMANCE_MISSING` | `checker` | `error` | `active` | No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair. |
+| `OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Fixed-operator selection never inserts an implicit operand conversion. |
+| `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, total, synchronous responsibility profile. |
+| `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Only existing binary +, -, and * are admitted for fixed-glyph conformance overloading. |
 | `OPERATOR_PRECEDENCE_TABLE_REQUIRED` | `checker` | `error` | `active` | Operator parsing requires the current profile operator precedence table. |
 | `OPTIONAL_CALLABLE_INVOCATION_NOT_CURRENT` | `parser` | `error` | `active` | Optional callable invocation \`callee?(args)\` is not current Deeplus source. Use explicit Option flow. |
 | `OPTIONAL_CHAINING_NOT_CURRENT` | `parser` | `error` | `active` | Optional chaining is not current Deeplus source; use explicit Option handling, match/@match, if-let, or library combinators. |
@@ -784,11 +823,16 @@
 | `POSTFIX_MUTATION_OPERATOR_NOT_CURRENT` | `parser` | `error` | `active` | Prefix/postfix increment and decrement expressions are not current Deeplus; write an explicit assignment. |
 | `POSTFIX_TRANSPOSE_MUST_BE_ATTACHED` | `checker` | `error` | `active` | NumericArray postfix transpose is written attached as \`A^\`. |
 | `POSTFIX_TRANSPOSE_NOT_CURRENT` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
+| `POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN` | `checker` | `error` | `active` | An expected result type cannot create or choose a power operation. |
+| `POWER_INTEGER_EXPONENT_NONNEGATIVE_PROOF_REQUIRED` | `checker` | `error` | `active` | An integer-result power requires a statically proven nonnegative exact integer exponent. |
+| `POWER_LITERAL_ADAPTATION_NOT_EXACT` | `checker` | `error` | `active` | The power-local literal adaptation is not exact in the selected result domain. |
+| `POWER_MATH_PROFILE_MISMATCH` | `linker` | `error` | `active` | Imported power semantics or special-value profile does not match the verified HIR-H1 plan. |
+| `POWER_OPERAND_DOMAIN_NOT_ADMITTED` | `checker` | `error` | `active` | The operand types do not select one cell of the closed scalar power-domain matrix. |
 | `PREFER_AT_IF_FOR_MULTILINE_TERNARY` | `checker` | `warning` | `active` | Long or multiline ternary is clearer as @if. |
 | `PREFIXED_LITERAL_NO_WHITESPACE` | `checker` | `error` | `active` | No whitespace is allowed between #, prefix, and literal opener. |
-| `PREFIXED_LITERAL_PREFIX_REQUIRED` | `checker` | `error` | `active` | Stable prefixed literal families require their exact \`#\` prefix; the current prefix set is \`#map\`, \`#set\`, \`#mut\`, and \`#bytes\`. |
+| `PREFIXED_LITERAL_PREFIX_REQUIRED` | `checker` | `error` | `active` | Stable prefixed literal families require their exact \`#\` prefix; the current prefix set is \`#map\`, \`#set\`, \`#mut\`, \`#raw\`, and \`#bytes\`. |
 | `PREFIX_FUNCTION_PROFILE_REMOVED_USE_DEF_HASH` | `parser` | `error` | `active` | Prefix async/guard/entry def spelling is not current; use the owner-appropriate closed def# introducer. |
-| `PREFIX_UNARY_POWER_BASE_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Unary-prefixed power base requires explicit parentheses. |
+| `PREFIX_UNARY_POWER_BASE_REQUIRES_PARENTHESES` | `parser` | `error` | `retired` | Historical diagnostic: current -2 ^ 2 parses as -(2 ^ 2), while (-2) ^ 2 keeps the explicit negative base. |
 | `PRELUDE_SIGNATURE_CATALOG_REQUIRED` | `design_static` | `error` | `active` | PRELUDE_SIGNATURE_CATALOG_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `PREVIEW_ALTERNATIVE_LEAKS_THROUGH_STABLE_PARENT` | `parser` | `error` | `active` | A stable/ordinary grammar parent includes a gated alternative without alternative-level metadata. |
 | `PREVIEW_GATE_DEPENDENCY_MISSING` | `parser` | `error` | `active` | A #preview list must explicitly contain the transitive closure of every PREVIEW dependency. |
@@ -900,9 +944,17 @@
 | `RANGE_STEP_DIRECTION_MISMATCH` | `checker` | `error` | `active` | Range direction and step sign are inconsistent. |
 | `RANGE_STEP_ZERO` | `checker` | `error` | `active` | Range step must not be zero. |
 | `RANGE_UNSIGNED_DESCENDING_REQUIRES_SIGNED_DOMAIN` | `checker` | `error` | `active` | Unsigned descending ranges require an explicit signed delta/domain profile. |
-| `RAW_MULTILINE_STRING_NOT_CURRENT` | `lexer` | `error` | `active` | Raw multiline String syntax is not current; use the Unicode multiline String or \`raw"..."\`. |
+| `RATIONAL_INEXACT_MIX_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Mixing Rational with Decimal, Float, or Complex requires an explicit named conversion. |
+| `RATIONAL_LITERAL_COMPONENT_NOT_DECIMAL_INTEGER` | `lexer` | `error` | `active` | Each Rational literal component must be an unsigned decimal magnitude with no radix prefix or suffix. |
+| `RATIONAL_LITERAL_DENOMINATOR_ZERO` | `checker` | `error` | `active` | A Rational literal denominator must be nonzero. |
+| `RATIONAL_LITERAL_MALFORMED` | `lexer` | `error` | `active` | Rational literal must have the exact expression-prefix form <unsigned-decimal/unsigned-decimal>. |
+| `RATIONAL_LITERAL_RESOURCE_LIMIT` | `checker` | `error` | `active` | Rational literal normalization exceeded the declared deterministic compile-time resource budget. |
+| `RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX` | `parser` | `error` | `active` | Write a Rational sign outside the literal, for example -<2/3>. |
+| `RATIONAL_LITERAL_TRIVIA_FORBIDDEN` | `lexer` | `error` | `active` | Rational literal delimiters, numerator, slash, and denominator must be contiguous. |
+| `RATIONAL_OVER_REQUIRES_EXACT_INTEGERS` | `checker` | `error` | `active` | Rational construction through over requires two exact integer operands. |
+| `RAW_MULTILINE_STRING_NOT_CURRENT` | `lexer` | `error` | `active` | Raw multiline String syntax is not current; use the Unicode multiline String or \`#raw"..."\`. |
 | `RAW_POINTER_ARITHMETIC_OPERATOR_FORBIDDEN` | `checker` | `error` | `active` | Use named unsafe pointer operations instead of ordinary arithmetic operators. |
-| `RAW_STRING_DELIMITER_INVALID` | `lexer` | `error` | `active` | Raw String Phase A uses exactly the raw"..." delimiter family. |
+| `RAW_STRING_DELIMITER_INVALID` | `lexer` | `error` | `active` | Stable raw String uses exactly the attached \`#raw"..."\` delimiter family. |
 | `RAW_STRING_UNTERMINATED` | `lexer` | `error` | `active` | A raw String literal must end with its closing double quote. |
 | `RAW_WITNESS_VALUE_FORBIDDEN` | `checker` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `RAW_WITNESS_VALUE_NOT_CURRENT` | `checker` | `error` | `active` | Witness evidence is not an ordinary first-class type or value; the only source binding is an explicit borrowed \`using name: witness Trait\` parameter. |
@@ -971,6 +1023,7 @@
 | `RESULT_THROWS_AUTOCONVERSION_FORBIDDEN` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `RESULT_THROWS_CHANNEL_OVERLAP` | `checker` | `error` | `active` | The same recoverable error family cannot be exposed through both Result and throws for one operation. |
 | `RETURN_NOT_ALLOWED_IN_LAMBDA` | `checker` | `error` | `active` | return is for named functions; lambda blocks use ret. |
+| `RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN` | `checker` | `error` | `active` | The expected result type cannot create, distinguish, or rank a fixed-operator conformance candidate. |
 | `RET_OUTSIDE_LAMBDA` | `checker` | `error` | `active` | \`ret\` is a local-result terminator only in a lambda block, a value match arm or declarative value-clause arm, or an \`@if\`/\`@try\`/\`@scope\` local-value block; it is not a named-function return. |
 | `RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN` | `design_static` | `error` | `active` | Rightward local binding must normalize to an ordinary local binding before semantic AST/HIR and MIR. |
 | `RIGHTWARD_FLOW_DOLLAR_LOCAL_BINDING_MSP_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -1132,6 +1185,11 @@
 | `TRAIT_ASSOCIATED_PROJECTION_REQUIRES_TRAIT_CONTEXT` | `checker` | `error` | `active` | Associated projection requires an explicit witness/static trait context: write \`<T as Trait>::Assoc\`. |
 | `TRAIT_ASSOCIATED_PROJECTION_USES_COLON_COLON` | `checker` | `error` | `active` | Associated projection is a witness/static projection and uses \`::\`: write \`<T as Trait>::Assoc\`. |
 | `TRAIT_ASSOCIATED_REQUIREMENT_MISSING` | `checker` | `error` | `active` | Conformance body does not bind a required associated item. |
+| `TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE` | `verifier` | `error` | `active` | Trait-associated static HIR/API residue is missing a required requirement, conformance, witness, implementation, substitution, or responsibility identity. |
+| `TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH` | `checker` | `error` | `active` | The selected Trait-associated item kind does not match the type or expression goal. |
+| `TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND` | `checker` | `error` | `active` | The explicitly qualified Trait has no associated item with this identity. |
+| `TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION` | `checker` | `error` | `active` | Trait-associated static selection must use <T as Trait>::item. |
+| `TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN` | `verifier` | `error` | `active` | Trait-associated static selection is resolved before execution and cannot perform runtime lookup or fallback. |
 | `TRAIT_ASSOCIATED_TYPE_CONSTRAINT_UNSATISFIED` | `checker` | `error` | `active` | Associated type equality constraint is not satisfied by the selected witness. |
 | `TRAIT_ASSOCIATED_TYPE_CYCLE` | `checker` | `error` | `active` | Associated type binding forms a cycle. |
 | `TRAIT_BODYLESS_FINAL_REQUIREMENT_REQUIRES_PREVIEW` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -1215,6 +1273,7 @@
 | `TYPE_SIDE_MUTABLE_REQUIRES_EFFECT_FOOTPRINT` | `checker` | `error` | `active` | var:: access/mutation must expose its effect footprint. |
 | `TYPE_SIDE_MUTABLE_REQUIRES_ISOLATION` | `checker` | `error` | `active` | var:: type-side mutable storage requires an explicit isolation law. |
 | `TYPE_SIDE_MUTABLE_STORAGE_UNSUPPORTED` | `checker` | `error` | `active` | var:: is recognized but unsupported in the default Stable profile; type-side mutable storage requires a separate effect/isolation law. |
+| `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN` | `checker` | `error` | `active` | Only a type-side function declared lexically inside the nominal owner may use that owner's private construction authority. |
 | `TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION` | `checker` | `error` | `active` | The is/!is subject must have one normalized closed Union static type. |
 | `TYPE_TOKEN_HAS_NO_CONSTRUCTION_AUTHORITY` | `lexer` | `error` | `active` | Type<T> token has no construction or metaclass invocation authority. |
 | `TYPE_TOKEN_IS_NOT_CONSTRUCTOR` | `lexer` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
@@ -1251,7 +1310,7 @@
 | `UNIT_TYPE_IS_UNIT_NOT_NONE` | `checker` | `note` | `seed` | The unit return type is \`Unit\`. \`None\` is the Option case expression, not the unit type. |
 | `UNIT_WITNESS_LITERAL_MUST_BE_ONE` | `checker` | `error` | `active` | Unit witness argument must be \`1[unit]\`. |
 | `UNKNOWN_NUMERIC_LITERAL_SUFFIX` | `lexer` | `error` | `active` | Unknown numeric literal suffix; use the closed integer or float suffix table. |
-| `UNKNOWN_PREFIXED_LITERAL` | `checker` | `error` | `active` | Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, and #bytes. |
+| `UNKNOWN_PREFIXED_LITERAL` | `checker` | `error` | `active` | Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes. |
 | `UNKNOWN_UNIT_SYMBOL` | `checker` | `error` | `active` | Unit symbol cannot be resolved in active unit catalogs. |
 | `UNSAFE_AUTHORITY_NOT_EFFECT` | `checker` | `error` | `active` | Unsafe authority must not be hidden as an ordinary runtime effect. |
 | `UNSAFE_BOUNDARY_GRAMMAR_REQUIRED` | `parser` | `error` | `seed` | Unsafe boundary prose/examples require an explicit \`unsafe Block\` grammar projection and crosswalk row. |
@@ -1286,6 +1345,7 @@
 | `YIELD_GUARD_CLAUSE_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `YIELD_RESPONSE_BINDING_NOT_ALLOWED_IN_GENERATOR` | `checker` | `error` | `active` | Yield guard and response binding are not both allowed in the same yield form. |
 | `ZERO_BASED_INDEX_NOT_CURRENT` | `checker` | `error` | `active` | Index zero is outside a built-in default one-based sequence or NumericArray axis; use logical coordinate 1 for its first element. |
+| `ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION` | `checker` | `warning` | `active` | Infix zero to the zero power evaluates to one; use powChecked for an analytic indeterminate outcome. |
 
 ## 검사기 술어
 
@@ -1311,7 +1371,7 @@
 | `BitfieldFieldValueAdmitted` | BitfieldFieldValueAdmitted | Admit a field value exactly when 0 <= value < 2^width. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BitfieldLayoutClosed` | BitfieldLayoutClosed | Validate positive static contiguous slots whose widths exactly close the backing. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BitfieldRawAdmitted` | BitfieldRawAdmitted | Checked conversion accepts an exact backing value whose reserved mask is canonical. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `BitwiseDomainAdmitted` | BitwiseDomainAdmitted | ordered branch 1: Bool operands with \`&&\` emit LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL and Bool operands with \`\|\|\` emit LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL; ordered branch 2: Bool with another bitwise token emits BITWISE_OPERATOR_DOES_NOT_ACCEPT_BOOL; ordered branch 3: a non-bitwise or non-finite operand domain emits BITWISE_OPERATOR_REQUIRES_BITWISE_OPERANDS; ordered branch 4: unequal normalized widths emit BITWISE_OPERATOR_MIXED_WIDTH_REQUIRES_EXPLICIT_CAST; ordered branch 5: same-width operands with different signedness or distinct finite-domain identity emit BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION; ordered branch 6: complement requires a known-width or finite-domain operand and otherwise emits BITWISE_COMPLEMENT_REQUIRES_KNOWN_WIDTH; ordered branch 7: an otherwise valid bitwise result consumed as Bool emits BITWISE_RESULT_USED_AS_BOOL; admission requires one exact normalized operand domain and never yields Bool | `DESIGN_STATIC_NOT_RUN` |
+| `BitwiseDomainAdmitted` | BitwiseDomainAdmitted | Historical predicate identity for the Stable built-in pointwise logical family. It preserves packed known-width integer and finite bitfield/#flags behavior and additionally admits exact same-shape NumericArray operands over one exact known-width integer element domain. Scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast or conversion, user-defined carriers, and result-as-control use reject deterministically. Binary operands evaluate left-to-right once with zero short circuit or flow narrowing. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalImportAdmitted` | BlockLocalImportAdmitted | Admits current block-prologue compile-time name visibility with no runtime load or extension activation. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalUseAdmitted` | BlockLocalUseAdmitted | Admits a block-prologue lexical use frame without name import, authority, evidence, or source-order priority. | `DESIGN_STATIC_NOT_RUN` |
 | `BorrowEscapeAdmitted` | borrow/view escape | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1322,7 +1382,7 @@
 | `CallSideUnfoldStaticEvidence` | CallSideUnfoldStaticEvidence | R51a1 closed design algorithm for CallSideUnfoldStaticEvidence; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CallableProfileAdmitted` | CallableProfileAdmitted | normalize four orthogonal axes; require unique canonical profile order; admit only the closed combination table; reject profile-only overload identity | `DESIGN_STATIC_NOT_RUN` |
 | `CanResolveUnitSymbol` | CanResolveUnitSymbol | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `CaretPowerAdmitted` | Caret power | R51a1 closed design algorithm for CaretPowerAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `CaretPowerAdmitted` | Caret power | Closed static integer, Float, Complex, and Measure power-domain algorithm; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CharScalarAdmitted` | Char Unicode scalar | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ClassDispositionAdmitted` | Class openness disposition | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `CleanupDeclarationAdmitted` | CleanupDeclarationAdmitted | require exact def#cleanup() declaration shape; forbid direct call/value, suspension, dispatch, visibility, and parameters; execute exactly once for initialized nonmoved state while preserving partial construction and primary/suppressed failure order | `DESIGN_STATIC_NOT_RUN` |
@@ -1336,6 +1396,7 @@
 | `CollectionTraversalRoleAdmitted` | CollectionTraversalRoleAdmitted | classify storage/shape/index ownership separately from traversal; retain single-pass/multipass and borrow/consume residue; reject automatic Collection-to-Iterator equivalence | `DESIGN_STATIC_NOT_RUN` |
 | `ColumnVectorSemicolonGateAdmitted` | ColumnVectorSemicolonGateAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ComplexLiteralAndOperatorAdmitted` | Complex literal and closed numeric operation | Admit attached floating i literals and the closed Float32/Float64 Complex numeric profile without implicit Rep conversion. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComputeResidualUnion` | ComputeResidualUnion | Compute exact remaining alternatives after ordered pattern coverage. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ConformanceDeclProducesWitness` | ConformanceDeclProducesWitness | explicit conformance produces checker-visible evidence when all requirements are satisfied | `DESIGN_STATIC_NOT_RUN` |
 | `ConformanceEvidenceOriginAdmitted` | ConformanceEvidenceOriginAdmitted | forwarded identifier must denote the matching explicit witness parameter; root selector must resolve to exactly one visible coherent conformance; both channels stay borrowed and non-first-class | `DESIGN_STATIC_NOT_RUN` |
@@ -1469,6 +1530,7 @@
 | `QualifiedExtensionSelectorAdmitted_R48_60` | QualifiedExtensionSelectorCurrentAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `QuarantineScopeDesignAdmitted` | QuarantineScopeDesignAdmitted | R51e design-static admission rule for dynamic_unsafe_quarantine_scope_msp; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `R0GuardSafe` | R0GuardSafe | Admit only a finite total, exact-Bool, responsibility-free R0 expression. | `DESIGN_STATIC_NOT_RUN` |
+| `RationalLiteralAdmitted` | Rational compound literal | Admit one expression-prefix transactional <p/q> literal and normalize it to an exact BigInt pair. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ReadonlyViewAdmitted` | ReadonlyViewAdmitted | require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/task/actor/isolation transfer without shareability proof | `DESIGN_STATIC_NOT_RUN` |
 | `ReceiverOwnerResultAdmitted` | ReceiverOwnerResultAdmitted | Admit exactly one explicit Self-compatible owner result from a consuming receiver. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RecordNamedArgumentSpreadAdmitted` | Record named argument spread | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1515,8 +1577,9 @@
 | `TernarySpacingAndArmJoinAdmitted` | TernarySpacingAndArmJoinAdmitted | Spaced ternary evaluates one strict-Bool condition once, evaluates exactly one lazy arm, and joins normalized type, place capability, ownership, effect row, recoverable errors, cancellation, and cleanup without synthesizing an anonymous Union. | `DESIGN_STATIC_NOT_RUN` |
 | `TopLevelTypeVisibilityAdmitted` | TopLevelTypeVisibilityAdmitted | Normalize one top-level visibility domain while requiring an explicit word for exactly nine type-producing owners in all six stable and preview source roots. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TrailingClosureArgumentAdmitted` | TrailingClosureArgumentAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `TrailingClosureCardinalityAdmitted` | TrailingClosureCardinalityAdmitted | unlabeled trailing closure count is zero or one; two or more callbacks are represented as ordinary named arguments | `DESIGN_STATIC_NOT_RUN` |
-| `TrailingClosureSuffixAdmitted` | TrailingClosureSuffixAdmitted | an ordinary trailing-closure suffix is admitted only when the preceding call has an exact closure parameter; without such a parameter the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER; a message-owned closure is not an ordinary trailing suffix and remains owned by the message parse rather than being rejected by this predicate | `DESIGN_STATIC_NOT_RUN` |
+| `TrailingClosureCardinalityAdmitted` | TrailingClosureCardinalityAdmitted | one trailing closure may be unlabeled or labeled; two or more require every item to have a unique label | `DESIGN_STATIC_NOT_RUN` |
+| `TrailingClosureSuffixAdmitted` | TrailingClosureSuffixAdmitted | a shared ordinary-or-message trailing-closure group is admitted only when every item binds to an exact closure/function-typed formal; without such a formal the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
+| `TraitAssociatedStaticSelectionAdmitted` | Trait-qualified associated static selection | Resolve <T as Trait>::item through exactly one static conformance and preserve all identity and responsibility residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TraitVariancePositionAdmitted` | TraitVariancePositionAdmitted | a variance marker is admitted only on a trait type parameter in the current Stable profile; an \`out\` parameter occurs only in producer/covariant positions and an \`in\` parameter only in consumer/contravariant positions after alias expansion; unmarked parameters are invariant; any declaration-role or use-position violation emits VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TransferableAcrossIsolation` | Transferable | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `TupleOrdinalProjectionAdmitted` | TupleOrdinalProjectionAdmitted | Admits a compile-time one-based tuple ordinal in 1..arity. | `DESIGN_STATIC_NOT_RUN` |

@@ -185,20 +185,15 @@
       "set",
       "unsafe"
     ],
-    "ordinary_identifiers": [
-      "EffectRow",
-      "ErrorSet",
-      "ExitCode",
-      "Facet",
-      "Never",
-      "Record",
-      "Sequence",
-      "StaticInt",
-      "String",
-      "Unit",
-      "array",
-      "case"
-    ],
+    "wildcard": {
+      "surface": "_",
+      "lexer": "WILDCARD",
+      "keyword": false
+    },
+    "one_lexeme_one_identity": true,
+    "quoted_word_terminal": "Exact lexeme match; lexer may emit a hard token or IDENTIFIER with contextual role metadata."
+  },
+  "identifier_model": {
     "predeclared_language_or_prelude_bindings": [
       "EffectRow",
       "ErrorSet",
@@ -215,14 +210,43 @@
       "array",
       "case"
     ],
-    "identifier_classification_law": "ordinary_identifiers is the disjoint union of the two category lists; membership never creates a keyword, intrinsic token kind, parser hook, resolver namespace, checker intrinsic, or formatter special case",
-    "wildcard": {
-      "surface": "_",
-      "lexer": "WILDCARD",
-      "keyword": false
+    "regression_seed_token_kind": "IDENTIFIER",
+    "regression_seed_special_role_count": 0,
+    "classification_law": "array and case are ordinary user-spellable identifiers and are absent from every hard-keyword, contextual-word, sigil-role, intrinsic-token, parser-hook, resolver-namespace, checker-intrinsic, and formatter-special-case list"
+  },
+  "package_module_model": {
+    "package": {
+      "role": [
+        "distribution",
+        "dependency resolution",
+        "build configuration",
+        "artifact and supply-chain identity"
+      ],
+      "identity_owner": "build manifest and resolved dependency graph",
+      "source_declaration": null,
+      "may_contain_multiple_modules": true
     },
-    "one_lexeme_one_identity": true,
-    "quoted_word_terminal": "Exact lexeme match; lexer may emit a hard token or IDENTIFIER with contextual role metadata."
+    "module": {
+      "role": [
+        "namespace",
+        "visibility boundary",
+        "static name resolution",
+        "source composition"
+      ],
+      "surface": "module QualifiedPath",
+      "identity": "ModuleId = (PackageId, ModulePath)",
+      "path_shape": "one-or-more Identifier segments joined by ::",
+      "runtime_object": false
+    },
+    "source_mapping": {
+      "owner": "build manifest or deterministic project convention",
+      "filesystem_path_equals_module_path": false,
+      "one_module_may_have_multiple_source_contributions": true,
+      "explicit_module_decl_must_equal_mapped_module_path": true,
+      "omitted_module_decl_uses_mapped_module_path": true,
+      "source_order_creates_identity": false,
+      "duplicate_or_conflicting_contribution": "reject before public API digest"
+    }
   },
   "current_surface_decisions": {
     "named_repeated_parameter": "***",
@@ -260,13 +284,13 @@
       "custom operator declaration"
     ],
     "semantic_rejections": [
-      "fixed-operator Trait/conformance dispatch",
+      "fixed-operator conformance outside exact binary +,-,* or outside its left-owner DIRECT_GLOBAL profile",
       "open or provider-driven runtime type tests",
       "accessor property header member visibility"
     ],
     "value_absence": "::none or Option<T>::none; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor; null is recovery only",
     "operator_token_vocabulary": "CLOSED",
-    "operator_glyph_dispatch": "INTRINSIC_ONLY",
+    "operator_glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_BINARY_PLUS_MINUS_MULTIPLY",
     "range_delimiters": [
       "..",
       "..<"
@@ -457,11 +481,13 @@
       "cst_roles": [
         "HashTag",
         "PrefixedCollectionIntroducer",
+        "PrefixedLiteralIntroducer",
         "NumericArrayIntroducer"
       ],
       "ast_roles": [
         "ModifierOrProfile",
         "CollectionKind",
+        "LiteralKind",
         "NumericArrayLiteral"
       ]
     },
@@ -699,7 +725,8 @@
         "#mut[",
         "#[",
         "#dims[",
-        "#bytes\""
+        "#bytes\"",
+        "#raw\""
       ]
     },
     {
@@ -1604,14 +1631,22 @@
           "attachment_policy": "CARET_ATTACHMENT"
         },
         {
-          "id": "prefix",
+          "id": "numeric_prefix_sign",
           "tokens": [
             [
               "+"
             ],
             [
               "-"
-            ],
+            ]
+          ],
+          "rbp": 159,
+          "assoc": "right",
+          "semantic_boundary": "language-reserved numeric sign; never a conformance lookup"
+        },
+        {
+          "id": "prefix",
+          "tokens": [
             [
               "not"
             ],
@@ -1812,8 +1847,9 @@
       "BYTES"
     ],
     "interpolation_owner": "scanner owns mode boundary; parser owns InterpolationPath CST",
-    "raw_string_phase_a": {
-      "surface": "raw\"...\"",
+    "raw_string_stable": {
+      "surface": "#raw\"...\"",
+      "design_maturity": "STABLE",
       "delimiter_family_count": 1,
       "escape_interpretation": false,
       "interpolation": false,
@@ -1925,7 +1961,7 @@
       "ScannerRawStringLiteral": {
         "token": "RAW_STRING_LITERAL",
         "mode": "RAW_STRING",
-        "surface": "raw\"...\"",
+        "surface": "#raw\"...\"",
         "direct_scalars": "every Unicode scalar except the closing quote and physical line terminator",
         "escapes": [],
         "interpolation": false,
@@ -2008,6 +2044,15 @@
       "evaluation": "initializer exactly once; name not in scope until successful commit",
       "ownership_effect_cleanup": "identical to ordinary let/var",
       "yield_response_boundary": "yield remains a suspension/resume event; resumed response binding then uses ordinary local binding"
+    },
+    "function_static_activation": {
+      "grammar": "CallableBlock owns at most one FunctionStaticActivation after optional BlockPrologue and before BlockSequence",
+      "cst": "FunctionStaticActivationCst preserves scope, #, static, body tokens, comments, and same-line role trivia",
+      "ast": "FunctionStaticActivationDecl is one nullable field of CallableBodyAst and is never an ordinary BlockItem",
+      "hir": "HirFunctionStaticActivation retains CallableImplementationId, normalized owner recipe, checked body, dependency summaries, contract digest, and source span",
+      "mir": "the call wrapper ensures FunctionStaticOwnerId after receiver/argument/default staging and before the existing atomic ownership_commit; the activation block is never lowered as ordinary body control flow",
+      "checker": "exact owner/profile admission, first-runtime-item placement, caller-data independence, effect/error/suspension/authority/resource closure, static helper closure, and owner identity",
+      "formatter": "accept the existing same-line # role trivia policy and print canonical scope#static"
     }
   },
   "feature_profiles": {
@@ -2065,9 +2110,49 @@
       "fix": "named Trait method or function"
     },
     {
-      "id": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+      "id": "OPERATOR_CONFORMANCE_MISSING",
       "stage": "CHECKER",
-      "fix": "named Trait method or API"
+      "fix": "left-owner DIRECT_GLOBAL Add/Subtract/Multiply conformance or named API"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_AMBIGUOUS",
+      "stage": "CHECKER",
+      "fix": "remove overlapping conformance"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+      "stage": "CHECKER",
+      "fix": "remove the user declaration for the intrinsic pair"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+      "stage": "CHECKER",
+      "fix": "declare in the left nominal owner package or use a named API"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+      "stage": "CHECKER",
+      "fix": "use one ordinary DIRECT_GLOBAL conformance"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+      "stage": "CHECKER",
+      "fix": "use borrowed throws Never effects {} synchronous implementation"
+    },
+    {
+      "id": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+      "stage": "CHECKER",
+      "fix": "make operand types and conformance exact before result checking"
+    },
+    {
+      "id": "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+      "stage": "CHECKER",
+      "fix": "convert the operand explicitly"
+    },
+    {
+      "id": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "stage": "CHECKER",
+      "fix": "use a named Trait method or API"
     },
     {
       "id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
@@ -2126,12 +2211,13 @@
     "ParenExprSyntax",
     "ParenTypeSyntax",
     "Block/ValueBody engine",
+    "CallableBlock/FunctionStaticActivation",
     "DelimitedSequence engine"
   ],
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
-    "LEXICAL": 89,
-    "STABLE": 443,
+    "LEXICAL": 91,
+    "STABLE": 454,
     "PREVIEW": 13,
     "RECOVERY": 15
   },
@@ -2172,6 +2258,55 @@
       "f32",
       "f64"
     ],
+    "imaginary_literal": {
+      "owner": "numeric_candidate_scanner",
+      "emitted_kind": "ImaginaryFloatLiteralToken",
+      "source_forms": [
+        "DecimalFraction ExponentPart? i",
+        "DecimalFraction ExponentPart? f32 i"
+      ],
+      "attachment": "the terminal ASCII i is part of the same token and admits no trivia",
+      "default_type": "Complex<Float64>",
+      "f32_type": "Complex<Float32>",
+      "canonical_value": "real component is positive zero; imaginary component is the exact validated floating literal value",
+      "accepted_examples": [
+        "4.0i",
+        "6.25e-2i",
+        "4.0f32i"
+      ],
+      "rejected_examples": {
+        "4i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+        "4.0 i": "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
+        "4.0f64i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+        "0x4.0i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+        "4.0j": "HISTORICAL_IMAGINARY_J_NOT_CURRENT"
+      },
+      "bare_i": "ordinary IDENTIFIER",
+      "global_constant_i": false,
+      "prelude_constant": "Complex::i",
+      "token_split_on_invalid_suffix": false
+    },
+    "rational_literal": {
+      "owner": "expression_prefix_transactional_scanner",
+      "emitted_kind": "RationalLiteralToken",
+      "shape": "<UnsignedDecimalMagnitude/UnsignedDecimalMagnitude>",
+      "internal_trivia": false,
+      "radix_prefix": false,
+      "suffix": false,
+      "internal_sign": false,
+      "type_goal_enabled": false,
+      "failed_probe_consumes_tokens": false,
+      "cst_preserves_source_spelling": true,
+      "hir_normalizes": "positive denominator and gcd-reduced BigInt numerator/denominator",
+      "examples": {
+        "<2/3>": "Rational(2,3)",
+        "<6/8>": "Rational(3,4) with source spelling retained",
+        "-<2/3>": "PrefixExpr(-, RationalLiteral(2,3))",
+        "<2/0>": "RATIONAL_LITERAL_DENOMINATOR_ZERO after successful literal recognition",
+        "a<2/3>b": "ordinary comparison/division/comparison expression",
+        "Box<2/3>": "type parser error; Rational literal mode is disabled"
+      }
+    },
     "underscore_rule": "exactly_between_two_digits_of_the_same_component",
     "decimal_point_requires_digits_on_both_sides": true,
     "exponent": "decimal_only_with_required_digits",
@@ -2222,6 +2357,13 @@
               "FloatLiteralToken",
               "NumericLiteralToken"
             ]
+          },
+          {
+            "predicate": "valid decimal fraction or exponent form followed immediately by the admitted imaginary i marker",
+            "emitted_kind": "ImaginaryFloatLiteralToken",
+            "matches_parser_terminals": [
+              "ImaginaryFloatLiteralToken"
+            ]
           }
         ],
         "static_int_terminal_law": "StaticIntLiteral matches only the DecimalIntegerToken concrete kind; radix prefix, integer suffix, decimal point, exponent, or float suffix prevents that kind"
@@ -2236,6 +2378,49 @@
         "radix_float_signature": "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
         "unknown_suffix": "UNKNOWN_NUMERIC_LITERAL_SUFFIX"
       }
+    }
+  },
+  "static_capability_lookup": {
+    "runtime_companion_object": false,
+    "implicit_trait_search_from_type_selector": false,
+    "domains": [
+      {
+        "syntax": "Type::item",
+        "domain": "nominal_type_side",
+        "selection": "one declared or inherited nominal type-side identity"
+      },
+      {
+        "syntax": "Type::extension::item",
+        "domain": "exact_named_extension",
+        "selection": "one member of the explicitly named extension identity"
+      },
+      {
+        "syntax": "<T as Trait>::item",
+        "domain": "trait_associated_static",
+        "selection": "one associated value or function through one statically selected ConformanceId and TraitWitnessId"
+      },
+      {
+        "syntax": "service_or_actor_value.item",
+        "domain": "explicit_runtime_owner",
+        "selection": "ordinary value/member or message semantics; never type-side lookup"
+      }
+    ],
+    "qualified_trait_selector": {
+      "production": "TraitQualifiedAssociatedSelector",
+      "direct_value_or_function": "<T as Trait>::item",
+      "associated_type_then_member": "<T as Trait>::Assoc::member",
+      "preserved_identities": [
+        "TraitId",
+        "RequirementId",
+        "ConformanceId",
+        "TraitWitnessId",
+        "ImplementationId",
+        "SubstitutionId",
+        "ResponsibilityId"
+      ],
+      "runtime_lookup_count": 0,
+      "provider_order_count": 0,
+      "implicit_companion_count": 0
     }
   },
   "source_roots": {
@@ -2359,6 +2544,258 @@
     "list_rest_current": "zero or one final ignored .._",
     "parameter_pattern_current": "Identifier only"
   },
+  "call_frontend_contract": {
+    "surface_owners": {
+      "ordinary": "CallSuffix",
+      "message": "MessageSuffix",
+      "shared_trailing_closures": "TrailingClosureGroup"
+    },
+    "lossless_cst_nodes": {
+      "ordinary_call": "CallExprCst",
+      "message_call": "MessageCallExprCst",
+      "message_selector": "MessageSelectorPathCst",
+      "message_payload": "MessagePayloadCst | null",
+      "trailing_closure": "TrailingClosureArgCst"
+    },
+    "normalized_ast_nodes": {
+      "CallExpr": {
+        "callee": "Expr",
+        "arguments": "ordered Argument[]",
+        "trailing_closures": "ordered TrailingClosureArg[]"
+      },
+      "MessageCallExpr": {
+        "receiver": "Expr",
+        "selector_path": "ordered selector segments plus optional type syntax",
+        "payload": "Expr | null",
+        "payload_kind": "none | scalar | tuple | record",
+        "trailing_closures": "ordered TrailingClosureArg[]"
+      },
+      "TrailingClosureArg": {
+        "label": "Identifier | null",
+        "closure": "ClosureExpr"
+      }
+    },
+    "message_payload_normalization": {
+      "omitted": "payload=null, payload_kind=none",
+      "empty_parentheses": "compatibility spelling; payload=null, payload_kind=none",
+      "bare_atomic": "payload=scalar expression",
+      "one_parenthesized_expression": "payload=grouped scalar expression",
+      "two_or_more_parenthesized_positional_expressions": "payload=TupleExpr",
+      "all_named_parenthesized_entries": "payload=RecordExpr with static unique labels",
+      "mixed_positional_and_named_entries": "reject before AST admission",
+      "ordinary_argument_list_reuse_count": 0
+    },
+    "structural_validation": {
+      "single_trailing_closure": "label optional",
+      "multiple_trailing_closures": "every label present and unique",
+      "duplicate_label_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
+      "unlabeled_multiple_diagnostic": "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT",
+      "selector_path_shape": "one plain segment or an admitted qualified path",
+      "postfix_attachment": "TrailingClosureGroup is consumed maximally by its immediately preceding CallSuffix or MessageSuffix; a later postfix applies to the completed call result"
+    },
+    "hir_lowering": {
+      "ordinary_call": "preserve selected callable identity, normalized channels, closure labels, source evaluation order, ownership and cleanup",
+      "message_call": "preserve selected dispatch identity, exactly zero or one payload aggregate, payload projection map, closure labels, source evaluation order, ownership and cleanup",
+      "payload_projection": "none->zero value formals; scalar->one; tuple->positional; record->static named",
+      "surface_sugar_erased_before_mir": true,
+      "dispatch_identity_erased": false
+    },
+    "formatter": {
+      "empty_message_payload_parentheses": "omit",
+      "single_unlabeled_trailing_closure": "same line when short, otherwise indented",
+      "single_labeled_trailing_closure": "label immediately followed by colon and closure",
+      "multiple_labeled_trailing_closures": "one labeled closure per indented line",
+      "parse_format_parse_ast_equivalence_required": true,
+      "product_support": "NOT_RUN"
+    }
+  },
+  "fixed_operator_conformance_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "source_activation": "none",
+    "new_syntax_count": 0,
+    "admitted_operator_rows": [
+      {
+        "operator_id": "BinaryAdd",
+        "glyph": "+",
+        "fixity": "binary_infix",
+        "trait_id": "Add<Rhs>",
+        "method_id": "Add.add",
+        "output_projection": "Add<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinarySubtract",
+        "glyph": "-",
+        "fixity": "binary_infix",
+        "trait_id": "Subtract<Rhs>",
+        "method_id": "Subtract.subtract",
+        "output_projection": "Subtract<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinaryMultiply",
+        "glyph": "*",
+        "fixity": "binary_infix",
+        "trait_id": "Multiply<Rhs>",
+        "method_id": "Multiply.multiply",
+        "output_projection": "Multiply<Rhs>::Output"
+      }
+    ],
+    "selection": {
+      "key": ["OperatorId", "normalized_left_type", "normalized_right_type"],
+      "intrinsic_reserved_lookup_count": 0,
+      "nonintrinsic_success_conformance_count": 1,
+      "owner": "normalized left nominal type defining package",
+      "route": "DIRECT_GLOBAL",
+      "expected_result_is_selection_key": false,
+      "implicit_conversion_candidate_count": 0,
+      "alternate_evidence_candidate_count": 0,
+      "order_tie_break_count": 0,
+      "runtime_lookup_or_fallback_count": 0
+    },
+    "typed_hir_residue": {
+      "node": "FixedOperatorConformanceCall",
+      "required_fields": [
+        "operator_id",
+        "normalized_left_type_id",
+        "normalized_right_type_id",
+        "conformance_id",
+        "witness_id",
+        "method_id",
+        "substitution",
+        "output_type_id",
+        "responsibility_profile_id"
+      ],
+      "operand_evaluation_order": "left_then_right_once_each",
+      "selected_identity_erased_before_mir": false
+    },
+    "responsibility_profile": {
+      "left": "borrow",
+      "right": "borrow",
+      "throws": "Never",
+      "effects": [],
+      "suspension": "forbidden",
+      "consume": false,
+      "mutation": false,
+      "authority": []
+    },
+    "excluded_operator_families": [
+      "division",
+      "remainder",
+      "strict logical",
+      "equality",
+      "ordering",
+      "assignment",
+      "range",
+      "short-circuit"
+    ],
+    "product_support": "NOT_RUN"
+  },
+  "function_static_activation_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "source_activation": "none",
+    "surface_owner": "CallableBlock",
+    "surface": "scope#static { ... }",
+    "placement": "after optional BlockPrologue and before the first runtime semantic item",
+    "maximum_per_callable_body": 1,
+    "hash_role_policy": {
+      "parser": "reuse the existing same-physical-line trivia policy between # and static; comments and horizontal whitespace do not create a different surface",
+      "line_break_between_hash_and_static": "reject",
+      "formatter": "scope#static",
+      "one_off_no_trivia_rule": false
+    },
+    "lossless_cst_node": "FunctionStaticActivationCst",
+    "normalized_ast_node": {
+      "node": "FunctionStaticActivationDecl",
+      "owner_field": "CallableBodyAst.function_static_activation",
+      "body": "Block",
+      "ordinary_block_item": false,
+      "normal_value": "Unit"
+    },
+    "admitted_synchronous_named_owners": {
+      "ModuleFunctionDecl": ["def", "def#pure"],
+      "ExtensionFunctionDecl": ["def"],
+      "nominal MemberFunctionDecl": ["def", "def#mut", "def#consume", "def#pure"],
+      "TypeSideMemberFunctionDecl": ["def"],
+      "TraitMethodDecl with body": ["def", "def#pure"],
+      "ConformanceMethodDecl": ["def", "def#mut", "def#consume", "def#pure"],
+      "ExtensionSetFunctionDecl": ["def"]
+    },
+    "excluded_owners_or_profiles": [
+      "EntryFunctionDecl",
+      "LocalFunctionDecl",
+      "ConstructorDecl",
+      "CleanupDecl",
+      "ActorOnDecl",
+      "ActorRequestDecl",
+      "AccessorDecl",
+      "ClosureExpr",
+      "lambda",
+      "async or suspending named callable",
+      "generator",
+      "PreviewFfiFunctionDecl",
+      "recovery declaration",
+      "bodyless Trait requirement",
+      "def#guard"
+    ],
+    "checked_body_profile": {
+      "caller_observation_count": 0,
+      "forbidden_caller_inputs": ["self", "receiver", "parameter", "evaluated default", "Context", "task identity", "actor identity", "thread identity"],
+      "normalized_error_set": [],
+      "normalized_effect_row": [],
+      "authority_count": 0,
+      "suspends": false,
+      "cancellation_observation": false,
+      "persistent_mutable_state_publication_count": 0,
+      "persistent_needs_drop_residue_count": 0,
+      "resource_escape_count": 0,
+      "dynamic_indirect_or_provider_call_count": 0,
+      "activation_bearing_callee_count": 0,
+      "lazy_force_count": 0,
+      "outward_control_transfer_count": 0,
+      "local_function_declaration_count": 0
+    },
+    "hir_node": {
+      "node": "HirFunctionStaticActivation",
+      "callable_identity": "CallableImplementationId",
+      "owner_identity": "FunctionStaticOwnerId",
+      "used_witness_ids": "sorted unique static WitnessId set",
+      "used_conformance_ids": "sorted unique static ConformanceId set",
+      "helper_dependencies": "sorted unique CallableImplementationId plus safety-summary digest records",
+      "contract_digest": "canonical normalized semantic body and dependency digest; excludes trivia, path spelling, source order, machine address, and backend code identity"
+    },
+    "call_boundary": {
+      "ordered_staging": ["callee or receiver", "explicit arguments left-to-right", "default arguments under current rules", "validation and temporary acquisition", "ensure FunctionStaticOwnerId", "existing atomic ownership_commit", "callable invoke and ordinary body"],
+      "invented_CALL_INPUT_COMMIT_event": false,
+      "activation_failure_ownership_commit_count": 0,
+      "activation_failure_ordinary_body_count": 0,
+      "caller_owner_retained": true,
+      "staged_temporary_cleanup": "exactly once in reverse acquisition order"
+    },
+    "state_and_failure": {
+      "states": ["Dormant", "Initializing", "Ready", "Failed"],
+      "terminal_states": ["Ready", "Failed"],
+      "winner_count": 1,
+      "implicit_retry_count": 0,
+      "implicit_reset_count": 0,
+      "same_owner_reentry": "terminal Failed with FUNCTION_STATIC_ACTIVATION_REENTRANCY cause; no deadlock or undefined behavior",
+      "uniform_failure": "winner, waiters, and later callers observe the same owner-bound FUNCTION_STATIC_ACTIVATION_FAILED identity; the initiating Defect is retained only as its cause"
+    },
+    "publication": {
+      "language_edge": "Ready or Failed publication happens-before every caller that leaves the ensure barrier",
+      "partial_observation_count": 0,
+      "backend_order": "release/acquire or stronger",
+      "weak_atomic_source_authority": false,
+      "wait_is_source_suspension": false,
+      "wait_is_cancellation_point": false,
+      "fairness_promise": false
+    },
+    "p_level": {
+      "semantic_p0": 0,
+      "open_feature_p1": 22,
+      "new_feature_p1": 0,
+      "closed_feature_p1": 0
+    },
+    "product_lanes": "15/15_NOT_RUN"
+  },
   "concurrency_frontend_contract": {
     "source_owners": [
       "ActorDecl",
@@ -2417,7 +2854,7 @@
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
-    "message_send_owner": "MessageSuffix; reserved spawn selector is recognized in HIR without a second syntax owner",
+    "message_send_owner": "MessageSuffix with call_frontend_contract payload and trailing-closure normalization; reserved spawn selector is recognized in HIR without a second syntax owner",
     "mailbox_profile_binding": {
       "clause_absent": "logical_unbounded_v1",
       "positive_static_capacity_clause": "bounded_reject_v1",
@@ -2494,7 +2931,7 @@
     "value_if_totality": "@if requires else after recovery",
     "guard_cardinality": "zero or one per admitting owner",
     "guard_chain_node_count": 0,
-    "parenless_call_exception": "one AtomicCallArgument followed by exactly one ClosureExpr"
+    "parenless_call_exception": "one AtomicCallArgument followed by one TrailingClosureGroup"
   },
   "parser_commitments": [
     {
@@ -2510,7 +2947,7 @@
     {
       "id": "HASH_LITERAL",
       "owner": "literal-prefix dispatcher",
-      "lookahead": "attached map/set/mut/NumericArray/bytes payload; obsolete-prefixed-collection is never a current owner"
+        "lookahead": "attached map/set/mut/NumericArray/bytes/raw payload; obsolete-prefixed-collection is never a current owner"
     },
     {
       "id": "TILDE_MESSAGE",

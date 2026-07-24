@@ -1677,7 +1677,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "NumericLiteralAdmitted owns normalization. Scalar +,-,*,/ require one exact Int/Float domain; % is integer-only and /,% truncate quotient toward zero. Integer ^ needs one exact domain plus static nonnegative proof. Measure/shape/bitwise use owner laws. ArithmeticDefect precedes commit; no hidden conversion, Trait dispatch, or runtime fallback.",
+    "notes": "NumericLiteralAdmitted owns normalization. Scalar +,-,*,/ require one exact Int/Float domain; % is integer-only and /,% truncate quotient toward zero. Intrinsic-reserved pairs remain intrinsic. Exact binary +,-,* may use the separately bounded Stable Add/Subtract/Multiply conformance profile for a non-intrinsic pair. Integer ^ needs one exact domain plus static nonnegative proof. Measure/shape/pointwise use owner laws. ArithmeticDefect precedes commit; there is no hidden conversion, result-directed selection, fallback, or runtime relookup.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1689,7 +1689,15 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT",
+        "OPERATOR_CONFORMANCE_AMBIGUOUS",
+        "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+        "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+        "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+        "OPERATOR_CONFORMANCE_MISSING",
+        "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+        "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+        "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
         "NUMERIC_OPERATOR_CORE_REQUIRED",
         "POSTFIX_MUTATION_OPERATOR_NOT_CURRENT"
       ],
@@ -1701,48 +1709,6 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / DIAGNOSTICS",
-    "authority_set": [
-      "LANGUAGE",
-      "DIAGNOSTICS"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
-    "display_name": "Old dotted bitwise operators removed",
-    "feature_id": "old_dotted_bitwise_operator_removed",
-    "feature_kind": "semantic_law",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": ".&. .|. .^.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "trace_class": "rejection",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "OLD_DOTTED_BITWISE_OPERATOR_REMOVED"
-      ],
-      "predicates": [],
-      "examples": [
-        "EX-R51a1-AUD-NG-033"
-      ],
-      "productions": [],
-      "semantic_reference_productions": []
-    },
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

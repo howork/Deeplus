@@ -1,0 +1,478 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/hir-h1-current-mir-bridge-fixtures-r1.json",
+  "title": "Deeplus HIR-H1 current-MIR bridge design fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "status",
+    "source_activation",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "product_lanes",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.hir-h1-current-mir-bridge-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/hir-h1-current-mir-bridge.json"
+    },
+    "status": {
+      "const": "STABLE_DESIGN"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": false
+    },
+    "open_feature_p1": {
+      "const": [
+        "CE-C-P1-001",
+        "CE-C-P1-002",
+        "CE-C-P1-003",
+        "CE-C-P1-004",
+        "CE-C-P1-005",
+        "CE-C-P1-006",
+        "CE-E-P1-001",
+        "CE-E-P1-002",
+        "CE-E-P1-003",
+        "CE-E-P1-004",
+        "CE-E-P1-005",
+        "CE-E-P1-006",
+        "CE-E-P1-007",
+        "CE-E-P1-008",
+        "TCC-P1-002",
+        "TCC-P1-003",
+        "TCC-P1-004",
+        "TCC-P1-005",
+        "TCC-P1-006",
+        "TCC-P1-007",
+        "TCC-P1-008",
+        "SFD-P1-009"
+      ]
+    },
+    "product_lanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "llvm_aot_backend",
+        "llvm_orc_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {
+          "const": "NOT_RUN"
+        },
+        "rust_frontend_parser": {
+          "const": "NOT_RUN"
+        },
+        "rust_hir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "rust_integrated_checker": {
+          "const": "NOT_RUN"
+        },
+        "deeplus_mir_lowering": {
+          "const": "NOT_RUN"
+        },
+        "xvm_bytecode_emitter": {
+          "const": "NOT_RUN"
+        },
+        "xvm_interpreter": {
+          "const": "NOT_RUN"
+        },
+        "llvm_aot_backend": {
+          "const": "NOT_RUN"
+        },
+        "llvm_orc_jit_backend": {
+          "const": "NOT_RUN"
+        },
+        "formatter_lsp": {
+          "const": "NOT_RUN"
+        },
+        "stdlib_provider_runner": {
+          "const": "NOT_RUN"
+        },
+        "official_tooling": {
+          "const": "NOT_RUN"
+        },
+        "independent_conformance": {
+          "const": "NOT_RUN"
+        },
+        "cross_backend_conformance": {
+          "const": "NOT_RUN"
+        },
+        "actual_user_team_study": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 48,
+      "maxItems": 48,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "positive",
+        "negative",
+        "boundary",
+        "mutation",
+        "pipeline_stages",
+        "power_operations",
+        "power_adaptations",
+        "semantic_p0",
+        "open_feature_p1",
+        "p1_closed",
+        "p1_created",
+        "product_lanes",
+        "product_executed",
+        "implementation_or_execution",
+        "backend_switches"
+      ],
+      "properties": {
+        "cases": {
+          "const": 48
+        },
+        "positive": {
+          "const": 16
+        },
+        "negative": {
+          "const": 16
+        },
+        "boundary": {
+          "const": 8
+        },
+        "mutation": {
+          "const": 8
+        },
+        "pipeline_stages": {
+          "const": 7
+        },
+        "power_operations": {
+          "const": 6
+        },
+        "power_adaptations": {
+          "const": 5
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "open_feature_p1": {
+          "const": 22
+        },
+        "p1_closed": {
+          "const": 0
+        },
+        "p1_created": {
+          "const": 0
+        },
+        "product_lanes": {
+          "const": 15
+        },
+        "product_executed": {
+          "const": 0
+        },
+        "implementation_or_execution": {
+          "const": 0
+        },
+        "backend_switches": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "zeroCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unresolved",
+        "recovery",
+        "generic_pow",
+        "power_witness_lookup",
+        "expected_result_selection",
+        "runtime_dispatch_or_fallback",
+        "implementation",
+        "product_execution"
+      ],
+      "properties": {
+        "unresolved": {
+          "const": 0
+        },
+        "recovery": {
+          "const": 0
+        },
+        "generic_pow": {
+          "const": 0
+        },
+        "power_witness_lookup": {
+          "const": 0
+        },
+        "expected_result_selection": {
+          "const": 0
+        },
+        "runtime_dispatch_or_fallback": {
+          "const": 0
+        },
+        "implementation": {
+          "const": 0
+        },
+        "product_execution": {
+          "const": 0
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "fixture_class",
+        "rule_ids",
+        "facet",
+        "scenario",
+        "expected_design",
+        "diagnostic_family_or_null",
+        "assertions",
+        "canonical_hir_outcome",
+        "executable_hir_outcome",
+        "zero_counts",
+        "current_source_activation",
+        "execution_state"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^H1MB-R1-(POS|NEG|BOUND|MUT)-[0-9]{3}$"
+        },
+        "fixture_class": {
+          "enum": [
+            "positive",
+            "negative",
+            "boundary",
+            "mutation"
+          ]
+        },
+        "rule_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^H1MB-R0(?:0[1-9]|1[0-9]|20)$"
+          }
+        },
+        "facet": {
+          "enum": [
+            "PIPELINE",
+            "CANONICAL_CLOSURE",
+            "IDENTITY",
+            "RESPONSIBILITY",
+            "POWER_OPERATION",
+            "POWER_ADAPTATION",
+            "EVALUATION_ORDER",
+            "PROFILE_BINDING",
+            "RATIONAL_CONST",
+            "COMPLEX_LITERAL",
+            "CAPABILITY",
+            "HIR_MIR_PAIR",
+            "BACKEND_AUTHORITY",
+            "NONACTIVATION"
+          ]
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_design": {
+          "enum": [
+            "ADMIT",
+            "REJECT",
+            "BOUNDARY",
+            "MUTANT_KILLED"
+          ]
+        },
+        "diagnostic_family_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "canonical_hir_outcome": {
+          "enum": [
+            "SEALED",
+            "REJECTED_BEFORE_SEAL",
+            "DESIGN_BOUNDARY_ONLY",
+            "VERIFIER_REJECTS_MUTANT"
+          ]
+        },
+        "executable_hir_outcome": {
+          "enum": [
+            "CAPABILITY_RECEIPT_REQUIRED",
+            "NOT_CONSTRUCTED",
+            "BOUNDARY_ONLY",
+            "MUTANT_REJECTED"
+          ]
+        },
+        "zero_counts": {
+          "$ref": "#/$defs/zeroCounts"
+        },
+        "current_source_activation": {
+          "const": false
+        },
+        "execution_state": {
+          "const": "DESIGN_STATIC_NOT_RUN"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "fixture_class": {
+                "const": "positive"
+              }
+            },
+            "required": [
+              "fixture_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expected_design": {
+                "const": "ADMIT"
+              },
+              "canonical_hir_outcome": {
+                "const": "SEALED"
+              },
+              "executable_hir_outcome": {
+                "const": "CAPABILITY_RECEIPT_REQUIRED"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "fixture_class": {
+                "const": "negative"
+              }
+            },
+            "required": [
+              "fixture_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expected_design": {
+                "const": "REJECT"
+              },
+              "canonical_hir_outcome": {
+                "const": "REJECTED_BEFORE_SEAL"
+              },
+              "executable_hir_outcome": {
+                "const": "NOT_CONSTRUCTED"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "fixture_class": {
+                "const": "boundary"
+              }
+            },
+            "required": [
+              "fixture_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expected_design": {
+                "const": "BOUNDARY"
+              },
+              "canonical_hir_outcome": {
+                "const": "DESIGN_BOUNDARY_ONLY"
+              },
+              "executable_hir_outcome": {
+                "const": "BOUNDARY_ONLY"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "fixture_class": {
+                "const": "mutation"
+              }
+            },
+            "required": [
+              "fixture_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expected_design": {
+                "const": "MUTANT_KILLED"
+              },
+              "canonical_hir_outcome": {
+                "const": "VERIFIER_REJECTS_MUTANT"
+              },
+              "executable_hir_outcome": {
+                "const": "MUTANT_REJECTED"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

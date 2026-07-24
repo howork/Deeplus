@@ -514,7 +514,12 @@
     "source_name": "R0GuardSafe",
     "summary": "Admit only a finite total, exact-Bool, responsibility-free R0 expression.",
     "input_descriptor": "TRNCoherenceDescriptor",
-    "descriptor_axes": ["subject", "guard_result_type", "responsibilities", "proof_state"],
+    "descriptor_axes": [
+      "subject",
+      "guard_result_type",
+      "responsibilities",
+      "proof_state"
+    ],
     "feature_refs": [
       "r0_guard_predicate_calculus"
     ],
@@ -531,7 +536,11 @@
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["guard", "totality", "responsibility"],
+    "rule_facets": [
+      "guard",
+      "totality",
+      "responsibility"
+    ],
     "formal_judgment_id": "J-R0GuardSafe",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
@@ -826,7 +835,12 @@
     "source_name": "RefinementCheckBoundaryAdmitted",
     "summary": "Apply three-valued proof at explicit refinement boundaries.",
     "input_descriptor": "TRNCoherenceDescriptor",
-    "descriptor_axes": ["declared_type", "boundary_kind", "proof_state", "type_relation"],
+    "descriptor_axes": [
+      "declared_type",
+      "boundary_kind",
+      "proof_state",
+      "type_relation"
+    ],
     "feature_refs": [
       "refinement_checked_boundary"
     ],
@@ -846,7 +860,11 @@
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
-    "rule_facets": ["type", "flow", "boundary"],
+    "rule_facets": [
+      "type",
+      "flow",
+      "boundary"
+    ],
     "formal_judgment_id": "J-RefinementCheckBoundaryAdmitted",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
@@ -1406,74 +1424,5 @@
       "branch_03": "RESULT_THROWS_CHANNEL_OVERLAP",
       "branch_04": "RESULT_THROWS_CHANNEL_OVERLAP"
     }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "RightwardLocalBindingNormalizesToOrdinaryBinding",
-    "source_name": "RightwardLocalBindingNormalizesToOrdinaryBinding",
-    "summary": "Classify `$`/`$$`, preserve CST, and normalize to ordinary immutable/mutable local binding before semantic checking.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "call_shape"
-    ],
-    "feature_refs": [
-      "rightward_flow_dollar_local_binding_msp"
-    ],
-    "diagnostic_refs": [
-      "RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "statement owner",
-      "fresh Identifier target",
-      "no chaining",
-      "no guard attachment"
-    ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "call_shape"
-    ],
-    "formal_judgment_id": "J-RightwardLocalBindingNormalizesToOrdinaryBinding",
-    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "statement owner",
-      "fresh Identifier target",
-      "no chaining",
-      "no guard attachment"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "evaluate and retain the initializer source expression once",
-      "map $ to let and $$ to var while preserving the optional type annotation",
-      "construct an ordinary local-binding semantic node after successful normalization",
-      "assert no FlowBinding AST/HIR/MIR node survives"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "RightwardLocalBindingNormalizesToOrdinaryBinding",
-    "active_primary_diagnostic": "RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN",
-    "secondary_diagnostics": [],
-    "positive_fixture_ids": [
-      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-BOUNDARY",
-      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "normalization_assertion_nonemitting",
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": false,
-    "input_adapter": null
   }
 ]

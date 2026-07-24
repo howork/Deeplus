@@ -94,9 +94,13 @@
       "local_violation": "caret_exponent_requires_static_nonnegative_proof",
       "preserved_companion_guard": {
         "operator": "+",
-        "operand_domain": "UserNumber",
-        "dispatch": "trait_conformance",
-        "expected_primary_diagnostic": "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+        "left_domain": "UserNumber",
+        "right_domain": "UserNumber",
+        "dispatch": "stable_fixed_conformance",
+        "evidence_route": "DIRECT_GLOBAL",
+        "selected_conformance_count": 1,
+        "expected": "admitted",
+        "expected_primary_diagnostic": null
       }
     },
     "fixture_kind": "mutation_recipe",
@@ -126,18 +130,23 @@
     "predicate_id": "NumericOperatorCoreAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "operator": "+=",
-      "dispatch": "intrinsic",
-      "lhs_domain": "Int",
-      "rhs_domain_before_context": "unsuffixed_integer",
-      "rhs_domain_after_context": "Int",
-      "target_place_evaluations": 1,
-      "rhs_evaluations": 1,
-      "commit_count_on_success": 1,
-      "commit_count_on_failure": 0,
-      "result_type": "Unit"
+      "operator": "+",
+      "operator_id": "BinaryAdd",
+      "dispatch": "stable_fixed_conformance",
+      "left_domain": "Vec2",
+      "right_domain": "Vec2",
+      "intrinsic_reserved_pair": false,
+      "evidence_route": "DIRECT_GLOBAL",
+      "left_nominal_owner": true,
+      "selected_conformance_count": 1,
+      "witness_id": "Add<Vec2>@Vec2",
+      "method_id": "Add.add",
+      "output_type": "Vec2",
+      "left_evaluations": 1,
+      "right_evaluations": 1,
+      "runtime_relookup_or_fallback_count": 0
     },
-    "rule_seed": "intrinsic Int compound addition contextually adapts the unsuffixed RHS, evaluates place/RHS once, and commits once after checked arithmetic; product checker NOT_RUN",
+    "rule_seed": "Stable BinaryAdd selects one left-owner DIRECT_GLOBAL Add<Vec2> conformance from exact operand types, derives Output after selection, evaluates operands once left-to-right, and performs no fallback or runtime lookup; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
@@ -1803,87 +1812,6 @@
       "semantic_type": {
         "kind": "nominal",
         "type_id": "PF-PlaceReplaceAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-PlaceReplaceAdmitted-POS-PRECOMMIT-ROLLBACK",
-    "predicate_id": "PlaceReplaceAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Binding",
-      "normalized_type": "Buffer",
-      "ownership": "owned",
-      "borrow_region": "exclusive",
-      "cleanup": {
-        "acquires_resource": false,
-        "escapes_resource": false
-      },
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "stdlib_operation",
-        "place_evaluation_count": 1,
-        "exclusive_access": true,
-        "old_owner_return_count": 0,
-        "new_value_write_count": 0,
-        "precommit_failure": true,
-        "transaction_committed": false,
-        "original_owner_preserved": true
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "admitted_condition": "a precommit failure performs no write/return and leaves the original owner in its place",
-    "fixture_kind": "concrete_positive",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-PlaceReplaceAdmitted-POS-PRECOMMIT-ROLLBACK"
       },
       "responsibility": {
         "ownership": "reusable",

@@ -1,0 +1,494 @@
+{
+  "schema": "deeplus.hir-h1-current-mir-bridge-contract/r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "feature_id": "hir_h1_current_mir_bridge",
+  "status": "STABLE_DESIGN",
+  "design_verdict": "HIR_H1_VERIFIER_BOUNDARY_STABLE_DESIGN",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "current_semantic_authority": "spec/mir/semantics.md",
+    "hir_h1_schema_authority_created": false,
+    "mir_x1_current_authority": false,
+    "implementation_authority": false,
+    "execution_authority": false,
+    "backend_switch_authority": false,
+    "publication_or_promotion_authority": false,
+    "source_or_grammar_activation": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_this_contract": 0,
+    "created_by_this_contract": 0
+  },
+  "separate_open_actions": [
+    "M13-A002",
+    "M13-A003",
+    "M13-A004",
+    "M13-A005"
+  ],
+  "pipeline": [
+    {
+      "ordinal": 1,
+      "stage": "LosslessCST",
+      "authority": "syntax_and_recovery",
+      "output": "NormalizedAST",
+      "invariant": "tokens, trivia, original spelling, and recovery provenance remain diagnosable"
+    },
+    {
+      "ordinal": 2,
+      "stage": "NormalizedAST",
+      "authority": "normalized_surface_structure",
+      "output": "HirSkeleton",
+      "invariant": "surface sugar is normalized without selecting overload, witness, ownership, or backend representation"
+    },
+    {
+      "ordinal": 3,
+      "stage": "HirSkeleton",
+      "authority": "owner_body_scope_and_generated_declaration_skeleton",
+      "output": "CheckSession",
+      "invariant": "unresolved slots are analysis inputs and never serializable canonical output"
+    },
+    {
+      "ordinal": 4,
+      "stage": "CheckSession",
+      "authority": "resolution_inference_admission_and_responsibility_fixed_point",
+      "output": "TypedHirDraft",
+      "invariant": "name, call, label, type, evidence, extension, provider, ownership, effect, error, cancellation, suspension, isolation, authority, and cleanup decisions close before sealing"
+    },
+    {
+      "ordinal": 5,
+      "stage": "TypedHirDraft",
+      "authority": "closed_but_not_yet_canonical",
+      "output": "Verified<CanonicalHirH1>",
+      "invariant": "canonicalization and the fail-closed HIR verifier remove no semantic decision and admit no recovery or unresolved variant"
+    },
+    {
+      "ordinal": 6,
+      "stage": "Verified<CanonicalHirH1>",
+      "authority": "canonical_design_semantics_only",
+      "output": "ExecutableHirH1",
+      "invariant": "a valid MirCapabilityReceipt for exact MIR schema and lowering-rules digests is mandatory"
+    },
+    {
+      "ordinal": 7,
+      "stage": "ExecutableHirH1",
+      "authority": "bounded_lowering_input_only",
+      "output": "Verified<ProposedMirX1>",
+      "invariant": "lowering expands fixed HIR decisions into control, value, place, token, cleanup, outcome, and suspension structure without semantic re-selection"
+    }
+  ],
+  "phase_type_contract": {
+    "analysis_only_types": [
+      "HirSkeleton",
+      "AnalysisHir",
+      "TypedHirDraft"
+    ],
+    "canonical_type": "Verified<CanonicalHirH1>",
+    "executable_type": "ExecutableHirH1",
+    "mir_candidate_type": "Verified<ProposedMirX1>",
+    "phase_flag_in_one_shared_node_type": false,
+    "analysis_value_serializable_as_canonical": false,
+    "canonical_value_executable_without_capability_receipt": false,
+    "mir_candidate_is_current_authority": false
+  },
+  "canonical_hir_contract": {
+    "fully_typed": true,
+    "fully_resolved": true,
+    "responsibility_closed": true,
+    "normalized_type_per_expression_binder_capture_payload": true,
+    "selected_identity_preserved": true,
+    "source_evaluation_order_preserved": true,
+    "formal_binding_order_separate_from_source_evaluation_order": true,
+    "unresolved_variant_count": 0,
+    "candidate_set_variant_count": 0,
+    "inference_variable_count": 0,
+    "error_type_count": 0,
+    "missing_expression_count": 0,
+    "recovery_node_count": 0,
+    "backend_layout_identity_count": 0,
+    "runtime_string_to_static_identity_conversion_count": 0,
+    "responsibility_axes": [
+      "value_mode",
+      "resource",
+      "place_access",
+      "effects",
+      "recoverable_errors",
+      "defects",
+      "cancellation",
+      "suspension",
+      "isolation",
+      "authority",
+      "cleanup"
+    ],
+    "selected_identity_domains": [
+      "FunctionId",
+      "CallableImplementationId",
+      "ClassSlotId",
+      "TraitId",
+      "ConformanceId",
+      "WitnessId",
+      "WitnessParamId",
+      "RequirementId",
+      "ExtensionSetId",
+      "ExtensionMemberId",
+      "ActivationOriginId",
+      "FormalId",
+      "ProviderId",
+      "AuthorityId",
+      "ActorId",
+      "ActorProtocolId"
+    ],
+    "mir_lowerer_forbidden_decisions": [
+      "name_or_selector_lookup",
+      "overload_ranking",
+      "return_type_directed_selection",
+      "label_or_trailing_closure_rebinding",
+      "witness_or_extension_or_provider_search",
+      "hidden_conversion_or_widening",
+      "pattern_binder_reinference",
+      "cleanup_or_outcome_policy_invention",
+      "actor_message_to_method_fallback"
+    ]
+  },
+  "power_plan_contract": {
+    "node": "HirPowerPlan",
+    "owner": "HirIntrinsicPlan",
+    "source_operand_count": 2,
+    "source_evaluation_order": [
+      "base_once",
+      "exponent_once"
+    ],
+    "required_fields": [
+      "operation",
+      "base_source_type_id",
+      "exponent_source_type_id",
+      "base_adapted_type_id",
+      "exponent_adapted_type_id",
+      "base_adaptation",
+      "exponent_adaptation",
+      "result_type_id",
+      "responsibility_profile_id",
+      "math_profile_id",
+      "special_value_profile_id",
+      "source_origin"
+    ],
+    "operation_enum": [
+      "CheckedIntPow",
+      "FloatPowInt",
+      "FloatPow",
+      "ComplexPowInt",
+      "ComplexPowPrincipal",
+      "MeasurePowStatic"
+    ],
+    "adaptation_enum": [
+      "Identity",
+      "DirectLiteralToF64Exact",
+      "F32ToF64",
+      "F32ToComplex64",
+      "F64ToComplex64"
+    ],
+    "operation_profiles": {
+      "CheckedIntPow": {
+        "inputs": "one exact integer domain plus StaticNonnegativeProofId",
+        "result": "same exact integer domain",
+        "failure": "checked overflow Defect before enclosing commit"
+      },
+      "FloatPowInt": {
+        "inputs": "Float32 or Float64 base plus exact signed integer exponent descriptor",
+        "result": "base float domain",
+        "failure": "no recoverable error; special values are ordinary values"
+      },
+      "FloatPow": {
+        "inputs": "closed Float32 or Float64 adapted domain",
+        "result": "same adapted float domain",
+        "failure": "no recoverable error; negative finite base and nonintegral exponent follow the bound special-value profile"
+      },
+      "ComplexPowInt": {
+        "inputs": "Complex64 semantic value plus exact signed integer exponent descriptor",
+        "result": "Complex64 semantic value",
+        "failure": "no recoverable error; zero and nonfinite cases follow the bound special-value profile"
+      },
+      "ComplexPowPrincipal": {
+        "inputs": "Complex64 semantic base and exponent after a closed adaptation",
+        "result": "signed-zero-aware principal Complex64 value",
+        "failure": "no recoverable error; all zero and nonfinite cases follow the bound special-value profile"
+      },
+      "MeasurePowStatic": {
+        "inputs": "Measure<Rep,Dim> plus StaticInt",
+        "result": "exact normalized powered Measure domain",
+        "failure": "separate current measure power law"
+      }
+    },
+    "generic_pow_node_count": 0,
+    "power_witness_lookup_count": 0,
+    "power_trait_dispatch_count": 0,
+    "expected_result_selection_count": 0,
+    "runtime_sign_selection_count": 0,
+    "runtime_integrality_operation_selection_count": 0,
+    "runtime_dispatch_or_fallback_count": 0,
+    "source_or_import_order_selection_count": 0,
+    "fixed_glyph_conformance_boundary": {
+      "stable_conformance_glyphs": [
+        "+",
+        "-",
+        "*"
+      ],
+      "power_glyph_conformance": false,
+      "arbitrary_custom_operator": false
+    },
+    "profile_binding": {
+      "math_profile_id_required": true,
+      "special_value_profile_id_required": true,
+      "profile_ids_in_semantic_digest": true,
+      "missing_or_mismatched_profile": "terminal verification or link rejection",
+      "host_libm_choice_is_semantic_authority": false
+    }
+  },
+  "literal_contract": {
+    "hir_literal_variants": [
+      "RationalConst",
+      "ComplexLiteral"
+    ],
+    "RationalConst": {
+      "payload_type": "ConstRational",
+      "semantic_status": "canonical HIR representation only; no Rational power route or source activation is created",
+      "required_payload_fields": [
+        "sign",
+        "numerator_magnitude_be",
+        "denominator_magnitude_be"
+      ],
+      "normalization": [
+        "denominator is strictly positive",
+        "gcd(numerator, denominator) equals one",
+        "zero is exactly positive 0/1",
+        "integer encodings are shortest unsigned big-endian magnitudes",
+        "negative zero is forbidden"
+      ],
+      "rational_power_adaptation_count": 0
+    },
+    "ComplexLiteral": {
+      "payload_type": "ConstComplex64",
+      "semantic_components": [
+        "real_f64_bits",
+        "imaginary_f64_bits"
+      ],
+      "component_encoding": "exact lowercase sixteen-hex-digit IEEE-754 binary64 bit pattern",
+      "signed_zero_preserved": true,
+      "nan_payload_preserved_in_literal_payload": true,
+      "component_order": [
+        "real",
+        "imaginary"
+      ],
+      "layout_or_abi_selected": false,
+      "surface_spelling_in_semantic_payload": false
+    }
+  },
+  "capability_receipt_contract": {
+    "type": "MirCapabilityReceipt",
+    "required_fields": [
+      "hir_semantic_digest",
+      "mir_schema_digest",
+      "lowering_rules_digest",
+      "required_capabilities",
+      "provided_capabilities",
+      "unsupported_reachable_variant_count"
+    ],
+    "required_capabilities_equal_provided_capabilities": true,
+    "unsupported_reachable_variant_count": 0,
+    "receipt_self_authorizes_execution": false,
+    "receipt_self_promotes_mir_x1": false,
+    "receipt_self_changes_backend_authority": false,
+    "silent_omission_count": 0,
+    "todo_pseudo_operation_count": 0,
+    "opaque_runtime_callback_count": 0
+  },
+  "current_mir_bridge": {
+    "current_semantic_authority": "spec/mir/semantics.md",
+    "compatibility_target": "DP-RFC-0001 ProposedMirX1",
+    "compatibility_target_status": "DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE",
+    "lowering_contract": "deterministic total expansion of every reachable supported HIR variant",
+    "pair_receipt": [
+      "hir_semantic_digest",
+      "mir_semantic_digest",
+      "mir_schema_digest",
+      "lowering_rules_digest",
+      "node_projection_map"
+    ],
+    "pair_verification": "deterministically relower canonical HIR, canonicalize and verify MIR, then compare semantic bytes and provenance projection",
+    "digest_only_pair_acceptance": false,
+    "executable_mir_without_verified_pair": false
+  },
+  "backend_authority": {
+    "current": [
+      "xVM initial execution",
+      "LLVM AOT",
+      "LLVM ORC JIT"
+    ],
+    "cranelift_current": false,
+    "xvm_only_current": false,
+    "backend_switch_count": 0,
+    "backend_specific_hir_field_count": 0,
+    "product_execution_receipt_count": 0
+  },
+  "rules": [
+    {
+      "rule_id": "H1MB-R001",
+      "title": "the bridge is preview design only",
+      "contract": "This contract creates no current HIR schema, MIR-X1 authority, implementation, execution, backend switch, source activation, publication, promotion, P1 closure, or product support."
+    },
+    {
+      "rule_id": "H1MB-R002",
+      "title": "phase authority is represented by distinct types",
+      "contract": "HirSkeleton, AnalysisHir, TypedHirDraft, Verified<CanonicalHirH1>, ExecutableHirH1, and Verified<ProposedMirX1> are distinct authority-bearing types rather than one node graph with a phase flag."
+    },
+    {
+      "rule_id": "H1MB-R003",
+      "title": "canonical HIR is closed",
+      "contract": "Canonical HIR is fully typed, resolved, responsibility-closed, canonical, and verified; recovery, unresolved, candidate, inference, error-type, missing-expression, and backend-layout variants are unrepresentable."
+    },
+    {
+      "rule_id": "H1MB-R004",
+      "title": "static selections survive lowering",
+      "contract": "Selected callable, conformance, witness, requirement, extension, activation, formal, provider, actor, and authority identities remain typed fields and are never recovered from strings or runtime lookup."
+    },
+    {
+      "rule_id": "H1MB-R005",
+      "title": "evaluation order and formal binding are distinct",
+      "contract": "Source operands and call inputs retain one total evaluate-once order while formal/channel binding is a separate static projection."
+    },
+    {
+      "rule_id": "H1MB-R006",
+      "title": "power has a closed operation enum",
+      "contract": "Every admitted power expression seals to exactly one of CheckedIntPow, FloatPowInt, FloatPow, ComplexPowInt, ComplexPowPrincipal, or MeasurePowStatic; generic or unresolved Pow is forbidden."
+    },
+    {
+      "rule_id": "H1MB-R007",
+      "title": "power adaptation is closed and explicit",
+      "contract": "Each operand uses exactly one Identity, DirectLiteralToF64Exact, F32ToF64, F32ToComplex64, or F64ToComplex64 adaptation; hidden conversion and adaptation inferred in MIR are forbidden."
+    },
+    {
+      "rule_id": "H1MB-R008",
+      "title": "power selection is static",
+      "contract": "Expected result type, runtime sign, runtime integrality, Trait or witness search, provider lookup, source/import order, runtime fallback, and backend never select a power operation or result type."
+    },
+    {
+      "rule_id": "H1MB-R009",
+      "title": "base precedes exponent exactly once",
+      "contract": "The base expression evaluates once, then the exponent expression evaluates once, then the sealed power operation executes once."
+    },
+    {
+      "rule_id": "H1MB-R010",
+      "title": "math profiles are semantic dependencies",
+      "contract": "Every floating or complex power plan binds exact math_profile_id and special_value_profile_id values into semantic identity; host libm selection cannot replace them."
+    },
+    {
+      "rule_id": "H1MB-R011",
+      "title": "fixed glyph conformance remains bounded",
+      "contract": "Stable fixed-glyph conformance remains exactly binary +, -, and *; power admits no conformance or arbitrary custom-operator route."
+    },
+    {
+      "rule_id": "H1MB-R012",
+      "title": "Rational constants are normalized without activation",
+      "contract": "RationalConst refers to one reduced positive-denominator ConstRational canonical payload and creates no Rational source literal, power adaptation, Prelude identity, or runtime implementation."
+    },
+    {
+      "rule_id": "H1MB-R013",
+      "title": "Complex constant bits preserve signed zero",
+      "contract": "ConstComplex64 stores ordered exact binary64 real and imaginary component bits, preserves signed zero and NaN payload bits, and selects no public layout or ABI."
+    },
+    {
+      "rule_id": "H1MB-R014",
+      "title": "capability receipt gates executable HIR",
+      "contract": "Verified canonical HIR becomes ExecutableHirH1 only when exact MIR schema and lowering-rules digests cover every reachable variant with zero unsupported cases."
+    },
+    {
+      "rule_id": "H1MB-R015",
+      "title": "capability is not execution authority",
+      "contract": "MirCapabilityReceipt proves bounded lowering coverage only; it does not authorize execution, implementation, MIR-X1 adoption, publication, or backend change."
+    },
+    {
+      "rule_id": "H1MB-R016",
+      "title": "HIR to MIR is deterministic expansion",
+      "contract": "Lowering introduces CFG, Value, Place, token, cleanup, outcome, and suspension structure but performs no semantic lookup, conversion, fallback, or policy invention."
+    },
+    {
+      "rule_id": "H1MB-R017",
+      "title": "pair verification relowers",
+      "contract": "A HIR/MIR pair is accepted only after deterministic relowering and canonical semantic-byte plus provenance comparison; matching independent digest strings are insufficient."
+    },
+    {
+      "rule_id": "H1MB-R018",
+      "title": "MIR-X1 remains noncanonical",
+      "contract": "ProposedMirX1 remains a noncanonical nonactivatable compatibility target and cannot displace the current MIR semantic authority through this bridge."
+    },
+    {
+      "rule_id": "H1MB-R019",
+      "title": "current backend authority is preserved",
+      "contract": "The current backend path remains xVM initial execution, LLVM AOT, and LLVM ORC JIT; neither xVM-only nor Cranelift becomes current."
+    },
+    {
+      "rule_id": "H1MB-R020",
+      "title": "evidence boundaries remain exact",
+      "contract": "Semantic P0 remains zero, the exact 22 feature P1 remain OPEN, M13-A002 through A005 remain separate, every product lane remains NOT_RUN, and static fixtures are not implementation receipts."
+    }
+  ],
+  "machine_acceptance": {
+    "pipeline_stage_count": 7,
+    "rule_count": 20,
+    "power_operation_count": 6,
+    "power_adaptation_count": 5,
+    "literal_variant_count": 2,
+    "fixture_count": 48,
+    "positive_fixture_count": 16,
+    "negative_fixture_count": 16,
+    "boundary_fixture_count": 8,
+    "mutation_fixture_count": 8,
+    "generic_pow_node_count": 0,
+    "recovery_or_unresolved_canonical_count": 0,
+    "implementation_or_execution_count": 0,
+    "backend_switch_count": 0,
+    "semantic_p0": 0,
+    "open_feature_p1_count": 22,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0,
+    "product_execution_receipt_count": 0,
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

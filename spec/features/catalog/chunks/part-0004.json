@@ -192,21 +192,21 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Custom operator",
+    "display_name": "Rejected custom-operator declaration trace",
     "feature_id": "custom_operator",
-    "feature_kind": "canonical_feature",
+    "feature_kind": "recognized_unsupported",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Preview design",
-    "notes": "Arbitrary custom operator declarations are Preview design and nonactivatable. Current source rejects them with CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT and directs authors to a named Trait method, function, message, or API.",
+    "language_status": "Rejected / not current",
+    "notes": "Historical rejection identity only. Deeplus does not admit arbitrary user-declared glyphs, fixity, precedence, associativity, or dispatch tables, including in Preview design. Bounded Recovery may recognize an old declaration solely to emit CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT with zero admitted AST/HIR/MIR/API residue. Named Trait methods, functions, messages, and APIs remain the general extension path. This rejection is distinct from the Stable exact binary +,-,* Add/Subtract/Multiply fixed-glyph conformance profile.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
     "source_activation": "nonactivatable",
-    "status_display": "Preview design",
-    "status_enum": "PREVIEW_DESIGN",
+    "status_display": "Rejected / not current (historical trace)",
+    "status_enum": "SUPERSEDED",
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "design_only",
     "normative_trace_refs": {
@@ -223,7 +223,11 @@
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
+    "independent_conformance": "NOT_RUN",
+    "downgrade_reason": "Arbitrary custom glyph, fixity, precedence, associativity, and dispatch declarations are rejected rather than retained as Preview design.",
+    "replaced_by": [
+      "closed_operator_symbols_open_named_extensions"
+    ]
   },
   {
     "actual_user_team_study": "NOT_RUN",
@@ -1594,7 +1598,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`::` is the static/module/type-side/associated/qualified-extension/full-enum-case boundary. Expected enum shorthand is `::case`; `.` is exclusively runtime member access and never an enum-case shorthand.",
+    "notes": "QualifiedPath contains one or more Identifier segments, with adjacent segments joined by `::`. The same static separator is reused by the exact type-side, associated, qualified-extension, and full-enum-case owners.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1606,20 +1610,15 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
     "normative_trace_refs": {
-      "diagnostics": [
-        "DOT_NOT_ALLOWED_FOR_TYPE_SIDE_SELECTOR",
-        "DOT_NOT_ALLOWED_IN_IMPORT_PATH",
-        "DOT_NOT_ALLOWED_IN_MODULE_PATH",
-        "DOT_NOT_ALLOWED_IN_USE_PATH"
-      ],
+      "diagnostics": [],
       "predicates": [],
       "examples": [
         "EX-R48C-070",
-        "EX-R48C-071",
-        "EX-R48L-001",
-        "EX-R48L-002"
+        "EX-R48L-001"
       ],
-      "productions": [],
+      "productions": [
+        "QualifiedPath"
+      ],
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": [],
@@ -1636,13 +1635,13 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Double-glyph bitwise operator family",
+    "display_name": "Double-glyph pointwise logical operator family",
     "feature_id": "double_glyph_bitwise_operator_family_msp",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current && || ^^ ~~ bitwise operators reject Bool and require one exact normalized known-width integer or identical finite bitfield/#flags domain; no signedness, width, or nominal-domain mixing is implicit.",
+    "notes": "Stable built-in pointwise logical family for &&, ||, ^^, and prefix ~~. The historical packed route is unchanged: one exact normalized known-width integer or one identical finite bitfield/#flags domain produces the same domain. The shaped route additionally admits only exact same-shape NumericArray operands whose elements have one exact known-width integer domain, and produces that same shape and element domain. Binary operands are evaluated left-to-right exactly once; there is no short circuit, flow narrowing, implicit broadcasting, width/signedness/element conversion, user conformance lookup, or runtime fallback. Scalar Bool remains rejected; NumericArray<Bool>, dynamic or heterogeneous shapes, generic collections, and user-defined carriers remain deferred or rejected. Product support remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

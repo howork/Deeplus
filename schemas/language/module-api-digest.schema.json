@@ -21,7 +21,8 @@
     },
     "module_id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "Resolved (PackageId, ModulePath) identity; never inferred from the filesystem path alone."
     },
     "source_role": {
       "enum": [
@@ -209,6 +210,26 @@
                 "type": "null"
               }
             ]
+          },
+          "function_static_activation": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/functionStaticActivationResidue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fixed_operator_conformance": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/fixedOperatorConformanceResidue"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "allOf": [
@@ -238,6 +259,11 @@
                   {
                     "required": [
                       "named_rest_residue"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "function_static_activation"
                     ]
                   }
                 ]
@@ -383,6 +409,11 @@
                     "required": [
                       "projection_row_sha256"
                     ]
+                  },
+                  {
+                    "required": [
+                      "function_static_activation"
+                    ]
                   }
                 ]
               },
@@ -436,6 +467,11 @@
                     "required": [
                       "projection_row_sha256"
                     ]
+                  },
+                  {
+                    "required": [
+                      "function_static_activation"
+                    ]
                   }
                 ]
               },
@@ -451,6 +487,66 @@
                 "isolation": {"const": "not_applicable"}
               }
             }
+          },
+          {
+            "if": {
+              "required": [
+                "function_static_activation"
+              ],
+              "properties": {
+                "function_static_activation": {
+                  "type": "object"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "function",
+                    "method"
+                  ]
+                },
+                "callable_profile": {
+                  "properties": {
+                    "behavior": {
+                      "enum": [
+                        "ordinary",
+                        "pure"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "behavior"
+                  ]
+                },
+                "cancellation": {
+                  "const": "forbidden"
+                },
+                "suspends": {
+                  "const": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": [
+                "fixed_operator_conformance"
+              ],
+              "properties": {
+                "fixed_operator_conformance": {
+                  "type": "object"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "kind": {
+                  "const": "conformance"
+                }
+              }
+            }
           }
         ]
       }
@@ -461,6 +557,42 @@
     }
   },
   "$defs": {
+    "fixedOperatorConformanceResidue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_id",
+        "normalized_left_type_id",
+        "normalized_right_type_id",
+        "conformance_id",
+        "witness_id",
+        "method_id",
+        "substitution_id",
+        "output_type_id",
+        "responsibility_profile_id",
+        "dispatch_route",
+        "runtime_relookup_count",
+        "fallback_count"
+      ],
+      "properties": {
+        "operator_id": {
+          "enum": ["BinaryAdd", "BinarySubtract", "BinaryMultiply"]
+        },
+        "normalized_left_type_id": {"type": "string", "minLength": 1},
+        "normalized_right_type_id": {"type": "string", "minLength": 1},
+        "conformance_id": {"type": "string", "minLength": 1},
+        "witness_id": {"type": "string", "minLength": 1},
+        "method_id": {"type": "string", "minLength": 1},
+        "substitution_id": {"type": "string", "minLength": 1},
+        "output_type_id": {"type": "string", "minLength": 1},
+        "responsibility_profile_id": {
+          "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        },
+        "dispatch_route": {"const": "DIRECT_GLOBAL"},
+        "runtime_relookup_count": {"const": 0},
+        "fallback_count": {"const": 0}
+      }
+    },
     "responsibilityChannel": {
       "type": "object",
       "additionalProperties": false,
@@ -468,6 +600,25 @@
       "properties": {
         "channel_id": {"type": "string", "minLength": 1},
         "type_identity": {"type": "string", "minLength": 1},
+        "visible_label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "call_channel_kind": {
+          "enum": [
+            "receiver",
+            "value",
+            "context",
+            "witness",
+            "repeated_positional",
+            "named_rest",
+            "trailing_closure",
+            "result",
+            "capture"
+          ]
+        },
         "ownership": {
           "enum": ["reusable", "borrow", "inout", "move", "resource"]
         },
@@ -610,6 +761,107 @@
         }
       }
     },
+    "functionStaticActivationHelperDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "callable_implementation_id",
+        "activation_present",
+        "safety_summary_sha256"
+      ],
+      "properties": {
+        "callable_implementation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activation_present": {
+          "const": false
+        },
+        "safety_summary_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "functionStaticActivationResidue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_present",
+        "activation_semantics_version",
+        "callable_implementation_id",
+        "owner_recipe_profile",
+        "owner_recipe_sha256",
+        "activation_contract_sha256",
+        "safety_summary_sha256",
+        "dependency_digest_sha256",
+        "used_witness_ids",
+        "used_conformance_ids",
+        "helper_dependencies",
+        "failure_profile",
+        "publication_profile"
+      ],
+      "properties": {
+        "activation_present": {
+          "const": true
+        },
+        "activation_semantics_version": {
+          "const": "function-static-activation/r1"
+        },
+        "callable_implementation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_recipe_profile": {
+          "const": "CallableImplementationId+normalized_instantiation+activation_contract_digest/v1"
+        },
+        "owner_recipe_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "activation_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "safety_summary_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "dependency_digest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "used_witness_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "used_conformance_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "helper_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/functionStaticActivationHelperDependency"
+          }
+        },
+        "failure_profile": {
+          "const": "terminal_cached_uniform_failure_no_retry_v1"
+        },
+        "publication_profile": {
+          "const": "owner_terminal_state_happens_before_observer_v1"
+        }
+      }
+    },
     "responsibilityProfile": {
       "oneOf": [
         {
@@ -681,7 +933,9 @@
       ],
       "forbidden": [
         "callable_profile",
-        "named_rest_residue"
+        "named_rest_residue",
+        "function_static_activation",
+        "fixed_operator_conformance"
       ]
     },
     "function": {
@@ -691,7 +945,11 @@
       ],
       "forbidden": [
         "construction_row_sha256",
-        "projection_row_sha256"
+        "projection_row_sha256",
+        "fixed_operator_conformance"
+      ],
+      "optional": [
+        "function_static_activation"
       ],
       "concrete_responsibility_axes": [
         "cancellation",
@@ -706,7 +964,11 @@
       ],
       "forbidden": [
         "construction_row_sha256",
-        "projection_row_sha256"
+        "projection_row_sha256",
+        "fixed_operator_conformance"
+      ],
+      "optional": [
+        "function_static_activation"
       ],
       "concrete_responsibility_axes": [
         "cancellation",
@@ -720,7 +982,11 @@
         "callable_profile",
         "named_rest_residue",
         "construction_row_sha256",
-        "projection_row_sha256"
+        "projection_row_sha256",
+        "function_static_activation"
+      ],
+      "optional": [
+        "fixed_operator_conformance"
       ],
       "nonempty": [
         "evidence_ids"
@@ -732,9 +998,35 @@
         "callable_profile",
         "named_rest_residue",
         "construction_row_sha256",
-        "projection_row_sha256"
+        "projection_row_sha256",
+        "function_static_activation",
+        "fixed_operator_conformance"
       ]
     }
+  },
+  "x-deeplus-function-static-activation-contract": {
+    "absence": "an absent or null function_static_activation field means activation_present=false; existing callable canonical bytes need not add a null member",
+    "presence_owner": "only kind=function or kind=method with synchronous, cancellation-forbidden ordinary or pure callable profile",
+    "identity_domain": "CallableImplementationId is semantic and target-independent; FunctionStaticOwnerId is computed per normalized instantiation and is not a machine address",
+    "runtime_key": "(RuntimeInstanceId, FunctionStaticOwnerId)",
+    "recipe_collision": "equal FunctionStaticOwnerId with unequal canonical owner recipes is a terminal link error",
+    "sorted_unique_rows": [
+      "used_witness_ids",
+      "used_conformance_ids",
+      "helper_dependencies by callable_implementation_id"
+    ],
+    "helper_dependency_rule": "every helper is statically selected, activation_present=false, and bound to its safety_summary_sha256",
+    "public_residue": "the public digest contains semantic recipe/digest/failure/publication residue only",
+    "backend_local_residue": "initializer symbols, bytecode entries, state-cell addresses, table indices, and machine-code identities belong to implementation/link artifacts and are forbidden here",
+    "product_support": "NOT_RUN"
+  },
+  "x-deeplus-fixed-operator-conformance-contract": {
+    "absence": "an absent or null fixed_operator_conformance field means the conformance is not a fixed-glyph dispatch provider",
+    "presence_owner": "only kind=conformance under the Stable exact binary +,-,* profile",
+    "selection_identity": "OperatorId plus normalized left/right type identities selects one left-owner DIRECT_GLOBAL ConformanceId/WitnessId/MethodId/substitution and then derives OutputTypeId",
+    "intrinsic_reservation": "an intrinsic-reserved operand pair has no user fixed_operator_conformance residue and cannot be overridden",
+    "runtime_lookup_or_fallback_count": 0,
+    "product_support": "NOT_RUN"
   },
   "x-deeplus-callable-channel-id-contract": {
     "scope": "for each function or method, collect every non-null receiver channel plus every parameters, result, and captures channel",
@@ -774,7 +1066,10 @@
       "authority",
       "effect_row",
       "error_set",
-      "evidence_ids"
+      "evidence_ids",
+      "function_static_activation.used_witness_ids",
+      "function_static_activation.used_conformance_ids",
+      "function_static_activation.helper_dependencies"
     ],
     "set_order": "strict ascending Unicode scalar sequence with no duplicates",
     "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",

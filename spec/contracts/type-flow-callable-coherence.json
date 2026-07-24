@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -206,21 +206,26 @@
     {
       "rule_id": "TFC-R011",
       "domain": "calls",
-      "title": "ordinary calls use parentheses with one bounded trailing-closure exception",
+      "title": "ordinary and message calls share one labeled trailing-closure group contract",
       "contract": {
         "ordinary_surface": "callee(argument-list)",
-        "parenless_exception": "callee AtomicCallArgument ClosureExpr",
+        "parenless_exception": "callee AtomicCallArgument TrailingClosureGroup",
         "atomic_argument_kinds": [
           "Literal",
           "Identifier",
           "QualifiedStaticExpr",
           "ExpectedVariantExpr"
         ],
-        "required_unlabeled_trailing_closure_count": 1,
-        "formal_parameter_requirement": "the selected callable has a matching closure parameter in the trailing suffix",
+        "trailing_closure_owner": "TrailingClosureGroup shared by CallSuffix and MessageSuffix",
+        "single_trailing_closure": "one unlabeled or one labeled closure is admitted",
+        "multiple_trailing_closures": "two or more closures are admitted only when every closure is labeled and labels are unique",
+        "formal_parameter_requirement": "each trailing closure binds to exactly one matching closure/function-typed parameter; labels bind by visible parameter label and one unlabeled closure binds only when exactly one suffix candidate remains",
+        "source_evaluation_order": "ordinary arguments or message payload first, then trailing closures in source order, each exactly once",
         "bare_call_without_closure": "reject",
         "multiple_unlabeled_trailing_closures": "reject",
-        "message_owned_closure": "separate MessageSuffix owner",
+        "duplicate_trailing_closure_label": "reject before overload ranking",
+        "default_parameter_skip": "forbidden",
+        "message_owned_closure": "MessageSuffix owns message dispatch and payload, while its trailing closure list uses the shared TrailingClosureGroup structural contract",
         "ordinary_mut_parameter": {
           "surface": "mut name: T",
           "argument_evaluation_count": 1,
@@ -528,6 +533,38 @@
         "return_break_continue_throw": "cannot skip required cleanup",
         "suspension": "preserves live ownership, borrow, isolation, and cleanup obligations"
       }
+    },
+    {
+      "rule_id": "TFC-R021",
+      "domain": "message_calls",
+      "title": "message syntax carries zero or one normalized payload plus a shared trailing-closure group",
+      "contract": {
+        "surface_owner": "MessageSuffix",
+        "payload_cardinality": "zero_or_one",
+        "ordinary_argument_list_owner_reused": false,
+        "bare_atomic_payload": "one scalar payload",
+        "parenthesized_single_expression": "one grouped scalar payload",
+        "parenthesized_positional_sequence": "one Tuple payload in source order",
+        "parenthesized_all_named_sequence": "one structural Record payload with static unique labels",
+        "mixed_positional_and_named_parenthesized_payload": "reject",
+        "empty_parentheses": "compatibility spelling normalized to no payload; canonical formatter output omits it",
+        "selector_surface": [
+          "selector",
+          "TraitOrProtocol::selector",
+          "Type::ExtensionSet::selector"
+        ],
+        "selector_path_preservation": "lossless CST and normalized AST preserve the complete qualified selector before resolution",
+        "selector_resolution": "the selected nominal, trait, extension, actor, or actor-protocol declaration identity is fixed before call matching; actor messages never fall back to ordinary methods",
+        "payload_to_formal_projection": {
+          "none": "zero ordinary value parameters",
+          "scalar": "one ordinary value parameter",
+          "tuple": "ordered positional value parameters",
+          "record": "static visible labels to named value parameters"
+        },
+        "context_or_witness_payload_synthesis": false,
+        "trailing_closure_contract": "TFC-R011",
+        "product_support": "NOT_RUN"
+      }
     }
   ],
   "parameter_mode_matrix": [
@@ -591,7 +628,7 @@
     "product_execution": "NOT_RUN"
   },
   "machine_acceptance": {
-    "rule_count": 20,
+    "rule_count": 21,
     "rule_ids_unique": true,
     "ordinary_identifier_set": [
       "array",
@@ -624,6 +661,10 @@
     "ternary_selected_arm_evaluation_count": 1,
     "ternary_unselected_arm_evaluation_count": 0,
     "ternary_automatic_anonymous_union_count": 0,
+    "message_payload_max_count": 1,
+    "message_argument_list_reuse_count": 0,
+    "multiple_trailing_closures_require_all_named": true,
+    "duplicate_trailing_closure_labels_admitted": false,
     "product_execution_receipt_count": 0
   }
 }

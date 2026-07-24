@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-contract/r1",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -137,8 +137,19 @@
       "contract": {
         "surface_owner": "MessageSuffix",
         "receiver_evaluation_count": 1,
-        "argument_evaluation": "left-to-right exactly once",
+        "payload_cardinality": "zero_or_one normalized payload node",
+        "ordinary_argument_list_owner_reused": false,
+        "payload_forms": {
+          "absent": "zero value parameters",
+          "scalar": "one value parameter",
+          "tuple": "one payload whose ordered fields project to positional value parameters",
+          "record": "one payload whose static unique labels project to named value parameters"
+        },
+        "payload_evaluation": "the one payload aggregate and every child expression evaluate left-to-right exactly once before enqueue commit",
+        "trailing_closure_group": "shared with ordinary CallSuffix; one closure may be unlabeled or labeled, two or more must all have unique labels",
+        "actor_boundary_closure_rule": "a trailing closure crossing actor isolation must independently satisfy transfer, capture, suspension, effect, error, and cleanup admission; the trailing surface grants no transferability",
         "selector_identity": "resolved before enqueue against the admitted actor/protocol domain",
+        "qualified_selector_identity": "TraitOrProtocol::selector or Type::ExtensionSet::selector is preserved through AST/HIR and resolved before admission",
         "ordinary_method_fallback": false,
         "runtime_string_lookup": false,
         "source_order_as_resolution_evidence": false

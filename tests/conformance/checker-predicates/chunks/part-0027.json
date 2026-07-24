@@ -1,0 +1,354 @@
+[
+  {
+    "fixture_id": "PF-RationalLiteralAdmitted-POS",
+    "predicate_id": "RationalLiteralAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.rational-literal-descriptor/r1",
+      "source": "<6/8>",
+      "goal": "expression_prefix",
+      "numerator": "6",
+      "denominator": "8",
+      "normalized": [
+        "3",
+        "4"
+      ]
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Rational"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a contiguous expression-prefix candidate normalizes to Rational(3,4) while preserving <6/8> source origin",
+    "rule_seed": "transactional exact Rational compound literal",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RationalLiteralAdmitted-BOUNDARY",
+    "predicate_id": "RationalLiteralAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.rational-literal-descriptor/r1",
+      "source": "-<0/17>",
+      "goal": "expression_prefix",
+      "numerator": "0",
+      "denominator": "17",
+      "normalized": [
+        "0",
+        "1"
+      ],
+      "outer_prefix_sign": "-"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Rational"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "zero canonicalizes to 0/1 and the sign remains an outer PrefixExpr",
+    "rule_seed": "Rational zero and prefix-sign boundary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RationalLiteralAdmitted-NEG",
+    "predicate_id": "RationalLiteralAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.rational-literal-descriptor/r1",
+      "source": "<2/0>",
+      "goal": "expression_prefix",
+      "numerator": "2",
+      "denominator": "0"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Rational"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "zero denominator is rejected after successful literal recognition",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "RATIONAL_LITERAL_DENOMINATOR_ZERO",
+    "violated_condition": "denominator is zero",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ComplexLiteralAndOperatorAdmitted-POS",
+    "predicate_id": "ComplexLiteralAndOperatorAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.complex-literal-operator-descriptor/r1",
+      "source": "3.0 + 4.0i",
+      "rep": "Float64",
+      "operator": "+",
+      "witness": "Prelude.Add<Complex<Float64>> for Float64"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Complex<Float64>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the attached i token and unique sealed direct-global Add witness produce Complex<Float64>",
+    "rule_seed": "canonical Cartesian Complex literal expression",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ComplexLiteralAndOperatorAdmitted-BOUNDARY",
+    "predicate_id": "ComplexLiteralAndOperatorAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.complex-literal-operator-descriptor/r1",
+      "source": "-0.0f32i",
+      "rep": "Float32",
+      "outer_prefix_sign": "-",
+      "real_bits": "0x00000000"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Complex<Float32>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the literal keeps Float32 and positive-zero real bits while unary minus applies outside the token",
+    "rule_seed": "signed-zero and suffix boundary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ComplexLiteralAndOperatorAdmitted-NEG",
+    "predicate_id": "ComplexLiteralAndOperatorAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.complex-literal-operator-descriptor/r1",
+      "source": "4i",
+      "rep": null,
+      "operator": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedImaginaryCandidate"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "only floating candidates own the imaginary marker",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+    "violated_condition": "the candidate is integer-shaped rather than floating",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAssociatedStaticSelectionAdmitted-POS",
+    "predicate_id": "TraitAssociatedStaticSelectionAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.trait-associated-static-selection/r1",
+      "source": "<Packet as Codec>::defaultFormat",
+      "type_id": "Packet",
+      "trait_id": "Codec",
+      "requirement_id": "Codec.defaultFormat",
+      "conformance_id": "Packet:Codec",
+      "witness_id": "Witness.Packet.Codec",
+      "implementation_id": "Impl.Packet.Codec.defaultFormat",
+      "responsibility_id": "PureStaticValue"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Format"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "explicit Trait qualification selects one complete static identity residue",
+    "rule_seed": "exact Trait-associated static selection",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAssociatedStaticSelectionAdmitted-BOUNDARY",
+    "predicate_id": "TraitAssociatedStaticSelectionAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.trait-associated-static-selection/r1",
+      "source": "<Packet as Codec>::Format::canonical",
+      "type_id": "Packet",
+      "trait_id": "Codec",
+      "requirement_id": "Codec.Format",
+      "conformance_id": "Packet:Codec",
+      "witness_id": "Witness.Packet.Codec",
+      "implementation_id": "Impl.Packet.Codec.Format",
+      "responsibility_id": "AssociatedTypeThenStaticMember"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Format"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "an associated type projection may be followed by an ordinary static member selector without losing witness identity",
+    "rule_seed": "associated type then static member boundary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAssociatedStaticSelectionAdmitted-NEG",
+    "predicate_id": "TraitAssociatedStaticSelectionAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.trait-associated-static-selection/r1",
+      "source": "Packet::defaultFormat",
+      "type_id": "Packet",
+      "trait_id": null,
+      "runtime_trait_search": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedImplicitTraitLookup"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "T::item cannot search visible Traits",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+    "violated_condition": "the Trait domain is implicit and would require search",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

@@ -107,10 +107,35 @@ def git_source_files(root: Path, *, allow_dirty: bool) -> list[Path] | None:
         names = listed.stdout.decode("utf-8").split("\0")
     except UnicodeDecodeError as exc:
         fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", str(exc))
+    if allow_dirty:
+        untracked = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(root),
+                "ls-files",
+                "-z",
+                "--others",
+                "--exclude-standard",
+            ],
+            capture_output=True,
+            check=False,
+        )
+        if untracked.returncode != 0:
+            fail(
+                "SOURCE_ARCHIVE_GIT_STATE",
+                untracked.stderr.decode("utf-8", "replace"),
+            )
+        try:
+            names.extend(untracked.stdout.decode("utf-8").split("\0"))
+        except UnicodeDecodeError as exc:
+            fail("SOURCE_ARCHIVE_UNSAFE_MEMBER", str(exc))
     files = []
+    seen: set[str] = set()
     for name in names:
-        if not name or name == MANIFEST:
+        if not name or name == MANIFEST or name in seen:
             continue
+        seen.add(name)
         relative = Path(name)
         if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue

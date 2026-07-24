@@ -45,6 +45,124 @@ ReturnShorthand    ::= "return" Expr StatementBoundary
 
 중복 profile과 owner에 없는 조합은 거부한다.
 
+### 함수 static activation
+
+`scope#static { ... }`은 이름 있는 동기 함수의 실제 구현에 결합되는
+Stable activation prologue다. 함수 값의 생성, 이름 조회, overload 후보
+수집 또는 JIT compilation 때가 아니라, 최종 구현을 실제로 호출할 때
+처음 한 번만 실행된다. 이 기능은 persistent function-local value나 cache,
+module initializer, type-side `def::` 또는 top-level `static def`가 아니다.
+
+```ebnf
+FunctionBodyContent      ::= CallableBlock | ReturnShorthand | ClauseFunctionBody
+CallableBlock            ::= "{" BlockPrologue?
+                                  FunctionStaticActivation?
+                                  BlockSequence "}"
+FunctionStaticActivation ::= "scope" "#" "static" StaticActivationBlock
+StaticActivationBlock    ::= "{" BlockSequence "}"
+```
+
+`#`와 `static`은 Deeplus의 공통 hash-role 규칙을 따른다. 같은 물리적 줄의
+수평 trivia와 comment는 parser가 받아들일 수 있고 formatter는
+`scope#static`으로 붙여 출력한다. activation은 optional `use`/`import`
+prologue 뒤, 첫 runtime semantic item 앞에 최대 하나만 놓인다. expression
+body와 clause body에는 직접 붙지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/function-static-activation.json -->
+```deeplus
+def decode(bytes: Bytes) -> Packet = {
+    scope#static {
+        verifyDecoderTables()
+    }
+
+    return decodePacket(bytes)
+}
+```
+
+최초 Stable owner matrix는 다음처럼 닫혀 있다.
+
+| owner | activation |
+|---|---|
+| 동기 module/extension 함수 | 허용 |
+| 동기 instance/type-side member | 허용 |
+| body가 있는 동기 Trait default와 explicit conformance method | 허용 |
+| `def#pure` | activation body가 같은 pure proof를 통과할 때 허용 |
+| entry/local function, constructor, cleanup/drop | 거부 |
+| lambda, anonymous closure, actor handler/request | 거부 |
+| async, generator, FFI, recovery declaration | 거부 |
+| `def#guard` | 거부; guard의 total narrowing 계약과 terminal activation failure를 섞지 않음 |
+
+정확한 once owner는 source 이름 하나가 아니라
+`FunctionStaticOwnerId`다. 이 ID는 activation semantics version,
+`CallableImplementationId`, 정규화한 owner/callable generic substitution,
+activation body contract digest에서 결정된다. 그 digest는 body가 실제
+사용하는 Witness/Conformance ID와 정적으로 선택한 helper ID 및 helper
+safety digest를 정렬해 결합한다. 사용하지 않은 ambient witness나
+`Context`는 ID를 나누지 않는다. overload, selected override와 서로 다른
+generic specialization은 별도 owner이며, inline/LTO/JIT clone은 같은
+owner state를 공유한다. runtime key는
+`(RuntimeInstanceId, FunctionStaticOwnerId)`다.
+
+호출 사건 순서는 다음과 같다.
+
+1. 최종 callable implementation을 선택한다.
+2. receiver와 explicit/default argument를 기존 규칙대로 한 번씩 평가하고
+   검증하여 staging한다.
+3. `EnsureFunctionStaticActivated(owner)` barrier를 통과한다.
+4. parameter ownership을 0회 또는 1회 원자적으로 commit한다.
+5. requires/`old(expr)`와 ordinary body로 진입한다.
+
+activation이 실패하면 parameter ownership commit과 ordinary body 진입은
+모두 0이다. caller owner는 caller에게 남고 staged argument, frame/result
+reservation과 activation-local temporary는 각각 정확히 한 번 정리된다.
+
+Activation body는 `safe`, synchronous, non-suspending, `throws Never`,
+`effects {}`다. literal, compile-time constant, immutable module/type
+constant, 정규화된 generic argument, activation-local temporary와
+정적으로 선택된 activation-free pure helper만 사용할 수 있다. 다음은
+금지한다.
+
+- `self`, receiver, parameter, default result, caller `Context`;
+- caller task/thread/actor identity, time, random, environment, locale;
+- mutable global state, ambient provider/authority, dynamic witness lookup;
+- I/O, FFI, actor send/request, `await`, `yield`, cancellation observation;
+- Resource 획득·escape, persistent `needsDrop` residue, body 밖 control transfer;
+- indirect/provider/dynamic call과 activation을 가진 다른 callable 호출.
+
+상태 기계는 `Dormant -> Initializing -> Ready | Failed`뿐이다. 동시 첫
+호출에서는 winner 하나만 activation body를 실행하고 나머지는
+non-cancellable synchronous barrier에서 기다린다. `Ready`와 `Failed`는
+release로 publish하고 acquire로 관찰한다. partial observation, reset,
+implicit retry는 없다.
+
+Activation body의 terminal Defect 또는 same-owner reentry는 하나의
+canonical `Failed(FailureRecord)`를 만든다. winner, waiter와 이후 caller는
+모두 `FUNCTION_STATIC_ACTIVATION_FAILED`를 같은 failure identity로
+관찰하며, 원래 Defect 또는
+`FUNCTION_STATIC_ACTIVATION_REENTRANCY`는 cause로 보존된다. reentry는
+deadlock이나 undefined behavior가 아니다. 최초 Stable profile은
+activation-bearing/dynamic/provider callee를 정적으로 거부하여
+cross-owner activation cycle을 구성할 수 없게 한다.
+
+Public callable metadata는 activation presence, owner recipe, semantics
+version, contract/safety digest, initializer entry, terminal cached failure
+profile과 release/acquire publication profile을 보존한다. activation을
+추가·제거하거나 contract digest를 바꾸는 것은 relink가 필요한 API/link
+변경이다. formatter/LSP/runtime/backend 지원은 target-bound receipt가
+없으므로 여전히 `NOT_RUN`이다.
+
+다음과 같은 과거 철자는 계속 거부한다. 이 진단 경계는
+`EX-R51a1-NG-066`에 고정한다.
+
+```deeplus
+public static def warm() -> Unit = { }
+```
+
+`STATIC_FUNCTION_DECLARATION_NOT_CURRENT`는 ordinary module function,
+owning nominal의 `def::`와 `scope#static`의 차이를 설명하지만 자동
+rewrite하지 않는다. `static_once_value`, effectful/module/class activation은
+별도 Preview 설계이며 이 Stable 승급으로 활성화되지 않는다.
+
 ### 매개변수 채널
 
 ```ebnf
@@ -128,17 +246,75 @@ lambda parameter 목록에는 괄호를 쓰지 않는다. 명시적 nullary lamb
 
 ### 호출
 
-일반 호출은 `callee(arguments)`다. 예외는 정확히 하나의 atomic argument
-뒤에 정확히 하나의 unlabeled trailing closure가 오는 bounded suffix다.
-여러 callback은 named argument로 전달한다.
+일반 호출의 기본형은 `callee(arguments)`다. 괄호 없는 bounded 예외는
+하나의 atomic argument 뒤에 하나 이상의 trailing closure가 이어지는
+형식뿐이다. 이 예외가 일반적인 괄호 없는 인수 목록을 허용하는 것은
+아니다.
 
 ```ebnf
+CallSuffix ::= ArgumentList TrailingClosureGroup?
+             | AtomicCallArgument TrailingClosureGroup
+
 Argument ::= ContextArgument | WitnessArgument | NamedArgument
            | PositionalUnfoldArgument | NamedUnfoldArgument | Expr
 NamedArgument            ::= Identifier ":" Expr
 PositionalUnfoldArgument ::= "*" Expr
 NamedUnfoldArgument      ::= "**" Expr
+
+TrailingClosureGroup    ::= TrailingClosureArgument+
+TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr
 ```
+
+trailing closure가 하나이면 label을 생략하거나 쓸 수 있다. 두 개 이상이면
+모든 closure에 서로 다른 label을 써야 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+run(1) { value => consume(value) }
+run(1) completion:{ value => consume(value) }
+
+transaction()
+    onCommit:{ => logCommit() }
+    onRollback:{ error => log(error) }
+```
+
+두 번째 묶음에서 하나라도 label이 없거나 label이 중복되면 call shape를
+만들지 않는다. label은 문자열이 아니라 선택된 함수의 visible
+function-typed parameter identity다.
+
+### 메시지 payload와 호출의 구분
+
+`~` 메시지 호출은 ordinary `ArgumentList`를 재사용하지 않는다. 메시지는
+selector 뒤에 정확히 0개 또는 1개의 payload AST node를 갖는다.
+
+```ebnf
+MessageSuffix ::= "~" MessageSelector MessagePayload?
+                  TrailingClosureGroup?
+MessageSelector ::= Identifier | QualifiedMessageSelector
+QualifiedMessageSelector ::= TypeRef "::" Identifier
+                             ("::" Identifier)?
+MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope
+```
+
+괄호 안의 positional expression은 하나의 Tuple payload로, all-named
+entry는 하나의 structural Record payload로 정규화된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+receiver ~ ping
+receiver ~ store value
+receiver ~ moveTo (x, y)
+receiver ~ configure(name: "Ada", retries: 3)
+receiver ~ SomeTrait::transform value
+receiver ~ Value::text::render value
+```
+
+따라서 `moveTo(x, y)`는 ordinary call의 두 argument지만,
+`receiver ~ moveTo (x, y)`는 Tuple payload 하나다. 그 Tuple은 선택된
+declaration의 positional value parameter에 순서대로 투영될 수 있다.
+named payload는 Record label을 named value parameter에 투영한다. mixed
+positional/named payload는 거부한다. 기존 `receiver ~ ping()`은 no-payload
+호환 표기이며 formatter는 괄호를 생략한 `receiver ~ ping`을 만든다.
 
 ## 허용과 정적 의미
 
@@ -179,6 +355,13 @@ NamedUnfoldArgument      ::= "**" Expr
    공급한다. ordinary runtime value로 대체할 수 없다.
 7. ownership, effects, ErrorSet, cancellation, isolation, return obligation을
    확인한 뒤에만 call을 commit한다.
+
+message call은 위 단계 앞에서 payload를 `none/scalar/tuple/record` 중
+하나로 정규화한다. 이 payload projection은 ordinary value parameter만
+채운다. `context`와 `using` evidence를 payload field에서 합성하지 않는다.
+qualified selector는 CST/AST에 전체 경로를 보존한 뒤 nominal, Trait,
+extension, actor 또는 actor-protocol domain의 declaration identity로
+해석한다. actor domain에서는 ordinary method fallback이 없다.
 
 lambda의 contextual shorthand `@`는 이 모든 판정이 먼저 끝나 정확히
 하나의 ordinary one-value parameter가 남을 때만 생긴다. context,
@@ -272,11 +455,30 @@ let consumeOnce = [move token] #once { value => consume(token, value) }
 let names = users ~ map { user => user.name }
 ```
 
-현행 예제 `EX-R51a1-NEW-008`,
-원본 `examples/guide/review-corpus.md`:
+하나의 named trailing closure:
 
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
-let value = transaction(onCommit: { => logCommit() }, onRollback: { error => log(error) })
+let value = transaction() completion:{ result => log(result) }
+```
+
+현행 예제 `EX-R51a1-NEW-008`처럼 여러 callback은 모두 이름을 붙여
+괄호 밖에 둘 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+let value = transaction()
+    onCommit:{ => logCommit() }
+    onRollback:{ error => log(error) }
+```
+
+message call도 같은 규칙을 쓴다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+let outcome = worker ~ process job
+    success:{ value => publish(value) }
+    failure:{ error => recover(error) }
 ```
 
 ### 이름 있는 함수 profile
@@ -313,7 +515,9 @@ def#guard validPort(port: Int) -> Bool = {
 | lambda value body 안의 `return` | 거부 |
 | local function의 암시적 outer capture | 거부 |
 | bare ordinary call | 거부; bounded trailing-closure 예외만 있다 |
-| unlabeled trailing closure 여러 개 | 거부; named argument를 사용한다 |
+| 둘 이상의 trailing closure 중 label 누락 | 거부; 모든 closure에 label을 쓴다 |
+| trailing closure label 중복 | 거부; 각 label은 정확히 한 번만 쓴다 |
+| message의 mixed positional/named payload | 거부; Tuple 또는 all-named Record 중 하나를 쓴다 |
 | named argument의 `name = value` | 거부; `name: value`를 사용한다 |
 | parameter/type의 `**` named rest | recovery-only; `***`를 사용한다 |
 | call-side `***record` | 거부; unfold는 `**record`다 |
@@ -328,8 +532,10 @@ def#guard validPort(port: Int) -> Bool = {
   refutable Pattern을 사용할 수 있다.
 - trailing closure는 capture, effect, error, ownership 검사를 완화하지
   않는다.
-- `~` message call은 ordinary call과 별도 postfix owner이며 actor
-  request/reply 책임을 유지한다.
+- `~` message call은 ordinary call과 별도 postfix owner이고 payload는
+  0/1 aggregate지만, `TrailingClosureGroup`의 구조 검사는 공유한다.
+- actor 경계를 건너는 closure는 독립적으로 transfer/capture/isolation
+  검사를 통과해야 하며 trailing 표면이 그 권한을 만들지 않는다.
 - `def#async`와 `await`는 suspension을 숨기지 않으며 structured task
   경계를 따라야 한다.
 - 함수 type의 `T...` 및 `Record***`는 public API digest와 compatibility에

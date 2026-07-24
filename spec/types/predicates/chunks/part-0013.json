@@ -1418,7 +1418,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "TrailingClosureCardinalityAdmitted",
     "source_name": "TrailingClosureCardinalityAdmitted",
-    "summary": "unlabeled trailing closure count is zero or one; two or more callbacks are represented as ordinary named arguments",
+    "summary": "one trailing closure may be unlabeled or labeled; two or more require every item to have a unique label",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "call_shape"
@@ -1432,8 +1432,9 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "unlabeled trailing closure count is zero or one",
-      "two or more callbacks are represented as ordinary named arguments"
+      "a one-item trailing group may be unlabeled or labeled",
+      "a group of two or more has a label on every item",
+      "all labels in one trailing group are unique"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1445,14 +1446,15 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "unlabeled trailing closure count is zero or one",
-      "two or more callbacks are represented as ordinary named arguments"
+      "a one-item trailing group may be unlabeled or labeled",
+      "a group of two or more has a label on every item",
+      "all labels in one trailing group are unique"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right in listed order",
-      "apply TrailingClosureCardinalityAdmitted local rule: unlabeled trailing closure count is zero or one; two or more callbacks are represented as ordinary named arguments",
+      "apply TrailingClosureCardinalityAdmitted local rule: admit one labeled or unlabeled item; for two or more require every item labeled and all labels unique",
       "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",

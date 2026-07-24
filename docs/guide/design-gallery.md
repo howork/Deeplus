@@ -78,7 +78,7 @@ public def#tailrec sumTo(n: Int) -> Int = {
 - evidence: `design-static; product NOT_RUN`
 
 ```deeplus
-let patternText = raw"[A-Z]+"
+let patternText = #raw"[A-Z]+"
 ```
 
 ## G-R51f-008 — Regex literal prefix is not current

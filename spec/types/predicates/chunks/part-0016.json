@@ -1,0 +1,247 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NumericFillSliceIndexAdmitted",
+    "source_name": "NumericFillSliceIndexAdmitted",
+    "summary": "NumericArray fill/index/slice has exact rank and typed one-based axes; slices preserve owner and coordinates",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "call_shape",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "fill_repeat_admissibility_law",
+      "index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "shaped_fill_initializer_msp"
+    ],
+    "diagnostic_refs": [
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "SLICE_AXIS_COUNT_MISMATCH",
+      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "the operation kind is fill, scalar_index, or slice",
+      "the normalized receiver is NumericArray with exact rank, shape, orientation, and typed axis identities",
+      "readonly views retain owner provenance and cannot outlive or cross isolation"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "cleanup",
+      "call_shape",
+      "source_role",
+      "numeric_literal_kind",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-NumericFillSliceIndexAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the descriptor selects one closed NumericArray operation kind",
+      "rank, shape, selected axes, and owner provenance are explicit",
+      "default source-visible axis coordinates are typed Int domains 1..dimension"
+    ],
+    "normalization": "normalize the NumericArray identity, rank, shape, orientation, ordered typed axes and owner provenance; never import an ordinary Sequence index witness",
+    "decision_procedure": [
+      "reject a non-NumericArray receiver with SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY",
+      "for scalar_index require exactly rank ordered scalar axes and evaluate each against its typed 1..dimension domain",
+      "for slice require exactly rank ordered scalar, range, or * axes; reject a mismatch with SLICE_AXIS_COUNT_MISMATCH",
+      "evaluate every scalar with LogicalIndexDomainAdmitted and every range with SliceRangeAdmitted left-to-right",
+      "evaluate SliceViewLifetimeAdmitted for the readonly result and admit only when owner provenance and all axes admit",
+      "for fill require exact shape cardinality and element-domain agreement under its existing fill laws; create no product receipt"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "SLICE_AXIS_COUNT_MISMATCH",
+    "secondary_diagnostics": [
+      "LOGICAL_INDEX_DOMAIN_MISMATCH",
+      "SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY"
+    ],
+    "positive_fixture_ids": [
+      "PF-NumericFillSliceIndexAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-NumericFillSliceIndexAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [
+      "LogicalIndexDomainAdmitted",
+      "SliceRangeAdmitted",
+      "SliceViewLifetimeAdmitted"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "451762aa0190643330acdda2c5c827f0f799b03034e7706caa7dbe4e4e3bfa65",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
+    "source_name": "PrimaryCtorPromotedFieldVisibilityMemberOnly",
+    "summary": "R51a1 design predicate; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "primary_ctor_promoted_field_visibility_sigil_msp"
+    ],
+    "diagnostic_refs": [
+      "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE"
+    ],
+    "design_seed_diagnostic_refs": [
+      "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-PrimaryCtorPromotedFieldVisibilityMemberOnly",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record PrimaryCtorPromotedFieldVisibilityMemberOnly requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "PRIMARY_CTOR_VISIBILITY_SIGIL_MUST_ATTACH_TO_STORAGE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-PrimaryCtorPromotedFieldVisibilityMemberOnly-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-PrimaryCtorPromotedFieldVisibilityMemberOnly-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "ae76683159306a4d61ee32960ed79b6533552c4111c8fbefb8e5328dd8a7d09c",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "source_name": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "summary": "Classify `$`/`$$`, preserve CST, and normalize to ordinary immutable/mutable local binding before semantic checking.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "call_shape"
+    ],
+    "feature_refs": [
+      "rightward_flow_dollar_local_binding_msp"
+    ],
+    "diagnostic_refs": [
+      "RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "statement owner",
+      "fresh Identifier target",
+      "no chaining",
+      "no guard attachment"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "call_shape"
+    ],
+    "formal_judgment_id": "J-RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "statement owner",
+      "fresh Identifier target",
+      "no chaining",
+      "no guard attachment"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "evaluate and retain the initializer source expression once",
+      "map $ to let and $$ to var while preserving the optional type annotation",
+      "construct an ordinary local-binding semantic node after successful normalization",
+      "assert no FlowBinding AST/HIR/MIR node survives"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "RightwardLocalBindingNormalizesToOrdinaryBinding",
+    "active_primary_diagnostic": "RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-BOUNDARY",
+      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-RightwardLocalBindingNormalizesToOrdinaryBinding-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "normalization_assertion_nonemitting",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": false,
+    "input_adapter": null
+  }
+]

@@ -190,10 +190,23 @@
         "$ref": "#/$defs/callable_invokeEvent"
       }
     },
+    "call_responsibilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/callResponsibilityDescriptor"
+      }
+    },
     "evidence_events": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/evidence_selectEvent"
+      }
+    },
+    "fixed_operator_dispatches": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/fixedOperatorConformanceDispatch"
       }
     },
     "effect_row": {
@@ -286,6 +299,131 @@
     }
   ],
   "$defs": {
+    "fixedOperatorConformanceDispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operator_id",
+        "normalized_left_type_id",
+        "normalized_right_type_id",
+        "conformance_id",
+        "witness_id",
+        "method_id",
+        "substitution_id",
+        "output_type_id",
+        "responsibility_profile_id",
+        "dispatch_route",
+        "runtime_relookup_count",
+        "fallback_count"
+      ],
+      "properties": {
+        "operator_id": {
+          "enum": ["BinaryAdd", "BinarySubtract", "BinaryMultiply"]
+        },
+        "normalized_left_type_id": {"type": "string", "minLength": 1},
+        "normalized_right_type_id": {"type": "string", "minLength": 1},
+        "conformance_id": {"type": "string", "minLength": 1},
+        "witness_id": {"type": "string", "minLength": 1},
+        "method_id": {"type": "string", "minLength": 1},
+        "substitution_id": {"type": "string", "minLength": 1},
+        "output_type_id": {"type": "string", "minLength": 1},
+        "responsibility_profile_id": {
+          "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        },
+        "dispatch_route": {"const": "DIRECT_GLOBAL"},
+        "runtime_relookup_count": {"const": 0},
+        "fallback_count": {"const": 0}
+      }
+    },
+    "trailingClosureBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_index",
+        "label",
+        "formal_identity",
+        "closure_environment_responsibility"
+      ],
+      "properties": {
+        "source_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "formal_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "closure_environment_responsibility": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "callResponsibilityDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "call_kind",
+        "resolved_identity",
+        "payload_kind",
+        "payload_count",
+        "payload_to_formal_bindings",
+        "trailing_closure_bindings",
+        "source_evaluation_order"
+      ],
+      "properties": {
+        "call_kind": {
+          "enum": [
+            "ordinary",
+            "message",
+            "actor_message"
+          ]
+        },
+        "resolved_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payload_kind": {
+          "enum": [
+            "none",
+            "scalar",
+            "tuple",
+            "record"
+          ]
+        },
+        "payload_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "payload_to_formal_bindings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "trailing_closure_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trailingClosureBinding"
+          }
+        },
+        "source_evaluation_order": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
     "evaluateEvent": {
       "type": "object",
       "additionalProperties": false,
@@ -2662,7 +2800,8 @@
     "task_responsibility_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
     "actor_turn": "for one actor_id/state_region_id the exact admitted lifecycle is turn_start, zero or more paired turn_suspend and turn_resume transitions that retain held state-region authority, then turn_finish/released before the next turn_start; overlapping turns are forbidden",
     "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
-    "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id"
+    "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id",
+    "fixed_operator_conformance": "an intrinsic-reserved pair has no fixed_operator_dispatches row; each admitted non-intrinsic binary +,-,* expression has one statically selected row whose identity fields survive HIR/MIR/API lowering and whose route, responsibility, runtime lookup and fallback constants are exact"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
   "x-product-runtime": "NOT_RUN"

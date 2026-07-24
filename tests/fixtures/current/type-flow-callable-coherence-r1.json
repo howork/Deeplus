@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/type-flow-callable-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-grammar-reference-semantic-coherence-r1",
+  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
   "contract": "spec/contracts/type-flow-callable-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -257,6 +257,66 @@
         "caller_place_alias_count": 1,
         "caller_writeback": true,
         "cleanup_owner": "caller"
+      }
+    },
+    {
+      "fixture_id": "TFC-P-024-SINGLE-NAMED-TRAILING-CLOSURE",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "let value = run(1) completion:{ result => publish(result) }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "trailing_closure_count": 1,
+        "all_named_required": false,
+        "label": "completion"
+      }
+    },
+    {
+      "fixture_id": "TFC-P-025-MULTIPLE-ALL-NAMED-TRAILING-CLOSURES",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "let value = transaction()\n  onCommit:{ => logCommit() }\n  onRollback:{ error => log(error) }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "trailing_closure_count": 2,
+        "all_named": true,
+        "unique_label_count": 2
+      }
+    },
+    {
+      "fixture_id": "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-PAYLOAD",
+      "rule_ids": [
+        "TFC-R021"
+      ],
+      "source": "let moved = receiver ~ Movable::moveTo (x, y)",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "message_payload_count": 1,
+        "payload_kind": "tuple",
+        "tuple_element_count": 2,
+        "selector_segment_count": 2
+      }
+    },
+    {
+      "fixture_id": "TFC-P-027-MESSAGE-RECORD-PAYLOAD-MULTIPLE-CLOSURES",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R021"
+      ],
+      "source": "let outcome = worker ~ process(job: job, priority: priority)\n  success:{ value => publish(value) }\n  failure:{ error => recover(error) }",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "message_payload_count": 1,
+        "payload_kind": "record",
+        "payload_label_count": 2,
+        "trailing_closure_count": 2,
+        "all_trailing_closures_named": true
       }
     }
   ],
@@ -535,6 +595,51 @@
         "right_normalized_type": "String",
         "independently_fixed_expected_type": false,
         "automatic_anonymous_union_count": 0
+      }
+    },
+    {
+      "fixture_id": "TFC-N-027-MIXED-NAMED-UNNAMED-TRAILING-CLOSURES",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "operate(1) { value => value } failure:{ error => error }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "a group of two or more trailing closures requires every item to have a unique label",
+      "expected_existing_diagnostic": "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT",
+      "assertions": {
+        "trailing_closure_count": 2,
+        "labeled_count": 1,
+        "unlabeled_count": 1
+      }
+    },
+    {
+      "fixture_id": "TFC-N-028-DUPLICATE-TRAILING-CLOSURE-LABEL",
+      "rule_ids": [
+        "TFC-R011"
+      ],
+      "source": "operate(1) done:{ value => value } done:{ error => error }",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "trailing closure labels in one group must be unique",
+      "expected_existing_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
+      "assertions": {
+        "trailing_closure_count": 2,
+        "unique_label_count": 1,
+        "duplicate_label": "done"
+      }
+    },
+    {
+      "fixture_id": "TFC-N-029-MIXED-MESSAGE-PAYLOAD-CHANNELS",
+      "rule_ids": [
+        "TFC-R021"
+      ],
+      "source": "let value = calendar ~ addUsing(policy, amount: duration)",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "one parenthesized message payload is either all positional Tuple content or all named Record content",
+      "expected_existing_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
+      "assertions": {
+        "message_payload_count": 0,
+        "positional_entry_count": 1,
+        "named_entry_count": 1
       }
     }
   ],
@@ -817,13 +922,42 @@
         "caller_writeback_count": 0
       },
       "boundary": "failure before the mut local's commit publishes no callee place and leaves ownership with the caller"
+    },
+    {
+      "fixture_id": "TFC-B-020-ORDINARY-ARGS-VS-MESSAGE-TUPLE",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R021"
+      ],
+      "paired_sources": {
+        "ordinary": "let a = function(x, y)",
+        "message": "let b = receiver ~ selector (x, y)"
+      },
+      "boundary": "ordinary source has two arguments while message source has one Tuple payload; trivia before the payload parenthesis is nonsemantic"
+    },
+    {
+      "fixture_id": "TFC-B-021-MESSAGE-EMPTY-COMPATIBILITY-AND-POSTFIX",
+      "rule_ids": [
+        "TFC-R011",
+        "TFC-R021"
+      ],
+      "paired_sources": {
+        "compatibility": "let a = receiver ~ ping()",
+        "canonical": "let b = receiver ~ ping"
+      },
+      "assertions": {
+        "normalized_payload_count": 0,
+        "canonical_formatter_parenthesis_count": 0,
+        "later_postfix_attaches_to_completed_call": true
+      },
+      "boundary": "empty message parentheses normalize to no payload, and a suffix after a trailing group applies to the completed call result"
     }
   ],
   "expected_counts": {
-    "positive": 23,
-    "negative": 26,
-    "boundary": 19,
-    "total": 68,
+    "positive": 27,
+    "negative": 29,
+    "boundary": 21,
+    "total": 77,
     "product_executed": 0
   }
 }

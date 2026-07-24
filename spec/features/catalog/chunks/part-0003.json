@@ -179,7 +179,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The punctuation operator set and precedence table are closed. Current glyph dispatch is intrinsic-only: no Trait conformance, extension, witness, provider, source-order, or runtime lookup can activate a glyph. User behavior remains open through named methods, messages, functions, and APIs.",
+    "notes": "The punctuation operator set and precedence table are closed. Built-in operand pairs remain intrinsic-reserved. Exactly binary +,-,* additionally admit the Stable fixed-operator profile through one left-owner DIRECT_GLOBAL Add/Subtract/Multiply conformance with no conversion, alternate evidence, order winner, fallback, or runtime lookup. No other Trait, extension, witness, provider, or arbitrary declaration activates a glyph. User behavior otherwise remains open through named methods, messages, functions, and APIs.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -194,7 +194,15 @@
       "semantic_reference_productions": [],
       "diagnostics": [
         "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-        "FIXED_OPERATOR_TRAIT_DISPATCH_NOT_CURRENT"
+        "OPERATOR_CONFORMANCE_AMBIGUOUS",
+        "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+        "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+        "OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED",
+        "OPERATOR_CONFORMANCE_MISSING",
+        "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
+        "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+        "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN"
       ],
       "predicates": [
         "NumericOperatorCoreAdmitted",

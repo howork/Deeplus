@@ -154,34 +154,51 @@
     "depends_on": [],
     "display_name": "Function static activation",
     "feature_id": "function_static_activation",
-    "feature_kind": "design_proposal",
+    "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Preview design",
-    "notes": "The underdefined top-level `static def` route is removed from current grammar. Type-side members remain `def::` only inside an owning nominal declaration or admitted extension route.",
+    "language_status": "Stable design",
+    "notes": "Stable scope#static function-body activation runs once per exact CallableImplementationId and normalized specialization at the first actual invocation, after argument/default staging and before parameter ownership commit. The body is caller-input-free, pure, synchronous, authority/resource-free, and activation-dependency-free. One winner publishes Ready or one cached Failed identity with release/acquire; there is no retry, reset, deadlock, or undefined reentry. Top-level static def remains rejected; static values and effectful/module/class activation remain separate Preview families. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
-    "source_activation": "nonactivatable",
-    "status_display": "Preview design",
-    "status_enum": "PREVIEW_DESIGN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
+        "FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED",
+        "FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN",
+        "FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN",
+        "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
+        "FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN",
+        "FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN",
+        "FUNCTION_STATIC_ACTIVATION_FAILED",
+        "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
+        "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
+        "FUNCTION_STATIC_ACTIVATION_REENTRANCY",
+        "FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN",
+        "FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN",
+        "FUNCTION_STATIC_METADATA_MISMATCH",
+        "FUNCTION_STATIC_OWNER_ID_COLLISION",
         "STATIC_FUNCTION_DECLARATION_NOT_CURRENT"
       ],
-      "predicates": [
-        "StableStaticContractProofAdmitted"
-      ],
+      "predicates": [],
       "examples": [
-        "EX-R51a1-NG-066"
+        "EX-R51a1-NG-066",
+        "EX-R51FSA-P-001",
+        "EX-R51FSA-NG-001"
       ],
-      "productions": [],
+      "productions": [
+        "CallableBlock",
+        "FunctionStaticActivation"
+      ],
       "semantic_reference_productions": []
     },
-    "trace_class": "design_only",
+    "trace_class": "syntax",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1689,59 +1706,6 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / TYPE_SYSTEM",
-    "authority_set": [
-      "LANGUAGE",
-      "TYPE_SYSTEM"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
-    "display_name": "move/borrow/inout mode surface",
-    "feature_id": "inout_borrow_move_modes",
-    "feature_kind": "canonical_feature",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Parameter and capture modes are explicit. An ordinary `mut name: T` parameter acquires its argument once and commits a callee-owned mutable local: it creates no caller alias or write-back edge, and a failure before commit retains the caller owner. `inout` instead borrows one caller place exclusively for the dynamic call extent and successful writes remain visible in that place. borrow creates a nonescaping shared region view; move transfers ownership and invalidates the source. The narrow Stable profile permits replacement through an inout place but not moving the current value out of that borrowed place; definite reinitialization across every exit is not a current feature. Overlapping inout/borrow conflicts, use-after-move, escape across return/storage/capture, and crossing suspension or actor transfer without an admitted ownership proof are rejected.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "trace_class": "semantic",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "OWNERSHIP_MODE_ADMISSION_FAILED"
-      ],
-      "predicates": [
-        "OwnershipModeAdmitted"
-      ],
-      "examples": [
-        "EX-R51a1-059",
-        "EX-R51a1-NG-072"
-      ],
-      "productions": [
-        "CaptureItem",
-        "ExpressionPrefixParselet",
-        "ParameterMode"
-      ],
-      "semantic_reference_productions": []
-    },
-    "artifact_trace_refs": [
-      "spec/contracts/type-flow-callable-coherence.json",
-      "spec/mir/semantics.md",
-      "tests/fixtures/current/type-flow-callable-coherence-r1.json"
-    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
