@@ -12,19 +12,22 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 ## 처음 읽는 순서
 
-1. 처음 배우는 독자는
+1. [Deeplus 언어 철학](docs/guide/language-philosophy.md)에서 언어가
+   추구하는 바, 주요 설계 원칙, 지원 범위와 의도적 비지원 범위를
+   먼저 살펴본다.
+2. 처음 배우는 독자는
    [한국어 프로그래밍 튜토리얼](docs/tutorial/README.md)의 12개 Part와
    안내 실습을 차례로 진행한다.
-2. [문법 명세 및 언어 참조서](docs/grammar-reference/README.md)에서
+3. [문법 명세 및 언어 참조서](docs/grammar-reference/README.md)에서
    현행 문법과 의미론, Preview Design 및 예제를 주제별로 찾아본다.
-3. [현행 포인터](current/current-pointer.json)에서 버전, 상태와 열린
+4. [현행 포인터](current/current-pointer.json)에서 버전, 상태와 열린
    action을 확인한다.
-4. [언어 명세](spec/language.md)와 필요한 정확 정본을 대조한다.
+5. [언어 명세](spec/language.md)와 필요한 정확 정본을 대조한다.
    - [정확 문법](spec/grammar/deeplus.ebnf)
    - [Frontend 수용 모델](spec/frontend/frontend-model.json)
    - [타입 시스템](spec/types/type-system.md)
    - [MIR 관측 의미론](spec/mir/semantics.md)
-5. [예제](examples/)와 [테스트 계약](tests/)으로 수용·거부 경계를
+6. [예제](examples/)와 [테스트 계약](tests/)으로 수용·거부 경계를
    확인한다.
 
 참조서는 정본을 읽기 쉽게 묶은 생성·검증 문서 projection이다. 정본과
@@ -38,7 +41,7 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
   - `STABLE 454`
   - `PREVIEW 13`
   - `RECOVERY 15`
-- 기능 레지스트리: `694`
+- 기능 레지스트리: `695`
 - 진단 레지스트리: `1,341`
 - 타입 predicate: `250`
 - Prelude 서명: `63`
