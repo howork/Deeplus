@@ -9,13 +9,29 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
+import uuid
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable
 
 
 CONTRACT_REL = Path("spec/contracts/grammar-reference-r1.json")
 GENERATOR_REL = Path("tools/generators/generate_grammar_reference.py")
+
+
+@contextmanager
+def workspace_temporary_directory(prefix: str):
+    """Create an isolated fixture under the ignored workspace build tree."""
+
+    workspace = Path(__file__).resolve().parents[2]
+    parent = workspace / "target" / "v"
+    parent.mkdir(parents=True, exist_ok=True)
+    path = parent / f"{prefix[:3]}-{uuid.uuid4().hex[:8]}"
+    path.mkdir()
+    try:
+        yield str(path)
+    finally:
+        shutil.rmtree(path)
 
 
 class TestFailure(RuntimeError):
@@ -658,7 +674,7 @@ def run_case(
     mutation: Callable[[Path, dict], None] | None,
     expected_code: str | None,
 ) -> None:
-    with tempfile.TemporaryDirectory(prefix="deeplus-grammar-reference-") as raw:
+    with workspace_temporary_directory("gr-") as raw:
         root = Path(raw).resolve()
         contract = prepare_root(source_root, root)
         expect_pass(invoke(generator, root, "--write"), f"{label}:write")
@@ -673,9 +689,7 @@ def run_case(
 
 
 def run_harness_path_guard_tests(source_root: Path) -> int:
-    with tempfile.TemporaryDirectory(
-        prefix="deeplus-grammar-reference-harness-"
-    ) as raw:
+    with workspace_temporary_directory("grh-") as raw:
         target_root = Path(raw).resolve()
         probes = [
             Path("..") / "outside.json",
@@ -696,9 +710,7 @@ def run_harness_path_guard_tests(source_root: Path) -> int:
 
 def run_determinism_test(source_root: Path, generator: Path) -> int:
     snapshots: list[dict[str, bytes]] = []
-    with tempfile.TemporaryDirectory(
-        prefix="deeplus-grammar-reference-determinism-"
-    ) as raw:
+    with workspace_temporary_directory("grd-") as raw:
         base = Path(raw).resolve()
         for index in range(2):
             root = base / f"root-{index}"
@@ -724,9 +736,7 @@ def run_determinism_test(source_root: Path, generator: Path) -> int:
 def run_governance_validation_only_test(
     source_root: Path, generator: Path
 ) -> int:
-    with tempfile.TemporaryDirectory(
-        prefix="deeplus-grammar-reference-governance-"
-    ) as raw:
+    with workspace_temporary_directory("grg-") as raw:
         root = Path(raw).resolve()
         contract = prepare_root(source_root, root)
         expect_pass(

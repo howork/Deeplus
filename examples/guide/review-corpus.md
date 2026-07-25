@@ -1,6 +1,6 @@
 # Deeplus 0.1.2-baseline.r51f3 Example Review Corpus
 
-This current-only design corpus is generated from one source model. Product parser/checker execution is `NOT_RUN`.
+This current-only design corpus is generated from one source model. Product parser/checker execution is `NOT_RUN`. Focused fragments may use undeclared `print`, `readLine`, or `assert` names as fixture-owned documentation/test adapters—not canonical Prelude signatures or language intrinsics; complete packages must bind an I/O/test adapter with explicit effect and failure policy as described in [`docs/guide/example-host-adapters.md`](../../docs/guide/example-host-adapters.md).
 
 ## EX-R48-001 — Column-vector semicolon stable shorthand
 

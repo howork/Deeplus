@@ -9,6 +9,9 @@
 가시성은 `CURRENT`다. 이는 정적 설계이며, 제품의 파싱, 이름 해석 및
 링크 실행은 계속 `NOT_RUN`이다.
 
+> 이 장의 조각 예제에 선언 없이 나타나는 `print`는 canonical Prelude
+> API가 아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
+
 ## 소스 루트
 
 정확히 하나의 소스 역할 루트가 컴파일 단위를 소유하며 입력 끝까지

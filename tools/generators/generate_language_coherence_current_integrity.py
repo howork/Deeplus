@@ -321,6 +321,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         safe_path(root, path)
     if relaxed:
         return contract
+    validate_required_bound_roots(paths)
     expected_keys = {"path", "kind", "file_count", "bytes", "sha256"}
     if any(set(row) != expected_keys for row in roots):
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "bound root shape")
@@ -351,6 +352,14 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "canonical counts")
     return contract
+
+
+def validate_required_bound_roots(paths: list[str]) -> None:
+    if "docs/tutorial" not in paths:
+        raise GeneratorError(
+            "LANGUAGE_COHERENCE_CONTRACT",
+            "docs/tutorial bound root is required",
+        )
 
 
 def validate_bound_roots(root: Path, contract: dict[str, Any]) -> None:
@@ -556,6 +565,8 @@ def refresh_contract(root: Path) -> dict[str, Any]:
     bound_paths = [row["path"] for row in contract["bound_roots"]]
     if "docs/grammar-reference" not in bound_paths:
         bound_paths.append("docs/grammar-reference")
+    if "docs/tutorial" not in bound_paths:
+        bound_paths.append("docs/tutorial")
     contract["bound_roots"] = [
         bound_identity(root, path) for path in bound_paths
     ]
@@ -599,6 +610,33 @@ def self_test(root: Path) -> dict[str, Any]:
             "pass": grammar_reference_paths == sorted(grammar_reference_paths),
         }
     )
+
+    tutorial_paths = [
+        path.relative_to(root).as_posix()
+        for path in iter_bound_files(root, safe_path(root, "docs/tutorial"))
+    ]
+    cases.append(
+        {
+            "case": "portable-tutorial-bound-path-order",
+            "pass": tutorial_paths == sorted(tutorial_paths),
+        }
+    )
+
+    missing_tutorial = [
+        row["path"]
+        for row in contract["bound_roots"]
+        if row["path"] != "docs/tutorial"
+    ]
+    try:
+        validate_required_bound_roots(missing_tutorial)
+        cases.append({"case": "required-tutorial-bound-root", "pass": False})
+    except GeneratorError as exc:
+        cases.append(
+            {
+                "case": "required-tutorial-bound-root",
+                "pass": exc.code == "LANGUAGE_COHERENCE_CONTRACT",
+            }
+        )
 
     bad_bound = copy.deepcopy(contract)
     bad_bound["bound_roots"][0]["sha256"] = "0" * 64

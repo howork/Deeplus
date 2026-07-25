@@ -26,6 +26,9 @@ measure/unit 표면을 설명한다.
 product support를 이 장이 변경하지 않으며 product lane은 정확히
 `15/15 NOT_RUN`이다.
 
+> 이 장의 조각 예제에 선언 없이 나타나는 `assert`는 canonical source
+> API가 아니라 [문서 fixture의 test oracle](../guide/example-host-adapters.md)이다.
+
 ## 문법
 
 ### Enum 선언과 case

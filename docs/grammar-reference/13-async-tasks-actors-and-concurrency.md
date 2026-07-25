@@ -25,6 +25,9 @@ checker, MIR, xVM, LLVM, formatter, LSP를 이 문서 작성 과정에서 실행
 않았으며 제품 lane은 정확히 `15/15 NOT_RUN`이다. 정적 계약의 존재는
 구현 완료, 제품 지원 또는 실행 적합성을 뜻하지 않는다.
 
+> 이 장의 조각 예제에 선언 없이 나타나는 `print`는 canonical Prelude
+> API가 아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
+
 ## 문법
 
 ### 비동기 함수와 명시적 중단

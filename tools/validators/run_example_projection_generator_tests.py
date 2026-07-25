@@ -11,7 +11,8 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
+import uuid
+from contextlib import contextmanager
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Callable
@@ -35,6 +36,20 @@ FIXTURE_ROOTS = [
     "tests/conformance/surface/rejected",
     "tests/conformance/surface/gated",
 ]
+
+
+@contextmanager
+def workspace_temporary_directory(prefix: str):
+    """Create a short-lived fixture below the ignored workspace build tree."""
+
+    parent = ROOT / "target" / "v"
+    parent.mkdir(parents=True, exist_ok=True)
+    path = parent / f"{prefix}{uuid.uuid4().hex[:8]}"
+    path.mkdir()
+    try:
+        yield str(path)
+    finally:
+        shutil.rmtree(path)
 
 
 def load_generator() -> ModuleType:
@@ -251,7 +266,7 @@ def main() -> int:
     tests: list[str] = []
     exercised: set[str] = set()
     try:
-        with tempfile.TemporaryDirectory(prefix="deeplus-example-generator-") as temp:
+        with workspace_temporary_directory("ex-") as temp:
             fixture = json.loads(KNOWN_DRIFT_FIXTURE.read_text(encoding="utf-8"))
             assert fixture["revision"] == "R2.2"
             assert fixture["evidence_classification"] == (

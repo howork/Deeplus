@@ -13,6 +13,9 @@ precedence, glyph dispatch는 닫혀 있다.
 `source_activation: none`인 항목이다. 제품 parser/checker/HIR/MIR/xVM/
 LLVM/formatter/LSP 실행은 `NOT_RUN`이다.
 
+> 이 장의 조각 예제에 선언 없이 나타나는 `assert`는 canonical source
+> API가 아니라 [문서 fixture의 test oracle](../guide/example-host-adapters.md)이다.
+
 ## 문법
 
 ### Pratt 진입점과 parselet

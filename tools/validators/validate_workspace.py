@@ -305,6 +305,13 @@ def main() -> int:
         "schemas/language/grammar-reference-coverage.schema.json",
         "tools/generators/generate_grammar_reference.py",
         "tools/validators/run_grammar_reference_generator_tests.py",
+        "docs/tutorial/README.md",
+        "docs/tutorial/SUMMARY.md",
+        "docs/tutorial/coverage-manifest.json",
+        "spec/contracts/tutorial-r1.json",
+        "schemas/language/tutorial-coverage.schema.json",
+        "tools/generators/generate_tutorial.py",
+        "tools/validators/run_tutorial_generator_tests.py",
         "tools/generators/generate_current_integrity.py",
         "tools/generators/current-integrity.contract.json",
         "tools/validators/run_current_integrity_generator_tests.py",
@@ -371,6 +378,30 @@ def main() -> int:
         check(
             process.returncode == 0,
             "GRAMMAR_REFERENCE_GENERATOR_CHECK",
+            detail[-4000:],
+        )
+
+    tutorial_generator = root / "tools/generators/generate_tutorial.py"
+    if tutorial_generator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(tutorial_generator),
+                "--root",
+                str(root),
+                "--check",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "TUTORIAL_GENERATOR_CHECK",
             detail[-4000:],
         )
 
