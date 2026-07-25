@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/tutorial-coverage.schema.json",
+  "title": "Deeplus Korean tutorial coverage manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "revision",
+    "contract",
+    "coverage_schema",
+    "source_bindings",
+    "curriculum",
+    "quality",
+    "governance",
+    "members"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.tutorial-coverage/r1"
+    },
+    "revision": {
+      "const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+    },
+    "contract": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"const": "spec/contracts/tutorial-r1.json"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "coverage_schema": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "const": "schemas/language/tutorial-coverage.schema.json"
+        },
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "source_bindings": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {
+            "enum": [
+              "spec/language.md",
+              "spec/grammar/deeplus.ebnf",
+              "spec/frontend/frontend-model.json",
+              "spec/types/type-system.md",
+              "docs/grammar-reference/coverage-manifest.json",
+              "library/prelude/signatures/catalog-metadata.json",
+              "examples/guide/review-corpus.md",
+              "docs/guide/example-host-adapters.md"
+            ]
+          },
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "curriculum": {
+      "type": "object",
+      "required": [
+        "part_guides",
+        "concept_chapters",
+        "guided_labs",
+        "capstones",
+        "appendices",
+        "summary_linked_documents",
+        "learning_units"
+      ],
+      "properties": {
+        "part_guides": {"const": 12},
+        "concept_chapters": {"const": 60},
+        "guided_labs": {"const": 12},
+        "capstones": {"const": 4},
+        "appendices": {"const": 8},
+        "summary_linked_documents": {"const": 96},
+        "learning_units": {"const": 72}
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "required": [
+        "korean_characters",
+        "deeplus_blocks",
+        "exercise_prompts",
+        "level2_headings",
+        "local_link_errors"
+      ],
+      "properties": {
+        "korean_characters": {"type": "integer", "minimum": 0},
+        "deeplus_blocks": {"type": "integer", "minimum": 0},
+        "exercise_prompts": {"type": "integer", "minimum": 0},
+        "level2_headings": {"type": "integer", "minimum": 0},
+        "local_link_errors": {"const": 0}
+      },
+      "additionalProperties": false
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "semantic_p0",
+        "feature_p1_status",
+        "open_feature_p1",
+        "feature_p1_ids",
+        "separate_open_actions",
+        "separate_open_action_ids",
+        "product_lanes",
+        "product_lane_status"
+      ],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1_status": {"const": "OPEN"},
+        "open_feature_p1": {"const": 22},
+        "feature_p1_ids": {
+          "type": "array",
+          "minItems": 22,
+          "maxItems": 22,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "separate_open_actions": {"const": 4},
+        "separate_open_action_ids": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "product_lanes": {"const": 15},
+        "product_lane_status": {"const": "NOT_RUN"}
+      },
+      "additionalProperties": false
+    },
+    "members": {
+      "type": "array",
+      "minItems": 99,
+      "maxItems": 99,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "kind",
+          "bytes",
+          "sha256",
+          "korean_characters",
+          "deeplus_blocks",
+          "exercise_prompts",
+          "level2_headings"
+        ],
+        "properties": {
+          "path": {"type": "string", "pattern": "^docs/tutorial/"},
+          "kind": {
+            "enum": [
+              "root_guide",
+              "part_guide",
+              "concept_chapter",
+              "guided_lab",
+              "capstone",
+              "appendix"
+            ]
+          },
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "korean_characters": {"type": "integer", "minimum": 0},
+          "deeplus_blocks": {"type": "integer", "minimum": 0},
+          "exercise_prompts": {"type": "integer", "minimum": 0},
+          "level2_headings": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

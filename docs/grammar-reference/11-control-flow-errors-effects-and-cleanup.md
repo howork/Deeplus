@@ -14,6 +14,9 @@ effect/error row, `defer`, lifecycle cleanup, cancellation 경계를 설명하�
 사용한다. 설계 정적 증거만 존재하며 제품 parser/checker/HIR/MIR/xVM/
 LLVM/formatter/LSP 실행은 `NOT_RUN`이다.
 
+> 이 장의 조각 예제에 선언 없이 나타나는 `print`는 canonical Prelude
+> API가 아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
+
 ## 문법
 
 ### 제어 이전

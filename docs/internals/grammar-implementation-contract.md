@@ -13,8 +13,8 @@
 - `**`는 Pratt 표가 허용하는 위치에서 별도의 linear-product
   operator이기도 하다.
 - Recovery는 진단만 만들며 current AST/HIR/MIR node를 만들지 않는다.
-- 정확한 production 수는 LEXICAL 89, STABLE 443, PREVIEW 13, RECOVERY
-  15로 총 560개이며 generator가 frontend model과의 일치를 검사한다.
+- 정확한 production 수는 LEXICAL 91, STABLE 454, PREVIEW 13, RECOVERY
+  15로 총 573개이며 generator가 frontend model과의 일치를 검사한다.
 - Deeplus MIR가 의미 정본이고 xVM과 LLVM은 그 projection이다.
 - target-bound receipt가 없으면 모든 product lane은 `NOT_RUN`이다.
 

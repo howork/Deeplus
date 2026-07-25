@@ -32,6 +32,10 @@ jobs:
         run: |
           python3 tools/validators/run_grammar_reference_generator_tests.py --root .
           python3 tools/generators/generate_grammar_reference.py --root . --check
+      - name: Validate deterministic Korean programming tutorial
+        run: |
+          python3 tools/validators/run_tutorial_generator_tests.py --root .
+          python3 tools/generators/generate_tutorial.py --root . --check
       - name: Validate deterministic current integrity
         run: |
           python3 tools/validators/run_legacy_current_integrity_compatibility_tests.py

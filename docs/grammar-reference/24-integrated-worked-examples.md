@@ -24,6 +24,13 @@ typed HIR, MIR 및 실행 관측 규칙을 통과하는 전체 판정 경로를 
 실제 Rust frontend, checker, MIR, xVM, LLVM, formatter 및 LSP 실행은
 이 장에서 수행하지 않았으므로 제품 지원은 `NOT_RUN`이다.
 
+이 장의 일부 조각에 나오는 `print`와 `readLine`은 현재 Prelude
+signature가 아니다. 주변 언어 규칙을 격리해 설명하는 fixture-owned
+host adapter이며, 완결된 프로그램은 console provider와 I/O
+effect/error 정책을 명시해야 한다. 경계는
+[`docs/guide/example-host-adapters.md`](../guide/example-host-adapters.md)에
+고정한다.
+
 정확한 권위는 다음 문서에 분산되어 있다.
 
 - token 순서와 구조:

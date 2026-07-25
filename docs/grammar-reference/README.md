@@ -35,6 +35,7 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 
 | 목적 | 시작할 문서 |
 |---|---|
+| 처음부터 차례로 배우기 | [한국어 프로그래밍 튜토리얼](../tutorial/README.md) |
 | 무엇이 현행 Deeplus인지 확인 | [상태, 권위 및 표기법](00-status-authority-and-notation.md) |
 | 소스 파일 작성 | [어휘 구조](01-lexical-structure.md)를 읽은 뒤 [프로그램과 모듈](02-programs-modules-and-imports.md) |
 | 선언과 이름 이해 | [선언, 바인딩 및 이름](03-declarations-bindings-and-names.md) |
@@ -114,7 +115,10 @@ Preview 설계는 비활성 상태라는 이유로 이름만 나열해서는 안
 다음 소스는
 [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)의
 `EX-R51a1-001`에서 수용된 현행 설계 예제로 분류된다. 파서와 검사기
-실행은 여전히 `NOT_RUN`이다.
+실행은 여전히 `NOT_RUN`이다. 이 조각의 `print`는 Prelude identity가
+아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
+완결된 프로그램은 실제 console provider와 effect/error 정책을
+명시해야 한다.
 
 ```deeplus
 def#entry launch(args: Sequence<String>) -> ExitCode

@@ -7,7 +7,7 @@
 ## 1. 이 장의 목적
 
 이 장은
-[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)의 560개
+[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)의 573개
 production을 다시 나열하는 색인이 아니다.
 독자가 실제 소스 조각을 보았을 때 어느 source root와 parser goal에서
 읽기 시작해야 하는지, 같은 token이 문맥에 따라 왜 다른 production의
@@ -30,6 +30,9 @@ CST/AST/HIR 책임은
 없으므로 `NOT_RUN`이다.
 따라서 “parse된다”는 설명은 통합 문법과 frontend model에 따른
 설계 판정이고, 실제 제품 실행을 주장하지 않는다.
+
+> 이 장의 조각 예제에 선언 없이 나타나는 `print`는 canonical Prelude
+> API가 아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
 
 ## 2. 문법을 읽는 네 단계
 
@@ -1296,6 +1299,6 @@ token 모양만으로 둘을 한꺼번에 제거하면 current named unfold까�
 | lowering | CST/AST/HIR/MIR 중 책임 단계와 관측 순서 |
 
 이 표를 채우지 않은 설명은 대개 “token이 보인다”는 수준에 머문다.
-반대로 표를 채우면 560개 production을 복제하지 않고도 독자가 정확한
+반대로 표를 채우면 573개 production을 복제하지 않고도 독자가 정확한
 권위 source로 이동하고, parse 가능성과 현행 언어 허용을 구별하며,
 부착·입력 공급·평가 순서의 빈틈을 찾을 수 있다.

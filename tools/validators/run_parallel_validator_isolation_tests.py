@@ -26,6 +26,8 @@ REPOSITORY_TEMP_PREFIXES = (
 )
 EXPECTED_INTEGRITY_SELF_TEST_CASES = {
     "portable-bound-path-order",
+    "portable-tutorial-bound-path-order",
+    "required-tutorial-bound-root",
     "bound-root-mutation",
     "pointer-nonowned-mutation",
     "authority-nonowned-mutation",

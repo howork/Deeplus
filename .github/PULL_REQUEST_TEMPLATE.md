@@ -15,6 +15,8 @@ Explain the problem, accepted decision, and alternatives considered.
 ## Evidence and validation
 
 - [ ] `python3 tools/validators/validate_workspace.py`
+- [ ] `python3 tools/generators/generate_tutorial.py --root . --check`
+- [ ] `python3 tools/validators/run_tutorial_generator_tests.py --root .`
 - [ ] `cargo fmt --all -- --check`
 - [ ] `cargo check --workspace --locked`
 - [ ] `cargo test --workspace --locked`
