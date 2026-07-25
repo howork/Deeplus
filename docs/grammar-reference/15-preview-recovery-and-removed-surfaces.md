@@ -16,7 +16,7 @@
 | 분류 | 현재 관측값 | 소스 의미 |
 |---|---:|---|
 | feature registry의 `PREVIEW` | 3 | `explicit_feature_gate`가 있는 Preview 루트에서만 허용 가능 |
-| feature registry의 `PREVIEW_DESIGN` | 47 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
+| feature registry의 `PREVIEW_DESIGN` | 45 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
 | EBNF `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
 | EBNF `RECOVERY` profile | 15 production | 진단 인식 전용; 허용된 AST/HIR/MIR residue 0 |
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
@@ -177,7 +177,7 @@ RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
                  | RecoveryQuarantineScope ;
 ```
 
-47개 `PREVIEW_DESIGN` feature 가운데 quarantine과 owned/inout Facet
+45개 `PREVIEW_DESIGN` feature 가운데 quarantine과 owned/inout Facet
 family만 현재 Recovery overlay에 직접 대응하는 형태가 있다.
 `dynamic_unsafe_quarantine_scope_msp`는 `RecoveryQuarantineScope`의 정밀
 진단 probe를 사용하고, owned/inout Facet은 `RecoveryFacetPackExpr`와
@@ -263,6 +263,7 @@ production을 발명해서는 안 된다.
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
 | `contextual_operation_anchor_dmad` | 일반화된 `&expr` context/provider anchor | NumericArray에 한정된 현행 `&` owner 밖으로 확장하지 않음 |
+| `guard_callable_refinement_summary_preview_design` | 새 syntax 없이 eligible `def#guard`의 versioned finite-R0 true/false API summary | direct truth-test와 stable actual에만 `Phi` fact를 추가하며 current opaque call과 exhaustiveness는 유지 |
 | `dependent_refinement_value_capture` | value-capturing refinement surface 미선정 | decidability, lifetime, substitution, public API 및 runtime dependency 금지 필요 |
 | `explicit_broadcast_marker_msp` | 후보 `matrix + &row` | `&` polarity가 context anchor와 충돌하며 현행 source가 아님 |
 | `explicit_context_argument_ampersand_spelling` | 후보 `&expr` argument | broadcast/context-anchor와 owner 충돌; parameter/call identity 미결 |
@@ -299,7 +300,7 @@ actor crossing을 암시하지 않는다.
 
 ### 기계 검증 가능한 Preview Design 도입 검토 카드
 
-다음 47개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
+다음 45개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
 일대일이다. 각 필드는 비어 있을 수 없으며, 구문이나 API가 아직
 선택되지 않은 경우에도 그 사실과 현재 대안을 명시한다. 카드의 존재는
 활성화가 아니라 도입 검토 가능성을 보장한다.
@@ -587,6 +588,15 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "token owner 결정, exact grammar, type/effect contract, ambiguity corpus와 API digest가 필요하다."
   },
   {
+    "feature_id": "guard_callable_refinement_summary_preview_design",
+    "motivation": "재사용 가능한 def#guard의 참 결과를 호출 지점의 branch-local narrowing fact로 안전하게 전달하려는 제안이다.",
+    "surface_or_api": "새 source syntax는 추가하지 않고 요약 가능한 def#guard의 canonical finite-R0 true/false summary를 versioned API metadata에 기록하는 초기 profile이다.",
+    "static_semantics_and_interactions": "직접 truth-test, 안정된 실제 인자, capture-free finite R0 치환만 Phi에 fact를 더하며 선언 타입, guarded-arm exhaustiveness, 평가 횟수와 ownership commit은 바꾸지 않는다.",
+    "diagnostics_migration_tooling": "현행 def#guard 호출은 계속 opaque이고 summary가 없거나 검증되지 않은 호출은 narrowing하지 않으며 IDE는 선언 타입과 flow fact를 분리해 표시해야 한다.",
+    "open_alternatives": "inline R0 guard와 checked refinement conversion이 현행 대안이며 함수 이름, arbitrary helper body 또는 저장된 Bool에서 proof를 추측하는 방식은 거부한다.",
+    "activation_prerequisites": "summary schema와 canonicalizer, API digest 및 separate-compilation law, mutation-kill 알고리즘, diagnostic family, positive/negative/metamorphic corpus와 독립 target receipt가 필요하다."
+  },
+  {
     "feature_id": "dependent_refinement_value_capture",
     "motivation": "타입 refinement가 주변 값에 의존하는 관계를 정적으로 표현하려는 제안이다.",
     "surface_or_api": "value-capturing predicate syntax와 public API representation은 미선정이다.",
@@ -735,7 +745,7 @@ actor crossing을 암시하지 않는다.
 Frontend model은 quarantine, Enum-derived 3개, literal-shaped 3개,
 immutable-first 및 freeze/snapshot/view를
 `preview_design_nonactivatable`로 직접 결합한다. 이 목록은 대표적인
-상세 결합이며 registry의 47개를 축소하는 대체 registry가 아니다.
+상세 결합이며 registry의 45개를 축소하는 대체 registry가 아니다.
 
 ## 평가·소유권·효과
 
@@ -966,7 +976,7 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
   [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
 - source root, gate, Recovery 및 비활성 상세 결합:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
-- 694-row feature registry:
+- 695-row feature registry:
   [`spec/features/catalog`](../../spec/features/catalog)
 - activatable/nonactivatable gate map:
   [`spec/features/gates.json`](../../spec/features/gates.json)

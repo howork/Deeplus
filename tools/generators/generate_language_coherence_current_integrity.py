@@ -335,7 +335,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "product lanes")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 694,
+        "features": 695,
         "predicates": 250,
         "predicate_fixtures": 780,
         "no_go": 150,

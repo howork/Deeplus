@@ -35,6 +35,7 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 
 | 목적 | 시작할 문서 |
 |---|---|
+| 언어가 왜 이런 선택을 하는지 이해 | [Deeplus 언어 철학](../guide/language-philosophy.md) |
 | 처음부터 차례로 배우기 | [한국어 프로그래밍 튜토리얼](../tutorial/README.md) |
 | 무엇이 현행 Deeplus인지 확인 | [상태, 권위 및 표기법](00-status-authority-and-notation.md) |
 | 소스 파일 작성 | [어휘 구조](01-lexical-structure.md)를 읽은 뒤 [프로그램과 모듈](02-programs-modules-and-imports.md) |

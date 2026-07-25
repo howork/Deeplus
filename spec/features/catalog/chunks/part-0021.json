@@ -320,5 +320,57 @@
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "r0_guard_predicate_calculus",
+      "guard_callable_profile",
+      "guard_function_for_clause_predicates"
+    ],
+    "display_name": "`def#guard` refinement summary",
+    "feature_id": "guard_callable_refinement_summary_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "A nonactivatable successor may export one canonical finite-R0 true/false refinement summary for an eligible def#guard. A direct truth test may substitute that summary into Phi without changing the binding's declared type. Current def#guard calls remain opaque; stored Bool results, arbitrary helper calls, unstable places, and guarded-arm exhaustiveness gain no fact.",
+    "primary_source": "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "R0_GUARD_NOT_GUARD_SAFE",
+        "RCTS_FLOW_STATE_EMBEDDED_IN_TYPE_DESCRIPTOR"
+      ],
+      "predicates": [
+        "GuardCallableAdmitted",
+        "R0GuardSafe"
+      ],
+      "examples": [],
+      "productions": [
+        "ClauseFunctionBody",
+        "GuardClause",
+        "ModuleFunctionDecl"
+      ],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
   }
 ]

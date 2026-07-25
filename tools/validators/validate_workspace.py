@@ -34,7 +34,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 694, "diagnostics": 1341, "predicates": 250,
+    "features": 695, "diagnostics": 1341, "predicates": 250,
     "predicate_fixtures": 780, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
@@ -274,7 +274,7 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 694
+                and fixed_counts.get("features") == 695
                 and fixed_counts.get("predicates") == 250
                 and fixed_counts.get("predicate_fixtures") == 780
                 and fixed_counts.get("no_go") == 150

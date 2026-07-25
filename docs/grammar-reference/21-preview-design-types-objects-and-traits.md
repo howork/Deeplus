@@ -5,6 +5,128 @@
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
+<!-- deeplus-preview-feature-example: guard_callable_refinement_summary_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-guard_callable_refinement_summary_preview_design"></a>
+
+## `def#guard` refinement summary
+
+> **Feature metadata**
+> - Feature ID: `guard_callable_refinement_summary_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `TYPE_SYSTEM / CHECKER`
+> - Dependencies: `r0_guard_predicate_calculus`,
+>   `guard_callable_profile`, `guard_function_for_clause_predicates`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+현행 `def#guard`는 pure·total Bool callable이지만 호출 결과는
+flow-proof 환경 `Phi`에 아무 fact도 만들지 않는다. 이 후보는 함수로
+재사용한 finite-R0 predicate의 참·거짓 조건을 separate compilation
+경계에서도 안전하게 전달해, 직접 inline으로 쓴 조건과 호출한 조건이
+같은 narrowing 능력을 가질 수 있는지 검토한다. 선언 타입은 바꾸지
+않고 branch-local fact만 더한다.
+
+**제안 표면**
+초기 profile은 새 source spelling을 추가하지 않는다. checker가 정확히
+하나의 매개변수 기반 finite-R0 식으로 환원할 수 있는 `def#guard`에
+대해서만 정규화된 `true_summary`와 그 보완인 `false_summary`를 만든다.
+summary는 함수의 public API digest에 versioned metadata로 결합된다.
+body가 arbitrary helper call, capture, runtime data, effect 또는
+비결정적 연산을 포함하면 summary를 만들지 않고 현행처럼 opaque하다.
+
+다음 예제는 문법상 현행 코드이지만, 두 번째 `describe`의 호출 결과가
+`Phi`를 좁힌다는 해석만 Preview Design이다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/features/catalog/chunks/part-0007.json -->
+```deeplus
+public enum Lookup {
+    found(value: Int)
+    missing
+}
+
+public def#guard isPositive(value: Int) -> Bool = {
+    return value > 0
+}
+
+public def describe(result: Lookup) -> String = {{
+    ::found(value) if isPositive(value) => "positive: ${value}"
+    ::found(value) => "non-positive: ${value}"
+    ::missing => "missing"
+}}
+```
+
+**정적 판정과 상호작용**
+summary 적용은 `if isPositive(place)` 또는 match/clause arm의 직접
+truth-test처럼 Bool 결과가 즉시 control-flow edge를 만드는 위치로
+제한한다. checker는 호출 overload와 인자를 먼저 한 번 확정하고,
+callee metadata의 formal parameter를 exact actual argument에
+capture-avoiding 방식으로 치환한다. actual이 immutable value이거나
+증거 수명 동안 mutation되지 않는 stable place일 때만 true edge에
+`value > 0`, false edge에 그 정규화된 보완을 넣는다.
+
+결과를 변수에 저장한 뒤 나중에 검사하거나 `== true`로 재구성하는
+경우, summary 없는 wrapper나 arbitrary Bool helper를 거친 경우,
+overload identity가 닫히지 않은 경우에는 fact를 만들지 않는다.
+assignment, aliasing mutation, exclusive borrow, escape/capture, consume,
+suspension 또는 may-mutate/may-consume call은 현행과 같은 규칙으로
+fact를 죽인다. guarded arm은 여전히 structural cell 전체를 덮지
+않으므로 exhaustiveness coverage를 얻지 않는다.
+
+**평가·소유권·오류**
+guard callable은 정확히 한 번 평가한다. summary는 그 결과를 설명하는
+정적 metadata이지 predicate를 두 번째로 실행하는 runtime check가
+아니다. summary 생성이나 치환은 value, owner, borrow, effect, authority,
+allocation 또는 MIR runtime event를 만들지 않는다. metadata digest가
+body/API와 맞지 않거나 summary가 finite R0 밖이면 import 또는 checker
+단계에서 terminal diagnostic을 내고 opaque Bool fallback으로
+조용히 계속해서는 안 된다.
+
+**현행 대안과 이행**
+현행에서는 `value > 0` 같은 inline admitted R0 guard를 직접 쓰거나
+`as? PositiveInt` 같은 checked refinement conversion으로 proof를
+만든다. `def#guard`라는 이름, 함수 이름의 영어 의미 또는 성공한 test를
+근거로 summary를 추측하지 않는다. Migration 도구는 summary 후보와
+불가능한 이유를 보고할 수 있지만 body rewrite나 public API 변경을
+자동 수행하지 않는다. IDE는 declared `Int`와 branch-local
+`value > 0` fact를 서로 다른 항목으로 보여야 한다.
+
+**활성화 선행 조건**
+Spec_이 summary schema, finite-R0 extraction과 canonical substitution,
+true/false complement, generic 및 cross-module API digest 법칙을
+ratify해야 한다. Impl_/Test_는 stable-place kill, overload, wrapper,
+stored Bool, mutation, alias, capture, generic substitution 및 stale
+metadata mutant를 실행해야 한다. Devel_은 hover와 diagnostic UX를
+검증하고 Design_이 별도 activation을 승인해야 한다. formatter/LSP,
+checker 및 모든 제품 lane은 현재 `NOT_RUN`이다.
+
+**설계 검토 시나리오**
+- **양성 전제·기대:** `isPositive(value)`가 direct truth-test이고
+  canonical summary가 `parameter0 > 0`이며 `value`가 stable하면 true
+  edge의 `Phi`에 `value > 0`을 추가한다.
+- **음성/거부:** Bool을 변수에 저장하거나 summary 없는 wrapper를 거치면
+  호출 이름이 guard라는 이유만으로 fact를 만들지 않는다.
+- **경계:** 검사 뒤 같은 place가 mutation·exclusive borrow·capture되면
+  기존 summary fact를 제거하고 이후 사용을 다시 검증한다.
+
+<!-- deeplus-status-fence: CURRENT -->
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
+```deeplus
+// 현행 대안: 직접 inline R0 guard가 true edge의 fact를 만든다.
+public enum Lookup {
+    found(value: Int)
+    missing
+}
+
+public def describeCurrent(result: Lookup) -> String = {{
+    ::found(value) if value > 0 => "positive: ${value}"
+    ::found(value) => "non-positive: ${value}"
+    ::missing => "missing"
+}}
+```
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
 이 장의 모든 항목은 설계 검토용이며 source activation이
 `nonactivatable`이다. 선택된 후보 철자를 보여 주는 코드도 현행
 Stable/Preview source가 아니고, 철자가 미선정인 항목의 코드는 오직

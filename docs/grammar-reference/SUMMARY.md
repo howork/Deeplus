@@ -42,7 +42,7 @@
 
 ## Preview와 Preview Design 상세 카드
 
-아래 47개 행은 registry identity에서 상태 fence, 상세 설명, 양성·음성·경계 시나리오와 예제로 직접 연결됩니다. 카드가 존재한다는 사실은 source activation 또는 제품 지원을 뜻하지 않습니다.
+아래 48개 행은 registry identity에서 상태 fence, 상세 설명, 양성·음성·경계 시나리오와 예제로 직접 연결됩니다. 카드가 존재한다는 사실은 source activation 또는 제품 지원을 뜻하지 않습니다.
 
 | Feature ID | 상태 | 설명 |
 |---|---|---|
@@ -75,6 +75,7 @@
 | [`first_class_witness_value_not_current`](21-preview-design-types-objects-and-traits.md#preview-feature-first_class_witness_value_not_current) | `PREVIEW_DESIGN` | First-class Witness value not current |
 | [`freeze_snapshot_view_responsibility_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-freeze_snapshot_view_responsibility_preview_design) | `PREVIEW_DESIGN` | Freeze snapshot view responsibility Preview design |
 | [`generic_named_extension_set_target`](21-preview-design-types-objects-and-traits.md#preview-feature-generic_named_extension_set_target) | `PREVIEW_DESIGN` | Generic named extension set target |
+| [`guard_callable_refinement_summary_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-guard_callable_refinement_summary_preview_design) | `PREVIEW_DESIGN` | \`def#guard\` refinement summary |
 | [`immutable_first_collection_ownership_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-immutable_first_collection_ownership_preview_design) | `PREVIEW_DESIGN` | Immutable-first collection ownership Preview design |
 | [`literal_shaped_closed_record_type_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-literal_shaped_closed_record_type_surface_preview_design) | `PREVIEW_DESIGN` | Literal-shaped closed Record type surface Preview design |
 | [`literal_shaped_collection_type_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-literal_shaped_collection_type_surface_preview_design) | `PREVIEW_DESIGN` | Literal-shaped collection type surface Preview design |

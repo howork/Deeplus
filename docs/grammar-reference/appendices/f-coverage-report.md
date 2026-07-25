@@ -11,7 +11,7 @@
 | 도메인 | 목표 | 관측 | 결과 |
 |---|---:|---:|---|
 | `grammar_productions` | 573 | 573 | `통과` |
-| `features` | 694 | 694 | `통과` |
+| `features` | 695 | 695 | `통과` |
 | `diagnostics` | 1341 | 1341 | `통과` |
 | `predicates` | 250 | 250 | `통과` |
 | `prelude_entries` | 63 | 63 | `통과` |
@@ -48,4 +48,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `8656465c6dcbcfb9f3c5e475e0d0ebb19cc36c5412f8bc7bb9c955439ac9f017` |
 | `prelude` | `library/prelude/prelude.md` | `d5f2b4389a9076430085ef5b19bb942bb9fedcbd1db67a2b48ee901c89f29124` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `b9fc0ff5f84a5688c85a848f0842cffa4eb3f86dd514072640a722778511d23d` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `1c76469b43315f3beba27fe94c1f250ab93a7b289480973ceb3a67a49037bee1` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `ab2d46022f4941dd3fe34f908219ae9e8570e6891d55678db890ce2c5555cdf0` |
