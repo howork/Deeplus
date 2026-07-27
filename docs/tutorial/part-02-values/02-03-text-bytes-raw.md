@@ -2,7 +2,7 @@
 
 ## 1. 상태와 읽는 법
 
-> **상태:** `MIXED_STATUS`  
+> **상태:** `CURRENT_DESIGN_PRODUCT_NOT_RUN`
 > **제품 증거:** `15/15 NOT_RUN`
 
 이 장의 plain/interpolated/raw/multiline String, Char, Bytes lexical
@@ -35,8 +35,8 @@ raw String을 쓰면 interpolation이 일어나지 않는다. 두 의도를 deli
 - raw String: `#raw"..."`, escape와 interpolation을 적용하지 않는다.
 - Bytes: `#bytes"..."`, Unicode String과 다른 byte sequence.
 
-`#`, `raw`, 여는 quote는 붙어 있어야 한다. prefixless `raw"..."`는
-현행이 아니다. raw multiline String도 현행 표면에 없다.
+`#`, `raw`, 여는 quote는 붙어 있어야 한다. raw multiline String은
+현행 표면에 없다.
 
 ## 6. 단계별 예제
 
@@ -66,6 +66,27 @@ let path: String = #raw"C:\temp\$learner"
 `title`은 shorthand와 braced expression을 평가한다. `path`의 backslash와
 `$learner`는 그대로 body text다.
 
+여러 줄의 설명·query·template를 표현할 때는 triple-quoted String을
+사용한다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let learner = "Mina"
+let welcome = """
+    안녕하세요, ${learner}님.
+
+    Deeplus 튜토리얼의 여러 줄 문자열입니다.
+        이 줄의 추가 네 칸은 값에 남습니다.
+    """
+```
+
+opener 뒤 newline과 독립된 closer line이 필수다. closer의 들여쓰기가
+공통 여백을 정하므로 위 예제의 비어 있지 않은 각 내용 줄에서는 네
+칸을 제거한다. 빈 줄과 내용 줄 사이의 newline은 값에 남는다.
+multiline String도 escape와 interpolation을 처리하므로 literal text를
+그대로 보존해야 한다면 한 줄 `#raw"..."`를 사용하거나 명시적 파일/API
+경계를 선택한다. 한 줄 triple quote와 raw multiline 형식은 없다.
+
 ### 판정 trace, 미니 사례와 흔한 오해
 
 text literal은 delimiter와 prefix를 먼저 판정한다. plain String이면
@@ -79,9 +100,7 @@ expression의 effect/error를 확인한다. 마지막으로 encoding이나 decod
 그대로 보존한다. `#bytes"DP"`는 화면에 같은 문자가 보여도 String이
 아니다. 흔한 오해는 raw literal이 “파일 경로 전용 문자열”이거나 Bytes가
 “더 빠른 String”이라는 생각이다. 둘은 사용 목적이 아니라 lexical
-처리와 value domain이 다르다. 이 장의 prefixless `raw"..."` block은
-Recovery-only reject probe이므로 top status도 두 surface를 드러내는
-`MIXED_STATUS`로 읽는다.
+처리와 value domain이 다르다.
 
 사용 시점은 delimiter 편의가 아니라 데이터 경계로 정한다. 사용자가
 읽고 편집하는 내용은 String, protocol header나 암호화 입력처럼 byte가
@@ -95,13 +114,6 @@ replacement policy가 필요하면 그 선택을 변환 API의 Result/error
 항상 같다고 가정하지 않는다.
 
 ## 7. 허용·거부·경계 사례
-
-과거 prefixless raw spelling은 Recovery 진단 뒤 거부한다.
-
-<!-- deeplus-example: illustrative; surface: RECOVERY_ONLY; product: NOT_RUN; expected: REJECT; diagnostic-family: RAW_STRING_* -->
-```deeplus
-let path = raw"C:\temp"
-```
 
 String과 Bytes를 같은 값으로 대입해도 안 된다.
 

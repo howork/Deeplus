@@ -85,7 +85,7 @@ public def normalizeInput(text: String) -> String
     throws Never
     effects {}
 = {
-    return text ~ trim()
+    return text ~ trim
 }
 ```
 

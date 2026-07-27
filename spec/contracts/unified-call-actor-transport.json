@@ -1,0 +1,102 @@
+{
+  "schema": "deeplus.unified-call-actor-transport-contract/r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "call_ast": {
+    "normalized_node": "CallExpr",
+    "mode_enum": [
+      "Ordinary",
+      "Message",
+      "ActorMessage"
+    ],
+    "head": {
+      "Ordinary": "callee Expr",
+      "Message": "receiver Expr plus statically preserved selector path",
+      "ActorMessage": "actor receiver Expr plus statically preserved actor-operation selector path"
+    },
+    "arguments": "ordered CallArgument[0..N]",
+    "argument_kinds": [
+      "Positional",
+      "Named",
+      "PositionalUnfold",
+      "NamedUnfold",
+      "Context",
+      "Witness"
+    ],
+    "trailing_closures": "ordered TrailingClosureArgument[]",
+    "message_payload_node_count": 0,
+    "tuple_or_record_payload_projection_count": 0
+  },
+  "pratt": {
+    "tilde_rank": 15,
+    "assignment_rank": 10,
+    "ternary_rank": 20,
+    "message_associativity": "left",
+    "actor_message_associativity": "terminal_nonassociative",
+    "operator_conformance_dispatch": false,
+    "outer_comma_rule": "a nested tilde call followed by an outer comma must be parenthesized",
+    "await_rule": "await receiver ~ f x parses as (await receiver) ~ f x; await the whole call with await (receiver ~ f x)"
+  },
+  "surface_examples": {
+    "zero_arguments": "receiver ~ ping",
+    "one_unit_argument": "receiver ~ send ()",
+    "two_arguments": "receiver ~ f x, y",
+    "one_tuple_argument": "receiver ~ f (x, y)",
+    "mixed_arguments": "receiver ~ configure base, retries: 3",
+    "one_record_argument": "receiver ~ configure ${ base: base retries: 3 }",
+    "actor_one_way": "worker :~ submit move job",
+    "actor_request": "directory :~ find id: id"
+  },
+  "resolution": {
+    "plan_variants": [
+      "DirectImplementation",
+      "VirtualSlot",
+      "TraitWitness",
+      "ExtensionStatic",
+      "ActorTransport",
+      "ReservedOperation"
+    ],
+    "runtime_selector_lookup": false,
+    "runtime_overload_or_label_matching": false,
+    "expected_result_selection": false,
+    "source_or_import_order_selection": false,
+    "actor_to_ordinary_fallback": false
+  },
+  "actor": {
+    "surface": ":~",
+    "admission": "immediate bounded_reject_v1 or logical_unbounded_v1 admission",
+    "implicit_suspend": false,
+    "implicit_retry": false,
+    "one_way_result": "Result<Unit, error ActorMessageError>",
+    "request_result": "Result<Task<T>, error ActorMessageError>",
+    "reply_wait": "extract the Task, then use explicit await",
+    "same_selector_shape_kind_collision": "reject at declaration, protocol composition, or link validation",
+    "deferred_cleanup_actor_call": "REJECT",
+    "envelope": "compiler-internal after exact resolution, binding, transfer, and isolation proof",
+    "precommit_failure": "publishes no envelope or sequence and retains every sender owner",
+    "successful_commit": "publishes one envelope and transfers every moved owner exactly once"
+  },
+  "migration": {
+    "actor_tilde": "diagnose and replace ~ with :~ only when actor-operation resolution is exact",
+    "zero_argument_parentheses": "remove ()",
+    "legacy_named_payload": "rewrite to ordinary named arguments",
+    "historical_blocking_colon_tilde": "NOT_CURRENT"
+  },
+  "machine_acceptance": {
+    "normalized_call_node_count": 1,
+    "call_mode_count": 3,
+    "message_payload_node_count": 0,
+    "ordinary_argument_family_count": 6,
+    "implicit_actor_suspension_count": 0,
+    "runtime_lookup_count": 0,
+    "fallback_count": 0,
+    "product_execution_receipt_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0
+  }
+}

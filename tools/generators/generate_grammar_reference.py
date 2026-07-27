@@ -59,18 +59,18 @@ PROFILE_MARKER_RE = re.compile(
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
-    "grammar_productions": 573,
-    "features": 695,
-    "diagnostics": 1341,
-    "predicates": 250,
-    "prelude_entries": 63,
-    "examples": 716,
+    "grammar_productions": 578,
+    "features": 705,
+    "diagnostics": 1367,
+    "predicates": 255,
+    "prelude_entries": 65,
+    "examples": 715,
     "hard_keywords": 30,
     "contextual_words": 101,
 }
 EXPECTED_PROFILES = {
     "LEXICAL": 91,
-    "STABLE": 454,
+    "STABLE": 459,
     "PREVIEW": 13,
     "RECOVERY": 15,
 }
@@ -98,7 +98,7 @@ EXPECTED_PREVIEW_POLICY = {
     ),
     "required_registry_status_counts": {
         "PREVIEW": 3,
-        "PREVIEW_DESIGN": 45,
+        "PREVIEW_DESIGN": 47,
     },
     "review_card_begin_marker": (
         "<!-- deeplus-preview-design-review-cards: begin -->"
@@ -114,7 +114,7 @@ EXPECTED_PREVIEW_POLICY = {
         "open_alternatives",
         "activation_prerequisites",
     ],
-    "required_review_card_count": 45,
+    "required_review_card_count": 47,
     "detail_chapter_paths": [
         "docs/grammar-reference/20-preview-gated-reference.md",
         "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
@@ -125,9 +125,9 @@ EXPECTED_PREVIEW_POLICY = {
     "feature_anchor_prefix": "preview-feature-",
     "required_feature_example_status_counts": {
         "PREVIEW": 3,
-        "PREVIEW_DESIGN": 45,
+        "PREVIEW_DESIGN": 47,
     },
-    "required_feature_example_count": 48,
+    "required_feature_example_count": 50,
     "feature_example_required_fields": [
         "검토 목적",
         "제안 표면",

@@ -1,0 +1,115 @@
+{
+  "schema": "deeplus.numeric-system-std-math-contract/r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_STABLE_AND_PREVIEW_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "stable_names": {
+    "Float": {
+      "kind": "closed alias",
+      "normalizes_to": "Float64",
+      "new_type_id": false,
+      "new_precision": false,
+      "new_abi": false
+    },
+    "UInt": {
+      "kind": "default unsigned core semantic domain",
+      "range": "0..18446744073709551615",
+      "width": 64,
+      "distinct_from": [
+        "UInt64",
+        "USize",
+        "Int",
+        "Int64"
+      ],
+      "arithmetic": "checked; dynamic overflow and zero division or remainder raise ArithmeticDefect before commit",
+      "unsuffixed_literal_default": false,
+      "contextual_literal_adaptation": "only under an independently fixed UInt target and exact representability",
+      "implicit_signedness_conversion": false,
+      "storage_or_abi_identity": false
+    }
+  },
+  "preview_numeric_lattice": [
+    "Numeric",
+    "ExactNumeric",
+    "ApproximateNumeric",
+    "IntegralNumeric",
+    "RealScalar",
+    "BinaryFloating",
+    "ComplexScalar"
+  ],
+  "preview_numeric_lattice_non_implications": [
+    "representation subtyping",
+    "implicit conversion",
+    "Ord",
+    "Hash",
+    "Keyable",
+    "remainder",
+    "transcendental functions",
+    "operator glyph activation"
+  ],
+  "preview_literal_adaptation": {
+    "integer_imaginary": "an unsuffixed decimal integer followed by attached i at an identifier boundary",
+    "default_type": "Complex<Float64>",
+    "radix_or_typed_integer_imaginary": "REJECT",
+    "maximal_munch": "4index is one invalid numeric-suffix candidate, never 4i plus ndex",
+    "typed_value_adaptation": false
+  },
+  "preview_rational_completion": {
+    "division": "Rational / Rational -> Rational; zero divisor raises RationalError::divisionByZero before commit",
+    "integral_power": "Rational ^ ExactBuiltinInteger -> Rational; negative exponent admitted; zero base with negative exponent fails before commit",
+    "named_remainder": [
+      "remainderTrunc",
+      "modEuclid",
+      "divRemTrunc"
+    ],
+    "remainder_glyph": "DEFERRED"
+  },
+  "std_math": {
+    "core_status": "STDLIB_PROFILE",
+    "dispatch": "normalized argument types only; expected result and runtime value never select a row",
+    "groups": [
+      "constants",
+      "classification",
+      "basic",
+      "rounding",
+      "exact",
+      "power_and_roots",
+      "exponential_and_logarithmic",
+      "trigonometric",
+      "hyperbolic",
+      "complex",
+      "approximation"
+    ],
+    "special_status": "PREVIEW_DESIGN",
+    "calculus_status": "PREVIEW_DESIGN",
+    "calculus_result": "Result<Estimate<T>, error NumericAnalysisError<T>>",
+    "correct_rounding_claim": false,
+    "portable_accuracy_claim": false,
+    "symbolic_or_automatic_differentiation": false
+  },
+  "deferred": [
+    "Decimal",
+    "BigFloat",
+    "direct Float or Complex Keyable",
+    "Rational remainder glyph",
+    "implicit mixed-width or mixed-signedness conversion"
+  ],
+  "rejected": [
+    "arbitrary custom numeric glyph"
+  ],
+  "machine_acceptance": {
+    "stable_alias_count": 1,
+    "stable_default_unsigned_domain_count": 1,
+    "preview_capability_count": 7,
+    "rational_remainder_glyph_count": 0,
+    "implicit_conversion_count": 0,
+    "arbitrary_custom_glyph_count": 0,
+    "product_execution_receipt_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0
+  }
+}

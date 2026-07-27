@@ -2,7 +2,7 @@
 
 이 저장소는 Deeplus 언어 설계와 그 검증 자료의 일상 작업 정본이다.
 현행 언어 버전은 `0.1.2-internal`, 명세 리비전은
-`r51f3-current-exact-numeric-hir-h1-coherence-r1`이다. 정확한 값은
+`r51f3-current-numeric-guard-call-enum-coherence-r1`이다. 정확한 값은
 [`current/language-version.toml`](current/language-version.toml)에서
 기계적으로 확인한다.
 
@@ -36,16 +36,16 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 ## 현재 검증 경계
 
-- 문법 생성 규칙: `573`
+- 문법 생성 규칙: `578`
   - `LEXICAL 91`
-  - `STABLE 454`
+  - `STABLE 459`
   - `PREVIEW 13`
   - `RECOVERY 15`
-- 기능 레지스트리: `695`
-- 진단 레지스트리: `1,341`
-- 타입 predicate: `250`
-- Prelude 서명: `63`
-- 예제 결과: `716`
+- 기능 레지스트리: `705`
+- 진단 레지스트리: `1,367`
+- 타입 predicate: `255`
+- Prelude 서명: `65`
+- 예제 결과: `715`
 - semantic P0: `0`
 - 기능 P1: `22 OPEN`
 - 별도 action: `M13-A002..005` 네 건 `OPEN`

@@ -55,7 +55,7 @@ let calibration: Rational = <3/2>
 let distance = 2500[m]
 let duration = 125[s]
 let speed = distance / duration
-let speedMetersPerSecond = speed ~ scalarIn(1[m/s])
+let speedMetersPerSecond = speed ~ scalarIn 1[m/s]
 ```
 
 calibration은 exact control value다. 실제 Float sample에 적용하려면 어떤

@@ -12,7 +12,7 @@
 | Compatibility target | 현행 Deeplus 의미 계약과 비정본 [`DP-RFC-0001 ProposedMirX1`](./DP-RFC-0001-xvm-only-mir.md) |
 | Proposed schema | `deeplus.hir/h1` |
 | Target language version | `0.1.2-internal` |
-| Target spec revision | `r51f3-current-exact-numeric-hir-h1-coherence-r1` |
+| Target spec revision | `r51f3-current-numeric-guard-call-enum-coherence-r1` |
 | Tracking issue | `TBD` |
 | Supersedes | None |
 | Created | 2026-07-24 |
@@ -133,7 +133,7 @@ deeplus-cst / deeplus-ast
 | `spec/contracts/type-flow-callable-coherence.json` | `8f90d3752d74be8ccad649d8250dde5f36e8ccfb9afa5d8ba838be1f92cb6749` |
 | `spec/contracts/actor-concurrency-coherence.json` | `dc0442099982fa81089f3602f439507347baa911c4a2d500710da20007fea627` |
 
-이 중 일부는 `current/authority-map.yaml`이 기록한 commit 기준 digest와 다르다. 특히 ordered trailing closure와 actor message payload 계약은 live working tree의 미커밋 입력이다. 따라서 이 RFC를 나중에 채택 후보로 삼을 때는 해당 변경이 정본에 들어갔는지 먼저 재검증해야 한다.
+이 중 일부는 `current/authority-map.yaml`이 기록한 commit 기준 digest와 다르다. 특히 ordered trailing closure와 unified call/actor-transport 계약은 live working tree의 입력에서 출발했다. 따라서 이 RFC를 나중에 채택 후보로 삼을 때는 해당 변경이 정본에 들어갔는지 먼저 재검증해야 한다.
 
 ## 3. 설계 목표와 비목표
 
@@ -344,7 +344,11 @@ Executable body는 owning-child graph가 명확해야 한다.
 - owning graph는 acyclic이고 body root에서 전부 도달 가능하다.
 - schema는 각 ID field를 `OwningChild` 또는 `NonOwningUse`로 분류한다. 이 문서의 evaluation child `HirExprId` 표기는 기본적으로 `OwningChild<HirExprId>`의 축약이다.
 - local use, `EvalSlotRef`, `ValueResultRef`, static projection, formal binding, region/provenance use는 non-owning reference다.
-- call/message eval step이 receiver/argument/payload/trailing-closure 식을 소유한다. `ReceiverPreparation`, `MessagePayloadPlan`, `ResolvedTrailingClosureArg`, `FormalBinding`은 그 eval slot 또는 식을 non-owning으로 참조한다. Interpolation은 segment가 hole 식을 소유하고 `eval_order`는 non-owning 순서 view다.
+- call eval step이 callee/receiver, ordered `CallArgument`, trailing-closure 식을
+  소유한다. `ReceiverPreparation`, `ResolvedCallArgument`,
+  `ResolvedTrailingClosureArg`, `FormalBinding`은 그 eval slot 또는 식을
+  non-owning으로 참조한다. Interpolation은 segment가 hole 식을 소유하고
+  `eval_order`는 non-owning 순서 view다.
 - 같은 expression을 두 번 실행하려고 두 parent가 같은 `HirExprId`를 소유할 수 없다. 공유가 필요하면 한 번 평가해 local/eval slot/value result에 넣고 그 non-owning ref를 사용한다.
 
 Item header와 body는 다른 query/digest 단위다. 함수 `foo`의 body만 바뀌면 `foo`의 공개 signature와 무관한 `bar`의 header/body query가 무효화되지 않아야 한다.
@@ -898,7 +902,7 @@ WitnessBinding {
 
 Verifier는 `ResolvedFormalSignature`의 formal order/default profile과 `FormalBinding`을 다시 대조한다. trailing closure가 선택한 formal 앞에 `DeclaredDefault`로만 충족된 ordinary value formal이 하나라도 있으면 `default_parameter_skip = forbidden` 위반으로 sealing을 거부한다.
 
-각 `EvalSlotRef`는 같은 call plan 안의 정확히 하나인 producing eval step을 가리킨다. ordinary slot과 message slot은 cast할 수 없고, payload projection은 자신의 `MessageEvalSlot` aggregate만 base로 삼는다.
+각 `EvalSlotRef`는 같은 call plan 안의 정확히 하나인 producing eval step을 가리킨다. Call mode는 selector/transport domain을 보존하지만 ordered `CallArgument`의 evaluation-slot law를 바꾸지 않는다. Positional/named unfold projection은 자신의 한 번 평가된 argument aggregate slot만 base로 삼고 message 전용 payload slot을 만들지 않는다.
 
 `*expr`와 `**record`는 projection entry마다 원식을 복제하지 않는다. 각각 하나의 aggregate evaluation slot을 만들고, positional shape 또는 static label row를 그 slot에 투영한다. projection은 이미 평가된 aggregate를 읽는 정적 descriptor이며 runtime Map iteration이나 재평가가 아니다. unknown-arity positional residue는 fixed formal을 채우지 못하고, named unfold의 row가 정적으로 닫히지 않으면 sealing 전에 거부한다.
 
@@ -936,11 +940,71 @@ ResolvedTrailingClosureArg {
 - 둘 이상이면 모두 label이 있고 label은 중복되지 않는다.
 - label은 visible function-typed formal에 결합한다.
 - unlabeled form은 남은 적합 formal이 정확히 하나일 때만 허용한다.
-- trailing syntax로 defaulted formal을 건너뛸 수 없다. selected formal 앞의 ordinary value formal은 모두 explicit ordinary/payload binding으로 충족되어야 한다.
-- ordinary arguments 또는 message payload가 먼저 평가되고, trailing closure는 그 뒤 source order로 각각 정확히 한 번 평가된다.
+- trailing syntax로 defaulted formal을 건너뛸 수 없다. selected formal 앞의 ordinary value formal은 모두 explicit ordered argument binding으로 충족되어야 한다.
+- ordered call arguments가 먼저 평가되고, trailing closure는 그 뒤 source order로 각각 정확히 한 번 평가된다.
 - HIR에는 surface label 유무와 무관하게 항상 `selected_formal`이 남는다.
 
-## 12. Message call과 actor transport
+## 12. Unified CallExpr와 actor transport
+
+이 절의 controlling 모델은 모든 호출을 하나의 `CallExpr`로 정규화한다.
+표면 소유자가 `CallMode`를 고정하고, 이후 단계는 mode를 재탐색하거나
+result type으로 바꾸지 않는다.
+
+```text
+CallMode = Ordinary | Message | ActorMessage
+
+CallArgument =
+    Positional(HirExprId)
+  | Named(LabelId, HirExprId)
+  | PositionalUnfold(HirExprId)
+  | NamedUnfold(HirExprId)
+  | Context(HirExprId)
+  | Witness(ResolvedEvidenceRef)
+
+ResolvedCallPlan =
+    DirectImplementation(CallableImplementationId)
+  | VirtualSlot(ClassSlotId)
+  | TraitWitness(RequirementId, WitnessId)
+  | ExtensionStatic(ExtensionSetId, ExtensionMemberId)
+  | ActorTransport(ActorTransportPlan)
+  | ReservedOperation(ReservedSelectorKind)
+
+HirCallExpr {
+  mode: CallMode,
+  head: ResolvedCallHead,
+  arguments: [ResolvedCallArgument],
+  trailing_closures: [ResolvedTrailingClosureArg],
+  eval_order: [CallEvalStep],
+  formal_bindings: [FormalBinding],
+  plan: ResolvedCallPlan,
+  outcome: ResponsibilitySummary,
+}
+```
+
+`~`와 `:~`는 rank 15의 structured led parselet이다. `~`는
+left-associative message mode이고, `:~`는 terminal nonassociative actor
+transport mode다. 두 mode 모두 ordinary call과 같은 ordered
+`CallArgument` family를 사용한다. message 전용 aggregate 또는
+Tuple/Record-to-formal projection은 없다. `receiver ~ ping`은 인자 0개,
+`receiver ~ send ()`는 Unit 인자 1개, `receiver ~ f x, y`는 인자 2개,
+`receiver ~ f (x, y)`는 Tuple 인자 1개다.
+
+`ActorTransportPlan`은 actor/protocol operation kind, selector,
+canonical call shape, mailbox profile, transfer plan, admission error set,
+request responsibility를 정적으로 보존한다. precommit failure는 envelope,
+sequence, ownership transfer를 만들지 않는다. 성공은 정확히 한 envelope와
+한 ownership transition을 commit한다. `:~` 자체는 suspend나 retry를 하지
+않으며, request는 `Result`에서 `Task<T>`를 꺼낸 뒤 명시적으로 await한다.
+같은 selector와 canonical call shape를 가진 `on`/`request` 쌍은
+expected-result selection 없이 일찍 거부한다. actor `:~`는 `defer`에
+들어갈 수 없다.
+
+### 12.H Superseded payload-projection record
+
+아래의 `MessagePayloadPlan` 기반 기록은 입력 보고서의 이전 설계를
+추적하기 위한 비정규 역사 기록이다. 현재 HIR, Grammar, checker 또는
+MIR authority로 해석하지 않는다. 위 `HirCallExpr` 계약이 충돌 시
+우선한다.
 
 `~` message는 하나의 별도 HIR 식이다. value carrier는 모든 dispatch 종류에서 `MessagePayloadPlan`을 사용하지만, 선택된 selector domain은 닫힌 합타입으로 구분한다.
 
@@ -1487,7 +1551,7 @@ direct `let`과 동치인 rightward binding은 같은 semantic digest를 가질 
 - concrete witness와 abstract witness parameter
 - import visibility와 use/extension activation
 - reusable callable과 once callable
-- message payload와 ordinary argument list
+- shared ordered arguments와 구분되는 `CallMode`/selector/actor-transport domain
 - trailing closure의 selected `FormalId`
 
 ## 21. HIR에서 MIR-X1로의 계약
@@ -1546,9 +1610,11 @@ require_mir_capabilities(
 
 1. ordinary call에 ordered trailing-closure channel을 추가한다.
 2. 각 trailing closure의 selected `FormalId`를 보존한다.
-3. actor message에 ordinary args와 별개의 single payload aggregate를 둔다.
-4. payload kind와 payload-to-formal projection을 보존한다.
-5. payload 평가 뒤 trailing closures를 평가한다는 순서를 MIR operation stream에 명시한다.
+3. 모든 call mode에 하나의 ordered `CallArgument` family를 둔다.
+4. `CallMode`와 닫힌 `ResolvedCallPlan`을 보존하고 message payload
+   aggregate/projection은 만들지 않는다.
+5. receiver/callee, arguments, trailing closures의 evaluate-once 순서를
+   MIR operation stream에 명시한다.
 6. `ModuleId`, `AssociatedItemId`, `ExtensionSetId`, `ActivationOriginId`, `FormalId`, `TaskResponsibilityId` 등 필요한 identity projection을 확정한다.
 7. concrete `WitnessId`와 abstract `WitnessParamId`를 구분한다.
 
@@ -1585,7 +1651,9 @@ pair verifier는 digest 문자열만 비교하지 않는다.
 4. **Item/body**: body store/index 일치, owner/scope/local/control target, owning graph 단일 parent/acyclic/reachability, orphan node 없음
 5. **Node typing**: kind signature, exact result type/category
 6. **Resolution closure**: unresolved/candidate/inference/recovery variant 없음
-7. **Calls**: exact callee/dispatch, unfold aggregate-once projection, channel/formal 일대일성, label, trailing closure, message payload projection
+7. **Calls**: exact `CallMode`/`ResolvedCallPlan`, unfold aggregate-once,
+   ordered `CallArgument`, channel/formal 일대일성, label, trailing closure,
+   actor transport responsibility, message payload aggregate 0
 8. **Evaluation**: source ordinal 전순서, evaluate-once, 중복 temp/slot 없음
 9. **Place/ownership**: access intent, move/borrow/inout/replace, region constraints
 10. **Responsibility**: effect/error/defect/cancel/suspend/isolation/authority/cleanup 재계산
@@ -1745,7 +1813,7 @@ assemble_module(ModuleId) -> Verified<CanonicalHirH1>
 |---|---|
 | AST node에 type side table만 붙임 | generated declaration, identity domain, call/pattern/cleanup plan을 닫지 못함 |
 | 하나의 HIR enum과 `phase` 플래그 | recovery/unresolved node가 MIR 경계로 새기 쉬움 |
-| 모든 call을 flat argument vector로 통합 | formal binding과 eval order, trailing closure, message payload 의미 손실 |
+| mode·argument kind·label을 지운 untyped flat vector로 모든 call을 통합 | formal binding과 eval order, trailing closure, selector/transport domain 의미 손실 |
 | message를 ordinary method call로 lowering | actor/protocol selector domain, mailbox, transfer, correlation 의미 손실 |
 | HIR에서 CFG/SSA 생성 | source-level structure와 incremental/diagnostic 경계를 잃고 MIR와 중복 |
 | 모든 identity를 문자열로 저장 | domain 혼합, rename 불안정성, runtime string의 static 승격 위험 |
@@ -1774,7 +1842,7 @@ assemble_module(ModuleId) -> Verified<CanonicalHirH1>
 - complete substitution
 - ordinary call channel과 eval order
 - ordered trailing closure
-- message payload/selector/formal projection
+- ordered `CallArgument`, message/actor selector와 formal-channel binding
 
 완료 조건: ambiguous/unresolved/hidden lookup mutant가 모두 sealing 단계에서 거부되고, call/message golden HIR가 current contract와 일치한다.
 
@@ -1893,9 +1961,9 @@ HIR-H1 제안은 최소한 다음을 모두 만족할 때만 정본 채택 후�
 - current authority와 live delta가 하나의 명시적 canonical revision으로 고정된다.
 - `deeplus.hir/h1` schema/version authority가 정식으로 배정된다.
 - canonical HIR에 unresolved name, candidate set, inference variable, recovery node가 존재하지 않는다.
-- 모든 식/binder/capture/payload에 exact normalized type과 responsibility가 있다.
+- 모든 식/binder/capture/call argument에 exact normalized type과 responsibility가 있다.
 - call, label, trailing closure, witness, extension, provider, actor selector가 재탐색 없이 닫혀 있다.
-- message payload와 ordinary call arguments가 섞이지 않는다.
+- Message/ActorMessage의 ordered arguments는 ordinary channel law를 재사용하되 `CallMode`와 selector/transport domain은 지워지지 않는다.
 - pattern, construction, cleanup, task/message transaction이 구조화된 plan으로 lossless하게 보존된다.
 - 같은 normalized 의미가 byte-for-byte 같은 canonical HIR를 만든다.
 - item/body incremental invalidation과 semantic/debug digest 분리가 검증된다.

@@ -180,7 +180,7 @@ module signature API {
 def ask() -> Int
 = {
     import std::inout::input
-    return input("n:") ~ toInt()
+    return input("n:") ~ toInt
 }
 ```
 

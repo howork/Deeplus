@@ -1,5 +1,60 @@
 [
   {
+    "entry_id": "float_alias",
+    "symbol": "Float",
+    "kind": "numeric_alias",
+    "status": "stable_design",
+    "feature_refs": [
+      "numeric_literal_lexical_contract"
+    ],
+    "signatures": [
+      "prelude intrinsic type Float = Float64"
+    ],
+    "responsibility": "Stable closed source alias of Float64 with identical normalized semantic identity",
+    "notes": "Float creates no distinct nominal, precision, serialization, runtime-discriminant, storage, layout, or ABI identity.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic type Float = Float64",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "7fdf1ad7105f86dc87cb446ad9e4d41cd8646fce943657fa7a241e005b423f52"
+  },
+  {
+    "entry_id": "uint",
+    "symbol": "UInt",
+    "kind": "core_numeric_value",
+    "status": "stable_design",
+    "feature_refs": [
+      "numeric_literal_lexical_contract",
+      "numeric_operator_core"
+    ],
+    "signatures": [
+      "prelude intrinsic UInt: unsigned 64-bit mathematical domain"
+    ],
+    "responsibility": "separate Stable default unsigned mathematical domain with checked arithmetic and exact target-directed literal adaptation",
+    "notes": "UInt ranges from 0 through 18446744073709551615; it is distinct from UInt64, USize, Int, and Int64 and grants no implicit signedness conversion or storage/ABI equivalence.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic UInt: unsigned 64-bit mathematical domain",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "53d05f4d43cdd4eb38db031d61c89b0589ec551737922280b0b2f23c6be5070f"
+  },
+  {
     "entry_id": "bigint",
     "symbol": "BigInt",
     "kind": "exact_numeric_value",
@@ -84,11 +139,11 @@
       "public def Complex<Rep>.conjugate.() -> Complex<Rep>",
       "public def Complex<Rep>.dividedBy.(borrow rhs: Complex<Rep>) -> Complex<Rep>",
       "public def Complex<Rep>.powInteger.(exponent: Int) -> Complex<Rep>",
-      "public def Complex<Float64>.powReal.(exponent: Float64) -> Complex<Float64>",
-      "public def Complex<Float64>.powComplex.(borrow exponent: Complex<Float64>) -> Complex<Float64>"
+      "public def Complex<Rep>.powReal.(exponent: Rep) -> Complex<Rep>",
+      "public def Complex<Rep>.powComplex.(borrow exponent: Complex<Rep>) -> Complex<Rep>"
     ],
     "responsibility": "immutable two-component IEEE value with partial equality, sealed same-Rep +,-,* evidence, intrinsic division, principal named transcendental operations and no strong Eq/Ord/Hash/Keyable",
-    "notes": "Attached 4.0i and 4.0f32i create exact component values; Complex::i is type-side and no companion singleton or public foreign ABI is implied.",
+    "notes": "Current attached 4.0i and 4.0f32i create exact component values; integer 4i is Preview-design/nonactivatable. Complex::i is type-side and no companion singleton or public foreign ABI is implied.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -137,19 +192,19 @@
         "schema": "deeplus.public-signature/r51f3"
       },
       {
-        "text": "public def Complex<Float64>.powReal.(exponent: Float64) -> Complex<Float64>",
+        "text": "public def Complex<Rep>.powReal.(exponent: Rep) -> Complex<Rep>",
         "dialect": "deeplus",
         "grammar_root": "FunctionDecl",
         "schema": "deeplus.public-signature/r51f3"
       },
       {
-        "text": "public def Complex<Float64>.powComplex.(borrow exponent: Complex<Float64>) -> Complex<Float64>",
+        "text": "public def Complex<Rep>.powComplex.(borrow exponent: Complex<Rep>) -> Complex<Rep>",
         "dialect": "deeplus",
         "grammar_root": "FunctionDecl",
         "schema": "deeplus.public-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "d9fa26ad6da4f987b3de7636122b3be2d55899759297b7c00ca63f1a94f9ea4d"
+    "normalized_contract_sha256": "e95b4db65bc8e11f9f5322f14038898683856b7b73fd08a4a6bb55d35c0d9d8a"
   },
   {
     "entry_id": "power_error",

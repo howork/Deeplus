@@ -227,5 +227,457 @@
     "violated_condition": "ActorDecl is in the exact nine-owner set but has no explicit visibility",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-GuardRefinementSummaryAdmitted-POS",
+    "predicate_id": "GuardRefinementSummaryAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.guard-refinement-predicate-descriptor/r1",
+      "predicate_kind": "SUMMARY_ADMISSION",
+      "summary": {
+        "schema": "deeplus.guard-summary/v1",
+        "callable_implementation_id": "validPort(Int)",
+        "normalized_parameter_type_ids": [
+          "Int"
+        ],
+        "normalized_formula": {
+          "kind": "AND",
+          "terms": [
+            "p0 >= 1",
+            "p0 <= 65535"
+          ]
+        },
+        "body_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+        "summary_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "profile_version": "deeplus.guard-refinement.r0/v1"
+      },
+      "summary_status": "VALID",
+      "selected_call_kind": "NOT_APPLICABLE",
+      "actual_place_stability": "NOT_APPLICABLE",
+      "edge": "NOT_APPLICABLE",
+      "substituted_formula_or_null": null,
+      "body_digest_matches": true,
+      "api_digest_matches": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "GuardSummaryV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the summary is finite R0, identity-bound, and digest-fresh",
+    "rule_seed": "mandatory exact GuardSummaryV1 admission",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-GuardRefinementSummaryAdmitted-NEG",
+    "predicate_id": "GuardRefinementSummaryAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.guard-refinement-predicate-descriptor/r1",
+      "predicate_kind": "SUMMARY_ADMISSION",
+      "summary": null,
+      "summary_status": "MISSING",
+      "selected_call_kind": "NOT_APPLICABLE",
+      "actual_place_stability": "NOT_APPLICABLE",
+      "edge": "NOT_APPLICABLE",
+      "substituted_formula_or_null": null,
+      "body_digest_matches": false,
+      "api_digest_matches": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MissingGuardSummary"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "opaque fallback is forbidden",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+    "violated_condition": "the selected def#guard has no GuardSummaryV1",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-GuardCallRefinementApplied-POS",
+    "predicate_id": "GuardCallRefinementApplied",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.guard-refinement-predicate-descriptor/r1",
+      "predicate_kind": "CALL_APPLICATION",
+      "summary": {
+        "schema": "deeplus.guard-summary/v1",
+        "callable_implementation_id": "isPositive(Int)",
+        "normalized_parameter_type_ids": [
+          "Int"
+        ],
+        "normalized_formula": {
+          "kind": "GT",
+          "parameter": 0,
+          "constant": 0
+        },
+        "body_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+        "summary_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+        "profile_version": "deeplus.guard-refinement.r0/v1"
+      },
+      "summary_status": "VALID",
+      "selected_call_kind": "EXACT_DIRECT",
+      "actual_place_stability": "STABLE",
+      "edge": "TRUE",
+      "substituted_formula_or_null": "x > 0",
+      "body_digest_matches": true,
+      "api_digest_matches": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Bool"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "an exact direct call over stable x applies P to the true Phi edge",
+    "rule_seed": "direct proof-carrying guard call",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-GuardCallRefinementApplied-NEG",
+    "predicate_id": "GuardCallRefinementApplied",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.guard-refinement-predicate-descriptor/r1",
+      "predicate_kind": "CALL_APPLICATION",
+      "summary": null,
+      "summary_status": "VALID",
+      "selected_call_kind": "STORED_BOOL",
+      "actual_place_stability": "STABLE",
+      "edge": "TRUE",
+      "substituted_formula_or_null": null,
+      "body_digest_matches": true,
+      "api_digest_matches": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Bool"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "stored Bool does not retain proof identity",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+    "violated_condition": "the condition is a stored Bool rather than the exact direct def#guard call",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumDeclarationOrderWitnessAdmitted-POS",
+    "predicate_id": "EnumDeclarationOrderWitnessAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "ORDER",
+      "enum_id": "Stage",
+      "order_roles": [
+        "increasing"
+      ],
+      "nonempty": true,
+      "payload_free": true,
+      "nongeneric": true,
+      "explicit_same_ground_ord": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Stage"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one increasing role over a nonempty payload-free nongeneric Enum",
+    "rule_seed": "EDC-R1-POS-001",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumDeclarationOrderWitnessAdmitted-NEG",
+    "predicate_id": "EnumDeclarationOrderWitnessAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "ORDER",
+      "enum_id": "Stage",
+      "order_roles": [
+        "increasing",
+        "decreasing"
+      ],
+      "nonempty": true,
+      "payload_free": true,
+      "nongeneric": true,
+      "explicit_same_ground_ord": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Stage"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "EDC-R1-NEG-016",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "ENUM_ORDER_ROLE_CONFLICT",
+    "violated_condition": "one Enum selects both order roles",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumCaseDisplayMappingAdmitted-POS",
+    "predicate_id": "EnumCaseDisplayMappingAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "DISPLAY",
+      "enum_id": "WeekDay",
+      "inhabitable_case_count": 7,
+      "mapped_case_count": 7,
+      "templates_guard_safe": true,
+      "explicit_same_ground_display": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "WeekDay"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "all seven inhabitable cases have one guard-safe display template",
+    "rule_seed": "EDC-R1-POS-005",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumCaseDisplayMappingAdmitted-NEG",
+    "predicate_id": "EnumCaseDisplayMappingAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "DISPLAY",
+      "enum_id": "WeekDay",
+      "inhabitable_case_count": 7,
+      "mapped_case_count": 6,
+      "templates_guard_safe": true,
+      "explicit_same_ground_display": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "WeekDay"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "EDC-R1-NEG-020",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "ENUM_DISPLAY_MAPPING_INCOMPLETE",
+    "violated_condition": "one inhabitable case omits its mapping",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumVariantSubsetAliasAdmitted-POS",
+    "predicate_id": "EnumVariantSubsetAliasAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "SUBSET",
+      "enum_id": "WeekDay",
+      "visibility_token": "+",
+      "explicit_type_keyword": true,
+      "member_variant_ids": [
+        "Sat",
+        "Sun"
+      ],
+      "foreign_owner_variant_count": 0,
+      "payload_bearing_variant_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "WeekDay::Weekend"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the explicit associated type names a finite payload-free same-owner VariantId set",
+    "rule_seed": "EDC-R1-POS-008",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumVariantSubsetAliasAdmitted-NEG",
+    "predicate_id": "EnumVariantSubsetAliasAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.enum-derived-capability-descriptor/r1",
+      "facility": "SUBSET",
+      "enum_id": "WeekDay",
+      "visibility_token": "+",
+      "explicit_type_keyword": true,
+      "member_variant_ids": [
+        "Sat",
+        "Color::red"
+      ],
+      "foreign_owner_variant_count": 1,
+      "payload_bearing_variant_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "WeekDay::InvalidSubset"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "EDC-R1-NEG-026",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "ENUM_VARIANT_SUBSET_OWNER_MISMATCH",
+    "violated_condition": "the subset contains one foreign-owner VariantId",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

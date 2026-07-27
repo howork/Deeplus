@@ -216,7 +216,7 @@ API compatibility와 target receipt가 필요하다.
 ```deeplus
 // 현행 명시적 대안: punctuation 후보를 발명하지 않는다.
 public def render(value: Money, context locale: Locale) -> String = {
-    return locale ~ format(value)
+    return locale ~ format value
 }
 let label = render(price, context Locale::koKR)
 ```
@@ -286,9 +286,9 @@ mutation·allocation-failure·escape corpus와 target-bound receipt가
 ```deeplus
 // 현행 identity를 보존하는 explicit 책임 예시.
 def snapshotThenFreeze(move values: MutableList<Int>) -> FrozenList<Int> = {
-    let snapshot: ListSnapshot<Int> = values ~ snapshot()
+    let snapshot: ListSnapshot<Int> = values ~ snapshot
     observe(snapshot)
-    return values ~ freeze()
+    return values ~ freeze
 }
 ```
 
@@ -357,7 +357,7 @@ cross-backend receipt가 필요하다. 정적 문서는 제품 지원이 아니�
 // 현행 명시적 구분: immutable List와 mutable owner는 다른 identity다.
 let names: List<String> = ["Ada", "Grace"]
 let queue: MutableList<String> = #mut["Ada", "Grace"]
-queue ~ append("Lin")
+queue ~ append "Lin"
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->

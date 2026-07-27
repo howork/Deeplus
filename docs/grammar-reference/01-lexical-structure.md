@@ -203,14 +203,15 @@ multiplication을 제공하지 않으므로 `4.0 i`를 `4.0 * i`로 보정하지
 
 최장 일치는 유효한 prefix만 떼어 내지 않는다. 따라서 `4.0index`를
 `4.0i`와 `ndex`로 쪼개거나, `4.0f64i`를 `4.0f64`와 `i`로 쪼개지 않는다.
-정수형 `4i`, bare `i`, 분리된 `4.0 i`, historical `4.0j`, radix 형식
-`0x4.0i`, suffix 연쇄 `4.0f64i`는 모두 거부된다. 진단은 다음 책임을
-구분한다.
+정수형 `4i`는 별도의 nonactivatable Preview Design에만 속한다.
+bare `i`, 분리된 `4.0 i`, historical `4.0j`, radix 형식 `0x4.0i`,
+suffix 연쇄 `4.0f64i`는 현행에서 거부된다. 진단은 다음 책임을 구분한다.
 
 | source | 판정 |
 |---|---|
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED` |
-| `4i`, `0x4.0i`, `4.0f64i`, chained suffix | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` |
+| `4i` | `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVATABLE` |
+| `0x4.0i`, `4.0f64i`, chained suffix | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` |
 | `4.0j` | `HISTORICAL_IMAGINARY_J_NOT_CURRENT` |
 | bare `i` | ordinary identifier; 허수 literal이 아님 |
 
@@ -246,9 +247,31 @@ plain String은 double quote를 쓴다. interpolation은 `${expr}`와 `$name`,
 
 Stable raw String delimiter는 `#raw"..."` 하나뿐이다. `#`, `raw`, 여는
 따옴표 사이에 trivia를 둘 수 없다. body에는 escape와 interpolation을
-적용하지 않는다. multiline Unicode String은 triple
-quote를 쓰며 opener 뒤 newline과 독립된 closer line이 필요하다.
-raw multiline String은 현행이 아니다.
+적용하지 않는다.
+
+multiline Unicode String은 `"""`를 사용한다. opener 뒤에는 newline이
+필수이고 closer는 내용과 분리된 줄에 있어야 한다. closer의 들여쓰기가
+공통 여백을 정하며, 그보다 적게 들여쓴 비어 있지 않은 내용 줄은
+거부한다. opener와 closer를 구분하기 위한 두 newline은 값에 포함되지
+않지만 내용 줄의 newline은 보존된다. multiline String도 plain String과
+같이 escape와 `${...}` interpolation을 처리한다. 한 줄 triple-quoted
+형식과 raw multiline String은 현행이 아니다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+```deeplus
+let customer = "Mina"
+let letter = """
+    안녕하세요, ${customer}님.
+    Deeplus에 오신 것을 환영합니다.
+
+    이 빈 줄과 각 내용 줄의 개행은 값에 남습니다.
+    """
+```
+
+위 값의 각 비어 있지 않은 줄에서는 closer 앞의 네 칸이 제거된다.
+추가로 들여쓴 여백은 내용이다. multiline literal은 코드 블록의 구조를
+읽기 좋게 유지하는 String 표면이지 별도의 raw 또는 bytes domain이
+아니다.
 
 `#bytes"..."`는 `Bytes`를 만든다. `String`, `Char`, `Bytes` 사이의
 암시적 변환은 없다.
@@ -268,6 +291,10 @@ owner만 가진다. `&&`는 Bool conjunction이 아니라 bitwise operator다.
 ## 허용과 정적 의미
 
 - unsuffixed integer는 `Int`, unsuffixed float는 `Float64`로 정규화된다.
+- `UInt`는 기본 부호 없는 core semantic domain `0..2^64-1`이다.
+  `UInt64`나 `USize`와 같은 storage/ABI identity를 뜻하지 않는다.
+- `Float`는 정확히 `Float64`로 정규화되는 닫힌 Prelude alias다. 별도의
+  정밀도, `TypeId`, 변환, 직렬화 또는 ABI domain을 만들지 않는다.
 - 명시적 suffix는 정확한 numeric domain을 고정한다.
 - `Char` literal은 escape 처리 뒤 정확히 하나의 Unicode scalar여야 한다.
 - plain/raw/multiline/interpolated String의 type은 `String`이다.
@@ -335,20 +362,39 @@ let path = #raw"C:\temp\$name"
 | `null` | recovery-only; `::none` 또는 `Option<T>::none` 사용 |
 | 숫자 token으로 쓴 `NaN`, `Infinity` | 거부; type-side constant 사용 |
 | raw multiline String | 거부 |
-| prefixless `raw"..."` 또는 다른 raw delimiter family | 거부; `#raw"..."` 사용 |
 | regex literal | 없음; named API에 String/Bytes 전달 |
 | 단독 `_`를 이름으로 사용 | wildcard이므로 거부 |
 | `array`, `case`를 hard keyword로 취급 | 잘못된 해석 |
 | 임의 custom operator punctuation | recovery-only이며 stable token route가 아님 |
 | `<2/0>` | 전체 Rational literal로 인식한 뒤 `RATIONAL_LITERAL_DENOMINATOR_ZERO` |
 | `<-2/3>`, `<2 / 3>`, `<0x2/3>` | `RATIONAL_LITERAL_MALFORMED`; 부호는 바깥 prefix에 두고 component는 붙은 10진 magnitude로 쓴다 |
-| `4i`, `0x4.0i`, `4.0f64i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`; 붙은 marker는 10진 `Float64` 또는 `Float32` literal만 허용 |
+| `4i` | integer-imaginary literal 확장 Preview Design; 현행 profile에서는 활성화되지 않음 |
+| `0x4.0i`, `4.0f64i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`; 붙은 marker는 현행 10진 `Float64` 또는 `Float32` literal만 허용 |
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED`; implicit multiplication 없음 |
 | `4.0j` | `HISTORICAL_IMAGINARY_J_NOT_CURRENT`; current marker는 ASCII `i` |
 | bare `i`를 내장 허수 단위로 가정 | ordinary identifier다. `Complex::i`를 사용 |
 
 Preview source는 첫머리에 명시적 `#preview(...)` gate가 필요하다. 이 장은
 Preview feature를 현행으로 승격하지 않는다.
+
+### Preview Design — 붙은 정수 `i`
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+`4i`는 `Complex<Float64>(real: +0.0, imag: 4.0)`로 정규화하는
+nonactivatable 설계다. marker는 unsuffixed 10진 정수에 공백 없이
+붙어야 한다. `4index`는 `4i`와 `ndex`로 쪼개지 않고 전체 최장 일치가
+유효한 token이 아니므로 거부한다. `4u8i`, `0x4i` 같은 typed/radix
+정수와 결과 annotation을 이용한 숨은 성분 변환도 허용하지 않는다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design — current source로 활성화할 수 없다.
+let axis: Complex = 4i
+let cartesian: Complex = 3.0 + 4i
+```
+
+<!-- deeplus-status-fence: CURRENT -->
 
 ## 상호작용
 

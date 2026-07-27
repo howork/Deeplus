@@ -30,7 +30,7 @@ source authority, P1 또는 product lane을 바꾸지 않는다.
    별도 OPEN action `M13-A002..005`를 메모한다.
 
 이 실습은 예시로
-`enum_case_display_mapping_preview_design`을 사용한다.
+`option_let_question_binding_preview_design`을 사용한다.
 
 ### 누적 프로젝트 연결
 
@@ -47,7 +47,7 @@ source authority, P1 또는 product lane을 바꾸지 않는다.
 검토 카드 첫머리를 다음처럼 만든다.
 
 ```text
-feature_id: enum_case_display_mapping_preview_design
+feature_id: option_let_question_binding_preview_design
 registry_status: PREVIEW_DESIGN
 source_activation: nonactivatable
 candidate_status: PREVIEW_DESIGN_NONACTIVATABLE
@@ -61,16 +61,16 @@ Git commit SHA도 같은 hash domain처럼 비교하지 않는다.
 
 ### 2단계 — 해결할 문제와 비목표를 쓴다
 
-문제는 “Enum을 예쁘게 출력한다”보다 정확해야 한다.
+문제는 “Option을 편하게 푼다”보다 정확해야 한다.
 
-- case별 display text를 source 가까이에 둘 필요가 있는가?
-- mapping은 all-or-none인가, 일부 case만 허용하는가?
-- display text와 serialization tag/semantic `VariantId`는 분리되는가?
-- template가 payload를 읽는다면 purity와 field admission은 무엇인가?
-- reverse parsing이나 localization을 자동으로 파생하지 않는가?
+- `Option<T>` 한 겹의 `::some` pattern을 얼마나 줄이는가?
+- subject 단일 평가와 atomic binding commit을 어떻게 보존하는가?
+- `if`/`while`/guarded local `let`의 mismatch disposition은 무엇인가?
+- `let`과 `?` 사이 trivia를 허용할 것인가?
+- Result·arbitrary Enum·force unwrap·propagation으로 확대하지 않는가?
 
-비목표에는 serialization identity 변경, declaration-order `Ord`, subset
-alias, automatic migration과 product support를 적는다.
+비목표에는 nullability, general truthiness, bare local `let?` without
+`else`, condition chain, automatic migration과 product support를 적는다.
 
 ### 3단계 — candidate probe와 current alternative를 분리한다
 
@@ -78,27 +78,18 @@ candidate probe는 expected reject다.
 
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-// feature: enum_case_display_mapping_preview_design
-private enum Status {
-    Ready ~> "ready"
-    Busy ~> "busy"
+// feature: option_let_question_binding_preview_design
+if let? value = maybeValue {
+    consume(value)
 }
 ```
 
-current alternative는 exhaustive named function이다.
+current alternative는 explicit `::some` pattern이다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-private enum Status {
-    Ready
-    Busy
-}
-
-def displayStatus(status: Status) -> String = {
-    return @match status {
-        ::Ready => "ready"
-        ::Busy => "busy"
-    }
+if let ::some(value) = maybeValue {
+    consume(value)
 }
 ```
 
@@ -111,21 +102,20 @@ implementation이 아니라 오늘 사용할 수 있는 explicit design이다.
 
 | scenario | expected | 이유 | required diagnostic/receipt |
 |---|---|---|---|
-| 모든 case가 pure literal mapping을 가짐 | proposal-positive | all-or-none, closed Enum | activation 이후에만 admission |
-| 한 case mapping 누락 | proposal-negative | partial mapping 금지 | deterministic missing-case diagnostic |
-| 같은 display text를 두 case가 공유 | boundary | display는 identity가 아님 | reverse parsing을 파생하지 않으면 허용 여부 별도 결정 |
-| payload field를 template가 읽음 | boundary | field admission·purity 필요 | exact template grammar와 checker evidence |
-| mapping을 serialization tag로 사용 | reject | hash/identity domain 혼동 | authority-domain diagnostic |
+| `Option<T>`과 irrefutable child pattern | proposal-positive | 한 겹 some binding | activation 이후에만 admission |
+| `Result<T,E>` subject | proposal-negative | Option-only profile | deterministic subject-type diagnostic |
+| `Option<Option<T>>` subject | boundary | 한 번에 한 겹만 open | inner Option 유지 evidence |
+| stored/moved subject | boundary | single evaluation·commit 필요 | ownership trace |
+| bare local `let?` without `else` | reject | mismatch disposition 없음 | missing-else diagnostic |
 
 positive는 “현재 컴파일 성공”이 아니다. ratification에 필요한 의미가
 일관되는지 보여 주는 proposal scenario다.
 
 ### 5단계 — ownership, effect와 IR residue를 쓴다
 
-mapping evaluation은 payload를 move하지 않고 hidden IO/allocation을
-도입하지 않아야 한다. HIR에는 semantic `VariantId`, selected mapping
-identity, admitted field reads와 purity proof가 분리되어야 한다. MIR은
-mapping을 serialization이나 reverse parser로 재해석하지 않는다.
+subject는 한 번 평가하고 `::some` structural test 성공 전에는 move,
+borrow와 binding을 commit하지 않아야 한다. AST/HIR은 기존 Option
+pattern으로 정규화하고 새 unwrap runtime node를 만들지 않는다.
 
 다음 skeleton을 완성한다.
 
@@ -145,11 +135,10 @@ migration_rule:
 
 ### 6단계 — activation evidence와 판정을 쓴다
 
-최소 evidence는 exact grammar/recovery, all-or-none checker, template
-purity, witness/conflict law, deterministic diagnostics, formatter/LSP,
-positive/negative/boundary corpus, HIR/MIR preservation과 target-bound
-receipt다. static parse나 schema file만으로 이 목록을 통과했다고 표시하지
-않는다.
+최소 evidence는 exact grammar/recovery, Option-only checker, one-layer
+normalization, evaluation/ownership/guard/exhaustiveness law, deterministic
+diagnostics, formatter/LSP, positive/negative/boundary corpus, HIR/MIR
+preservation과 target-bound receipt다.
 
 현재 판정은 다음 중 하나여야 한다.
 
@@ -166,7 +155,7 @@ receipt다. static parse나 schema file만으로 이 목록을 통과했다고 �
 - candidate code에 `PREVIEW_DESIGN_NONACTIVATABLE`과 expected reject가
   붙었는가?
 - current alternative가 별도 block에 있는가?
-- semantic identity와 display/serialization text를 분리했는가?
+- Option identity와 binding sugar를 분리했는가?
 - positive, negative, boundary scenario가 각각 하나 이상 있는가?
 - static evidence와 execution receipt를 구분했는가?
 - P1 delta와 product state를 바꾸지 않았는가?
@@ -179,45 +168,34 @@ receipt다. static parse나 schema file만으로 이 목록을 통과했다고 �
 
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-#preview(enum_case_display_mapping_preview_design)
-private enum Status {
-    Ready ~> "ready"
-    Busy ~> "busy"
+#preview(option_let_question_binding_preview_design)
+if let? value = maybeValue {
+    consume(value)
 }
 ```
 
 예상 결과는 gate activation이 아니라 nonactivatable feature 진단이다.
 
-### 실험 2 — display와 serialization identity 합치기
+### 실험 2 — Option과 Result를 같은 unwrap으로 합치기
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-// current explicit form: display와 wire tag를 서로 다른 함수가 소유한다.
-def displayStatus(status: Status) -> String = {
-    return @match status {
-        ::Ready => "ready"
-        ::Busy => "busy"
-    }
-}
-
-def statusWireTag(status: Status) -> Int = {
-    return @match status {
-        ::Ready => 1
-        ::Busy => 2
-    }
+// current explicit form: carrier마다 exact pattern을 사용한다.
+let optionValue = @match maybeValue {
+    ::some(value) => value
+    ::none => fallback
 }
 ```
 
-검토 카드에서 두 결과를 한 identity로 합쳤다면 실패다. display 변경이
-wire compatibility를 깨지 않도록 domain을 분리한다.
+검토 카드에서 Option absence와 Result error를 한 failure identity로
+합쳤다면 실패다. carrier와 mismatch disposition을 분리한다.
 
 ## 연습 문제
 
 1. **그대로 따라 하기:** 위 identity/status header와 두 코드 블록을
    그대로 옮기고 각 블록의 admission 상태를 표시하라.
-2. **빈칸 채우기:** IR skeleton에서 `semantic_identity`를 `VariantId`,
-   `serialization_identity`를 `별도 ____`로 완성하고 같은 값으로
-   강제하면 안 되는 이유를 적어라.
+2. **빈칸 채우기:** IR skeleton에서 `semantic_identity`를
+   `Option::some`, `ownership_rule`을 `성공 전 ____ commit`으로 완성하라.
 3. **스스로 설계하기:** Part 12의 다른 Preview Design feature 하나를
    골라 문제/비목표, current alternative, candidate probe,
    allow/reject/boundary, ownership/effect, HIR/MIR residue, diagnostic,

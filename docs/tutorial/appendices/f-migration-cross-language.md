@@ -12,10 +12,10 @@
 | index 0이 첫 원소 | 일반 index는 1부터 시작 |
 | `.`이 모든 path/member 구분 | qualified owner path는 `::`; member 표면은 문맥별 규칙 |
 | package와 namespace가 같은 축 | Package와 Module을 분리 |
-| guard function이면 자동 narrowing | `def#guard` 호출만으로 Phi narrowing 없음 |
+| guard 함수 이름만으로 narrowing | 검증된 `GuardSummaryV1` direct truth-test와 stable actual만 narrowing |
 | operator는 사용자가 새 glyph를 정의 | fixed admitted glyph conformance만 허용 |
 | enum case는 `case` keyword 사용 | `case`는 ordinary identifier |
-| raw string은 `raw"..."` | `#raw"..."` |
+| raw string delimiter가 언어마다 다름 | Deeplus는 `#raw"..."`만 사용 |
 | async 함수는 `async def` | current named spelling은 `def#async` |
 
 ## 2. C#/Java/Kotlin 계열에서

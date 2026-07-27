@@ -880,7 +880,7 @@
       "outside an explicit boundary emit REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
       "at a static boundary PROVED admits, DISPROVED emits the contradiction, and UNKNOWN emits REFINEMENT_PROOF_REQUIRED",
       "as? returns Option<T>; as! preserves the declared defect edge; T::check returns Result<T,error E>",
-      "opaque Bool and def#guard calls create no proof fact"
+      "opaque stored Bool and unsummarized, indirect, wrapped, stale, or invalid def#guard calls create no proof fact; an exact direct call with a fresh valid GuardSummaryV1 and stable actual places contributes its normalized branch fact"
     ],
     "termination_metric": "finite descriptor size plus decreasing candidate count",
     "success_result": "admit | reject(diagnostic_id)",

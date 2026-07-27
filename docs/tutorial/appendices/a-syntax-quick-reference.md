@@ -36,7 +36,6 @@ Package는 배포·의존성·빌드 단위이고 Module은 이름 공간·가�
 | Bytes | `#bytes"..."` 계열 | String과 암시 변환 없음 |
 
 bare `i`는 ordinary identifier다. 명시적 허수 단위는 `Complex::i`다.
-prefixless `raw"..."`는 현행 표면이 아니다.
 
 ## 3. 함수와 callable
 

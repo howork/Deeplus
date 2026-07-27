@@ -26,13 +26,13 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
-PREVIOUS_REVISION = "r51f3-current-operator-function-static-coherence-r1"
+REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
+PREVIOUS_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
 OUTPUTS = (AUTHORITY_REL, POINTER_REL)
-EXCLUDED_PARTS = {".git", "__pycache__", "target", "dist"}
+EXCLUDED_PARTS = {".git", "__pycache__", "target", "dist", "candidate", "tmp"}
 DOMAIN_RE = re.compile(
     r'^  ([a-z_]+):\n'
     r'    path: (\S+)\n'
@@ -335,9 +335,9 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "product lanes")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 695,
-        "predicates": 250,
-        "predicate_fixtures": 780,
+        "features": 705,
+        "predicates": 255,
+        "predicate_fixtures": 790,
         "no_go": 150,
         "hard_keywords": 30,
         "contextual_words": 101,

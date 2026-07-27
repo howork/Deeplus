@@ -61,7 +61,7 @@ private def#pure describe(value: TextOrNumber) -> String
     effects {}
 = {
     return @match value {
-        number: Int => number ~ toString()
+        number: Int => number ~ toString
         text: String => text
     }
 }

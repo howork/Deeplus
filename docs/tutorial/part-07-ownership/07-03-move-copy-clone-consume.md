@@ -122,7 +122,7 @@ callable `#once`는 별도 축이므로 문맥에 맞게 명시한다.
 ```deeplus
 // config에는 exact Clone과 Display evidence가 있다고 가정한다.
 let renderLater = [clone config] { =>
-    config ~ display()
+    config ~ display
 }
 ```
 

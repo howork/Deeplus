@@ -513,8 +513,8 @@ private def describe(id: UserId) -> String
     throws Never
     effects {}
 = {
-    let ordinary = id ~ display()
-    let qualified = id ~ UserId::audit::auditLabel()
+    let ordinary = id ~ display
+    let qualified = id ~ UserId::audit::auditLabel
     return "${ordinary} / ${qualified}"
 }
 ```
@@ -550,7 +550,7 @@ private def describe(id: UserId) -> String
    활성화하지만 conformance evidence를 만들지는 않는다.
 
 8. **call resolution**
-   `id ~ display()`는 nominal member/Trait witness domain에서,
+   `id ~ display`는 nominal member/Trait witness domain에서,
    qualified selector는 지정 extension domain에서 해석한다.
 
 9. **lowering**
@@ -591,7 +591,7 @@ public class Logger {
 private def needsDisplay<T>(value: T) -> String
     where T conforms Display
 = {
-    return value ~ display()
+    return value ~ display
 }
 
 let text = needsDisplay(Logger!())
@@ -1334,13 +1334,13 @@ public def#async observe(counter: Counter) -> Int
     effects {task}
 = {
     task scope {
-        let Result::ok(_) = counter ~ add(value: 1)
+        let Result::ok(_) = counter :~ add value: 1
         else Result::err(error) => throw error
 
-        let Result::ok(_) = counter ~ add(value: 2)
+        let Result::ok(_) = counter :~ add value: 2
         else Result::err(error) => throw error
 
-        let Result::ok(replyTask) = counter ~ current()
+        let Result::ok(replyTask) = counter :~ current
         else Result::err(error) => throw error
 
         return await replyTask
@@ -1366,7 +1366,7 @@ public def#async observe(counter: Counter) -> Int
    맞는지 검사한다.
 
 5. **message selector**
-   `counter ~ add`와 `counter ~ current`를 actor domain에서 정적으로
+   `counter :~ add`와 `counter :~ current`를 actor domain에서 정적으로
    해석한다.
 
 6. **admission result**
@@ -1417,7 +1417,7 @@ request admission Result를 풀지 않고 바로 await하면 type이 맞지 않�
 
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
-let value = await counter ~ current()
+let value = await (counter :~ current)
 // operand는 Task<Int>가 아니라 Result<Task<Int>, error ActorMessageError>
 ```
 
@@ -1474,7 +1474,7 @@ private def refresh(
     }
 
     mutex.withLock() { inout count =>
-        count = count + 1
+        count += 1
     }
 
     log(label)
@@ -1605,7 +1605,7 @@ public def readByte(
     effects {memory}
 = {
     unsafe {
-        return pointer ~ load()
+        return pointer ~ load
     }
 }
 ```
@@ -1702,35 +1702,35 @@ target receipt 없는 foreign binding은 executable support를 주장할 수
   않는다.
 - official tooling certificate가 runtime witness나 권위 값이 되지 않는다.
 
-## 14. 사례 13 — message payload와 공통 trailing closure
+## 14. 사례 13 — 통합 call argument와 공통 trailing closure
 
-### 14.1 ordinary argument와 message payload
+### 14.1 ordinary와 message의 ordered argument
 
-다음 두 괄호는 AST 책임이 다르다.
+다음 두 줄은 모두 `CallExpr`이지만 argument 경계가 다르다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
 let ordinary = moveTo(x, y)
-let message = worker ~ WorkerProtocol::moveTo (x, y)
+let message = receiver ~ Mover::moveTo (x, y)
 ```
 
-첫 줄은 ordinary argument 두 개다. 둘째 줄은 selector 뒤의 Tuple payload
-하나다. checker가 여러 positional handler parameter에 투영할 수 있지만
-AST와 enqueue transport에는 payload가 하나뿐이다. 공백은 의미가 아니므로
-`moveTo(x, y)`와 `moveTo (x, y)`는 message 문맥에서 같은 Tuple payload다.
+첫 줄은 ordinary argument 두 개다. 둘째 줄은 selector 뒤에 Tuple 식
+하나를 둔 message이므로 positional argument 하나다. Message 전용 payload
+AST나 Tuple-to-formal projection은 없다. 두 개의 message argument를
+전달하려면 `receiver ~ Mover::moveTo x, y`처럼 쓴다.
 
-all-named message payload는 하나의 structural Record다.
+Named argument도 ordinary call과 같은 ordered argument channel을 쓴다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
-let configured = worker ~ WorkerProtocol::configure(
-    name: "Ada",
-    retries: 3,
-)
+let configured =
+    receiver ~ Mover::configure name: "Ada", retries: 3
 ```
 
-`name`, `retries`는 runtime Map key가 아니라 static Record label이다.
-positional entry와 섞거나 label을 중복하면 payload AST를 승인하지 않는다.
+`name`, `retries`는 runtime Map key나 structural Record field가 아니라
+정적인 call label이다. Positional과 named argument의 허용 순서는 ordinary
+channel matcher와 같고, label 중복·미지·누락은 overload ranking 전에
+거부한다.
 
 ### 14.2 공통 trailing-closure group
 
@@ -1742,7 +1742,7 @@ let local = transaction()
     onCommit:{ => logCommit() }
     onRollback:{ error => log(error) }
 
-let remote = worker ~ WorkerProtocol::process(job: move job)
+let remote = worker :~ WorkerProtocol::process job: move job
     success:[move successToken] #once {
         value => publish(successToken, value)
     }
@@ -1760,27 +1760,27 @@ environment의 transfer, isolation, suspension, effect, error, cleanup을
 
 ### 14.3 phase trace
 
-1. parser가 receiver, selector path, 0/1 payload, ordered closure list를
+1. parser가 receiver, selector path, ordered argument와 closure list를
    보존한다.
 2. AST structural validation이 둘 이상의 closure에 label 누락·중복이
    없는지 검사한다.
 3. resolution이 `WorkerProtocol::process`를 exact actor-protocol identity로
    고정한다. ordinary method fallback은 없다.
-4. call matching이 Record payload label과 trailing label을 각 formal에
+4. call matching이 ordered argument label과 trailing label을 각 formal에
    한 번씩 결합한다.
-5. HIR이 selector identity, payload projection, closure environment
+5. HIR이 `CallMode`, selector identity, ordered argument, closure environment
    responsibility를 보존한다.
-6. MIR prepare가 receiver → payload child → closure capture 순으로 한 번씩
+6. MIR prepare가 receiver → argument expression → closure capture 순으로 한 번씩
    평가한다.
-7. actor enqueue commit이 성공할 때만 payload와 closure owner를 이전한다.
+7. actor enqueue commit이 성공할 때만 moved argument와 closure owner를 이전한다.
 8. xVM/LLVM은 같은 event order와 failure/cleanup 결과를 재현해야 한다.
 
 거부 예:
 
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
-worker ~ process(job, priority: 3)
-// STATIC_CALL_SHAPE_NOT_ADMITTED: positional/named payload 혼합
+worker ~ process job: job, job: other
+// STATIC_CALL_SHAPE_NOT_ADMITTED: named argument label 중복
 
 worker ~ process job
     { value => publish(value) }

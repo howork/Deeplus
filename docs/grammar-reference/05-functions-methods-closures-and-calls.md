@@ -282,39 +282,56 @@ transaction()
 만들지 않는다. label은 문자열이 아니라 선택된 함수의 visible
 function-typed parameter identity다.
 
-### 메시지 payload와 호출의 구분
+### 통합 호출 AST와 `~`/`:~`
 
-`~` 메시지 호출은 ordinary `ArgumentList`를 재사용하지 않는다. 메시지는
-selector 뒤에 정확히 0개 또는 1개의 payload AST node를 갖는다.
+ordinary, message, actor-transport 호출은 하나의 `CallExpr`와
+`CallMode = Ordinary | Message | ActorMessage`로 정규화된다. 세 mode는
+같은 ordered `CallArgument[0..N]` family와 trailing-closure 판정을
+사용한다. message 전용 payload AST나 Tuple/Record를 parameter 목록으로
+투영하는 규칙은 없다.
 
 ```ebnf
-MessageSuffix ::= "~" MessageSelector MessagePayload?
-                  TrailingClosureGroup?
+TildeCallLed ::= TildeCallToken MessageSelector
+                 TildeArgumentSequence? TrailingClosureGroup?
+TildeCallToken ::= "~" | ":~"
 MessageSelector ::= Identifier | QualifiedMessageSelector
 QualifiedMessageSelector ::= TypeRef "::" Identifier
                              ("::" Identifier)?
-MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope
+TildeArgumentSequence ::= TildeArgument ("," TildeArgument)*
+TildeArgument ::= ContextArgument | WitnessArgument | NamedArgument
+                | PositionalUnfoldArgument | NamedUnfoldArgument | Expr
 ```
 
-괄호 안의 positional expression은 하나의 Tuple payload로, all-named
-entry는 하나의 structural Record payload로 정규화된다.
+`~`는 Stable message mode이며 왼쪽 결합한다. `:~`는 Stable
+actor-transport mode이며 terminal·비결합이다. 두 표면 모두 rank 15라서
+rank 10 assignment보다 강하다. 바깥 호출의 comma 뒤에 nested tilde
+call을 놓으려면 그 tilde call을 괄호로 감싸 comma owner를 명확히 한다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/unified-call-actor-transport.json -->
 ```deeplus
-receiver ~ ping
-receiver ~ store value
-receiver ~ moveTo (x, y)
-receiver ~ configure(name: "Ada", retries: 3)
+receiver ~ ping                         // 인수 0개
+receiver ~ send ()                     // Unit 인수 1개
+receiver ~ moveTo x, y                 // positional 인수 2개
+receiver ~ moveTo (x, y)               // Tuple 인수 1개
+receiver ~ configure base, retries: 3  // positional 1 + named 1
+receiver ~ configure ${ base: base retries: 3 } // Record 인수 1개
 receiver ~ SomeTrait::transform value
 receiver ~ Value::text::render value
+worker :~ submit move job
+directory :~ find id: id
 ```
 
-따라서 `moveTo(x, y)`는 ordinary call의 두 argument지만,
-`receiver ~ moveTo (x, y)`는 Tuple payload 하나다. 그 Tuple은 선택된
-declaration의 positional value parameter에 순서대로 투영될 수 있다.
-named payload는 Record label을 named value parameter에 투영한다. mixed
-positional/named payload는 거부한다. 기존 `receiver ~ ping()`은 no-payload
-호환 표기이며 formatter는 괄호를 생략한 `receiver ~ ping`을 만든다.
+따라서 `receiver ~ moveTo x, y`와 `receiver ~ moveTo (x, y)`는 서로
+다른 call shape다. 앞은 인수 두 개이고 뒤는 Tuple 값 하나다.
+`receiver ~ ping()`을 zero-argument 호환 표기로 보존하지 않는다.
+canonical zero-argument 표면은 `receiver ~ ping`이다.
+
+prefix `await`은 tilde call보다 강하다. 따라서
+`await receiver ~ fetch key`는 `(await receiver) ~ fetch key`다. call
+전체의 결과를 기다리려면 반드시 `await (receiver ~ fetch key)`처럼
+괄호로 owner를 고정한다. actor `:~` 자체는 suspend하거나 retry하지
+않는다. request는 먼저 `Result<Task<T>, error ActorMessageError>`에서
+task를 추출한 뒤 그 task에 `await`을 적용한다.
 
 ## 허용과 정적 의미
 
@@ -335,8 +352,8 @@ positional/named payload는 거부한다. 기존 `receiver ~ ping()`은 no-paylo
 - implicit `@` parameter는 overload가 정확히 1-parameter callable을
   독립적으로 선택한 경우에만 허용된다.
 - `#guard`는 terminating, nonsuspending, nonconsuming pure Bool
-  callable이지만 호출했다는 사실만으로 flow narrowing proof가 생기지는
-  않는다.
+  callable이다. 검증된 `GuardSummaryV1`과 stable actual을 가진 direct
+  truth-test는 branch-local flow narrowing fact를 만든다.
 
 호출 판정은 다음 순서를 고정한다.
 
@@ -356,12 +373,12 @@ positional/named payload는 거부한다. 기존 `receiver ~ ping()`은 no-paylo
 7. ownership, effects, ErrorSet, cancellation, isolation, return obligation을
    확인한 뒤에만 call을 commit한다.
 
-message call은 위 단계 앞에서 payload를 `none/scalar/tuple/record` 중
-하나로 정규화한다. 이 payload projection은 ordinary value parameter만
-채운다. `context`와 `using` evidence를 payload field에서 합성하지 않는다.
-qualified selector는 CST/AST에 전체 경로를 보존한 뒤 nominal, Trait,
-extension, actor 또는 actor-protocol domain의 declaration identity로
-해석한다. actor domain에서는 ordinary method fallback이 없다.
+message/actor-message call도 같은 argument channel 판정을 그대로
+적용한다. `context`와 `using` evidence는 각각 명시적 channel이며
+ordinary Record field나 positional 값에서 합성하지 않는다. qualified
+selector는 CST/AST에 전체 경로를 보존한 뒤 nominal, Trait, extension,
+actor 또는 actor-protocol domain의 declaration identity로 해석한다.
+actor `:~` domain에서는 ordinary method fallback이 없다.
 
 lambda의 contextual shorthand `@`는 이 모든 판정이 먼저 끝나 정확히
 하나의 ordinary one-value parameter가 남을 때만 생긴다. context,
@@ -491,7 +508,7 @@ def#async fetch(url: String) -> Bytes
     throws NetworkError
     effects {io}
 = {
-    return await client ~ get(url)
+    return await (client ~ get url)
 }
 ```
 
@@ -517,7 +534,9 @@ def#guard validPort(port: Int) -> Bool = {
 | bare ordinary call | 거부; bounded trailing-closure 예외만 있다 |
 | 둘 이상의 trailing closure 중 label 누락 | 거부; 모든 closure에 label을 쓴다 |
 | trailing closure label 중복 | 거부; 각 label은 정확히 한 번만 쓴다 |
-| message의 mixed positional/named payload | 거부; Tuple 또는 all-named Record 중 하나를 쓴다 |
+| `receiver ~ ping()`을 zero-argument message로 사용 | 거부; `receiver ~ ping`을 쓴다 |
+| message/actor call을 payload aggregate로 해석 | 거부; ordinary argument channel을 그대로 사용한다 |
+| actor operation에 `~` 사용 | 거부; exact actor operation은 `:~`를 사용한다 |
 | named argument의 `name = value` | 거부; `name: value`를 사용한다 |
 | parameter/type의 `**` named rest | recovery-only; `***`를 사용한다 |
 | call-side `***record` | 거부; unfold는 `**record`다 |

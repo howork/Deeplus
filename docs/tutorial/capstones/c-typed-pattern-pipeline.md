@@ -36,9 +36,10 @@ refinement는 각각의 기반 타입에 추가 predicate를 붙인다. Enum은
 ## 3. guard와 narrowing의 역할
 
 `def#guard`의 순수·전체 Bool 계약은 재사용 가능한 판정을 만든다.
-그러나 호출만으로 자동 narrowing fact가 생기지는 않는다. 직접
-분기에서 확인할 수 있는 type test와 checked refinement conversion을
-사용한다.
+eligible body에서 검증한 `GuardSummaryV1`은 direct truth-test와 stable
+actual에 branch-local narrowing fact를 만든다. exact refined value를
+경계 밖에 보존하거나 상세 실패가 필요하면 checked refinement
+conversion을 사용한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -105,10 +106,11 @@ public def unsafeId(raw: Int) -> PositiveId = {
 }
 ```
 
-두 문제를 구분한다. 먼저 `isPositive`가 `def#guard`여도 호출 결과를
-automatic narrowing summary로 쓰지 않는다. 다음으로 false branch도
-같은 raw 값을 반환한다. 올바른 API는 failure를 `Option`/`Result`에
-드러내거나 refinement proof를 만드는 checked conversion을 사용한다.
+두 branch를 구분한다. `isPositive(raw)` direct truth-test의 true edge에는
+`raw > 0` fact가 있어 첫 반환을 증명할 수 있다. 그러나 false branch는
+그 보완 fact만 가지므로 같은 raw 값을 `PositiveId`로 반환할 수 없다.
+올바른 API는 failure를 `Option`/`Result`에 드러내거나 checked conversion을
+사용한다.
 
 ## 6. stable place와 mutation
 
@@ -209,7 +211,7 @@ parse가 성공한 뒤에도 refinement와 domain construction은 별도 단계�
 ## 9. 완료 체크리스트
 
 - [ ] Union, refinement, Enum의 identity 역할을 구분했다.
-- [ ] `def#guard`를 자동 narrowing으로 오해하지 않았다.
+- [ ] `def#guard` narrowing에 summary/direct-test/stable-place 조건을 확인했다.
 - [ ] 실패를 `Option` 또는 `Result`로 보존했다.
 - [ ] pattern binding은 성공 edge에서만 commit된다.
 - [ ] exhaustive match를 유지했다.

@@ -109,7 +109,8 @@ value `@try`는 모든 정상 경로의 값 type을 join하고 `finally` 자체�
 DeferStmt ::= "defer" DeferredCleanupInvocation StatementBoundary
 DeferredCleanupInvocation ::= DeferredDirectCall | DeferredMessageCall
 DeferredDirectCall  ::= DeferredReceiver ArgumentList
-DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessagePayload?
+DeferredMessageCall ::= DeferredReceiver "~" MessageSelector
+                        TildeArgumentSequence?
 
 CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody
 ```
@@ -117,8 +118,9 @@ CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody
 `defer`는 direct/member/type-side/message cleanup invocation 하나만
 등록한다. block, trailing closure, inline callable, `await`, `spawn`,
 guard를 cleanup invocation으로 암시 변환하지 않는다. message cleanup도
-일반 message와 같은 0/1 payload 정규화를 사용하지만, cleanup 등록에는
-`TrailingClosureGroup`을 허용하지 않는다.
+일반 message와 같은 ordered argument channel을 사용하지만, cleanup
+등록에는 `TrailingClosureGroup`을 허용하지 않는다. actor `:~`는
+admission `Result`를 버릴 수 있으므로 `defer`에 등록할 수 없다.
 
 ## 허용과 정적 의미
 
@@ -227,7 +229,7 @@ match {
 
 ```deeplus
 let handle = open(path)
-defer handle ~ close()
+defer handle ~ close
 process(handle)
 ```
 

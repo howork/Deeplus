@@ -478,19 +478,28 @@ ExtensionPackBody ::= "{" UseExportDecl* "}" ;
 
 (* ---------- Enums ---------- *)
 
-EnumDecl ::= TopLevelVisibility? "enum" Identifier TypeParameterList? EnumBody ;
+EnumDecl ::= TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? EnumBody ;
+EnumOrderRole ::= "#" ("increasing" | "decreasing") ;
 EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}" ;
 EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","? ;
 EnumLayoutBody ::= EnumCaseDecl* EnumMemberDecl* ;
 EnumCaseDecl ::= EnumCaseCore StatementBoundary? ;
-EnumCaseCore ::= Identifier EnumCasePayload? ;
+EnumCaseCore ::= Identifier EnumCasePayload? EnumCaseDisplayMapping? ;
 EnumCasePayload ::= "(" EnumCaseFieldList? ")" ;
 EnumCaseFieldList ::= EnumCaseField ("," EnumCaseField)* ","? ;
 EnumCaseField ::= Identifier TypeAnnotation | TypeRef ;
 EnumMemberDecl ::= MemberFunctionDecl
                  | TypeSideFieldDecl
                  | TypeSideMemberFunctionDecl
-                 | AccessorPropertyDecl ;
+                 | AccessorPropertyDecl
+                 | EnumVariantSubsetAliasDecl ;
+EnumCaseDisplayMapping ::= "~>" RestrictedEnumDisplayTemplate ;
+RestrictedEnumDisplayTemplate ::= PLAIN_STRING_LITERAL
+                                | MULTILINE_STRING_LITERAL
+                                | InterpolatedString ;
+EnumVariantSubsetAliasDecl ::= "+" "type" Identifier
+                               "=" EnumVariantSubsetRhs StatementBoundary? ;
+EnumVariantSubsetRhs ::= Identifier ("|" Identifier)* ;
 
 (* ---------- Schema, aliases, bindings and effects ---------- *)
 
@@ -784,7 +793,7 @@ DeferStmt ::= "defer" DeferredCleanupInvocation StatementBoundary ;
    inline callable, await, spawn, guard or block is admitted. *)
 DeferredCleanupInvocation ::= DeferredDirectCall | DeferredMessageCall ;
 DeferredDirectCall ::= DeferredReceiver ArgumentList ;
-DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessagePayload? ;
+DeferredMessageCall ::= DeferredReceiver "~" MessageSelector TildeArgumentSequence? ;
 DeferredReceiver ::= DeferredPrimary DeferTargetSuffix* ;
 DeferredPrimary ::= Identifier | QualifiedStaticExpr ;
 DeferTargetSuffix ::= IndexSuffix | MemberSuffix ;
@@ -814,10 +823,10 @@ SliceIndexExpr ::= PrattSliceIndexExpr ;
 ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
                            | "move" | "borrow" | "&" | "await" ;
 ExpressionPostfixParselet ::= CallSuffix
+                            | TildeCallLed
                             | TupleOrdinalSuffix
                             | IndexSuffix
                             | MemberSuffix
-                            | MessageSuffix
                             | NumericArrayTransposeSuffix
                             | ConstructorCallSuffix
                             | NamedConstructorCallSuffix
@@ -904,22 +913,24 @@ AxisWildcard ::= "*" ;
 
 TupleOrdinalSuffix ::= "." StaticIntLiteral ;
 MemberSuffix ::= "." Identifier | "." "\\" NAME_TOKEN ;
-(* A message has zero or one payload node, never an ordinary ArgumentList.
-   Parenthesized positional content normalizes to one Tuple payload; all-named
-   content normalizes to one structural Record payload. Empty parentheses are
-   accepted as a compatibility spelling for no payload and are canonically
-   omitted by the formatter. *)
-MessageSuffix ::= "~" MessageSelector MessagePayload? TrailingClosureGroup? ;
+(* `~` and `:~` are structured Pratt led parselets at rank 15, below ternary
+   and above assignment. They share ordinary CallArgument variants and never
+   lower through fixed-glyph conformance. `~` is left associative; `:~` is
+   terminal and nonassociative. A nested tilde call followed by an outer comma
+   must be parenthesized so that comma ownership remains deterministic. *)
+TildeCallLed ::= TildeCallToken MessageSelector
+                 TildeArgumentSequence? TrailingClosureGroup? ;
+TildeCallToken ::= "~" | ":~" ;
 MessageSelector ::= Identifier | QualifiedMessageSelector ;
 QualifiedMessageSelector ::= TypeRef "::" Identifier ("::" Identifier)? ;
 QualifiedExtensionSelector ::= TypeRef "::" Identifier "::" Identifier ;
-MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope ;
-MessagePayloadEnvelope ::= "(" ")"
-                         | "(" Expr ")"
-                         | "(" Expr "," Expr ("," Expr)* ","? ")"
-                         | "(" MessageNamedPayloadEntry
-                               ("," MessageNamedPayloadEntry)* ","? ")" ;
-MessageNamedPayloadEntry ::= Identifier ":" Expr ;
+TildeArgumentSequence ::= TildeArgument ("," TildeArgument)* ;
+TildeArgument ::= ContextArgument
+                | WitnessArgument
+                | NamedArgument
+                | PositionalUnfoldArgument
+                | NamedUnfoldArgument
+                | Expr ;
 
 NumericArrayTransposeSuffix ::= "^" ;
 ConstructorCallSuffix ::= "!" ArgumentList ;

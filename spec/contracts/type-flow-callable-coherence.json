@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -143,7 +143,18 @@
         "guard_effects": [],
         "guard_errors": [],
         "guard_suspension": false,
-        "guard_control_transfer": false
+        "guard_control_transfer": false,
+        "def_guard_refinement": {
+          "summary": "mandatory fresh GuardSummaryV1",
+          "formula_domain": "finite normalized R0 Boolean reflection calculus",
+          "direct_call_required": true,
+          "stable_actual_places_required": true,
+          "true_edge": "substitute actual places into P and add P to Phi",
+          "false_edge": "substitute actual places into not(P) and add the exact complement to Phi",
+          "opaque_or_missing_summary_fallback": false,
+          "wrapper_or_stored_bool_fact": false,
+          "guarded_arm_exhaustiveness_effect": false
+        }
       }
     },
     {
@@ -206,9 +217,18 @@
     {
       "rule_id": "TFC-R011",
       "domain": "calls",
-      "title": "ordinary and message calls share one labeled trailing-closure group contract",
+      "title": "all call modes normalize to one ordered CallExpr contract",
       "contract": {
+        "normalized_ast_node": "CallExpr",
+        "call_modes": [
+          "Ordinary",
+          "Message",
+          "ActorMessage"
+        ],
+        "mode_selection": "the grammar owner and statically preserved selector path determine CallMode before callable matching; no mode fallback is admitted",
         "ordinary_surface": "callee(argument-list)",
+        "message_surface": "receiver ~ selector argument-list?",
+        "actor_message_surface": "actor :~ selector argument-list?",
         "parenless_exception": "callee AtomicCallArgument TrailingClosureGroup",
         "atomic_argument_kinds": [
           "Literal",
@@ -216,16 +236,26 @@
           "QualifiedStaticExpr",
           "ExpectedVariantExpr"
         ],
-        "trailing_closure_owner": "TrailingClosureGroup shared by CallSuffix and MessageSuffix",
+        "ordered_argument_kinds": [
+          "Positional",
+          "Named",
+          "PositionalUnfold",
+          "NamedUnfold",
+          "Context",
+          "Witness"
+        ],
+        "message_payload_ast_node_count": 0,
+        "tuple_or_record_payload_projection_count": 0,
+        "trailing_closure_owner": "TrailingClosureGroup shared by every CallExpr mode",
         "single_trailing_closure": "one unlabeled or one labeled closure is admitted",
         "multiple_trailing_closures": "two or more closures are admitted only when every closure is labeled and labels are unique",
         "formal_parameter_requirement": "each trailing closure binds to exactly one matching closure/function-typed parameter; labels bind by visible parameter label and one unlabeled closure binds only when exactly one suffix candidate remains",
-        "source_evaluation_order": "ordinary arguments or message payload first, then trailing closures in source order, each exactly once",
+        "source_evaluation_order": "receiver or callee, ordered CallArgument entries, then trailing closures, all left-to-right exactly once",
         "bare_call_without_closure": "reject",
         "multiple_unlabeled_trailing_closures": "reject",
         "duplicate_trailing_closure_label": "reject before overload ranking",
         "default_parameter_skip": "forbidden",
-        "message_owned_closure": "MessageSuffix owns message dispatch and payload, while its trailing closure list uses the shared TrailingClosureGroup structural contract",
+        "message_owned_closure": "TildeCallLed owns Message or ActorMessage selection while the resulting CallExpr uses the same ordered CallArgument and TrailingClosureGroup structures as Ordinary mode",
         "ordinary_mut_parameter": {
           "surface": "mut name: T",
           "argument_evaluation_count": 1,
@@ -537,17 +567,31 @@
     {
       "rule_id": "TFC-R021",
       "domain": "message_calls",
-      "title": "message syntax carries zero or one normalized payload plus a shared trailing-closure group",
+      "title": "tilde message surfaces select a CallMode and reuse the ordered call argument family",
       "contract": {
-        "surface_owner": "MessageSuffix",
-        "payload_cardinality": "zero_or_one",
-        "ordinary_argument_list_owner_reused": false,
-        "bare_atomic_payload": "one scalar payload",
-        "parenthesized_single_expression": "one grouped scalar payload",
-        "parenthesized_positional_sequence": "one Tuple payload in source order",
-        "parenthesized_all_named_sequence": "one structural Record payload with static unique labels",
-        "mixed_positional_and_named_parenthesized_payload": "reject",
-        "empty_parentheses": "compatibility spelling normalized to no payload; canonical formatter output omits it",
+        "surface_owner": "TildeCallLed",
+        "ordinary_message_token": "~",
+        "actor_message_token": ":~",
+        "pratt_rank": 15,
+        "ordinary_message_associativity": "left",
+        "actor_message_associativity": "nonassociative_terminal",
+        "normalized_ast_node": "CallExpr",
+        "mode_by_token": {
+          "~": "Message",
+          ":~": "ActorMessage"
+        },
+        "argument_cardinality": "zero_to_many",
+        "ordinary_argument_list_owner_reused": true,
+        "argument_kinds": [
+          "Positional",
+          "Named",
+          "PositionalUnfold",
+          "NamedUnfold",
+          "Context",
+          "Witness"
+        ],
+        "message_payload_node_count": 0,
+        "tuple_or_record_payload_projection_count": 0,
         "selector_surface": [
           "selector",
           "TraitOrProtocol::selector",
@@ -555,18 +599,34 @@
         ],
         "selector_path_preservation": "lossless CST and normalized AST preserve the complete qualified selector before resolution",
         "selector_resolution": "the selected nominal, trait, extension, actor, or actor-protocol declaration identity is fixed before call matching; actor messages never fall back to ordinary methods",
-        "payload_to_formal_projection": {
-          "none": "zero ordinary value parameters",
-          "scalar": "one ordinary value parameter",
-          "tuple": "ordered positional value parameters",
-          "record": "static visible labels to named value parameters"
-        },
-        "context_or_witness_payload_synthesis": false,
+        "argument_to_formal_projection": "the ordinary static channel matcher consumes the preserved ordered CallArgument list without synthesizing a payload aggregate",
+        "context_or_witness_synthesis": false,
         "trailing_closure_contract": "TFC-R011",
+        "actor_message_result": "one-way Result<Unit, error ActorMessageError>; request Result<Task<T>, error ActorMessageError>",
+        "actor_request_await": "extract Task<T> from Result before an explicit await",
+        "actor_ordinary_fallback": false,
+        "implicit_actor_suspension_or_retry": false,
         "product_support": "NOT_RUN"
       }
     }
   ],
+  "option_optional_binding_preview_design": {
+    "contract": "spec/contracts/option-optional-binding-preview-design.json",
+    "feature_id": "option_let_question_binding_preview_design",
+    "status": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "surface_owners": [
+      "if let? OptionPayloadPattern = Expr",
+      "while let? OptionPayloadPattern = Expr",
+      "guarded local let? OptionPayloadPattern = Expr"
+    ],
+    "payload_pattern_production": "OptionPayloadPattern ::= Pattern",
+    "normalization": "exactly one Option layer is tested and an admitted some payload is matched transactionally by the payload Pattern",
+    "attached_token_required": true,
+    "implicit_flattening_or_coercion": false,
+    "new_mir_or_runtime_node_count": 0,
+    "source_activation_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "parameter_mode_matrix": [
     {
       "mode": "ordinary",
@@ -661,8 +721,13 @@
     "ternary_selected_arm_evaluation_count": 1,
     "ternary_unselected_arm_evaluation_count": 0,
     "ternary_automatic_anonymous_union_count": 0,
-    "message_payload_max_count": 1,
-    "message_argument_list_reuse_count": 0,
+    "normalized_call_node_count": 1,
+    "call_mode_count": 3,
+    "call_argument_kind_count": 6,
+    "message_payload_max_count": 0,
+    "message_argument_list_reuse_count": 1,
+    "actor_colon_tilde_surface_count": 1,
+    "implicit_actor_suspension_or_retry_count": 0,
     "multiple_trailing_closures_require_all_named": true,
     "duplicate_trailing_closure_labels_admitted": false,
     "product_execution_receipt_count": 0

@@ -25,14 +25,13 @@ syntax 오류는 token이 해당 grammar goal에서 production을 만들지 못�
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-let path = raw"C:\temp"       // prefixless raw spelling
 let values = [10, 20, 30]
 let first = values[0]         // 일반 sequence의 첫 index라고 가정
 ```
 
-첫째는 `#raw"..."`를 요구하는 lexical/syntax family다. 둘째는 대개
 index expression 자체는 parse되지만 1-based bounds semantics에서
-실패한다. 두 오류를 같은 “문법 오류”라고 부르면 수정 지점이 흐려진다.
+실패한다. parse 성공과 semantic admission을 같은 것으로 보면 수정
+지점이 흐려진다.
 
 ## 3. 타입·refinement·pattern 진단
 
@@ -69,7 +68,6 @@ borrow가 escape·suspension·actor crossing을 넘는 오류는 “lifetime을
 Recovery surface는 과거 spelling을 인식해 정확한 수정 방향을 제시할
 수 있지만 admitted AST/HIR/MIR/API residue를 만들지 않는다.
 
-- `raw"..."` → `#raw"..."`
 - `async def` → 현재 named async spelling `def#async`
 - 제거된 임의 custom operator → admitted named function 또는 fixed
   conformance로 재설계
@@ -109,10 +107,11 @@ automatic rewrite가 금지된 migration alternative는 사용자가 선택해�
 ## 8. 교육용 rule label과 registry ID
 
 이 튜토리얼은 diagnostic catalog에 실제로 존재하는 이름만
-`diagnostic-family` 또는 exact ID라고 부른다. 현재 일반적인
-block-scope name-not-found와 mixed positional/named message payload에는
-각 상황만을 전담하는 stable exact catalog ID가 없다. 해당 실패를
-설명하는 장은 `expected-rule` 또는 `teaching-label`이라고 표기한다.
+`diagnostic-family` 또는 exact ID라고 부른다. 일반적인 block-scope
+name-not-found처럼 한 상황만을 전담하는 stable exact catalog ID가 없는
+실패를 설명하는 장은 `expected-rule` 또는 `teaching-label`이라고 표기한다.
+Message와 actor-message는 ordinary call과 같은 ordered argument
+진단 family를 사용하며 별도의 “payload-row” 진단을 발명하지 않는다.
 이는 새 diagnostic, 새 P1, 구현 지원을 발명하는 표식이 아니다.
 
 향후 exact ID를 정본화하려면 resolver/checker owner, primary span,

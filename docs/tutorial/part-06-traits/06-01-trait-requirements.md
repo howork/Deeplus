@@ -97,7 +97,7 @@ public trait Display {
 private def describe<T>(borrow value: T) -> String
     where T conforms Display
 = {
-    return value ~ display()
+    return value ~ display
 }
 ```
 
@@ -119,7 +119,7 @@ public trait Source {
 private def first<S>(borrow source: S) -> <S as Source>::Item?
     where S conforms Source
 = {
-    return source ~ next()
+    return source ~ next
 }
 ```
 

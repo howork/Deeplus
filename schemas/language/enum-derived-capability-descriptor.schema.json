@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/enum-derived-capability-descriptor.schema.json",
+  "title": "Deeplus stable Enum derived-capability admission descriptor",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/order"
+    },
+    {
+      "$ref": "#/$defs/display"
+    },
+    {
+      "$ref": "#/$defs/subset"
+    }
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": [
+        "schema",
+        "facility",
+        "enum_id"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.enum-derived-capability-descriptor/r1"
+        },
+        "facility": {
+          "enum": [
+            "ORDER",
+            "DISPLAY",
+            "SUBSET"
+          ]
+        },
+        "enum_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "order": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/base"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema",
+            "facility",
+            "enum_id",
+            "order_roles",
+            "nonempty",
+            "payload_free",
+            "nongeneric",
+            "explicit_same_ground_ord"
+          ],
+          "properties": {
+            "schema": {
+              "const": "deeplus.enum-derived-capability-descriptor/r1"
+            },
+            "facility": {
+              "const": "ORDER"
+            },
+            "enum_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "order_roles": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "increasing",
+                  "decreasing"
+                ]
+              }
+            },
+            "nonempty": {
+              "type": "boolean"
+            },
+            "payload_free": {
+              "type": "boolean"
+            },
+            "nongeneric": {
+              "type": "boolean"
+            },
+            "explicit_same_ground_ord": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "display": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/base"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema",
+            "facility",
+            "enum_id",
+            "inhabitable_case_count",
+            "mapped_case_count",
+            "templates_guard_safe",
+            "explicit_same_ground_display"
+          ],
+          "properties": {
+            "schema": {
+              "const": "deeplus.enum-derived-capability-descriptor/r1"
+            },
+            "facility": {
+              "const": "DISPLAY"
+            },
+            "enum_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "inhabitable_case_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "mapped_case_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "templates_guard_safe": {
+              "type": "boolean"
+            },
+            "explicit_same_ground_display": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "subset": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/base"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema",
+            "facility",
+            "enum_id",
+            "visibility_token",
+            "explicit_type_keyword",
+            "member_variant_ids",
+            "foreign_owner_variant_count",
+            "payload_bearing_variant_count"
+          ],
+          "properties": {
+            "schema": {
+              "const": "deeplus.enum-derived-capability-descriptor/r1"
+            },
+            "facility": {
+              "const": "SUBSET"
+            },
+            "enum_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "visibility_token": {
+              "const": "+"
+            },
+            "explicit_type_keyword": {
+              "type": "boolean"
+            },
+            "member_variant_ids": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "foreign_owner_variant_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "payload_bearing_variant_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -6,8 +6,8 @@
 ## 목표
 
 문자열 parsing과 port refinement를 서로 다른 Result layer로 보존하고,
-`def#guard`가 Bool을 만들지만 자동 narrowing summary는 만들지 않는다는
-경계를 코드로 확인한다.
+검증된 `def#guard` direct truth-test가 stable actual에만 branch-local
+narrowing을 제공하는 경계를 코드로 확인한다.
 
 ## 준비
 
@@ -107,12 +107,13 @@ private def#pure explainPort(
 - 두 `@match`가 각각 exhaustive한가?
 - named function의 결과에 `return`을 사용했는가?
 
-## 실패 실험 — guard의 한계
+## 성공 실험 — guard summary와 stable actual
 
-`def#guard`는 total pure Bool predicate로 쓸 수 있지만 호출만으로
-refinement proof를 만들지는 않는다.
+이 guard body는 finite R0이고 `GuardSummaryV1`로 검증할 수 있다.
+direct truth-test의 true edge는 `raw >= 0 and raw <= 65_535` fact를
+제공하므로 `Port` construction을 정적으로 증명한다.
 
-<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic-family: NARROWING_PROOF_* -->
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#guard validPort(raw: Int) -> Bool = {
     return raw >= 0 and raw <= 65_535
@@ -124,8 +125,20 @@ if validPort(raw) {
 }
 ```
 
-정상 수정은 `Port::check(raw)`을 수행하고 `Result::ok(port)` pattern에서
-이미 refinement identity를 가진 payload를 사용하는 것이다.
+guard 호출은 runtime에서 정확히 한 번 실행되고 `raw`의 선언 타입은
+계속 `Int`다. summary가 없는 wrapper, stored Bool 또는 mutation으로
+불안정해진 place는 이 proof를 제공하지 않는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic-family: NARROWING_PROOF_* -->
+```deeplus
+let wasValid = validPort(raw)
+if wasValid {
+    let port: Port = raw
+}
+```
+
+상세 실패 payload가 필요하면 여전히 `Port::check(raw)`을 수행하고
+`Result::ok(port)` pattern에서 exact refined payload를 사용한다.
 
 ## 흔한 오해와 미니 사례
 
@@ -133,16 +146,16 @@ if validPort(raw) {
 error를 자동으로 합쳐야 한다는 생각이다. 합쳐진 public error identity와
 conversion rule은 별도 authority가 필요하다. 이 실습은 parser failure와
 refinement failure의 owner를 보존한다. 두 번째 오해는 `def#guard`라는
-이름이 checker의 hidden narrowing summary를 뜻한다는 생각이다.
-현행 profile은 total pure Bool callable이지만 API metadata에 refinement
-summary owner가 없다.
+이름만으로 checker가 임의 predicate를 추측한다는 생각이다. narrowing은
+검증된 `GuardSummaryV1`, direct truth-test와 stable actual이 모두 있을
+때만 성립한다.
 
 미니 사례로 `validPort(raw)`가 true인 branch와
 `Port::check(raw)`의 `Result::ok(port)` branch를 나란히 그려 보라.
-앞쪽에는 raw `Int`와 Bool 사실만 있고, 뒤쪽에는 exact Port payload가
-있다. 이후 mutation으로 raw 값이 바뀔 수 있다면 이전 Bool 결과도 새
-값의 proof가 아니다. 성공 payload를 별도 이름으로 유지하면 이 차이가
-코드에 드러난다.
+앞쪽에는 raw `Int`의 선언 타입과 branch-local Port predicate fact가
+있고, 뒤쪽에는 exact Port payload가 있다. 이후 mutation으로 raw 값이
+바뀌면 이전 fact가 제거된다. 성공 payload를 별도 이름으로 유지하면
+이 차이가 코드에 드러난다.
 
 ## 4단계. 완성 체크리스트
 
@@ -150,7 +163,7 @@ summary owner가 없다.
 - [ ] 모든 Result use-site에 `error` role을 썼다.
 - [ ] 같은 오류를 Result와 `throws`에 중복하지 않았다.
 - [ ] 모든 `@match`가 total하고 arm join type이 같다.
-- [ ] `def#guard`를 자동 narrowing proof로 사용하지 않았다.
+- [ ] `def#guard` narrowing에 summary/direct-test/stable-place 조건을 확인했다.
 - [ ] 순수 함수의 `throws Never effects {}` 경계를 유지했다.
 - [ ] 제품 실행 상태를 `NOT_RUN`으로 유지했다.
 
@@ -182,7 +195,7 @@ pattern owner가 무엇을 추가로 검증하는지 이어서 기록한다.
 - parse와 refinement는 서로 다른 실패 경계일 수 있다.
 - Result nesting은 불편함이 아니라 authority 없는 오류 합성을 피하는
   정확한 중간 표현이다.
-- `def#guard`는 Bool callable이지 refinement-summary owner가 아니다.
+- eligible `def#guard`는 검증된 `GuardSummaryV1` owner가 될 수 있다.
 - 성공 payload를 pattern으로 얻어야 exact refined type을 사용할 수 있다.
 
 ## 근거와 다음 단계

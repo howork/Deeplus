@@ -29,7 +29,7 @@ ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
                            | "move" | "borrow" | "&" | "await"
 
 ExpressionPostfixParselet ::= CallSuffix | TupleOrdinalSuffix | IndexSuffix
-                            | MemberSuffix | MessageSuffix
+                            | MemberSuffix
                             | NumericArrayTransposeSuffix
                             | ConstructorCallSuffix
                             | NamedConstructorCallSuffix
@@ -46,6 +46,7 @@ Pratt registry 및 operator contract가 소유한다.
 | 순위 | 계층 | token/형식 | 결합 |
 |---:|---|---|---|
 | 10 | 대입 | `=`, `+=`, `-=`, `*=`, `/=`, `%=` | 오른쪽 |
+| 15 | tilde call | `~`, `:~` | `~`는 왼쪽, `:~`는 terminal·비결합 |
 | 20 | 조건 | `? :` | 오른쪽, 구조적 |
 | 30 | 순차 대안 | `otherwise` | 왼쪽 |
 | 40 | strict Bool OR | `or` | 왼쪽 |
@@ -64,7 +65,7 @@ Pratt registry 및 operator contract가 소유한다.
 | 160 | 거듭제곱 | `^` | lbp 160, rbp 159, 오른쪽 |
 | 170 | 그 밖의 prefix | `not`, `~~`, `move`, `borrow`, `&`, `await` | 오른쪽 |
 | 180 | cast | `as?`, `as!` | 비결합 |
-| 190 | postfix | call, ordinal, index, member, message, transpose, constructor, derivation, trailing closure | 왼쪽, 구조적 |
+| 190 | postfix | ordinary call, ordinal, index, member, transpose, constructor, derivation, trailing closure | 왼쪽, 구조적 |
 
 괄호는 precedence를 명시적으로 바꾼다. index suffix 안 range delimiter는
 slice parser가 소유하며 바깥 expression range로 소비하지 않는다.
@@ -79,8 +80,9 @@ CallSuffix         ::= ArgumentList TrailingClosureGroup?
                      | AtomicCallArgument TrailingClosureGroup
 IndexSuffix        ::= "[" SliceAxisList "]"
 MemberSuffix       ::= "." Identifier | "." "\\" NAME_TOKEN
-MessageSuffix      ::= "~" MessageSelector MessagePayload?
-                       TrailingClosureGroup?
+TildeCallLed       ::= ("~" | ":~") MessageSelector
+                       TildeArgumentSequence? TrailingClosureGroup?
+TildeArgumentSequence ::= TildeArgument ("," TildeArgument)*
 CastSuffix         ::= "as" "?" TypeRef | "as" "!" TypeRef
 TupleOrdinalSuffix ::= "." StaticIntLiteral
 ```
@@ -88,11 +90,16 @@ TupleOrdinalSuffix ::= "." StaticIntLiteral
 lexer가 `as`와 `?`/`!`를 별도 token으로 내더라도 parser는 붙어 있는
 `as?`/`as!` cast operation으로 처리한다.
 
-`CallSuffix`와 `MessageSuffix`는 ordered `TrailingClosureGroup`만 공유한다.
-message의 앞부분은 ordinary `ArgumentList`가 아니라 0/1 payload다.
-positional `(x, y)`는 Tuple payload 하나, all-named `(x: a, y: b)`는
-Record payload 하나다. closure가 둘 이상이면 모두 서로 다른 label을
-가져야 한다. 이 구조 규칙은 postfix binding power를 바꾸지 않는다.
+ordinary, message, actor-message mode는 하나의 `CallExpr`와 같은 ordered
+argument/trailing-closure family를 공유한다. message 전용 payload node나
+Tuple/Record-to-formal projection은 없다. `receiver ~ f x, y`는 인수
+두 개이고 `receiver ~ f (x, y)`는 Tuple 인수 하나다. closure가 둘
+이상이면 모두 서로 다른 label을 가져야 한다.
+
+tilde call은 prefix `await`보다 약하다. 따라서 `await receiver ~ f x`는
+`(await receiver) ~ f x`이고, call 전체를 기다리려면
+`await (receiver ~ f x)`를 쓴다. `:~`는 actor admission 자체를
+suspend시키지 않는다.
 
 ## 허용과 정적 의미
 
@@ -167,12 +174,14 @@ signedness 변경이 없다. float는 정확한 `Float32` 또는 `Float64` domai
 사용한다.
 
 unsuffixed integer literal은 기본적으로 signed 64-bit `Int`다. 기대
-타입이 이미 정확한 `IntN` 또는 `UIntN`으로 고정되었을 때만 표현 가능한
-양의 literal을 그 domain으로 문맥 적응한다. 직접 결합된
-`PrefixExpr(-, UnsuffixedIntegerLiteral)`에는 음수 최솟값을 표현하기
-위한 한정 적응이 있지만 `ISize`/`USize`, 임의 상수식, 일반 unary
-계산에는 확대되지 않는다. 즉 `-128`은 `Int8` 문맥에서 한 값으로
-검사할 수 있지만 `-(64 + 64)`를 같은 규칙으로 접어 주지 않는다.
+타입이 이미 정확한 `UInt`, `IntN` 또는 `UIntN`으로 고정되었을 때는
+표현 가능한 signless literal만 그 domain으로 문맥 적응한다. 직접 결합된
+`PrefixExpr(-, UnsuffixedIntegerLiteral)`에는 정확한 `Int`, `IntN` 또는
+`UIntN` 문맥에서 음수 최솟값과 범위 오류를 일관되게 판정하기 위한 한정
+적응이 있지만, `UInt`에는 이 음수 adapter가 없다. 이 규칙은
+`ISize`/`USize`, 임의 상수식, 일반 unary 계산으로 확대되지 않는다. 즉
+`-128`은 `Int8` 문맥에서 한 값으로 검사할 수 있지만 `-(64 + 64)`를 같은
+규칙으로 접어 주지 않는다.
 
 integer `/`는 0 방향으로 절단한다. `%`의 결과 `r`은
 `a == trunc(a / b) * b + r`을 만족하고 0이 아니면 dividend와 같은

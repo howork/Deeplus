@@ -58,7 +58,7 @@ public actor #mailbox(capacity: 8) Worker {
 
     on submit(job: Job) = {
         accept(job)
-        completed = completed + 1
+        completed += 1
     }
 
     request processedCount() -> Int = {
@@ -83,14 +83,14 @@ source order로 평가되고 admission이 성공하면 enqueue commit된다.
 public def submitOne(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
 = {
-    return worker ~ submit(move job)
+    return worker :~ submit move job
 }
 
 public def#async countProcessed(worker: Worker) -> Int
     throws ActorMessageError
 = {
     task scope {
-        let Result::ok(replyTask) = worker ~ processedCount
+        let Result::ok(replyTask) = worker :~ processedCount
         else Result::err(error) => throw error
         return await replyTask
     }
@@ -132,7 +132,7 @@ Deeplus 현행 actor 모델에서 handler의 `await`가 곧바로 state authorit
 actor #mailbox(capacity: 0) Broken { }
 
 def sendBorrow(worker: Worker, borrow job: Job) = {
-    worker ~ submit job
+    worker :~ submit job
 }
 ```
 

@@ -71,9 +71,9 @@ signature와 indexing coherence contract에서 확인한다. 마지막으로
 fixture catalog는 accept/reject row를 제공하지만 실제 backend 실행
 PASS를 대신하지 않는다.
 
-“왜 `def#guard`를 호출했는데 type이 좁아지지 않는가?”라는 질문은
-Part 04와 09의 flow 설명을 읽고, 문법 참조 04장의 usable-place/Phi
-규칙과 type-refinement-narrowing contract를 확인한다. 이 순서가
+“왜 이 `def#guard` 호출은 type을 좁히고 저 호출은 그렇지 않은가?”라는
+질문은 Part 04와 09의 flow 설명을 읽고, 문법 참조 04장의 summary,
+direct truth-test, usable-place/Phi 규칙을 확인한다. 이 순서가
 튜토리얼 → 참조서 → exact authority → fixture의 일반 탐색 경로다.
 
 ## 6. 색인 유지 원칙

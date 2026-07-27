@@ -620,5 +620,247 @@
       "1_missing_required_visibility": "TYPE_DECL_VISIBILITY_REQUIRED"
     },
     "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "GuardRefinementSummaryAdmitted",
+    "source_name": "GuardRefinementSummaryAdmitted",
+    "summary": "Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is in the finite R0 reflection calculus.",
+    "input_descriptor": "GuardRefinementPredicateDescriptorR1",
+    "input_descriptor_schema": "schemas/language/guard-refinement-predicate-descriptor.schema.json",
+    "preconditions": [
+      "the selected declaration is exactly one def#guard CallableImplementationId",
+      "summary metadata is available before call-site flow transfer"
+    ],
+    "normalization": "validate and canonicalize the GuardSummaryV1 parameter identities and R0 Boolean formula without evaluating the guard or creating a runtime proof object",
+    "decision_procedure": [
+      "reject a missing summary with GUARD_REFINEMENT_SUMMARY_REQUIRED",
+      "reject a formula outside the finite R0 calculus with GUARD_REFINEMENT_SUMMARY_NOT_R0",
+      "bind the callable implementation and normalized parameter identities exactly or reject with GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+      "verify body, summary, API, and language-profile digests or reject with GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
+      "return one immutable summary admission record"
+    ],
+    "requires": [
+      "opaque summary fallback is forbidden",
+      "the body is not evaluated by this predicate",
+      "the declared callable type and return type remain unchanged"
+    ],
+    "termination_metric": "one finite summary record and one finite normalized R0 formula",
+    "success_result": "one validated GuardSummaryV1 admission record",
+    "active_primary_diagnostic": "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+    "secondary_diagnostics": [
+      "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+      "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+      "GUARD_REFINEMENT_SUMMARY_METADATA_STALE"
+    ],
+    "positive_fixture_ids": [
+      "PF-GuardRefinementSummaryAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-GuardRefinementSummaryAdmitted-NEG"
+    ],
+    "evaluation_order": "summary presence -> R0 normalization -> callable identity -> digest freshness -> admission",
+    "dependency_predicates": [
+      "R0GuardSafe"
+    ],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "algorithm_owner": "integrated_checker"
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "GuardCallRefinementApplied",
+    "source_name": "GuardCallRefinementApplied",
+    "summary": "Apply a validated GuardSummaryV1 only at an exact direct def#guard call over stable actual places and transfer P or not(P) to Phi.",
+    "input_descriptor": "GuardRefinementPredicateDescriptorR1",
+    "input_descriptor_schema": "schemas/language/guard-refinement-predicate-descriptor.schema.json",
+    "preconditions": [
+      "GuardRefinementSummaryAdmitted has returned one fresh summary admission record",
+      "the condition expression retains the exact call identity and source edge"
+    ],
+    "normalization": "substitute stable actual place identities into the already normalized summary formula without wrapper traversal, stored-Bool recovery, or a second predicate evaluation",
+    "decision_procedure": [
+      "require exact direct callable selection or reject with GUARD_REFINEMENT_CALL_NOT_DIRECT",
+      "require every substituted actual to be a stable place or reject with GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
+      "revalidate the exact summary identity and metadata binding",
+      "substitute P on the true edge or the exact finite complement not(P) on the false edge",
+      "return the edge-local Phi facts without altering the declared semantic type or exhaustiveness residual"
+    ],
+    "requires": [
+      "wrapper, indirect callable, dynamic dispatch, and stored Bool routes add no fact",
+      "ordinary Bool calls add no fact",
+      "kill events remove the fact before an invalid use"
+    ],
+    "termination_metric": "one finite direct-call descriptor and one finite summary substitution",
+    "success_result": "one edge-local finite Phi fact set",
+    "active_primary_diagnostic": "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+    "secondary_diagnostics": [
+      "GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
+      "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+      "GUARD_REFINEMENT_SUMMARY_METADATA_STALE"
+    ],
+    "positive_fixture_ids": [
+      "PF-GuardCallRefinementApplied-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-GuardCallRefinementApplied-NEG"
+    ],
+    "evaluation_order": "summary admission -> exact direct selection -> stable actuals -> edge selection -> Phi substitution",
+    "dependency_predicates": [
+      "GuardRefinementSummaryAdmitted"
+    ],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "algorithm_owner": "integrated_checker"
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "EnumDeclarationOrderWitnessAdmitted",
+    "source_name": "EnumDeclarationOrderWitnessAdmitted",
+    "summary": "Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Ord witness.",
+    "input_descriptor": "EnumDerivedCapabilityDescriptorR1",
+    "input_descriptor_schema": "schemas/language/enum-derived-capability-descriptor.schema.json",
+    "preconditions": [
+      "the descriptor facility is ORDER",
+      "the owner is one nominal Enum identity"
+    ],
+    "normalization": "normalize the singular direction and declaration-order VariantId vector independently of tags, raw values, serialization, layout, ABI, and match priority",
+    "decision_procedure": [
+      "require exactly one increasing or decreasing role or reject with ENUM_ORDER_ROLE_CONFLICT",
+      "require one nonempty payload-free nongeneric nominal Enum",
+      "reject an explicit same-ground Ord conformance conflict",
+      "derive one direction-aware ordered VariantId vector",
+      "admit at most one whole-Enum Ord witness and zero case witnesses"
+    ],
+    "requires": [
+      "source order is not witness priority",
+      "operator glyph activation is not implied",
+      "payload and generic profiles remain outside the minimum"
+    ],
+    "termination_metric": "one finite Enum case vector",
+    "success_result": "one Enum order witness admission record",
+    "active_primary_diagnostic": "ENUM_ORDER_ROLE_CONFLICT",
+    "secondary_diagnostics": [
+      "ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER"
+    ],
+    "positive_fixture_ids": [
+      "PF-EnumDeclarationOrderWitnessAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-EnumDeclarationOrderWitnessAdmitted-NEG"
+    ],
+    "evaluation_order": "owner -> singular role -> minimum profile -> conformance conflict -> witness",
+    "dependency_predicates": [
+      "WitnessCoherent"
+    ],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "algorithm_owner": "integrated_checker"
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "EnumCaseDisplayMappingAdmitted",
+    "source_name": "EnumCaseDisplayMappingAdmitted",
+    "summary": "Admit one complete all-or-none enum-owned display mapping and synthesize at most one whole-Enum Display witness.",
+    "input_descriptor": "EnumDerivedCapabilityDescriptorR1",
+    "input_descriptor_schema": "schemas/language/enum-derived-capability-descriptor.schema.json",
+    "preconditions": [
+      "the descriptor facility is DISPLAY",
+      "the owner is one nominal Enum identity"
+    ],
+    "normalization": "bind one restricted borrowed String template to each inhabitable VariantId without treating display text as identity or serialization",
+    "decision_procedure": [
+      "count all inhabitable owner cases",
+      "require exactly one mapping for every inhabitable case or reject with ENUM_DISPLAY_MAPPING_INCOMPLETE",
+      "validate every template against the bounded guard-safe read-only calculus",
+      "reject an explicit same-ground Display conformance conflict",
+      "admit at most one whole-Enum Display witness and zero case witnesses"
+    ],
+    "requires": [
+      "duplicate rendered strings are admitted",
+      "case-name fallback and reverse parsing are forbidden",
+      "provider and locale lookup are not implicit"
+    ],
+    "termination_metric": "one finite Enum case and template vector",
+    "success_result": "one Enum display witness admission record",
+    "active_primary_diagnostic": "ENUM_DISPLAY_MAPPING_INCOMPLETE",
+    "secondary_diagnostics": [
+      "ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE"
+    ],
+    "positive_fixture_ids": [
+      "PF-EnumCaseDisplayMappingAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-EnumCaseDisplayMappingAdmitted-NEG"
+    ],
+    "evaluation_order": "owner -> case census -> mapping completeness -> template safety -> witness",
+    "dependency_predicates": [
+      "WitnessCoherent"
+    ],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "algorithm_owner": "integrated_checker"
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "EnumVariantSubsetAliasAdmitted",
+    "source_name": "EnumVariantSubsetAliasAdmitted",
+    "summary": "Admit one explicit associated exact-variant subset alias over a finite payload-free same-owner VariantId set.",
+    "input_descriptor": "EnumDerivedCapabilityDescriptorR1",
+    "input_descriptor_schema": "schemas/language/enum-derived-capability-descriptor.schema.json",
+    "preconditions": [
+      "the descriptor facility is SUBSET",
+      "the owner is one nominal Enum identity"
+    ],
+    "normalization": "deduplicate the finite same-owner VariantId set order-insensitively and bind it to the frozen Enum universe without creating a wrapper or witness",
+    "decision_procedure": [
+      "require the exact +type associated owner form and reject omission or any other visibility",
+      "resolve every named member to an exact payload-free VariantId",
+      "reject any foreign-owner member with ENUM_VARIANT_SUBSET_OWNER_MISMATCH",
+      "normalize a set equal to the complete frozen universe back to the nominal owner Enum",
+      "return one alias definition with zero new representation and witness identities"
+    ],
+    "requires": [
+      "omitted +, every other visibility, and bare subset assignment are rejected",
+      "implicit owner-to-subset narrowing is forbidden",
+      "membership order carries no identity"
+    ],
+    "termination_metric": "one finite declared VariantId list",
+    "success_result": "one normalized exact-variant subset alias",
+    "active_primary_diagnostic": "ENUM_VARIANT_SUBSET_OWNER_MISMATCH",
+    "secondary_diagnostics": [
+      "ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN"
+    ],
+    "positive_fixture_ids": [
+      "PF-EnumVariantSubsetAliasAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-EnumVariantSubsetAliasAdmitted-NEG"
+    ],
+    "evaluation_order": "owner -> explicit type form -> exact member resolution -> owner equality -> normalization",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "algorithm_owner": "integrated_checker"
   }
 ]

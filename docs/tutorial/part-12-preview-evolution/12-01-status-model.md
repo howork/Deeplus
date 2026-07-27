@@ -96,10 +96,9 @@ let missing = null
 
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-// feature: enum_case_display_mapping_preview_design
-private enum Status {
-    Ready ~> "ready"
-    Busy ~> "busy"
+// feature: option_let_question_binding_preview_design
+if let? user = findUser(id) {
+    show(user)
 }
 ```
 

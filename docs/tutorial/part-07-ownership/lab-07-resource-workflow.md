@@ -39,14 +39,14 @@ public resource class FileSession {
         throws IOError
         effects {io}
     = {
-        return self.handle ~ readAll()
+        return self.handle ~ readAll
     }
 
     def#cleanup()
         throws CloseError
         effects {io}
     = {
-        self.handle ~ close()
+        self.handle ~ close
     }
 }
 ```
@@ -62,7 +62,7 @@ private def inspect(borrow session: FileSession) -> Int
     throws IOError
     effects {io}
 = {
-    let bytes = session ~ read()
+    let bytes = session ~ read
     return bytes.length
 }
 
@@ -70,7 +70,7 @@ private def archive(move session: FileSession) -> Unit
     throws IOError | CloseError
     effects {io}
 = {
-    let bytes = session ~ read()
+    let bytes = session ~ read
     writeArchive(bytes)
 }
 ```
@@ -101,7 +101,7 @@ callee가 owner와 cleanup을 책임지며 caller source를 다시 사용할 수
 callee failure path에서 정확히 한 번 정리한다. 이 경계가 duplicate
 close와 leak을 동시에 방지한다.
 
-audit handle의 `defer audit ~ close()`는 등록 시 exact invocation과
+audit handle의 `defer audit ~ close`는 등록 시 exact invocation과
 place를 예약한다. 이후 main body가 정상 return, IOError, Cancellation
 중 무엇으로 끝나도 cleanup은 정해진 LIFO 순서로 실행된다. body failure와
 CloseError가 함께 생기면 primary/suppressed 정책을 보존하고 하나가
@@ -167,7 +167,7 @@ private def run(path: String) -> Unit
     effects {io}
 = {
     let audit = openAudit()
-    defer audit ~ close()
+    defer audit ~ close
 
     let session = FileSession!(openHandle(path))
     let size = inspect(borrow session)
@@ -192,8 +192,8 @@ inspect(borrow session)
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL; product: NOT_RUN -->
 ```deeplus
 defer {
-    audit ~ flush()
-    audit ~ close()
+    audit ~ flush
+    audit ~ close
 }
 // 두 cleanup invocation으로 나누어 등록한다.
 ```

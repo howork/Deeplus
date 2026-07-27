@@ -106,7 +106,7 @@ private type TextOrNumber = Int | String
 let value: TextOrNumber = 13
 
 let text = @match value {
-    n: Int => n ~ toString()
+    n: Int => n ~ toString
     s: String => s
 }
 ```
@@ -150,8 +150,8 @@ parameter 구조 분해도 현행이 아니다.
 - Pattern success edge는 Enum/Union narrowing fact를 더할 수 있다.
 - `pattern as name`은 clone이 아니라 borrow alias다.
 - `move pattern`은 structural probe가 아니라 성공 commit 때 적용된다.
-- `def#guard` 호출은 Bool을 만들지만 자체로 narrowing summary를 만들지
-  않는다.
+- 검증된 `GuardSummaryV1` direct truth-test는 stable actual에
+  branch-local narrowing을 만들지만 structural coverage는 늘리지 않는다.
 
 ## 9. Deeplus다운 작성 관례
 

@@ -32,7 +32,9 @@ API identity, HIR/MIR 책임에 남기 때문이다.
 - `()`는 유일한 `Unit` 값이다.
 - `true`, `false`는 `Bool`이다.
 - suffix 없는 integer는 기본 `Int`다.
+- `UInt`는 별도 64-bit unsigned 기본 의미 domain이며 `UInt64` 별칭이 아니다.
 - suffix 없는 decimal float는 `Float64`, `f32`는 `Float32`다.
+- `Float`는 새 정밀도나 ABI를 만들지 않는 `Float64`의 닫힌 별칭이다.
 - 부호는 token의 일부가 아니라 prefix expression이다.
 - `Char`는 Unicode scalar 하나다.
 - String과 Bytes 사이에는 암시적 변환이 없다.
@@ -49,14 +51,17 @@ API identity, HIR/MIR 책임에 남기 때문이다.
 let nothing: Unit = ()
 let enabled: Bool = true
 let count: Int = 42
+let mask: UInt = 42
 let exact: Int32 = 42i32
-let ratio: Float64 = 1.5
+let ratio: Float = 1.5
 let compact: Float32 = 1.5f32
 ```
 
-`42`는 `Int`, `42i32`는 `Int32`다. 기대 타입이 이미 exact fixed-width
-integer로 정해져 있고 값이 표현 가능할 때만 signless literal의 제한된
-문맥 적응이 가능하다. 이것은 일반 implicit conversion이 아니다.
+`42`는 기본적으로 `Int`, `42i32`는 `Int32`다. `mask`의 독립적인 target
+type이 먼저 `UInt`로 고정되어 있고 값이 정확히 표현 가능하므로 signless
+literal이 그 domain에 제한적으로 적응한다. 이것은 signedness 사이의
+일반 implicit conversion이 아니다. `ratio`의 `Float`는 정규화 뒤 정확히
+`Float64`다.
 
 Unicode 값과 byte 값도 분리한다.
 

@@ -181,8 +181,8 @@ let speed = distance / time
 ```deeplus
 use std::units::si
 let d = 2500[m]
-let km = d ~ asUnit(1[km])
-let scalar = d ~ scalarIn(1[m])
+let km = d ~ asUnit 1[km]
+let scalar = d ~ scalarIn 1[m]
 ```
 ## EX-R48-011 — Type schema construction and derivation
 
@@ -1509,7 +1509,7 @@ use std::units::si
 
 public type Meter = typeof 1[m]
 private type Vec3 = typeof #[1, 2, 3]
-public def move(distance: Meter) = return distance ~ scalarIn(1[m])
+public def move(distance: Meter) = return distance ~ scalarIn 1[m]
 ```
 ## EX-R48E-002 — `typeof` still rejects runtime/effectful samples
 
@@ -1739,7 +1739,7 @@ public def withLock<T>(lock: Lock, body: #scoped (Guard) -> T) -> T
     throws Never
     effects {}
 = {
-    return lock ~ scoped(body)
+    return lock ~ scoped body
 }
 ```
 ## EX-R48E-017 — Async/await minimal core is language-design stable
@@ -1758,7 +1758,7 @@ public def#async loadUser(id: UserId) -> User
     throws NetworkError
     effects { Network }
 = {
-    return await service ~ fetchUser(id)
+    return await (service ~ fetchUser id)
 }
 ```
 ## EX-R48E-018 — Structured task scope makes cancellation owner visible
@@ -2416,7 +2416,7 @@ public def#async run(job: Job) -> Result
     throws ActorMessageError
     effects {task}
 = {
-    let Result::ok(task) = Worker!() ~ compute(job)
+    let Result::ok(task) = Worker!() :~ compute job
     else Result::err(error) => throw error
     return await task
 }
@@ -2433,7 +2433,7 @@ public def#async run(job: Job) -> Result
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let converted = price ~ asUnitUsing(provider, 1[USD])
+let converted = price ~ asUnitUsing provider, 1[USD]
 ```
 ## EX-R48E1-032 — Raw first class witness remains not current
 
@@ -2872,7 +2872,7 @@ public def#async loadUser(id: UserId) -> User
     throws NetworkError
     effects { Network }
 = {
-    return await client ~ fetchUser(id)
+    return await (client ~ fetchUser id)
 }
 ```
 ## EX-R48F-028 — Actor protocol request reply current design
@@ -3327,7 +3327,7 @@ public def first<S>(source: S) -> <S as Source>::Item?
     effects {}
     where S conforms Source
 = {
-    return source ~ next()
+    return source ~ next
 }
 ```
 ## EX-R48L-004 — Dot associated projection is rejected
@@ -3485,7 +3485,7 @@ public conformance UserId conforms StableHash {
         throws Never
         effects {}
     = {
-        return self.raw ~ hash64()
+        return self.raw ~ hash64
     }
 }
 ```
@@ -3761,7 +3761,7 @@ public def drawPoint(x: Int, y: Int, color: Color) -> Unit
     throws Never
     effects {io}
 = {
-    return renderer ~ point(x: x, y: y, color: color)
+    return renderer ~ point x: x, y: y, color: color
 }
 
 let point = ${ x: 10, y: 20 }
@@ -3784,7 +3784,7 @@ public def connect(host: String, port: Int) -> Unit
     throws Never
     effects {io}
 = {
-    return net ~ connect(host: host, port: port)
+    return net ~ connect host: host, port: port
 }
 
 let config = #map{ "host": "example.com", "port": 443 }
@@ -4510,7 +4510,7 @@ public extension User as printable {
     }
 }
 use User::printable
-let text = user ~ display()
+let text = user ~ display
 ```
 ## EX-R49B-EXT-002 — Superseded tilde declaration inside extension set
 
@@ -4547,7 +4547,7 @@ public extension User as printable {
     +def display() -> String = { return self.name }
 }
 public def render<T>(value: T) -> String where T conforms Display = {
-    return value ~ display()
+    return value ~ display
 }
 let bad = render(User!(name: "Kim"))
 // EXTENSION_AUTO_WITNESS_FORBIDDEN
@@ -4586,7 +4586,7 @@ public conformance User conforms Display {
 ```deeplus
 use User::compact
 use User::verbose
-let bad = user ~ display()
+let bad = user ~ display
 // EXTENSION_RESOLUTION_ORDER_NOT_TIEBREAKER
 ```
 ## EX-R49B-OPTION-001 — Nested optionality is explicit
@@ -5210,7 +5210,7 @@ let neg = -Float64::positiveInfinity
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let item: <Self as Iterator>::Item? = iterator ~ next()
+let item: <Self as Iterator>::Item? = iterator ~ next
 ```
 ## EX-R49C-PROJ-002 — Associated projection parentheses are redundant
 
@@ -5224,7 +5224,7 @@ let item: <Self as Iterator>::Item? = iterator ~ next()
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let item: (<Self as Iterator>::Item)? = iterator ~ next()
+let item: (<Self as Iterator>::Item)? = iterator ~ next
 // warning: REDUNDANT_ASSOCIATED_PROJECTION_PARENS_BEFORE_OPTIONAL
 ```
 ## EX-R49C-RESULT-001 — Result error argument is a grammar-visible channel
@@ -5392,7 +5392,7 @@ let message = "name:$name total=${total:>8}"
 ```deeplus
 public extension BlobStore as binary {
     +def load*.(key: Key) -> Bytes = {
-        return backend ~ read(key)
+        return backend ~ read key
     }
 }
 ```
@@ -6036,7 +6036,7 @@ let remoteName = await fetchUser().profile.name
 let localName = (await fetchUser()).name
 let total = (await fetchCount()) + 1
 ```
-## EX-R51a1-037 — message suffix maximally owns immediate arguments and closures
+## EX-R51a1-037 — structured message call owns immediate arguments and trailing closures
 
 - **source_feature_ids:** `instance_side_tilde_structured_names`, `trailing_closure_argument_msp`
 - **checker_trace_ids:** `none`
@@ -6048,7 +6048,7 @@ let total = (await fetchCount()) + 1
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let nextValue = receiver ~ next(args)
+let nextValue = receiver ~ next args
 let mapped = receiver ~ map values { value => value }
 let invoked = (receiver ~ callback)(args)
 ```
@@ -6497,7 +6497,7 @@ let parsed = UserId::parse("42")
 ```deeplus
 use std::units::si
 let distance = 100[cm]
-let meters = distance ~ asUnit(1[m])
+let meters = distance ~ asUnit 1[m]
 ```
 ## EX-R51a1-065 — explicit reusable authority-free context value
 
@@ -6932,7 +6932,7 @@ let f = #async{ => await load() }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-file ~ cleanup()
+file ~ cleanup
 ```
 ## EX-R51a1-AUD-NG-025 — context anchor requires a registered evidence role
 
@@ -6977,7 +6977,7 @@ let sorted = sort(values, using conformance(T conforms Ord<T>))
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let result = value ~ dynamicExtensionCall()
+let result = value ~ dynamicExtensionCall
 ```
 ## EX-R51a1-AUD-NG-028 — explicit broadcast marker remains absent
 
@@ -7219,7 +7219,7 @@ assert(days[3] == "Wed")
 
 ```deeplus
 let handle = open(path)
-defer handle ~ close()
+defer handle ~ close
 process(handle)
 ```
 ## EX-R51a1-DEFER-NG-001 — arbitrary defer block is removed
@@ -7333,7 +7333,7 @@ def escape(user: User) -> Facet<borrow any Printable>
 
 ```deeplus
 let printable: Facet<borrow any Printable> = facet[borrow user as Printable]
-let text = printable ~ print()
+let text = printable ~ print
 ```
 ## EX-R51a1-FLAGS-NG-001 — Flags result is not Bool
 
@@ -7515,7 +7515,7 @@ let value = import std::codec::json in { decode(text) }
 def ask() -> Int
 = {
     import std::inout::input
-    return input("n:") ~ toInt()
+    return input("n:") ~ toInt
 }
 ```
 ## EX-R51a1-IMPORT-P-002 — Stable scoped import limits name visibility
@@ -7964,7 +7964,7 @@ def#async fetch(url: String) -> Bytes
     throws NetworkError
     effects {io}
 = {
-    return await client ~ get(url)
+    return await (client ~ get url)
 }
 ```
 ## EX-R51a1-NEW-018 — guard named declaration profile
@@ -8092,9 +8092,9 @@ let old = replace(buffer[index()], replacement)
 
 ```deeplus
 def snapshotThenFreeze(move values: MutableList<Int>) -> FrozenList<Int> = {
-    let snapshot: ListSnapshot<Int> = values ~ snapshot()
+    let snapshot: ListSnapshot<Int> = values ~ snapshot
     observe(snapshot)
-    return values ~ freeze()
+    return values ~ freeze
 }
 ```
 ## EX-R51a1-NEW-026 — owned downcast preserves unmatched source
@@ -8109,7 +8109,7 @@ def snapshotThenFreeze(move values: MutableList<Int>) -> FrozenList<Int> = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let outcome: OwnedDowncast<Target, Source> = value ~ downcastOwned()
+let outcome: OwnedDowncast<Target, Source> = value ~ downcastOwned
 @match outcome {
     ::matched(target) => use(target)
     ::unmatched(original) => recover(original)
@@ -8163,7 +8163,7 @@ while ready {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let values = items ~ map(@.name)
+let values = items ~ map @.name
 ```
 ## EX-R51a1-NEW-030 — scoped pure callback in Prelude
 
@@ -8192,7 +8192,7 @@ let total = withBorrowed(values, #scoped#pure{ xs => xs ~ count })
 
 ```deeplus
 def checksum(borrow bytes: Bytes) -> UInt64 = {
-    let view: ByteView = bytes ~ view()
+    let view: ByteView = bytes ~ view
     return hashBytes(view)
 }
 ```
@@ -8561,7 +8561,7 @@ extern c("sqlite3") {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let converted = price ~ asUnitUsing(provider, 1[USD])
+let converted = price ~ asUnitUsing provider, 1[USD]
 ```
 ## EX-R51a1-NG-026 — rejected: explicit entry declaration inside a script source
 
@@ -8658,7 +8658,7 @@ extern c("libc") { unsafe def puts(text: CString) -> Int }
 ```deeplus
 module demo
 #preview(ffi_c_extern_unsafe_surface_msp)
-let converted = price ~ asUnitUsing(provider, 1[USD])
+let converted = price ~ asUnitUsing provider, 1[USD]
 ```
 ## EX-R51a1-NG-032 — rejected: top-level visibility modifier on a local function
 
@@ -9287,7 +9287,7 @@ let reflected = User
 ```deeplus
 def#async update(inout value: Int) -> Unit = {
     await checkpoint()
-    value = value + 1
+    value += 1
 }
 ```
 ## EX-R51a1-NG-073 — rejected: dynamic unit exponent in the exact canonical core
@@ -9411,7 +9411,7 @@ let printable: Facet<User as Printable>
 ```deeplus
 let printable: Facet<borrow any Printable> =
     facet[borrow user as Printable]
-let text = printable ~ print()
+let text = printable ~ print
 ```
 ## EX-R51a1-RCTS-INTERSECTION-NG-001 — Bare contract bundle is not a value carrier
 
@@ -9504,7 +9504,7 @@ let value = @if cond { 1 } else { "one" }
 private type TextOrNumber = Int | String
 let value: TextOrNumber = 13
 let text = @match value {
-    n: Int => n ~ toString()
+    n: Int => n ~ toString
     s: String => s
 }
 ```
@@ -9694,7 +9694,7 @@ print(value.length)
 ```deeplus
 let value: Float64 | String = "Hello"
 let text = @match value {
-    x: Float64 => x ~ display()
+    x: Float64 => x ~ display
     s: String => s
 }
 ```
@@ -9713,7 +9713,7 @@ let text = @match value {
 def render(user: User) -> String
 = {
     use app::formatting::compact
-    return user ~ display()
+    return user ~ display
 }
 ```
 ## EX-R51a1-USE-002 — scoped use block is a lexical statement
@@ -9957,8 +9957,8 @@ def read() -> Int = {
 
 ```deeplus
 def write(file: File) -> Unit = {
-    defer file ~ close()
-    file ~ write(data)
+    defer file ~ close
+    file ~ write data
 }
 ```
 ## EX-R51b-GRAM-NG-008 — Defer block is not current
@@ -10417,7 +10417,7 @@ law BadLaw {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let task = worker ~ spawn { => worker ~ run(job) }
+let task = worker ~ spawn { => worker ~ run job }
 ```
 ## EX-R51c-017 — Shallow and deep same-type derivation
 
@@ -10446,11 +10446,10 @@ let deep = graph!!{ root: replacement }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let due = calendar ~ addUsing(
+let due = calendar ~ addUsing
     policy: policy,
     amount: 3[business_day],
-    from: referenceDate,
-)
+    from: referenceDate
 ```
 ## EX-R51c-019 — Dynamic RCTS source activation remains unavailable
 
@@ -10603,21 +10602,6 @@ let path = #raw"C:\temp\$name"
 ```deeplus
 let path = #raw#"C:\temp"#
 ```
-## EX-R51d-002A — Prefixless legacy raw String is not current
-
-- **source_feature_ids:** `raw_string_prefixed_literal`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `RAW_STRING_DELIMITER_INVALID`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let path = raw"C:\temp"
-```
 ## EX-R51d-003 — Rightward immutable binding normalizes to let
 
 - **source_feature_ids:** `rightward_flow_dollar_local_binding_msp`, `r51e_package_current_canonical_authority`
@@ -10763,7 +10747,7 @@ public def answer() -> Int = 42
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let converted = price ~ asUnitUsing(provider, 1[USD])
+let converted = price ~ asUnitUsing provider, 1[USD]
 ```
 ## EX-R51d-013 — Dynamic unit profile needs an explicit provider
 
@@ -10778,7 +10762,7 @@ let converted = price ~ asUnitUsing(provider, 1[USD])
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let converted = price ~ asUnit(1[USD])
+let converted = price ~ asUnit 1[USD]
 ```
 ## EX-R51e-001 — Materialization field pun
 
@@ -11121,7 +11105,7 @@ let timeout = options.timeout
 
 ```deeplus
 var value = 0
-value = value + 1
+value += 1
 ```
 
 ## EX-R51f-004 — Postfix increment is not current
@@ -11490,11 +11474,11 @@ public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
 = {
     task scope {
-        let Result::ok(_) = counter ~ add(value: 1)
+        let Result::ok(_) = counter :~ add value: 1
         else Result::err(error) => throw error
-        let Result::ok(_) = counter ~ add(value: 2)
+        let Result::ok(_) = counter :~ add value: 2
         else Result::err(error) => throw error
-        let Result::ok(replyTask) = counter ~ current()
+        let Result::ok(replyTask) = counter :~ current
         else Result::err(error) => throw error
         return await replyTask
     }
@@ -11578,7 +11562,7 @@ public actor Worker {
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
 = {
-    return worker ~ run(move job)
+    return worker :~ run move job
 }
 ```
 

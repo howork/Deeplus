@@ -1,19 +1,19 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
   "product_lanes": "15/15_NOT_RUN",
-  "semantic_effect": "NORMATIVE_CLARIFICATION_WITHOUT_NEW_SOURCE_SYNTAX",
+  "semantic_effect": "STABLE_UNIFIED_CALL_AND_ACTOR_TRANSPORT_DESIGN",
   "ledger_effect": {
     "existing_open_feature_p1_count": 22,
     "closed_by_contract": 0,
     "new_p1_by_contract": 0
   },
   "authority_fence": {
-    "new_source_syntax": false,
+    "new_source_syntax": true,
     "new_prelude_surface": true,
     "prelude_surface_scope": [
       "AsyncSequence<T, E>",
@@ -23,11 +23,12 @@
       "SharedCell<T> identity linkage; exact shared-state rules are external"
     ],
     "shared_state_contract": "spec/contracts/shared-state-coherence.json",
-    "feature_activation": false,
+    "feature_activation": true,
     "implementation_authority": false,
     "product_support_claim": false,
     "on_semantics": "ActorOnDecl remains the existing grammar owner; this contract does not infer structural protocol conformance or add an alternate handler surface",
-    "await_semantics": "await remains the existing explicit unary suspension owner over an independently admitted awaitable expression; this contract adds neither implicit await nor a task expression"
+    "await_semantics": "await remains the existing explicit unary suspension owner over an independently admitted awaitable expression; this contract adds neither implicit await nor a task expression",
+    "actor_transport_surface": "the stable :~ token selects CallExpr mode ActorMessage; implementation and product execution remain NOT_RUN"
   },
   "current_authority_refs": [
     "spec/language.md#37-async-functions-tasks-and-suspension",
@@ -62,7 +63,7 @@
           "SpawnExpr",
           "StructuredTaskScope",
           "TaskGroupStmt",
-          "ordinary MessageSuffix whose selected identifier is spawn"
+          "ordinary TildeCallLed whose statically selected identifier is spawn"
         ],
         "async_surfaces": [
           "def#async",
@@ -133,24 +134,25 @@
     {
       "rule_id": "ACC-R005",
       "domain": "message_selection",
-      "title": "actor message selection is not ordinary method dispatch",
+      "title": "actor :~ selection is one CallExpr mode and not ordinary method dispatch",
       "contract": {
-        "surface_owner": "MessageSuffix",
+        "surface_owner": "TildeCallLed",
+        "surface_token": ":~",
+        "normalized_ast_node": "CallExpr",
+        "call_mode": "ActorMessage",
         "receiver_evaluation_count": 1,
-        "payload_cardinality": "zero_or_one normalized payload node",
-        "ordinary_argument_list_owner_reused": false,
-        "payload_forms": {
-          "absent": "zero value parameters",
-          "scalar": "one value parameter",
-          "tuple": "one payload whose ordered fields project to positional value parameters",
-          "record": "one payload whose static unique labels project to named value parameters"
-        },
-        "payload_evaluation": "the one payload aggregate and every child expression evaluate left-to-right exactly once before enqueue commit",
-        "trailing_closure_group": "shared with ordinary CallSuffix; one closure may be unlabeled or labeled, two or more must all have unique labels",
+        "argument_cardinality": "zero_to_many",
+        "ordinary_argument_list_owner_reused": true,
+        "argument_kinds": ["Positional", "Named", "PositionalUnfold", "NamedUnfold", "Context", "Witness"],
+        "message_payload_node_count": 0,
+        "tuple_or_record_payload_projection_count": 0,
+        "argument_evaluation": "every ordered CallArgument evaluates left-to-right exactly once before enqueue commit",
+        "trailing_closure_group": "shared by every CallExpr mode; one closure may be unlabeled or labeled, two or more must all have unique labels",
         "actor_boundary_closure_rule": "a trailing closure crossing actor isolation must independently satisfy transfer, capture, suspension, effect, error, and cleanup admission; the trailing surface grants no transferability",
         "selector_identity": "resolved before enqueue against the admitted actor/protocol domain",
         "qualified_selector_identity": "TraitOrProtocol::selector or Type::ExtensionSet::selector is preserved through AST/HIR and resolved before admission",
         "ordinary_method_fallback": false,
+        "implicit_suspend_or_retry": false,
         "runtime_string_lookup": false,
         "source_order_as_resolution_evidence": false
       }
@@ -271,11 +273,11 @@
     {
       "rule_id": "ACC-R009",
       "domain": "task_spawn_ownership",
-      "title": "standalone spawn and message spawn have distinct existing syntax owners",
+      "title": "standalone spawn and ordinary message spawn have distinct syntax owners",
       "contract": {
         "standalone_owner": "SpawnExpr",
         "standalone_body": "the narrow TaskBody and TaskBodySequence grammar",
-        "message_spawn_owner": "ordinary MessageSuffix recognized by HIR when the selector is spawn",
+        "message_spawn_owner": "CallExpr mode Message produced by ordinary ~ TildeCallLed and recognized by HIR when the selector is spawn",
         "second_TaskSpawnSuffix": false,
         "general_async_callable_literal_activation": false,
         "implicit_spawn_from_await": false,
@@ -473,7 +475,13 @@
     "rule_count": 18,
     "rule_ids_unique": true,
     "gate_count": 5,
-    "new_source_syntax_count": 0,
+    "new_source_syntax_count": 1,
+    "normalized_call_node_count": 1,
+    "call_mode_count": 3,
+    "actor_colon_tilde_surface_count": 1,
+    "ordinary_argument_family_count": 6,
+    "message_payload_node_count": 0,
+    "implicit_actor_suspension_or_retry_count": 0,
     "first_class_channel_source_type_count": 0,
     "silent_drop_count": 0,
     "global_fifo_guarantee_count": 0,

@@ -16,6 +16,7 @@ reachability다. successor의 uniform payload와 final-dot-only member는
 - case payload의 선언·값·Pattern plane을 구분한다.
 - Enum source order와 serialization/raw/ordinal identity를 분리한다.
 - 현재 Enum member marker를 정확히 읽는다.
+- Stable declaration-order `Ord`, case Display와 exact subset을 사용한다.
 
 ## 3. 선수 지식
 
@@ -37,8 +38,11 @@ EnumId
  └─ VariantId(failed)
 ```
 
-선언 순서는 source presentation일 뿐 raw value, ordinal, ABI, 우선순위,
-match winner가 아니다. case payload는 다음 세 plane을 가진다.
+기본 Enum의 선언 순서는 source presentation일 뿐 raw value, ordinal,
+ABI, 우선순위, match winner가 아니다. `enum#increasing` 또는
+`enum#decreasing`을 명시한 제한된 Enum만 별도의 semantic order vector를
+얻는다. 이 vector도 raw/tag/layout/ABI가 아니다. case payload는 다음
+세 plane을 가진다.
 
 1. declaration: `failed(code: Int, String)`
 2. value argument: `JobState::failed(code: 13, "disk")`
@@ -133,6 +137,73 @@ public enum State {
 `+ open`, `*. override 후 close`, `*+ override 후 open`이다. marker는
 case identity, raw value, ordinal 또는 Trait witness를 뜻하지 않는다.
 
+### 6.4 declaration-order `Ord`
+
+payload가 없고 비어 있지 않으며 generic이 아닌 Enum은 정확히 하나의
+order role을 선택할 수 있다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public enum#increasing Priority {
+    low
+    normal
+    high
+}
+```
+
+이 선언은 whole-Enum `Ord<Priority>` witness 하나를 만들고
+`low < normal < high`의 semantic order를 고정한다. `#decreasing`이면
+반대 방향이다. 같은 ground의 explicit `Ord`와 함께 둘 수 없고 payload
+ordering, iteration, match priority, raw value 또는 comparison glyph의
+새 dispatch route를 만들지 않는다. public order behavior가 있으므로
+case reorder는 API compatibility 변경으로 검토한다.
+
+### 6.5 case-owned Display mapping
+
+case의 `~>`는 parsing·serialization·localization과 분리된 restricted
+String template다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public enum Delivery {
+    queued ~> "queued"
+    moving(driver: String) ~> "moving: ${driver}"
+    delivered ~> "delivered"
+}
+```
+
+한 inhabitable case가 mapping을 가지면 모든 inhabitable case가 정확히
+하나씩 가져야 한다. named payload는 read-only binder이고 interpolation
+hole은 이미 선택 가능한 `Display` evidence만 사용한다. mapping은
+payload를 move/mutate하거나 throw/suspend/spawn하지 않으며 fallback,
+reverse parser, serialization tag나 hidden locale provider를 만들지
+않는다.
+
+### 6.6 exact-variant subset alias
+
+payload 없는 same-owner case의 유한 부분집합은 Enum body의 associated
+type으로 선언한다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public enum Day {
+    Mon
+    Tue
+    Wed
+    Sat
+    Sun
+
+    +type Weekend = Sat | Sun
+}
+```
+
+`Weekend` identity는 같은 `EnumId`, frozen `VariantId` set과 universe
+digest로 정규화된다. 새 case, wrapper, storage, tag, allocation 또는
+witness를 만들지 않는다. subset에서 owner `Day`로의 widening은
+lossless지만 owner에서 subset으로의 narrowing은 `as?` 또는 pattern 같은
+checked boundary를 요구한다. foreign owner case와 payload-bearing case는
+subset member가 될 수 없다.
+
 ## 7. 허용·거부·경계 사례
 
 허용:
@@ -197,6 +268,8 @@ mapping을 선언해야 한다.
 - `::case`는 expected owner, `Enum::case`는 explicit owner를 쓴다.
 - payload declaration/value/pattern plane은 서로 다르다.
 - current와 nonactivatable successor를 섞지 않는다.
+- declaration-order `Ord`, case Display와 exact subset은 Stable이지만
+  successor uniform-payload/final-dot-only profile과는 별개다.
 
 ## 12. 정본 근거와 다음 장
 

@@ -1,0 +1,46 @@
+{
+  "schema": "deeplus.dynamic-rcts-checked-carrier-preview-design/r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "PREVIEW_DESIGN",
+  "source_activation": "nonactivatable",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "feature_id": "dyn_rcts_family",
+  "term": "Runtime Checked Type-and-Shape descriptor",
+  "purpose": "an owned checked carrier for an explicitly open-world value boundary",
+  "minimum_profile": {
+    "carrier_ownership": "owned-only",
+    "pack": "explicit",
+    "descriptor_match": "exact nominal identity, profile version, and provenance",
+    "checked_cast": "exact match only",
+    "success": "transfer the payload ownership exactly once",
+    "mismatch": "return typed mismatch information and the original carrier with ownership restored",
+    "drop": "exactly once on every terminal path",
+    "structural_fallback_count": 0,
+    "conversion_retry_count": 0,
+    "runtime_trait_witness_synthesis_count": 0
+  },
+  "closed_world_preference": "Use a closed Union when the complete alternative set is statically known.",
+  "deferred": [
+    "borrowed carrier",
+    "actor or task transfer",
+    "FFI or plugin ABI carrier",
+    "zero-copy shared carrier",
+    "reflection surface",
+    "dynamic Trait attachment",
+    "source API spelling",
+    "MIR opcode selection"
+  ],
+  "machine_acceptance": {
+    "source_activation_count": 0,
+    "owned_profile_count": 1,
+    "unchecked_cast_count": 0,
+    "structural_fallback_count": 0,
+    "runtime_witness_synthesis_count": 0,
+    "product_execution_receipt_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0
+  }
+}

@@ -106,15 +106,16 @@ public def describe(result: Lookup) -> String = {{
 `= {{ ... }}`의 암시적 subject는 단일 매개변수 `result`다. 두 형식
 모두 첫 guard가 이미 선택된 `found` case의 일부만 통과시키므로 다음
 `found` arm이 residual을 닫고 `missing` arm이 나머지 case를 닫는다.
-`def#guard`는 재사용 가능한 pure·total Bool 판정을 정의하지만,
-**그 함수를 호출했다는 사실만으로 자동 narrowing fact나
-exhaustiveness cell이 생기지는 않는다**. 두 번째 예의 `value`가
-`Int`인 근거는 `isPositive` 호출이 아니라 앞선 `::found(value)`
-pattern이다. Deeplus는 이처럼 각 증거 owner를 구분하면서도 한 정적
-오류 검출 체계 안에서 조합한다. 호출 가능한 finite-R0 summary를
-`Phi`에 안전하게 전달하는 확장은
-[`def#guard` refinement summary Preview Design](../grammar-reference/21-preview-design-types-objects-and-traits.md#preview-feature-guard_callable_refinement_summary_preview_design)으로
-별도 검토하며, 현행 동작은 바꾸지 않는다.
+`def#guard`는 재사용 가능한 pure·total Bool 판정을 정의한다. 검증된
+`GuardSummaryV1`이 있는 `isPositive(value)` direct truth-test는 true
+edge에 `value > 0`, false edge에 그 보완 fact를 남긴다. 다만 `value`의
+선언 타입은 계속 `Int`이고, stored Bool·wrapper·unstable place에서는
+이 narrowing을 만들지 않는다. 또한 guard는 이미 선택된 `found` case의
+일부만 통과시킬 뿐 structural exhaustiveness cell을 만들지 않는다.
+Deeplus는 이처럼 pattern fact, refinement fact와 coverage 증거를
+구분하면서 한 정적 오류 검출 체계 안에서 조합한다. 자세한 규칙은
+[`def#guard` 직접 호출 narrowing](../grammar-reference/04-types-generics-and-refinement.md#guard-callable-refinement-summary)을
+따른다.
 
 ### 2.3 값, 이름 및 표현 identity를 분리한다
 
@@ -141,9 +142,9 @@ Deeplus의 ownership은 “누가 메모리를 해제하는가”만 답하지 �
 
 ```deeplus
 let handle = open(path)
-defer handle ~ close()
+defer handle ~ close
 
-let bytes = handle ~ readAll()
+let bytes = handle ~ readAll
 process(bytes)
 ```
 
@@ -186,8 +187,8 @@ public actor Counter {
     request current() -> Int = { return 0 }
 }
 
-counter ~ add(value: 3)
-let admission = counter ~ current
+counter :~ add value: 3
+let admission = counter :~ current
 ```
 
 Actor의 상태는 actor가 소유한다. 메시지와 격리 경계를 넘는 값은

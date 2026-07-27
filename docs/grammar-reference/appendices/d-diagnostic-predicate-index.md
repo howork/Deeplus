@@ -16,10 +16,13 @@
 | `ACTOR_DECLARATION_GRAMMAR_CLOSED_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ACTOR_MAILBOX_CAPACITY_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT` | `checker` | `error` | `active` | actor mailbox capacity must be a statically known positive integer in the minimum profile. |
+| `ACTOR_OPERATION_KIND_COLLISION` | `checker` | `error` | `active` | Actor on and request operations cannot share the same selector and canonical call shape. |
 | `ACTOR_PROTOCOL_FAMILY_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ACTOR_PROTOCOL_REQUIRES_PREVIEW` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ACTOR_REQUEST_REPLY_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `ACTOR_REQUEST_REPLY_REQUIRES_PREVIEW` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
+| `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
+| `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `checker` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
 | `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` | `checker` | `error` | `active` | An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress. |
 | `AFFINE_UNIT_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Affine units such as degrees Celsius are not part of the current profile measure profile. |
 | `ALIASABLE_REJECTS_LIFECYCLE_OWNER` | `checker` | `error` | `active` | Aliasable is removed and lifecycle owners cannot be hidden behind alias vocabulary. |
@@ -334,8 +337,14 @@
 | `ENUM_CASE_PATTERN_PAYLOAD_MUST_NOT_USE_DECLARATION_PAYLOAD` | `checker` | `error` | `active` | Enum case pattern payload uses pattern payload syntax, not enum case declaration field syntax. |
 | `ENUM_CASE_PATTERN_USES_COLON_COLON` | `checker` | `error` | `active` | Enum case patterns use \`::case\` or \`EnumType::case\`, not \`.case\`. |
 | `ENUM_CASE_SEPARATOR_MIXED` | `parser` | `error` | `active` | An enum body may not mix comma-list and layout separators for cases. |
+| `ENUM_DISPLAY_MAPPING_INCOMPLETE` | `checker` | `error` | `active` | If one inhabitable Enum case has a display mapping, every inhabitable case must have exactly one mapping. |
+| `ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE` | `checker` | `error` | `active` | An Enum display template must be pure, synchronous, read-only, total, and use only preselected Display evidence. |
 | `ENUM_MEMBER_KIND_NOT_ADMITTED` | `parser` | `error` | `active` | An enum body may contain cases followed by methods, accessors, and type-side members; stored fields, constructors, and lifecycle cleanup declarations are not admitted. |
+| `ENUM_ORDER_ROLE_CONFLICT` | `checker` | `error` | `active` | An Enum may select exactly one declaration-order role and may not conflict with an explicit same-ground Ord conformance. |
+| `ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER` | `checker` | `error` | `active` | Declaration-order Ord requires a nonempty, payload-free, nongeneric Enum owner. |
 | `ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH` | `checker` | `error` | `retired` | The Enum pattern case must belong to the subject Enum and its active payload arity, labels, positions, and child types must match exactly. |
+| `ENUM_VARIANT_SUBSET_OWNER_MISMATCH` | `checker` | `error` | `active` | Every member of an exact Enum variant subset must belong to the declaring Enum owner. |
+| `ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN` | `checker` | `error` | `active` | An exact Enum variant subset may contain only payload-free variants. |
 | `ERRORVALUE_REQUIRED_FOR_ERRORSET_PAYLOAD` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `ERROR_ROW_PRIVATE_TYPE_LEAK` | `checker` | `error` | `seed` | Error row inference leaks a private error type into a public signature. |
 | `ERROR_SET_UNION_TOKEN_REQUIRED` | `lexer` | `error` | `active` | Error-set alternatives require the visible \| token. |
@@ -502,6 +511,12 @@
 | `GUARD_CONDITION_SUSPEND_NOT_ALLOWED` | `checker` | `error` | `active` | Guard condition must not suspend. |
 | `GUARD_CONDITION_THROWS_NOT_ALLOWED` | `checker` | `error` | `active` | Guard condition must not throw. |
 | `GUARD_EVALUATION_CONTRACT_VIOLATION` | `checker` | `error` | `active` | Guard evaluation must precede ownership commit and payload evaluation; a false guard leaves payload responsibilities unobserved. |
+| `GUARD_REFINEMENT_ACTUAL_NOT_STABLE` | `checker` | `note` | `active` | This guard result is Boolean-only because an actual place is not stable for the refinement lifetime. |
+| `GUARD_REFINEMENT_CALL_NOT_DIRECT` | `checker` | `note` | `active` | Only a direct call to the exact summarized def#guard can contribute a refinement fact. |
+| `GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH` | `checker` | `error` | `active` | The guard summary callable identity or normalized parameter types do not match the selected def#guard implementation. |
+| `GUARD_REFINEMENT_SUMMARY_METADATA_STALE` | `checker` | `error` | `active` | The guard body, API, or summary digest is stale and cannot authorize flow refinement. |
+| `GUARD_REFINEMENT_SUMMARY_NOT_R0` | `checker` | `error` | `active` | The def#guard body cannot be normalized to the finite R0 refinement calculus; use def#pure for an opaque Bool helper. |
+| `GUARD_REFINEMENT_SUMMARY_REQUIRED` | `checker` | `error` | `active` | An admitted def#guard must export one verified finite-R0 GuardSummaryV1. |
 | `HARD_KEYWORD_MEMBER_REQUIRES_ESCAPE` | `lexer` | `error` | `active` | A hard keyword used as a data member name must use the member-only escape, for example obj.\\\\class. |
 | `HASH_ROLE_PHYSICAL_LINE_BREAK_FORBIDDEN` | `parser` | `error` | `active` | A role marker may contain horizontal trivia but cannot cross a physical line break between \`#\` and its role word. |
 | `HIR_POWER_OPERATION_UNRESOLVED` | `verifier` | `error` | `active` | Canonical HIR-H1 cannot contain an unresolved or generic power operation. |
@@ -527,6 +542,7 @@
 | `INITIALIZED_LET_FIELD_CANNOT_BE_REASSIGNED_IN_POST_INIT_BODY` | `checker` | `error` | `active` | A post-init constructor body cannot reassign an already initialized \`let\` field. |
 | `INLINE_CONFORMANCE_HEADER_NOT_CURRENT_USE_CONFORMANCE_DECL` | `parser` | `error` | `active` | Inline class/enum header conformance is not current; conformance is an explicit nominal declaration. |
 | `INOUT_ALIAS_CONFLICT` | `checker` | `error` | `seed` | inout access conflicts with an existing alias or shared observation. |
+| `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVE` | `lexer` | `error` | `seed` | Integer-magnitude imaginary literals such as 4i are a nonactivatable Preview design; current source uses 4.0i. |
 | `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` | `lexer` | `error` | `active` | A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode. |
 | `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` | `parser` | `error` | `active` | Complex interpolation expression requires ${...}. |
 | `INTERPOLATION_FACTOR_REQUIRES_PREVIEW_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -741,6 +757,7 @@
 | `NUMERIC_ARRAY_ELEMENTWISE_REQUIRES_SAME_SHAPE` | `checker` | `error` | `active` | NumericArray elementwise arithmetic requires statically/proven same shape; implicit broadcasting is not performed. |
 | `NUMERIC_ARRAY_ELEMENTWISE_SHAPE_MISMATCH` | `checker` | `error` | `active` | Elementwise NumericArray arithmetic requires same static or checker-proven shape. |
 | `NUMERIC_ARRAY_SHAPE_MISMATCH_NO_IMPLICIT_BROADCAST` | `checker` | `error` | `active` | Ordinary NumericArray elementwise operations do not perform implicit broadcasting. |
+| `NUMERIC_CAPABILITY_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | The closed numeric capability lattice is a nonactivatable Preview design. |
 | `NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID` | `lexer` | `error` | `active` | A numeric underscore must occur exactly between two digits of the same component. |
 | `NUMERIC_LITERAL_OUT_OF_RANGE` | `checker` | `error` | `active` | Numeric literal is outside the representable or refined range. |
 | `NUMERIC_OPERATOR_CORE_REQUIRED` | `checker` | `error` | `active` | Numeric operator use requires the current profile numeric operator core law. |
@@ -760,6 +777,7 @@
 | `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, total, synchronous responsibility profile. |
 | `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Only existing binary +, -, and * are admitted for fixed-glyph conformance overloading. |
 | `OPERATOR_PRECEDENCE_TABLE_REQUIRED` | `checker` | `error` | `active` | Operator parsing requires the current profile operator precedence table. |
+| `OPTIONAL_BINDING_SOURCE_NOT_CURRENT` | `parser` | `error` | `seed` | Optional payload binding with let? is a nonactivatable Preview design; use an explicit ::some pattern in current source. |
 | `OPTIONAL_CALLABLE_INVOCATION_NOT_CURRENT` | `parser` | `error` | `active` | Optional callable invocation \`callee?(args)\` is not current Deeplus source. Use explicit Option flow. |
 | `OPTIONAL_CHAINING_NOT_CURRENT` | `parser` | `error` | `active` | Optional chaining is not current Deeplus source; use explicit Option handling, match/@match, if-let, or library combinators. |
 | `OPTIONAL_SUFFIX_REPEATED` | `parser` | `error` | `active` | A compact optional suffix may occur once; write Option<T?> for nested optionality. |
@@ -951,6 +969,7 @@
 | `RATIONAL_LITERAL_RESOURCE_LIMIT` | `checker` | `error` | `active` | Rational literal normalization exceeded the declared deterministic compile-time resource budget. |
 | `RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX` | `parser` | `error` | `active` | Write a Rational sign outside the literal, for example -<2/3>. |
 | `RATIONAL_LITERAL_TRIVIA_FORBIDDEN` | `lexer` | `error` | `active` | Rational literal delimiters, numerator, slash, and denominator must be contiguous. |
+| `RATIONAL_OPERATOR_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | Rational division and integral-exponent power completion are a nonactivatable Preview design. |
 | `RATIONAL_OVER_REQUIRES_EXACT_INTEGERS` | `checker` | `error` | `active` | Rational construction through over requires two exact integer operands. |
 | `RAW_MULTILINE_STRING_NOT_CURRENT` | `lexer` | `error` | `active` | Raw multiline String syntax is not current; use the Unicode multiline String or \`#raw"..."\`. |
 | `RAW_POINTER_ARITHMETIC_OPERATOR_FORBIDDEN` | `checker` | `error` | `active` | Use named unsafe pointer operations instead of ordinary arithmetic operators. |
@@ -1132,6 +1151,9 @@
 | `STATIC_SPELLING_REMOVED_USE_COLON_COLON` | `parser` | `error` | `active` | def#static/def#class spelling is removed; use def::. |
 | `STATUS_ENUM_DECLARATION_DRIFT` | `checker` | `error` | `seed` | Declared status enum projection does not match registry/sanity. |
 | `STDLIB_PROFILE_NOT_CORE_SYNTAX` | `parser` | `error` | `seed` | stdlib feature is not ordinary source syntax in R49. |
+| `STD_MATH_CALCULUS_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | The std::math calculus family is a nonactivatable Preview design. |
+| `STD_MATH_DOMAIN_NOT_ADMITTED` | `checker` | `error` | `active` | The selected std::math core function does not admit this exact normalized numeric domain. |
+| `STD_MATH_SPECIAL_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | The std::math special-function family is a nonactivatable Preview design. |
 | `STEPPED_RANGE_TYPE_REQUIRES_PREVIEW_DESIGN` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `STRICT_BOOLEAN_OPERAND_NOT_BOOL` | `checker` | `error` | `active` | \`and\`/\`or\` require Bool operands. |
 | `STRING_INTERPOLATION_FORMAT_SPEC_CORE_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -1165,6 +1187,8 @@
 | `TERNARY_QUESTION_REQUIRES_SPACING` | `checker` | `error` | `active` | Ternary \`?\` requires separating trivia from the condition and then-expression tokens. |
 | `THROWING_CLEANUP_FAILURE_POLICY_REQUIRED` | `checker` | `error` | `active` | A throwing cleanup path must preserve deterministic primary/suppressed failure order and cannot mask Cancellation as Error. |
 | `THROWING_DROP_CLEANUP_FAILURE_POLICY_REQUIRED` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
+| `TILDE_CALL_COMMA_REQUIRES_GROUPING` | `parser` | `error` | `active` | Parenthesize a nested tilde call before a comma that belongs to the outer call. |
+| `TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN` | `parser` | `error` | `active` | Actor :~ is terminal and nonassociative; explicitly restructure a chained transport call. |
 | `TOKEN_PRECEDENCE_SCHEMA_PARITY_REQUIRED` | `design_static` | `error` | `active` | The integrated Grammar, Frontend Model Pratt registry, lifecycle and current corpus must agree. |
 | `TOOLING_FEATURE_NOT_SOURCE` | `checker` | `error` | `seed` | tooling feature is not ordinary source syntax in R49. |
 | `TOP_LEVEL_AWAIT_NOT_CURRENT` | `checker` | `error` | `active` | Top-level \`await\` is not admitted by the Stable script profile; use \`def#entry#async\`. |
@@ -1278,6 +1302,8 @@
 | `TYPE_TOKEN_HAS_NO_CONSTRUCTION_AUTHORITY` | `lexer` | `error` | `active` | Type<T> token has no construction or metaclass invocation authority. |
 | `TYPE_TOKEN_IS_NOT_CONSTRUCTOR` | `lexer` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `TYPE_TOKEN_RUNTIME_AUTHORITY_FORBIDDEN` | `checker` | `error` | `active` | A type token is compile-time identity only and cannot be used as a runtime reflective value or authority source. |
+| `UINT_LITERAL_CONTEXT_OUT_OF_RANGE` | `checker` | `error` | `active` | The signless integer literal is outside the exact UInt range 0..2^64-1. |
+| `UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN` | `checker` | `error` | `active` | UInt has no negative contextual literal adapter or implicit signedness conversion. |
 | `UNANNOTATED_NULLARY_LAMBDA_REQUIRES_PREVIEW` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `UNFOLD_DUPLICATE_LABEL` | `checker` | `error` | `active` | Unfold/comprehension produced duplicate label without an admitted policy. |
 | `UNICODE_ESCAPE_INVALID_DIGIT` | `lexer` | `error` | `active` | Unicode escape contains an invalid hex digit. |
@@ -1422,8 +1448,11 @@
 | `EntrySignatureAdmitted` | EntrySignatureAdmitted | source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds | `DESIGN_STATIC_NOT_RUN` |
 | `EntryTargetUnique` | EntryTargetUnique | call_shape.selected_entry_target_count is a nonnegative integer; an executable root is admitted exactly when selected_entry_target_count equals one; a zero count emits NO_EXECUTABLE_ENTRY and a count greater than one emits ENTRY_DECL_DUPLICATE; a library root with a nonzero selected count emits ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE and a script root with a nonzero selected count emits SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT; library and script roots are admitted exactly when selected_entry_target_count equals zero | `DESIGN_STATIC_NOT_RUN` |
 | `EnumCaseCommaListAdmitted` | EnumCaseCommaListAdmitted | R51f3 owner-specific static design seed for enum_case_comma_list; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `EnumCaseDisplayMappingAdmitted` | EnumCaseDisplayMappingAdmitted | Admit one complete all-or-none enum-owned display mapping and synthesize at most one whole-Enum Display witness. | `` |
 | `EnumCaseDoubleColonAdmitted` | Enum case double-colon injection | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `EnumDeclarationOrderWitnessAdmitted` | EnumDeclarationOrderWitnessAdmitted | Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Ord witness. | `` |
 | `EnumPayloadPlaneSeparated` | EnumPayloadPlaneSeparated | Enum declaration, expression, and pattern payload planes are separated. | `DESIGN_STATIC_NOT_RUN` |
+| `EnumVariantSubsetAliasAdmitted` | EnumVariantSubsetAliasAdmitted | Admit one explicit associated exact-variant subset alias over a finite payload-free same-owner VariantId set. | `` |
 | `ErrorRowForwardingAdmitted` | higher-order error forwarding | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EscapedMemberSuffixAdmitted` | Escaped member suffix | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ExactRatioUnitConversionAdmitted` | ExactRatioUnitConversionAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1454,8 +1483,10 @@
 | `GenericInvarianceAdmitted` | GenericInvarianceAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `GenericVarianceDescriptorAdmitted` | GenericVarianceDescriptorAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `GroupedMemberForwardingAdmitted` | GroupedMemberForwardingAdmitted | R51f3 owner-specific static design seed for grouped_member_forwarding_sugar; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `GuardCallRefinementApplied` | GuardCallRefinementApplied | Apply a validated GuardSummaryV1 only at an exact direct def#guard call over stable actual places and transfer P or not(P) to Phi. | `` |
 | `GuardCallableAdmitted` | GuardCallableAdmitted | apply PureCallableAdmitted; require exact Bool result; reject consume, mutation, external control transfer, and spawned/resource obligations | `DESIGN_STATIC_NOT_RUN` |
 | `GuardPredicateAdmitted` | GuardPredicateAdmitted | A guard is exact Bool, pure, no-throw, nonsuspending, authority-free and cannot transfer control. | `DESIGN_STATIC_NOT_RUN` |
+| `GuardRefinementSummaryAdmitted` | GuardRefinementSummaryAdmitted | Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is in the finite R0 reflection calculus. | `` |
 | `GuardedBindingCommitAdmitted` | GuardedBindingCommitAdmitted | Commit guarded-let bindings only after one successful pattern and one direct unconditional failure exit are proven. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `GuardedLetResidualExitAdmitted` | GuardedLetResidualExitAdmitted | Computes the residual closed domain after the success pattern and requires one irrefutable failure pattern plus one terminating exit. | `DESIGN_STATIC_NOT_RUN` |
 | `GuardedTransferEvaluationAdmitted` | GuardedTransferEvaluationAdmitted | evaluate guards left-to-right once each; perform no ownership commit before all guards succeed; a false guard evaluates no payload or payload-created obligation | `DESIGN_STATIC_NOT_RUN` |

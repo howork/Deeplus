@@ -565,7 +565,7 @@ let result = records[2].name~trim()
 ```
 
 읽기 순서는 `records` → `IndexSuffix` → `MemberSuffix` →
-`MessageSuffix`다.
+rank-15 `TildeCallLed`다.
 각 suffix가 `records`를 다시 평가하는 것이 아니며, lowering은
 source-defined single evaluation과 failure order를 보존한다.
 
@@ -581,9 +581,9 @@ comment나 line break는 attachment 증거가 아니다.
 postfix와 infix 해석이 동시에 가능하도록 섞으면
 `CARET_ATTACHMENT_AMBIGUOUS` 경계 진단이 우선한다.
 
-### 7.6 `~` message suffix
+### 7.6 `~`/`:~` tilde call
 
-`MessageSuffix`는 receiver를 Pratt left에서 공급받고
+`TildeCallLed`는 receiver를 Pratt left에서 공급받고
 `MessageSelector`를 읽는다.
 selector는 identifier 또는 정적으로 제한된 `QualifiedMessageSelector`다.
 qualified 경로는 `TraitOrProtocol::selector` 또는
@@ -592,16 +592,17 @@ actor protocol identity는 name resolution이 결정한다.
 HIR은 `spawn` selector를 예약해 concurrency 의미를 부여하지만,
 parser가 별도의 `SpawnMessageSyntax`를 만들지는 않는다.
 
-selector 다음에는 ordinary `ArgumentList`가 아니라 0/1
-`MessagePayload`가 온다. `receiver ~ f (x, y)`의 괄호는 Tuple payload
-하나를 만들며 ordinary `f(x, y)`의 두 argument와 다르다. all-named
-괄호는 하나의 Record payload이고 mixed positional/named는 structural
-error다. 기존 빈 `()`는 no-payload 호환 철자이며 formatter가 생략한다.
+selector 다음에는 ordinary call과 같은 ordered `TildeArgumentSequence`가
+온다. `receiver ~ f x, y`는 인수 두 개이고
+`receiver ~ f (x, y)`의 괄호는 Tuple 인수 하나를 만든다.
+zero-argument call은 `receiver ~ ping`이며 `ping()` 호환 철자는 없다.
+`:~`는 actor-operation domain을 고정하는 terminal·비결합 call mode다.
 
-payload 뒤의 `TrailingClosureGroup`은 ordinary call과 같은 구조를
+argument 뒤의 `TrailingClosureGroup`은 ordinary call과 같은 구조를
 사용한다. 한 closure는 label을 생략할 수 있지만 둘 이상이면 모두
-서로 다른 label을 가져야 한다. group은 바로 앞의 call/message suffix가
-최대로 소비하고, 그 뒤의 다음 postfix는 완성된 호출 결과에 붙는다.
+서로 다른 label을 가져야 한다. group은 바로 앞의 ordinary `CallSuffix`
+또는 structured `TildeCallLed`가 만든 `CallExpr` owner에 최대로 결합하고,
+그 뒤의 다음 postfix는 완성된 호출 결과에 붙는다.
 줄바꿈이나 indentation은 이 attachment를 바꾸지 않는다.
 
 ## 8. 괄호와 hash prefix의 parser commitment

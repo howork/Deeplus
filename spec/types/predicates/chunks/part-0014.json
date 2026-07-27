@@ -22,8 +22,8 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "CallSuffix and MessageSuffix share the TrailingClosureGroup structural contract",
-      "every trailing item binds exactly one closure/function-typed formal after ordinary argument or message-payload projection",
+      "every CallExpr mode shares the TrailingClosureGroup structural contract",
+      "every trailing item binds exactly one closure/function-typed formal after ordinary CallArgument binding",
       "without such a parameter the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -38,8 +38,8 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "CallSuffix and MessageSuffix share the TrailingClosureGroup structural contract",
-      "every trailing item binds exactly one closure/function-typed formal after ordinary argument or message-payload projection",
+      "every CallExpr mode shares the TrailingClosureGroup structural contract",
+      "every trailing item binds exactly one closure/function-typed formal after ordinary CallArgument binding",
       "without such a parameter the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",

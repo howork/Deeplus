@@ -34,8 +34,8 @@ channel은 어느 formal에 값이 결합되는지를 정하고, source order는
 
 메시지 `worker ~ run job`을 괄호 없는 일반 함수 호출로 읽거나,
 `def#pure`를 body 검사와 무관한 장식으로 보는 것이 대표적인 오해다.
-미니 사례에서는 같은 두 값을 ordinary call과 Tuple payload message로
-각각 표현해 AST 차이를 말로 설명한다. 또한 closure capture와
+미니 사례에서는 같은 두 값을 ordinary argument 둘과 message의 Tuple
+argument 하나로 각각 표현해 AST 경계를 말로 설명한다. 또한 closure capture와
 `scope#static`을 “함수가 기억하는 값”이라는 한 개념으로 합치지 않는다.
 
 ## 이 부에서 지킬 경계

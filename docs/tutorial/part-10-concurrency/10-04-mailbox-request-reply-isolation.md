@@ -55,13 +55,13 @@ admission Result를 먼저 푼 뒤 task를 await한다.
 def#async inspect(directory: Directory, id: Int) -> Status
     throws ActorMessageError | LookupError
 = {
-    let Result::ok(task) = directory ~ find(id)
+    let Result::ok(task) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
     return await task
 }
 ```
 
-`directory ~ find(id)`의 실패 시점에는 task/correlation이 없다.
+`directory :~ find id: id`의 실패 시점에는 task/correlation이 없다.
 `Result::ok(task)` 뒤에야 reply 책임이 존재한다.
 
 ## 7. 허용·거부·경계 사례
@@ -73,7 +73,7 @@ def#async inspect(directory: Directory, id: Int) -> Status
 def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
 = {
-    return worker ~ run(move job)
+    return worker :~ run move job
 }
 ```
 
@@ -81,7 +81,7 @@ def dispatch(worker: Worker, move job: Job)
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-let status = await directory ~ find(id)
+let status = await (directory :~ find id: id)
 // request expression은 먼저 Result<Task<Status>, ...> admission을 반환한다.
 ```
 

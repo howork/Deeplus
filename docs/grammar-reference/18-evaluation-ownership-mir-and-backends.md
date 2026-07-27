@@ -382,17 +382,16 @@ witness identity는 runtime lookup을 하지 않지만
 그 channel이 signature와 MIR call descriptor에서 사라지지 않는다.
 
 ordinary call과 message call은 ordered trailing-closure channel을 공유한다.
-closure capture environment는 payload/ordinary argument 뒤 source order로
+closure capture environment는 ordinary argument 뒤 source order로
 획득되고, 각 label과 선택된 function-typed formal identity가 HIR/MIR에
 남는다. surface brace attachment만 지울 수 있고 evaluation order나
 selected dispatch identity는 지우지 않는다.
 
-message는 ordinary argument vector가 아니라 payload aggregate를 0개 또는
-1개 갖는다. Tuple payload는 positional projection map, Record payload는
-static-label projection map과 함께 lowering한다. 예를 들어
-`receiver ~ moveTo (x, y)`는 `x`, `y`를 순서대로 한 번 평가해 Tuple
-하나를 만들고, selector resolution 뒤 그 Tuple field를 positional
-formal에 결합한다.
+ordinary/message/actor-message는 하나의 ordered argument vector를
+lowering한다. message 전용 payload aggregate와 Tuple/Record projection
+map은 없다. `receiver ~ moveTo x, y`는 두 argument를 왼쪽부터 평가하고,
+`receiver ~ moveTo (x, y)`는 `x`, `y`로 Tuple 값 하나를 만든 뒤 그 값
+하나를 formal 하나에 결합한다.
 
 ### 4.4 collection entry
 
@@ -1096,10 +1095,10 @@ full이면 precommit에서 즉시
 
 ### 15.3 prepare와 enqueue commit
 
-message send는 method call이 아니다.
-prepare 단계는 receiver를 한 번 평가하고, 0/1 payload aggregate의
-child를 왼쪽에서 오른쪽으로 한 번씩 평가하지만 owner를 아직 넘기지
-않는다. trailing closure가 있으면 payload 다음에 capture environment를
+actor `:~` send는 ordinary method call이 아니다.
+prepare 단계는 receiver를 한 번 평가하고 ordered argument를
+왼쪽에서 오른쪽으로 한 번씩 평가하지만 owner를 아직 넘기지
+않는다. trailing closure가 있으면 argument 다음에 capture environment를
 source order로 획득한다.
 
 actor isolation을 건너는 closure는 독립적으로 transfer 가능해야 한다.
@@ -1133,8 +1132,8 @@ exactly-once delivery는 보장하지 않는다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
 private def sendTwo(counter: Counter) -> Unit = {
-    let first = counter ~ add(value: 1)
-    let second = counter ~ add(value: 2)
+    let first = counter :~ add value: 1
+    let second = counter :~ add value: 2
 }
 ```
 
@@ -1591,7 +1590,7 @@ view coordinate는 4와 5를 보존한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
-private let outcome = worker ~ run(move job)
+private let outcome = worker :~ run move job
 ```
 
 mailbox admission이 commit 전에 실패하면

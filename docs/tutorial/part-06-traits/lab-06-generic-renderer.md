@@ -11,7 +11,7 @@ operator/custom surface를 만들지 않는다.
 ## 준비
 
 - 6.1~6.5를 읽는다.
-- `where T conforms Display`와 `value ~ display()`를 설명할 수 있어야 한다.
+- `where T conforms Display`와 `value ~ display`를 설명할 수 있어야 한다.
 - 결과는 static design이며 제품 실행이 아님을 기록한다.
 
 ## 누적 프로젝트 연결
@@ -62,14 +62,14 @@ public conformance Invoice conforms Display {
 public def renderOne<T>(borrow value: T) -> String
     where T conforms Display
 = {
-    return value ~ display()
+    return value ~ display
 }
 
 public def renderAll<T>(values: List<T>) -> List<String>
     where T conforms Display
 = {
     return [
-        value ~ display()
+        value ~ display
         for value in values
     ]
 }
@@ -169,7 +169,7 @@ public extension Invoice as audit {
 use Invoice::audit
 let invoice = Invoice${ number: 7, total: <25/2> }
 let publicText = renderOne(invoice)
-let auditText = invoice ~ auditLabel()
+let auditText = invoice ~ auditLabel
 ```
 
 `auditLabel`은 Display requirement를 대신 충족하지 않는다.

@@ -73,8 +73,10 @@ acquisition commit은 영이다. 다음 arm은 같은 원본 owner를 검사하�
 effectful guard는 false 이전에 I/O나 mutation을 남겨 “실패한 arm은
 흔적이 없다”는 법칙을 깨뜨린다. 그래서 guard는 exact Bool,
 deterministic, synchronous, no-throw, `effects {}`여야 한다. 일반
-`def#guard` 호출도 자동 coverage cell이나 narrowing summary를 만들지
-않는다.
+`def#guard`라는 이름만으로 coverage cell이나 narrowing summary를
+추측하지 않는다. 검증된 `GuardSummaryV1` direct truth-test는 stable
+actual에 branch-local narrowing fact를 만들 수 있지만 그 fact도 coverage
+cell을 추가하지 않는다.
 
 마지막 catch-all을 넣으면 무조건 좋다는 생각은 흔한 오해다. 닫힌
 domain에서는 새 case 검토를 숨길 수 있고, external residual이 실제

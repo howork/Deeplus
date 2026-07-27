@@ -1,6 +1,8 @@
 # Deeplus Prelude 0.1.2 — R51f3 Current Canonical
 
-Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 63 rows.
+Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 65 rows.
+
+Revision: `r51f3-current-numeric-guard-call-enum-coherence-r1`
 
 ## 1. Core domains
 
@@ -53,7 +55,34 @@ is `NOT_RUN`, and all `TCC-P1-002..008` remain OPEN evidence gates.
 
 ## 4A. Current numeric and indexing boundary
 
-`Int` has the signed 64-bit mathematical domain. Integer operators are checked and raise deterministic `ArithmeticDefect` on dynamic overflow or division or remainder by zero before assignment commit; named APIs own wrapping and saturating behavior. `Float32` and `Float64` follow IEEE-754 binary32/binary64 value behavior with round-to-nearest, ties-to-even; NaN is unordered, signed zero compares equal, and Float receives no implicit `Ord`/`Keyable` evidence. None of these laws selects storage, ABI, or backend layout.
+`Int` has the signed 64-bit mathematical domain. `UInt` is the distinct Stable
+default unsigned mathematical domain `0..18446744073709551615`; it is not an
+alias for `UInt64`, `USize`, `Int`, or `Int64`. An unsuffixed integer still
+defaults to `Int`, but it may adapt to `UInt` only when an independently fixed
+exact target exists and the magnitude is representable. Negative source,
+implicit signedness conversion, and storage/ABI equivalence are not admitted.
+Integer operators are checked and raise deterministic `ArithmeticDefect` on
+dynamic overflow or division or remainder by zero before assignment commit;
+named APIs own wrapping and saturating behavior.
+
+`Float32` and `Float64` follow IEEE-754 binary32/binary64 value behavior with
+round-to-nearest, ties-to-even. `Float` is the Stable closed alias of
+`Float64`; it creates no distinct nominal, precision, serialization, runtime,
+layout, or ABI identity. NaN is unordered, signed zero compares equal, and
+neither `Float64` nor its `Float` spelling receives implicit
+`Ord`/`Keyable` evidence. None of these laws selects storage, ABI, or backend
+layout.
+
+```deeplus
+var attempts: UInt = 0
+attempts += 1
+
+let ratio: Float = 3.0 / 2.0
+```
+
+The compound spelling is canonical for a simple place; it preserves the
+single-read, single-RHS-evaluation, failure-atomic assignment law and does not
+introduce an increment operator.
 
 `ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers both integer division and remainder by zero. It is neither an `ErrorSet` member nor an enum-as-error. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
 
@@ -76,6 +105,12 @@ directions. Division is the named checked `dividedBy`; Decimal, Float and
 Complex conversions are explicit. `display()` may return `2/3`, while
 `sourceRepr()` returns the parseable `<2/3>`.
 
+The nonactivatable Preview completion keeps exact normalization and proposes
+checked exact `/`, integral `^`, plus named `remainderTrunc`, `modEuclid`, and
+`divRemTrunc`. `%` remains deferred; no quotient
+law is silently selected and no current operator row changes merely because
+this inventory exists.
+
 `Complex<Rep>` is an immutable two-component core numeric value whose initial
 Rep set is exactly Float32 and Float64. Bare `Complex` is the closed alias
 `Complex<Float64>`. The values `Complex::zero`, `Complex::one`, and
@@ -96,6 +131,13 @@ polar construction, robust checked division, principal exp/log/sqrt/cbrt,
 integer/real/Complex power, alternate branches, trigonometric and hyperbolic
 families, parsing, codecs, and explicit conversion.
 
+The Preview numeric profile additionally proposes the compact `4i` spelling
+for `Complex<Float64>(+0.0, 4.0)`. It is limited to an attached unsuffixed
+decimal integer followed by an identifier boundary. `0x4i`, `4u8i`, `4 i`,
+and `4index` do not enter that Preview literal judgment. The current admitted
+floating forms above remain unchanged until separate activation evidence
+exists.
+
 NumericArray Complex dot product conjugates the left operand. `dotu` is the
 explicit unconjugated operation. Attached `A^` is transpose and
 `A ~ adjoint` is conjugate transpose.
@@ -106,6 +148,30 @@ runtime lookup. Real power remains real; Complex power uses the principal
 branch. Ordinary `0 ^ 0` returns one in the selected result domain; named
 `powChecked` may instead report `PowerError::indeterminate`. All of these are
 language/Prelude design contracts; every product lane remains `NOT_RUN`.
+
+### 4C. Numeric capabilities and `std::math`
+
+The thin Preview lattice contains `Numeric`, `ExactNumeric`,
+`ApproximateNumeric`, `IntegralNumeric`, `RealScalar`, `BinaryFloating`, and
+`ComplexScalar`. These names express capability requirements only. They do not
+create representation subtyping, implicit numeric conversion, ordering,
+hashing, keyability, remainder, transcendental support, operator activation,
+or a common runtime value.
+
+The current `std::math` facade is a `STDLIB_PROFILE` with closed groups for:
+
+- core classification and rounding;
+- elementary, exponential, logarithmic, trigonometric and hyperbolic
+  operations;
+- complex principal-branch operations;
+- approximation helpers.
+
+Each callable must state its exact scalar family, result family, exceptional
+value behavior, error/effect row, and approximation responsibility. Special
+functions and calculus are separate Preview/nonactivatable profiles; the latter
+returns an explicit `Result<Estimate<T>, error NumericAnalysisError<T>>`.
+Neither current profile maturity nor a Preview inventory is a product-support
+claim, and none activates a hidden conversion or operator witness.
 
 ## 5. Profile boundaries
 
@@ -146,7 +212,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 63 canonical Prelude entries
+## 10. Human index of the 65 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -190,6 +256,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `ModuleSignature` | language_surface | `stable_design` | public API boundary surface; stable design; not separate compilation receipt |
 | `Float32` | numeric_type_side_constants | `stable_design` | IEEE binary32 value behavior; non-finite values are type-side constants. |
 | `Float64` | numeric_type_side_constants | `stable_design` | IEEE binary64 value behavior; NaN supplies no implicit ordering/key evidence. |
+| `Float` | numeric_alias | `stable_design` | Stable closed source alias of `Float64`; no distinct nominal, precision, serialization, layout, or ABI identity. |
+| `UInt` | core_numeric_value | `stable_design` | Separate default unsigned 64-bit mathematical domain; checked arithmetic and no implicit signedness conversion or ABI identity. |
 | `BigInt` | exact_numeric_value | `stable_design` | arbitrary-precision signed integer dependency; no implicit Int or ABI equivalence |
 | `Rational` | exact_numeric_value | `stable_design` | normalized exact BigInt ratio with strong equality/order/hash/key laws |
 | `Complex<Rep>` | core_numeric_value | `stable_design` | immutable Float32/Float64 complex value with partial equality and principal numeric APIs |

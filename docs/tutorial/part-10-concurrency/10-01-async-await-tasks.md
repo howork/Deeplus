@@ -43,7 +43,7 @@ def#async fetch(url: String) -> Bytes
     throws NetworkError
     effects {network}
 = {
-    return await client ~ get(url)
+    return await (client ~ get url)
 }
 ```
 

@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-exact-numeric-hir-h1-coherence-r1`
+- revision: `r51f3-current-numeric-guard-call-enum-coherence-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -10,12 +10,12 @@
 - 부록: 8
 - SUMMARY 연결 문서: 96
 - 학습 단위: 72
-- 한국어 문자: 92736
-- Deeplus 코드 블록: 331
+- 한국어 문자: 93099
+- Deeplus 코드 블록: 333
 - 연습 prompt 표식: 257
 - 로컬 링크 오류: 0
-- contract SHA-256: `ed65847c6e74a8492a070d1e6240c6b3c237e5835c20ab7814818c21c9d39835`
-- coverage schema SHA-256: `d0f19256cf9f73bfc33d30f20d406abdc1e74a7772969a27e4453a0dbb16b52c`
+- contract SHA-256: `a5f125e30a78b448a9225c6679dfb23a2fd0dda56d40c1d3f81796f559377f3a`
+- coverage schema SHA-256: `a87e80e1d5304a2affe60de3b5303c51e9d361f952fce853111ffee232fa4bbd`
 
 ## authority 울타리
 

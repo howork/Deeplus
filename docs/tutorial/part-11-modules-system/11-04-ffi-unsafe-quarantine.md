@@ -46,7 +46,7 @@ def inspectRaw(handle: RawHandle) -> Int
     effects {}
 = {
     return unsafe {
-        handle ~ checkedValue()
+        handle ~ checkedValue
     }
 }
 ```

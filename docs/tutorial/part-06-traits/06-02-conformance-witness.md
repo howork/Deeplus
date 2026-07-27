@@ -107,7 +107,7 @@ public conformance UserId conforms Display {
 }
 
 let id = UserId${ raw: 13 }
-let text = id ~ display()
+let text = id ~ display
 ```
 
 conformance body의 method marker는 Trait witness slot을 구현한다. data class
@@ -120,7 +120,7 @@ conformance body의 method marker는 Trait witness slot을 구현한다. data cl
 private def render<T>(borrow value: T) -> String
     where T conforms Display
 = {
-    return value ~ display()
+    return value ~ display
 }
 
 let label = render(id)

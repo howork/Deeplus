@@ -39,7 +39,7 @@
       "public enum ActorMessageError { mailboxFull; receiverClosedBeforeAdmission; receiverClosedBeforeReply; }"
     ],
     "responsibility": "closed recoverable actor admission and post-admission receiver-closure failure family; Cancellation remains a distinct control axis",
-    "notes": "One-way MessageSuffix returns Result<Unit, error ActorMessageError>; request MessageSuffix returns immediate Result<Task<T>, error ActorMessageError>; product support NOT_RUN",
+    "notes": "One-way actor :~ transport returns Result<Unit, error ActorMessageError>; request :~ transport returns immediate Result<Task<T>, error ActorMessageError>; :~ never implicitly suspends or retries; product support NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -52,7 +52,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "2ef0581145255199e467472c91e8ce91e2c08962390cb077f321cac6a91db094"
+    "normalized_contract_sha256": "e7f57541209636edbedfa0f65109ee79e68bcfa5b4e430750283fe9709290ec6"
   },
   {
     "entry_id": "add_rhs",
@@ -450,7 +450,7 @@
       "public trait Display { +def display.() -> String throws Never effects {}; }"
     ],
     "responsibility": "borrowed deterministic synchronous non-consuming string interpolation rendering/display with throws Never and no hidden authority; not serialization, parsing, localization, provider lookup, or redaction authority",
-    "notes": "Enum case display mapping is PREVIEW_DESIGN/nonactivatable and may synthesize only one whole-Enum witness after its gates close; case and alias witnesses remain zero.",
+    "notes": "Enum case display mapping is Stable/current and may synthesize exactly one whole-Enum witness under the closed Enum contract; case and alias witnesses remain zero.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -466,7 +466,7 @@
     "absorbed_entry_ids": [
       "display_025"
     ],
-    "normalized_contract_sha256": "780457fa8b6d663b6fe01721d2792a1c8e3c8fdea33f81c795be38523c00f50f"
+    "normalized_contract_sha256": "37d45f09649fe629d72c235776de7fd17008a8613c549d16aef2d3dfa70e7646"
   },
   {
     "entry_id": "exit_code",
@@ -1247,7 +1247,7 @@
       "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
     ],
     "responsibility": "nominal total-order evidence for T; compare borrows both operands, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign contractually meaningful and stable; never an operator-glyph hook",
-    "notes": "Zero is the ground equality relation and trichotomy, transitivity, and antisymmetry are required. Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence. Enum declaration-order derivation is PREVIEW_DESIGN/nonactivatable.",
+    "notes": "Zero is the ground equality relation and trichotomy, transitivity, and antisymmetry are required. Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence. Enum declaration-order derivation is Stable/current under the closed declaration-order contract.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1260,7 +1260,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "4a47e2cd9a9f71f1d92a00fcda0a35615219ecf53f1fc4e74a03b6621082dc4c"
+    "normalized_contract_sha256": "5007bcde9d2e36f82c59f599dfad3bbeb5edd5120f880dd2b8dd65cc37f6527f"
   },
   {
     "entry_id": "owned_downcast_op",

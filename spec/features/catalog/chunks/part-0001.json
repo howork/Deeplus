@@ -130,7 +130,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Actor syntax owners are closed; mailbox admission and message result semantics are supplied by the current actor coherence contract without new syntax.",
+    "notes": "Actor syntax owners are closed. Stable actor transport uses terminal rank-15 :~ inside the unified CallExpr family; mailbox admission and message result semantics are supplied by the current actor coherence contract.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -156,7 +156,8 @@
       ],
       "productions": [
         "ActorBody",
-        "ActorDecl"
+        "ActorDecl",
+        "TildeCallLed"
       ],
       "semantic_reference_productions": []
     },
@@ -235,7 +236,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Protocol send and request requirements remain distinct; admission returns are fixed by the actor coherence contract and never inferred from ordinary method dispatch.",
+    "notes": "Protocol on and request requirements remain distinct. :~ statically selects one actor operation, never falls back to ordinary/message dispatch, and immediately returns the exact admission Result fixed by the actor coherence contract.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -248,7 +249,10 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
-        "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN"
+        "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN",
+        "ACTOR_OPERATION_KIND_COLLISION",
+        "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
       ],
       "predicates": [
         "ActorProtocolGateAdmitted",
@@ -264,7 +268,9 @@
         "ActorProtocolBody",
         "ActorProtocolDecl",
         "ActorProtocolRequestRequirement",
-        "ActorProtocolSendRequirement"
+        "ActorProtocolSendRequirement",
+        "TildeCallLed",
+        "TildeCallToken"
       ],
       "semantic_reference_productions": []
     },
@@ -291,7 +297,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "A request expression immediately returns Result<Task<T>, error ActorMessageError>; source extracts Task<T> before explicit await, and receiver closure before reply terminates that admitted task through its declared failure axis.",
+    "notes": "An actor :~ request immediately returns Result<Task<T>, error ActorMessageError>; source extracts Task<T> before explicit await, and receiver closure before reply terminates that admitted task through its declared failure axis. :~ itself never suspends or retries.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -303,7 +309,10 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "ACTOR_OPERATION_KIND_COLLISION",
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+      ],
       "predicates": [
         "ActorProtocolGateAdmitted"
       ],
@@ -315,7 +324,8 @@
       ],
       "productions": [
         "ActorProtocolRequestRequirement",
-        "ActorRequestDecl"
+        "ActorRequestDecl",
+        "TildeCallLed"
       ],
       "semantic_reference_productions": []
     },
@@ -1763,50 +1773,5 @@
     "language_status": "Stable design",
     "source_activation": "none",
     "notes": "Stable finite-universe flags specialization; same-nominal &&, ||, ^^ and ~~ return the flags type and mask to the known universe. Product implementation NOT_RUN."
-  },
-  {
-    "feature_id": "bitfield_layout_digest_tooling",
-    "display_name": "Bitfield layout digest tooling",
-    "baseline": "0.1.2-baseline.r51f3",
-    "feature_kind": "canonical_feature",
-    "authority_set": [
-      "OFFICIAL_TOOLING",
-      "EVIDENCE",
-      "TYPE_SYSTEM"
-    ],
-    "authority": "OFFICIAL_TOOLING / EVIDENCE / TYPE_SYSTEM",
-    "primary_source": "spec/language.md",
-    "trace_class": "tooling",
-    "depends_on": [
-      "bitfield_unsigned_strict_layout_msp"
-    ],
-    "artifact_trace_refs": [],
-    "normative_trace_refs": {
-      "productions": [],
-      "semantic_reference_productions": [],
-      "diagnostics": [
-        "BITFIELD_LAYOUT_DIGEST_INCOMPLETE"
-      ],
-      "predicates": [
-        "ApiContractDigestProjection"
-      ],
-      "examples": []
-    },
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "product_support": "NOT_RUN",
-    "production_lexer": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "formatter_lsp": "NOT_RUN",
-    "runtime_xvm": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "actual_user_team_study": "NOT_RUN",
-    "independent_conformance": "NOT_RUN",
-    "status_enum": "OFFICIAL_TOOLING",
-    "status_display": "Official tooling",
-    "language_status": "Official tooling",
-    "source_activation": "tooling",
-    "notes": "Public layout digest preserves backing, order, ordered slots, masks, reserved policy, defaults and invariants."
   }
 ]

@@ -16,7 +16,7 @@
 | 분류 | 현재 관측값 | 소스 의미 |
 |---|---:|---|
 | feature registry의 `PREVIEW` | 3 | `explicit_feature_gate`가 있는 Preview 루트에서만 허용 가능 |
-| feature registry의 `PREVIEW_DESIGN` | 45 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
+| feature registry의 `PREVIEW_DESIGN` | 47 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
 | EBNF `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
 | EBNF `RECOVERY` profile | 15 production | 진단 인식 전용; 허용된 AST/HIR/MIR residue 0 |
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
@@ -177,7 +177,7 @@ RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
                  | RecoveryQuarantineScope ;
 ```
 
-45개 `PREVIEW_DESIGN` feature 가운데 quarantine과 owned/inout Facet
+47개 `PREVIEW_DESIGN` feature 가운데 quarantine과 owned/inout Facet
 family만 현재 Recovery overlay에 직접 대응하는 형태가 있다.
 `dynamic_unsafe_quarantine_scope_msp`는 `RecoveryQuarantineScope`의 정밀
 진단 probe를 사용하고, owned/inout Facet은 `RecoveryFacetPackExpr`와
@@ -263,27 +263,32 @@ production을 발명해서는 안 된다.
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
 | `contextual_operation_anchor_dmad` | 일반화된 `&expr` context/provider anchor | NumericArray에 한정된 현행 `&` owner 밖으로 확장하지 않음 |
-| `guard_callable_refinement_summary_preview_design` | 새 syntax 없이 eligible `def#guard`의 versioned finite-R0 true/false API summary | direct truth-test와 stable actual에만 `Phi` fact를 추가하며 current opaque call과 exhaustiveness는 유지 |
 | `dependent_refinement_value_capture` | value-capturing refinement surface 미선정 | decidability, lifetime, substitution, public API 및 runtime dependency 금지 필요 |
 | `explicit_broadcast_marker_msp` | 후보 `matrix + &row` | `&` polarity가 context anchor와 충돌하며 현행 source가 아님 |
 | `explicit_context_argument_ampersand_spelling` | 후보 `&expr` argument | broadcast/context-anchor와 owner 충돌; parameter/call identity 미결 |
 | `nullsafe_control` | exact surface 미선정 | Option/match/current control과 중복되지 않는 semantics, diagnostic 및 trace가 없음 |
+| `option_let_question_binding_preview_design` | `if let?`, `while let?`, guarded `let? ... else` | `Option<T>` 한 겹만 기존 `::some` pattern으로 정규화; Result·arbitrary Enum·force unwrap·propagation으로 확대하지 않음 |
 | `solver_backed_general_refinement` | solver query/API와 source surface 미선정 | termination, resource budget, proof reproducibility, provider authority 및 ABI stability 필요 |
 | `use_site_projection_dmad` | Java/Kotlin형 use-site projection 후보; exact Deeplus spelling 미선정 | Phase A role-named facade와 variance law를 우선하며 ABI/API residue 미결 |
 
-### Registry 전체 분류 — 수용된 Enum successor 설계
+### Registry 전체 분류 — 수치 capability, Rational과 `std::math`
 
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
-| `enum_declaration_order_ord_preview_design` | 정확히 하나의 `enum#increasing` 또는 `enum#decreasing` | payload-free/nonempty/nongeneric whole-Enum `Ord` witness; glyph routing·raw·tag·layout·ABI와 분리 |
-| `enum_case_display_mapping_preview_design` | case-owned `~>` restricted String template | inhabitable case 전체를 all-or-none으로 매핑하고 whole-Enum `Display` witness 하나만 생성 |
-| `enum_exact_variant_subset_alias_preview_design` | enum body의 `+type Weekend = Sat \| Sun` | 같은 owner의 payload-free `VariantId` finite set; owner widening은 lossless, narrowing은 checked |
+| `numeric_capability_lattice_preview_design` | `Numeric`, `ExactNumeric`, `ApproximateNumeric`, `IntegralNumeric`, `RealScalar`, `BinaryFloating`, `ComplexScalar` | generic capability 요구만 표현하며 representation subtyping, implicit conversion, `Ord`/`Hash`/`Keyable`, 함수 또는 glyph를 자동 부여하지 않음 |
+| `rational_operator_completion_preview_design` | Rational division·정수 지수 power와 `remainderTrunc`/`modEuclid`/`divRemTrunc` | exact result/error algebra 후보이며 remainder glyph와 mixed-type conversion은 deferred; arbitrary custom operator는 거부되어 후보가 아님 |
+| `integer_imaginary_literal_preview_design` | identifier boundary의 unsuffixed 10진 정수와 붙은 `i`; 기본 `Complex<Float64>` | `4u8i`, `0x4i`와 `4index` 분할을 거부하며 현행 `4.0i`를 자동 rewrite하지 않음 |
+| `std_math_special_preview_design` | `std::math` special 함수군의 별도 profile | 함수 목록·domain/branch·accuracy·error carrier가 미확정이며 core facade의 `STDLIB_PROFILE`과 분리 |
+| `std_math_calculus_preview_design` | `Result<Estimate<T>, error NumericAnalysisError<T>>`를 반환하는 수치 calculus 후보 | symbolic/automatic differentiation이 아니며 algorithm, tolerance, effect·ownership 및 재현성 계약 필요 |
 
-세 기능은 current `EnumDecl`, mixed payload, marker `.`, `+`, `*.`, `*+`,
-lowercase `via`를 변경하지 않는다. order는 `SemanticOrderRank`, display는
-표현 동작, subset은 resolution identity이며 raw/serialization/layout/ABI와
-독립이다. payload ordering, payload-bearing exact variant, automatic reverse
-parsing, subset range/iteration 및 bundled Trait derivation은 deferred다.
+### Stable로 승급되어 Preview 목록에서 제외된 항목
+
+`def#guard`의 `GuardSummaryV1`, Enum declaration-order `Ord`, case-owned
+Display mapping과 exact-variant subset alias는 Stable로 승급되었다.
+현행 문법과 의미는 [타입, generic과 refinement](04-types-generics-and-refinement.md#guard-callable-refinement-summary)와
+[Enum, Record, schema, bitfield와 단위](07-enums-records-schemas-bitfields-and-units.md)를
+따른다. 이 장의 Preview gate나 nonactivatable 판정은 이 네 기능에
+적용되지 않는다.
 
 ### Registry 전체 분류 — 수용된 collection successor 설계
 
@@ -300,7 +305,7 @@ actor crossing을 암시하지 않는다.
 
 ### 기계 검증 가능한 Preview Design 도입 검토 카드
 
-다음 45개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
+다음 47개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
 일대일이다. 각 필드는 비어 있을 수 없으며, 구문이나 API가 아직
 선택되지 않은 경우에도 그 사실과 현재 대안을 명시한다. 카드의 존재는
 활성화가 아니라 도입 검토 가능성을 보장한다.
@@ -308,6 +313,51 @@ actor crossing을 암시하지 않는다.
 <!-- deeplus-preview-design-review-cards: begin -->
 ```json
 [
+  {
+    "feature_id": "integer_imaginary_literal_preview_design",
+    "motivation": "복소수 표면에서 정수처럼 보이는 허수부를 4i로 간결하게 쓰되 suffix와 maximal-munch 경계를 닫으려는 제안이다.",
+    "surface_or_api": "unsuffixed 10진 정수에 붙은 i만 후보이며 기본 결과는 Complex<Float64>이고 4u8i, 0x4i와 4index 분할은 허용하지 않는다.",
+    "static_semantics_and_interactions": "expected type이 typed imaginary를 제조하지 않고 lexical boundary, magnitude, unary minus와 Complex 연산 규칙을 분리해야 한다.",
+    "diagnostics_migration_tooling": "현행 4.0i를 자동 축약하지 않으며 invalid numeric suffix를 결정적으로 진단하고 formatter round-trip을 보장해야 한다.",
+    "open_alternatives": "현행 floating imaginary literal이 대안이며 radix·typed integer imaginary와 arbitrary suffix adaptation은 거부한다.",
+    "activation_prerequisites": "exact lexical table, AST/HIR/MIR identity, representability 규칙, negative corpus와 backend parity receipt가 필요하다."
+  },
+  {
+    "feature_id": "numeric_capability_lattice_preview_design",
+    "motivation": "generic 수치 알고리즘이 구체 표현에 묶이지 않고 필요한 연산 능력을 명시하도록 얇은 capability 분류를 검토한다.",
+    "surface_or_api": "Numeric, ExactNumeric, ApproximateNumeric, IntegralNumeric, RealScalar, BinaryFloating, ComplexScalar의 정확한 일곱 이름이 후보이다.",
+    "static_semantics_and_interactions": "membership는 representation subtyping, implicit conversion, Ord, Hash, Keyable, remainder, transcendental 함수나 glyph activation을 뜻하지 않는다.",
+    "diagnostics_migration_tooling": "기존 concrete type과 Trait bound를 자동 rewrite하거나 후보 capability의 alias로 재해석하지 않는다.",
+    "open_alternatives": "현행 concrete numeric type 또는 기존 Trait bound가 대안이며 ambient conversion과 open capability 제조는 거부한다.",
+    "activation_prerequisites": "partial order, 최소 operation set, generic satisfaction·ambiguity 규칙, checker contract와 target-bound conformance receipt가 필요하다."
+  },
+  {
+    "feature_id": "rational_operator_completion_preview_design",
+    "motivation": "Rational의 exact 성질을 보존하면서 division, 정수 지수 power와 이름 있는 remainder API의 빈틈을 닫으려는 제안이다.",
+    "surface_or_api": "Rational / Rational, Rational ^ ExactBuiltinInteger와 remainderTrunc, modEuclid, divRemTrunc가 후보이고 remainder glyph는 deferred이다.",
+    "static_semantics_and_interactions": "음수 지수는 허용하되 implicit mixed-type conversion, arbitrary exponent type와 custom operator 등록은 만들지 않는다.",
+    "diagnostics_migration_tooling": "integer·floating 계산을 자동 Rational로 승격하거나 named remainder를 glyph로 rewrite하지 않는다.",
+    "open_alternatives": "현행 명시적 Rational library function이 대안이고 implicit conversion과 새 remainder glyph는 비활성이다.",
+    "activation_prerequisites": "exact result/error algebra, zero·부호 경계, normalization, diagnostic oracle와 xVM/LLVM 실행 receipt가 필요하다."
+  },
+  {
+    "feature_id": "std_math_calculus_preview_design",
+    "motivation": "수치 미분·적분·근 찾기의 근삿값, 오차와 수렴 실패를 하나의 명시적 carrier로 제공할 수 있는지 검토한다.",
+    "surface_or_api": "후보 결과는 Result<Estimate<T>, error NumericAnalysisError<T>>이며 구체 algorithm 이름과 signature는 미확정이다.",
+    "static_semantics_and_interactions": "callback type/effect, tolerance, budget와 interval을 명시하고 expected result나 runtime sample로 overload를 선택하지 않아야 한다.",
+    "diagnostics_migration_tooling": "ordinary closure를 자동 calculus 호출로 감싸거나 finite difference를 symbolic 또는 automatic differentiation으로 표시하지 않는다.",
+    "open_alternatives": "현행 application·library의 명시적 반복 알고리즘이 대안이며 silent convergence fallback은 거부한다.",
+    "activation_prerequisites": "algorithm family, Estimate invariant, effect·ownership·cancellation, oracle corpus와 backend 정확도·재현성 receipt가 필요하다."
+  },
+  {
+    "feature_id": "std_math_special_preview_design",
+    "motivation": "gamma, error function, Bessel 계열처럼 강한 정의역·정확도 계약이 필요한 함수를 별도 std::math profile로 검토한다.",
+    "surface_or_api": "std::math의 special namespace 후보이지만 함수 폐쇄 목록, overload 행과 result/error carrier는 아직 미선정이다.",
+    "static_semantics_and_interactions": "normalized argument type으로만 dispatch하며 real/complex domain, poles와 branch cut를 family별로 닫아야 한다.",
+    "diagnostics_migration_tooling": "기존 호출을 자동 이동하거나 플랫폼 C 결과를 Deeplus portability 보증으로 재표시하지 않는다.",
+    "open_alternatives": "현행 std::math core 또는 검증된 외부 library가 대안이고 implicit conversion과 ambient precision은 거부한다.",
+    "activation_prerequisites": "함수 목록, domain/codomain, accuracy metric, determinism, diagnostic carrier와 다중 backend 참조값 receipt가 필요하다."
+  },
   {
     "feature_id": "async_callable_literal_profile",
     "motivation": "중단 가능한 호출 가능 값을 이름 있는 선언 없이 안전하게 전달하려는 제안이다.",
@@ -521,7 +571,7 @@ actor crossing을 암시하지 않는다.
     "surface_or_api": "value.member(...) 후보가 있으나 selector와 activation 경계의 exact surface는 미선정이다.",
     "static_semantics_and_interactions": "dot/member, extension, tilde pipeline과 actor message domain을 합치지 않고 ambiguity/coherence를 닫아야 한다.",
     "diagnostics_migration_tooling": "tilde 또는 explicit selector를 자동 dot으로 바꾸지 않으며 후보 출처 진단과 completion 구분이 필요하다.",
-    "open_alternatives": "현행 value ~ extension::name(...)와 명시적 selector가 대안이고 ordinary member fallback은 거부한다.",
+    "open_alternatives": "현행 value ~ extension::name arguments와 명시적 selector가 대안이고 ordinary member fallback은 거부한다.",
     "activation_prerequisites": "ranked resolution, no-fallback law, import/link invariance, formatter와 mutation corpus가 필요하다."
   },
   {
@@ -588,15 +638,6 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "token owner 결정, exact grammar, type/effect contract, ambiguity corpus와 API digest가 필요하다."
   },
   {
-    "feature_id": "guard_callable_refinement_summary_preview_design",
-    "motivation": "재사용 가능한 def#guard의 참 결과를 호출 지점의 branch-local narrowing fact로 안전하게 전달하려는 제안이다.",
-    "surface_or_api": "새 source syntax는 추가하지 않고 요약 가능한 def#guard의 canonical finite-R0 true/false summary를 versioned API metadata에 기록하는 초기 profile이다.",
-    "static_semantics_and_interactions": "직접 truth-test, 안정된 실제 인자, capture-free finite R0 치환만 Phi에 fact를 더하며 선언 타입, guarded-arm exhaustiveness, 평가 횟수와 ownership commit은 바꾸지 않는다.",
-    "diagnostics_migration_tooling": "현행 def#guard 호출은 계속 opaque이고 summary가 없거나 검증되지 않은 호출은 narrowing하지 않으며 IDE는 선언 타입과 flow fact를 분리해 표시해야 한다.",
-    "open_alternatives": "inline R0 guard와 checked refinement conversion이 현행 대안이며 함수 이름, arbitrary helper body 또는 저장된 Bool에서 proof를 추측하는 방식은 거부한다.",
-    "activation_prerequisites": "summary schema와 canonicalizer, API digest 및 separate-compilation law, mutation-kill 알고리즘, diagnostic family, positive/negative/metamorphic corpus와 독립 target receipt가 필요하다."
-  },
-  {
     "feature_id": "dependent_refinement_value_capture",
     "motivation": "타입 refinement가 주변 값에 의존하는 관계를 정적으로 표현하려는 제안이다.",
     "surface_or_api": "value-capturing predicate syntax와 public API representation은 미선정이다.",
@@ -633,6 +674,15 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "동기와 유스케이스 승인, exact syntax, lowering, diagnostics/migration policy와 execution corpus가 필요하다."
   },
   {
+    "feature_id": "option_let_question_binding_preview_design",
+    "motivation": "Option 한 겹의 성공 payload를 기존 pattern engine으로 짧고 명시적으로 결합하려는 제안이다.",
+    "surface_or_api": "if let? Pattern = Expr Block, while let? Pattern = Expr Block, let? Pattern = Expr else Failure가 후보다.",
+    "static_semantics_and_interactions": "Option<T> 한 겹만 ::some(Pattern)으로 정규화하고 subject 단일 평가, nonconsuming test, atomic binding commit과 owner별 mismatch disposition을 보존한다.",
+    "diagnostics_migration_tooling": "let과 ?는 붙여 쓰며 Result, arbitrary Enum, nullability, force unwrap, propagation, bare local let?와 condition chain으로 확대하지 않는다.",
+    "open_alternatives": "현행 if let/while let/guarded let과 명시적 ::some pattern이 대안이다.",
+    "activation_prerequisites": "exact grammar/recovery, Option-only typing, ownership/guard/exhaustiveness corpus, formatter/LSP와 target receipt가 필요하다."
+  },
+  {
     "feature_id": "solver_backed_general_refinement",
     "motivation": "finite R0보다 풍부한 수학적 predicate를 정적 증명에 사용하려는 제안이다.",
     "surface_or_api": "solver query, proof annotation과 source predicate calculus는 미선정이다.",
@@ -649,33 +699,6 @@ actor crossing을 암시하지 않는다.
     "diagnostics_migration_tooling": "기존 generic 인수를 자동 projection으로 바꾸지 않으며 variance/capture 진단과 signature display가 필요하다.",
     "open_alternatives": "명시적 facade Trait와 invariant generic이 대안이고 wildcard 기반 hidden capture는 거부한다.",
     "activation_prerequisites": "normative variance calculus, exact syntax, substitution/capture algorithm, ABI/API tests와 migration plan이 필요하다."
-  },
-  {
-    "feature_id": "enum_declaration_order_ord_preview_design",
-    "motivation": "선언 순서를 명시적으로 선택한 Enum에서만 안전한 전체 순서를 파생하려는 제안이다.",
-    "surface_or_api": "정확히 하나의 enum#increasing 또는 enum#decreasing modifier가 후보다.",
-    "static_semantics_and_interactions": "payload-free, nonempty, nongeneric whole-Enum에 SemanticOrderRank와 Ord witness 하나를 만들며 raw/tag/layout/ABI와 분리한다.",
-    "diagnostics_migration_tooling": "final registry code는 미선정이고 기존 Enum을 자동 modifier화하지 않으며 declaration-order 변화 진단과 formatter 보존이 필요하다.",
-    "open_alternatives": "명시적 compare 함수가 현행 대안이고 payload ordering, case-local witness와 raw ordinal 재사용은 거부한다.",
-    "activation_prerequisites": "TCC/CE P1 closure, witness conflict 규칙, link summary, diagnostics와 permutation 실행 receipt가 필요하다."
-  },
-  {
-    "feature_id": "enum_case_display_mapping_preview_design",
-    "motivation": "Enum case의 사용자 표시를 owner 가까이에 전체적으로 정의하려는 제안이다.",
-    "surface_or_api": "case-owned ~> restricted String template가 후보다.",
-    "static_semantics_and_interactions": "inhabitable case 전체의 all-or-none mapping과 whole-Enum Display witness 하나를 요구하며 parsing/serialization과 분리한다.",
-    "diagnostics_migration_tooling": "partial mapping fallback과 자동 reverse parser를 만들지 않으며 missing/impure template 진단 및 formatter round-trip이 필요하다.",
-    "open_alternatives": "명시적 display match 함수가 현행 대안이고 partial default, runtime effect와 case-local witness는 거부한다.",
-    "activation_prerequisites": "restricted template grammar, purity checker, TCC/CE evidence, diagnostic binding과 target corpus가 필요하다."
-  },
-  {
-    "feature_id": "enum_exact_variant_subset_alias_preview_design",
-    "motivation": "같은 Enum의 정확한 case 부분집합을 타입 안전한 alias로 표현하려는 제안이다.",
-    "surface_or_api": "enum body의 +type Weekend = Sat | Sun 형태가 후보다.",
-    "static_semantics_and_interactions": "payload-free same-owner VariantId finite set이며 owner widening은 lossless, narrowing은 checked이고 range/iteration과 분리한다.",
-    "diagnostics_migration_tooling": "case 목록을 자동 subset으로 만들지 않으며 foreign/payload variant 진단과 rename/navigation 보존이 필요하다.",
-    "open_alternatives": "closed Union 또는 explicit predicate가 현행 대안이고 cross-owner subset과 implicit narrowing은 거부한다.",
-    "activation_prerequisites": "frozen VariantId universe, exact grammar, narrowing API, exhaustiveness integration과 CE/TCC receipt가 필요하다."
   },
   {
     "feature_id": "literal_shaped_collection_type_surface_preview_design",
@@ -722,7 +745,7 @@ actor crossing을 암시하지 않는다.
 | 권위 행 | 보존되는 설계 | 활성화 fence |
 |---|---|---|
 | `DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW` | literal-shaped type와 immutable-first/freeze-snapshot-view 책임 | nonactivatable, current indexing/Prelude 불변 |
-| `DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-PREVIEW` | order, display, exact subset | nonactivatable, current Enum 불변 |
+| `DSGN-OPTION-LET-QUESTION-BINDING-PREVIEW` | Option 한 겹의 `let?` binding sugar | nonactivatable, 기존 pattern engine과 Option identity 불변 |
 | `DSGN-QUARANTINE` | dynamic/unsafe quarantine minimum profile | Recovery probe만 존재 |
 | `DSGN-POST-PR16-TRAIT-BASE` | `TC-R001..R016` | successor only, current conformance/`via` 불변 |
 | `DSGN-POST-PR16-TRAIT-GUARDS` | `TCC-DG-001..008`, `TCC-DG-P2-009/A/B` | VIA/AUTO, specialization, child-local witness 비활성 |
@@ -738,14 +761,14 @@ actor crossing을 암시하지 않는다.
 | Trait Conformance | requirement·witness·parent evidence를 source/import/link 순서와 무관하게 하나로 닫기 | `RequirementId`, canonical ground conformance key, `SupertraitLink`; 최초 successor route 후보는 DIRECT뿐이며 source spelling은 미선정 | global coherence, locality, overlap rejection, associated binding closure, no specialization/priority, closed MIR evidence | `TC-R016`의 1..10 진단 rank; current lowercase `via` rewrite 금지; `TCC-P1-002..008` 모두 OPEN |
 | Class/Enumeration CE-G6 | owner identity, construction/formation, cleanup, dispatch 및 evolution lane의 역할 혼동 제거 | `ClassResponsibilityDescriptor`, `ClassSlotId`, `EnumDescriptor`, `EnumId`, `VariantId`, `VariantFormationPlanId`; current syntax는 유지 | Class/Enum/Trait dispatch domain 분리, `PC-09` terminal tier, `PC-10` 8개 독립 lane, `X-01..X-10`은 owner-closed input만 소비 | final diagnostic registry ID는 null; E-02/E-06 migration default와 auto rewrite 없음; CE 14개와 TCC 7개 P1 OPEN |
 | Static-first Dyn/Facet | 닫힌 정적 대안을 먼저 사용하고 open-world boundary에서만 명시적 dynamic carrier를 허용 | explicit owned Dyn pack, immutable `FacetRegistry<Trait>` borrow projection 등의 설계 identity; exact source route 미선정 | compiler retry/fallback/order winner 0, provenance·drop·owner·cast failure를 명시, borrow Facet current 유지 | `SFD-P1-001..008` 정적 폐쇄를 되돌리지 않음; 실행은 별도 `SFD-P1-009`; formatter/runtime route와 product claim 없음 |
-| Enum-derived capability | order/display/subset을 raw/tag/layout이나 case-local witness 없이 owner 수준에서 표현 | `enum#increasing`/`enum#decreasing`, case `~>` template, `+type` exact subset 후보 | whole-Enum witness 하나, restricted pure template, finite same-owner subset 및 checked narrowing | explicit same-ground witness conflict는 terminal; P1/TCC gate와 link summary/diagnostic/execution evidence 필요 |
+| Stable Enum-derived capability | order/display/subset을 raw/tag/layout이나 case-local witness 없이 owner 수준에서 표현 | `enum#increasing`/`enum#decreasing`, case `~>` template, `+type` exact subset | whole-Enum witness 하나, restricted pure template, finite same-owner subset 및 checked narrowing | `STABLE_DESIGN`; explicit same-ground witness conflict는 terminal이고 제품 실행은 `NOT_RUN` |
 | Literal-shaped collection | 값 literal과 닮은 읽기 쉬운 type spelling 및 immutable-first 책임 모델 | `[T]`, `#mut[T]`, `#set{T}`, `#map{K:V}`, `${label:T,...}`와 freeze/snapshot/view successor | type-goal에서 canonical identity로만 normalize; one-based index, bracket matrix, Union, ABI/serialization 불변 | parser-goal 분리, formatter round-trip, Prelude migration, borrow/MIR/actor evidence 및 target receipt 필요 |
 | Dynamic/unsafe quarantine | 불가피한 legacy/dynamic/unsafe 작업의 authority와 escape를 한 lexical owner에 가두기 | `@scope#dynamic` / `@scope#unsafe`와 typed immutable export probe | outer mutation·suspension·모든 authority/resource escape 금지, xVM/LLVM에서 하나의 MIR 의미 | 현행은 Recovery 진단만; provenance, authority accounting, escape proof 및 differential execution이 열려 있음 |
 
-Frontend model은 quarantine, Enum-derived 3개, literal-shaped 3개,
-immutable-first 및 freeze/snapshot/view를
-`preview_design_nonactivatable`로 직접 결합한다. 이 목록은 대표적인
-상세 결합이며 registry의 45개를 축소하는 대체 registry가 아니다.
+Frontend model은 Enum-derived 3개를 `stable_design_surfaces_current`에
+결합하고, quarantine, literal-shaped 3개, immutable-first 및
+freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목록은 대표적인
+상세 결합이며 registry의 47개를 축소하는 대체 registry가 아니다.
 
 ## 평가·소유권·효과
 
@@ -831,14 +854,13 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 let squared = values ^ 2
 ```
 
-<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+<!-- deeplus-status-fence: CURRENT -->
 
-### 비활성 설계 예시 — Enum order/display/subset
+### Stable 승급 참조 — Enum order/display/subset
 
-다음은 수용된 설계의 후보 표면을 함께 보여 주지만 current source가
-아니다.
+다음은 현행 Stable surface를 한 선언에서 함께 사용하는 예다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
 private enum#increasing Day {
     Mon ~> "Monday"
@@ -852,6 +874,8 @@ private enum#increasing Day {
 
 Display 설계는 inhabitable case 전체의 all-or-none mapping을 요구하며,
 partial mapping fallback은 없다.
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
 ### 비활성 설계 예시 — literal-shaped type
 

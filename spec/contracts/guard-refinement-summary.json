@@ -1,0 +1,78 @@
+{
+  "schema": "deeplus.guard-refinement-summary-contract/r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "surface_change": "NONE",
+  "summary": {
+    "schema_id": "GuardSummaryV1",
+    "owner": "an exactly selected def#guard CallableImplementationId",
+    "required": true,
+    "opaque_fallback": false,
+    "formula_domain": "finite normalized R0 Boolean reflection calculus",
+    "true_edge": "substitute the actual places into P and add P to Phi",
+    "false_edge": "substitute the actual places into not(P) and add the exact complement to Phi",
+    "declared_type_change": false,
+    "runtime_proof_object": false,
+    "second_predicate_evaluation": false,
+    "guarded_arm_exhaustiveness_effect": false
+  },
+  "identity": {
+    "required_fields": [
+      "callable_implementation_id",
+      "normalized_parameter_type_ids",
+      "normalized_formula",
+      "body_digest",
+      "summary_digest",
+      "profile_version"
+    ],
+    "api_digest_includes_summary_digest": true,
+    "stale_or_forged_summary": "reject at import or link validation",
+    "dynamic_dispatch_summary_use": false,
+    "first_class_callable_erasure_summary_use": false
+  },
+  "application": {
+    "callee": "exact direct def#guard",
+    "position": "direct truth-test that immediately creates control-flow edges",
+    "actuals": "stable places or immutable values with exact substitution",
+    "stored_bool_result": "adds no refinement fact",
+    "wrapper_call": "adds no refinement fact",
+    "arbitrary_helper_call": "adds no refinement fact",
+    "float_complement": "logical not(P), never an algebraic rewrite that erases NaN behavior"
+  },
+  "kill_events": [
+    "subject assignment",
+    "aliasing mutation",
+    "exclusive borrow",
+    "escape or mutable capture",
+    "consume",
+    "suspension",
+    "call that may mutate or consume the subject"
+  ],
+  "diagnostics": [
+    "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+    "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+    "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+    "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+    "GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
+    "GUARD_REFINEMENT_SUMMARY_METADATA_STALE"
+  ],
+  "predicates": [
+    "GuardRefinementSummaryAdmitted",
+    "GuardCallRefinementApplied"
+  ],
+  "machine_acceptance": {
+    "summary_schema_count": 1,
+    "opaque_fallback_count": 0,
+    "runtime_proof_object_count": 0,
+    "second_runtime_evaluation_count": 0,
+    "exhaustiveness_fact_count": 0,
+    "product_execution_receipt_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0
+  }
+}
