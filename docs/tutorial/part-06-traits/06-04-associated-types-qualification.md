@@ -132,8 +132,6 @@ public conformance Token conforms DefaultToken {
     let ::code = 0
 
     def ::make() -> Token
-        throws Never
-        effects {}
     = {
         return Token::fromInt(<Token as DefaultToken>::code)
     }

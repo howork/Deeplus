@@ -186,9 +186,8 @@ let invalid = renderOne(Accidental!())
 // STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN
 ```
 
-두 번째 실험으로 custom `operator <+>` declaration을 작성한 뒤
-`CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`가 왜 올바른 경계인지 설명하라.
-그 코드를 positive 예제로 바꾸지 않는다.
+두 번째 실험으로 admitted set 밖 glyph을 conformance dispatch에
+사용할 수 없는 이유와 named API가 일반 확장 경로인 이유를 설명하라.
 
 ## 확장 과제
 

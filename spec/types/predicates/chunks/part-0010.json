@@ -269,14 +269,11 @@
     ],
     "feature_refs": [
       "closed_operator_symbols_open_named_extensions",
-      "custom_operator",
       "operator_precedence_table_phase_a",
       "range_step_expression_surface_clarification"
     ],
     "diagnostic_refs": [
-      "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-      "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-      "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+      "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
@@ -305,17 +302,15 @@
     ],
     "normalization": "longest token, exact Pratt entry, structural owner before lookup",
     "decision_procedure": [
-      "reject custom/table extension with CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
       "require exact token/binding/associativity/parselet or OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-      "range admits .. and ..<; infix .../..> emits RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+      "range admits .. and ..<; ... remains owned by repeated positional and comprehension unfold structures",
       "slice-index stops before range/;/]; preserve structural ...; admit without lookup"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
+    "active_primary_diagnostic": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
     "secondary_diagnostics": [
-      "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-      "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+      "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
     ],
     "positive_fixture_ids": [
       "PF-OperatorPrecedenceTablePhaseAAdmitted-POS"

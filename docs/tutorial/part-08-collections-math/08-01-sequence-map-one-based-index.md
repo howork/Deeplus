@@ -29,6 +29,7 @@ coordinate는 `1..length`이고 backend offset은 별도 `index - 1` projection�
 | carrier | index domain | 결과 |
 |---|---|---|
 | `List<T>` | `1..length` | read-only `T` |
+| `ListRestView<T>` | 원본 List coordinate span | borrowed remainder element |
 | `String` | `1..UnicodeScalarCount` | `Char` |
 | `Bytes` | `1..byteCount` | `UInt8` |
 | bounded List | 선언 `L..U` | read-only element |
@@ -37,6 +38,12 @@ coordinate는 `1..length`이고 backend offset은 별도 `index - 1` projection�
 
 Set은 bracket이 없고 iteration order가 semantic API가 아니다. Tuple은
 static `.1`, Record는 static label로 선택한다.
+
+`ListRestView<T>`는 borrowed List Pattern의 captured remainder 전용
+closed carrier다. 원본 owner region과 coordinate projection을 보존하며
+길이는 0일 수 있다. 이 carrier의 intrinsic `Sequence<T>` witness는
+traversal을 허용하지만 generic `Sequence` conformance가 bracket이나
+Pattern decomposition을 자동 생성한다는 뜻이 아니다.
 
 ## 6. 단계별 예제
 
@@ -116,6 +123,19 @@ let secure = ports["https"]
 Map lookup은 `String` key identity를 사용한다. 없는 key를 `Option`이나
 0-based index로 바꾸지 않는다.
 
+### 6.4 Pattern rest도 coordinate를 보존한다
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+if let [first, ..middle.., last] = values {
+    inspect(middle)
+}
+```
+
+`middle`의 type은 borrowed `ListRestView<T>`다. 첫 element의 coordinate는
+원본 `values`에서 차지하던 coordinate이며 1로 자동 rebase되지 않는다.
+독립 List가 필요하면 명시적인 copy/materialization API를 호출한다.
+
 ## 7. 허용·거부·경계 사례
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: INDEX_OUT_OF_LOGICAL_DOMAIN; product: NOT_RUN -->
@@ -140,6 +160,8 @@ negative-from-end index도 없다. from-end가 필요하면 slice bound의 `$`�
 - comprehension은 Sequence traversal을 사용하지만 eager collection
   identity를 명시한다.
 - slice 결과는 `ReadonlyView`이며 source coordinate를 보존한다.
+- Pattern remainder는 `ListRestView`이며 source owner와 coordinate를
+  보존한다.
 - Map의 `**base` unfold와 Record named unfold는 서로 다르다.
 - String index는 byte나 grapheme가 아니라 Unicode scalar `Char`다.
 

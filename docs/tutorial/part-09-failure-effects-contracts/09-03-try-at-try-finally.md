@@ -9,7 +9,8 @@
 ## 2. 학습 목표
 
 - statement `try`와 value `@try`를 구분한다.
-- catch pattern의 irrefutability 조건을 이해한다.
+- refutable catch Pattern의 source-order 선택과 irrefutable catch 이후의
+  도달 불가능성을 이해한다.
 - finally가 값을 만들지 않는다는 법칙을 적용한다.
 - body failure와 cleanup failure의 우선순위를 추적한다.
 
@@ -89,10 +90,13 @@ try {
 // BARE_TRY_WITHOUT_HANDLER_OR_FINALLY_NOT_CURRENT 계열
 ```
 
-catch header는 binder, wildcard, 또는 남은 ErrorSet에서 checker가
-irrefutable하다고 증명한 transactional Pattern이어야 한다. 일부 variant만
-시험하고 실패하면 다음 catch로 넘기는 runtime dispatch는 현행이 아니다.
-Defect와 Cancellation도 catch residual에 들어오지 않는다.
+catch header는 transactional Pattern과 선택적인 pure Bool guard를
+사용할 수 있다. catch는 source order로 검사하며 Pattern과 guard가 모두
+성공한 첫 절만 binder를 commit한다. Pattern mismatch나 false guard는
+부분 binding·move·borrow를 남기지 않고 다음 catch로 진행한다. 끝까지
+일치하지 않은 recoverable Error는 `finally` 뒤 바깥으로 전파된다. 남은
+ErrorSet 전체를 받는 irrefutable catch 뒤의 절은 도달할 수 없다. Defect와
+Cancellation은 catch residual에 들어오지 않는다.
 
 body와 cleanup/finally가 함께 실패할 때의 정본 순서는 다음 네 행으로
 추적한다. “suppressed”는 실패를 지운다는 뜻이 아니라 primary 뒤에
@@ -133,7 +137,9 @@ primary가 된다. `@try`에서도 계산된 성공값이 cleanup failure를
 ### 판정 추적
 
 먼저 statement/value owner를 고르고, body에서 남는 ErrorSet을 계산한
-다음 각 catch pattern의 irrefutability와 residual 제거를 확인한다.
+다음 각 catch Pattern과 guard의 성공·실패, residual propagation을
+source order로 확인한다. 남은 ErrorSet 전체를 받는 irrefutable catch가
+나오면 뒤 절은 도달 불가능하다고 판정한다.
 정상 경로라면 `@try` value join을 계산하고, 그 뒤에 finally와 lexical
 cleanup event를 실제 실행 순서로 붙인다. 마지막으로 위 표에 따라
 primary와 suppressed 배열을 만든다. scheduler 완료 시점이나 source에
@@ -142,9 +148,10 @@ primary와 suppressed 배열을 만든다. scheduler 완료 시점이나 source�
 ### 흔한 오해
 
 `finally`가 마지막에 있으니 항상 그 실패가 primary라고 생각하기 쉽지만
-이미 body failure가 있으면 틀리다. 또 catch pattern을 일반 match arm처럼
-부분 일치 dispatch에 쓸 수 있다고 오해하기 쉽다. 현행 catch는 남은
-ErrorSet을 확실히 받는 header이며, 값 계산은 `@try`의 ValueBody가
+이미 body failure가 있으면 틀리다. catch Pattern은 부분 일치할 수
+있지만 ordinary match subject를 임의로 여는 기능은 아니다. ErrorSet의
+admitted Pattern carrier와 pure guard만 source order로 검사하며, 첫
+성공 뒤에는 다음 catch를 시도하지 않는다. 값 계산은 `@try`의 ValueBody가
 소유한다.
 
 ## 9. Deeplus다운 작성 관례
@@ -165,6 +172,8 @@ ErrorSet을 확실히 받는 header이며, 값 계산은 `@try`의 ValueBody가
 
 - `try`는 statement, `@try`는 value expression이다.
 - bare statement try는 현행이 아니다.
+- refutable catch는 첫 성공을 선택하고, irrefutable catch 뒤의 절은
+  도달 불가능하다.
 - finally는 값을 만들지 않고 처리되지 않은 Error 뒤에도 실행된다.
 - Defect와 Cancellation은 catch 대상이 아니다.
 

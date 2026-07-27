@@ -18,7 +18,7 @@
 ## 2. 공통 풀이 순서
 
 1. 입력과 기대 결과를 값이 아니라 type까지 적는다.
-2. Current/Preview/Recovery 상태를 표시한다.
+2. Current/Preview 상태를 표시한다.
 3. owner와 mutable place를 표시한다.
 4. throws/effect/cancellation을 signature에 쓴다.
 5. pattern이면 test와 binding commit을 분리한다.

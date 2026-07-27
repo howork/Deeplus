@@ -62,8 +62,6 @@ ownership/effect source도 commit plan을 남긴다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def update(inout value: Counter, delta: Int) -> Unit
-    throws Never
-    effects {}
 = {
     value.count += delta
 }

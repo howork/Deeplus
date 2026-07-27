@@ -66,7 +66,7 @@ Rust 자료는 완성 프로그램을 먼저 만들고 ownership·move·referenc
 
 Deeplus는 다음 이유로 단순한 “문법 한 번 훑기”보다 긴 과정이 필요하다.
 
-1. 기능 상태가 Current, Preview gated, Preview Design, Recovery,
+1. 기능 상태가 Current, Preview gated, Preview Design으로
    Removed로 나뉜다.
 2. 타입, pattern, ownership, effect, actor가 독립 기능이 아니라 서로
    증거를 주고받는다.

@@ -710,5 +710,653 @@
     "violated_condition": "slot dependency graph is cyclic",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SequencePositionalRestAdmitted-POS",
+    "predicate_id": "SequencePositionalRestAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "[first, ..middle.., last]",
+      "carrier": "List<Int>",
+      "rest_type": "ListRestView<Int>",
+      "rank_span": {
+        "start": 2,
+        "count": 2
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ListRestView<Int>"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SequencePositionalRestAdmitted-NEG",
+    "predicate_id": "SequencePositionalRestAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_REST_CARRIER_NOT_ADMITTED",
+    "violated_condition": "the carrier has no admitted intrinsic Sequence witness",
+    "descriptor": {
+      "surface": "[head, ..tail]",
+      "carrier": "OpaqueBag<Int>",
+      "sequence_witness": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "OpaqueBag<Int>"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TupleProductSurfaceAdmitted-POS",
+    "predicate_id": "TupleProductSurfaceAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "return_type_surface": "Int, String",
+      "return_value_surface": "3, \"three\"",
+      "normalized_carrier": "Tuple<Int,String>"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Tuple<Int,String>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TupleProductSurfaceAdmitted-NEG",
+    "predicate_id": "TupleProductSurfaceAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+    "violated_condition": "bare comma appears in a general expression goal",
+    "descriptor": {
+      "surface": "consume(1, 2), 3",
+      "goal": "general_expression"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedBareCommaExpression"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StructuredRecordMapPatternAdmitted-POS",
+    "predicate_id": "StructuredRecordMapPatternAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "record_surface": "${name, renamed:id, ..rest}",
+      "map_surface": "#map{value:\"name\", ..rest}",
+      "exact_or_open": "explicit_residual"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "StructuredRecordMapPattern"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StructuredRecordMapPatternAdmitted-NEG",
+    "predicate_id": "StructuredRecordMapPatternAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+    "violated_condition": "an exact Record Pattern omits a declared field",
+    "descriptor": {
+      "surface": "${name}",
+      "declared_fields": [
+        "name",
+        "id"
+      ]
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ExactRecordPatternMismatch"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TransparentNominalPatternAdmitted-POS",
+    "predicate_id": "TransparentNominalPatternAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "Point${x, y}",
+      "nominal_kind": "data_class",
+      "pattern_transparent": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Point"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TransparentNominalPatternAdmitted-NEG",
+    "predicate_id": "TransparentNominalPatternAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_NOMINAL_NOT_TRANSPARENT",
+    "violated_condition": "an ordinary Class is not automatically Pattern-transparent",
+    "descriptor": {
+      "surface": "Account${id}",
+      "nominal_kind": "ordinary_class",
+      "pattern_transparent": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Account"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PinRangeRelationalPatternAdmitted-POS",
+    "predicate_id": "PinRangeRelationalPatternAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "pin_surface": "^expected",
+      "range_surface": "1..=10",
+      "domain": "Int"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Int"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PinRangeRelationalPatternAdmitted-NEG",
+    "predicate_id": "PinRangeRelationalPatternAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+    "violated_condition": "the pinned expression is not a stable value",
+    "descriptor": {
+      "surface": "^nextValue()",
+      "stable_place": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "UnstablePinnedValue"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-AssertivePatternBindingAdmitted-POS",
+    "predicate_id": "AssertivePatternBindingAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "let! ::found(value) = lookup()",
+      "mismatch_effect": "PatternMatchDefect",
+      "precommit_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "AssertivePatternBinding"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-AssertivePatternBindingAdmitted-NEG",
+    "predicate_id": "AssertivePatternBindingAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "ASSERTIVE_PATTERN_MISMATCH",
+    "violated_condition": "the runtime value does not satisfy the asserted Pattern",
+    "descriptor": {
+      "surface": "let! ::found(value) = ::missing",
+      "precommit_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PatternMatchDefect"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PatternConditionChainAdmitted-POS",
+    "predicate_id": "PatternConditionChainAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "if let ::found(value) = lookup() and then value > 0",
+      "evaluation": "left_to_right",
+      "scope_frontiers": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PatternConditionChain"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PatternConditionChainAdmitted-NEG",
+    "predicate_id": "PatternConditionChainAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL",
+    "violated_condition": "a nonbinding chain term has type Int rather than Bool",
+    "descriptor": {
+      "surface": "if let ::found(value) = lookup() and then value",
+      "last_term_type": "Int"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedPatternConditionChain"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RefutableCatchPatternAdmitted-POS",
+    "predicate_id": "RefutableCatchPatternAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "catch ::invalid(code) if code > 0",
+      "guard_purity": "pure",
+      "unmatched": "propagate"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RefutableCatchPattern"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-RefutableCatchPatternAdmitted-NEG",
+    "predicate_id": "RefutableCatchPatternAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "CATCH_PATTERN_GUARD_NOT_PURE",
+    "violated_condition": "the catch guard performs an effect",
+    "descriptor": {
+      "surface": "catch ::invalid(code) if audit(code)",
+      "guard_purity": "effectful"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedEffectfulCatchGuard"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-IrrefutableParameterEntryAdmitted-POS",
+    "predicate_id": "IrrefutableParameterEntryAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "channel": "point",
+      "channel_type": "Tuple<Int,Int>",
+      "entry_pattern": "(x, y)",
+      "callable_identity_changed": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Tuple<Int,Int>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-IrrefutableParameterEntryAdmitted-NEG",
+    "predicate_id": "IrrefutableParameterEntryAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+    "violated_condition": "the parameter-entry Pattern selects one Enum case",
+    "descriptor": {
+      "channel": "result",
+      "entry_pattern": "::found(value)",
+      "irrefutable": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Lookup"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LocalGroupAssignmentAdmitted-POS",
+    "predicate_id": "LocalGroupAssignmentAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "x, y = y, x",
+      "targets": [
+        "x",
+        "y"
+      ],
+      "target_domain": "direct_mutable_plain_locals",
+      "logical_commit_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Tuple<Int,Int>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-LocalGroupAssignmentAdmitted-NEG",
+    "predicate_id": "LocalGroupAssignmentAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+    "violated_condition": "one target is not an existing mutable local",
+    "descriptor": {
+      "surface": "x, missing = y, x",
+      "targets": [
+        "x",
+        "missing"
+      ]
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedGroupAssignment"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

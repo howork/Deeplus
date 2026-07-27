@@ -46,8 +46,6 @@ public enum ImportError {
 }
 
 def decodeRows(bytes: Bytes) -> Result<List<ImportRow>, error ImportError>
-    throws Never
-    effects {}
 = {
     return parseRows(bytes)
 }

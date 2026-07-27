@@ -7,7 +7,7 @@
 
 현행 operator token과 precedence는 닫혀 있다. Stable fixed-glyph
 conformance는 exact binary `+`, `-`, `*`에만 존재한다. 임의 custom
-operator는 Preview Design에서도 제거된 표면이다.
+operator는 Current와 Preview Design 모두에서 수용하지 않는다.
 
 ## 2. 학습 목표
 

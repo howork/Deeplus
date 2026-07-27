@@ -48,8 +48,10 @@ formal parameter와의 정적 결합 정보다.
 - `items...: T`는 repeated positional parameter다.
 - `options***: Record`는 유일하고 마지막인 named-rest parameter다.
 - 호출의 `*values`는 positional unfold, `**record`는 named unfold다.
-- parameter/type의 `**`와 call-side `***value`는 거부한다.
+- named-rest parameter/type은 `***`, call-side named unfold는 `**`다.
 - argument expression은 source에 적힌 순서로 정확히 한 번 평가된다.
+- ordinary value parameter는 call-channel 이름 뒤에 checker-proven
+  irrefutable structural Pattern을 body-entry plan으로 둘 수 있다.
 
 ## 6. 단계별 예제
 
@@ -62,8 +64,6 @@ private def#pure command(
     args...: String,
     options***: Record,
 ) -> Record
-    throws Never
-    effects {}
 = {
     return options
 }
@@ -86,8 +86,6 @@ private def#pure renderWith<T>(
     context locale: Locale,
     using display: witness Display<T>,
 ) -> String
-    throws Never
-    effects {}
 = {
     return renderValue(value, context locale, using display)
 }
@@ -98,6 +96,31 @@ private def#pure renderWith<T>(
 여기서 `renderValue`는 예제 Module이 선언한 helper다. `display` evidence를
 ordinary receiver value처럼 호출하거나 저장하지 않고 `using` channel로
 그대로 전달한다.
+
+### 6.1 parameter Pattern은 call shape를 바꾸지 않는다
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+private def distance(point Point${x, y}: Point) -> Float = {
+    return sqrt(x ^ 2 + y ^ 2)
+}
+```
+
+`point`는 외부 call label과 whole-value local이다. `Point${x, y}`는
+parameter ownership commit 뒤 body-entry에서만 실행된다. overload와
+function type은 여전히 `point: Point`의 call channel을 사용한다.
+Pattern은 parameter type에 대해 irrefutable이어야 한다.
+
+```deeplus
+private def first(values: List<Int>) -> Int = {
+    let [head, .._] = values
+    else throw DomainError::empty
+    return head
+}
+```
+
+동적 List처럼 빈 값이 가능한 carrier는 formal에서 직접 분해하지 않고
+body에서 failure owner를 선택한다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 
@@ -114,18 +137,6 @@ positional value를 공급하고 `**options`는 정적 Record label을 공급한
 대칭으로 바꿀 수 없다. Map key도 Record label로 승격되지 않는다.
 
 ## 7. 허용·거부·경계 사례
-
-별의 방향과 개수는 대칭 장식이 아니다.
-
-<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostics: NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR, TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE -->
-```deeplus
-private def bad(options**: Record) -> Unit = {
-    consume(options)
-}
-
-let options = ${ retries: 2 }
-bad(***options)
-```
 
 formal은 `options***: Record`, call unfold는 `**options`여야 한다.
 named-rest는 canonical structural `Record`만 받으며 `Map`을 펼쳐 label
@@ -146,6 +157,8 @@ Record`처럼 residue를 보존한다.
 - `Map`을 이름 있는 인수처럼 암묵 변환하지 않는다.
 - ownership/context/witness channel을 value parameter로 위장하지 않는다.
 - label과 expression 순서를 읽을 때 binding과 evaluation을 따로 적는다.
+- parameter Pattern을 쓸 때도 call-channel 이름을 남기고 refutable
+  검사는 body에 둔다.
 
 ## 10. 연습 문제
 

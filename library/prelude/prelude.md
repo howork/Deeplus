@@ -88,6 +88,24 @@ introduce an increment operator.
 
 NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. No Prelude operation silently rebases, copies, makes the view mutable, crosses isolation, or extends its owner lifetime. An independent value or rebased coordinate domain requires an explicit named operation.
 
+`ListRestView<T>` is the dedicated borrowed result of an admitted positional
+List-pattern rest. It is created only by the closed built-in decomposition
+descriptor; ordinary construction and user-supplied conformance do not create
+one. Its semantic identity records the source owner and borrow region, an
+ordinal `RankSpan(start_rank, count)`, and the exact projection from those ranks
+back to the source's logical coordinates and provenance. `count = 0` is a valid
+empty residual at a preserved insertion boundary and is not represented by an
+invalid or omitted source Range.
+
+`ListRestView<T>` has one explicit intrinsic `Sequence<T>` witness so the
+captured residual can be traversed without copying. That witness does not
+activate brackets, List patterns, generic Sequence decomposition, mutation, or
+an owner-lifetime extension. Existing `ReadonlyView<T>` deliberately receives
+no Sequence witness from this rule. Pattern probing may expose a nonowning
+rest view to an admitted pure guard, but the final binder is published only
+after the entire Pattern succeeds; failure publishes no residual and performs
+no hidden allocation.
+
 ### 4B. BigInt, Rational, Complex, and power
 
 `BigInt` is the public arbitrary-precision signed integer dependency of the
@@ -212,7 +230,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 65 canonical Prelude entries
+## 10. Human index of the 66 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -240,6 +258,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `NumericArray<T, rank R>` | core_type | `stable_design` | ranked numeric value with typed one-based default axes and visible allocation/backend responsibility |
 | `OwnedDowncast<Target,Source>` | core_type | `stable_design` | sum channel that preserves exactly one owner on both downcast outcomes |
 | `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded coordinate-preserving view |
+| `ListRestView<T>` | core_type | `stable_design` | owner-bounded positional List-rest view with an explicit intrinsic Sequence witness and exact rank-to-coordinate provenance |
 | `String` | core_type | `stable_design` | immutable Unicode scalar sequence with one-based Char indexing |
 | `Task<T>` | core_type | `stable_design` | general structured asynchronous task handle; only an `actor_request_admitted` instance carries typed-HIR/API/MIR `TaskResponsibility` residue for request result, handler ErrorSet, Cancellation, isolation, correlation, and the sole post-admission transport failure |
 | `AsyncCollector` | stdlib_profile | `stable_design` | finite policy-visible async collection with no partial commit |

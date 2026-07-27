@@ -273,7 +273,6 @@ mutex.withLock() { inout value => value = update(value) }
 | 겹치는 `inout` access | 거부 |
 | borrow/view의 region escape | 거부 |
 | borrowed Facet의 suspension/task/actor crossing | 거부 |
-| `Facet<T as Trait>` concrete-payload spelling | 제거됨 |
 | owner를 암시적으로 `Shared<T>`로 승격 | 거부 |
 | `Shareable`만으로 alias 생성 | 거부 |
 | Plain에 resource/drop 책임 숨김 | 거부 |
@@ -285,8 +284,8 @@ mutex.withLock() { inout value => value = update(value) }
 ### `PREVIEW_NONACTIVATABLE`: owned/inout Facet 검토안
 
 `facet[inout value as Trait]`, `facet[move value as Trait]` 및 대응
-`Facet<inout ...>`, `Facet<move ...>`는 Recovery가 진단을 위해 알아보는
-Preview-design이다. 현행 Facet grammar는 `borrow`만 허용한다.
+`Facet<inout ...>`, `Facet<move ...>`는 보존된 Preview Design이다.
+현행 Facet grammar는 `borrow`만 허용한다.
 
 비활성 예:
 

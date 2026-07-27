@@ -1038,7 +1038,6 @@
       "slice_half_open_noncanonical_warning_law"
     ],
     "diagnostic_refs": [
-      "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
       "SLICE_BOUND_ORDER_INVALID",
       "SLICE_BOUND_OUT_OF_RANGE_STATIC",
       "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
@@ -1076,7 +1075,7 @@
     ],
     "normalization": "preserve delimiter spelling, normalize ^/$ anchors against the receiver's first/last logical coordinates, and retain source-domain bounds without rebasing",
     "decision_procedure": [
-      "reject .../..> or either missing bound with the exact range/empty-range diagnostic; ^/$ express endpoints",
+      "reject a missing bound with the exact empty-range diagnostic; ^/$ express endpoints",
       "evaluate lower then upper once; reject statically out-of-domain or reversed bounds",
       "a dynamic bounds failure raises IndexError::outOfLogicalDomain before any view or ownership commit",
       ".. admits inclusive coordinates; ..< admits lower..upper-1 with SLICE_HALF_OPEN_RANGE_NONCANONICAL; never infer step/rebase"
@@ -1085,7 +1084,6 @@
     "success_result": "admit | admit_with_lint(diagnostic_id) | reject(diagnostic_id)",
     "active_primary_diagnostic": "SLICE_BOUND_ORDER_INVALID",
     "secondary_diagnostics": [
-      "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
       "SLICE_BOUND_OUT_OF_RANGE_STATIC",
       "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
       "SLICE_HALF_OPEN_RANGE_NONCANONICAL"

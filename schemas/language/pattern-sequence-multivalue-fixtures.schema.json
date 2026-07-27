@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/pattern-sequence-multivalue-fixtures.schema.json",
+  "title": "Deeplus Pattern, Sequence Rest and Multi-Value Static Fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "contract",
+    "product_lanes",
+    "fixtures"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.pattern-sequence-multivalue-fixtures/r1"
+    },
+    "revision": {
+      "const": "r51f3-current-pattern-sequence-multivalue-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/pattern-sequence-multivalue-r1.json"
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 40,
+      "maxItems": 40,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fixture_id",
+          "fixture_class",
+          "surface",
+          "rule",
+          "expected",
+          "assertions",
+          "execution"
+        ],
+        "properties": {
+          "fixture_id": {
+            "type": "string",
+            "pattern": "^PSM-R1-(POS|NEG|PRE)-[0-9]{3}$"
+          },
+          "fixture_class": {
+            "enum": [
+              "positive",
+              "negative",
+              "preview"
+            ]
+          },
+          "surface": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rule": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assertions": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "execution": {
+            "const": "DESIGN_STATIC_NOT_RUN"
+          }
+        }
+      }
+    }
+  }
+}

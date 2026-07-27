@@ -324,7 +324,53 @@ copy, language-observable allocation, mutation, adjoint, shareability
 inference, or isolation crossing. Backend representation and incidental
 storage strategy remain unselected.
 
-A successful Pattern owner emits `subject_evaluate`, `subject_acquire`, `test_plan_build`, `structural_test`, `probe_bind`, optional `guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and `exit_or_join`. A structural mismatch terminates after `structural_test`; a false guard terminates after `guard_evaluate`. In both cases only the context-bound `exit_or_join` edge follows. TestPlan and probe events are nonconsuming. Failure before `atomic_commit` has zero ownership commit, `pattern_move_count`, irreversible borrow, authority, escape, suspension, partial binding, and final binders. Guarded-let failure transfers to its required `else`; `for let` mismatch or false guard filters exactly one candidate and emits no body event. Each phase carries the exact DPM fixture identity and attempt disposition so successful match commit, precommit mismatch, false guard, guarded-let transfer, for-let filtering, and plain-let destructuring remain independently auditable. Or-pattern branches expose one canonical binder interface, alias binding is a borrow event, and a place join retains only the intersection of incoming capabilities. A rejected quarantine design probe creates no MIR event.
+A successful Pattern owner emits `subject_evaluate`, `subject_acquire`,
+`test_plan_build`, `structural_test`, `probe_bind`, optional
+`guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and
+`exit_or_join`. A structural mismatch terminates after `structural_test`; a
+false guard terminates after `guard_evaluate`. In both cases only the
+context-bound `exit_or_join` edge follows. TestPlan and probe events are
+nonconsuming. Failure before `atomic_commit` has zero ownership commit,
+`pattern_move_count`, irreversible borrow, authority, escape, suspension,
+partial binding, residual-view publication, and final binders. Guarded-binding
+failure transfers to its required `else`; `for let` mismatch or false guard
+filters exactly one candidate; assertive binding emits one
+`PatternMatchDefect`; ordered catch continues to the next handler or
+propagates. Each phase carries the exact DPM fixture identity and attempt
+disposition. Or-pattern branches expose one canonical binder interface, alias
+binding is a borrow event, and a place join retains only the intersection of
+incoming capabilities.
+
+Tuple Pattern lowering is an exact static product projection. Record/Map
+patterns first compare their exact or explicitly open row/key shapes; nominal
+patterns require one statically selected pattern-transparent descriptor. Pin,
+range and relational patterns receive a closed strong equality/order
+descriptor before MIR and invoke no getter, provider, reflection or dynamic
+extractor. A parameter's leading channel value is acquired by ordinary call
+lowering before its checker-proven irrefutable decomposition plan runs at body
+entry; the plan adds no call argument, overload key, ABI field or failure edge.
+
+For a List positional rest, the frontend supplies one closed
+`SequenceDecompositionDescriptorV1`. MIR evaluates length and the needed
+front/back projections once over ordinal ranks, then builds only an ephemeral
+probe-rest for guard observation. Successful final commit publishes the exact
+descriptor result. A borrowed result is `ListRestView<T>` carrying
+`SourceOwnerId`, `BorrowRegionId`, `RankSpan(start_rank,count)`, original
+logical-coordinate projection, and an explicit intrinsic `Sequence<T>`
+witness. `count = 0` represents an empty residual without constructing an
+invalid source Range. The view never rebases, allocates, copies, retains a
+temporary owner or escapes its source. Existing `ReadonlyView<T>` receives no
+Sequence witness, and conformance alone cannot synthesize a descriptor.
+
+Bare comma return type/value/binding surfaces disappear before MIR as the
+existing TupleType/TupleExpr/TuplePattern identity. They do not create a comma
+operator, ValuePack, Sequence return carrier or multiple-result ABI. A
+direct-local parallel or structural assignment resolves only static distinct
+mutable `LocalPlaceId`s, evaluates and stages the complete RHS left-to-right
+once, validates arity/ownership/overlap before any write, then emits exactly one
+`replace_group_commit` and returns Unit. A precommit failure emits zero target
+writes; this is failure-atomic logical publication, not hardware or
+cross-thread atomicity.
 
 
 ## 12. Removed-surface MIR boundary

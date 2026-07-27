@@ -417,7 +417,6 @@ let converted = price ~ asUnitUsing provider, 1[USD]
 | 형태 | 처리 |
 |---|---|
 | `case blocked(...)` declaration | 거부; bare case name 사용 |
-| dot-case `.blocked` | 제거됨; `::blocked` 또는 `State::blocked` 사용 |
 | 여러 줄 comma case list | 거부; layout case body 사용 |
 | empty Enum | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 현행 mixed payload를 자동 label-all/unlabel-all/Record로 rewrite | 금지 |

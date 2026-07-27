@@ -691,8 +691,6 @@ private type T = typeof([0, ""])
 
 ```deeplus
 def squareWith(a: Int, body: (Int) -> Int) -> Int
-    throws Never
-    effects {}
 = { return body(a) }
 
 let y = squareWith 10 { x => x * x }
@@ -1971,8 +1969,6 @@ let nested = serviceConfig!!{ retryPolicy: serviceConfig.retryPolicy!!{ attempts
 
 ```deeplus
 def checkReady(ready: Bool) -> Unit
-    throws Never
-    effects {}
 = {
     if not ready {
     }
@@ -1992,8 +1988,6 @@ def checkReady(ready: Bool) -> Unit
 
 ```deeplus
 def checkReady(ready: Bool) -> Unit
-    throws Never
-    effects {}
 = {
     if !ready {
     }
@@ -4900,8 +4894,6 @@ def#entry launch(args: Sequence<String>) -> ExitCode
 
 ```deeplus
 def#entry launch() -> Unit
-    throws Never
-    effects {}
 = { }
 print("also a script")
 ```
@@ -5273,8 +5265,6 @@ def announce() -> Unit
 
 ```deeplus
 def validate(x: Int) -> Unit
-    throws Never
-    effects {}
 = {
     if x < 0 {
         return
@@ -5808,9 +5798,9 @@ let table = #map {
     "b": 2,
 }
 ```
-## EX-R51a1-024 — nested local function with explicit outer capture
+## EX-R51a1-024 — nested local function with nonescaping lexical access
 
-- **source_feature_ids:** `nested_function_local_def_msp`
+- **source_feature_ids:** `nested_function_local_def_msp`, `nonescaping_lexical_access`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -5821,7 +5811,7 @@ let table = #map {
 
 ```deeplus
 def outer(x: Int) -> Int = {
-    [borrow x] def inner(y: Int) -> Int = {
+    def inner(y: Int) -> Int = {
         return x + y
     }
     return inner(1)
@@ -7683,22 +7673,6 @@ let#lazy model: Result<Model, error ParseError> = parseResult(text)
 inspect(model)
 inspect(model)
 ```
-## EX-R51a1-NAMEDREST-NG-001 — Old double-star collector is recovery-only
-
-- **source_feature_ids:** `named_rest_parameter_record_msp`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-def configure(options**: Record) -> Unit { }
-// NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR
-```
 ## EX-R51a1-NAMEDREST-P-001 — Canonical named-rest collector uses triple star
 
 - **source_feature_ids:** `named_rest_parameter_record_msp`
@@ -9076,22 +9050,6 @@ let second: Int = first
 ```deeplus
 let background = spawn async { => 1 }
 ```
-## EX-R51a1-NG-060 — rejected: generic entry function
-
-- **source_feature_ids:** `entry_signature_contract`, `explicit_entry_function_surface`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `executable`
-- **source_root:** `ExecutableSourceFile`
-- **primary_diagnostic:** `ENTRY_SIGNATURE_NOT_ADMITTED`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-def#entry launch<T>() -> Unit = {
-}
-```
 ## EX-R51a1-NG-061 — rejected: two selected entry declarations in one executable root
 
 - **source_feature_ids:** `entry_signature_contract`, `entry_target_uniqueness_law`
@@ -9785,22 +9743,6 @@ let distance = use std::units::si in {
 def configure(options***: Record) -> Unit = { apply(options) }
 configure(**settings)
 ```
-## EX-R51b-GRAM-NG-001 — Old double-star named-rest collector is recovery-only
-
-- **source_feature_ids:** `named_rest_parameter_record_msp`, `r51e_frontend_grammar_current_canonical`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `library`
-- **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-def configure(options**: Record) -> Unit = { }
-// NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR
-```
 ## EX-R51b-GRAM-P-002 — Lazy binding uses the hash role
 
 - **source_feature_ids:** `lazy_let_call_by_need_msp`, `r51e_frontend_grammar_current_canonical`
@@ -9816,22 +9758,6 @@ def configure(options**: Record) -> Unit = { }
 let#lazy model: Result<Model, error ParseError> = parseResult(text)
 inspect(model)
 ```
-## EX-R51b-GRAM-NG-002 — At-sigil lazy spelling is recovery-only
-
-- **source_feature_ids:** `lazy_let_call_by_need_msp`, `r51e_frontend_grammar_current_canonical`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `LAZY_BINDING_USE_HASH`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let@lazy model = loadModel()
-// LAZY_BINDING_USE_HASH
-```
 ## EX-R51b-GRAM-P-003 — Unit products use star and slash
 
 - **source_feature_ids:** `unit_operation_policy_msp`, `r51e_frontend_grammar_current_canonical`
@@ -9845,22 +9771,6 @@ let@lazy model = loadModel()
 
 ```deeplus
 let acceleration = 9.8[m/s^2]
-```
-## EX-R51b-GRAM-NG-004 — Unit middle dot is recovery-only
-
-- **source_feature_ids:** `unit_operation_policy_msp`, `r51e_frontend_grammar_current_canonical`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `UNIT_MULTIPLICATION_USE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let momentum = 3[kg·m/s]
-// UNIT_MULTIPLICATION_USE_STAR
 ```
 ## EX-R51b-GRAM-P-004 — Data class may omit its body
 
@@ -10172,21 +10082,6 @@ public def configure(options***: Record) -> Unit = {
     apply(**options)
 }
 public type Configure = (Record***) -> Unit
-```
-## EX-R51c-002 — Double-star named-rest parameter is removed
-
-- **source_feature_ids:** `named_rest_parameter_record_msp`
-- **checker_trace_ids:** `NamedRestCollectorAdmitted`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `library`
-- **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-public def configure(options**: Record) -> Unit = { }
 ```
 ## EX-R51c-003 — Class instance methods require dispatch markers; fields do not
 
@@ -10526,36 +10421,6 @@ public type Configure = (Record***) -> Unit
 ```deeplus
 let options = ${ timeout: 30, retries: 2 }
 configure(**options)
-```
-## EX-R51c1-004 — Double-star named-rest parameter is removed
-
-- **source_feature_ids:** `named_rest_parameter_record_msp`
-- **checker_trace_ids:** `NamedRestCollectorAdmitted`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `library`
-- **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-public def configure(options**: Record) -> Unit = { }
-```
-## EX-R51c1-005 — Double-star function-type residue is removed
-
-- **source_feature_ids:** `named_rest_parameter_record_msp`, `call_shape_rest_type_residue_law`
-- **checker_trace_ids:** `NamedRestCollectorAdmitted`, `FunctionRestResiduePreserved`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `library`
-- **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-public type Configure = (Record**) -> Unit
 ```
 ## EX-R51c1-006 — Triple-star cannot be used as named unfold
 
@@ -11060,7 +10925,7 @@ if let value = candidate { consume(value) }
 
 ## EX-R51f-001 — Map String key uses explicit indexing
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `map_prefixed_literal`, `basic_index_operator`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `map_prefixed_literal`, `basic_index_operator`
 - **checker_trace_ids:** `BasicIndexOperatorAdmitted`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11076,7 +10941,7 @@ let timeout = options["timeout"]
 
 ## EX-R51f-002 — Map dot-key projection is not member lookup
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `map_prefixed_literal`, `static_runtime_member_boundary_law`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `map_prefixed_literal`, `static_runtime_member_boundary_law`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11093,7 +10958,7 @@ let timeout = options.timeout
 
 ## EX-R51f-003 — Explicit assignment replaces increment
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `numeric_operator_core`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `numeric_operator_core`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11109,7 +10974,7 @@ value += 1
 
 ## EX-R51f-004 — Postfix increment is not current
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `numeric_operator_core`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `numeric_operator_core`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11126,7 +10991,7 @@ value++
 
 ## EX-R51f-005 — Ordinary recursive function
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `function_profile_introducer_family`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `function_profile_introducer_family`
 - **checker_trace_ids:** `FunctionProfileIntroducerAdmitted`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11144,7 +11009,7 @@ public def sumTo(n: Int) -> Int = {
 
 ## EX-R51f-006 — Tail-recursion callable kind is not current
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `function_profile_introducer_family`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `function_profile_introducer_family`
 - **checker_trace_ids:** `FunctionProfileIntroducerAdmitted`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11162,7 +11027,7 @@ public def#tailrec sumTo(n: Int) -> Int = {
 
 ## EX-R51f-007 — Raw String can carry pattern text
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `raw_string_prefixed_literal`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `raw_string_prefixed_literal`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11177,7 +11042,7 @@ let patternText = #raw"[A-Z]+"
 
 ## EX-R51f-008 — Regex literal prefix is not current
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `set_prefixed_literal`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `set_prefixed_literal`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11193,7 +11058,7 @@ let pattern = #regex"[A-Z]+"
 
 ## EX-R51f-009 — Explicit expected List union
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `ordinary_list_literal_surface`, `closed_anonymous_union_type_msp`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `ordinary_list_literal_surface`, `closed_anonymous_union_type_msp`
 - **checker_trace_ids:** `ListLiteralElementJoinAdmitted`, `ClosedAnonymousUnionAdmitted`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11208,7 +11073,7 @@ let values: List<Int | String> = [1, "two"]
 
 ## EX-R51f-010 — Automatic heterogeneous List union is absent
 
-- **source_feature_ids:** `r51f_removed_surface_boundary_law`, `ordinary_list_literal_surface`, `closed_anonymous_union_type_msp`
+- **source_feature_ids:** `closed_source_surface_boundary_law`, `ordinary_list_literal_surface`, `closed_anonymous_union_type_msp`
 - **checker_trace_ids:** `ListLiteralElementJoinAdmitted`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11357,16 +11222,15 @@ for let Result::ok(value) in results if 1 {
 }
 ```
 
-## EX-R51f3-COH-003 — Tuple decomposition pattern is not current
+## EX-R51f3-COH-003 — Tuple decomposition pattern follows the product channel
 
 - **source_feature_ids:** `pattern_binding_control_family`, `pattern_decomposition`
 - **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
+- **expected_outcome:** `accept`
 - **source_activation:** `none`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `TUPLE_PATTERN_NOT_CURRENT`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -11753,40 +11617,6 @@ let values = [10, 20, 30, 40]
 let prefix = values[1..<4]
 ```
 
-## EX-R51VOI-NG-001 — null is reserved recovery, not a value
-
-- **source_feature_ids:** `option_none_case_only`, `option_result_double_colon_case_surface`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let missing: Option<Int> = null
-// NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE
-```
-
-## EX-R51VOI-NG-002 — custom operator declarations are not current
-
-- **source_feature_ids:** `custom_operator`, `closed_operator_symbols_open_named_extensions`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `nonactivatable`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `library`
-- **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-operator <+> precedence 130
-// CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT
-```
-
 ## EX-R51VOI-NG-003 — fixed operator rejects an alternate evidence route
 
 - **source_feature_ids:** `fixed_operator_conformance_overloading`, `closed_operator_symbols_open_named_extensions`
@@ -11841,57 +11671,6 @@ public conformance Vec2 conforms Add<Vec2> {
 }
 
 let combined: Vec2 = left + right
-```
-
-## EX-R51VOI-NG-004 — descending range glyph is not current
-
-- **source_feature_ids:** `operator_precedence_table_phase_a`, `range_step_expression_surface_clarification`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `RANGE_OPERATOR_SPELLING_NOT_CURRENT`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let descending = 5..>1
-// RANGE_OPERATOR_SPELLING_NOT_CURRENT
-```
-
-## EX-R51VOI-NG-005 — ellipsis is not an expression range operator
-
-- **source_feature_ids:** `operator_precedence_table_phase_a`, `range_step_expression_surface_clarification`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `RANGE_OPERATOR_SPELLING_NOT_CURRENT`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let invalid = 1...5
-// RANGE_OPERATOR_SPELLING_NOT_CURRENT
-```
-
-## EX-R51VOI-NG-006 — an empty index suffix never implies a full slice
-
-- **source_feature_ids:** `basic_index_operator`, `index_operator`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `INDEX_SUFFIX_REQUIRES_AXIS`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let invalid = values[]
-// INDEX_SUFFIX_REQUIRES_AXIS
 ```
 
 ## EX-R51VOI-NG-007 — NumericArray zero is outside every built-in positional axis
@@ -12480,4 +12259,353 @@ public def invalid() -> Int = {
     return static#slot::left
 }
 // FUNCTION_STATIC_SLOT_CYCLE
+```
+
+## EX-R52-SEQ-P-001 — Directional sequence rests preserve position and owner
+
+- **source_feature_ids:** `sequence_positional_rest_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let values = [10, 20, 30, 40]
+
+if let [head, ..tail] = values {
+    consume(head, tail)
+}
+if let [leadings.., last] = values {
+    consume(leadings, last)
+}
+if let [first, ..middle.., last] = values {
+    consume(first, middle, last)
+}
+if let [.._] = values {
+    observe(values)
+}
+```
+
+## EX-R52-TUP-P-001 — Bare products normalize to Tuple
+
+- **source_feature_ids:** `tuple_bare_product_surface`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private def identity() -> Int, String = {
+    return 13, "Ada"
+}
+
+let id, name = identity()
+let explicit = (id, name)
+let singleton = (id,)
+```
+
+## EX-R52-ASN-P-001 — Local group assignment has one logical commit
+
+- **source_feature_ids:** `local_group_tuple_assignment`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+var left = acquireLeft()
+var right = acquireRight()
+
+left, right = right, left
+```
+
+## EX-R52-PAT-P-001 — Record and Map patterns make exactness explicit
+
+- **source_feature_ids:** `structured_record_map_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let point = ${x: 10, y: 20, label: "origin"}
+let ${horizontal: x, vertical: y, ..metadata} = point
+
+let payload = #map{"id": 13, "name": "Ada", "active": true}
+if let #map{
+    userId: "id"
+    displayName: "name"
+    ..rest
+} = payload {
+    consume(userId, displayName, rest)
+}
+```
+
+## EX-R52-PAT-P-002 — Transparent nominal and named Enum payload patterns
+
+- **source_feature_ids:** `transparent_nominal_named_enum_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public data class Point(+let x: Int, +let y: Int)
+
+public enum ParseResult {
+    ok(value: Int)
+    error(message: String, code: Int)
+}
+
+private def describe(result: ParseResult) -> String = {{
+    ::ok(value) => "ok:${value}"
+    ::error${message, code} => "${code}:${message}"
+}}
+
+private def sum(point Point${x, y}: Point) -> Int = {
+    return x + y
+}
+```
+
+## EX-R52-PAT-P-003 — Pin, range and relational patterns use closed tests
+
+- **source_feature_ids:** `pin_range_relational_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let expected = 200
+let status = readStatus()
+
+let label = @match status {
+    ^expected => "expected"
+    200..<300 => "success"
+    >= 500 => "server-error"
+    otherwise => "other"
+}
+```
+
+## EX-R52-PAT-P-004 — Assertive pattern binding is explicit
+
+- **source_feature_ids:** `assertive_pattern_binding`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let guaranteed = protocolGuaranteedNonempty()
+let! [head, ..tail] = guaranteed
+consume(head, tail)
+```
+
+## EX-R52-PAT-P-005 — Pattern condition chain is left-to-right
+
+- **source_feature_ids:** `pattern_condition_chain`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let ::some(user) = lookupUser(id)
+    and then let ${email, .._} = user.profile
+    and then isVerified(email)
+{
+    publish(user)
+}
+```
+
+## EX-R52-PAT-P-006 — Refutable catch selects the first matching Error pattern
+
+- **source_feature_ids:** `refutable_catch_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private def loadConfiguration() -> Unit
+    throws IOError
+= {
+    try {
+        readConfiguration()
+    } catch IOError${path, .._} if isConfigPath(path) {
+        useDefaults(path)
+    } catch error: IOError {
+        throw error
+    }
+}
+```
+
+## EX-R52-PAT-P-007 — Irrefutable parameter pattern preserves the call channel
+
+- **source_feature_ids:** `irrefutable_parameter_entry_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public data class Point(+let x: Float, +let y: Float)
+
+private def distanceSquared(point Point${x, y}: Point) -> Float = {
+    return x ^ 2 + y ^ 2
+}
+```
+
+## EX-R52-PAT-PREVIEW-001 — Advanced pattern abstractions remain Preview
+
+- **source_feature_ids:** `pattern_advanced_surface_preview_design`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `PreviewLibrarySourceFile`
+- **primary_diagnostic:** `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public pattern Origin = Point${0: x, 0: y}
+
+public def#pattern Email(borrow subject: String)
+    -> Option<(String, String)>
+    throws Never
+    effects {}
+= {
+    return splitEmail(subject)
+}
+// Preview Design: Pattern Synonym and Pattern View are not Stable source.
+```
+
+## EX-R52-PAT-NG-001 — Middle rest requires a closing marker
+
+- **source_feature_ids:** `sequence_positional_rest_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let [first, ..middle, last] = values {
+    consume(middle)
+}
+// PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS
+```
+
+## EX-R52-PAT-NG-002 — Map pattern key must be stable
+
+- **source_feature_ids:** `structured_record_map_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `PATTERN_MAP_KEY_NOT_STABLE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let #map{value: normalizeKey()} = payload {
+    consume(value)
+}
+// PATTERN_MAP_KEY_NOT_STABLE
+```
+
+## EX-R52-PAT-NG-003 — Ordinary Class representation is not opened
+
+- **source_feature_ids:** `transparent_nominal_named_enum_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public final class Secret {
+    -let value: Int
+}
+
+private def expose(secret: Secret) -> Int = {
+    let Secret${value} = secret
+    return value
+}
+// PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN
+```
+
+## EX-R52-PAT-NG-004 — Parameter pattern must be irrefutable
+
+- **source_feature_ids:** `irrefutable_parameter_entry_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private def first(values [head, .._]: List<Int>) -> Int = {
+    return head
+}
+// REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT
+```
+
+## EX-R52-PAT-NG-005 — Group assignment rejects overlapping targets
+
+- **source_feature_ids:** `local_group_tuple_assignment`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `PATTERN_ASSIGNMENT_TARGET_OVERLAP`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+var value = 0
+value, value = nextPair()
+// PATTERN_ASSIGNMENT_TARGET_OVERLAP
 ```

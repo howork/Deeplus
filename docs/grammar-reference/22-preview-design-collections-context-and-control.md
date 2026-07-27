@@ -5,7 +5,82 @@
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
-이 장의 여덟 기능은 모두 `source_activation = nonactivatable`인 설계
+<!-- deeplus-preview-feature-example: pattern_advanced_surface_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-pattern_advanced_surface_preview_design"></a>
+
+## 고급 Pattern 표면
+
+> **Feature metadata**
+> - Feature ID: `pattern_advanced_surface_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `LANGUAGE / TYPE_SYSTEM`; dependency: `pattern_decomposition`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+Stable Pattern은 exact Tuple, descriptor가 닫힌 List rest, exact/open
+Record·Map, transparent nominal product와 direct-local group assignment까지
+책임을 닫는다. 그보다 넓은 검색, 논리 결합, user-selected view와 비지역
+대입은 같은 편의성 아래 서로 다른 finiteness·effect·rollback 문제를
+숨길 수 있으므로 하나의 current 기능으로 묶지 않고 독립 gate 후보로
+검토한다.
+
+**제안 표면**
+후보 inventory는 And/Not Pattern, Set/NumericArray Pattern, Option 전용
+`let?`, Pattern Synonym/View/completeness/find, Float range, clone binder,
+generic Sequence opening, temporary-owner-retaining residual, affine/Resource
+permutation과 member/index/property/shared/actor/FFI group assignment이다.
+아래 코드는 이해를 위한 비활성 예시이며 current parser가 받는 구문이
+아니다.
+
+**정적 판정과 상호작용**
+And는 양쪽 binder의 canonical type·mode·region을 일치시켜야 하고 Not은
+binder를 만들 수 없다. Set/Map key와 range는 compiler-selected pure total
+equality/order가 필요하다. NumericArray는 exact rank/shape를 잃지 않아야
+한다. View는 정적으로 하나를 고르고 pure·total·nonthrowing·nonsuspending
+이어야 한다. generic Sequence는 finite/front/back/residual descriptor를
+적합성 하나로 추정하지 않는다. 각 기능은 Stable `ListRestView<T>`와
+Tuple product identity를 바꾸지 않는다.
+
+**평가·소유권·오류**
+어떤 후보도 subject를 두 번 평가하거나 probe 중 user code, move, exclusive
+borrow, authority, suspension 또는 partial assignment를 실행할 수 없다.
+temporary residual은 source lifetime을 명시적으로 소유하지 않으면
+escape할 수 없다. shared/actor/FFI assignment는 direct-local logical commit을
+hardware atomicity로 확대할 수 없으며 isolation·rollback·cleanup 계약을
+별도로 가져야 한다. 현재 제품 실행은 모두 `NOT_RUN`이다.
+
+**현행 대안과 이행**
+논리 결합은 nested match/guard, 검색은 명시적 iteration과 named library
+API, 변환은 pure named adapter, Option은 `if let`/`match`, 대입은 distinct
+direct mutable local만 사용하는 Stable group assignment가 대안이다.
+formatter나 migration은 Preview 표면을 Stable 표면으로 자동 추정하지 않고
+정확한 gate와 책임 차이를 report한다.
+
+**활성화 선행 조건**
+각 후보마다 별도 exact grammar와 context policy, terminating checker
+algorithm, deterministic diagnostic/fix-it, ownership·effect·cleanup MIR
+events, formatter/LSP round-trip, positive/negative/boundary/metamorphic corpus,
+xVM/LLVM target receipt와 명시적 Design activation authority가 필요하다.
+한 후보의 통과가 나머지 후보를 자동 활성화하지 않는다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+// 비활성 검토 예시: current source가 아니다.
+match values {
+    find [..before, ^target, ..after] => report(before, after)
+    otherwise => reportMissing()
+}
+
+// 현행 대안: 검색과 control을 이름 있는 API/loop로 드러낸다.
+for value in values {
+    if value == target {
+        reportFound(value)
+        break
+    }
+}
+```
+
+이 장의 아홉 기능은 모두 `source_activation = nonactivatable`인 설계
 검토안이다. 아래 코드가 선택된 후보 철자를 보이더라도 current
 Stable/Preview source가 아니며, 철자가 미선정인 항목은 ordinary Deeplus로
 작성한 현행 명시적 대안만 보여 준다. 문서와 정적 예시는 구현·제품
@@ -58,7 +133,7 @@ anchor로 바꾸지 않고 provider dependency와 authority를 report한다.
 formatter/LSP는 context role과 NumericArray token owner를 구분해 표시한다.
 
 **활성화 선행 조건**
-Design_의 token-owner 판정, exact EBNF/recovery, type/effect/authority
+Design_의 token-owner 판정, exact EBNF/diagnostic, type/effect/authority
 contract, ambiguity mutation corpus, API digest, formatter/LSP와
 artifact-bound execution receipt가 필요하다. 문서만으로 P1이나
 `NOT_RUN` lane은 닫히지 않는다.
@@ -98,9 +173,9 @@ let text = format(3.14, context FormatPattern!("{:.2f}"))
 
 **검토 목적**
 NumericArray operand가 어떤 axis로 broadcast되는지 call site에서 명시해
-shape 오류와 암시적 NumPy식 확장을 줄이려는 요구를 검토한다. 과거
-`matrix + &row` 후보는 `&`가 context anchor와 충돌하고, axis/shape
-proof가 드러나지 않아 아직 exact source 표면으로 선택되지 않았다.
+shape 오류와 암시적 NumPy식 확장을 줄이려는 요구를 검토한다. exact
+marker는 `&`의 context-anchor 역할과 충돌하지 않으면서 axis/shape
+proof를 드러내야 하므로 아직 source 표면으로 선택되지 않았다.
 
 **제안 표면**
 marker의 polarity, parse owner와 axis spelling은 미선정이다. 아래 코드는
@@ -125,9 +200,9 @@ successor diagnostic와 backend lowering은 미결/`NOT_RUN`이다.
 
 **현행 대안과 이행**
 same-shape operand 또는 명시적인 named broadcast/expand helper가 대안이다.
-migration은 implicit broadcast를 marker로 자동 표기하거나 과거 `. ^`
-철자를 이 기능으로 재분류하지 않는다. formatter는 token spacing을
-보존하고 IDE는 axis proof와 source coordinates를 표시해야 한다.
+migration은 implicit broadcast를 marker로 자동 표기하지 않는다.
+formatter는 token spacing을 보존하고 IDE는 axis proof와 source
+coordinates를 표시해야 한다.
 
 **활성화 선행 조건**
 exact parse owner, axis/shape algorithm, failure-atomic allocation, diagnostic
@@ -406,7 +481,7 @@ open/optional/empty row 선택을 사용자에게 남긴다. formatter/LSP는 su
 hover에 canonical row를 보여야 한다.
 
 **활성화 선행 조건**
-exact type-goal grammar/recovery, label uniqueness/canonicalization,
+exact type-goal grammar/diagnostic, label uniqueness/canonicalization,
 row/API schema, formatter round-trip, Map/Record negative corpus와 target
 parser/checker receipt가 필요하다.
 
@@ -460,7 +535,7 @@ identity가 같다는 hover만 제공한다. formatter는 goal과 sigil/brace
 attachment를 보존한다.
 
 **활성화 선행 조건**
-goal-separated grammar와 lossless recovery, canonicalization proof,
+goal-separated grammar와 lossless CST, canonicalization proof,
 Prelude/API compatibility, formatter/LSP, ambiguity·Union·NumericArray
 mutation corpus와 target receipt가 필요하다. 모든 제품 lane은 `NOT_RUN`이다.
 
@@ -517,7 +592,7 @@ fallback effect를 report한다. IDE는 desugaring과 conditional ownership을
 
 **활성화 선행 조건**
 승인된 use case와 exact syntax, one-evaluation lowering, type/ownership/effect
-join, deterministic diagnostics/recovery, migration/formatter corpus와
+join, deterministic diagnostics/admission, migration/formatter corpus와
 backend receipt가 필요하다. 제품 lane은 모두 `NOT_RUN`이다.
 
 **설계 검토 시나리오**

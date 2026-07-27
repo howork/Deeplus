@@ -1,0 +1,294 @@
+{
+  "schema": "deeplus.pattern-sequence-multivalue-contract/r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "language_version": "0.1.2-internal",
+  "status": "CURRENT_STABLE_DESIGN_WITH_PREVIEW_GATES",
+  "authority": "LANGUAGE / GRAMMAR / TYPE_SYSTEM / CHECKER / MIR",
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "implementation_status": "DESIGN_STATIC_NOT_RUN",
+  "source_packages": [
+    {
+      "filename": "Design_Deeplus_Sequence_Rest_and_Multi_Value_Revision_R3.zip",
+      "bytes": 23760,
+      "sha256": "6e4f9f433e2b6abe631b07427b9ffa9c6a9495d08dee93fa6765dfa652c7c60b",
+      "precedence": "CONTROLS_SEQUENCE_REST_AND_MULTI_VALUE"
+    },
+    {
+      "filename": "Design_Deeplus_Pattern_and_Destructuring_Revision_R2.zip",
+      "bytes": 36559,
+      "sha256": "93b685e088f5de2aa4eafde9ca9161178b3c34456f3028b19adf5bf48b0cea20",
+      "precedence": "CONTROLS_REMAINING_PATTERN_AND_DESTRUCTURING_SCOPE"
+    }
+  ],
+  "design_principles": [
+    "One normalized Pattern algebra is shared by every owner.",
+    "A Pattern evaluates its subject exactly once.",
+    "Structural probes are pure, deterministic, nonconsuming, nonthrowing and nonsuspending.",
+    "Bindings, moves, borrows and assignments publish through one failure-atomic logical commit.",
+    "A failed probe or false guard publishes no partial binding, move, exclusive borrow, assignment or authority.",
+    "Fixed products use Tuple identity; ordered residual decomposition uses an admitted Sequence descriptor.",
+    "No syntax is interpreted differently from the runtime type of its subject.",
+    "Preview syntax does not imply implementation or product support."
+  ],
+  "stable_design": [
+    "exact Tuple patterns",
+    "List exact patterns",
+    "List prefix rest binder..",
+    "List suffix rest ..binder",
+    "List middle rest ..binder..",
+    "Record exact, open-ignore and open-capture patterns",
+    "Record destination-pattern:source-field mapping",
+    "Map exact, open-ignore and open-capture patterns",
+    "explicitly pattern-transparent nominal product patterns",
+    "positional and named Enum payload patterns",
+    "stable-value pin patterns",
+    "bounded range and relational patterns",
+    "assertive let! and var! bindings",
+    "left-to-right pattern condition chains",
+    "refutable ordered catch patterns",
+    "irrefutable callable and lambda parameter decomposition",
+    "direct-local failure-atomic pattern assignment",
+    "bare Tuple return type and return-value sugar",
+    "bare Tuple multi-binding sugar",
+    "direct-local bare Tuple parallel assignment"
+  ],
+  "preview_gated": [
+    "and and not patterns",
+    "Set patterns",
+    "NumericArray patterns",
+    "Pattern Synonyms",
+    "pure Pattern Views",
+    "Pattern completeness manifests",
+    "find/search patterns",
+    "one-layer let? Option payload binding",
+    "Float range patterns",
+    "clone binder acquisition",
+    "generic Sequence automatic Pattern opening",
+    "affine or Resource parallel permutation",
+    "field, index, property, shared, actor or FFI multi-assignment",
+    "top-level destructuring"
+  ],
+  "not_admitted": [
+    "general comma expression operator",
+    "Sequence as a fixed multi-return carrier",
+    "type-dependent dual lowering of one source surface",
+    "automatic opening from Sequence conformance alone",
+    "ordinary Class private-state opening",
+    "arbitrary getter or provider invocation during a Pattern probe",
+    "effectful, throwing or suspending extractors",
+    "unbounded backtracking",
+    "hidden copy, allocation, owner extension or ABI inference",
+    "hardware or cross-thread atomicity claims for local group commit"
+  ],
+  "pattern_algebra": {
+    "stable_precedence": [
+      "or",
+      "alias",
+      "bind-mode",
+      "primary"
+    ],
+    "preview_precedence": [
+      "or",
+      "and",
+      "alias",
+      "not",
+      "bind-mode",
+      "primary"
+    ],
+    "stable_bind_modes": [
+      "move"
+    ],
+    "preview_bind_modes": [
+      "borrow",
+      "copy",
+      "clone"
+    ],
+    "record_and_map_shape_default": "EXACT",
+    "open_ignore": ".._",
+    "open_capture": "..name",
+    "mapping_direction": "DESTINATION_PATTERN_COLON_SOURCE_IDENTITY",
+    "ordinary_class_opening": "REQUIRES_EXPLICIT_PATTERN_TRANSPARENCY_OR_ADAPTER"
+  },
+  "sequence_rest": {
+    "carrier_scope": [
+      "List<T>",
+      "bounded List<T>",
+      "rank-one ReadonlyView<T> through a closed built-in descriptor"
+    ],
+    "maximum_rest_per_pattern": 1,
+    "prefix": {
+      "surface": "binder..",
+      "position": "FIRST"
+    },
+    "suffix": {
+      "surface": "..binder",
+      "position": "LAST"
+    },
+    "middle": {
+      "surface": "..binder..",
+      "position": "BETWEEN_FIXED_PATTERNS",
+      "minimum_fixed_prefix": 1,
+      "minimum_fixed_suffix": 1
+    },
+    "wildcard_binder": "_",
+    "empty_residual_admitted": true,
+    "descriptor": "SequenceDecompositionDescriptorV1",
+    "sequence_conformance_alone_activates_pattern": false,
+    "rest_result": {
+      "exact_concrete_type_preserved": true,
+      "requires_sequence_conformance": true,
+      "coordinate_provenance_preserved": true,
+      "hidden_copy_or_allocation": false,
+      "borrowed_type": "ListRestView<T>",
+      "moved_list_type": "List<T>",
+      "temporary_owner_retention": "PREVIEW_GATED",
+      "empty_representation": "RankSpan(start_rank, count=0, insertion_boundary)"
+    },
+    "list_rest_view": {
+      "kind": "BORROWED_OWNER_BOUNDED_RANK_ONE_VIEW",
+      "explicit_builtin_sequence_witness": true,
+      "ordinary_readonly_view_sequence_witness_changed": false,
+      "logical_coordinates_rebased": false,
+      "source_owner_required": true,
+      "escapes_source_owner": false,
+      "activates_pattern_or_indexing_by_conformance": false
+    },
+    "descriptor_fields": [
+      "subject_type_id",
+      "element_type_id",
+      "finite_profile",
+      "length_profile",
+      "front_projection_profile",
+      "back_projection_profile",
+      "contiguous_rest_profile",
+      "rest_type_id",
+      "rest_ownership_profile",
+      "rest_lifetime_profile",
+      "rank_span_start",
+      "rank_span_count",
+      "source_coordinate_projection",
+      "test_effects",
+      "test_errors",
+      "suspension"
+    ]
+  },
+  "tuple_and_multi_value": {
+    "semantic_carrier": "Tuple",
+    "single_result_channel": true,
+    "minimum_bare_arity": 2,
+    "normalizations": {
+      "return_type": "BareTupleTypeSurface -> TupleType",
+      "return_value": "BareTupleValueSurface -> TupleExpr",
+      "binding": "BareTupleBindingSurface -> TuplePattern",
+      "parallel_assignment": "BareTuplePlaceSurface -> ParallelTupleAssignment"
+    },
+    "component_evaluation_order": "LEFT_TO_RIGHT_EXACTLY_ONCE",
+    "general_comma_operator": false,
+    "sequence_as_fixed_return_carrier": false,
+    "ffi_multi_return_inference": false
+  },
+  "record_map_nominal": {
+    "record_exact_without_rest": true,
+    "record_open_ignore": ".._",
+    "record_open_capture": "..name",
+    "record_residual_type": "exact structural Record row",
+    "map_exact_without_rest": true,
+    "map_open_ignore": ".._",
+    "map_open_capture": "..name",
+    "map_keys": "literal or pinned stable Keyable value",
+    "map_probe_responsibility": "pure total key lookup with no provider selection",
+    "nominal_opening": "schema, data/value carrier or explicit pattern-transparent descriptor only",
+    "enum_payloads": [
+      "positional",
+      "named"
+    ]
+  },
+  "owner_policies": {
+    "plain_let_var": "CHECKER_PROVEN_IRREFUTABLE",
+    "assertive_let_var": "REFUTABLE_MISMATCH_PATTERN_MATCH_DEFECT",
+    "guarded_let_var": "REFUTABLE_FAILURE_EXIT_NONFALLTHROUGH",
+    "if_while_let": "REFUTABLE_FALSE_EDGE",
+    "for_pattern": "IRREFUTABLE",
+    "for_let_pattern": "REFUTABLE_CANDIDATE_FILTER",
+    "match": "REFUTABLE_WITH_EXHAUSTIVENESS",
+    "catch": "FIRST_MATCH_THEN_PROPAGATE",
+    "callable_parameter": "IRREFUTABLE_BODY_ENTRY_DECOMPOSITION",
+    "lambda_parameter": "IRREFUTABLE_BODY_ENTRY_DECOMPOSITION",
+    "local_assignment": "IRREFUTABLE_DIRECT_MUTABLE_LOCAL_TARGETS"
+  },
+  "condition_chain": {
+    "separator": "and then",
+    "evaluation_order": "LEFT_TO_RIGHT_SHORT_CIRCUIT",
+    "later_terms_see_prior_binders": true,
+    "failure_result": "WHOLE_CHAIN_FALSE",
+    "or_mixing_without_nesting": false
+  },
+  "assignment": {
+    "initial_targets": "DISTINCT_DIRECT_MUTABLE_LOCALS",
+    "rhs_evaluated_before_commit": true,
+    "target_overlap_count": 0,
+    "commit": "ONE_FAILURE_ATOMIC_LOGICAL_GROUP_COMMIT",
+    "hardware_atomicity": false,
+    "cross_thread_atomicity": false,
+    "user_code_during_commit": false,
+    "result_type": "Unit",
+    "preview_target_families": [
+      "Resource",
+      "field",
+      "index",
+      "property",
+      "shared",
+      "actor",
+      "FFI"
+    ]
+  },
+  "lowering_invariants": {
+    "subject_evaluation_count": 1,
+    "precommit_irreversible_move_count": 0,
+    "failed_probe_commit_count": 0,
+    "false_guard_commit_count": 0,
+    "hidden_allocation_count": 0,
+    "user_extractor_call_count": 0,
+    "backtracking_retry_count": 0,
+    "successful_commit_count": 1,
+    "cleanup": "DETERMINISTIC_EXACTLY_ONCE",
+    "product_execution_receipt_count": 0
+  },
+  "diagnostic_families": [
+    "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+    "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+    "PATTERN_MULTIPLE_REST",
+    "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+    "PATTERN_REST_CARRIER_NOT_ADMITTED",
+    "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE",
+    "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
+    "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+    "PATTERN_RECORD_TARGET_TYPE_REQUIRES_PARENS",
+    "RECORD_PATTERN_DUPLICATE_FIELD",
+    "PATTERN_MAP_DUPLICATE_KEY",
+    "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+    "PATTERN_RANGE_DOMAIN_UNSUPPORTED",
+    "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+    "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS",
+    "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+    "RETURN_TUPLE_ARITY_MISMATCH",
+    "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+    "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+    "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR"
+  ],
+  "acceptance": {
+    "stable_design_count": 20,
+    "preview_gated_count": 14,
+    "not_admitted_count": 10,
+    "diagnostic_family_count": 20,
+    "sequence_rest_form_count": 3,
+    "maximum_rest_per_sequence_pattern": 1,
+    "multi_value_semantic_carrier_count": 1,
+    "general_comma_operator_count": 0,
+    "hidden_allocation_count": 0,
+    "partial_commit_count": 0,
+    "semantic_p0": 0,
+    "product_lanes_not_run": 15
+  }
+}

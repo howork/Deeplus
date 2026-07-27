@@ -171,7 +171,7 @@ def load(path: String, context fileIO: FileIO) -> Bytes
 ```ebnf
 TryStmt ::= "try" Block
             (CatchClause+ FinallyClause? | FinallyClause)
-CatchClause   ::= "catch" Pattern? Block
+CatchClause   ::= "catch" Pattern? GuardClause? Block
 FinallyClause ::= "finally" Block
 
 AtTryExpr ::= "@" "try" ValueBody
@@ -179,8 +179,11 @@ AtTryExpr ::= "@" "try" ValueBody
 ```
 
 statement `try`는 적어도 하나의 `catch` 또는 `finally`를 가져야 한다.
-value `@try`는 모든 정상 경로의 값 type을 join하고 `finally` 자체는 값을
-생산하지 않는다. 처리되지 않은 Error는 `finally` 뒤 전파된다.
+catch는 recoverable Error subject를 한 번 평가하고 source order의
+refutable Pattern과 optional pure guard를 시험한다. 첫 성공 catch만
+binding을 commit한다. value `@try`는 모든 정상 경로의 값 type을 join하고
+`finally` 자체는 값을 생산하지 않는다. 처리되지 않은 Error는
+`finally` 뒤 전파된다.
 
 ### defer와 lifecycle cleanup
 
@@ -210,10 +213,11 @@ admission `Result`를 버릴 수 있으므로 `defer`에 등록할 수 없다.
 - `#pure`는 `throws Never`, `effects {}`이고 suspension, authority,
   mutable/resource capture가 없어야 한다.
 - `#guard`는 terminating, nonsuspending, nonconsuming pure Bool이다.
-- `catch` header는 binder, wildcard 또는 해당 ErrorSet에서
-  checker-proven irrefutable인 transactional Pattern만 허용한다.
-  refutable variant/value/List Pattern을 runtime에 시험해 다음 catch로
-  넘기는 dispatch는 현행이 아니다.
+- `catch` header는 binder, wildcard와 refutable variant/value/transparent
+  product Pattern을 허용한다. 구조 또는 guard 실패는 부분 binding이나
+  move 없이 다음 catch로 진행한다.
+- catch guard는 pure Bool, nonthrowing, nonsuspending이며 probe binder를
+  consume, escape, mutate-through하거나 authority 획득에 사용할 수 없다.
 - 한 catch가 남은 ErrorSet 전체에 irrefutable이면 뒤의 catch는
   unreachable이다. Defect와 Cancellation은 어떤 catch residual에도
   들어오지 않는다.
@@ -260,8 +264,6 @@ def announce() -> Unit
 
 ```deeplus
 def validate(x: Int) -> Unit
-    throws Never
-    effects {}
 = {
     if x < 0 {
         return
@@ -359,7 +361,6 @@ public def#async supervise() -> Unit = {
 | 형식 또는 주장 | 판정 |
 |---|---|
 | handler/finally가 없는 bare statement `try` | 거부 |
-| `defer { ... }` block | 제거됨; 단일 cleanup invocation 사용 |
 | `defer await ...`, `defer spawn ...` | 거부 |
 | named function의 `ret` | 거부 |
 | lambda value body의 `return` | 거부 |
@@ -388,9 +389,8 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 
 ### `PREVIEW_NONACTIVATABLE`: dynamic/unsafe 격리 영역
 
-`@scope#dynamic`과 `@scope#unsafe` quarantine은 Recovery parser가 정밀한
-진단을 위해 알아보는 nonactivatable 설계다. 현행 AST/HIR/MIR source
-surface가 아니다.
+`@scope#dynamic`과 `@scope#unsafe` quarantine은 보존된 nonactivatable
+Preview Design이다. 현행 AST/HIR/MIR source surface가 아니다.
 
 검토 중인 최소 의미는 typed immutable export 하나, outer mutation 금지,
 suspension 금지, pointer/authority/borrow/resource/closure/task/actor escape
@@ -403,14 +403,12 @@ suspension 금지, pointer/authority/borrow/resource/closure/task/actor escape
 3. escape/alias/cleanup 증명;
 4. 효과·오류·Cancellation 격리 법칙;
 5. xVM/LLVM backend equivalence와 target-bound 실행 증거;
-6. formatter/LSP 및 negative recovery 검증.
+6. formatter/LSP 및 negative admission 검증.
 
 비활성 설명용 예시는 다음과 같으며 현재 source로 사용하면
 `QUARANTINE_SCOPE_NOT_ACTIVATABLE`이다.
 
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
-
-<!-- deeplus-example: illustrative; status: RECOVERY_ONLY; authority-source: spec/contracts/quarantine-scope.json -->
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/quarantine-scope.json -->
 ```deeplus
 @scope#dynamic {
     legacyCall()

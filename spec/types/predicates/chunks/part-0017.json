@@ -510,5 +510,576 @@
     "predicate_maturity": "design_seed",
     "emission_eligible": false,
     "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "SequencePositionalRestAdmitted",
+    "source_name": "Sequence positional-rest Pattern admission",
+    "summary": "Admit the three attached positional-rest forms over explicitly witnessed Sequence values and materialize a source-borrowed ListRestView.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_REST_CARRIER_NOT_ADMITTED",
+      "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+      "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+      "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+      "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+      "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
+      "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
+    ],
+    "output": "admit(ListRestView plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-SequencePositionalRestAdmitted",
+    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the scrutinee type is normalized",
+      "the Pattern contains at most one positional rest"
+    ],
+    "normalization": "normalize prefix, suffix or doubly attached middle rest to one ordinal RankSpan and preserve source logical coordinates",
+    "decision_procedure": [
+      "validate marker attachment and the positional form",
+      "resolve an explicit intrinsic Sequence witness",
+      "compute the one-based ordinal RankSpan after fixed-item matching",
+      "create one nonowning ListRestView with exact source owner and borrow region",
+      "commit the final rest binder only after the complete Pattern succeeds"
+    ],
+    "requires": [
+      "one admitted Sequence witness",
+      "zero or one attached positional rest",
+      "a rest-view lifetime no longer than the source borrow"
+    ],
+    "termination_metric": "finite Pattern nodes plus finite fixed Sequence positions",
+    "success_result": "sequence decomposition and ListRestView binding plan",
+    "active_primary_diagnostic": "PATTERN_REST_CARRIER_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+      "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+      "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+      "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+      "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
+      "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
+    ],
+    "positive_fixture_ids": [
+      "PF-SequencePositionalRestAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-SequencePositionalRestAdmitted-NEG"
+    ],
+    "evaluation_order": "shape -> witness -> fixed probes -> RankSpan -> whole-Pattern commit",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TupleProductSurfaceAdmitted",
+    "source_name": "Tuple and bare fixed-product surface admission",
+    "summary": "Admit exact Tuple Pattern and fixed bare two-or-more-value return and binding surfaces without Sequence or ValuePack dual lowering.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "diagnostic_refs": [
+      "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+      "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS",
+      "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
+      "RETURN_TUPLE_ARITY_MISMATCH"
+    ],
+    "output": "admit(fixed Tuple product plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-TupleProductSurfaceAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the comma surface occurs in an admitted return, return-Type or binding goal",
+      "the item list is finite"
+    ],
+    "normalization": "normalize bare T1,T2 and e1,e2 only in admitted goals to one fixed-arity Tuple identity",
+    "decision_procedure": [
+      "classify the syntactic goal before interpreting comma",
+      "require at least two items",
+      "construct one fixed Tuple TypeId and preserve left-to-right item order",
+      "verify binding or return arity exactly",
+      "reject all general expression and Sequence or ValuePack interpretations"
+    ],
+    "requires": [
+      "an admitted comma goal",
+      "fixed arity of at least two",
+      "exact producer-consumer arity equality"
+    ],
+    "termination_metric": "finite comma-item list",
+    "success_result": "fixed Tuple product and destructuring plan",
+    "active_primary_diagnostic": "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+    "secondary_diagnostics": [
+      "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS",
+      "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
+      "RETURN_TUPLE_ARITY_MISMATCH"
+    ],
+    "positive_fixture_ids": [
+      "PF-TupleProductSurfaceAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-TupleProductSurfaceAdmitted-NEG"
+    ],
+    "evaluation_order": "goal -> arity -> Tuple identity -> item typing -> exact consumer arity",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StructuredRecordMapPatternAdmitted",
+    "source_name": "Record and Map structural Pattern admission",
+    "summary": "Admit exact, open-ignore and residual Record and Map Patterns with explicit field direction and stable Map keys.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "structured_record_map_pattern"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+      "PATTERN_RECORD_TARGET_TYPE_REQUIRES_PARENS",
+      "PATTERN_MAP_KEY_NOT_STABLE",
+      "PATTERN_MAP_DUPLICATE_KEY"
+    ],
+    "output": "admit(structural Pattern plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-StructuredRecordMapPatternAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the Record field domain or Map lookup domain is known",
+      "the Pattern has at most one terminal open or residual marker"
+    ],
+    "normalization": "normalize ${target:sourceField} and #map{valuePattern:key} to explicit destination-source rows",
+    "decision_procedure": [
+      "validate unique source fields or keys",
+      "require parentheses around typed or nested Record targets",
+      "require every Map key to be a literal or pin of a stable value",
+      "compare the exact field or key set unless an admitted terminal open marker is present",
+      "bind residual content only after all selected rows succeed"
+    ],
+    "requires": [
+      "unique structural selectors",
+      "stable Map keys",
+      "exact set equality or an explicit terminal open form"
+    ],
+    "termination_metric": "finite field or key Pattern rows",
+    "success_result": "Record or Map decomposition plan",
+    "active_primary_diagnostic": "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+    "secondary_diagnostics": [
+      "PATTERN_RECORD_TARGET_TYPE_REQUIRES_PARENS",
+      "PATTERN_MAP_KEY_NOT_STABLE",
+      "PATTERN_MAP_DUPLICATE_KEY"
+    ],
+    "positive_fixture_ids": [
+      "PF-StructuredRecordMapPatternAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-StructuredRecordMapPatternAdmitted-NEG"
+    ],
+    "evaluation_order": "shape -> selector uniqueness -> target shape -> key stability -> exact/open policy -> commit",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TransparentNominalPatternAdmitted",
+    "source_name": "Transparent nominal and named Enum Pattern admission",
+    "summary": "Open only explicitly Pattern-transparent products and match named Enum payloads by their declared labels.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "transparent_nominal_named_enum_pattern"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_NOMINAL_NOT_TRANSPARENT",
+      "ENUM_NAMED_PATTERN_LABEL_MISMATCH"
+    ],
+    "output": "admit(nominal decomposition plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-TransparentNominalPatternAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the nominal TypeId and declared field or payload labels are known",
+      "representation visibility is resolved"
+    ],
+    "normalization": "preserve nominal identity and map every named subpattern to one declared visible field or Enum payload label",
+    "decision_procedure": [
+      "classify Record, schema, data class or explicit Pattern-transparent product",
+      "reject ordinary Class, Dyn, Facet and FFI owners",
+      "for Enum require the selected case and positional or named payload family",
+      "verify every named label exactly once",
+      "emit a nominal decomposition plan without representation inference"
+    ],
+    "requires": [
+      "explicit Pattern transparency",
+      "visible declared fields or payload labels",
+      "no inferred private representation opening"
+    ],
+    "termination_metric": "finite declared field or payload-label set",
+    "success_result": "transparent nominal or Enum-case decomposition plan",
+    "active_primary_diagnostic": "PATTERN_NOMINAL_NOT_TRANSPARENT",
+    "secondary_diagnostics": [
+      "ENUM_NAMED_PATTERN_LABEL_MISMATCH"
+    ],
+    "positive_fixture_ids": [
+      "PF-TransparentNominalPatternAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-TransparentNominalPatternAdmitted-NEG"
+    ],
+    "evaluation_order": "nominal identity -> transparency -> case -> labels -> commit",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "PinRangeRelationalPatternAdmitted",
+    "source_name": "Pin, range and relational Pattern admission",
+    "summary": "Admit stable-value pins and bounded exact ordered-domain range or relational Patterns.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "pin_range_relational_pattern"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+      "PATTERN_PIN_STRONG_EQ_UNAVAILABLE",
+      "PATTERN_RANGE_DOMAIN_UNSUPPORTED"
+    ],
+    "output": "admit(comparison Pattern plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-PinRangeRelationalPatternAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the comparison subject type is normalized",
+      "all endpoints and pinned places are statically resolved"
+    ],
+    "normalization": "freeze the pinned stable place identity and normalize range endpoints to one exact admitted ordered domain",
+    "decision_procedure": [
+      "require a stable pinned value",
+      "require strong equality for a pin",
+      "admit only Int, UInt, Char, ordered Enum or another exact ordered domain",
+      "reject Float and mixed-domain endpoints in Current",
+      "emit one pure comparison Pattern plan"
+    ],
+    "requires": [
+      "stable pin identity or exact ordered endpoints",
+      "strong equality for pins",
+      "one admitted ordered domain for ranges and relations"
+    ],
+    "termination_metric": "one finite comparison subject and at most two endpoints",
+    "success_result": "pin, range or relational comparison plan",
+    "active_primary_diagnostic": "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+    "secondary_diagnostics": [
+      "PATTERN_PIN_STRONG_EQ_UNAVAILABLE",
+      "PATTERN_RANGE_DOMAIN_UNSUPPORTED"
+    ],
+    "positive_fixture_ids": [
+      "PF-PinRangeRelationalPatternAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-PinRangeRelationalPatternAdmitted-NEG"
+    ],
+    "evaluation_order": "subject type -> stable identity/endpoints -> Eq/ordering capability -> comparison plan",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "AssertivePatternBindingAdmitted",
+    "source_name": "Assertive Pattern binding admission",
+    "summary": "Admit let! and var! as failure-atomic Pattern assertions whose mismatch raises PatternMatchDefect.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "assertive_pattern_binding"
+    ],
+    "diagnostic_refs": [
+      "ASSERTIVE_PATTERN_MISMATCH"
+    ],
+    "output": "admit(assertive binding plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-AssertivePatternBindingAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the binding surface is let! or var!",
+      "the right-hand expression and Pattern are type-checkable"
+    ],
+    "normalization": "normalize the refutable binding to one probe plan, one PatternMatchDefect edge and one all-or-nothing binding commit",
+    "decision_procedure": [
+      "evaluate the initializer exactly once",
+      "probe every Pattern component without publishing bindings",
+      "on mismatch raise PatternMatchDefect with zero precommit",
+      "on success commit every binding simultaneously"
+    ],
+    "requires": [
+      "single initializer evaluation",
+      "zero binding precommit",
+      "one complete success commit"
+    ],
+    "termination_metric": "finite Pattern tree",
+    "success_result": "assertive Pattern binding commit plan",
+    "active_primary_diagnostic": "ASSERTIVE_PATTERN_MISMATCH",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-AssertivePatternBindingAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-AssertivePatternBindingAdmitted-NEG"
+    ],
+    "evaluation_order": "initializer -> probe -> mismatch defect or complete commit",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "PatternConditionChainAdmitted",
+    "source_name": "Pattern condition-chain admission",
+    "summary": "Admit left-to-right if let and then let and then Bool chains with scoped prior probes and per-term atomic commit.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "pattern_condition_chain"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL"
+    ],
+    "output": "admit(condition-chain plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-PatternConditionChainAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the chain begins in an if condition",
+      "each term is let Pattern = expression or Bool"
+    ],
+    "normalization": "normalize and then into an ordered short-circuit chain with a scope frontier after every successful Pattern term",
+    "decision_procedure": [
+      "type-check terms from left to right",
+      "probe each Pattern term atomically",
+      "publish that term's bindings only on success",
+      "make published bindings visible to later terms",
+      "require each non-Pattern term to be Bool and short-circuit on false"
+    ],
+    "requires": [
+      "left-to-right evaluation",
+      "term-local atomic Pattern commit",
+      "Bool nonbinding terms"
+    ],
+    "termination_metric": "finite condition-term list",
+    "success_result": "ordered scoped condition-chain plan",
+    "active_primary_diagnostic": "PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-PatternConditionChainAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-PatternConditionChainAdmitted-NEG"
+    ],
+    "evaluation_order": "left term -> probe/Bool -> scope frontier -> next term -> branch",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "RefutableCatchPatternAdmitted",
+    "source_name": "Refutable catch Pattern admission",
+    "summary": "Admit source-ordered refutable catch Patterns with pure guards and propagation of unmatched recoverable errors.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "refutable_catch_pattern"
+    ],
+    "diagnostic_refs": [
+      "CATCH_PATTERN_GUARD_NOT_PURE"
+    ],
+    "output": "admit(catch dispatch plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-RefutableCatchPatternAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the caught value or error type is known",
+      "catch arms are source ordered"
+    ],
+    "normalization": "normalize each catch arm to a noncommitting Pattern probe followed by an optional pure guard and one handler",
+    "decision_procedure": [
+      "visit catch arms in source order",
+      "probe the Pattern without binding publication on failure",
+      "evaluate only a pure guard after a successful probe",
+      "select the first Pattern-and-guard success",
+      "propagate the original recoverable error when no arm matches"
+    ],
+    "requires": [
+      "source-order selection",
+      "pure catch guards",
+      "unmatched recoverable-error propagation"
+    ],
+    "termination_metric": "finite catch-arm list and finite Pattern trees",
+    "success_result": "first-match catch dispatch plan",
+    "active_primary_diagnostic": "CATCH_PATTERN_GUARD_NOT_PURE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-RefutableCatchPatternAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-RefutableCatchPatternAdmitted-NEG"
+    ],
+    "evaluation_order": "source arm -> Pattern probe -> pure guard -> handler or next arm -> propagation",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "IrrefutableParameterEntryAdmitted",
+    "source_name": "Irrefutable parameter-entry Pattern admission",
+    "summary": "Admit an identifier channel followed by irrefutable structural entry decomposition without changing callable identity.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "irrefutable_parameter_entry_pattern"
+    ],
+    "diagnostic_refs": [
+      "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+      "PATTERN_PARAMETER_BINDER_COLLISION"
+    ],
+    "output": "admit(parameter-entry decomposition) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-IrrefutableParameterEntryAdmitted",
+    "algorithm_owner": "parser_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the public parameter channel Identifier and Type are resolved",
+      "the entry Pattern has no refutable operation"
+    ],
+    "normalization": "preserve the parameter channel and callable identity while lowering the structural Pattern to function-entry bindings",
+    "decision_procedure": [
+      "bind the parameter channel Identifier and declared Type",
+      "prove the entry Pattern irrefutable for that Type",
+      "reject binder collisions in the entry scope",
+      "lower decomposition after parameter receipt",
+      "preserve labels, overload identity and API shape"
+    ],
+    "requires": [
+      "one explicit parameter channel",
+      "an irrefutable structural Pattern",
+      "unique entry binders"
+    ],
+    "termination_metric": "finite parameter and Pattern trees",
+    "success_result": "parameter-channel plus entry-decomposition plan",
+    "active_primary_diagnostic": "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+    "secondary_diagnostics": [
+      "PATTERN_PARAMETER_BINDER_COLLISION"
+    ],
+    "positive_fixture_ids": [
+      "PF-IrrefutableParameterEntryAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-IrrefutableParameterEntryAdmitted-NEG"
+    ],
+    "evaluation_order": "channel -> irrefutability -> binder uniqueness -> entry lowering",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "LocalGroupAssignmentAdmitted",
+    "source_name": "Local group Tuple assignment admission",
+    "summary": "Admit exact-arity assignment to distinct direct mutable Plain locals with staged right-hand values and one infallible logical commit.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "diagnostic_refs": [
+      "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+      "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+      "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+      "PATTERN_ASSIGNMENT_REFUTABLE",
+      "PATTERN_ASSIGNMENT_SHARED_TARGET",
+      "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL"
+    ],
+    "output": "admit(group assignment plan) | reject(diagnostic_id)",
+    "formal_judgment_id": "J-LocalGroupAssignmentAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "all left-hand targets resolve to existing direct mutable Plain locals",
+      "the right-hand side has one fixed Tuple arity"
+    ],
+    "normalization": "normalize the right-hand side to staged temporaries and the left-hand side to a distinct ordered local-place set",
+    "decision_procedure": [
+      "resolve every target and require an existing var local",
+      "require exact Tuple arity and an irrefutable target shape",
+      "reject duplicate, overlapping, member, index, property, shared, actor and FFI places",
+      "evaluate all right-hand items left to right into temporaries",
+      "reserve an infallible replacement for every target and commit as one logical group"
+    ],
+    "requires": [
+      "existing direct mutable Plain locals",
+      "distinct target places",
+      "exact fixed Tuple arity",
+      "infallible logical commit after complete staging"
+    ],
+    "termination_metric": "finite target and Tuple-item lists",
+    "success_result": "failure-atomic local group assignment plan",
+    "active_primary_diagnostic": "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+    "secondary_diagnostics": [
+      "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+      "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+      "PATTERN_ASSIGNMENT_REFUTABLE",
+      "PATTERN_ASSIGNMENT_SHARED_TARGET",
+      "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL"
+    ],
+    "positive_fixture_ids": [
+      "PF-LocalGroupAssignmentAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-LocalGroupAssignmentAdmitted-NEG"
+    ],
+    "evaluation_order": "target resolution -> arity/irrefutability -> overlap/domain -> RHS staging -> commit reservation -> group commit",
+    "dependency_predicates": [
+      "TupleProductSurfaceAdmitted"
+    ],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
   }
 ]

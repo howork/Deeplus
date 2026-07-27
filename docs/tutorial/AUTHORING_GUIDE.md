@@ -32,7 +32,6 @@
 - `CURRENT_DESIGN_PRODUCT_NOT_RUN`: 현행 정본 설계. 제품 실행 증거는 없음.
 - `PREVIEW_GATED_PRODUCT_NOT_RUN`: 명시적 gate가 필요한 Preview.
 - `PREVIEW_DESIGN_NONACTIVATABLE`: 비활성 설계 검토면.
-- `RECOVERY_ONLY`: 이행 진단에만 쓰며 admitted AST/HIR/MIR을 만들지 않음.
 - `MIXED_STATUS`: 장 안에서 표면별 상태를 다시 구분함.
 
 `CURRENT` 또는 `Stable`은 제품 구현·실행·지원 PASS를 뜻하지 않는다.
@@ -83,7 +82,8 @@ Preview Design 예제는 반드시 `surface: PREVIEW_DESIGN_NONACTIVATABLE`로
 - 한정 이름은 식별자를 `::`로 잇는다.
 - Package는 배포·의존성·빌드 단위이고 Module은 이름 공간·가시성·소스
   구성 단위다. Module 경로와 파일 시스템 경로는 동일할 필요가 없다.
-- 임의 custom operator는 제거된 표면이며 positive 예제에 쓰지 않는다.
+- 임의 custom operator는 Current와 Preview Design 모두에서 수용하지
+  않으며 positive 예제에 쓰지 않는다.
 - fixed-glyph conformance는 정본 Stable 설계 범위만 설명한다.
 - 현재 lowercase `via`와 비활성 successor `VIA`/`AUTO` route를 섞지 않는다.
 - 현재 Enum과 Preview successor Enum 표면을 섞지 않는다.

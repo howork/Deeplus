@@ -44,8 +44,6 @@
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure clampAtZero(value: Int) -> Int
-    throws Never
-    effects {}
 = {
     let doubled = value * 2
     var adjusted = doubled
@@ -67,8 +65,6 @@ private def#pure clampAtZero(value: Int) -> Int
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure successor(raw: Int) -> Int
-    throws Never
-    effects {}
 = {
     raw + 1 -> $value: Int
     return value
@@ -114,7 +110,7 @@ private def invalidScope() -> Int = {
 `LOCAL_NAME_OUT_OF_BLOCK_SCOPE`는 교육용 name-resolution rule label이며
 stable diagnostic ID가 아니다. 현재 catalog에는 이 일반 local-name
 실패를 단독으로 소유하는 exact diagnostic ID가 없다.
-`let@lazy`는 Recovery이고 현행 지연 표면은 `let#lazy`다. 지연 바인딩은
+현행 지연 바인딩 표면은 `let#lazy`다. 지연 바인딩은
 순수·동기·nonthrowing·resource-free 조건을 별도로 만족해야 한다.
 
 ## 8. 다른 기능과의 연결

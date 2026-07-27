@@ -43,6 +43,9 @@ control은 성공하기 전까지 binding이나 move를 commit하지 않는다.
 - `match subject { ... }`와 `@match subject { ... }`도 같은 구분을 갖는다.
 - `@match` direct arm은 expression이 결과이고 block arm은 `ret`를 쓴다.
 - `if let`/`while let`/`for let`은 refutable pattern만 받는다.
+- `and then` condition chain의 뒤 단계는 앞 단계가 만든 probe binder를
+  읽을 수 있다.
+- `let!`/`var!`은 mismatch를 명시적 `PatternMatchDefect`로 assert한다.
 - control-transfer 뒤 `if` 또는 `!if`는 해당 transfer만 guard한다.
 - guard condition은 정확히 `Bool`이어야 한다.
 
@@ -88,6 +91,22 @@ for item in items {
 
 실패한 Option/Result pattern은 binding을 남기지 않는다. 반복의 `if`
 filter와 transfer guard도 반드시 `Bool`이다.
+
+여러 구조와 조건이 순서대로 의존하면 condition chain을 쓴다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+if let ::some(user) = lookup(id)
+    and then let ${email, .._} = user.profile
+    and then isVerified(email)
+{
+    publish(user)
+}
+```
+
+앞 단계가 실패하면 뒤 단계는 평가하지 않는다. 성공한 probe binder는
+read-only로 다음 condition에 보이지만 전체 성공 전에는 final ownership
+commit이 일어나지 않는다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 
@@ -140,6 +159,8 @@ nonconsuming하게 시험하고 성공 뒤 binding/move를 commit하므로 owner
 - 동작 분기는 `if`/`match`, 값 분기는 `@if`/`@match`로 의도를 드러낸다.
 - value control은 처음부터 모든 경로와 exact join type을 설계한다.
 - Option/Result 해체에는 `if let` 또는 `match`를 사용한다.
+- 순차적인 구조 의존성은 nested lookup이나 숨은 mutation 대신
+  `and then` chain으로 드러낸다.
 - 반복 안의 짧은 탈출은 guarded transfer로 국소화한다.
 - expected type 없이 서로 다른 arm을 anonymous Union으로 합치지 않는다.
 

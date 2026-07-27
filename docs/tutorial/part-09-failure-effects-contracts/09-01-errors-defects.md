@@ -53,8 +53,6 @@ public enum DecodeError {
 }
 
 def decodeHeader(bytes: Bytes) -> Result<Header, error DecodeError>
-    throws Never
-    effects {}
 = {
     return parseHeader(bytes)
 }

@@ -55,8 +55,6 @@ mutable/resource capture가 없어야 한다. `#pure`라고 해서 compiler가
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure greeting(name: String) -> String
-    throws Never
-    effects {}
 = {
     return "안녕하세요, $name"
 }

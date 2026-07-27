@@ -45,7 +45,8 @@ generic specialization, override, runtime instance별 identity가
 - 명시적 nullary lambda는 `{ => body }`다.
 - 단일 expression body가 lambda 결과이며 multiline 결과에는 `ret`를
   사용한다.
-- 로컬 함수가 outer local을 쓰려면 `[borrow x] def inner...`처럼 적는다.
+- 비탈출·동기·same-isolation 로컬 함수의 read-only outer use는 capture가
+  아니라 lexical access다.
 - `static { ... }`은 허용된 이름 있는 동기 함수 body에 최대 하나다.
 - optional import/use 뒤, 첫 runtime semantic item 앞에 놓인다.
 - 최종 구현이 실제 호출될 때 해당 `FunctionStaticOwnerId`마다 최초 한
@@ -53,7 +54,7 @@ generic specialization, override, runtime instance별 identity가
 
 ## 6. 단계별 예제
 
-capture mode를 lambda와 로컬 함수에서 분명히 적는다.
+capture mode는 실제 environment 책임이 생길 때만 적는다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -61,10 +62,8 @@ let offset: Int = 10
 let addOffset = [borrow offset] { value: Int => value + offset }
 
 private def#pure outer(base: Int) -> Int
-    throws Never
-    effects {}
 = {
-    [borrow base] def inner(step: Int) -> Int = {
+    def inner(step: Int) -> Int = {
         return base + step
     }
 
@@ -72,9 +71,11 @@ private def#pure outer(base: Int) -> Int
 }
 ```
 
-lambda capture와 local function capture 모두 outer name 사용을 source에
-남긴다. `[move token] #once { ... }`처럼 ownership과 callable profile을
-함께 표현할 수도 있다.
+`addOffset`은 저장되는 closure value라 명시적 borrow environment를
+유지한다. 반면 `inner`는 `outer`의 dynamic extent 안에서 direct call되고
+`base`를 읽기만 하므로 별도 capture 없이 call-time lexical dependency로
+판정한다. `[move token] #once { ... }`처럼 실제 ownership transfer와
+callable profile은 계속 source에 남긴다.
 
 function static activation은 capture가 아니다.
 
@@ -95,12 +96,6 @@ private def decode(bytes: Bytes) -> Packet
 인수 평가와 최종 callable 선택이 이루어진 뒤 activation barrier를
 통과한다. 이 block은 persistent local value를 선언하는 표면이 아니라
 owner별 activation 작업을 표현한다.
-
-이전 철자 `scope#static { ... }`은
-`FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC` migration 진단을 위한
-recovery-only 표면이다. Block의 의미를 바꾸지 않고 `static`으로
-치환하며, 두 철자는 migration 비교에서 같은 activation HIR와
-`FunctionStaticOwnerId`를 뜻한다.
 
 `static#slot name` persistent slot과 `static#slot::name` 참조는 별도
 `PREVIEW_DESIGN_NONACTIVATABLE` 설계다. 아직 current parser 문법이 아니며
@@ -124,18 +119,10 @@ closure에 저장하는 표면이 아니다. 흔한 오해는 둘 다 “함수�
 
 ## 7. 허용·거부·경계 사례
 
-implicit local capture와 허용되지 않은 owner의 static activation은
-거부한다.
+허용되지 않은 owner의 static activation은 거부한다.
 
-<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostics: NESTED_DEF_CAPTURE_LIST_REQUIRED, FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED -->
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic: FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED -->
 ```deeplus
-private def outer(base: Int) -> Int = {
-    def inner(step: Int) -> Int = {
-        return base + step
-    }
-    return inner(1)
-}
-
 let bad = { value: Int =>
     static {
         prepare()
@@ -144,7 +131,6 @@ let bad = { value: Int =>
 }
 ```
 
-첫 함수에는 `[borrow base]` 같은 capture contract가 없고, 두 번째는
 lambda 안에 `static`을 놓았다. local function, lambda, async,
 generator, guard, constructor, cleanup과 actor handler는 최초 Stable
 owner matrix에서 static activation을 소유하지 않는다.
@@ -159,8 +145,10 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 
 ## 9. Deeplus다운 작성 관례
 
-- 외부 값을 쓰는 closure와 local function은 capture를 항상 명시한다.
-- 읽기만 하면 `borrow`, 소유 이전이면 `move`처럼 책임을 정확히 고른다.
+- 비탈출·동기·same-isolation read-only outer use는 lexical access로
+  간결하게 쓴다.
+- snapshot, mutation, lifetime extension, escape, 소유 이전이 있으면
+  `copy`, `inout`, `borrow`, `move` 등 실제 책임을 정확히 적는다.
 - nullary lambda도 `{ => ... }`로 arrow를 생략하지 않는다.
 - 함수별 activation과 module/type initialization을 같은 것으로 설명하지
   않는다.
@@ -168,7 +156,8 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 
 ## 10. 연습 문제
 
-1. **따라 하기:** `borrow factor`를 capture해 값을 곱하는 lambda를 쓴다.
+1. **따라 하기:** direct-only local 함수가 outer `factor`를 읽도록 쓰고,
+   별도 capture가 필요 없는 이유를 설명한다.
 2. **빈칸 완성:** `[___ token] #once { value => consume(token, value) }`에서
    소유권 이전 mode를 채운다.
 3. **스스로 설계하기:** decoder 함수에 static 검증 prologue를 설계하고,
@@ -177,7 +166,7 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 ## 11. 빠른 복습
 
 - capture list와 parameter list는 역할이 다르다.
-- 로컬 함수도 outer local 사용을 명시적으로 capture한다.
+- 증명된 비탈출 read-only outer use는 lexical access이며 capture가 아니다.
 - `static`은 허용된 이름 있는 동기 구현의 activation prologue다.
 - activation은 global value나 compile/JIT 시점 실행이 아니다.
 

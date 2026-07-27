@@ -26,8 +26,6 @@ private def#pure addRate(
     base: Rational,
     rate: Rational,
 ) -> Rational
-    throws Never
-    effects {}
 = {
     return base + base * rate
 }
@@ -45,8 +43,6 @@ Rational multiplication과 addition은 정확하다. `total`의 정본상 값은
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure rotateQuarter(signal: Complex) -> Complex
-    throws Never
-    effects {}
 = {
     return Complex::i * signal
 }

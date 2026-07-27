@@ -24,7 +24,7 @@
 | ownership | [Part 07](../part-07-ownership/README.md) | [12](../../grammar-reference/12-ownership-borrowing-and-responsibility.md) |
 | async/actor | [Part 10](../part-10-concurrency/README.md) | [13](../../grammar-reference/13-async-tasks-actors-and-concurrency.md) |
 | FFI/unsafe | [11-04](../part-11-modules-system/11-04-ffi-unsafe-quarantine.md) | [14](../../grammar-reference/14-ffi-unsafe-metaprogramming-and-profiles.md) |
-| Preview/Recovery | [Part 12](../part-12-preview-evolution/README.md) | [15](../../grammar-reference/15-preview-recovery-and-removed-surfaces.md) |
+| Preview | [Part 12](../part-12-preview-evolution/README.md) | [15](../../grammar-reference/15-preview-surfaces.md) |
 | resolution/inference | [04-03](../part-04-type-system/04-03-narrowing-stable-place.md) | [17](../../grammar-reference/17-name-resolution-type-inference-and-calls.md) |
 | HIR/MIR/backend | [11-05](../part-11-modules-system/11-05-hir-mir-backends-tooling.md) | [18](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md) |
 | Prelude/provider | [11-03](../part-11-modules-system/11-03-prelude-provider-console-adapter.md) | [19](../../grammar-reference/19-prelude-providers-diagnostics-and-conformance.md) |
@@ -80,6 +80,6 @@ direct truth-test, usable-place/Phi 규칙을 확인한다. 이 순서가
 
 새 장을 추가할 때는 비슷한 제목만 연결하지 말고 그 장이 실제로
 설명하는 semantic owner를 확인한다. Preview Design 링크에는 상태를
-숨기지 않고, Recovery 링크는 positive 예제로 사용하지 않는다. 링크
+숨기지 않고, Preview Design 링크는 Current positive 예제로 사용하지 않는다. 링크
 target이 존재하는지만 검사한 결과를 의미 completeness로 해석하지
 않는다.

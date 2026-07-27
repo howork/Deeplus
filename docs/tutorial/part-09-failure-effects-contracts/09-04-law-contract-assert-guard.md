@@ -44,8 +44,6 @@ callable contract는 함수 signature와 body 사이의 경계를 설명한다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def boundedAdd(left: Int, right: Int) -> Int
-    throws Never
-    effects {}
     requires left >= 0 and right >= 0
     ensures true
 = {

@@ -5,8 +5,8 @@
 > 상태: `MIXED_STATUS`
 
 Stable unsafe block과 static type projection은 current design이다. C FFI는
-`PREVIEW_GATED_PRODUCT_NOT_RUN`, quarantine spelling은
-`PREVIEW_DESIGN_NONACTIVATABLE`이자 recovery probe다.
+`PREVIEW_GATED_PRODUCT_NOT_RUN`, quarantine은
+`PREVIEW_DESIGN_NONACTIVATABLE`이다.
 
 ## 2. 학습 목표
 
@@ -120,8 +120,8 @@ pointer를 borrowed Deeplus slice처럼 그대로 반환하면 lifetime owner가
 사라진다. copy와 release가 모두 실패할 수 있다면 body/cleanup의
 primary·suppressed 순서도 Part 09 법칙을 따른다.
 
-quarantine recovery probe를 보았을 때는 migration diagnostic만 만들고
-admitted AST/HIR/MIR residue count를 0으로 유지한다. 비슷한 문제를
+quarantine 후보 표면은 설명용이며 current AST/HIR/MIR을 만들지 않는다.
+비슷한 문제를
 해결한다는 이유로 gated FFI profile에 끼워 넣거나 current `unsafe`
 block으로 자동 재작성하지 않는다.
 
@@ -170,7 +170,7 @@ ownership, error를 다시 Deeplus type으로 닫게 한다. gate와 unsafe를
 - unsafe와 effects는 독립 축이다.
 - FFI는 exact gated Preview다.
 - gate는 target ABI proof가 아니다.
-- quarantine은 nonactivatable recovery probe다.
+- quarantine은 보존된 nonactivatable Preview Design이다.
 
 ## 12. 정본 근거와 다음 장
 

@@ -25,8 +25,9 @@
 함수 이름과 매개변수만 보고 호출을 허용하면 “무엇을 돌려주는가”,
 “어떤 오류로 빠질 수 있는가”, “어떤 외부 capability를 쓰는가”가
 호출자에게 숨는다. Deeplus는 이 세 축을 함수 identity와 호출 계약에
-명시한다. 단순한 `Int -> Int` 함수도 `throws Never effects {}`를 적으면
-실패와 effect가 없는 경계가 눈에 보인다.
+보존한다. 다만 내부 구현 예제는 존재하지 않는 책임을 반복하지 않는다.
+private/local `#pure` 함수의 빈 error/effect row는 짧게 쓰고, 공개 API와
+명시적 callable type은 완전한 계약을 계속 표시한다.
 
 ## 5. 핵심 모델
 
@@ -41,12 +42,13 @@
 
 <!-- deeplus-status-fence: PREVIEW_DESIGN_NONACTIVATABLE -->
 
-### 비활성 Preview: 빈 책임 절을 쓰지 않는 표기
+### 비활성 Preview: 모든 callable owner의 양수 책임 표면
 
-다음은 현행 작성 관례를 대체하지 않는
-`PREVIEW_DESIGN_NONACTIVATABLE` 학습 예다. source에서 활성화할 수 없고
+다음 Preview는 현재의 내부 예제 간결화보다 넓다. 모든 callable owner에서
+두 절을 독립적으로 생략하고 public API digest까지 같은 정규화 법칙으로
+묶는 `PREVIEW_DESIGN_NONACTIVATABLE` 설계다. source에서 활성화할 수 없고
 제품 lane은 `15/15 NOT_RUN`이다. 현행 Stable의
-`private_error_set_inference`도 그대로 유지되므로, 이 절의 생략 의미를
+`private_error_set_inference`도 그대로 유지되므로 이 전체 owner 법칙을
 현재 checker 동작으로 간주하면 안 된다.
 
 Preview 설계에서는 clause를 소유하는 callable의 생략을 다음처럼 읽는다.
@@ -98,8 +100,6 @@ subsumption을 사용한다. responsibility row 차이만으로 overload를 만�
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure clamp(value: Int, lower: Int, upper: Int) -> Int
-    throws Never
-    effects {}
 = {
     return @if value < lower {
         lower
@@ -117,7 +117,8 @@ let safeLevel: Int = clamp(120, lower: 0, upper: 100)
 
 `@if`는 값을 만드는 total expression이고, 이름 있는 함수의 최종
 결과는 `return`이 전달한다. 호출 label은 `lower`와 `upper` formal에
-정적으로 결합한다.
+정적으로 결합한다. `#pure`가 이미 빈 error/effect row보다 강한 계약을
+드러내므로 내부 예제에서 `throws Never effects {}`를 반복하지 않았다.
 
 오류를 값으로 받았다가 그대로 던지는 함수는 정상 return type과 error
 경로가 다름을 보여 준다.
@@ -133,7 +134,8 @@ private def failParse(error: ParseError) -> Never
 ```
 
 정상 완료가 없으므로 return type은 `Never`다. `ParseError`는 error
-channel이고 `effects {}`는 외부 effect가 없다는 별도 계약이다.
+channel이고 `effects {}`는 외부 effect가 없다는 별도 계약이다. 이
+예제는 error 축을 가르치므로 완전한 두 행을 일부러 보여 준다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 
@@ -157,8 +159,6 @@ service를 context로 받는다면 callable identity가 같지 않다. 흔한 �
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic: FUNCTION_BODY_REQUIRES_BLOCK_RETURN_OR_CLAUSE -->
 ```deeplus
 private def#pure doubled(value: Int) -> Int
-    throws Never
-    effects {}
 = value * 2
 ```
 
@@ -176,7 +176,10 @@ conformance, cancellation과 연결된다. `Result<T, error E>`를 반환하는
 
 ## 9. Deeplus다운 작성 관례
 
-- 작은 순수 함수도 `throws Never effects {}`로 경계를 드러낸다.
+- private/local 순수 함수는 `#pure`와 body proof가 빈 row를 닫는다면
+  `throws Never effects {}`를 반복하지 않는다.
+- public API, Trait requirement와 명시적 callable type은 검토 가능한
+  완전한 책임 계약을 표시한다.
 - 값 실패는 `Result`, 비국소 전파는 `throws` 중 하나로 책임을 정한다.
 - named non-`Unit` 함수에는 명시적 `return`을 사용한다.
 - body 안에서 발생한 effect를 빈 row로 숨기지 않는다.
@@ -184,10 +187,10 @@ conformance, cancellation과 연결된다. `Result<T, error E>`를 반환하는
 
 ## 10. 연습 문제
 
-1. **따라 하기:** `Int` 두 개 중 작은 값을 돌려주는 `minimum`을
-   `throws Never effects {}`로 작성한다.
-2. **빈칸 완성:** `private def#pure identity(value: String) -> ___ throws
-   Never effects {} = { return value }`의 return type을 채운다.
+1. **따라 하기:** `Int` 두 개 중 작은 값을 돌려주는 private `#pure`
+   `minimum`을 빈 책임 절 반복 없이 작성한다.
+2. **빈칸 완성:** `private def#pure identity(value: String) -> ___ =
+   { return value }`의 return type을 채운다.
 3. **스스로 설계하기:** 실패를 `Result`로 돌려줄 함수와 `throws`로
    전파할 함수를 하나씩 설계하고, 두 선택의 호출자 책임을 비교한다.
 

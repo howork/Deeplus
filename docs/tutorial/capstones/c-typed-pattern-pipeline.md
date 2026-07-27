@@ -57,7 +57,7 @@ public def parse(raw: RawIdentifier) -> Option<ParsedId>
             ::none => ::none
         }
 
-    text: String if text.length > 0 =>
+    text: String if hasText(text) =>
         @match (text as? NonEmptyText) {
             ::some(valid) => ::some(ParsedId::symbolic(valid))
             ::none => ::none
@@ -70,6 +70,9 @@ public def parse(raw: RawIdentifier) -> Option<ParsedId>
 각 typed pattern은 Union injection identity를 확인한다. guard는
 binding을 읽지만 실패하면 arm의 binding transaction을 commit하지
 않는다. `as?`는 proof가 실패할 수 있음을 `Option`에 남긴다.
+`hasText(text)`는 exact direct `def#guard` 호출이고 `text`가 stable
+actual이므로 true edge에 `text.length > 0` fact를 더한다. stored Bool이나
+wrapper 호출은 같은 fact를 만들지 않는다.
 
 ## 4. 소비 단계
 
@@ -89,6 +92,32 @@ public def canonicalText(value: ParsedId) -> String
 
 새 case가 추가되면 exhaustive match가 검토 지점을 만든다. wildcard로
 모든 미래 case를 숨기는 것보다 명시적 arm이 조기 오류 검출에 유리하다.
+
+### 4.1 구조화된 요청을 exact/open Pattern으로 받기
+
+입력 schema가 확장될 수 있는 Record라면 필요한 field와 개방 의도를
+함께 적는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public def parseRequest(request: Record) -> Option<ParsedId>
+    throws Never
+    effects {}
+= {
+    if let ${rawIdentifier: id, metadata, .._} = request
+        and then let ${source, .._} = metadata
+        and then hasText(source)
+    {
+        return parse(rawIdentifier)
+    }
+    return ::none
+}
+```
+
+`${rawIdentifier: id, ...}`는 source field `id`를 destination
+`rawIdentifier`로 받는다. 두 Record Pattern의 `.._`는 새 field를
+명시적으로 허용한다. 어느 단계가 실패해도 앞 단계 probe binder를 final
+binding으로 남기지 않는다.
 
 ## 5. 잘못된 지름길
 
@@ -214,6 +243,8 @@ parse가 성공한 뒤에도 refinement와 domain construction은 별도 단계�
 - [ ] `def#guard` narrowing에 summary/direct-test/stable-place 조건을 확인했다.
 - [ ] 실패를 `Option` 또는 `Result`로 보존했다.
 - [ ] pattern binding은 성공 edge에서만 commit된다.
+- [ ] Record Pattern의 exact/open 의도와 destination:source 방향을
+      확인했다.
 - [ ] exhaustive match를 유지했다.
 - [ ] product lane 상태는 `NOT_RUN`이다.
 

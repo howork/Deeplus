@@ -2,8 +2,8 @@
 
 > 상태: `MIXED_STATUS`
 >
-> 기본 학습면은 `CURRENT_DESIGN_PRODUCT_NOT_RUN`이다. 복구 전용 철자를
-> 보여 주는 조각은 `RECOVERY_ONLY`로 따로 표시한다. 모든 제품 레인은
+> 기본 학습면은 `CURRENT_DESIGN_PRODUCT_NOT_RUN`이다. Preview 표면은
+> activation 상태를 별도로 표시한다. 모든 제품 레인은
 > `15/15 NOT_RUN`이다.
 
 실패를 모두 “예외”라는 한 상자에 넣으면 프로그램의 책임이 흐려진다.
@@ -18,7 +18,8 @@ callable 계약이 결합된다.
 2. `throws`, `effects`, `Result`는 왜 서로 대체 관계가 아닌가?
 3. `try`와 값 식 `@try`는 어떤 결과와 cleanup을 소유하는가?
 4. 계약과 `def#guard`의 검증된 direct-call narrowing은 어떻게 다른가?
-5. 복구 parser가 철자를 알아본다는 사실이 왜 기능 활성화가 아닌가?
+5. parser가 잘못된 입력을 진단할 수 있다는 사실이 왜 기능 활성화를
+   뜻하지 않는가?
 
 ## 학습 순서
 
@@ -26,7 +27,7 @@ callable 계약이 결합된다.
 2. [effects, throws와 Result](09-02-effects-throws-result.md)
 3. [try, @try와 finally](09-03-try-at-try-finally.md)
 4. [law, contract, assertion과 def#guard](09-04-law-contract-assert-guard.md)
-5. [진단과 recovery](09-05-diagnostics-recovery.md)
+5. [진단 우선순위와 오류 경계](09-05-diagnostics.md)
 6. [실습 — 회복 가능한 import pipeline](lab-09-resilient-import.md)
 
 ## 두 개의 기준 예

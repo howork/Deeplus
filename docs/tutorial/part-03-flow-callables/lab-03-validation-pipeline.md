@@ -35,8 +35,6 @@ private def#pure inClosedRange(
     lower: Int,
     upper: Int,
 ) -> Bool
-    throws Never
-    effects {}
 = {
     return value >= lower and then value <= upper
 }
@@ -67,8 +65,6 @@ private def#pure chooseMessage(
     onAccept: (Int) -> String throws Never effects {},
     onReject: (Int) -> String throws Never effects {},
 ) -> String
-    throws Never
-    effects {}
 = {
     return @if predicate(value) {
         onAccept(value)

@@ -20,9 +20,9 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
-PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
+PATTERN_COMPONENT_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -35,9 +35,9 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 708, "diagnostics": 1395, "predicates": 258,
-    "predicate_fixtures": 799, "no_go": 150,
-    "hard_keywords": 30, "contextual_words": 101,
+    "features": 719, "diagnostics": 1414, "predicates": 268,
+    "predicate_fixtures": 819, "no_go": 155,
+    "hard_keywords": 29, "contextual_words": 101,
 }
 REQUIRED_FEATURE_IDS = (
     "named_rest_parameter_record_msp",
@@ -275,11 +275,11 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 708
-                and fixed_counts.get("predicates") == 258
-                and fixed_counts.get("predicate_fixtures") == 799
-                and fixed_counts.get("no_go") == 150
-                and fixed_counts.get("hard_keywords") == 30
+                and fixed_counts.get("features") == 719
+                and fixed_counts.get("predicates") == 268
+                and fixed_counts.get("predicate_fixtures") == 819
+                and fixed_counts.get("no_go") == 155
+                and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 101,
                 "LANGUAGE_COHERENCE_CONTRACT",
                 str(fixed_counts),
@@ -920,7 +920,7 @@ def main() -> int:
     check(
         unknown_prefixed.get("feature_refs") == [
             "set_prefixed_literal",
-            "r51f_removed_surface_boundary_law",
+            "closed_source_surface_boundary_law",
         ]
         and unknown_prefixed.get("message") == "Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes."
         and unknown_prefixed.get("stage") == "checker"
@@ -1326,7 +1326,7 @@ def main() -> int:
         == len(hir_fixture.get("cases", []))
         == 48
         and hir_machine.get("generic_pow_node_count") == 0
-        and hir_machine.get("recovery_or_unresolved_canonical_count") == 0
+        and hir_machine.get("invalid_or_unresolved_canonical_count") == 0
         and hir_machine.get("implementation_or_execution_count")
         == hir_counts.get("implementation_or_execution")
         == 0
@@ -1731,6 +1731,145 @@ def main() -> int:
         f"rows={len(dpm_rows)} ids={len(set(dpm_ids))} classes={dict(dpm_class_counts)}",
     )
 
+    psm_contract_rel = "spec/contracts/pattern-sequence-multivalue-r1.json"
+    psm_contract = parsed.get(root / psm_contract_rel, {})
+    psm_acceptance = psm_contract.get("acceptance", {})
+    psm_rest = psm_contract.get("sequence_rest", {})
+    psm_rest_result = psm_rest.get("rest_result", {})
+    psm_assignment = psm_contract.get("assignment", {})
+    psm_lowering = psm_contract.get("lowering_invariants", {})
+    psm_sources = {
+        row.get("filename"): (row.get("bytes"), row.get("sha256"), row.get("precedence"))
+        for row in psm_contract.get("source_packages", [])
+        if isinstance(row, dict)
+    }
+    psm_diagnostic_families = psm_contract.get("diagnostic_families", [])
+    check(
+        psm_contract.get("schema") == "deeplus.pattern-sequence-multivalue-contract/r1"
+        and psm_contract.get("revision") == LANGUAGE_COHERENCE_REVISION
+        and psm_contract.get("status") == "CURRENT_STABLE_DESIGN_WITH_PREVIEW_GATES"
+        and psm_contract.get("semantic_p0") == 0
+        and psm_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and len(psm_contract.get("stable_design", [])) == 20
+        and len(psm_contract.get("preview_gated", [])) == 14
+        and len(psm_contract.get("not_admitted", [])) == 10,
+        "PSM_CONTRACT_IDENTITY_AND_DECISION_COUNTS",
+        f"acceptance={psm_acceptance}",
+    )
+    check(
+        psm_sources
+        == {
+            "Design_Deeplus_Sequence_Rest_and_Multi_Value_Revision_R3.zip": (
+                23760,
+                "6e4f9f433e2b6abe631b07427b9ffa9c6a9495d08dee93fa6765dfa652c7c60b",
+                "CONTROLS_SEQUENCE_REST_AND_MULTI_VALUE",
+            ),
+            "Design_Deeplus_Pattern_and_Destructuring_Revision_R2.zip": (
+                36559,
+                "93b685e088f5de2aa4eafde9ca9161178b3c34456f3028b19adf5bf48b0cea20",
+                "CONTROLS_REMAINING_PATTERN_AND_DESTRUCTURING_SCOPE",
+            ),
+        },
+        "PSM_SOURCE_PACKAGE_PROVENANCE_BINDING",
+        repr(psm_sources),
+    )
+    check(
+        len(psm_diagnostic_families)
+        == len(set(psm_diagnostic_families))
+        == psm_acceptance.get("diagnostic_family_count")
+        == 20
+        and all(
+            diagnostic_id in diagnostic_by_id
+            and diagnostic_by_id[diagnostic_id].get("diagnostic_status")
+            == "active"
+            for diagnostic_id in psm_diagnostic_families
+        ),
+        "PSM_DIAGNOSTIC_FAMILY_CATALOG_BINDING",
+        repr(psm_diagnostic_families),
+    )
+    check(
+        psm_rest.get("maximum_rest_per_pattern") == 1
+        and psm_rest.get("descriptor") == "SequenceDecompositionDescriptorV1"
+        and psm_rest.get("sequence_conformance_alone_activates_pattern") is False
+        and psm_rest_result.get("borrowed_type") == "ListRestView<T>"
+        and psm_rest_result.get("moved_list_type") == "List<T>"
+        and psm_rest_result.get("requires_sequence_conformance") is True
+        and psm_rest_result.get("coordinate_provenance_preserved") is True
+        and psm_rest_result.get("hidden_copy_or_allocation") is False
+        and "count=0" in psm_rest_result.get("empty_representation", "")
+        and psm_rest.get("list_rest_view", {}).get(
+            "ordinary_readonly_view_sequence_witness_changed"
+        )
+        is False,
+        "PSM_SEQUENCE_REST_CARRIER_CLOSURE",
+        repr(psm_rest_result),
+    )
+    check(
+        psm_contract.get("tuple_and_multi_value", {}).get("semantic_carrier")
+        == "Tuple"
+        and psm_contract.get("tuple_and_multi_value", {}).get(
+            "general_comma_operator"
+        )
+        is False
+        and psm_contract.get("tuple_and_multi_value", {}).get(
+            "sequence_as_fixed_return_carrier"
+        )
+        is False
+        and psm_assignment.get("initial_targets")
+        == "DISTINCT_DIRECT_MUTABLE_LOCALS"
+        and psm_assignment.get("commit")
+        == "ONE_FAILURE_ATOMIC_LOGICAL_GROUP_COMMIT"
+        and psm_assignment.get("hardware_atomicity") is False
+        and psm_assignment.get("cross_thread_atomicity") is False
+        and psm_lowering.get("subject_evaluation_count") == 1
+        and psm_lowering.get("precommit_irreversible_move_count") == 0
+        and psm_lowering.get("failed_probe_commit_count") == 0
+        and psm_lowering.get("false_guard_commit_count") == 0
+        and psm_lowering.get("hidden_allocation_count") == 0
+        and psm_lowering.get("product_execution_receipt_count") == 0,
+        "PSM_TUPLE_ASSIGNMENT_AND_LOWERING_CLOSURE",
+        f"assignment={psm_assignment} lowering={psm_lowering}",
+    )
+
+    psm_fixture_rel = "tests/fixtures/current/pattern-sequence-multivalue-r1.json"
+    psm_fixture = parsed.get(root / psm_fixture_rel, {})
+    psm_fixture_rows = [
+        row for row in psm_fixture.get("fixtures", []) if isinstance(row, dict)
+    ]
+    psm_fixture_ids = [row.get("fixture_id") for row in psm_fixture_rows]
+    psm_fixture_classes = Counter(
+        row.get("fixture_class") for row in psm_fixture_rows
+    )
+    psm_fixture_row_keys = {
+        "fixture_id",
+        "fixture_class",
+        "surface",
+        "rule",
+        "expected",
+        "assertions",
+        "execution",
+    }
+    check(
+        psm_fixture.get("schema")
+        == "deeplus.pattern-sequence-multivalue-fixtures/r1"
+        and psm_fixture.get("revision") == LANGUAGE_COHERENCE_REVISION
+        and psm_fixture.get("contract") == psm_contract_rel
+        and psm_fixture.get("product_lanes") == "15/15_NOT_RUN"
+        and len(psm_fixture_rows)
+        == len(psm_fixture_ids)
+        == len(set(psm_fixture_ids))
+        == 40
+        and psm_fixture_classes
+        == Counter({"positive": 24, "negative": 12, "preview": 4})
+        and all(set(row) == psm_fixture_row_keys for row in psm_fixture_rows)
+        and all(
+            row.get("execution") == "DESIGN_STATIC_NOT_RUN"
+            for row in psm_fixture_rows
+        ),
+        "PSM_FIXTURE_SHAPE_COUNT_AND_ID_CLOSURE",
+        f"rows={len(psm_fixture_rows)} classes={dict(psm_fixture_classes)}",
+    )
+
     voi_rel = "tests/fixtures/current/value-operator-indexing-coherence-r1.json"
     voi = parsed.get(root / voi_rel, {})
     voi_top_keys = {
@@ -1843,8 +1982,6 @@ def main() -> int:
         if isinstance(row, dict)
     ]
     expected_voi_diagnostics = [
-        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
-        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
         "OPERATOR_CONFORMANCE_MISSING",
         "OPERATOR_CONFORMANCE_AMBIGUOUS",
         "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
@@ -1854,7 +1991,6 @@ def main() -> int:
         "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
         "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
         "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
-        "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
         "INDEX_SUFFIX_REQUIRES_AXIS",
         "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
     ]
@@ -1866,7 +2002,7 @@ def main() -> int:
         and voi_contract.get("open_feature_p1", {}).get("total") == 22
         and voi_machine.get("rule_count") == 12
         and voi_machine.get("literal_domain_row_count")
-        == len(voi_contract.get("literal_domain_matrix", [])) == 13
+        == len(voi_contract.get("literal_domain_matrix", [])) == 12
         and voi_machine.get("expression_precedence_row_count")
         == len(voi_contract.get("expression_operator_precedence_matrix", [])) == 19
         and voi_machine.get("index_carrier_row_count")
@@ -1889,7 +2025,7 @@ def main() -> int:
         and voi_machine.get("implicit_rebase_count") == 0
         and voi_machine.get("product_execution_receipt_count") == 0
         and voi_machine.get("new_rejection_diagnostic_count")
-        == len(voi_new_diagnostics) == 14
+        == len(voi_new_diagnostics) == 11
         and voi_new_diagnostics == expected_voi_diagnostics
         and set(voi_new_diagnostics).issubset(set(diagnostic_by_id)),
         "VOI_CONTRACT_MACHINE_ACCEPTANCE",
@@ -1897,7 +2033,6 @@ def main() -> int:
     )
     voi_example_ids = {
         *(f"EX-R51VOI-{index:03d}" for index in range(1, 10)),
-        *(f"EX-R51VOI-NG-{index:03d}" for index in range(1, 10)),
     }
     warning_example = active_by_id.get("EX-R51VOI-009", {})
     check(
@@ -2248,9 +2383,11 @@ def main() -> int:
     )
     pattern_policies = parsed.get(root / "spec/patterns/pattern-context-policies.json", {})
     expected_union_contexts = {
-        "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-FOR-LET",
-        "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH",
-        "PCTX-DECLARATIVE-CLAUSE", "PCTX-COMPREHENSION-IF-LET",
+        "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET",
+        "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN",
+        "PCTX-FOR-LET", "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH",
+        "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH",
+        "PCTX-VALUE-CATCH", "PCTX-COMPREHENSION-IF-LET",
     }
     policy_union_contexts = {
         row.get("context_id")
@@ -2258,8 +2395,8 @@ def main() -> int:
         if "PK-UNION-ALTERNATIVE-BINDER" in row.get("allowed_pattern_kind_ids", [])
     }
     check(
-        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 19
-        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 19
+        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 39
+        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 39
         and pattern_kinds.get("revision") == PATTERN_COMPONENT_REVISION
         and pattern_lowering.get("revision") == PATTERN_COMPONENT_REVISION
         and pattern_policies.get("revision") == PATTERN_COMPONENT_REVISION
@@ -3151,24 +3288,20 @@ def main() -> int:
     check(
         literal_rule is not None
         and "NullLiteral" not in literal_rule.group(1)
-        and 'RecoveryNullLiteral ::= "null" ;' in grammar
+        and "RecoveryNullLiteral" not in grammar
         and 'UnfoldClause ::= "for" "..." Pattern "in" Expr ;' in grammar
         and 'IndexSuffix ::= "[" SliceAxisList "]" ;' in grammar
         and 'BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral'
         in grammar
         and range_operator.get("tokens") == [[".."], ["..<"]]
-        and range_operator.get("rejected_reserved_spellings")
-        == {
-            "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
-            "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
-        }
+        and "rejected_reserved_spellings" not in range_operator
         and assignment_operator.get("tokens")
         == [["="], ["+="], ["-="], ["*="], ["/="], ["%="]]
         and slice_index_owner.get("entry") == "SLICE_INDEX_PRATT_ENTRY"
         and slice_index_owner.get("bounds_required") is True
         and slice_index_owner.get("full_axis") == "* (NumericArray axis only)"
         and slice_index_owner.get("empty_axis") == "INDEX_SUFFIX_REQUIRES_AXIS"
-        and slice_index_owner.get("anchor_outside_slice_bound_recovery")
+        and slice_index_owner.get("anchor_outside_slice_bound_diagnostic")
         == {
             "diagnostic": "SLICE_ANCHOR_OUTSIDE_SLICE",
             "stage": "parser",
@@ -3180,10 +3313,8 @@ def main() -> int:
         == ["RepeatedPositional", "ComprehensionUnfold"]
         and ellipsis_token.get("contexts")
         == ["parameter", "function_type", "comprehension_unfold_clause"]
-        and vocabulary.get("recovery_reserved_words", {}).get("null", {}).get(
-            "admitted_as_literal"
-        )
-        is False,
+        and "recovery_reserved_words" not in vocabulary
+        and "null" not in vocabulary.get("hard_keywords", []),
         "VOI_GRAMMAR_FRONTEND_OWNER_CLOSURE",
         f"literal={literal_rule.group(1) if literal_rule else None} range={range_operator.get('tokens')} assignment={assignment_operator.get('tokens')}",
     )
@@ -3191,8 +3322,7 @@ def main() -> int:
     index_suffix_diagnostic = diagnostic_by_id.get("INDEX_SUFFIX_REQUIRES_AXIS", {})
     check(
         index_suffix_diagnostic.get("stage") == "parser"
-        and slice_index_owner.get("empty_axis_recovery_production")
-        == "RecoveryEmptyIndexSuffix"
+        and "empty_axis_recovery_production" not in slice_index_owner
         and basic_index_predicate.get("active_primary_diagnostic")
         == "LOGICAL_INDEX_DOMAIN_MISMATCH"
         and basic_index_predicate.get("diagnostic_refs")
@@ -3261,8 +3391,6 @@ def main() -> int:
             diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
             == "active"
             for diagnostic_id in (
-                "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
-                "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
                 "OPERATOR_CONFORMANCE_MISSING",
                 "OPERATOR_CONFORMANCE_AMBIGUOUS",
                 "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
@@ -3272,7 +3400,6 @@ def main() -> int:
                 "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
                 "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
                 "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
-                "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
                 "INDEX_SUFFIX_REQUIRES_AXIS",
             )
         ),

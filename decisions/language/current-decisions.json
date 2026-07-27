@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 36,
+  "law_count": 38,
   "laws": [
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
@@ -33,7 +33,7 @@
     },
     {
       "id": "USR-LAZY",
-      "law": "Lazy bindings use `let#lazy`; `let@lazy` is recovery-only.",
+      "law": "Lazy bindings use `let#lazy`.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT",
       "ratification_status": "CURRENT_USER_DIRECTION",
@@ -51,7 +51,7 @@
     },
     {
       "id": "USR-UNIT-PRODUCT",
-      "law": "Unit multiplication uses `*`; the middle dot is recovery-only.",
+      "law": "Unit multiplication uses `*`.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT",
       "ratification_status": "CURRENT_USER_DIRECTION",
@@ -141,7 +141,7 @@
     },
     {
       "id": "USR-KEYWORDS",
-      "law": "The lexical vocabulary contains 30 hard keywords and 101 contextual words after removal of obsolete source roles.",
+      "law": "The lexical vocabulary contains 29 hard keywords and 101 contextual words after removal of obsolete source roles.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT",
       "ratification_status": "CURRENT_USER_DIRECTION",
@@ -197,12 +197,21 @@
     },
     {
       "id": "DSGN-CURRENT-PATTERN-COHERENCE",
-      "law": "One Pattern CST/AST is admitted through explicit context policies. Ordinary parameters are identifiers; plain bindings are statically irrefutable; refutable owners use nonconsuming test/probe, zero-or-one pure guard, and one atomic ownership commit. Current carriers are nominal variants, Record label subsets, and exact-or-final-ignored-tail List; tuple patterns and open/captured rests are absent.",
+      "law": "One Pattern CST/AST is admitted through explicit context policies. A callable parameter begins with one stable channel Identifier and may add only checker-proven irrefutable body-entry structural decomposition; the child binders never change call/API/ABI identity. Plain bindings, bare for, parameters and direct-local Pattern assignment are irrefutable owners; guarded bindings, if/while/for let, ordered catch and match are refutable owners, while let!/var! explicitly raise PatternMatchDefect on mismatch. Current carriers are nominal variants with positional or named payloads, exact fixed-product Tuple, exact/open Record and Map rows, explicitly pattern-transparent nominal products, and closed List-shaped carriers. Record/Map are exact by default and use .._ or ..name for open remainder; entry mapping is destination Pattern : source identity. Pin and bounded range/relational Patterns require stable values and a closed exact equality/order descriptor. List patterns admit exact shape, the existing all-ignored `[.._]`, or exactly one attached positional rest: `leadings..` first, `..tail` last, or `..middle..` between at least one fixed pattern on each side. Generic `Sequence<T>` conformance alone never activates bracket syntax or pattern opening. And/Not, Set, NumericArray, Synonym/View/completeness/find, top-level decomposition, generic Sequence opening and nonlocal/shared assignment remain Preview Gated; effectful/dynamic/backtracking extraction is not admitted.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
-      "source_evidence": "Supp1 Destructuring/Pattern Matching review packs R1/R2 and user canonicalization direction",
-      "effective_revision": "r51f3-current-language-coherence-r1"
+      "source_evidence": "Supp1 Destructuring/Pattern Matching review packs R1/R2; Design Deeplus Sequence Rest and Multi-Value Revision R3; user canonicalization direction",
+      "effective_revision": "r51f3-current-pattern-sequence-multivalue-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-SEQUENCE-REST-MULTIVALUE-R3",
+      "law": "Stable Sequence-rest design is restricted to the closed built-in List-shaped decomposition matrix and exactly one positional rest. A captured rest has exact borrowed type `ListRestView<T>`, retains its source owner, borrow region, ordinal RankSpan, and original logical-coordinate projection, admits `count = 0` without constructing an empty source Range, and has one explicit intrinsic `Sequence<T>` witness. Existing `ReadonlyView<T>` does not acquire a Sequence witness. Final rest publication follows all structural tests and the pure guard; failure publishes no rest and extends no temporary lifetime. Bare `-> T1, T2`, `return`/`ret e1, e2`, and `let`/`var p1, p2 = value` are fixed-product Tuple sugar with one result channel and no general comma operator, ValuePack, Sequence return carrier, ABI identity, or type-dependent lowering. Direct mutable local Plain targets admit bounded parallel Tuple assignment with complete RHS staging, distinct LocalPlaceIds, and one failure-atomic logical group commit. Generic Sequence opening, owner-retaining temporary residuals, affine/resource permutation, and field/index/property/shared/actor/FFI parallel targets remain Preview Gated. Product lanes remain 15/15 NOT_RUN, and this design-static adoption closes no existing P1.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Design_Deeplus_Sequence_Rest_and_Multi_Value_Revision_R3.zip and user adoption direction",
+      "effective_revision": "r51f3-current-pattern-sequence-multivalue-r1"
     },
     {
       "id": "DSGN-CURRENT-IDENTIFIER-TYPE-FLOW",
@@ -233,7 +242,7 @@
     },
     {
       "id": "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
-      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default; null is recovery-only and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary, fixity, binding power, and associativity are closed. Arbitrary custom operators are rejected and recovery-only. Fixed existing-glyph conformance dispatch is Stable only for exact binary +, -, and * under intrinsic reservation plus one left-owner DIRECT_GLOBAL conformance with no conversion, order ranking, fallback, or runtime relookup. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
+      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default, and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary, fixity, binding power, and associativity are closed. Arbitrary custom operators are not part of the language. Fixed existing-glyph conformance dispatch is Stable only for exact binary +, -, and * under intrinsic reservation plus one left-owner DIRECT_GLOBAL conformance with no conversion, order ranking, fallback, or runtime relookup. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
@@ -251,7 +260,7 @@
     },
     {
       "id": "DSGN-CURRENT-TOP-LEVEL-TYPE-VISIBILITY-COHERENCE",
-      "law": "Exactly ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl are type-producing top-level visibility owners. In every stable or preview library, executable, and script root they require an explicit public/common/private domain; omission is recovery-only and produces zero admitted HIR type identities. Every other top-level owner carrying TopLevelVisibility? defaults an omitted word to private. Wider API residue cannot expose a narrower identity, common is never external or re-exported, and public requires a separately admitted export or module interface.",
+      "law": "Exactly ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl are type-producing top-level visibility owners. In every Stable or Preview library, executable, and script root they require an explicit public/common/private domain; omission is rejected and produces zero admitted HIR type identities. Every other top-level owner carrying TopLevelVisibility? defaults an omitted word to private. Wider API residue cannot expose a narrower identity, common is never external or re-exported, and public requires a separately admitted export or module interface.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
@@ -287,7 +296,7 @@
     },
     {
       "id": "DSGN-CURRENT-OPERATOR-FUNCTION-STATIC-INTAKE",
-      "law": "Arbitrary glyph/fixity/precedence custom operators are not a Deeplus feature and are retained only as recovery/no-go evidence. Existing fixed-glyph conformance overloading is STABLE_DESIGN for exact binary +, -, and *: it freezes a direct-global, left-owner, intrinsic-reserved, pure borrowed, no-fallback/no-relookup profile without closing TCC-P1-002..008. The Stable &&/||/^^/~~ family is described as pointwise logical: current packed-bit behavior is preserved and exact same-shape NumericArray values over one known-width integer element domain gain the pure total built-in lift, while scalar Bool, NumericArray<Bool>, broadcast, dynamic/heterogeneous/generic collections and user carriers remain excluded or deferred. Stable `static { ... }` is an exact function-body prologue owned by an admitted synchronous named CallableImplementationId; historical `scope#static` is recovery-only and identity-preserving. It runs once per normalized specialization at first actual invocation after input staging and before ownership commit, observes no caller input/authority, calls no activation-bearing or dynamic target, publishes exactly Ready or one cached Failed identity with release/acquire, never retries or deadlocks on reentry, and carries exact HIR/MIR/API identity while every product lane remains NOT_RUN. The older Trait shared-design report contributes only identity/coherence/no-order/no-runtime-relookup principles already represented by TC-R001..R016 and TCC-DG; its alternate type/derives/auto/conform/local-witness/specialization surfaces do not replace current conformance/requires/lowercase-via authority. Semantic P0 remains 0 and the existing feature P1 set remains exactly 22 OPEN.",
+      "law": "Arbitrary glyph/fixity/precedence custom operators are not a Deeplus feature. Existing fixed-glyph conformance overloading is STABLE_DESIGN for exact binary +, -, and *: it freezes a direct-global, left-owner, intrinsic-reserved, pure borrowed, no-fallback/no-relookup profile without closing TCC-P1-002..008. The Stable &&/||/^^/~~ family is described as pointwise logical: current packed-bit behavior is preserved and exact same-shape NumericArray values over one known-width integer element domain gain the pure total built-in lift, while scalar Bool, NumericArray<Bool>, broadcast, dynamic/heterogeneous/generic collections and user carriers remain excluded or deferred. Stable `static { ... }` is an exact function-body prologue owned by an admitted synchronous named CallableImplementationId. It runs once per normalized specialization at first actual invocation after input staging and before ownership commit, observes no caller input/authority, calls no activation-bearing or dynamic target, publishes exactly Ready or one cached Failed identity with release/acquire, never retries or deadlocks on reentry, and carries exact HIR/MIR/API identity while every product lane remains NOT_RUN. The older Trait shared-design report contributes only identity/coherence/no-order/no-runtime-relookup principles already represented by TC-R001..R016 and TCC-DG; its alternate type/derives/auto/conform/local-witness/specialization surfaces do not replace current conformance/requires/lowercase-via authority. Semantic P0 remains 0 and the existing feature P1 set remains exactly 22 OPEN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
@@ -323,7 +332,7 @@
     },
     {
       "id": "DSGN-CURRENT-FUNCTION-STATIC-S0-S1",
-      "law": "Current Stable function-static activation uses contextual `static { ... }`; the old scope#static spelling is recovery-only and normalizes to the same owner identity. Persistent immutable function-static slots are a separate PREVIEW_DESIGN_NONACTIVATABLE profile using proposed static#slot declarations and static#slot:: references that do not collide with Stable let:: or QualifiedStaticExpr grammar, a fifth closed FUNCTION_STATIC_NAMESPACE domain, deeply immutable M0 values, declaration-order prior-slot staging, atomic Ready publication, and existing activation failure/reentry identities. Current OPEN P1 remains exactly 22 and product lanes remain 15/15 NOT_RUN.",
+      "law": "Current Stable function-static activation uses contextual `static { ... }`. Persistent immutable function-static slots are a separate PREVIEW_DESIGN_NONACTIVATABLE profile using proposed static#slot declarations and static#slot:: references that do not collide with Stable let:: or QualifiedStaticExpr grammar, a fifth closed FUNCTION_STATIC_NAMESPACE domain, deeply immutable M0 values, declaration-order prior-slot staging, atomic Ready publication, and existing activation failure/reentry identities. Current OPEN P1 remains exactly 22 and product lanes remain 15/15 NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",

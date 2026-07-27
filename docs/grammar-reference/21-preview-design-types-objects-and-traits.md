@@ -131,14 +131,13 @@ locking이나 runtime string lookup은 없다.
 
 **현행 대안과 이행**
 현행에서는 module/type static 또는 명시적 immutable owner object를 쓴다.
-기존 `scope#static`은 함수 activation에 한해 recovery-only이며 Stable
-`static`으로 identity-preserving 정규화한다. 기존 activation 안의 plain
+함수 activation의 Stable 표면은 `static`이다. 기존 activation 안의 plain
 `let`/`var`를 persistent slot으로 자동 재해석하지 않는다. mutable cache가
 필요하면 SharedCell·SharedMutex 등 별도의 lifecycle/effect 책임 프로필을
 먼저 설계해야 한다.
 
 **활성화 선행 조건**
-exact parser/recovery와 CST, namespace lookup, owner/slot recipe digest,
+exact parser/diagnostic과 CST, namespace lookup, owner/slot recipe digest,
 concurrent publication, failure/reentry, module API residue, formatter/LSP,
 xVM·LLVM 간 재현 가능한 실행 receipt와 별도 Design authority가 필요하다.
 현재 parser-cover, HIR/MIR operation, runtime route와 제품 지원 수는 모두
@@ -201,7 +200,7 @@ Defect 또는 effect를 흡수하거나 nullable truthiness로 바꾸지 않는�
 force unwrap 또는 propagation spelling을 이 후보와 합치지 않는다.
 
 **활성화 선행 조건**
-exact EBNF와 trivia/recovery, Option 한 겹의 type rule, mismatch
+exact EBNF와 trivia/diagnostic, Option 한 겹의 type rule, mismatch
 disposition, ownership commit 및 nested-pattern 상호작용을 먼저
 ratify해야 한다. positive/negative/boundary corpus, diagnostic/fix-it,
 formatter/LSP round-trip과 target-bound checker receipt가 모두 필요하다.
@@ -688,7 +687,6 @@ runtime 또는 제품 지원을 만들지 않는다. 15개 제품 lane은 모두
 
 **검토 목적**
 Class owner에 공유 초기화와 수명 주기를 결합하려는 요구를 검토한다.
-과거 `static class` 철자는 제거되었고 successor 철자는 선택되지 않았다.
 핵심 질문은 Class identity와 module storage identity 중 누가 값을
 소유하며, 상속·visibility·generic instantiation마다 초기화 cell이 몇
 개 생기는가이다.
@@ -698,7 +696,7 @@ Class 후보 표면은 Class body의 `scope#static { ... }`로 선택되어 있�
 여전히 `PREVIEW_DESIGN_NONACTIVATABLE`이며 현행 parser acceptance는 0이다.
 아래 현행 대안은 module binding과 ordinary function을 사용한다. 양성
 검토 시나리오는 owner와 초기화 호출이 명시된 경우,
-음성은 제거된 top-level static Class를 되살리는 경우, 경계는 generic
+음성은 import만으로 숨은 초기화와 IO가 생기는 경우, 경계는 generic
 Class별 cell 수가 불명확한 경우다.
 
 **정적 판정과 상호작용**
@@ -711,14 +709,13 @@ Class/Enum/Trait dispatch identity나 CE-G6 책임을 static storage identity와
 **평가·소유권·오류**
 초기화는 성공 시 한 번만 publish되고 실패 시 부분 object나 delegated
 owner가 남지 않아야 한다. retry, failure caching, cleanup과 module unload
-정책은 미결이다. 제거된 철자에는 `STATIC_CLASS_DECLARATION_NOT_CURRENT`가
-적용되며 다른 constructor 진단으로 fallback하지 않는다.
+정책은 미결이다.
 
 **현행 대안과 이행**
 module-level static-admissible `let`과 명시적 lifecycle 함수가 대안이다.
-도구는 제거된 철자를 자동 복구하거나 Class를 임의 module singleton으로
-rewrite하지 않는다. owner 선택과 호출 순서를 사용자가 정한 뒤에만
-migration을 제안하며 formatter/LSP는 binding과 Class API를 분리한다.
+도구는 Class를 임의 module singleton으로 rewrite하지 않는다. owner
+선택과 호출 순서를 사용자가 정한 뒤에만 migration을 제안하며
+formatter/LSP는 binding과 Class API를 분리한다.
 
 **활성화 선행 조건**
 Design_의 owner 선택, exact EBNF/root, cycle과 failure algorithm, API/link
@@ -728,8 +725,8 @@ identity, cleanup MIR, multi-module mutation corpus와 target-bound receipt가
 **설계 검토 시나리오**
 - **양성 전제·기대:** module이 공유 cell 하나와 명시적 초기화 함수를
   소유하면, 첫 성공 publication 뒤 모든 Class 사용자가 같은 값을 본다.
-- **음성/거부:** import만으로 IO를 수행하거나 제거된 `static class`가
-  숨은 singleton을 만들면 owner와 effect가 보이지 않으므로 거부한다.
+- **음성/거부:** import만으로 IO를 수행하거나 숨은 singleton을 만들면
+  owner와 effect가 보이지 않으므로 거부한다.
 - **경계:** generic Class에서 type argument별 cell인지 단일 module
   cell인지 결정되지 않았다면 어느 쪽도 선택하지 않고 설계를 보류한다.
 
@@ -797,7 +794,7 @@ artifact가 대안이다. migration은 주석이나 test를 자동 proof로 승�
 dependency와 selected conformance identity를 별도 표시해야 한다.
 
 **활성화 선행 조건**
-formal calculus와 trusted base ratification, exact syntax/recovery,
+formal calculus와 trusted base ratification, exact syntax/diagnostic,
 termination/resource cap, artifact digest, generic proof corpus, independent
 checker와 formatter/LSP receipt가 필요하다. 모든 제품 실행 상태는
 `NOT_RUN`이다.
@@ -1377,8 +1374,8 @@ existential package를 검토한다. borrow Facet의 read-only evidence sealing�
 nonescape lifetime을 보존하는 것이 목적이다.
 
 **제안 표면**
-`facet[inout value as Trait]`와 대응 `Facet<inout any Trait>`가 Recovery에
-있는 선택 후보다. 아래는 비활성 설계 예시다. 양성은 unique local place,
+`facet[inout value as Trait]`와 대응 `Facet<inout any Trait>`는
+nonactivatable 선택 후보다. 아래는 비활성 설계 예시다. 양성은 unique local place,
 음성은 alias가 겹치는 pack, 경계는 suspension 또는 return으로 region을
 벗어나는 경우다.
 
@@ -1391,7 +1388,7 @@ method receiver capability가 닫혀야 한다. borrow Facet을 자동 inout으�
 **평가·소유권·오류**
 pack은 payload를 이동하지 않지만 exclusive loan을 정확히 한 번 열고
 종료 시 되돌린다. 실패·panic·cancellation에도 loan residue가 없어야 한다.
-현행은 Recovery 후 semantic node 0으로 거부되고 전용 final diagnostic와
+현행은 semantic node 0으로 거부되고 전용 final diagnostic와
 MIR region execution은 미결이다.
 
 **현행 대안과 이행**
@@ -1407,7 +1404,7 @@ positive/negative/escape corpus, TCC evidence와 target receipt가 필요하다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/types/type-system.md -->
 ```deeplus
-// 비활성 설계 표면: 현재는 Recovery 진단만 가능하다.
+// 비활성 설계 표면: 현재 source route는 없다.
 let editable = facet[inout value as Editable]
 editable ~ update
 ```
@@ -1443,7 +1440,7 @@ isolation과 cast result를 닫아야 한다. Dyn carrier나 Box identity와
 **평가·소유권·오류**
 pack 성공은 원 binding을 소비하고 package가 drop 책임을 갖는다. 실패는
 원 owner를 그대로 반환하거나 unpublished payload를 정확히 한 번
-cleanup해야 한다. compiler fallback/retry는 0이고 현행 Recovery는
+cleanup해야 한다. compiler fallback/retry는 0이고 현행 source에서는
 admitted AST/HIR/MIR를 만들지 않는다.
 
 **현행 대안과 이행**

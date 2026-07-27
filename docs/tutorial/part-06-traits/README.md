@@ -27,7 +27,8 @@ fixed-glyph conformance를 하나의 흐름으로 배운다.
   specialization, child/case-local witness replacement는 활성화하지 않는다.
 - associated item은 `<T as Trait>::item`으로 명시한다.
 - fixed-glyph conformance의 Stable 집합은 정확히 `+`, `-`, `*`다.
-- 임의 custom operator는 제거된 표면이며 positive 예제가 없다.
+- 임의 custom operator는 Current와 Preview Design 모두에서 수용하지
+  않으며 positive 예제가 없다.
 
 Trait Conformance 관련 `TCC-P1-002..008`은 정확히 7개 모두 OPEN이다.
 이 튜토리얼은 문서만으로 witness 구현, formatter/LSP 또는 backend

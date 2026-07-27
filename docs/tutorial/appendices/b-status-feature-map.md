@@ -4,15 +4,13 @@
 >
 > 아래 분류는 학습용 projection이다. product lane은 `15/15 NOT_RUN`이다.
 
-## 1. 다섯 상태를 구분하는 질문
+## 1. 세 상태를 구분하는 질문
 
 | 상태 | source admission | semantic authority | product PASS | positive 예제 |
 |---|---:|---:|---:|---:|
 | Current/Stable design | 예 | 예 | 아니오 | 예 |
 | Preview gated | gate 조건부 | 제한됨 | 아니오 | gate 표식 필수 |
 | Preview Design | 아니오 | 설계 후보 | 아니오 | 검토용으로만 |
-| Recovery only | 정상 AST 없음 | 이행 진단 | 아니오 | negative only |
-| Removed | 아니오 | 금지 규칙 | 아니오 | negative only |
 
 “문서에 자세히 쓰였다”와 “활성화됐다”는 같은 말이 아니다. 특히
 Preview Design 문서가 풍부해도 parser, checker, HIR, MIR, backend,
@@ -32,7 +30,7 @@ formatter, LSP 또는 product support authority를 만들지 않는다.
 - named `def#async`, structured task, actor
 - HIR-H1 verifier boundary와 current xVM/LLVM backend authority
 
-이 목록은 registry 전체를 대체하지 않는다. 정확한 694 feature row는
+이 목록은 registry 전체를 대체하지 않는다. 정확한 708 feature row는
 feature catalog와 문법 참조 부록을 사용한다.
 
 ## 3. Preview gated
@@ -45,7 +43,7 @@ gate를 발명하지 않는다.
 
 ## 4. Preview Design
 
-현재 registry의 Preview Design surface는 44개이며 모두
+현재 registry의 Preview Design surface는 49개이며 모두
 `PREVIEW_DESIGN_NONACTIVATABLE`이다. 대표적인 주제는 다음과 같다.
 
 - successor Trait/Enum route, `VIA`/`AUTO`, specialization
@@ -78,9 +76,7 @@ positive Current 예제로 옮기지 않는다.
 
 1. Stable design을 “compiler에서 실행 PASS”로 읽는다.
 2. Preview Design example을 복사해 Current source로 쓴다.
-3. recovery spelling을 alternate syntax로 가르친다.
-4. historical artifact를 current authority로 다시 올린다.
-5. artifact SHA-256과 Git commit SHA를 비교해 충돌을 만든다.
+3. artifact SHA-256과 Git commit SHA를 비교해 충돌을 만든다.
 
 각 경우에는 먼저 identity domain과 authority source를 확인한다.
 
@@ -89,8 +85,10 @@ positive Current 예제로 옮기지 않는다.
 - `spec/features/gates.json`
 - `spec/features/catalog/**`
 - [상태·authority·표기법](../../grammar-reference/00-status-authority-and-notation.md)
-- [Preview·Recovery·Removed](../../grammar-reference/15-preview-recovery-and-removed-surfaces.md)
+- [Preview 표면](../../grammar-reference/15-preview-surfaces.md)
 
 상태 판단을 리뷰할 때는 “문서 존재”, “정적 fixture”, “제품 실행”을
 각각 별도 열로 기록한다. 이 세 열을 하나의 PASS로 합치지 않는 습관이
 Preview와 Current를 안전하게 함께 문서화하는 핵심이다.
+따라서 독자는 각 기능의 언어 상태와 실제 제품 지원 상태를 반드시
+따로 확인해야 한다.

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -12,7 +12,6 @@
     "ordinary names acquire meaning through explicit declarations or Prelude bindings, never spelling alone",
     "one surface owner supplies one syntax role and one deterministic lowering route",
     "static identity, ownership, effects, errors, isolation, suspension, and cleanup remain visible",
-    "recovery may diagnose an intended spelling but creates no current semantic identity",
     "a restriction must preserve an explicit expression of programmer intent"
   ],
   "rules": [
@@ -45,8 +44,7 @@
           "type-checker intrinsic",
           "formatter-only special name",
           "semantic AST or HIR identity"
-        ],
-        "recovery_exception": "after an enum-body parse commitment, the two-identifier spelling `case name` may receive the existing targeted recovery diagnostic without reclassifying either identifier"
+        ]
       }
     },
     {
@@ -79,7 +77,6 @@
         "user_declared_type_named_array_allowed": true,
         "legacy_sharp_array_constructor": "#array{...}",
         "legacy_sharp_array_constructor_exists": false,
-        "legacy_sharp_array_recovery_or_migration_route": false,
         "active_numeric_array_surfaces": [
           "#[...]",
           "#N[...]"
@@ -168,8 +165,8 @@
         ],
         "tail_less_try_block": "reject",
         "try_expression_statement": "reject",
-        "catch_pattern": "binder, wildcard, or another checker-proven-irrefutable transactional Pattern",
-        "catch_selection": "no runtime pattern dispatch in the current minimum; a refutable catch is rejected before MIR",
+        "catch_pattern": "source-ordered refutable transactional Pattern with zero or one terminating pure Bool guard",
+        "catch_selection": "the first structural-and-guard success commits; Pattern mismatch or a false guard selects the next catch without partial publication",
         "later_catches_after_irrefutable": "statically unreachable and do not create a fallthrough route",
         "unmatched_error": "propagate after finally",
         "finally_execution_count": 1
@@ -190,6 +187,9 @@
           "single expression ValueBody",
           "local ret on every reachable normal block path"
         ],
+        "catch_pattern": "source-ordered refutable transactional Pattern with zero or one terminating pure Bool guard",
+        "catch_selection": "the first structural-and-guard success commits; Pattern mismatch or a false guard selects the next value catch without partial publication",
+        "later_catches_after_irrefutable": "statically unreachable and do not create a fallthrough route",
         "finally_produces_value": false,
         "unmatched_error": "propagate after finally"
       }

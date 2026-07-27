@@ -127,16 +127,34 @@ total += nextDelta()
 value와 RHS operation이 성공한 뒤에만 한 번 write한다. overflow나 RHS
 failure에서는 `total`이 10으로 남는다.
 
-## 7. 허용·거부·경계 사례
+### 6.4 Pattern과 지역 병렬 대입의 commit
 
-<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL; product: NOT_RUN -->
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-defer {
-    closePrimary()
-    closeSecondary()
-}
-// DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL: 각각의 invocation을 따로 등록
+var left = acquireLeft()
+var right = acquireRight()
+
+left, right = right, left
 ```
+
+두 target을 왼쪽부터 한 번 resolve하고 RHS Tuple을 한 번 평가한다.
+overlap, type, liveness와 ownership transition을 모두 확인한 뒤 하나의
+logical commit을 수행한다. commit 전 실패에서는 두 old owner가 그대로
+live이고 write count가 0이다. commit 뒤 old owner cleanup은 deterministic
+reverse target order로 정확히 한 번 수행한다.
+
+refutable Pattern도 같은 zero-partial-publication 원칙을 쓴다.
+
+```deeplus
+let [head, ..tail] = values
+else return
+```
+
+length test나 rest carrier 준비가 실패하면 `head`와 `tail`은 final
+binder가 되지 않는다. borrowed rest의 `ListRestView<T>`는 원본 owner
+region을 보존하므로 view가 escape하도록 수명을 늘리지 않는다.
+
+## 7. 허용·거부·경계 사례
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: DEFER_REQUIRES_SINGLE_INVOCATION; product: NOT_RUN -->
 ```deeplus
@@ -151,6 +169,8 @@ throwing cleanup이 body failure를 덮는 것, Cancellation을 catchable Error�
 ## 8. 다른 기능과의 연결
 
 - pattern mismatch와 false guard는 binding/move를 commit하지 않는다.
+- 지역 병렬 대입은 target overlap을 정적으로 거부하고 하나의
+  `PatternAssignmentCommitId`만 만든다.
 - Map/schema/constructor는 partial result를 publish하지 않고 temporary를
   역순 cleanup한다.
 - Actor enqueue precommit failure는 sender owner를 보존한다.

@@ -41,8 +41,6 @@ private def#pure typedGreeting(
     name: String,
     count: GreetingCount,
 ) -> String
-    throws Never
-    effects {}
 = {
     return "[$count] 안녕하세요, $name"
 }
@@ -70,8 +68,8 @@ label은 runtime String이 아니라 선택된 callable의 parameter identity다
    각 argument expression은 source order로 한 번만 평가한다.
 4. 문자열 보간 결과가 `String`인지, 정상 경로가 명시적 `return`으로
    끝나는지 확인한다.
-5. body에 숨은 I/O나 authority가 없어 `def#pure`, `throws Never`,
-   `effects {}`와 일치하는지 확인한다.
+5. body에 숨은 I/O나 authority가 없어 `def#pure`가 정규화한
+   `throws Never effects {}`와 일치하는지 확인한다.
 
 이 trace는 실행 순서를 흉내 내는 것이 아니라 어느 정적 owner가 어떤
 결정을 내리는지 정리한다. 한 단계가 실패하면 뒤 단계의 제품 실행을
@@ -82,7 +80,7 @@ label은 runtime String이 아니라 선택된 callable의 parameter identity다
 - ModulePath는 `tutorial::labs::greeting`인가?
 - `GreetingCount`에 명시적 가시성이 있는가?
 - 함수 정상 경로가 `String`을 명시적으로 `return`하는가?
-- `throws Never`, `effects {}`가 순수 profile과 맞는가?
+- 생략해 표시한 빈 error/effect row가 순수 profile과 맞는가?
 - I/O나 존재가 확인되지 않은 `print`/`readLine`을 사용하지 않았는가?
 
 ## 실패 실험

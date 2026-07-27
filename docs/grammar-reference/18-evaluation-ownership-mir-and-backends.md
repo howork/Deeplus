@@ -50,8 +50,7 @@ xVM·LLVM 실행, backend opcode, 표현, 성능 및 제품 지원은
 
 scanner는 Unicode source와 lexical mode를 읽어
 token과 trivia를 만든다.
-lossless CST는 토큰, delimiter, 줄바꿈,
-주석, recovery spelling을 보존한다.
+lossless CST는 토큰, delimiter, 줄바꿈과 주석을 보존한다.
 
 이 단계가 책임지는 대표적인 결정은 다음과 같다.
 
@@ -59,7 +58,7 @@ lossless CST는 토큰, delimiter, 줄바꿈,
 - numeric literal token과 prefix sign 분리
 - attached postfix `A^`와 spaced infix `a ^ b` 경계
 - `#map`, `#set`, `#mut`, `#raw`, `#bytes` prefixed goal
-- Stable, Preview, Recovery entry point 분리
+- Stable과 Preview entry point 분리
 - 문장 경계와 layout separator 보존
 
 scanner는 타입을 보고 token을 다시 나누지 않는다.
@@ -73,11 +72,9 @@ Pratt expression owner를 확정한다.
 AST는 소스 구조를 나타내지만
 아직 모든 static identity와 ownership plan을 갖지 않는다.
 
-Recovery-only form은 진단에 필요한 spelling을 보존할 수 있지만
-허용된 Stable AST로 가장해서는 안 된다.
-허용되지 않은 `null`, empty `[]` suffix,
-removed operator가 AST recovery node로 보였다는 사실은
-그 값이나 연산의 MIR identity를 만들지 않는다.
+문법 또는 owner admission에 실패한 source를 허용된 Stable AST로
+가장해서는 안 된다. 실패한 구조는 그 값이나 연산의 MIR identity를
+만들지 않는다.
 
 ### 2.3 HIR
 
@@ -131,7 +128,7 @@ LosslessCST
 
 | 단계 | 할 수 있는 일 | 아직 권위가 아닌 것 |
 |---|---|---|
-| `LosslessCST` | token, trivia, 원 spelling, recovery provenance 보존 | type·witness·ownership 선택 |
+| `LosslessCST` | token, trivia와 원 spelling 보존 | type·witness·ownership 선택 |
 | `NormalizedAST` | surface sugar를 구조적으로 정규화 | overload나 backend representation 선택 |
 | `HirSkeleton` | owner/body/scope/generated declaration의 뼈대 구성 | unresolved slot을 canonical로 저장 |
 | `CheckSession` | name, type, call, label, evidence, ownership, effect, error, cancellation, isolation, cleanup을 fixed point로 폐쇄 | 실행 |
@@ -158,7 +155,7 @@ region-bound인 callable도 표현할 수 있다.
 
 반대로 다음 값의 canonical variant 수는 정확히 0이다.
 
-- recovery node
+- 문법 또는 admission에 실패한 node
 - unresolved lookup 또는 candidate set
 - inference variable와 placeholder/error type
 - missing expression
@@ -588,6 +585,30 @@ backend가 편의를 위해 compound opcode를 만들 수는 있지만
 
 MIR observable trace가 같아야 한다.
 
+### 7.4 지역 병렬 대입
+
+bare comma와 Tuple target은 하나의 `PatternAssignmentPlan`으로
+정규화된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+left, right = right, left
+```
+
+Stable plan은 서로 겹치지 않는 direct mutable Plain local만 받는다.
+
+1. target place를 왼쪽부터 각각 한 번 resolve한다.
+2. overlap, mutability, liveness와 exclusivity를 검사한다.
+3. RHS Tuple을 한 번 평가한다.
+4. 구조와 각 target type/ownership을 검사한다.
+5. 새 value와 교체될 old owner를 private staging에 준비한다.
+6. 하나의 `PatternAssignmentCommitId`로 논리적 commit한다.
+7. old owner를 deterministic reverse order로 정리한다.
+
+commit 전 어느 단계에서 실패해도 target write는 0이고 old value와 owner는
+그대로다. commit 중 user callback, suspension 또는 recoverable
+conversion은 허용하지 않는다.
+
 ## 8. integer와 floating value
 
 ### 8.1 semantic domain
@@ -713,10 +734,11 @@ receipt는 없으며 제품 상태는 `NOT_RUN`이다.
 4. `structural_test`
 5. `probe_bind`
 6. 선택적 `guard_evaluate`
-7. `atomic_commit`
-8. `final_bind`
-9. `body`
-10. `exit_or_join`
+7. `acquisition_stage`
+8. `atomic_commit`
+9. `final_bind`
+10. `body`
+11. `exit_or_join`
 
 TestPlan과 probe binder는 nonconsuming이다.
 guard는 probe를 읽을 수 있지만
@@ -743,6 +765,13 @@ atomic commit에서 한 번 적용한다.
 alias pattern은 clone이 아니라 borrow event다.
 Or-pattern branch는 canonical binder interface와
 같은 ownership state를 제공해야 한다.
+
+Tuple, List rest, exact/open Record·Map, transparent nominal product,
+named Enum payload, pin과 bounded range/relational test도 이 공통 event
+family를 사용한다. 구조 종류가 늘어도 별도의 비원자적 binder path를
+만들지 않는다. `let!`의 mismatch는 `PatternMatchDefect`로 나가지만
+commit 전 zero-count 법칙은 동일하다. refutable catch의 mismatch는 다음
+catch로 진행한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/mir/semantics.md -->
 ```deeplus
@@ -1019,6 +1048,23 @@ private let originalCoordinate = tail[3]
 
 `tail`은 source coordinate 2부터 4를 보존한다.
 독립된 1-based collection으로 rebase하지 않는다.
+
+Pattern으로 borrowed List remainder를 capture하면 별도 closed carrier인
+`ListRestView<T>`를 만든다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+private def inspect(values: List<Int>) -> Unit = {
+    if let [first, ..middle.., last] = values {
+        consume(middle)
+    }
+}
+```
+
+`middle`은 원본 owner region, coordinate projection과 길이 0도 가능한
+`RankSpan`을 보존한다. intrinsic `Sequence<T>` witness는 이 carrier의
+정해진 traversal에만 적용되며 generic `Sequence`가 Pattern이나 bracket을
+새로 활성화하지 않는다.
 
 ### 13.3 precommit failure
 
@@ -1779,7 +1825,7 @@ normative design을 설명하는 conceptual trace다.
 ## 27. backend 검토 체크리스트
 
 1. source role과 parser owner가 고정되었는가.
-2. recovery node가 MIR로 내려가지 않는가.
+2. 문법 또는 admission에 실패한 node가 MIR로 내려가지 않는가.
 3. HIR identity가 runtime String lookup으로 바뀌지 않는가.
 4. operand와 argument를 정확히 한 번 평가하는가.
 5. source order를 보존하는가.
@@ -1808,7 +1854,7 @@ normative design을 설명하는 conceptual trace다.
 28. xVM/AOT/ORC trace를 같은 기준으로 비교하는가.
 29. tooling side receipt가 program event를 바꾸지 않는가.
 30. product claim이 target-bound receipt를 갖는가.
-31. canonical HIR에 recovery, unresolved, candidate 또는 placeholder가
+31. canonical HIR에 invalid, unresolved, candidate 또는 placeholder가
     남지 않는가.
 32. Rational constant가 BigInt 기약분수와 positive denominator를
     보존하는가.

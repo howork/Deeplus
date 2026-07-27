@@ -5,8 +5,8 @@
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
-이 장의 열다섯 기능은 모두 `PREVIEW_DESIGN/nonactivatable`이다. 선택된
-Recovery probe와 후보 철자는 current source가 아니며, exact syntax가
+이 장의 열다섯 기능은 모두 `PREVIEW_DESIGN/nonactivatable`이다. 후보
+철자는 current source가 아니며, exact syntax가
 미선정인 기능의 코드는 현행 이름 있는 declaration 또는 explicit API만
 사용한다. 설명·schema·fixture는 activation, 구현 완료나 product support가
 아니다. 15개 제품 lane은 모두 `NOT_RUN`이고 OPEN P1은 그대로 유지된다.
@@ -55,7 +55,7 @@ closure에 async marker를 자동 추가하지 않는다. LSP는 capture, suspen
 error와 cancellation channel을 별도로 표시해야 한다.
 
 **활성화 선행 조건**
-exact root/grammar와 recovery, callable ABI와 capture/ownership calculus,
+exact root/grammar와 diagnostic, callable ABI와 capture/ownership calculus,
 HIR/MIR lowering, cancellation/cleanup corpus, formatter/LSP와 xVM/LLVM
 target receipt가 필요하다. 정적 예시는 제품 evidence가 아니다.
 
@@ -563,8 +563,8 @@ typed immutable 결과만 내보내고 outer mutation, suspension과 resource/
 pointer/borrow/closure/task/actor escape를 금지한다.
 
 **제안 표면**
-`@scope#dynamic` 또는 `@scope#unsafe`와 typed export는 Recovery probe로만
-선택되어 있고 activatable route는 없다. 아래는 거부되는 비활성 설계
+`@scope#dynamic` 또는 `@scope#unsafe`와 typed export는 nonactivatable
+후보이며 activatable route는 없다. 아래는 거부되는 비활성 설계
 예시다. 양성 검토는 plain typed immutable export, 음성은 pointer/resource
 escape, 경계는 closure가 quarantined authority를 capture하는 경우다.
 
@@ -577,7 +577,7 @@ proof로 바꾸지 않는다.
 **평가·소유권·오류**
 body는 별도 authority owner 아래 평가되고 모든 local cleanup이 끝난 뒤
 허용 export만 commit한다. 실패·Cancellation·suspension에서 export 0,
-resource residue 0이어야 한다. current Recovery는
+resource residue 0이어야 한다. current source에서는
 `QUARANTINE_SCOPE_NOT_ACTIVATABLE`를 내며 semantic AST/HIR/MIR 0이다.
 
 **현행 대안과 이행**
@@ -593,7 +593,7 @@ security review와 별도 Design_ activation이 필요하다. 제품은 `NOT_RUN
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/quarantine-scope.json -->
 ```deeplus
-// 비활성 Recovery probe: current source에서는 반드시 거부된다.
+// 비활성 Preview Design: current source에서는 반드시 거부된다.
 @scope#dynamic {
     let value: Int = inspect(payload)
 } -> $value: Int
@@ -617,8 +617,8 @@ failure/retry, effects, cleanup과 unload가 정해지지 않은 상태에서 hi
 load-time execution을 current로 만들 수 없다.
 
 **제안 표면**
-과거 `static { ... }` 후보는 있으나 exact lifecycle contract와 successor
-route는 미선정이다. 아래는 explicit initialization function 대안이다.
+exact source surface, lifecycle contract와 successor route는 미선정이다.
+아래는 explicit initialization function 대안이다.
 양성 검토는 caller가 phase/order를 소유하는 경우, 음성은 import 시 hidden
 IO, 경계는 두 module의 cyclic initializer와 partial publication이다.
 
@@ -842,7 +842,7 @@ Enum+match, ordinary Class/actor state와 `uml_state_machine_provider`가
 자동 DSL로 바꾸지 않고 state/transition graph를 report한다.
 
 **활성화 선행 조건**
-Design_ syntax 선택, exact grammar/recovery, totality/reentrancy/effect
+Design_ syntax 선택, exact grammar/diagnostic, totality/reentrancy/effect
 checker, MIR event, persistence/versioning policy, provider parity와 target
 receipt가 필요하다.
 

@@ -258,9 +258,9 @@ JIT 같은 backend가 언어 의미를 제각기 재해석해서는 안 된다.
 - 의미를 보존하는 안전한 수정이 있는가
 - 자동 수정이 오히려 의미를 바꿀 수 있어 제공되지 않는가
 
-Recovery 문법은 후속 진단과 편집 경험을 위한 것이며, 유효한
-AST/HIR/MIR 잔여물을 만드는 우회로가 아니다. Formatter와 LSP도 문법
-owner와 semantic identity를 보존해야 한다.
+잘못된 입력을 parser가 어디까지 읽었는지는 진단 품질을 위한 정보일
+뿐, 별도의 소스 표면이나 유효한 AST/HIR/MIR 의미를 만들지 않는다.
+Formatter와 LSP도 문법 owner와 semantic identity를 보존해야 한다.
 
 ### 2.12 진화는 상태와 증거를 통해 이루어진다
 
@@ -272,8 +272,6 @@ Deeplus는 새로운 아이디어를 문서에 썼다는 이유만으로 현행 
 | `CURRENT` / `STABLE_DESIGN` | 현행 언어 설계에 수용됨 |
 | `PREVIEW` | 명시적 source gate 아래 제한적으로 수용됨 |
 | `PREVIEW_DESIGN` | 검토 가능한 설계이지만 source에서 활성화할 수 없음 |
-| `RECOVERY_ONLY` | 오류 복구와 진단에만 사용되며 유효 프로그램을 만들지 않음 |
-| `REMOVED` | 현행 표면이 아니며 필요하면 migration 진단만 제공 |
 | `PRODUCT_NOT_RUN` | target-bound compiler/runtime/tool 실행 증거가 없음 |
 
 기능의 존재, 설계의 안정성, 구현의 존재, 독립 적합성 검증 및 제품
@@ -356,7 +354,7 @@ Deeplus는 domain modeling만을 위한 언어도, 저수준 제어만을 위한
 | 동시성 | async/await, structured task, cancellation, actor와 mailbox 격리 |
 | 시스템 경계 | provider/Prelude, FFI, unsafe 격리, serialization identity 분리 |
 | 컴파일 계약 | CST/AST, HIR-H1, MIR 및 다중 backend가 지켜야 할 의미 경계 |
-| 언어 진화 | Current, Preview, Preview Design, Recovery, Removed 상태 fence |
+| 언어 진화 | Current, Preview, Preview Design과 제품 증거 상태의 분리 |
 
 주제별 정확한 설명과 예제는
 [`docs/grammar-reference/`](../grammar-reference/README.md), 학습 순서는
@@ -381,7 +379,7 @@ Preview는 gate가 있는 시험적 source surface다. Preview Design은 미래
 ### 5.1 의도적으로 현행 표면에 두지 않는 것
 
 - **`null` 값** — 부재는 `Option`, 결과는 `Result` 등 책임이 드러나는
-  타입으로 표현한다. `null` 철자는 recovery 진단 대상일 뿐이다.
+  타입으로 표현하며 `null`은 현행 소스에서 수용하지 않는다.
 - **임의 custom operator glyph와 사용자 정의 우선순위** — 정해진
   fixed-glyph와 Trait 계약만 사용한다.
 - **기본 0-based indexing** — Deeplus sequence의 첫 source index는
@@ -399,8 +397,6 @@ Preview는 gate가 있는 시험적 source surface다. Preview Design은 미래
   격리 및 명시적 unsafe 경계를 우선한다.
 - **runtime에서 Trait 적합성을 무제한 재검색하는 것** — 정적 단계에서
   닫힌 witness와 dispatch evidence를 전달한다.
-- **Recovery syntax를 유효 프로그램으로 승격하는 것** — recovery
-  residue는 진단을 돕지만 admitted semantic node를 만들지 않는다.
 
 ### 5.2 설계 후보는 있으나 아직 활성화하지 않은 것
 
@@ -409,7 +405,7 @@ Preview Design에 기록된 surface와 semantics는 검토 대상이지 current
 evidence가 요구되는 설계는 문서가 존재해도 사용할 수 없다.
 
 특정 후보의 정확한 상태는
-[`docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md`](../grammar-reference/15-preview-recovery-and-removed-surfaces.md)와
+[`docs/grammar-reference/15-preview-surfaces.md`](../grammar-reference/15-preview-surfaces.md)와
 Preview Design 세 장에서 확인한다. “좋은 아이디어”와 “현행 언어”의
 차이는 명시적 authority와 acceptance evidence가 메운다.
 

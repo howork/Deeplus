@@ -35,7 +35,8 @@ Trait witness, context 채널 또는 명시적 evidence 채널에 나타날 수 
    어떻게 별도로 결합되는가.
 6. lambda와 trailing closure는 언제 expected callable type을
    사용할 수 있는가.
-7. `catch`는 왜 일반적인 runtime pattern dispatch가 아닌가.
+7. `catch`의 refutable Pattern과 guard는 어떤 source-order 규칙으로
+   첫 성공을 선택하는가.
 8. 허용 판정 뒤 평가·소유권·효과·오류·정리 책임은 어떻게
    호출 계획에 남는가.
 
@@ -367,8 +368,6 @@ runtime payload가 `AdminUser`라는 이유로
 ```deeplus
 public trait DefaultValue {
     def ::make() -> Self
-        throws Never
-        effects {}
 }
 
 private def makeDefault<T>() -> T
@@ -496,8 +495,8 @@ Resource·drop/finalizer·ambient authority·escaping borrow·cycle을
 persistent mutable cache, runtime registry, lifecycle이 정의되지 않은
 allocation은 immutable `let` 이름 아래 숨겨도 허용되지 않는다.
 `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED`가 binding을 거부하면
-그 item은 이후 `<T as Trait>::item` 후보가 되지 않으며 recovery node도
-Stable HIR/MIR로 내려가지 않는다. runtime owner가 필요한 기능은
+그 item은 이후 `<T as Trait>::item` 후보가 되지 않으며 Stable HIR/MIR로
+내려가지 않는다. runtime owner가 필요한 기능은
 ordinary value나 Actor/shared-state owner로 명시한다.
 
 ## 6. generic 문법과 kind
@@ -638,8 +637,9 @@ Parameter ::= StoredParameter
             | NamedRestParameter
             | ValueParameter ;
 
-ValueParameter     ::= ParameterMode? ParameterPatternSlot
+ValueParameter     ::= ParameterMode? ParameterEntrySlot
                        TypeAnnotation ;
+ParameterEntrySlot ::= Identifier IrrefutableParameterPattern? ;
 ParameterMode      ::= "borrow" | "mut" | "move" | "inout" ;
 ContextParameter   ::= "context" Identifier ":" TypeRef ;
 WitnessParameter   ::= "using" Identifier ":" "witness" TypeRef ;
@@ -647,10 +647,12 @@ RepeatedParameter  ::= Identifier "..." TypeAnnotation ;
 NamedRestParameter ::= Identifier "***" TypeAnnotation ;
 ```
 
-ordinary parameter는 identifier slot이다.
-refutable Pattern을 formal에 직접 넣지 않는다.
-구조 분해는 함수 body의 pattern owner나
-별도의 exhaustive declarative clause owner가 담당한다.
+ordinary parameter의 선행 identifier는 call channel과 whole-value local을
+공급한다. 그 뒤의 structural Pattern은 parameter type에 대해
+irrefutable일 때만 body-entry decomposition plan이 된다. Pattern은
+overload selection, named-argument label 또는 function type identity에
+참여하지 않는다. refutable decomposition은 함수 body의 guarded Pattern
+owner나 exhaustive declarative clause owner가 담당한다.
 
 callable signature identity에는
 다음이 보존된다.
@@ -980,8 +982,8 @@ ClosureExpr ::= CaptureList? HashTag* "{" ClosureContent "}" ;
 ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody ;
 LambdaParameterList    ::= LambdaParameter
                            ("," LambdaParameter)* ","? ;
-LambdaParameter        ::= ParameterMode? Identifier
-                           TypeAnnotation? ;
+LambdaParameter        ::= ParameterMode? IrrefutableParameterPattern
+                            TypeAnnotation? ;
 
 CaptureList ::= "[" CaptureItemList? "]" ;
 CaptureItem ::= ("let" | "var") Identifier "=" Expr
@@ -991,11 +993,12 @@ CaptureMode ::= "borrow" | "inout" | "move"
               | "clone" | "deep" | "copy" | "once" ;
 ```
 
-lambda parameter list에는 괄호를 쓰지 않는다.
-명시적 nullary lambda는 `{ => body }`다.
-parameter는 identifier이며
-context, witness, repeated positional, named-rest,
-stored parameter channel을 가질 수 없다.
+lambda parameter list 자체에는 바깥 괄호를 쓰지 않는다. Pattern의
+괄호는 별도 의미를 가진다. `{ (x, y): (Int, Int) => ... }`는 Tuple
+parameter 하나를 분해하고 `{ x: Int, y: Int => ... }`는 parameter 둘을
+받는다. 명시적 nullary lambda는 `{ => body }`다. lambda parameter는
+irrefutable Pattern만 허용하며 context, witness, repeated positional,
+named-rest, stored parameter channel을 가질 수 없다.
 
 ### 11.2 lambda body 결과
 
@@ -1180,31 +1183,21 @@ capture-level mode와 callable-level right는
 ```ebnf
 TryStmt      ::= "try" Block
                  (CatchClause+ FinallyClause? | FinallyClause) ;
-CatchClause  ::= "catch" Pattern? Block ;
+CatchClause  ::= "catch" Pattern? GuardClause? Block ;
 FinallyClause ::= "finally" Block ;
 ```
 
-문법은 `CatchClause+`를 허용한다.
-그러나 현행 최소 의미는
-일반적인 runtime pattern-dispatch chain이 아니다.
+문법은 `CatchClause+`를 허용하며 recoverable Error subject를 정확히 한
+번 평가한 뒤 source order의 refutable Pattern dispatch를 수행한다.
 
 ### 13.2 허용되는 catch pattern
 
-catch pattern은 다음 중 하나여야 한다.
-
-- 단순 binder
-- wildcard
-- checker가 해당 error residual 전체에서
-  irrefutable임을 증명한 transactional Pattern
-
-refutable pattern을 runtime에서 순서대로 시험하고
-다음 catch로 fallthrough하는 의미는 현행이 아니다.
-refutable catch는 MIR 전에 거부된다.
-
-첫 catch가 irrefutable이면
-뒤 catch는 statically unreachable이며
-새 fallthrough route를 만들지 않는다.
-처리되지 않은 Error는 `finally`를 정확히 한 번 거친 뒤 전파된다.
+catch는 binder, wildcard, variant, transparent named payload, bounded
+value Pattern과 pure guard를 사용할 수 있다. 첫 structural test와 guard가
+성공한 catch만 binding을 commit한다. 실패하면 tentative binder나 move를
+남기지 않고 다음 catch로 간다. 첫 catch가 남은 ErrorSet 전체에
+irrefutable이면 뒤 catch는 statically unreachable이다. 끝까지 처리되지
+않은 Error는 `finally`를 정확히 한 번 거친 뒤 전파된다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
@@ -1225,27 +1218,26 @@ private def load() -> Unit
 `finally`는 정상 완료와 catch 완료,
 그리고 전파되는 실패에서 각각 정확히 한 번 실행된다.
 
-### 13.3 refutable catch 경계
+### 13.3 refutable catch와 guard
 
-<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
-private def invalidCatch() -> Unit
+private def loadConfiguration() -> Unit
     throws IOError
 = {
     try {
         readAll()
-    } catch IOError::permissionDenied(path) {
-        report(path)
+    } catch IOError${path, .._} if isConfigPath(path) {
+        useDefaults(path)
+    } catch error: IOError {
+        throw error
     }
 }
-// 현행 최소 catch는 refutable runtime dispatch를 만들지 않는다.
 ```
 
-variant별 error dispatch가 필요하다면
-irrefutable binder로 Error를 받은 뒤
-body 안의 현행 `match` owner에서 명시적으로 분기한다.
-이 방식은 catch selection과 pattern match의 의미 owner를
-혼합하지 않는다.
+catch guard는 pure Bool, nonthrowing, nonsuspending이고 probe binder를
+consume, escape, mutate-through하거나 authority 획득에 사용할 수 없다.
+Defect와 Cancellation은 recoverable Error residual에 들어오지 않는다.
 
 ## 14. 평가, commit 및 cleanup
 
@@ -1443,24 +1435,9 @@ private let value: Int = parse("42")
 실제 프로그램은 selector를 한정하거나
 서로 다른 argument shape를 사용해야 한다.
 
-### 16.8 local function의 explicit capture
+### 16.8 local function의 lexical access
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
-```deeplus
-private def outer(base: Int) -> Int = {
-    [borrow base] def add(delta: Int) -> Int = {
-        return base + delta
-    }
-    return add(1)
-}
-```
-
-local function은 outer local을 명시적으로 capture한다.
-borrow region보다 오래 escape하면 거부된다.
-
-### 16.9 nonescaping lexical access
-
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/nonescaping-lexical-access.json -->
 ```deeplus
 private def outer(base: Int) -> Int = {
     def add(delta: Int) -> Int = {
@@ -1472,6 +1449,8 @@ private def outer(base: Int) -> Int = {
 
 `add`가 선언 뒤 direct call로만 사용되고 동기·same-isolation이므로
 `base`는 capture가 아니라 call-time lexical dependency가 될 수 있다.
+반대로 callable이 outer region보다 오래 살거나 값을 snapshot·변경·소비하면
+해당 책임을 명시적 capture 또는 parameter로 표현해야 한다.
 `base`를 환경에 snapshot하지 않으며 호출 때 현재 값을 읽는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/nonescaping-lexical-access.json -->
@@ -1543,11 +1522,10 @@ lambda body type error를 primary로 내는 방식은
 
 ### 18.1 pattern과 parameter
 
-ordinary parameter는 identifier-only다.
-body 안의 `if let`, guarded `let`, `match`는
-각자의 Pattern owner에서 refutable destructuring을 수행한다.
-parameter grammar가 Pattern을 받지 않는 경계는
-호출 shape를 정적으로 닫게 한다.
+ordinary parameter의 call-channel identifier는 항상 보존된다. 뒤의
+structural Pattern은 irrefutable body-entry plan일 뿐 call shape를
+바꾸지 않는다. body 안의 `if let`, guarded `let`, `match`는 각자의
+Pattern owner에서 refutable destructuring을 수행한다.
 
 ### 18.2 effect capability
 
@@ -1620,10 +1598,11 @@ event도 만들지 않는다.
 - `mut` parameter와 `mut T`의 완전한 ownership law
 - `clone`, `deep`, `copy`, capture-level `once`
 - 일반 async callable literal
-- runtime refutable catch dispatch
+- refutable catch의 target-bound parser/checker/MIR 실행
 
-앞의 세 항목은 일부 Stable design surface를 가지지만 product-unbound다.
-뒤의 두 항목은 현행 current 의미로 활성화되지 않는다.
+앞의 세 항목과 refutable catch의 target-bound 실행은 Stable design
+surface를 가지지만 product-unbound다. 일반 async callable literal은
+nonactivatable Preview다.
 이 차이를 “파서가 토큰을 볼 수 있다”는 이유로 합치면 안 된다.
 
 미폐쇄 의미에 대해 구현자가 취할 수 있는 안전한 행동은
@@ -1688,7 +1667,8 @@ call-shape 설명을 backend call ABI PASS로,
 16. 익명 Union이나 hidden generic을 만들지 않는가.
 17. ownership/capture/cleanup 책임이 signature에 남는가.
 18. effects/errors/cancellation/suspension이 서로 분리되는가.
-19. catch가 refutable runtime dispatch로 확장되지 않는가.
+19. catch의 refutable Pattern mismatch와 false guard가 partial commit
+    없이 다음 catch로 진행하는가.
 20. HIR/MIR가 lookup 결과를 고정하고 재검색하지 않는가.
 21. product support가 receipt 범위를 넘지 않는가.
 22. 네 capability domain이 selector 철자와 owner 단계에서 분리되는가.

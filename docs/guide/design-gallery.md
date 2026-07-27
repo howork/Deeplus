@@ -1,6 +1,7 @@
 # Deeplus 0.1.2-baseline.r51f3 Design Gallery
 
-This curated gallery teaches both current Deeplus responsibilities and removed-surface boundaries. Product parser/checker execution is NOT_RUN.
+This curated gallery teaches current Deeplus responsibilities and explicit
+current rejection boundaries. Product parser/checker execution is NOT_RUN.
 
 ## G-R51f-001 — Map String key uses explicit indexing
 

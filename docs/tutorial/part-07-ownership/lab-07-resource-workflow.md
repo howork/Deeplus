@@ -189,15 +189,6 @@ inspect(borrow session)
 // OWNERSHIP_MODE_ADMISSION_FAILED
 ```
 
-<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL; product: NOT_RUN -->
-```deeplus
-defer {
-    audit ~ flush
-    audit ~ close
-}
-// 두 cleanup invocation으로 나누어 등록한다.
-```
-
 ## 확장 과제
 
 1. **복사:** audit `flush`와 `close`를 두 defer로 등록하고 실제 LIFO 순서를

@@ -293,9 +293,7 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-        "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-        "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+        "OPERATOR_PRECEDENCE_TABLE_REQUIRED"
       ],
       "predicates": [
         "OperatorPrecedenceTablePhaseAAdmitted"
@@ -491,9 +489,7 @@
     "normative_trace_refs": {
       "productions": [],
       "semantic_reference_productions": [],
-      "diagnostics": [
-        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE"
-      ],
+      "diagnostics": [],
       "predicates": [],
       "examples": []
     },
@@ -584,7 +580,6 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
-        "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
         "NONE_IS_NOT_A_TYPE",
         "OPTION_BARE_NONE_REMOVED",
         "OPTION_BARE_SOME_REMOVED",
@@ -1219,15 +1214,24 @@
         "PATTERN_ANALYSIS_RESOURCE_LIMIT",
         "PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY",
         "PATTERN_MULTIPLE_REST",
+        "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+        "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+        "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+        "PATTERN_REST_CARRIER_NOT_ADMITTED",
+        "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE",
         "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN",
-        "PATTERN_REST_MUST_BE_FINAL_IGNORED",
         "RECORD_PATTERN_DUPLICATE_FIELD",
         "RECORD_PATTERN_PRIVATE_FIELD",
         "RECORD_PATTERN_UNKNOWN_FIELD",
-        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
-        "TUPLE_PATTERN_NOT_CURRENT"
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT"
       ],
-      "predicates": [],
+      "predicates": [
+        "SequencePositionalRestAdmitted",
+        "TupleProductSurfaceAdmitted",
+        "StructuredRecordMapPatternAdmitted",
+        "TransparentNominalPatternAdmitted",
+        "PinRangeRelationalPatternAdmitted"
+      ],
       "examples": [
         "EX-R51b-GRAM-P-005"
       ],
@@ -1724,48 +1728,6 @@
       "predicates": [],
       "examples": [],
       "productions": [
-        "PrimaryExpr"
-      ],
-      "semantic_reference_productions": []
-    },
-    "trace_class": "syntax",
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
-    "authority_set": [
-      "LANGUAGE"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
-    "display_name": "Prefixed literal opener family",
-    "feature_id": "prefixed_literal_opener_family",
-    "feature_kind": "canonical_feature",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Prefixed literal opener family. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "PREFIXED_LITERAL_NO_WHITESPACE"
-      ],
-      "predicates": [],
-      "examples": [],
-      "productions": [
-        "ComprehensionExpr",
         "PrimaryExpr"
       ],
       "semantic_reference_productions": []

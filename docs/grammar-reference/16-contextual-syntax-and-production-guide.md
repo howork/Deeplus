@@ -63,10 +63,6 @@ source role
   → MIR의 관측 의미
 ```
 
-`RecoverySyntax`는 이 흐름의 예외처럼 보이지만 실제로는 예외가 아니다.
-recovery owner도 CST와 진단까지만 만들며 admitted AST/HIR/MIR을 만들지
-않는다는 별도의 admission 결과를 갖는다.
-
 ## 3. 첫 진입점: 파일 역할과 source root
 
 ### 3.1 안정 source root
@@ -307,16 +303,18 @@ Parameter ::= StoredParameter
             | NamedRestParameter
             | ValueParameter
 
-ValueParameter     ::= ParameterMode? ParameterPatternSlot TypeAnnotation
-ParameterPatternSlot ::= Identifier
+ValueParameter     ::= ParameterMode? ParameterEntrySlot TypeAnnotation
+ParameterEntrySlot ::= Identifier IrrefutableParameterPattern?
 ContextParameter   ::= "context" Identifier ":" TypeRef
 WitnessParameter   ::= "using" Identifier ":" "witness" TypeRef
 RepeatedParameter  ::= Identifier "..." TypeAnnotation
 NamedRestParameter ::= Identifier "***" TypeAnnotation
 ```
 
-callable parameter는 refutable `Pattern`이 아니라 identifier slot만
-받는다.
+callable parameter는 identifier call channel을 먼저 받고, 그 뒤에
+checker-proven irrefutable structural Pattern을 body-entry plan으로 둘
+수 있다. Pattern은 call shape와 overload identity를 바꾸지 않는다.
+refutable Pattern은 formal에 둘 수 없다.
 `StoredParameter`는 primary/data class parameter list에서 field, input,
 initialization을 합성하는 별도 lowering owner다.
 겉으로 `let id: Int`처럼 보인다는 이유로 local binding과 같은 AST를
@@ -435,8 +433,7 @@ FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause? EffectsClause?
 
 닫는 괄호 뒤의 `->`와 내부 comma shape가 commitment에 중요하다.
 `(Int) -> String`은 function type이고 `(Int, String)`은 tuple type이다.
-named rest를 표기할 때에는 `Record***`를 쓰며 `Record**`는 recovery
-대상이다.
+named rest는 `Record***`로 표기한다.
 
 ### 6.3 type argument와 type parameter는 다르다
 
@@ -653,8 +650,6 @@ expression prefix `#`를 보면 attached payload를 먼저 구분한다.
 | `#<dims>[` | `ExactShapeArrayLiteral` |
 
 `# role`이 허용하는 trivia 정책을 hash literal에 적용하지 않는다.
-obsolete prefixed collection spelling은 현재 owner가 아니며 recovery나
-removed-surface 진단 정책을 따른다.
 
 ## 9. block, statement, value body
 
@@ -743,10 +738,10 @@ MovePattern    ::= "move"? PatternPrimary
 BindingPattern ::= BindingOrPattern TypeAnnotation?
 ```
 
-callable parameter는 둘 중 어느 것도 아니고
-`ParameterPatternSlot ::= Identifier`다.
-이 세 구분은 refutability, binding transaction, public signature identity
-때문에 필요하다.
+callable parameter는 `ParameterEntrySlot`을 사용한다. 선행 Identifier가
+call channel과 whole-value local을 공급하고, 선택적인
+`IrrefutableParameterPattern`은 body-entry에서만 실행된다. 이 구분은
+refutability, binding transaction, public signature identity를 보존한다.
 
 ### 10.2 pattern primary 찾기
 
@@ -755,16 +750,22 @@ callable parameter는 둘 중 어느 것도 아니고
 | 모양 | production |
 |---|---|
 | `name: T` | `TypedBindingPattern` |
-| `(pattern)` | `ParenthesizedPattern` |
-| `${ field, name: p }` | `RecordPattern` |
-| `[head, .._]` | `ListPattern` |
+| `(pattern)` / `(p,)` / `(p, q)` | grouping / singleton Tuple / Tuple Pattern |
+| `${field, destination: source, .._}` | exact/open/rest `RecordPattern` |
+| `[head, ..tail]`, `[leadings.., last]`, `[first, ..middle.., last]` | `ListPattern` |
+| `#map{destination: key, .._}` | `MapPattern` |
 | `Type::case(...)` 또는 `::case(...)` | `VariantPattern` |
+| `::case${field, .._}` | labeled-payload `VariantPattern` |
+| `^stableValue` | `PinPattern` |
+| `0..<10`, `>= 10` | bounded `RangePattern` / `RelationalPattern` |
 | literal | literal pattern branch |
 | `_` | wildcard branch |
 
-현재 tuple pattern과 record rest는 current가 아니다.
-list rest는 마지막의 무시 rest `.._` 하나만 허용한다.
-parameter pattern은 identifier 하나뿐이다.
+Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다. Sequence
+rest는 marker 방향에 따라 tail `..tail`, prefix `leadings..`, middle
+`..middle..`을 구분하며 한 Pattern에 최대 하나만 허용한다. Record와
+Map은 exact-by-default이고 subset 의도는 `.._`로 명시한다. colon
+왼쪽은 destination Pattern, 오른쪽은 source field/key다.
 
 ### 10.3 expected-type input
 
@@ -788,8 +789,10 @@ clause function의 subject는 함수 parameter parent가 암시적으로 공급�
 
 ### 10.4 transactional binding
 
-`if let`, `while let`, `for let`, guarded binding은 pattern 성공 edge에서만
-binding을 commit한다.
+`if let`, `while let`, `for let`, guarded binding, refutable catch와
+condition chain은 Pattern 성공 edge에서만 binding을 commit한다.
+`let!`/`var!`은 mismatch를 명시적 `PatternMatchDefect`로 바꾸지만
+commit 전 부분 binding이나 move를 만들지 않는다.
 실패 edge에는 부분 binding이 새지 않는다.
 `move` pattern의 ownership 이동도 성공 commit과 함께 관측되어야 한다.
 
@@ -944,7 +947,6 @@ AxisWildcard ::= "*"
 ```
 
 현재 index suffix에는 axis가 하나 이상 필요하다.
-빈 `[]`는 `RecoveryEmptyIndexSuffix`의 진단 전용 owner다.
 slice range는 양 bound를 요구하며 생략 bound 대신 첫 좌표 `^`와 마지막
 좌표 `$` anchor를 쓴다.
 
@@ -979,17 +981,16 @@ semantic owner가 결정한다.
 
 ## 14. parse 성공과 semantic admission
 
-### 14.1 세 가지 결과를 구분한다
+### 14.1 두 가지 결과를 구분한다
 
-한 source fragment에는 적어도 다음 세 결과가 가능하다.
+한 source fragment에는 다음 두 결과가 가능하다.
 
 | 결과 | CST | HIR/MIR | 예 |
 |---|---|---|---|
 | current admitted | lossless CST 있음 | owner 검사를 통과해 생성 | 올바른 module function |
 | structurally valid, semantically rejected | CST 있음 | 진단 뒤 admitted node 없음 또는 poison | 잘못된 variance 위치 |
-| recovery-only recognized | recovery CST 있음 | 항상 0 | `null`, 빈 index |
 
-“문법에 production이 있다”는 두 번째와 세 번째 결과도 포함할 수 있다.
+“문법에 production이 있다”는 두 번째 결과도 포함할 수 있다.
 production profile과 frontend feature profile을 반드시 확인한다.
 
 ### 14.2 owner admission 사례
@@ -1032,9 +1033,6 @@ public class InvalidBox<out T> {
 - statement-only rightward binding을 expression 안에서 사용
 - interpolation shorthand 뒤 복잡한 call continuation
 
-recovery owner가 있는 경우 parser는 정확한 교정 진단을 위해 CST를
-보존할 수 있지만 current AST로 승인하지 않는다.
-
 ## 15. ambiguity를 푸는 실전 절차
 
 모호해 보이는 token을 만났을 때 다음 질문을 위에서 아래로 적용한다.
@@ -1045,7 +1043,7 @@ recovery owner가 있는 경우 parser는 정확한 교정 진단을 위해 CST�
 3. 앞서 완성된 construct가 implicit input을 공급하는가?
 4. token 사이 trivia가 semantic attachment를 만족하는가?
 5. lookahead가 owner commitment를 확정하는가?
-6. production profile은 `STABLE`, `PREVIEW`, `RECOVERY` 중 무엇인가?
+6. production profile은 `STABLE`, `PREVIEW` 중 무엇인가?
 7. 구조가 완성된 뒤 owner admission이 추가로 거부하는가?
 
 ### 15.1 빠른 ambiguity 표
@@ -1231,60 +1229,7 @@ extern#C def#unsafe c_abs(value: Int) -> Int
 stable root에 gate를 무시하고 FFI declaration만 주입하는 구현은
 source-root commitment를 위반한다.
 
-## 19. Recovery production을 읽는 법
-
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
-
-`RecoverySyntax` 아래 production은 사용 가능한 대체 syntax 목록이 아니다.
-parser가 폐기되었거나 잘못된 spelling을 정밀하게 인식하여 하나의
-교정 진단과 안정적인 CST를 만들기 위한 owner다.
-
-대표 production은 다음과 같다.
-
-- `RecoveryNullLiteral`
-- `RecoveryEmptyIndexSuffix`
-- `RecoveryCustomOperatorDeclaration`
-- `RecoveryGenericEntryFunctionDecl`
-- `RecoveryFacetPackExpr`
-- `RecoveryFacetType`
-- `RecoveryNamedRestDoubleStar`
-- `RecoveryFunctionTypeNamedRestDoubleStar`
-- `RecoveryLazyBindingAt`
-- `RecoveryUnitMiddleDot`
-- `RecoveryQuarantineScope`
-
-recovery 성공의 공통 결과는 admitted semantic node 0개다.
-formatter가 recovery spelling을 current spelling으로 조용히 정본화해서도
-안 된다.
-명시적 fix-it은 사용자가 적용하기 전까지 source를 바꾸지 않는다.
-
-<!-- deeplus-example: illustrative; status: RECOVERY_ONLY; authority-source: spec/grammar/deeplus.ebnf -->
-```deeplus
-let missing = null
-let invalid = values[]
-```
-
-첫 줄은 `RecoveryNullLiteral`, 둘째 줄은
-`RecoveryEmptyIndexSuffix`가 정확한 진단을 위한 CST를 만들 수 있다.
-둘 다 current value 또는 index operation을 만들지 않는다.
-
-named rest의 옛 `**` suffix도 같은 원칙이다.
-
-<!-- deeplus-example: illustrative; status: RECOVERY_ONLY; authority-source: spec/frontend/frontend-model.json -->
-```deeplus
-def legacy(options**: Record) -> Unit = {
-}
-// parameter owner에서는 options***: Record로 교정
-```
-
-call의 prefix `**options`는 current이지만 parameter suffix `options**`는
-recovery다.
-token 모양만으로 둘을 한꺼번에 제거하면 current named unfold까지
-손상한다.
-
-<!-- deeplus-status-fence: CURRENT -->
-
-## 20. 독자와 구현자를 위한 최종 판정표
+## 19. 독자와 구현자를 위한 최종 판정표
 
 문법 질문에 답할 때에는 최소한 다음 여덟 항목을 기록한다.
 
@@ -1295,11 +1240,11 @@ token 모양만으로 둘을 한꺼번에 제거하면 current named unfold까�
 | nested goal | declaration/type/expression/predicate/slice/pattern/block |
 | input supply | explicit 또는 정확한 implicit supply ID |
 | boundary | attachment, line break, separator, lookahead commitment |
-| profile | STABLE/PREVIEW/RECOVERY |
+| profile | STABLE/PREVIEW |
 | admission | owner별 checker 조건과 실패 진단 |
 | lowering | CST/AST/HIR/MIR 중 책임 단계와 관측 순서 |
 
 이 표를 채우지 않은 설명은 대개 “token이 보인다”는 수준에 머문다.
-반대로 표를 채우면 573개 production을 복제하지 않고도 독자가 정확한
+반대로 표를 채우면 562개 production을 복제하지 않고도 독자가 정확한
 권위 source로 이동하고, parse 가능성과 현행 언어 허용을 구별하며,
 부착·입력 공급·평가 순서의 빈틈을 찾을 수 있다.

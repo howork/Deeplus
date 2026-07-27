@@ -42,11 +42,11 @@ Unicode source
   -> MIR capability receipt가 있을 때만 ExecutableHirH1
 ```
 
-lossless CST는 원래 철자와 주석, 줄바꿈, Recovery provenance를 보존한다.
+lossless CST는 원래 철자와 주석, 줄바꿈을 보존한다.
 AST는 구조 owner를 정하지만 아직 모든 identity를 닫지 않는다. HIR
 경계는 이름, 타입, callable, witness, ownership, effect, error,
-cancellation, cleanup 결정을 모두 닫아야 한다. unresolved 후보나
-Recovery node는 canonical HIR에 들어갈 수 없다.
+cancellation, cleanup 결정을 모두 닫아야 한다. unresolved 후보는
+canonical HIR에 들어갈 수 없다.
 
 ## 6. 단계별 예제
 
@@ -57,8 +57,6 @@ Recovery node는 canonical HIR에 들어갈 수 없다.
 private type Port = 0..65_535
 
 private def#pure isDefault(port: Port) -> Bool
-    throws Never
-    effects {}
 = {
     return port == 80
 }
@@ -69,7 +67,8 @@ scanner는 단어와 숫자를 나누고, parser는 `TypeAliasDecl`과 함수 �
 domain 비교인지 확인한다. 허용된다면 HIR은 alias identity와 함수
 책임을 보존한다.
 
-다음 선언은 구조를 복구해도 checker admission 전에 멈춘다.
+다음 선언은 parser가 declaration 구조를 만들 수 있지만 checker
+admission 전에 멈춘다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic-family: TYPE_DECL_VISIBILITY_* -->
 ```deeplus
@@ -104,7 +103,7 @@ checker가 refinement를 검토하기 전에 attachment/parse 단계가 막힌�
 - **어휘 거부:** 잘못된 literal delimiter나 token 연쇄.
 - **구조 거부:** 닫는 delimiter, owner 또는 source role이 맞지 않음.
 - **정적 거부:** 이름 없음, 타입 불일치, ownership/effect 의무 위반.
-- **Recovery 경계:** spelling은 보존하지만 Stable AST/HIR로 바뀌지 않음.
+- **문법 경계:** 문법에 없는 source는 Stable AST/HIR로 바뀌지 않음.
 - **runtime 경계:** 정적 거부 source는 runtime failure나 MIR event를
   만들지 않음.
 
@@ -124,7 +123,7 @@ checker가 refinement를 검토하기 전에 attachment/parse 단계가 막힌�
 - 오류 메시지의 첫 줄만 보지 말고 source span, owner, 제시된 대안을
   함께 읽는다.
 - 한 번에 첫 primary diagnostic 하나를 고친 뒤 다시 검사한다.
-- Recovery가 제안한 대안을 자동 rewrite 권위로 오해하지 않는다.
+- 진단의 제안을 자동 rewrite 권위로 오해하지 않는다.
 - “컴파일러가 알아서 추측할 것”이라는 설명 대신 어떤 정적 identity가
   부족한지 적는다.
 
@@ -139,7 +138,7 @@ checker가 refinement를 검토하기 전에 attachment/parse 단계가 막힌�
 
 ## 11. 빠른 복습
 
-- CST는 원 source와 Recovery provenance를 보존한다.
+- CST는 원 source, trivia와 delimiter 구조를 보존한다.
 - AST는 구조 owner를, HIR은 닫힌 정적 identity와 책임을 보존한다.
 - 정적 거부 source는 MIR/runtime event를 만들지 않는다.
 - 첫 실패 단계가 뒤 단계의 추측보다 우선한다.

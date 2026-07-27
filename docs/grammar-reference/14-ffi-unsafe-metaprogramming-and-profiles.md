@@ -13,12 +13,11 @@
 |---|---|---|
 | `unsafe { ... }` | `CURRENT` 구조 구문 | unsafe 권위를 가시화하지만 효과·오류·소유권·정리 의무를 지우지 않음 |
 | `extern#C def#unsafe`와 `extern c("...")` | `PREVIEW_GATED` | 정확한 Preview 루트와 기능 gate가 있을 때만 설계상 허용 |
-| `@scope#dynamic`, `@scope#unsafe` | `PREVIEW_NONACTIVATABLE` / `RECOVERY_ONLY` | 진단을 위한 형태만 인식하며 현행 의미 노드를 만들지 않음 |
+| `@scope#dynamic`, `@scope#unsafe` | `PREVIEW_NONACTIVATABLE` | 설계 후보이며 현행 의미 노드를 만들지 않음 |
 | `typeof <static-sample>` | `CURRENT` | 타입 위치의 정적 표본 투영이며 runtime reflection이 아님 |
 | `value!{...}`, `value!!{...}` | `CURRENT` | 같은 명목 타입의 얕은/깊은 derivation이며 소스 생성이나 reflection이 아님 |
 | compiler CST/AST/HIR/MIR | 내부 구현 자료 | 소스에서 인용·변형하는 값이 아님 |
 | provider/공식 도구가 만든 소스 | `OFFICIAL_TOOLING` 또는 별도 provider 프로필 | 생성된 소스도 일반 소스와 같은 scanner-to-MIR 검사를 다시 받음 |
-| `@ast`, `^{...}`, 붙은 `?Identifier` | `REMOVED` | Stable, Preview, Recovery 어느 프로필에도 없음 |
 
 언어 설계 상태와 별개로 Rust scanner/parser, checker, MIR, xVM, LLVM,
 formatter/LSP를 포함한 제품 15개 lane은 모두 `NOT_RUN`이다. 이 장은
@@ -96,20 +95,20 @@ bytes를 사용한다.
 extern#C def#unsafe c_abs(x: Int) -> Int
 ```
 
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
-### 비활성 quarantine의 Recovery 형태
+### 비활성 quarantine 후보
 
-다음 production은 제안된 설계를 정밀하게 거부하기 위한
-Recovery 전용이다. Stable 또는 activatable Preview route가 아니다.
+다음 production은 제안된 설계의 구조를 설명하는 문서용 후보다.
+Stable 또는 activatable Preview route가 아니다.
 
 ```ebnf
-RecoveryQuarantineScope ::= "@" "scope" "#" ("dynamic" | "unsafe")
-                            Block QuarantineExport? ;
-QuarantineExport ::= "->" "$" Identifier TypeAnnotation
-                   | "->" "$" "(" QuarantineExportField
-                     ("," QuarantineExportField)* ")" ;
-QuarantineExportField ::= Identifier TypeAnnotation ;
+QuarantineScopeCandidate ::= "@" "scope" "#" ("dynamic" | "unsafe")
+                             Block QuarantineExportCandidate? ;
+QuarantineExportCandidate ::= "->" "$" Identifier TypeAnnotation
+                            | "->" "$" "(" QuarantineExportFieldCandidate
+                              ("," QuarantineExportFieldCandidate)* ")" ;
+QuarantineExportFieldCandidate ::= Identifier TypeAnnotation ;
 ```
 
 <!-- deeplus-status-fence: CURRENT -->
@@ -224,7 +223,7 @@ Deeplus의 현행 경계는 “정적 정보 사용”과 “프로그램이 com
 
 | 축 | 값의 예 | 의미 |
 |---|---|---|
-| 문법 profile | `LEXICAL`, `STABLE`, `PREVIEW`, `RECOVERY` | scanner/parser reachability |
+| 문법 profile | `LEXICAL`, `STABLE`, `PREVIEW` | scanner/parser reachability |
 | 기능 maturity | `STABLE_DESIGN`, `PREVIEW`, `PREVIEW_DESIGN` | 언어 설계의 성숙도와 source activation |
 | library/tooling | `STDLIB_PROFILE`, `OFFICIAL_TOOLING` | core syntax 밖의 API 또는 도구 계약 |
 | 제품 evidence | `NOT_RUN` 또는 target-bound receipt | 실제 구현·실행 주장 |
@@ -328,16 +327,15 @@ def readByte(pointer: RawPtr<Byte>) -> Byte
 | C aggregate, variadic, stored callback을 최소 FFI로 암시 | 비활성 별도 설계 |
 | `typeof(runtimeExpr)` 또는 `typeof(...)` 호출형 | 거부 |
 | type token을 runtime reflection 값으로 저장 | 거부 |
-| `@scope#dynamic`, `@scope#unsafe` | Recovery 진단 후 비활성 거부 |
-| source `@ast`, `^{...}`, 붙은 `?Identifier` | 완전히 제거됨 |
+| `@scope#dynamic`, `@scope#unsafe` | 비활성 Preview Design으로 거부 |
 | 도구가 만든 sidecar를 witness나 실행 권위로 사용 | 거부 |
 | 문서 예제만으로 FFI/unsafe product PASS 주장 | 거부 |
 
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
 quarantine의 비활성 예시는 다음과 같다.
 
-<!-- deeplus-example: illustrative; status: RECOVERY_ONLY; authority-source: spec/contracts/quarantine-scope.json -->
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/quarantine-scope.json -->
 ```deeplus
 @scope#dynamic {
     legacyCall()
@@ -362,14 +360,14 @@ pointer/authority/borrow/resource/closure/task/actor escape를 금지한다.
   단위](07-enums-records-schemas-bitfields-and-units.md)를 따른다.
 - callable profile과 FFI signature channel은 [함수, 메서드, 클로저 및
   호출](05-functions-methods-closures-and-calls.md)을 따른다.
-- Preview·Recovery·Removed의 전체 분류와 OPEN gate는 [Preview, 복구 및
-  제거된 표면](15-preview-recovery-and-removed-surfaces.md)을 따른다.
+- Preview의 전체 분류와 OPEN gate는 [Preview 표면](15-preview-surfaces.md)을
+  따른다.
 
 ## 정본 근거
 
 - 언어 경계와 제품 상태:
   [`spec/language.md`](../../spec/language.md)
-- 정확한 Stable/Preview/Recovery 문법:
+- 정확한 Stable/Preview 문법:
   [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
 - source root, gate, unsafe 및 quarantine 허용:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
