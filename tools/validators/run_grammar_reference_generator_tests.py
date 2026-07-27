@@ -207,9 +207,11 @@ def mutate_profile(root: Path, contract: dict) -> None:
 def mutate_production(root: Path, contract: dict) -> None:
     path = root / contract["grammar"]["path"]
     text = path.read_text(encoding="utf-8")
-    needle = 'IgnoredListRest ::= ".." "_" ;'
+    needle = 'IgnoredAllListRest ::= ".." "_" ","? ;'
     if text.count(needle) != 1:
-        raise TestFailure("PRODUCTION_MUTATION_NEEDLE: expected one IgnoredListRest")
+        raise TestFailure(
+            "PRODUCTION_MUTATION_NEEDLE: expected one IgnoredAllListRest"
+        )
     path.write_text(text.replace(needle, "", 1), encoding="utf-8")
 
 
@@ -633,7 +635,7 @@ def mutate_cross_chapter_example_status_fence(
     text = path.read_text(encoding="utf-8")
     marker = (
         "<!-- deeplus-example: illustrative; "
-        "status: RECOVERY_ONLY; "
+        "status: PREVIEW_NONACTIVATABLE; "
         "authority-source: spec/contracts/quarantine-scope.json -->"
     )
     if text.count(marker) != 1:
@@ -642,8 +644,8 @@ def mutate_cross_chapter_example_status_fence(
         text.replace(
             marker,
             marker.replace(
-                "status: RECOVERY_ONLY",
                 "status: PREVIEW_NONACTIVATABLE",
+                "status: CURRENT_EXPLANATORY",
             ),
             1,
         ),
