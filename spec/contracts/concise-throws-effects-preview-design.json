@@ -1,0 +1,300 @@
+{
+  "schema": "deeplus.concise-throws-effects-preview-design/r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "language_version": "0.1.2-internal",
+  "feature_id": "concise_throws_effects_declaration_preview_design",
+  "status": "PREVIEW_DESIGN",
+  "acceptance_class": "PREVIEW_DESIGN_NONACTIVATABLE",
+  "source_activation": "nonactivatable",
+  "current_binding": false,
+  "stable_semantics_mutated": false,
+  "grammar_change_count": 0,
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "product_support": "NOT_RUN",
+  "product_lanes_summary": "15/15_NOT_RUN",
+  "authority_fence": {
+    "design_contract_authorized": true,
+    "current_language_change_authorized": false,
+    "source_activation_authorized": false,
+    "feature_catalog_mutation_authorized": true,
+    "generated_projection_mutation_authorized": true,
+    "compiler_or_runtime_implementation_authorized": false,
+    "product_support_claim_authorized": false
+  },
+  "surface": {
+    "positive_only": true,
+    "new_token_count": 0,
+    "new_production_count": 0,
+    "clause_order": [
+      "throws",
+      "effects"
+    ],
+    "forbidden_placeholders": [
+      "throws _",
+      "throws auto",
+      "effects _",
+      "effects auto"
+    ]
+  },
+  "owner_matrix": [
+    {
+      "owner_class": "NAMED_IMPLEMENTATION",
+      "productions": [
+        "ModuleFunctionDecl",
+        "EntryFunctionDecl",
+        "ExtensionFunctionDecl",
+        "LocalFunctionDecl",
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "TraitMethodDecl",
+        "TraitFunctionTail",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl"
+      ],
+      "admitted_variant": "TraitFunctionTail selects FunctionBody for a TraitMethodDecl in this owner class",
+      "has_body": true,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "body_error_residual subset_of declared_error_set and body_effect_residual subset_of declared_effect_row"
+    },
+    {
+      "owner_class": "CONSTRUCTOR",
+      "productions": [
+        "ConstructorDecl"
+      ],
+      "has_body": true,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "body_error_residual subset_of declared_error_set and body_effect_residual subset_of declared_effect_row",
+      "grammar_note": "absence of ConstructorSignatureTail supplies both empty rows; a present tail keeps the existing fixed clause order"
+    },
+    {
+      "owner_class": "CLEANUP",
+      "productions": [
+        "CleanupDecl"
+      ],
+      "has_body": true,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "body_error_residual subset_of declared_error_set and body_effect_residual subset_of declared_effect_row",
+      "overlay": "existing cleanup failure ordering and suppression laws remain unchanged"
+    },
+    {
+      "owner_class": "BODYLESS_TRAIT_DECLARATION",
+      "productions": [
+        "TraitMethodDecl",
+        "TraitFunctionTail",
+        "AssociatedFunctionRequirementDecl"
+      ],
+      "admitted_variant": "TraitFunctionTail selects StatementBoundary for a TraitMethodDecl in this owner class",
+      "has_body": false,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "none; the normalized rows are the declared requirement"
+    },
+    {
+      "owner_class": "ACTOR_IMPLEMENTATION",
+      "productions": [
+        "ActorOnDecl",
+        "ActorRequestDecl"
+      ],
+      "has_body": true,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "body_error_residual subset_of declared_error_set and body_effect_residual subset_of declared_effect_row",
+      "overlay": "mailbox, cancellation, suspension, isolation, and authority remain separate responsibility axes"
+    },
+    {
+      "owner_class": "BODYLESS_ACTOR_PROTOCOL_DECLARATION",
+      "productions": [
+        "ActorProtocolSendRequirement",
+        "ActorProtocolRequestRequirement"
+      ],
+      "has_body": false,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "none; the normalized rows are the declared protocol requirement"
+    },
+    {
+      "owner_class": "FUNCTION_TYPE",
+      "productions": [
+        "FunctionTypeTail"
+      ],
+      "has_body": false,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "none; the normalized rows are part of the semantic function type"
+    },
+    {
+      "owner_class": "PREVIEW_FFI_DECLARATION",
+      "productions": [
+        "PreviewFfiFunctionDecl",
+        "PreviewFfiBlockMember"
+      ],
+      "has_body": false,
+      "omitted_throws": "Never",
+      "omitted_effects": "{}",
+      "body_law": "none; the normalized rows are the foreign declaration contract",
+      "overlay": "existing FFI preview gate and unsafe profile remain independently required"
+    }
+  ],
+  "owner_overlays": [
+    {
+      "owner_or_profile": "EntryFunctionDecl",
+      "law": "the existing source-role requirement for an empty recoverable error set remains authoritative"
+    },
+    {
+      "owner_or_profile": "#pure",
+      "law": "normalized throws must be Never and normalized effects must be {}; existing suspension, authority, mutation, ownership, and capture restrictions remain stronger"
+    },
+    {
+      "owner_or_profile": "#guard",
+      "law": "normalized throws must be Never and normalized effects must be {}; existing terminating, nonsuspending, nonconsuming Bool guard restrictions remain stronger"
+    },
+    {
+      "owner_or_profile": "ReturnShorthand",
+      "law": "when both responsibility clauses are omitted, the existing implicit-pure proof is attempted; writing either clause selects the ordinary callable path and the general subset law"
+    }
+  ],
+  "excluded_owners": [
+    {
+      "productions": [
+        "ClosureExpr",
+        "ExplicitLambdaContent",
+        "LambdaBody"
+      ],
+      "reason": "ClosureExpr, including its optional CaptureList form, does not admit ThrowsClause or EffectsClause; contextual callable typing remains unchanged"
+    },
+    {
+      "productions": [
+        "AccessorDecl"
+      ],
+      "reason": "accessor grammar does not admit responsibility clauses; accessor-specific checking remains unchanged"
+    },
+    {
+      "productions": [
+        "TypestateTransitionDecl"
+      ],
+      "reason": "typestate transition grammar does not admit responsibility clauses"
+    }
+  ],
+  "normalization": {
+    "omitted_throws_clause": "Never",
+    "omitted_effects_clause": "{}",
+    "explicit_empty_equivalence": {
+      "throws": "omitted throws == throws Never",
+      "effects": "omitted effects == effects {}"
+    },
+    "closed_declaration": true,
+    "body_driven_signature_widening": false,
+    "body_error_law": "normalize(body_error_residual) subset_of normalize(declared_error_set)",
+    "body_effect_law": "normalize(body_effect_residual) subset_of normalize(declared_effect_row)"
+  },
+  "representation": {
+    "cst": {
+      "preserve_source_spelling": true,
+      "preserve_throws_clause_presence": true,
+      "preserve_effects_clause_presence": true
+    },
+    "ast": {
+      "responsibility_rows": "always concrete and normalized",
+      "semantic_omission_bit": false
+    },
+    "hir": {
+      "responsibility_rows": "always concrete and normalized before canonical HIR",
+      "inference_variable_count": 0,
+      "semantic_omission_bit": false
+    },
+    "api_digest": {
+      "project_full_normalized_rows": true,
+      "omitted_and_explicit_empty_digest_equal": true,
+      "source_spelling_in_digest": false
+    },
+    "mir": {
+      "new_node_count": 0,
+      "new_operation_count": 0,
+      "semantic_omission_bit": false,
+      "input": "existing normalized ResponsibilityProfileId"
+    }
+  },
+  "compatibility": {
+    "semantic_callable_identity": "exact equality of fully normalized responsibility rows",
+    "api_digest_identity": "exact equality of fully normalized responsibility rows",
+    "trait_witness": "witness error and effect rows may be narrower than or equal to requirement rows; widening is rejected",
+    "class_override": "existing exact responsibility-profile equality remains required; result covariance is unchanged",
+    "function_value_assignment": "existing parameter/result variance and error/effect row subsumption remain required",
+    "overload_slot": "responsibility-profile-only differences do not create distinct overload slots",
+    "omitted_vs_explicit_empty": "identical after normalization in every compatibility relation"
+  },
+  "diagnostic_design": {
+    "planned_generic_body_diagnostics": [
+      "CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION",
+      "CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION"
+    ],
+    "planned_implicit_pure_diagnostics": [
+      "IMPLICIT_PURE_FUNCTION_THROWS",
+      "IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION"
+    ],
+    "existing_diagnostic_retained": "IMPLICIT_PURE_FUNCTION_HAS_EFFECTS",
+    "precedence": [
+      "owner or profile admission",
+      "existing specialized callback, Trait, constructor, cleanup, or pure diagnostic",
+      "implicit-pure diagnostic for an unprofiled ReturnShorthand with both clauses omitted",
+      "generic callable body row-exceeds-declaration diagnostic"
+    ],
+    "current_registry_rows_created": 4
+  },
+  "private_error_inference_migration_gate": {
+    "current_feature_id": "private_error_set_inference",
+    "current_status": "STABLE_DESIGN",
+    "preview_changes_current_behavior": false,
+    "preview_activation_available": false,
+    "stable_promotion_requires": [
+      "mark private_error_set_inference SUPERSEDED without deleting its immutable feature identity",
+      "replace dependencies that require private_error_set_inference",
+      "provide a source migrator that computes the former private or local inferred ErrorSet and inserts an explicit normalized throws clause",
+      "preserve explicit empty clauses during the migration release",
+      "prove omitted and explicit empty API digest equality",
+      "add deterministic positive, boundary, and negative conformance fixtures",
+      "obtain product receipts before changing any NOT_RUN lane"
+    ],
+    "silent_semantic_flip_for_existing_source": false
+  },
+  "documentation_fence": {
+    "current_examples_remain_current": true,
+    "preview_examples_status": "PREVIEW_NONACTIVATABLE_DESIGN_ONLY",
+    "preview_examples_are_conformance_evidence": false,
+    "preview_examples_are_source_activation": false
+  },
+  "product_lanes": {
+    "rust_frontend_lexer": "NOT_RUN",
+    "rust_frontend_parser": "NOT_RUN",
+    "rust_hir_lowering": "NOT_RUN",
+    "rust_integrated_checker": "NOT_RUN",
+    "deeplus_mir_lowering": "NOT_RUN",
+    "xvm_bytecode_emitter": "NOT_RUN",
+    "xvm_interpreter": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "official_tooling": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "cross_backend_conformance": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN"
+  },
+  "machine_acceptance": {
+    "semantic_p0": 0,
+    "open_feature_p1_count": 22,
+    "product_lane_count": 15,
+    "product_not_run_count": 15,
+    "source_activation_count": 0,
+    "current_semantic_mutation_count": 0,
+    "grammar_production_change_count": 0,
+    "new_mir_node_count": 0,
+    "new_runtime_operation_count": 0,
+    "current_feature_catalog_row_count": 1,
+    "current_diagnostic_catalog_row_count": 4
+  }
+}

@@ -53,6 +53,7 @@
 | [`c_stored_callback`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-c_stored_callback) | `PREVIEW_DESIGN` | C stored callback |
 | [`c_variadic`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-c_variadic) | `PREVIEW_DESIGN` | C variadic |
 | [`class_static_activation`](21-preview-design-types-objects-and-traits.md#preview-feature-class_static_activation) | `PREVIEW_DESIGN` | Class static activation |
+| [`concise_throws_effects_declaration_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-concise_throws_effects_declaration_preview_design) | `PREVIEW_DESIGN` | Concise throws and effects declaration Preview Design |
 | [`conformance_law_proof_block_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-conformance_law_proof_block_preview_design) | `PREVIEW_DESIGN` | Conformance law proof block preview-design |
 | [`contextual_operation_anchor_dmad`](22-preview-design-collections-context-and-control.md#preview-feature-contextual_operation_anchor_dmad) | `PREVIEW_DESIGN` | \`&expr\` contextual operation anchor D-MAD |
 | [`dependent_refinement_value_capture`](21-preview-design-types-objects-and-traits.md#preview-feature-dependent_refinement_value_capture) | `PREVIEW_DESIGN` | Dependent refinement value capture |
@@ -71,6 +72,7 @@
 | [`ffi_minimum_sound_profile`](20-preview-gated-reference.md#preview-feature-ffi_minimum_sound_profile) | `PREVIEW` | Safe FFI minimum sound profile |
 | [`first_class_witness_value_not_current`](21-preview-design-types-objects-and-traits.md#preview-feature-first_class_witness_value_not_current) | `PREVIEW_DESIGN` | First-class Witness value not current |
 | [`freeze_snapshot_view_responsibility_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-freeze_snapshot_view_responsibility_preview_design) | `PREVIEW_DESIGN` | Freeze snapshot view responsibility Preview design |
+| [`function_static_namespace_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-function_static_namespace_preview_design) | `PREVIEW_DESIGN` | Function-static immutable namespace Preview Design |
 | [`generic_named_extension_set_target`](21-preview-design-types-objects-and-traits.md#preview-feature-generic_named_extension_set_target) | `PREVIEW_DESIGN` | Generic named extension set target |
 | [`immutable_first_collection_ownership_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-immutable_first_collection_ownership_preview_design) | `PREVIEW_DESIGN` | Immutable-first collection ownership Preview design |
 | [`integer_imaginary_literal_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-integer_imaginary_literal_preview_design) | `PREVIEW_DESIGN` | Integer-magnitude imaginary literal Preview design |

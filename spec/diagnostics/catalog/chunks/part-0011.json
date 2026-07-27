@@ -1431,12 +1431,13 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "nested_function_local_def_msp"
+      "nested_function_local_def_msp",
+      "nonescaping_lexical_access"
     ],
-    "fixit_hint": "add an explicit [borrow/move/clone/deep/copy name] capture list or pass the value as a parameter",
+    "fixit_hint": "prove a bounded read-only lexical dependency, add an explicit capture mode, or pass the value as a parameter",
     "fixit_kind": "manual_review",
-    "fixit_policy": "add an explicit [borrow/move/clone/deep/copy name] capture list or pass the value as a parameter",
-    "message": "A nested local function may use an outer local only when that capture is listed explicitly in its CaptureList.",
+    "fixit_policy": "manual responsibility review; do not invent a snapshot or ownership transfer",
+    "message": "A nested local function must capture an outer local explicitly unless the exact read qualifies for the Stable nonescaping lexical-dependency profile.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

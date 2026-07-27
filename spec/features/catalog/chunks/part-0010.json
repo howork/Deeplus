@@ -509,7 +509,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "A block-local def/def#pure/def#async/def#guard is a BlockItem, has lexical visibility after declaration, carries no visibility modifier, and lists every outer capture explicitly in CaptureList.",
+    "notes": "A block-local def/def#pure/def#async/def#guard is a BlockItem, has lexical visibility after declaration, and carries no visibility modifier. Outer dependencies use an explicit CaptureList unless the separate nonescaping_lexical_access predicate proves a Stable synchronous read-only lexical dependency.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -522,6 +522,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "NESTED_DEF_CAPTURE_LIST_REQUIRED",
+        "CAPTURE_LIST_NEWLINE_DETACHED",
         "NESTED_DEF_FORWARD_REFERENCE_FORBIDDEN",
         "NESTED_DEF_VISIBILITY_FORBIDDEN"
       ],

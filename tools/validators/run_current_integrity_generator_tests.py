@@ -23,7 +23,10 @@ OUTPUTS = (
     "migration/catalog-reassembly.json",
     "migration/current-document-consistency-repair-r2.3-manifest.json",
 )
-EXCLUDED = {".git", "target", "dist", "__pycache__"}
+# The isolated generator suite exercises canonical repository inputs only.
+# Historical candidate packs and local intake scratch data are intentionally
+# outside the source tree and can also exceed the Windows legacy path limit.
+EXCLUDED = {".git", "target", "dist", "__pycache__", "candidate", "tmp"}
 
 
 def load_generator() -> Any:

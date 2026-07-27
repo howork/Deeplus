@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -372,13 +372,26 @@
     {
       "rule_id": "TFC-R015",
       "domain": "local_functions",
-      "title": "local functions are lexical declarations with explicit capture",
+      "title": "local functions separate explicit environment capture from proven lexical dependency",
       "contract": {
         "placement": "BlockItem",
         "visibility_modifier": "forbidden",
         "visible_before_declaration": false,
         "implicit_outer_capture": false,
         "outer_capture_surface": "CaptureList before def",
+        "lexical_dependency_is_capture": false,
+        "lexical_dependency_profile": {
+          "owner": "synchronous local def with a use graph closed inside the declaring block",
+          "access": "read-only nonconsuming ancestor place",
+          "residence": "proven RegionBound",
+          "isolation": "same",
+          "suspension": false,
+          "place_state_at_every_call": "LiveReadable",
+          "implicit_environment_field_count": 0
+        },
+        "explicit_empty_capture_list": "closed ancestor-frame assertion",
+        "bare_capture_item": "preserved explicit-capture compatibility surface",
+        "write_move_escape_unknown_proof": "reject or require an explicit admitted capture/parameter/carrier",
         "mutual_recursion": "not current",
         "profile_set": [
           "def",
@@ -405,6 +418,30 @@
           "explicit var initialization"
         ],
         "implicit_ownership_weakening": false,
+        "capture_list_presence": {
+          "absent": "eligible for proven lexical dependency",
+          "present_empty": "closed ancestor-frame assertion",
+          "present_nonempty": "ordered explicit CapturePlan; a distinct outer name may still be a proven lexical dependency"
+        },
+        "normalized_callable_descriptor": {
+          "residence": "FrameIndependent | RegionBound(RegionId)",
+          "environment": "Empty | Explicit(CapturePlan)",
+          "closed_assertion": "bool",
+          "lexical_dependencies": "sorted unique ancestor-place read rows"
+        },
+        "lexical_dependency_initial_proof_routes": [
+          "immediate invocation",
+          "all-use-closed local binding",
+          "exact selected invocation-bounded #scoped formal"
+        ],
+        "lexical_dependency_excluded_owners": [
+          "#guard",
+          "async",
+          "generator",
+          "task",
+          "actor or isolation crossing",
+          "unknown escape proof"
+        ],
         "axes": {
           "lifetime": [
             "ordinary",

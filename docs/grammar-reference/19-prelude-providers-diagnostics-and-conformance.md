@@ -1941,7 +1941,7 @@ value가 Trait associated static 또는 nominal type-side member로
 
 ### 28.9 함수 static과 Class static Preview
 
-이름 있는 허용 동기 함수의 `scope#static { ... }`은 Stable
+이름 있는 허용 동기 함수의 `static { ... }`은 Stable
 `FunctionStaticOwnerId` activation이다. 최초 실제 invocation에서
 argument/default staging 뒤 기존 `ownership_commit` 앞에 실행되며,
 caller-input-free, pure, synchronous, authority/resource-free 조건을
@@ -1962,7 +1962,7 @@ source acceptance, AST/HIR/MIR operation과 product execution 수는 0이며,
 | 모든 type에는 암시적 companion singleton이 있다 | 아니다. nominal/extension/Trait-associated/runtime owner를 분리한다 |
 | `let::`이면 mutable cache도 associated value로 안전하다 | 아니다. immutable/static-safe 최소 profile을 모두 만족해야 한다 |
 | conformance의 `def::`는 nominal private constructor를 부를 수 있다 | 아니다. private construction 권한은 owner-local nominal `def::`에만 있다 |
-| 함수 `scope#static`이 Class static cache를 뜻한다 | 아니다. 함수 activation은 Stable이지만 Class 표면은 Preview nonactivatable이다 |
+| 함수 `static { ... }`이 Class static cache를 뜻한다 | 아니다. 함수 activation은 Stable이지만 Class 표면은 Preview nonactivatable이다 |
 | Sequence conformance가 `[]`를 준다 | built-in bracket matrix만 current다 |
 | pattern engine은 regex literal이다 | explicit String/Bytes library call이다 |
 | compile failure와 no-match는 같다 | 서로 다른 result다 |
@@ -2118,7 +2118,7 @@ receipt는 null이다.
    전이되지 않는가.
 8. companion object, metatype runtime value, hidden singleton을 만들지
    않는가.
-9. 함수 `scope#static` Stable owner와 Class Preview owner를 분리하는가.
+9. 함수 `static { ... }` Stable owner와 Class Preview owner를 분리하는가.
 10. product receipt 없이 지원 또는 실행 PASS를 주장하지 않는가.
 
 ## 33. 정본 근거

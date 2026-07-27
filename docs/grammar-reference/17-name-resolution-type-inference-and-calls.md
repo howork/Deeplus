@@ -174,6 +174,12 @@ local function은 선언 뒤부터 보이며,
 앞선 위치에서 호출할 수 있는 암시적 hoisting이 없다.
 현행 local mutual recursion도 자동으로 만들어지지 않는다.
 
+이름 lookup과 ancestor place 사용의 admission은 별도다.
+`nonescaping_lexical_access` Stable design에서는 이름이 ancestor frame에서
+해석된 뒤, callable이 동기적·same-isolation이고 정확히 nonescaping인지,
+접근이 read-only·nonconsuming인지 추가로 증명한다.
+lookup 성공만으로 capture나 lexical access가 허용되지는 않는다.
+
 지역 shadowing은 일반 lexical shadowing 규칙을 따른다.
 다만 rightward flow binding의 `$name`과 `$$name`은
 현재 block에서 fresh identifier만 허용하므로,
@@ -1097,6 +1103,41 @@ environment commit 전 clone/deep acquisition이 실패하면
 owner를 보존한다. 이 규칙은 current design-static law이고
 제품 실행은 `NOT_RUN`이다.
 
+### 11.6 nonescaping lexical dependency
+
+`nonescaping_lexical_access`는
+`CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT`이며 `source_activation: none`,
+제품 상태는 `15/15_NOT_RUN`이다. 문법을 추가하거나 기존 capture item을
+제거하지 않는다. 특히 `CaptureItem ::= Identifier`는 현행 compatibility
+의미를 그대로 유지한다.
+
+동기 local `def` 또는 closure가 다음 중 하나로 정확히 닫힐 때 ancestor
+place의 read-only·nonconsuming 사용은 environment capture가 아니라
+call-time lexical dependency가 될 수 있다.
+
+1. local `def`가 direct call로만 사용된다.
+2. closure가 즉시 호출된다.
+3. bounded local binding이 direct call로만 사용된다.
+4. 호출 후보를 먼저 확정한 뒤 선택된 정확한 formal 또는 trailing
+   formal이 `#scoped`다.
+
+unknown/opaque flow는 거부한다. return, yield, aggregate/field storage,
+ordinary callable formal, async/generator/task/spawn/Actor/isolation crossing도
+closed proof가 아니다. guard-owned dependency는 이 revision에서 제외한다.
+
+capture-list presence는 의미 정보다. list가 없으면 qualified lexical
+dependency를 추론할 수 있고, `[]`는 ancestor-frame dependency가 0이라는
+assertion이다. nonempty list는 explicit capture plan이며 residual lexical
+dependency와 함께 존재할 수 있다. 따라서 HIR은 capture list의
+absent/present-empty/present-nonempty를 보존하고, residence와 environment를
+독립 축으로 표현해야 한다.
+
+lexical dependency는 callable 생성 때 값을 획득하지 않고 호출 때 ancestor
+place의 현재 값을 읽는다. 반대로 `copy`, `clone`, `move`, `borrow`를 포함한
+explicit capture의 획득 시점과 책임은 바뀌지 않는다. `#pure` callable의
+lexical dependency는 immutable data여야 하며 shared state, resource,
+authority 또는 observable effect를 들여오면 안 된다.
+
 ## 12. callable profile과 책임
 
 callable은 단순히 parameter와 result만 갖지 않는다.
@@ -1402,7 +1443,7 @@ private let value: Int = parse("42")
 실제 프로그램은 selector를 한정하거나
 서로 다른 argument shape를 사용해야 한다.
 
-### 16.8 local function capture
+### 16.8 local function의 explicit capture
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
 ```deeplus
@@ -1417,21 +1458,35 @@ private def outer(base: Int) -> Int = {
 local function은 outer local을 명시적으로 capture한다.
 borrow region보다 오래 escape하면 거부된다.
 
-### 16.9 암시적 local capture
+### 16.9 nonescaping lexical access
 
-<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/language.md -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/nonescaping-lexical-access.json -->
 ```deeplus
-private def invalidOuter(base: Int) -> Int = {
+private def outer(base: Int) -> Int = {
     def add(delta: Int) -> Int = {
         return base + delta
     }
     return add(1)
 }
-// outer local `base`가 capture list에 없다.
 ```
 
-lexical name lookup이 성공할 수 있다는 사실과
-capture admission은 별도 판정이다.
+`add`가 선언 뒤 direct call로만 사용되고 동기·same-isolation이므로
+`base`는 capture가 아니라 call-time lexical dependency가 될 수 있다.
+`base`를 환경에 snapshot하지 않으며 호출 때 현재 값을 읽는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/nonescaping-lexical-access.json -->
+```deeplus
+private def invalidFactory(base: Int) -> (() -> Int) = {
+    def read() -> Int = {
+        return base
+    }
+    return read
+}
+// ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE
+```
+
+두 번째 예제는 local callable을 반환하므로 direct-call closed proof가
+없다. explicit owned snapshot 같은 별도 capture plan 없이는 거부한다.
 
 ## 17. 진단 우선순위
 
@@ -1541,9 +1596,9 @@ resource parameter는
 선택된 callable responsibility가
 MIR cleanup region을 결정하는 입력이 된다.
 
-### 18.7 함수 `scope#static`과 Class Preview의 분리
+### 18.7 함수 `static { ... }`과 Class Preview의 분리
 
-이름 있는 허용 동기 함수 body의 `scope#static { ... }`은 Stable
+이름 있는 허용 동기 함수 body의 `static { ... }`은 Stable
 `FunctionStaticOwnerId` activation이다. exact
 `CallableImplementationId + normalized specialization`마다 최초 실제
 호출에서 한 번 판정되며, argument/default staging 뒤 기존
@@ -1646,7 +1701,7 @@ call-shape 설명을 backend call ABI PASS로,
     전이되지 않는가.
 28. companion singleton, type-as-runtime-value, runtime provider fallback
     수가 모두 0인가.
-29. 함수 `scope#static` Stable owner와 Class Preview owner가 분리되는가.
+29. 함수 `static { ... }` Stable owner와 Class Preview owner가 분리되는가.
 
 ## 22. 정본 근거
 
@@ -1666,6 +1721,8 @@ call-shape 설명을 backend call ABI PASS로,
 - [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
   - call shape, unfold arity, lambda staging
   - catch minimum과 flow join
+- [`spec/contracts/nonescaping-lexical-access.json`](../../spec/contracts/nonescaping-lexical-access.json)
+  - exact closed proof, lexical dependency, capture-list presence
 - [`spec/contracts/companion-capability-coherence.json`](../../spec/contracts/companion-capability-coherence.json)
   - 네 capability domain, direct Trait-associated static selection
   - associated value admission, private authority와 runtime lookup fence

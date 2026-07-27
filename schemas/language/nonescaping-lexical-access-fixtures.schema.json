@@ -1,0 +1,324 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/nonescaping-lexical-access-fixtures.schema.json",
+  "title": "Deeplus nonescaping lexical access R1 fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "contract",
+    "status",
+    "source_activation",
+    "current_binding",
+    "product_lanes",
+    "positive",
+    "negative",
+    "boundary",
+    "mutation",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.nonescaping-lexical-access-fixtures/r1"
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract": {
+      "const": "spec/contracts/nonescaping-lexical-access.json"
+    },
+    "status": {
+      "const": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "current_binding": {
+      "const": true
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "positive": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/positiveCase"
+      }
+    },
+    "negative": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "$ref": "#/$defs/negativeCase"
+      }
+    },
+    "boundary": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/boundaryCase"
+      }
+    },
+    "mutation": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/mutationCase"
+      }
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "positive",
+        "negative",
+        "boundary",
+        "mutation",
+        "total",
+        "product_executed"
+      ],
+      "properties": {
+        "positive": {
+          "const": 10
+        },
+        "negative": {
+          "const": 15
+        },
+        "boundary": {
+          "const": 8
+        },
+        "mutation": {
+          "const": 5
+        },
+        "total": {
+          "const": 38
+        },
+        "product_executed": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "diagnosticId": {
+      "enum": [
+        "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+        "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+        "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+        "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+        "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+        "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+        "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+        "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+        "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT"
+      ]
+    },
+    "nullableDiagnosticId": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/diagnosticId"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "ruleIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^NLA-R[0-9]{3}$"
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "positiveCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "title",
+        "rule_ids",
+        "source",
+        "expected_outcome",
+        "diagnostic",
+        "assertions"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^NLA-R1-POS-[0-9]{2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_ids": {
+          "$ref": "#/$defs/ruleIds"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_outcome": {
+          "const": "accept"
+        },
+        "diagnostic": {
+          "type": "null"
+        },
+        "assertions": {
+          "$ref": "#/$defs/assertions"
+        }
+      }
+    },
+    "negativeCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "title",
+        "rule_ids",
+        "source",
+        "expected_outcome",
+        "diagnostic",
+        "assertions"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^NLA-R1-NEG-[0-9]{2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_ids": {
+          "$ref": "#/$defs/ruleIds"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_outcome": {
+          "const": "reject"
+        },
+        "diagnostic": {
+          "$ref": "#/$defs/diagnosticId"
+        },
+        "assertions": {
+          "$ref": "#/$defs/assertions"
+        }
+      }
+    },
+    "boundaryCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "title",
+        "rule_ids",
+        "accepted_source",
+        "rejected_source",
+        "rejection_diagnostic",
+        "assertions"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^NLA-R1-BND-[0-9]{2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_ids": {
+          "$ref": "#/$defs/ruleIds"
+        },
+        "accepted_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rejected_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rejection_diagnostic": {
+          "$ref": "#/$defs/nullableDiagnosticId"
+        },
+        "assertions": {
+          "$ref": "#/$defs/assertions"
+        }
+      }
+    },
+    "mutationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "title",
+        "rule_ids",
+        "base_source",
+        "mutated_source",
+        "base_outcome",
+        "mutated_outcome",
+        "mutated_diagnostic",
+        "invariant"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^NLA-R1-MUT-[0-9]{2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_ids": {
+          "$ref": "#/$defs/ruleIds"
+        },
+        "base_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mutated_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_outcome": {
+          "enum": [
+            "accept",
+            "reject"
+          ]
+        },
+        "mutated_outcome": {
+          "enum": [
+            "accept",
+            "reject"
+          ]
+        },
+        "mutated_diagnostic": {
+          "$ref": "#/$defs/nullableDiagnosticId"
+        },
+        "invariant": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

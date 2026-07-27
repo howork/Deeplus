@@ -28,7 +28,7 @@ formatter, LSP 또는 product support authority를 만들지 않는다.
 - closed Union, refinement, flow narrowing
 - 현행 mixed-payload Enum과 marker reachability
 - explicit Trait conformance와 fixed-glyph operator
-- 함수 `scope#static`
+- 함수 `static { ... }` activation
 - named `def#async`, structured task, actor
 - HIR-H1 verifier boundary와 current xVM/LLVM backend authority
 

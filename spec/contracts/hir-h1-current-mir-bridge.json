@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.hir-h1-current-mir-bridge-contract/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
   "language_version": "0.1.2-internal",
   "feature_id": "hir_h1_current_mir_bridge",
   "status": "STABLE_DESIGN",
@@ -388,6 +388,38 @@
     "silent_omission_count": 0,
     "todo_pseudo_operation_count": 0,
     "opaque_runtime_callback_count": 0
+  },
+  "callable_lexical_dependency_contract": {
+    "status": "STABLE_DESIGN",
+    "normalized_descriptor_product": {
+      "residence": "FrameIndependent | RegionBound(RegionId)",
+      "environment": "Empty | Explicit(CapturePlan)",
+      "closed_assertion": "bool",
+      "lexical_dependencies": "sorted unique rows keyed by ancestor place identity and Read access"
+    },
+    "dependency_row": [
+      "ancestor_callable_body_id",
+      "ancestor_place_id",
+      "ancestor_depth",
+      "RegionId",
+      "access=Read",
+      "required_state=LiveReadable",
+      "canonical diagnostic use spans"
+    ],
+    "capture_plan_item_count_for_lexical_read": 0,
+    "module_api_region_id_export_count": 0,
+    "mir_lowering": "ordinary ancestor-rooted place read; hidden static link is backend-private and nonobservable",
+    "new_observable_mir_event_count": 0,
+    "product_support": "NOT_RUN"
+  },
+  "concise_responsibility_preview_bridge": {
+    "status": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "lossless_clause_presence_reaches_mir": false,
+    "successor_hir_and_mir_rows": "always complete after omission normalization",
+    "omitted_throws": "Never",
+    "omitted_effects": [],
+    "current_private_error_inference_changed": false,
+    "product_support": "NOT_RUN"
   },
   "current_mir_bridge": {
     "current_semantic_authority": "spec/mir/semantics.md",

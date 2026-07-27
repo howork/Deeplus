@@ -1,0 +1,189 @@
+{
+  "schema": "deeplus.nonescaping-lexical-access-contract/r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "language_version": "0.1.2-internal",
+  "feature_id": "nonescaping_lexical_access",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "design_verdict": "STABLE_DESIGN_ACCEPTED_WITH_EXACT_GUARDS",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": true,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "grammar": "NOT_RUN",
+    "ast_hir": "NOT_RUN",
+    "type_effect_escape": "NOT_RUN",
+    "mir_backend": "NOT_RUN",
+    "diagnostics_catalog": "NOT_RUN",
+    "formatter": "NOT_RUN",
+    "examples": "NOT_RUN",
+    "product": "15/15_NOT_RUN",
+    "claim": "This contract stabilizes the design only. It does not activate source syntax or claim implementation, publication, or product support."
+  },
+  "syntax_compatibility": {
+    "capture_item_production": "CaptureItem ::= (\"let\" | \"var\") Identifier \"=\" Expr | CaptureMode Identifier | Identifier",
+    "bare_capture_item": {
+      "status": "PRESERVED_CURRENT_COMPATIBILITY",
+      "meaning": "A bare identifier retains its current capture-item meaning.",
+      "forbidden_reinterpretation": "A bare capture item is not an implicit lexical-access marker and is not removed by this design."
+    },
+    "capture_list_presence": {
+      "absent": "Qualified nonescaping lexical access may be inferred.",
+      "present_empty": "The author asserts that the callable has no ancestor-frame dependencies. Module, type, and Prelude dependencies remain permitted.",
+      "present_nonempty": "The list remains the explicit capture plan. Residual qualified lexical dependencies may coexist with explicit captures."
+    },
+    "representation_requirement": "Absent, present-empty, and present-nonempty capture-list states remain distinct through CST, AST, HIR, and formatting."
+  },
+  "semantic_model": {
+    "core_rule": "A proven-nonescaping synchronous callable may read an ancestor place at call time without acquiring that place into a capture environment.",
+    "lexical_dependency": "The dependency is a call-time region requirement, not an environment capture.",
+    "residence_axis": [
+      "FrameIndependent",
+      "RegionBound(RegionId)"
+    ],
+    "environment_axis": [
+      "Empty",
+      "Explicit(CapturePlan)"
+    ],
+    "closed_assertion": "Present-empty capture syntax independently asserts an empty ancestor-frame dependency set.",
+    "mixed_state": "A callable may have Explicit(CapturePlan) and RegionBound(RegionId) simultaneously.",
+    "region_ids": "RegionId values are internal proof artifacts and are not exported in public API digests."
+  },
+  "admission": {
+    "target_domains": [
+      "synchronous local def",
+      "synchronous closure"
+    ],
+    "excluded_owners": [
+      "guard",
+      "async",
+      "generator",
+      "task",
+      "spawn",
+      "actor",
+      "isolation-crossing callable"
+    ],
+    "closed_proof_routes": [
+      "sync_local_def_direct_calls_only",
+      "sync_closure_immediate_invocation",
+      "bounded_local_binding_with_direct_calls_only",
+      "exact_selected_scoped_formal_or_trailing_formal"
+    ],
+    "unknown_proof": "reject",
+    "escape_sinks": [
+      "return",
+      "yield",
+      "aggregate_or_field_store",
+      "ordinary_callable_argument",
+      "task_or_spawn",
+      "actor_or_isolation_transfer",
+      "unknown_or_opaque_flow"
+    ],
+    "ancestor_access": {
+      "allowed": [
+        "read",
+        "shared_nonconsuming_borrow whose lifetime is bounded by the call"
+      ],
+      "rejected": [
+        "write",
+        "inout",
+        "move",
+        "consume",
+        "borrow returned or stored beyond the call"
+      ]
+    },
+    "pure_rule": "A pure lexical dependency must denote immutable data and must not introduce shared-state, resource, authority, or observable-effect access.",
+    "scoped_rule": "Passing a qualified lexical callable to the exact selected #scoped formal requires only a call-duration read requirement; it does not create a capture.",
+    "guard_rule": "Guard-owned lexical dependencies are excluded from this revision."
+  },
+  "capture_preservation": {
+    "explicit_capture_timing": "Existing explicit capture acquisition remains creation-time.",
+    "lexical_read_timing": "Qualified lexical access reads the current ancestor place at call time.",
+    "snapshot_contrast": "An explicit copy capture remains a creation-time snapshot; lexical access remains live.",
+    "bare_compatibility": "Existing bare capture-item behavior is unchanged."
+  },
+  "mir_backend_projection": {
+    "mir_form": "Use ordinary ancestor-rooted place reads with region proof metadata.",
+    "forbidden_observable_events": [
+      "ancestor_place_read",
+      "zero_count_callable_create"
+    ],
+    "static_link": "A backend hidden static link is permitted but is not a source-observable event, capture environment, or public ABI surface."
+  },
+  "diagnostic_design": {
+    "required_classes": [
+      "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+      "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+      "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+      "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+      "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+      "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+      "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT"
+    ],
+    "catalog_status": "ACTIVE_IDENTITY_DESIGN_STATIC_PRODUCT_NOT_RUN",
+    "bare_capture_compatibility": "No diagnostic is emitted for the current bare capture-item meaning."
+  },
+  "rules": [
+    {
+      "rule_id": "NLA-R001",
+      "statement": "Qualified lexical access requires an exact closed proof route."
+    },
+    {
+      "rule_id": "NLA-R002",
+      "statement": "Qualified lexical access is synchronous, same-isolation, read-only, and nonconsuming."
+    },
+    {
+      "rule_id": "NLA-R003",
+      "statement": "Absent capture syntax permits inference; present-empty syntax asserts no ancestor-frame dependencies."
+    },
+    {
+      "rule_id": "NLA-R004",
+      "statement": "Explicit captures and residual lexical dependencies are orthogonal."
+    },
+    {
+      "rule_id": "NLA-R005",
+      "statement": "Lexical reads are live at call time; explicit capture timing is unchanged."
+    },
+    {
+      "rule_id": "NLA-R006",
+      "statement": "Bare capture items preserve their current meaning."
+    },
+    {
+      "rule_id": "NLA-R007",
+      "statement": "Qualified lexical access does not add an observable capture or MIR event."
+    },
+    {
+      "rule_id": "NLA-R008",
+      "statement": "Pure lexical dependencies are restricted to immutable, non-authority, non-resource data."
+    }
+  ],
+  "fixture_binding": {
+    "schema": "schemas/language/nonescaping-lexical-access-fixtures.schema.json",
+    "fixture": "tests/fixtures/current/nonescaping-lexical-access-r1.json",
+    "expected_counts": {
+      "positive": 10,
+      "negative": 15,
+      "boundary": 8,
+      "mutation": 5,
+      "total": 38,
+      "product_executed": 0
+    }
+  },
+  "machine_acceptance": {
+    "rule_count": 8,
+    "fixture_count": 38,
+    "positive_fixture_count": 10,
+    "negative_fixture_count": 15,
+    "boundary_fixture_count": 8,
+    "mutation_fixture_count": 5,
+    "semantic_p0": 0,
+    "product_lane_count": 15,
+    "product_executed_count": 0,
+    "source_gate_count": 0,
+    "new_observable_mir_event_count": 0,
+    "bare_capture_item_removal_count": 0
+  }
+}

@@ -58,7 +58,7 @@ return, throws, effect가 모두 참여한다. ordinary, context, witness
 argument를 위치만 같다고 서로 바꿀 수 없다.
 
 이름 있는 async 함수는 `def#async`, entry는 `def#entry`, guard는
-`def#guard`다. 함수 body의 `scope#static` activation은 Stable이지만
+`def#guard`다. 함수 body의 `static { ... }` activation은 Stable이지만
 Class body의 같은 표면은 Preview Design nonactivatable이다.
 
 ## 4. 타입

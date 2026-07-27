@@ -248,5 +248,267 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "NonescapingLexicalAccessAdmitted",
+    "source_name": "Nonescaping lexical access admission",
+    "summary": "Classify a proven synchronous ancestor-place read as a region-bounded lexical dependency rather than an environment capture.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "ownership",
+      "cleanup",
+      "suspension",
+      "isolation",
+      "call_shape",
+      "source_role"
+    ],
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "diagnostic_refs": [
+      "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+      "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+      "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+      "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+      "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+      "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+      "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(LexicalDependencyRow) | reject(diagnostic_id)",
+    "requires": [
+      "synchronous same-isolation nonsuspending callable",
+      "proven RegionBound residence",
+      "read-only nonconsuming ancestor place",
+      "LiveReadable place at every invocation",
+      "zero rooted-borrow escape"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "ownership",
+      "cleanup",
+      "suspension",
+      "isolation",
+      "call_shape",
+      "source_role"
+    ],
+    "formal_judgment_id": "J-NonescapingLexicalAccessAdmitted",
+    "algorithm_owner": "escape_analysis_then_integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the capture list is absent or present-nonempty; a present-empty list is a closed ancestor-frame assertion, and explicit capture items remain orthogonal to residual lexical dependencies",
+      "the free use resolves to an admitted ancestor local or parameter place",
+      "the selected call/use graph supplies one exact bounded residence proof"
+    ],
+    "normalization": "deduplicate lexical dependencies by stable ancestor place identity and Read access while retaining use spans for diagnostics",
+    "decision_procedure": [
+      "classify capture-list presence; reject a present-empty list before dependency formation, and retain a present-nonempty explicit capture plan independently",
+      "classify access and reject write, move, consume, snapshot, or unknown place state",
+      "reject guard, suspension, isolation crossing, or escaping residence",
+      "reserve one shared-read requirement for the invocation region",
+      "emit one lexical dependency row and zero CapturePlan items"
+    ],
+    "termination_metric": "finite callable body plus finite closed use graph",
+    "success_result": "LexicalDependencyRow",
+    "active_primary_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+    "secondary_diagnostics": [
+      "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+      "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+      "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+      "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+      "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+      "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+      "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT"
+    ],
+    "positive_fixture_ids": [
+      "PF-NonescapingLexicalAccessAdmitted-POS",
+      "PF-NonescapingLexicalAccessAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-NonescapingLexicalAccessAdmitted-NEG"
+    ],
+    "evaluation_order": "capture-clause state -> access -> owner profile -> residence -> liveness -> HIR",
+    "dependency_predicates": [
+      "ScopedCallableLifetimeAdmitted"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ConciseCallableResponsibilityPreviewAdmitted",
+    "source_name": "Concise callable responsibility Preview admission",
+    "summary": "Specify closed omission normalization and body-row subset checking without changing current private inference.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "errors",
+      "call_shape",
+      "source_role"
+    ],
+    "feature_refs": [
+      "concise_throws_effects_declaration_preview_design"
+    ],
+    "diagnostic_refs": [],
+    "design_seed_diagnostic_refs": [
+      "CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION",
+      "CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION",
+      "IMPLICIT_PURE_FUNCTION_THROWS",
+      "IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION"
+    ],
+    "output": "design(admit normalized rows | reject candidate diagnostic)",
+    "requires": [
+      "owner syntactically admits responsibility clauses",
+      "omitted throws normalizes to Never",
+      "omitted effects normalizes to empty",
+      "body rows are subsets of declaration rows"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "errors",
+      "call_shape",
+      "source_role"
+    ],
+    "formal_judgment_id": "J-ConciseCallableResponsibilityPreviewAdmitted",
+    "algorithm_owner": "design_only_callable_header_normalizer",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the nonactivatable successor profile is selected for design analysis",
+      "current private_error_set_inference is not consulted as successor semantics"
+    ],
+    "normalization": "preserve omission only in CST and create complete normalized declaration rows for every typed stage",
+    "decision_procedure": [
+      "classify exact owner",
+      "normalize omitted axes",
+      "check body row subsets when a body exists",
+      "apply owner-specific pure, Trait, override, and function-value compatibility laws",
+      "emit no current diagnostic while the feature is nonactivatable"
+    ],
+    "termination_metric": "finite owner header plus finite normalized body rows",
+    "success_result": "design-only complete callable responsibility rows",
+    "active_primary_diagnostic": null,
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ConciseCallableResponsibilityPreviewAdmitted-POS",
+      "PF-ConciseCallableResponsibilityPreviewAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ConciseCallableResponsibilityPreviewAdmitted-NEG"
+    ],
+    "evaluation_order": "owner -> omission presence -> normalization -> body subsets -> compatibility",
+    "dependency_predicates": [
+      "EffectRowSubsumes"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "input_adapter": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "FunctionStaticNamespacePreviewAdmitted",
+    "source_name": "Function-static immutable namespace Preview admission",
+    "summary": "Specify explicit immutable function-static slots, closed lookup, ordered staging, and atomic publication without activating source.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "cleanup",
+      "authority",
+      "lookup_domain",
+      "source_role"
+    ],
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "diagnostic_refs": [],
+    "design_seed_diagnostic_refs": [
+      "FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID",
+      "FUNCTION_STATIC_SLOT_DUPLICATE",
+      "FUNCTION_STATIC_SLOT_FORWARD_REFERENCE",
+      "FUNCTION_STATIC_SLOT_CYCLE",
+      "FUNCTION_STATIC_REFERENCE_NO_OWNER",
+      "FUNCTION_STATIC_SLOT_NOT_FOUND",
+      "FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION",
+      "FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED",
+      "FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT",
+      "FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN",
+      "FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN",
+      "FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN",
+      "FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN"
+    ],
+    "output": "design(admit slot plan | reject candidate diagnostic)",
+    "requires": [
+      "exact enclosing FunctionStaticOwnerId",
+      "explicit static#slot declaration and static#slot:: reference",
+      "deeply immutable static-materializable M0 value",
+      "declaration-order prior-slot-only initialization",
+      "atomic Ready publication"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "cleanup",
+      "authority",
+      "lookup_domain",
+      "source_role"
+    ],
+    "formal_judgment_id": "J-FunctionStaticNamespacePreviewAdmitted",
+    "algorithm_owner": "design_only_function_static_namespace_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the nonactivatable Preview profile is selected for design analysis",
+      "the existing Stable function-static owner contract is satisfied"
+    ],
+    "normalization": "bind ordered slot rows to exact FunctionStaticOwnerId and derive FunctionStaticSlotId from canonical name",
+    "decision_procedure": [
+      "validate slot-section position and unique canonical names",
+      "validate closed FUNCTION_STATIC_NAMESPACE lookup with no fallback",
+      "validate M0 value profile",
+      "validate prior-slot-only staged initialization and reject cycles",
+      "bind atomic Ready publication and existing failure identity",
+      "emit no current diagnostic while the feature is nonactivatable"
+    ],
+    "termination_metric": "finite ordered slot sequence plus acyclic prior-only dependency edges",
+    "success_result": "design-only function-static slot plan",
+    "active_primary_diagnostic": null,
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-FunctionStaticNamespacePreviewAdmitted-POS",
+      "PF-FunctionStaticNamespacePreviewAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-FunctionStaticNamespacePreviewAdmitted-NEG"
+    ],
+    "evaluation_order": "owner -> slot order -> closed lookup -> value profile -> staging -> publication",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "input_adapter": null
   }
 ]

@@ -197,7 +197,14 @@ def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[st
     results: list[dict[str, object]] = []
     for name, kind, process in processes:
         stdout, stderr = process.communicate()
-        receipt = parse_receipt(stdout)
+        try:
+            receipt = parse_receipt(stdout)
+        except RuntimeError as exc:
+            detail = stderr.strip() or "<empty stderr>"
+            raise RuntimeError(
+                f"{exc}; process={name}; returncode={process.returncode}; "
+                f"stderr={detail}"
+            ) from exc
         peer_absent = all(
             spelling not in stdout and spelling not in stderr
             for spelling in peer_spellings

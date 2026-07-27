@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.function-static-activation-contract/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
   "language_version": "0.1.2-internal",
   "feature_id": "function_static_activation",
   "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
@@ -83,22 +83,29 @@
     "M13-A005"
   ],
   "surface_contract": {
-    "canonical_surface": "scope#static { ... }",
+    "canonical_surface": "static { ... }",
     "grammar_owner": "CallableBlock",
     "placement": "after optional BlockPrologue and before the first runtime semantic item",
     "maximum_per_callable_body": 1,
     "normal_result": "Unit",
     "expression_body_route": false,
     "ordinary_block_item": false,
-    "hash_role": {
-      "token_sequence": [
-        "scope",
-        "#",
-        "static"
-      ],
-      "trivia_policy": "the existing hash-role policy admits horizontal whitespace and comments on the same physical line; a physical line break is rejected",
-      "formatter_output": "scope#static",
-      "special_no_trivia_rule": false
+    "contextual_introducer": {
+      "lexeme": "static",
+      "hard_keyword_added": false,
+      "commit_context": "after optional BlockPrologue in CallableBlock, before BlockSequence, when the next token opens Block",
+      "formatter_output": "static",
+      "ordinary_identifier_outside_owned_context": true
+    },
+    "legacy_recovery": {
+      "surface": "scope#static { ... }",
+      "production": "RecoveryFunctionStaticScopeHash",
+      "status": "RECOVERY_ONLY",
+      "diagnostic": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
+      "admitted_activation_node_count": 0,
+      "automatic_fix": "replace the introducer with static while preserving the Block and safely rehoming trivia",
+      "identity_equivalence": "the recovery spelling and canonical spelling normalize to the same FunctionStaticActivationDecl for migration comparison; source spelling and trivia are excluded from FunctionStaticOwnerId and activation contract digest",
+      "semantic_reinterpretation_count": 0
     }
   },
   "admitted_synchronous_named_owner_matrix": [
@@ -351,6 +358,7 @@
     "trait_successor_via_auto_specialization_or_local_witness": "NOT_ACTIVATED"
   },
   "diagnostic_families": [
+    "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
     "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
     "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
     "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
@@ -374,8 +382,8 @@
     },
     {
       "rule_id": "FSA-R002",
-      "title": "The surface is one current hash-role composition",
-      "contract": "Canonical source prints scope#static; parsing follows the existing same-line hash-role trivia law and rejects a physical line break without inventing a stricter lexical owner."
+      "title": "The surface is one callable-owned contextual introducer",
+      "contract": "Canonical source prints static { ... }; static remains a contextual word and is committed as FunctionStaticActivation only in the dedicated CallableBlock prologue position before BlockSequence."
     },
     {
       "rule_id": "FSA-R003",
@@ -460,7 +468,7 @@
     {
       "rule_id": "FSA-R019",
       "title": "Removed and Preview families do not inherit activation",
-      "contract": "Top-level static def remains rejected without automatic rewrite, and value/effectful/module/class static plus Trait VIA/AUTO/specialization/local-witness successors remain nonactivated."
+      "contract": "The old scope#static spelling is recovery-only and migration-normalizes without changing owner identity; top-level static def remains rejected without automatic rewrite, and value/effectful/module/class static plus Trait VIA/AUTO/specialization/local-witness successors remain nonactivated."
     },
     {
       "rule_id": "FSA-R020",

@@ -8677,16 +8677,15 @@ def outer() -> Unit = {
     public def inner() -> Unit = { }
 }
 ```
-## EX-R51a1-NG-033 — rejected: implicit outer capture by a local function
+## EX-R51a1-NG-033 — accepted: direct-only local function lexical read
 
-- **source_feature_ids:** `nested_function_local_def_msp`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
+- **source_feature_ids:** `nested_function_local_def_msp`, `nonescaping_lexical_access`
+- **checker_trace_ids:** `NonescapingLexicalAccessAdmitted`
+- **expected_outcome:** `accept`
 - **source_activation:** `none`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NESTED_DEF_CAPTURE_LIST_REQUIRED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -8723,7 +8722,7 @@ def outer() -> Int = {
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NESTED_DEF_CAPTURE_LIST_REQUIRED`
+- **primary_diagnostic:** `CAPTURE_LIST_NEWLINE_DETACHED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -12129,7 +12128,7 @@ actor Worker {}
 
 ```deeplus
 public def decode(bytes: Bytes) -> Packet = {
-    scope#static {
+    static {
         verifyDecoderTables()
     }
 
@@ -12309,11 +12308,176 @@ public def energy(base: Float64, exponent: Float64) -> Float64 = {
 ```deeplus
 public def decode(bytes: Bytes) -> Packet = {
     traceDecoderUse()
-    scope#static {
+    static {
         verifyDecoderTables()
     }
     // FUNCTION_STATIC_ACTIVATION_POSITION_INVALID
 
     return decodePacket(bytes)
 }
+```
+
+## EX-R51f3-NLA-001 — Local read remains a lexical dependency
+
+- **source_feature_ids:** `nonescaping_lexical_access`
+- **checker_trace_ids:** `NonescapingLexicalAccessAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private def scaledResult(scale: Int) -> Int = {
+    def apply(value: Int) -> Int = {
+        return value * scale
+    }
+    return apply(3)
+}
+
+let result = scaledResult(4)
+// scale is read at invocation time; no environment snapshot is formed.
+```
+
+## EX-R51f3-NLA-002 — Copy capture is an explicit snapshot
+
+- **source_feature_ids:** `nonescaping_lexical_access`
+- **checker_trace_ids:** `NonescapingLexicalAccessAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+var rate = 2
+let current = { value: Int => value * rate }
+let snapshot = [copy rate] { value: Int => value * rate }
+
+rate = 3
+let a = current(10)   // 30: invocation-time lexical read
+let b = snapshot(10)  // 20: creation-time copy
+```
+
+## EX-R51f3-NLA-NG-001 — Closed callable rejects an ancestor reference
+
+- **source_feature_ids:** `nonescaping_lexical_access`
+- **checker_trace_ids:** `NonescapingLexicalAccessAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `CLOSED_CALLABLE_HAS_OUTER_REFERENCE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let base = 10
+let closed = [] { value: Int => value + base }
+// CLOSED_CALLABLE_HAS_OUTER_REFERENCE
+```
+
+## EX-R51f3-NLA-NG-002 — Escaping callable requires explicit capture
+
+- **source_feature_ids:** `nonescaping_lexical_access`
+- **checker_trace_ids:** `NonescapingLexicalAccessAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private def makeAdder(base: Int) -> (Int) -> Int = {
+    return { value: Int => value + base }
+}
+// ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE
+```
+
+## EX-R51f3-CRESP-PREVIEW-001 — Concise closed responsibility rows
+
+- **source_feature_ids:** `concise_throws_effects_declaration_preview_design`
+- **checker_trace_ids:** `ConciseCallableResponsibilityPreviewAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `PreviewLibrarySourceFile`
+- **primary_diagnostic:** `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def size() -> Int = {
+    return 3
+}
+// Preview meaning only: omitted rows normalize to throws Never effects {}.
+```
+
+## EX-R51f3-CRESP-PREVIEW-NG-001 — Body exceeds a concise declaration
+
+- **source_feature_ids:** `concise_throws_effects_declaration_preview_design`
+- **checker_trace_ids:** `ConciseCallableResponsibilityPreviewAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `PreviewLibrarySourceFile`
+- **primary_diagnostic:** `CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def load() -> Document = {
+    throw IOError::unavailable
+}
+// Preview omitted throws normalizes to Never.
+// CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION
+```
+
+## EX-R51f3-FSNS-PREVIEW-001 — Explicit immutable function-static slots
+
+- **source_feature_ids:** `function_static_namespace_preview_design`
+- **checker_trace_ids:** `FunctionStaticNamespacePreviewAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `PreviewLibrarySourceFile`
+- **primary_diagnostic:** `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def lookup(key: String) -> Option<Int> = {
+    static {
+        static#slot table = buildImmutableTable()
+    }
+    return static#slot::table.find(key)
+}
+// Preview Design only: static#slot is not current parser-cover source.
+```
+
+## EX-R51f3-FSNS-PREVIEW-NG-001 — Function-static slot cycle rejects
+
+- **source_feature_ids:** `function_static_namespace_preview_design`
+- **checker_trace_ids:** `FunctionStaticNamespacePreviewAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `nonactivatable`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `PreviewLibrarySourceFile`
+- **primary_diagnostic:** `FUNCTION_STATIC_SLOT_CYCLE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def invalid() -> Int = {
+    static {
+        static#slot left = static#slot::right
+        static#slot right = static#slot::left
+    }
+    return static#slot::left
+}
+// FUNCTION_STATIC_SLOT_CYCLE
 ```

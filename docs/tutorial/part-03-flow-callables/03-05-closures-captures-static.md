@@ -1,4 +1,4 @@
-# 03-05. closure capture와 `scope#static`
+# 03-05. closure capture와 `static`
 
 ## 1. 상태와 읽는 법
 
@@ -8,13 +8,13 @@
 > **제품 증거:** `15/15 NOT_RUN`
 
 이 장은 lambda/로컬 함수 capture와 이름 있는 동기 함수의
-`scope#static` activation을 분리해 설명한다.
+`static` activation을 분리해 설명한다.
 
 ## 2. 학습 목표
 
 - lambda parameter와 capture list를 구분한다.
 - 로컬 함수의 외부 이름 capture를 명시한다.
-- `scope#static`의 owner, 위치, 최초 호출 의미를 이해한다.
+- `static`의 owner, 위치, 최초 호출 의미를 이해한다.
 - 허용되지 않는 static owner와 activation failure 경계를 식별한다.
 
 ## 3. 선수 지식
@@ -36,7 +36,7 @@ callable identity에 남는다는 사실을 먼저 익히는 것이다.
 closure가 바깥 변수를 암묵적으로 붙잡으면 lifetime과 mutation 책임이
 보이지 않는다. 반대로 함수별 한 번 초기화를 module global로 흉내 내면
 generic specialization, override, runtime instance별 identity가
-무너진다. Deeplus는 capture list와 `scope#static` prologue를 각각
+무너진다. Deeplus는 capture list와 `static` prologue를 각각
 명시적인 구조로 둔다.
 
 ## 5. 핵심 모델
@@ -46,7 +46,7 @@ generic specialization, override, runtime instance별 identity가
 - 단일 expression body가 lambda 결과이며 multiline 결과에는 `ret`를
   사용한다.
 - 로컬 함수가 outer local을 쓰려면 `[borrow x] def inner...`처럼 적는다.
-- `scope#static { ... }`은 허용된 이름 있는 동기 함수 body에 최대 하나다.
+- `static { ... }`은 허용된 이름 있는 동기 함수 body에 최대 하나다.
 - optional import/use 뒤, 첫 runtime semantic item 앞에 놓인다.
 - 최종 구현이 실제 호출될 때 해당 `FunctionStaticOwnerId`마다 최초 한
   번 activation된다.
@@ -84,7 +84,7 @@ private def decode(bytes: Bytes) -> Packet
     throws DecodeError
     effects {}
 = {
-    scope#static {
+    static {
         verifyDecoderTables()
     }
 
@@ -96,16 +96,27 @@ private def decode(bytes: Bytes) -> Packet
 통과한다. 이 block은 persistent local value를 선언하는 표면이 아니라
 owner별 activation 작업을 표현한다.
 
+이전 철자 `scope#static { ... }`은
+`FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC` migration 진단을 위한
+recovery-only 표면이다. Block의 의미를 바꾸지 않고 `static`으로
+치환하며, 두 철자는 migration 비교에서 같은 activation HIR와
+`FunctionStaticOwnerId`를 뜻한다.
+
+`static#slot name` persistent slot과 `static#slot::name` 참조는 별도
+`PREVIEW_DESIGN_NONACTIVATABLE` 설계다. 아직 current parser 문법이 아니며
+plain `let`/`var`는 계속 activation-local binding이다. 이 분리 덕분에
+기존 activation code가 암묵적인 shared value로 바뀌지 않는다.
+
 ### 판정 trace, 미니 사례와 흔한 오해
 
 closure를 판정할 때 capture list의 각 이름을 outer binding에 resolve하고
 mode와 lifetime이 body 사용에 맞는지 확인한다. parameter와 capture를
 분리한 뒤 callable profile, result, error/effect를 검사한다.
-`scope#static`은 이 trace와 별도로 owning named synchronous implementation,
+`static`은 이 trace와 별도로 owning named synchronous implementation,
 prologue 위치, owner identity, 최초 activation barrier를 판정한다.
 
 미니 사례에서 `[borrow rate] { value => value * rate }`는 rate를 parameter로
-받지 않고 명시적으로 빌린다. 반면 `scope#static` block은 값을 capture해
+받지 않고 명시적으로 빌린다. 반면 `static` block은 값을 capture해
 closure에 저장하는 표면이 아니다. 흔한 오해는 둘 다 “함수가 값을
 기억한다”고 합치는 것이다. capture는 callable value 환경, activation은
 허용된 named implementation의 once barrier이며 owner와 실패 법칙이
@@ -126,7 +137,7 @@ private def outer(base: Int) -> Int = {
 }
 
 let bad = { value: Int =>
-    scope#static {
+    static {
         prepare()
     }
     value
@@ -134,7 +145,7 @@ let bad = { value: Int =>
 ```
 
 첫 함수에는 `[borrow base]` 같은 capture contract가 없고, 두 번째는
-lambda 안에 `scope#static`을 놓았다. local function, lambda, async,
+lambda 안에 `static`을 놓았다. local function, lambda, async,
 generator, guard, constructor, cleanup과 actor handler는 최초 Stable
 owner matrix에서 static activation을 소유하지 않는다.
 
@@ -142,7 +153,7 @@ owner matrix에서 static activation을 소유하지 않는다.
 
 capture mode는 borrow/move/lifetime과 callable identity에 연결된다.
 `#once` closure는 한 번 소비되는 callable 책임을 표현한다.
-`scope#static` owner identity는 selected implementation, generic
+`static` owner identity는 selected implementation, generic
 substitution, witness/helper digest와 runtime instance를 결합하며
 inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 
@@ -153,7 +164,7 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 - nullary lambda도 `{ => ... }`로 arrow를 생략하지 않는다.
 - 함수별 activation과 module/type initialization을 같은 것으로 설명하지
   않는다.
-- `scope#static`은 prologue의 정해진 위치에 하나만 둔다.
+- `static`은 prologue의 정해진 위치에 하나만 둔다.
 
 ## 10. 연습 문제
 
@@ -167,7 +178,7 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 
 - capture list와 parameter list는 역할이 다르다.
 - 로컬 함수도 outer local 사용을 명시적으로 capture한다.
-- `scope#static`은 허용된 이름 있는 동기 구현의 activation prologue다.
+- `static`은 허용된 이름 있는 동기 구현의 activation prologue다.
 - activation은 global value나 compile/JIT 시점 실행이 아니다.
 
 ## 12. 정본 근거와 다음 장
@@ -175,6 +186,7 @@ inline/JIT clone이 새로운 source owner를 만들지는 않는다.
 - [capture와 function static](../../grammar-reference/05-functions-methods-closures-and-calls.md)
 - [ownership과 evaluation](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 - [function static 계약](../../../spec/contracts/function-static-activation.json)
+- [function static namespace Preview 계약](../../../spec/contracts/function-static-namespace-preview-design.json)
 
 이제 [실습: 검증 파이프라인](lab-03-validation-pipeline.md)에서 함수,
 lambda, control과 Result를 한 흐름으로 묶는다.

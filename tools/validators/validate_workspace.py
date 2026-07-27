@@ -20,8 +20,8 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
@@ -35,8 +35,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 705, "diagnostics": 1367, "predicates": 255,
-    "predicate_fixtures": 790, "no_go": 150,
+    "features": 708, "diagnostics": 1395, "predicates": 258,
+    "predicate_fixtures": 799, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
 REQUIRED_FEATURE_IDS = (
@@ -275,9 +275,9 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 705
-                and fixed_counts.get("predicates") == 255
-                and fixed_counts.get("predicate_fixtures") == 790
+                and fixed_counts.get("features") == 708
+                and fixed_counts.get("predicates") == 258
+                and fixed_counts.get("predicate_fixtures") == 799
                 and fixed_counts.get("no_go") == 150
                 and fixed_counts.get("hard_keywords") == 30
                 and fixed_counts.get("contextual_words") == 101,
@@ -1503,6 +1503,100 @@ def main() -> int:
     )
     mir_schema = parsed.get(
         root / "schemas/language/mir-responsibility.schema.json", {}
+    )
+    residence_array_schema = mir_schema.get("properties", {}).get(
+        "callable_residence_descriptors", {}
+    )
+    residence_descriptor_schema = (
+        mir_schema.get("$defs", {}).get("callableResidenceDescriptor", {})
+    )
+
+    def callable_residence_rows_are_coherent(rows: Any) -> bool:
+        if not isinstance(rows, list):
+            return False
+        callable_ids = [
+            row.get("callable_id")
+            for row in rows
+            if isinstance(row, dict)
+        ]
+        if (
+            len(callable_ids) != len(rows)
+            or any(not isinstance(value, str) or not value for value in callable_ids)
+            or len(callable_ids) != len(set(callable_ids))
+        ):
+            return False
+        for row in rows:
+            residence = row.get("residence", {})
+            dependencies = row.get("lexical_dependencies", [])
+            closed = row.get("closed_ancestor_frame_assertion")
+            if not isinstance(dependencies, list) or not isinstance(closed, bool):
+                return False
+            if residence.get("kind") == "FrameIndependent" and dependencies:
+                return False
+            if closed and dependencies:
+                return False
+            if dependencies and (
+                residence.get("kind") != "RegionBound" or closed
+            ):
+                return False
+        return True
+
+    coherent_residence_rows = [
+        {
+            "callable_id": "callable.closed",
+            "residence": {"kind": "FrameIndependent", "region_id": None},
+            "environment": {"kind": "Empty", "capture_plan_id": None},
+            "closed_ancestor_frame_assertion": True,
+            "lexical_dependencies": [],
+        },
+        {
+            "callable_id": "callable.mixed",
+            "residence": {"kind": "RegionBound", "region_id": "region.outer"},
+            "environment": {
+                "kind": "Explicit",
+                "capture_plan_id": "capture.seed",
+            },
+            "closed_ancestor_frame_assertion": False,
+            "lexical_dependencies": [
+                {
+                    "place_id": "place.offset",
+                    "access": "shared_read",
+                    "lifetime": "call_duration",
+                }
+            ],
+        },
+    ]
+    incoherent_residence_rows = [
+        coherent_residence_rows + [dict(coherent_residence_rows[0])],
+        [
+            {
+                **coherent_residence_rows[0],
+                "lexical_dependencies": [
+                    {
+                        "place_id": "place.bad",
+                        "access": "shared_read",
+                        "lifetime": "call_duration",
+                    }
+                ],
+            }
+        ],
+        [
+            {
+                **coherent_residence_rows[1],
+                "closed_ancestor_frame_assertion": True,
+            }
+        ],
+    ]
+    check(
+        residence_array_schema.get("x-deeplus-unique-by") == "callable_id"
+        and len(residence_descriptor_schema.get("allOf", [])) == 3
+        and callable_residence_rows_are_coherent(coherent_residence_rows)
+        and all(
+            not callable_residence_rows_are_coherent(rows)
+            for rows in incoherent_residence_rows
+        ),
+        "NONESCAPING_LEXICAL_ACCESS_MIR_DESCRIPTOR_INVARIANTS",
+        "unique callable identity + residence/closed/dependency exclusion",
     )
     module_schema = parsed.get(
         root / "schemas/language/module-api-digest.schema.json", {}

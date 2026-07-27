@@ -350,5 +350,365 @@
     "violated_condition": "the Trait domain is implicit and would require search",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NonescapingLexicalAccessAdmitted-POS",
+    "predicate_id": "NonescapingLexicalAccessAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "owner": "sync local def",
+      "residence": "RegionBound",
+      "access": "Read",
+      "place_state": "LiveReadable",
+      "escapes": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "LexicalScopedCallable"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "block-closed synchronous read with LiveReadable ancestor place",
+    "rule_seed": "lexical dependency creates zero CapturePlan items",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NonescapingLexicalAccessAdmitted-BOUNDARY",
+    "predicate_id": "NonescapingLexicalAccessAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "owner": "closure argument",
+      "selected_formal": "#scoped",
+      "residence": "RegionBound",
+      "access": "Read",
+      "explicit_capture_for_other_name": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MixedLexicalCapturedCallable"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "exact selected invocation-bounded formal and orthogonal explicit environment",
+    "rule_seed": "residence and environment are independent",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NonescapingLexicalAccessAdmitted-NEG",
+    "predicate_id": "NonescapingLexicalAccessAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "owner": "returned closure",
+      "residence": "escaping",
+      "access": "Read"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedEscapingLexicalCallable"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "escaping callables require explicit capture",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+    "violated_condition": "residence is not region-bounded",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ConciseCallableResponsibilityPreviewAdmitted-POS",
+    "predicate_id": "ConciseCallableResponsibilityPreviewAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "surface": "def size() -> Int = { return 1 }",
+      "normalized_throws": "Never",
+      "normalized_effects": [],
+      "current_source_activation": "nonactivatable"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PreviewConciseCallable"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "both omitted axes normalize to closed rows in design analysis",
+    "rule_seed": "Preview-only omission normalization",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no current diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ConciseCallableResponsibilityPreviewAdmitted-BOUNDARY",
+    "predicate_id": "ConciseCallableResponsibilityPreviewAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "omitted_rows": {
+        "throws": "Never",
+        "effects": []
+      },
+      "explicit_rows": {
+        "throws": "Never",
+        "effects": []
+      },
+      "typed_identity_equal": true,
+      "cst_presence_equal": false
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PreviewResponsibilityIdentityBoundary"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "CST presence differs while normalized typed identity is equal",
+    "rule_seed": "lossless spelling is not callable identity",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no current diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ConciseCallableResponsibilityPreviewAdmitted-NEG",
+    "predicate_id": "ConciseCallableResponsibilityPreviewAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "normalized_throws": "Never",
+      "body_errors": [
+        "IOError"
+      ],
+      "current_source_activation": "nonactivatable"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedPreviewResponsibilityBody"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [
+          "IOError"
+        ],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "body rows must be subsets of normalized declaration rows",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design seed nonemitting",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION",
+    "violated_condition": "IOError is outside Never",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-FunctionStaticNamespacePreviewAdmitted-POS",
+    "predicate_id": "FunctionStaticNamespacePreviewAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "slots": [
+        {
+          "name": "base",
+          "type": "Int",
+          "dependencies": []
+        },
+        {
+          "name": "limit",
+          "type": "Int",
+          "dependencies": [
+            "base"
+          ]
+        }
+      ],
+      "publication": "atomic Ready",
+      "current_source_activation": "nonactivatable"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PreviewFunctionStaticSlotPlan"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "unique deeply immutable slots use prior-only declaration-order dependencies",
+    "rule_seed": "function-static namespace Preview M0",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no current diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-FunctionStaticNamespacePreviewAdmitted-BOUNDARY",
+    "predicate_id": "FunctionStaticNamespacePreviewAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "activation_local_binding": "let verified = verify()",
+      "persistent_slot": "static#slot table = buildTable()",
+      "same_binding_kind": false,
+      "current_source_activation": "nonactivatable"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PreviewFunctionStaticBindingBoundary"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "explicit slot marker does not reinterpret ordinary activation-local let",
+    "rule_seed": "persistent and activation-local bindings remain distinct",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no current diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-FunctionStaticNamespacePreviewAdmitted-NEG",
+    "predicate_id": "FunctionStaticNamespacePreviewAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "slots": [
+        {
+          "name": "a",
+          "dependencies": [
+            "b"
+          ]
+        },
+        {
+          "name": "b",
+          "dependencies": [
+            "a"
+          ]
+        }
+      ],
+      "current_source_activation": "nonactivatable"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "RejectedPreviewFunctionStaticCycle"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "rule_seed": "self, forward and cyclic dependencies are forbidden",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "design seed nonemitting",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "FUNCTION_STATIC_SLOT_CYCLE",
+    "violated_condition": "slot dependency graph is cyclic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

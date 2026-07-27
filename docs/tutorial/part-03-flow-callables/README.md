@@ -18,7 +18,7 @@ activation까지 단계적으로 확장한다.
 2. [매개변수, label, rest와 unfold](03-02-parameters-labels-rest-unfold.md)
 3. [메서드, 메시지와 trailing closure](03-03-methods-messages-trailing-closures.md)
 4. [조건, 반복, `match`와 값 흐름](03-04-control-flow.md)
-5. [closure capture와 `scope#static`](03-05-closures-captures-static.md)
+5. [closure capture와 `static { ... }`](03-05-closures-captures-static.md)
 6. [실습: 검증 파이프라인](lab-03-validation-pipeline.md)
 
 ## 이 부의 학습 판정 trace
@@ -36,7 +36,7 @@ channel은 어느 formal에 값이 결합되는지를 정하고, source order는
 `def#pure`를 body 검사와 무관한 장식으로 보는 것이 대표적인 오해다.
 미니 사례에서는 같은 두 값을 ordinary argument 둘과 message의 Tuple
 argument 하나로 각각 표현해 AST 경계를 말로 설명한다. 또한 closure capture와
-`scope#static`을 “함수가 기억하는 값”이라는 한 개념으로 합치지 않는다.
+`static { ... }`을 “함수가 기억하는 값”이라는 한 개념으로 합치지 않는다.
 
 ## 이 부에서 지킬 경계
 
@@ -48,7 +48,7 @@ argument 하나로 각각 표현해 AST 경계를 말로 설명한다. 또한 cl
 - 여러 trailing closure에는 모두 서로 다른 label을 쓴다.
 - capture는 명시적으로 적으며 ownership/effect/error 검사를 우회하지
   않는다.
-- `scope#static`은 허용된 이름 있는 동기 함수의 activation prologue일
+- `static { ... }`은 허용된 이름 있는 동기 함수의 activation prologue일
   뿐, 전역 변수나 type-side member가 아니다.
 
 ## 정본 안내

@@ -736,9 +736,33 @@ actor crossing을 암시하지 않는다.
     "open_alternatives": "현행 명시적 carrier API가 대안이고 deep freeze 암시, owner escape와 actor shareability 자동 부여는 거부한다.",
     "activation_prerequisites": "exact API signatures, ownership/MIR events, failure cleanup, serialization/indexing review와 target-bound execution receipt가 필요하다."
   }
+  ,
+  {
+    "feature_id": "concise_throws_effects_declaration_preview_design",
+    "motivation": "오류와 효과가 없는 callable의 흔한 선언을 짧게 쓰되 책임 행을 완전히 명시한 선언과 같은 정적 의미로 정규화하려는 설계다.",
+    "surface_or_api": "제안 프로필에서 생략한 throws는 Never, 생략한 effects는 빈 행으로 정규화한다. 현행 private_error_set_inference는 그대로 유지하며 이 규칙은 비활성 Preview다.",
+    "static_semantics_and_interactions": "CST는 절의 존재 여부를 보존하지만 typed AST/HIR/API/MIR은 완전한 정규화 행을 가진다. 구현 body 행은 선언 행의 부분집합이어야 하고 Trait witness, override, 함수 값 호환성은 각각의 기존 규칙을 따른다.",
+    "diagnostics_migration_tooling": "현행 private/local 생략 선언을 자동으로 순수 함수로 바꾸지 않는다. Stable 전환 전에는 추론된 기존 오류 행을 명시적으로 보존하는 결정적 migration inventory와 formatter/LSP 왕복 증거가 필요하다.",
+    "open_alternatives": "현행 private_error_set_inference를 유지하거나, 오류 행만 추론하고 효과 행은 닫는 혼합 프로필이 대안이다. 어느 대안도 이 Preview의 존재만으로 선택되지 않는다.",
+    "activation_prerequisites": "명시적 supersession, 전체 private/local migration, Trait/override/function-value 적합성 corpus, 안정된 진단과 target-bound parser/checker/API receipt가 필요하다."
+  },
+  {
+    "feature_id": "function_static_namespace_preview_design",
+    "motivation": "함수별 persistent immutable 값을 activation과 같은 owner identity 아래 두되 module/type static과 혼동하지 않는 닫힌 namespace를 설계한다.",
+    "surface_or_api": "후보 표면은 함수 body의 static 블록 안에서 static#slot name을 선언하고 함수 body에서 static#slot::name으로 참조한다. 현행 Stable 표면은 activation만 수행하는 static { ... }이며 slot 문법은 비활성 Preview다.",
+    "static_semantics_and_interactions": "FUNCTION_STATIC_NAMESPACE는 다섯 번째 닫힌 lookup domain이다. slot 값은 깊이 불변 M0 프로필이고 선언 순서상 앞선 slot만 initializer에서 참조할 수 있으며 activation 성공 후 Ready 상태로 원자적으로 공개된다.",
+    "diagnostics_migration_tooling": "old scope#static은 현행 recovery-only로 static에 identity-preserving 정규화한다. slot Preview에는 forward reference, cycle, bare-name, mutable/move/write, 외부 접근을 각각 고정 진단하고 자동 module/type static rewrite를 제공하지 않는다.",
+    "open_alternatives": "module static 또는 명시적 memoization object가 현행 대안이다. mutable slot, lazy per-slot initialization, caller 입력 기반 key, public slot export는 이번 후보에서 제외한다.",
+    "activation_prerequisites": "exact grammar와 CST, namespace lookup/owner recipe, concurrency publication, failure/reentry, API digest, formatter/LSP, cross-backend 실행 receipt와 별도 Design authority가 필요하다."
+  }
 ]
 ```
 <!-- deeplus-preview-design-review-cards: end -->
+
+이 revision에서 추가된 비활성 설계는
+`concise_throws_effects_declaration_preview_design`과
+`function_static_namespace_preview_design`이다. 두 항목은 canonical
+설계 기록이지만 source gate, 구현 또는 제품 지원을 활성화하지 않는다.
 
 ### Controlling decision 및 frontend 결합
 

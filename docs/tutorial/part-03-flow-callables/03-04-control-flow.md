@@ -164,5 +164,5 @@ nonconsuming하게 시험하고 성공 뒤 binding/move를 commit하므로 owner
 - [pattern과 narrowing](../../grammar-reference/10-patterns-destructuring-and-matching.md)
 - [평가와 commit](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 
-다음은 [closure capture와 `scope#static`](03-05-closures-captures-static.md)에서
+다음은 [closure capture와 `static { ... }`](03-05-closures-captures-static.md)에서
 실행 환경과 함수별 activation을 다룬다.
