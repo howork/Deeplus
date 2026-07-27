@@ -207,15 +207,15 @@
     "surface_family": "CaptureList separated from its owner by NEWLINE",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "NESTED_DEF_CAPTURE_LIST_REQUIRED",
+    "primary_diagnostic": "CAPTURE_LIST_NEWLINE_DETACHED",
     "negative_fixture_ids": [
       "EX-R51a1-NG-035"
     ],
     "replacement_or_no_fix": "place the capture list and local def on the same logical line",
     "feature_gate_policy": "no current gate",
-    "recognition_stage": "checker",
-    "current_ast_created": true,
-    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "The line boundary detaches the capture list before a local-function or closure owner can be constructed; emit the parser diagnostic without a current AST"
   },
   {
     "rejection_id": "NG-CLEANUP-DIRECT-CALL",

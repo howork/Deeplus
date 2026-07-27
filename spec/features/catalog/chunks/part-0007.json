@@ -158,7 +158,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Stable scope#static function-body activation runs once per exact CallableImplementationId and normalized specialization at the first actual invocation, after argument/default staging and before parameter ownership commit. The body is caller-input-free, pure, synchronous, authority/resource-free, and activation-dependency-free. One winner publishes Ready or one cached Failed identity with release/acquire; there is no retry, reset, deadlock, or undefined reentry. Top-level static def remains rejected; static values and effectful/module/class activation remain separate Preview families. Product execution remains NOT_RUN.",
+    "notes": "Stable contextual static { ... } function-body activation runs once per exact CallableImplementationId and normalized specialization at the first actual invocation, after argument/default staging and before parameter ownership commit. Historical scope#static is recovery-only and normalizes to the same owner identity. The body is caller-input-free, pure, synchronous, authority/resource-free, and activation-dependency-free. One winner publishes Ready or one cached Failed identity with release/acquire; there is no retry, reset, deadlock, or undefined reentry. Persistent slots and effectful/module/class activation remain separate Preview families. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -184,6 +184,7 @@
         "FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN",
         "FUNCTION_STATIC_METADATA_MISMATCH",
         "FUNCTION_STATIC_OWNER_ID_COLLISION",
+        "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
         "STATIC_FUNCTION_DECLARATION_NOT_CURRENT"
       ],
       "predicates": [],

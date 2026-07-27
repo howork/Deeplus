@@ -1473,22 +1473,26 @@
   },
   {
     "example_id": "EX-R51a1-NG-033",
-    "title": "rejected: implicit outer capture by a local function",
+    "title": "accepted: direct-only local function lexical read",
     "feature_ids": [
-      "nested_function_local_def_msp"
+      "nested_function_local_def_msp",
+      "nonescaping_lexical_access"
     ],
     "source_feature_ids": [
-      "nested_function_local_def_msp"
+      "nested_function_local_def_msp",
+      "nonescaping_lexical_access"
     ],
-    "checker_trace_ids": [],
+    "checker_trace_ids": [
+      "NonescapingLexicalAccessAdmitted"
+    ],
     "provenance_ids": [
       "EX-R51a1-NG-033"
     ],
-    "expected_outcome": "reject",
+    "expected_outcome": "accept",
     "corpus_partition": "active_profile",
     "source_activation": "none",
     "certification_status": "design_static_product_not_run",
-    "primary_diagnostic": "NESTED_DEF_CAPTURE_LIST_REQUIRED",
+    "primary_diagnostic": null,
     "expected_warnings": [],
     "source_role": "script",
     "source_root": "ScriptSourceFile",
@@ -1501,7 +1505,7 @@
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
     "card_line_start": 8680,
-    "card_line_end": 8697
+    "card_line_end": 8696
   },
   {
     "example_id": "EX-R51a1-NG-034",
@@ -1532,8 +1536,8 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 8698,
-    "card_line_end": 8716
+    "card_line_start": 8697,
+    "card_line_end": 8715
   },
   {
     "example_id": "EX-R51a1-NG-035",
@@ -1552,7 +1556,7 @@
     "corpus_partition": "active_profile",
     "source_activation": "none",
     "certification_status": "design_static_product_not_run",
-    "primary_diagnostic": "NESTED_DEF_CAPTURE_LIST_REQUIRED",
+    "primary_diagnostic": "CAPTURE_LIST_NEWLINE_DETACHED",
     "expected_warnings": [],
     "source_role": "script",
     "source_root": "ScriptSourceFile",
@@ -1564,8 +1568,8 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 8717,
-    "card_line_end": 8735
+    "card_line_start": 8716,
+    "card_line_end": 8734
   },
   {
     "example_id": "EX-R51a1-NG-036",
@@ -1596,8 +1600,8 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 8736,
-    "card_line_end": 8750
+    "card_line_start": 8735,
+    "card_line_end": 8749
   },
   {
     "example_id": "EX-R51a1-NG-037",
@@ -1628,8 +1632,8 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 8751,
-    "card_line_end": 8765
+    "card_line_start": 8750,
+    "card_line_end": 8764
   },
   {
     "example_id": "EX-R51a1-NG-038",
@@ -1660,7 +1664,7 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 8766,
-    "card_line_end": 8780
+    "card_line_start": 8765,
+    "card_line_end": 8779
   }
 ]

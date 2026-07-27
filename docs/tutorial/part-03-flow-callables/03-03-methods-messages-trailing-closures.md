@@ -114,7 +114,7 @@ let badCallbacks = transaction()
 
 메서드 선언의 `.`, `+`, `*.`, `*+` 표면은 현행 owner/member
 reachability를 보존한다. type-side member `def::`와
-function-local `scope#static`은 이름이 비슷해도 별개다. message는 actor
+function-local `static { ... }`은 이름이 비슷해도 별개다. message는 actor
 delivery와 연결될 수 있지만 모든 `~`가 곧 actor spawn 또는 비동기
 실행을 뜻하지는 않는다.
 

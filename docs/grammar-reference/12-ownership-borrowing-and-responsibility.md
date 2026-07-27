@@ -60,6 +60,36 @@ profile을 자동으로 만들지 않는다. 여러 capture는 왼쪽부터 얻�
 environment publish 전 실패하면 temporary를 역순으로 정리해 partial
 closure가 escape하지 않게 한다.
 
+### nonescaping lexical access와 capture의 구분
+
+`nonescaping_lexical_access`는
+`CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT`이며 `source_activation: none`,
+제품 15개 lane은 모두 `NOT_RUN`이다. 이 설계에서 동기적이고 같은
+isolation에 있으며 escape하지 않는다고 정확히 증명된 local `def` 또는
+closure는 ancestor place를 capture environment에 넣지 않고 호출 시점에
+읽을 수 있다.
+
+이 접근은 read-only·nonconsuming이다. ancestor place에 대한 write,
+`inout`, `move`, consume, 호출보다 오래 사는 derived borrow에는 적용되지
+않는다. local `def`의 direct call only, closure의 immediate invocation,
+direct call만 있는 bounded local binding, 선택된 정확한 `#scoped` formal
+같이 닫힌 proof가 있을 때만 허용하며, opaque flow나 return/storage,
+generator/async/task/spawn/Actor/isolation crossing에서는 거부한다.
+
+capture list의 세 상태는 서로 다르다.
+
+- capture list 없음: 위 조건을 만족하는 lexical dependency를 추론할 수 있다.
+- `[]`: ancestor-frame dependency가 없다는 assertion이다. module, type,
+  Prelude dependency나 purity까지 없다는 뜻은 아니다.
+- nonempty list: 기존 explicit capture acquisition plan이다. explicit
+  capture와 남은 lexical dependency는 동시에 존재할 수 있다.
+
+따라서 residence는 `FrameIndependent | RegionBound(RegionId)`,
+environment는 `Empty | Explicit(CapturePlan)`이라는 독립 축으로 기록한다.
+`[name]` bare capture item은 현행 의미를 그대로 유지한다. lexical read는
+호출 시점의 live value를 보지만 `[copy name]`은 생성 시점 snapshot을
+유지한다.
+
 ### resource와 borrowed Facet
 
 ```ebnf
@@ -153,9 +183,12 @@ borrow와 view는 owner-bounded다. owner보다 오래 살거나 owner의 move/d
 task/actor isolation crossing을 지나서는 안 된다. suspension은 live
 borrow, isolation, cleanup obligation을 지우지 않는다.
 
-클로저(closure), generator, async suspension, actor message, Facet packaging,
-`defer`, return은 escape boundary다. checker는 capture borrow의 lifetime과
-resource의 exactly-one cleanup path를 증명해야 한다.
+callable value의 return/storage, generator, async suspension, actor message,
+Facet packaging, `defer`는 escape boundary다. checker는 capture borrow의
+lifetime, lexical dependency의 closed proof와 resource의 exactly-one
+cleanup path를 증명해야 한다. 즉시 호출이나 exact `#scoped` call은
+계약이 정한 bounded proof가 될 수 있지만, ordinary callable argument는
+그 자체로 proof가 아니다.
 
 actor message enqueue commit 전 실패에서는 sender가 moved owner를
 유지한다. commit 성공 뒤에는 receiver actor가 owner를 얻고 cancellation이
@@ -326,6 +359,8 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
   [`spec/contracts/actor-concurrency-coherence.json`](../../spec/contracts/actor-concurrency-coherence.json)
 - callable capture와 cleanup:
   [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
+- nonescaping lexical dependency:
+  [`spec/contracts/nonescaping-lexical-access.json`](../../spec/contracts/nonescaping-lexical-access.json)
 - collection ownership Preview 경계:
   [`spec/contracts/literal-shaped-collection-design.json`](../../spec/contracts/literal-shaped-collection-design.json)
 - 정본 설명과 진단:

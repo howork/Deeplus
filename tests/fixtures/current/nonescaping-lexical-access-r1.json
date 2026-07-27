@@ -1,0 +1,553 @@
+{
+  "schema": "deeplus.nonescaping-lexical-access-fixtures/r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "contract": "spec/contracts/nonescaping-lexical-access.json",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "source_activation": "none",
+  "current_binding": true,
+  "product_lanes": "15/15_NOT_RUN",
+  "positive": [
+    {
+      "fixture_id": "NLA-R1-POS-01",
+      "title": "direct-only local def reads an outer parameter",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002",
+        "NLA-R005"
+      ],
+      "source": "def total(base: Int) -> Int = {\n  def add(delta: Int) -> Int = { return base + delta }\n  return add(1)\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "add is proven closed by direct local calls only",
+        "base is read live at call time",
+        "no capture environment is acquired"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-02",
+      "title": "immediately invoked closure reads an outer let",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002"
+      ],
+      "source": "def value() -> Int = {\n  let base = 40\n  return { => base + 2 }()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "immediate invocation is an exact closed proof route",
+        "the immutable ancestor place is read-only"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-03",
+      "title": "direct local calls observe the current outer var value",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002",
+        "NLA-R005"
+      ],
+      "source": "def current() -> Int = {\n  var value = 1\n  def read() -> Int = { return value }\n  value = 2\n  return read()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "the callable only reads the outer var",
+        "the result observes value 2 rather than a creation-time snapshot"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-04",
+      "title": "exact selected scoped formal admits call-duration lexical access",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002",
+        "NLA-R004"
+      ],
+      "source": "def useNow(f: #scoped () -> Int) -> Int = { return f() }\ndef demo(base: Int) -> Int = {\n  return useNow({ => base + 1 })\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "the exact selected formal is scoped",
+        "the lexical dependency is bounded by the call"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-05",
+      "title": "pure callable reads immutable inert data",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002",
+        "NLA-R008"
+      ],
+      "source": "def answer() -> Int = {\n  let base = 40\n  let f = #pure { => base + 2 }\n  return f()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "base is immutable",
+        "the dependency introduces no authority, resource, shared state, or effect"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-06",
+      "title": "effectful local def may still use qualified lexical access",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002"
+      ],
+      "source": "def report(prefix: String) effects {io} = {\n  def emitLine(value: String) effects {io} = { print(prefix + value) }\n  emitLine(\"ready\")\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "lexical access does not imply purity",
+        "the declared io effect remains on the callable profile"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-07",
+      "title": "nested callable may read an ancestor closure field and frame parameter",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002",
+        "NLA-R004"
+      ],
+      "source": "def makeAdder(seed: Int) -> (Int) -> Int = {\n  return [copy seed] { delta: Int =>\n    def add(extra: Int) -> Int = { return seed + delta + extra }\n    return add(1)\n  }\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "the outer closure explicitly owns seed",
+        "the nested direct-only def has lexical dependencies on seed and delta",
+        "explicit environment and region binding are orthogonal"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-08",
+      "title": "explicit copy retains snapshot semantics",
+      "rule_ids": [
+        "NLA-R005"
+      ],
+      "source": "def snapshot() -> Int = {\n  var value = 1\n  let read = [copy value] { => value }\n  value = 2\n  return read()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "the explicit copy is acquired at closure creation",
+        "the result observes the snapshot value 1"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-09",
+      "title": "empty capture list permits module dependencies",
+      "rule_ids": [
+        "NLA-R003"
+      ],
+      "source": "def demo() -> Int = {\n  let f = [] { => ModuleDefaults.answer() }\n  return f()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "the callable has no ancestor-frame dependency",
+        "empty capture syntax is not a purity or dependency-free assertion"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-POS-10",
+      "title": "bare capture item preserves current compatibility",
+      "rule_ids": [
+        "NLA-R006"
+      ],
+      "source": "def demo(base: Int) -> Int = {\n  let f = [base] { => base + 1 }\n  return f()\n}",
+      "expected_outcome": "accept",
+      "diagnostic": null,
+      "assertions": [
+        "base remains a current bare capture item",
+        "the syntax is not reinterpreted as inferred lexical access"
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "fixture_id": "NLA-R1-NEG-01",
+      "title": "returning a lexical callable escapes",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "source": "def bad(base: Int) -> () -> Int = {\n  def read() -> Int = { return base }\n  return read\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "return is an escape sink",
+        "no exact closed proof exists"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-02",
+      "title": "ordinary callable argument is not a scoped proof",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "source": "def consume(f: () -> Int) -> Int = { return f() }\ndef bad(base: Int) -> Int = { return consume({ => base }) }",
+      "expected_outcome": "reject",
+      "diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "an ordinary formal may store or return the callable",
+        "the selected formal is not exact #scoped"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-03",
+      "title": "storing a lexical callable in a field escapes",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "source": "def bad(box: Box<() -> Int>, base: Int) = {\n  box.callback = { => base }\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "field storage is an escape sink"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-04",
+      "title": "lexical access cannot write an outer place",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad() -> Int = {\n  var total = 0\n  def bump() = { total = total + 1 }\n  bump()\n  return total\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+      "assertions": [
+        "qualified lexical access is read-only"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-05",
+      "title": "lexical access cannot move an outer owner",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(resource: File) = {\n  def take() = { consume(resource) }\n  take()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+      "assertions": [
+        "moving an ancestor owner requires an explicit ownership mechanism"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-06",
+      "title": "async local def is excluded",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(base: Int) = {\n  def#async read() -> Int = { return base }\n  await read()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+      "assertions": [
+        "suspension can outlive the ancestor activation"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-07",
+      "title": "generator owner is excluded",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(base: Int) = {\n  let values = generator { yield base }\n  consume(values)\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+      "assertions": [
+        "a generator may suspend beyond the ancestor activation"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-08",
+      "title": "spawn is an escape and concurrency sink",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R002"
+      ],
+      "source": "def bad(base: Int) = {\n  spawn { => use(base) }\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+      "assertions": [
+        "spawn crosses both activation and concurrency boundaries"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-09",
+      "title": "actor transfer is excluded",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(actor: Worker, base: Int) = {\n  actor:~submit({ => base })\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+      "assertions": [
+        "actor transfer crosses isolation"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-10",
+      "title": "empty capture assertion rejects an ancestor dependency",
+      "rule_ids": [
+        "NLA-R003"
+      ],
+      "source": "def bad(base: Int) -> Int = {\n  let f = [] { => base + 1 }\n  return f()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "assertions": [
+        "present-empty and absent capture syntax are semantically distinct"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-11",
+      "title": "lexical read after outer move is invalid",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(value: Payload) = {\n  def read() = { inspect(value) }\n  consume(value)\n  read()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+      "assertions": [
+        "the ancestor place must be live at each call"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-12",
+      "title": "pure lexical callable cannot read mutable shared state",
+      "rule_ids": [
+        "NLA-R008"
+      ],
+      "source": "def bad() -> Int = {\n  var shared = 1\n  let f = #pure { => shared }\n  return f()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+      "assertions": [
+        "pure admission excludes mutable shared state"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-13",
+      "title": "guard-owned lexical dependency is excluded",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(limit: Int) = {\n  def#guard check(value: Int) -> Bool = { return value < limit }\n  require check(1)\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT",
+      "assertions": [
+        "guard owners are outside the R1 admission domain"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-14",
+      "title": "borrow rooted in an ancestor cannot outlive the call",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "source": "def bad(values: [Int]) -> &Int = {\n  def first() -> &Int = { return &values[0] }\n  return first()\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "the derived borrow escapes its call-duration requirement"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-NEG-15",
+      "title": "explicit capture does not make a residual lexical escape safe",
+      "rule_ids": [
+        "NLA-R001",
+        "NLA-R004"
+      ],
+      "source": "def bad(seed: Int, offset: Int) -> () -> Int = {\n  let f = [copy seed] { => seed + offset }\n  return f\n}",
+      "expected_outcome": "reject",
+      "diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "seed is environment-owned",
+        "offset remains region-bound",
+        "the residual lexical dependency prevents escape"
+      ]
+    }
+  ],
+  "boundary": [
+    {
+      "fixture_id": "NLA-R1-BND-01",
+      "title": "absent capture syntax differs from present-empty syntax",
+      "rule_ids": [
+        "NLA-R003"
+      ],
+      "accepted_source": "def demo(base: Int) -> Int = { return { => base }() }",
+      "rejected_source": "def demo(base: Int) -> Int = { return [] { => base }() }",
+      "rejection_diagnostic": "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "assertions": [
+        "absence permits inference",
+        "empty brackets assert an empty ancestor dependency set"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-02",
+      "title": "live lexical read differs from explicit copy snapshot",
+      "rule_ids": [
+        "NLA-R005"
+      ],
+      "accepted_source": "var n = 1; def read() -> Int = { return n }; n = 2; assert read() == 2",
+      "rejected_source": "var n = 1; let read = [copy n] { => n }; n = 2; assert read() == 2",
+      "rejection_diagnostic": null,
+      "assertions": [
+        "lexical access reads at call time",
+        "copy capture reads its creation-time snapshot"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-03",
+      "title": "exact scoped formal differs from ordinary formal",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "accepted_source": "useNow({ => base }) where useNow: (#scoped () -> Int) -> Int",
+      "rejected_source": "consume({ => base }) where consume: (() -> Int) -> Int",
+      "rejection_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "only the exact selected scoped formal supplies the proof"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-04",
+      "title": "bare explicit capture differs from an empty closed assertion",
+      "rule_ids": [
+        "NLA-R006"
+      ],
+      "accepted_source": "[base] { => base + 1 }",
+      "rejected_source": "[] { => base + 1 }",
+      "rejection_diagnostic": "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "assertions": [
+        "the source remains accepted with its current capture-item meaning",
+        "empty brackets instead assert zero ancestor-frame dependencies"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-05",
+      "title": "mixed explicit capture and lexical dependency remains region-bound",
+      "rule_ids": [
+        "NLA-R004"
+      ],
+      "accepted_source": "let f = [copy seed] { => seed + offset }; return f()",
+      "rejected_source": "let f = [copy seed] { => seed + offset }; return f",
+      "rejection_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "environment state and residence state are separate axes"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-06",
+      "title": "empty capture assertion permits module but not ancestor dependency",
+      "rule_ids": [
+        "NLA-R003"
+      ],
+      "accepted_source": "[] { => ModuleDefaults.answer() }",
+      "rejected_source": "[] { => localAnswer }",
+      "rejection_diagnostic": "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+      "assertions": [
+        "empty brackets are not a global dependency-free assertion"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-07",
+      "title": "direct calls differ from alias or aggregate flow",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "accepted_source": "def read() -> Int = { return base }; return read()",
+      "rejected_source": "def read() -> Int = { return base }; let table = [read]; return table[0]()",
+      "rejection_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "the direct-call proof is syntactic and flow-bounded",
+        "aggregate storage invalidates that proof route"
+      ]
+    },
+    {
+      "fixture_id": "NLA-R1-BND-08",
+      "title": "known proof differs from opaque flow",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "accepted_source": "withNow({ => base }) where the exact selected formal is #scoped",
+      "rejected_source": "opaqueHigherOrder({ => base }) where callable flow is unknown",
+      "rejection_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "assertions": [
+        "unknown proof rejects"
+      ]
+    }
+  ],
+  "mutation": [
+    {
+      "fixture_id": "NLA-R1-MUT-01",
+      "title": "outer value mutation changes a later live read",
+      "rule_ids": [
+        "NLA-R005"
+      ],
+      "base_source": "var n = 1; def read() -> Int = { return n }; return read()",
+      "mutated_source": "var n = 1; def read() -> Int = { return n }; n = 2; return read()",
+      "base_outcome": "accept",
+      "mutated_outcome": "accept",
+      "mutated_diagnostic": null,
+      "invariant": "Both programs are admitted; the observable result changes from 1 to 2 because lexical reads are live."
+    },
+    {
+      "fixture_id": "NLA-R1-MUT-02",
+      "title": "adding explicit copy changes live access to snapshot",
+      "rule_ids": [
+        "NLA-R005"
+      ],
+      "base_source": "var n = 1; let read = { => n }; n = 2; return read()",
+      "mutated_source": "var n = 1; let read = [copy n] { => n }; n = 2; return read()",
+      "base_outcome": "accept",
+      "mutated_outcome": "accept",
+      "mutated_diagnostic": null,
+      "invariant": "Both programs are admitted; the observable result changes from live value 2 to snapshot value 1."
+    },
+    {
+      "fixture_id": "NLA-R1-MUT-03",
+      "title": "returning a direct-only local callable destroys the closed proof",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "base_source": "def read() -> Int = { return base }; return read()",
+      "mutated_source": "def read() -> Int = { return base }; return read",
+      "base_outcome": "accept",
+      "mutated_outcome": "reject",
+      "mutated_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "invariant": "Changing invocation to callable return introduces an escape sink."
+    },
+    {
+      "fixture_id": "NLA-R1-MUT-04",
+      "title": "changing a scoped formal to ordinary destroys the proof",
+      "rule_ids": [
+        "NLA-R001"
+      ],
+      "base_source": "useNow({ => base }) where useNow: (#scoped () -> Int) -> Int",
+      "mutated_source": "useNow({ => base }) where useNow: (() -> Int) -> Int",
+      "base_outcome": "accept",
+      "mutated_outcome": "reject",
+      "mutated_diagnostic": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+      "invariant": "Only an exact selected scoped formal supplies call-duration closure."
+    },
+    {
+      "fixture_id": "NLA-R1-MUT-05",
+      "title": "changing an ancestor read to a move is rejected",
+      "rule_ids": [
+        "NLA-R002"
+      ],
+      "base_source": "def inspectNow() = { inspect(payload) }; inspectNow()",
+      "mutated_source": "def takeNow() = { consume(payload) }; takeNow()",
+      "base_outcome": "accept",
+      "mutated_outcome": "reject",
+      "mutated_diagnostic": "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+      "invariant": "Qualified lexical access is read-only and nonconsuming."
+    }
+  ],
+  "expected_counts": {
+    "positive": 10,
+    "negative": 15,
+    "boundary": 8,
+    "mutation": 5,
+    "total": 38,
+    "product_executed": 0
+  }
+}

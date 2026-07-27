@@ -25,7 +25,7 @@ nullable reference를 하나의 특수 표면으로만 생각하지 말고
 쓸지 결정한다. extension-like syntax가 nominal member, named extension,
 Trait witness 중 무엇을 뜻하는지도 구분한다.
 
-Class static member에 익숙해도 Deeplus의 함수 `scope#static`과 Class
+Class static member에 익숙해도 Deeplus의 함수 `static { ... }`과 Class
 Preview Design 표면을 합치지 않는다.
 
 ## 3. Rust에서

@@ -130,6 +130,8 @@
 | `BYTES_NOT_IMPLICITLY_CONVERTIBLE_TO_STRING` | `checker` | `error` | `active` | Bytes is not implicitly convertible to String. |
 | `BYTE_LITERAL_NON_BYTE_SCALAR` | `lexer` | `error` | `active` | A Bytes literal admits ASCII direct bytes and byte escapes only; use \`\\xHH\` for arbitrary bytes. |
 | `BYTE_VIEW_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | ByteView requires live Bytes-owner provenance, contiguous byte-addressable storage, and no assumed text encoding or String semantics. |
+| `CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body performs an effect outside the normalized declared EffectRow. |
+| `CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body exposes an Error outside the normalized declared ErrorSet. |
 | `CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED` | `parser` | `error` | `active` | The callable profile combination is outside the closed Phase-A compatibility table. |
 | `CALLABLE_PROFILE_DUPLICATE` | `parser` | `error` | `active` | A callable profile may occur at most once in a cluster. |
 | `CALLABLE_PROFILE_LITERAL_ATTACHMENT_REQUIRED` | `lexer` | `error` | `active` | The final callable profile and literal { must be adjacent. |
@@ -145,6 +147,7 @@
 | `CANNOT_INFER_REST_ELEMENT_TYPE_FROM_EMPTY_ARGUMENTS` | `checker` | `error` | `active` | The element type of an empty repeated-argument call cannot be inferred without an expected type or explicit generic argument. |
 | `CANONICAL_TYPE_NAME_INT` | `checker` | `warning` | `active` | \`int\` is not canonical Deeplus spelling; use \`Int\`. |
 | `CAPABILITY_CONFORMANCE_NOT_USER_AUTHORIZED` | `checker` | `note` | `seed` | This capability predicate is checker-internal and cannot be made true by ordinary user conformance. |
+| `CAPTURE_LIST_NEWLINE_DETACHED` | `parser` | `error` | `active` | A capture list must remain attached to the local function or closure it describes. |
 | `CARET_ATTACHMENT_AMBIGUOUS` | `parser` | `error` | `active` | Caret ownership is ambiguous; write attached \`A^\` for transpose or spaced \`a ^ b\` for power. |
 | `CARET_INFIX_REQUIRES_SPACING` | `checker` | `error` | `active` | Infix \`^\` power uses spacing (\`a ^ b\`). Attached postfix transpose is written without spacing (\`A^\`). |
 | `CARET_POWER_REQUIRES_EXPLICIT_PARENTHESES_FOR_CHAIN` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -172,6 +175,7 @@
 | `CLEANUP_DECLARATION_DIRECT_CALL_FORBIDDEN` | `checker` | `error` | `active` | A def#cleanup declaration is invoked only by lifecycle semantics and cannot be called or referenced as a method value. |
 | `CLEANUP_LEGACY_SPELLING_REMOVED_USE_DEF_HASH_CLEANUP` | `parser` | `error` | `active` | Legacy destructor/drop spellings are not current; use def#cleanup(). |
 | `CLEANUP_VISIBILITY_SIGIL_FORBIDDEN` | `parser` | `error` | `active` | def#cleanup is a lifecycle hook and cannot carry a member visibility sigil. |
+| `CLOSED_CALLABLE_HAS_OUTER_REFERENCE` | `checker` | `error` | `active` | A callable with an explicit empty capture list cannot reference an ancestor callable local or parameter. |
 | `CLOSURE_ASYNC_AWAIT_IN_SYNC` | `checker` | `error` | `seed` | Closure async await in sync |
 | `CLOSURE_BORROW_CAPTURE_ESCAPES` | `checker` | `error` | `seed` | Closure borrow capture escapes |
 | `CLOSURE_CAPTURE_DESCRIPTOR_STABLE_BUT_PRODUCT_NOT_RUN` | `checker` | `info` | `active` | Closure capture descriptors are Stable design in the current profile, but production parser/checker support remains NOT_RUN. |
@@ -350,6 +354,7 @@
 | `ERROR_SET_UNION_TOKEN_REQUIRED` | `lexer` | `error` | `active` | Error-set alternatives require the visible \| token. |
 | `ESCAPED_MEMBER_ADJACENCY_REQUIRED` | `parser` | `error` | `active` | A member escape must be written as attached .\\\\name with no intervening trivia. |
 | `ESCAPED_MEMBER_CONTEXT_ONLY` | `checker` | `error` | `active` | Backslash identifier escape is permitted only in a member-access suffix. |
+| `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE` | `checker` | `error` | `active` | A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter. |
 | `EVIDENCE_ARTIFACT_NOT_SOURCE` | `checker` | `error` | `seed` | evidence feature is not ordinary source syntax in R49. |
 | `EVIDENCE_SELECTOR_NOT_A_VALUE` | `checker` | `error` | `active` | A conformance evidence selector is not an ordinary value and cannot be stored, returned, captured, or runtime-selected. |
 | `EXAMPLE_BLOCK_EXPECTED_OUTCOME_REQUIRED` | `design_static` | `error` | `active` | EXAMPLE_BLOCK_EXPECTED_OUTCOME_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
@@ -460,17 +465,31 @@
 | `FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED` | `checker` | `error` | `active` | This callable kind cannot own function static activation. |
 | `FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot observe receiver, parameters, defaults, Context, or caller execution identity. |
 | `FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN` | `checker` | `error` | `active` | The initial Stable profile forbids a function static activation from calling another activation-bearing owner. |
-| `FUNCTION_STATIC_ACTIVATION_DUPLICATE` | `parser` | `error` | `active` | A callable body may contain at most one scope#static activation prologue. |
+| `FUNCTION_STATIC_ACTIVATION_DUPLICATE` | `parser` | `error` | `active` | A callable body may contain at most one static activation prologue. |
 | `FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN` | `checker` | `error` | `active` | Function static activation may call only statically selected activation-safe helpers. |
 | `FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN` | `checker` | `error` | `active` | Function static activation must be effect-free, authority-free, and nonthrowing. |
 | `FUNCTION_STATIC_ACTIVATION_FAILED` | `runtime` | `error` | `active` | The function static activation failed; all callers observe the same cached failure identity and no implicit retry occurs. |
-| `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` | `checker` | `error` | `active` | scope#static is admitted only in a supported synchronous named callable owner. |
-| `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` | `parser` | `error` | `active` | scope#static must follow the optional block import/use prologue and precede the first runtime semantic item. |
+| `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` | `checker` | `error` | `active` | The static activation prologue is admitted only in a supported synchronous named callable owner. |
+| `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` | `parser` | `error` | `active` | The static activation prologue must follow the optional block import/use prologue and precede the first runtime semantic item. |
 | `FUNCTION_STATIC_ACTIVATION_REENTRANCY` | `runtime` | `error` | `active` | A function static activation re-entered its own owner; the activation transitions to one canonical failed state. |
 | `FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot publish a Resource, mutable persistent state, or needsDrop residue. |
 | `FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN` | `checker` | `error` | `active` | Function static activation cannot await, yield, suspend, or observe cancellation. |
+| `FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION` | `checker` | `error` | `seed` | A Preview function-static slot is referenced only as static#slot::name; bare-name fallback is forbidden. |
 | `FUNCTION_STATIC_METADATA_MISMATCH` | `runtime` | `error` | `active` | Imported function static activation metadata does not match the selected implementation contract. |
 | `FUNCTION_STATIC_OWNER_ID_COLLISION` | `runtime` | `error` | `active` | Distinct function static owner recipes produced the same identity. |
+| `FUNCTION_STATIC_REFERENCE_NO_OWNER` | `checker` | `error` | `seed` | A Preview static#slot:: reference has no enclosing function-static owner. |
+| `FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC` | `parser` | `error` | `active` | Historical scope#static is recovery-only; use the current static activation prologue. |
+| `FUNCTION_STATIC_SLOT_CYCLE` | `checker` | `error` | `seed` | Preview function-static slot initialization contains a dependency cycle. |
+| `FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID` | `checker` | `error` | `seed` | Preview static#slot declarations must form the initial slot section of the function-static activation block. |
+| `FUNCTION_STATIC_SLOT_DUPLICATE` | `checker` | `error` | `seed` | A Preview function-static owner declares the same canonical slot name more than once. |
+| `FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN` | `checker` | `error` | `seed` | Preview M0 function-static slots cannot be borrowed exclusively. |
+| `FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN` | `checker` | `error` | `seed` | Preview function-static slots are private to the exact enclosing callable implementation. |
+| `FUNCTION_STATIC_SLOT_FORWARD_REFERENCE` | `checker` | `error` | `seed` | A Preview function-static slot initializer may read only a previously staged slot. |
+| `FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN` | `checker` | `error` | `seed` | Preview M0 function-static slots cannot be moved or consumed. |
+| `FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT` | `checker` | `error` | `seed` | Mutable function-static slots are outside the Preview M0 profile. |
+| `FUNCTION_STATIC_SLOT_NOT_FOUND` | `checker` | `error` | `seed` | The exact enclosing function-static namespace has no slot with this canonical name. |
+| `FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED` | `checker` | `error` | `seed` | A Preview M0 slot must be deeply immutable, static-materializable, and free of resource, authority, borrow, needsDrop, and interior mutable state. |
+| `FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN` | `checker` | `error` | `seed` | Preview M0 function-static slots are read-only after initialization. |
 | `FUNCTION_TYPE_REQUIRES_THIN_ARROW` | `checker` | `error` | `active` | Function/result/signature arrows use ->. |
 | `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` | `checker` | `error` | `active` | Function types and public API digests must preserve \`T...\` and \`Record***\` call-shape residues; neither may be erased to \`Sequence<T>\` or \`Record\`. |
 | `GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED` | `design_static` | `error` | `active` | GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
@@ -503,6 +522,7 @@
 | `GUARDED_RETURN_DOES_NOT_COMPLETE_ALL_PATHS` | `checker` | `error` | `active` | A guarded return does not complete all value paths; add an unconditional return or exhaustive control expression. |
 | `GUARD_AND_RIGHTWARD_BINDING_CANNOT_COEXIST` | `checker` | `error` | `active` | Guard clause and rightward \`$\` binding cannot coexist in one statement. |
 | `GUARD_CALLABLE_CONSUME_FORBIDDEN` | `checker` | `error` | `active` | A #guard callable cannot consume parameters or captures. |
+| `GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT` | `checker` | `error` | `active` | The initial nonescaping lexical-access profile does not admit an ancestor-frame dependency in a guard callable. |
 | `GUARD_CALLABLE_RESULT_MUST_BE_BOOL` | `checker` | `error` | `active` | A #guard callable must return exactly Bool on every normal path. |
 | `GUARD_CLAUSE_NOT_ALLOWED_HERE` | `checker` | `error` | `active` | Guard clauses are allowed only on approved control-transfer statements and loop headers. |
 | `GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED` | `checker` | `error` | `active` | Guard condition must not contain control transfer. |
@@ -534,6 +554,8 @@
 | `IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS` | `checker` | `error` | `active` | Implicit @ cannot be checked until overload shape selects exactly one expected callable. |
 | `IMPLICIT_OWNER_TO_SHARED_FORBIDDEN` | `checker` | `error` | `active` | An owner cannot be implicitly promoted to Shared<T> or reused across a sharing boundary. |
 | `IMPLICIT_PURE_FUNCTION_HAS_EFFECTS` | `checker` | `error` | `active` | Implicit pure-elision function has effects and cannot elide #pure. |
+| `IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION` | `checker` | `error` | `seed` | The concise-responsibility implicit-pure candidate violates a non-row pure responsibility. |
+| `IMPLICIT_PURE_FUNCTION_THROWS` | `checker` | `error` | `seed` | The concise-responsibility implicit-pure candidate has a nonempty ErrorSet. |
 | `IMPLICIT_REUSE_REQUIRES_PLAIN_OR_SHARED_HANDLE` | `checker` | `error` | `active` | Value cannot be reused implicitly; use move, borrow, Plain, or Shared<T>. |
 | `IMPLICIT_SUPER_NEW_NOT_AVAILABLE` | `checker` | `error` | `active` | Implicit \`: super!()\` is available only when the base no-argument \`new\` is accessible. |
 | `INDEX_OPERATOR_MINIMUM_CORE_ONLY` | `checker` | `error` | `active` | the current profile index operator Stable law covers minimum indexing; effectful/custom index overloading is not enabled. |
@@ -585,6 +607,9 @@
 | `LEGACY_SHORT_CIRCUIT_AND_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`&&\` is not logical AND in Deeplus; use \`and then\` for short-circuit or \`and\` for strict Boolean AND. |
 | `LEGACY_SHORT_CIRCUIT_OR_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`\|\|\` is not logical OR in Deeplus; use \`otherwise\` for short-circuit or \`or\` for strict Boolean OR. |
 | `LET_PROPERTY_CANNOT_HAVE_SETTER` | `checker` | `error` | `active` | let property cannot have setter. |
+| `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` | `checker` | `error` | `active` | A lexical dependency cannot cross a task, actor, FFI, or other isolation boundary. |
+| `LEXICAL_DEPENDENCY_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A lexical dependency cannot remain live across await, yield, or another suspension point. |
+| `LEXICAL_DEPENDENCY_PLACE_NOT_LIVE` | `checker` | `error` | `active` | The ancestor place required by a lexical callable is not live and readable at this invocation. |
 | `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` | `checker` | `error` | `active` | A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/task/actor free, acyclic, and committed once. |
 | `LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT` | `checker` | `error` | `active` | A library target cannot contain script computation; split declarations into a library or select an executable script target. |
 | `LINALG_BACKEND_TRANSFER_REQUIRES_NAMED_API` | `checker` | `error` | `seed` | Linear algebra operators cannot hide backend transfer. |
@@ -710,7 +735,7 @@
 | `NEGATIVE_FIXTURE_EXECUTION_RECEIPT_REQUIRED` | `checker` | `warning` | `seed` | Verifier negative fixtures must be either executed by a static mutation runner or explicitly marked NOT_RUN in the receipt. |
 | `NEGATIVE_IMPL_NOT_CURRENT` | `checker` | `error` | `active` | General negative impl remains Preview-design and is not current Stable source. |
 | `NESTED_BLOCK_COMMENT_DASH_MISMATCH` | `lexer` | `error` | `retired` | This diagnostic is not emitted by current Deeplus. |
-| `NESTED_DEF_CAPTURE_LIST_REQUIRED` | `checker` | `error` | `active` | A nested local function may use an outer local only when that capture is listed explicitly in its CaptureList. |
+| `NESTED_DEF_CAPTURE_LIST_REQUIRED` | `checker` | `error` | `active` | A nested local function must capture an outer local explicitly unless the exact read qualifies for the Stable nonescaping lexical-dependency profile. |
 | `NESTED_DEF_FORWARD_REFERENCE_FORBIDDEN` | `checker` | `error` | `active` | A local function is visible only after its declaration; forward reference and mutual-recursion groups are not current. |
 | `NESTED_DEF_MUTUAL_RECURSION_REQUIRES_PREVIEW` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `NESTED_DEF_VISIBILITY_FORBIDDEN` | `parser` | `error` | `active` | A nested local function has lexical visibility and cannot carry a public/private/common modifier. |
@@ -804,6 +829,8 @@
 | `OTHERWISE_DUPLICATE_CLAUSE` | `checker` | `error` | `active` | A clause block or match may contain at most one \`otherwise\` arm. |
 | `OTHERWISE_MUST_BE_LAST` | `checker` | `error` | `active` | \`otherwise\` must be the last clause or match arm. |
 | `OTHERWISE_UNREACHABLE` | `checker` | `error` | `active` | The \`otherwise\` arm is unreachable because previous clauses already cover all cases. |
+| `OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE` | `checker` | `error` | `active` | Moving or consuming an ancestor place requires an explicit move or once capture, parameter, or owner-transfer carrier. |
+| `OUTER_MUTATION_REQUIRES_INOUT_CAPTURE` | `checker` | `error` | `active` | Mutating an ancestor place requires an explicit admitted inout route; lexical dependency is read-only. |
 | `OVERRIDE_VISIBILITY_CANNOT_NARROW` | `checker` | `error` | `active` | Overriding/fulfilling member cannot reduce base slot visibility. |
 | `OWNED_DOWNCAST_OWNER_NOT_PRESERVED` | `checker` | `error` | `active` | An owned downcast must return either the matched target owner or the original unmatched source owner. |
 | `OWNERSHIP_MODE_ADMISSION_FAILED` | `checker` | `error` | `active` | The borrow/inout/move mode violates exclusivity, lifetime, escape, suspension, or transfer responsibility. |
@@ -885,6 +912,7 @@
 | `PROVIDER_SIDECAR_NOT_RECHECKED` | `checker` | `error` | `seed` | Provider-generated sidecar must be materialized and rechecked as ordinary Deeplus source. |
 | `PUBLIC_API_HIDDEN_WITNESS` | `checker` | `error` | `active` | Public API depends on a trait, associated item, or witness that is not public/exportable. |
 | `PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN` | `checker` | `error` | `active` | A #pure callable cannot capture var/inout/mutable shared state. |
+| `PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE` | `checker` | `error` | `active` | A pure lexical callable cannot observe an outer mutable place. |
 | `PURE_CALLABLE_PROFILE_VIOLATION` | `checker` | `error` | `active` | A #pure callable must be nonthrowing, effect-free, nonsuspending, authority-free, and free of mutable/resource captures. |
 | `PURE_ELISION_REQUIRES_PREVIEW_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
 | `PURE_ELISION_RETURN_BODY_MSP_REQUIRES_FEATURE_GATE` | `design_static` | `note` | `retired` | This diagnostic is not emitted by current Deeplus. |
@@ -1424,6 +1452,7 @@
 | `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ComplexLiteralAndOperatorAdmitted` | Complex literal and closed numeric operation | Admit attached floating i literals and the closed Float32/Float64 Complex numeric profile without implicit Rep conversion. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComputeResidualUnion` | ComputeResidualUnion | Compute exact remaining alternatives after ordered pattern coverage. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ConciseCallableResponsibilityPreviewAdmitted` | Concise callable responsibility Preview admission | Specify closed omission normalization and body-row subset checking without changing current private inference. | `DESIGN_STATIC_NOT_RUN` |
 | `ConformanceDeclProducesWitness` | ConformanceDeclProducesWitness | explicit conformance produces checker-visible evidence when all requirements are satisfied | `DESIGN_STATIC_NOT_RUN` |
 | `ConformanceEvidenceOriginAdmitted` | ConformanceEvidenceOriginAdmitted | forwarded identifier must denote the matching explicit witness parameter; root selector must resolve to exactly one visible coherent conformance; both channels stay borrowed and non-first-class | `DESIGN_STATIC_NOT_RUN` |
 | `ConformanceVisibilityOrphanAdmitted` | ConformanceVisibilityOrphanAdmitted | Check the named conformance visibility and orphan domain before publishing its evidence identity. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1477,6 +1506,7 @@
 | `FunctionProfileIntroducerAdmitted` | FunctionProfileIntroducerAdmitted | Admits exactly the owner-specific closed declaration-profile table; the removed tail-recursion kind is never admitted. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionRestResiduePreserved` | FunctionRestResiduePreserved | Function types and public API digests preserve each repeated \`T...\` and named \`Record***\` residue exactly; Sequence, plain Record, Map, count, and omission erasure are rejected. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionReturnAndLambdaRetAdmitted` | FunctionReturnAndLambdaRetAdmitted | ordered branch 1: return in a lambda emits RETURN_NOT_ALLOWED_IN_LAMBDA and ret in a named function emits RET_OUTSIDE_LAMBDA; ordered branch 2: a non-Unit lambda block path without ret emits LAMBDA_BLOCK_REQUIRES_RET; ordered branch 3: a non-Unit named-function block path without return emits MISSING_EXPLICIT_RETURN; ordered branch 4: a terminal valueless return in a Unit named function is admitted and emits only the REDUNDANT_FINAL_VALUELESS_RETURN lint; Unit fallthrough and early valueless return are admitted without that lint; an ordinary named \`= expr\` body has no current AST route and is rejected earlier by the parser with FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN | `DESIGN_STATIC_NOT_RUN` |
+| `FunctionStaticNamespacePreviewAdmitted` | Function-static immutable namespace Preview admission | Specify explicit immutable function-static slots, closed lookup, ordered staging, and atomic publication without activating source. | `DESIGN_STATIC_NOT_RUN` |
 | `GeneratedDataMaterializationAdmitted` | GeneratedDataMaterializationAdmitted | parsing DataClassDecl deterministically normalizes class_kind=data and class_disposition=final; this implicit final disposition forbids subclasses and requires no source \`final\` token; every promoted stored field is let and there is no mutable stored field; custom_root_constructor, resource_semantics, effectful_default, throwing_default, hidden_invariant, and nontrivial_super_initialization are all false; the compiler generates exactly one ConstructionRow from visible promoted fields in declaration order; no ProjectionRow is generated automatically and named unfolding remains unavailable without an explicit ProjectionRow | `DESIGN_STATIC_NOT_RUN` |
 | `GenericConstraintSatisfied` | generic/where clause | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `GenericConstructorVariance` | GenericConstructorVariance | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1526,6 +1556,7 @@
 | `NamedRestParameterRecordAndLastPosition` | NamedRestParameterRecordAndLastPosition | named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position | `DESIGN_STATIC_NOT_RUN` |
 | `NarrowUnionByPattern` | NarrowUnionByPattern | Refine Phi by the alternatives selected by a pattern without changing the declared semantic type. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NominalPrototypeDerivationAdmitted` | NominalPrototypeDerivationAdmitted | the result normalized_type is exactly the base nominal type; construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once; derivation mode is shallow or deep and never changes conformance or nominal identity; shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field; resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed | `DESIGN_STATIC_NOT_RUN` |
+| `NonescapingLexicalAccessAdmitted` | Nonescaping lexical access admission | Classify a proven synchronous ancestor-place read as a region-bounded lexical dependency rather than an environment capture. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NormalizeContractIntersection` | NormalizeContractIntersection | Normalize one optional concrete base plus coherent Trait contracts. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NormalizeSemanticType` | NormalizeSemanticType | Normalize source spelling into one closed RCTS-V5 semantic variant without dropping responsibility axes. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NormalizeUnion` | NormalizeUnion | Admit a closed Union only when every finite R0 alternative pair is proven disjoint. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

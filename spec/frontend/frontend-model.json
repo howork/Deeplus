@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
   "date": "2026-07-15",
   "authority_bundle": {
@@ -2049,12 +2049,12 @@
     },
     "function_static_activation": {
       "grammar": "CallableBlock owns at most one FunctionStaticActivation after optional BlockPrologue and before BlockSequence",
-      "cst": "FunctionStaticActivationCst preserves scope, #, static, body tokens, comments, and same-line role trivia",
+      "cst": "FunctionStaticActivationCst preserves contextual static, body tokens, comments, and trivia; the historical scope#static surface is retained only by its recovery CST",
       "ast": "FunctionStaticActivationDecl is one nullable field of CallableBodyAst and is never an ordinary BlockItem",
       "hir": "HirFunctionStaticActivation retains CallableImplementationId, normalized owner recipe, checked body, dependency summaries, contract digest, and source span",
       "mir": "the call wrapper ensures FunctionStaticOwnerId after receiver/argument/default staging and before the existing atomic ownership_commit; the activation block is never lowered as ordinary body control flow",
       "checker": "exact owner/profile admission, first-runtime-item placement, caller-data independence, effect/error/suspension/authority/resource closure, static helper closure, and owner identity",
-      "formatter": "accept the existing same-line # role trivia policy and print canonical scope#static"
+      "formatter": "print canonical static { ... }; recovery input scope#static is rewritten to the same normalized activation identity"
     }
   },
   "feature_profiles": {
@@ -2219,9 +2219,9 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 459,
+    "STABLE": 458,
     "PREVIEW": 13,
-    "RECOVERY": 15
+    "RECOVERY": 17
   },
   "numeric_lexical_policy": {
     "sign_is_prefix_operator": true,
@@ -2701,14 +2701,20 @@
     "status": "STABLE_DESIGN",
     "source_activation": "none",
     "surface_owner": "CallableBlock",
-    "surface": "scope#static { ... }",
+    "surface": "static { ... }",
     "placement": "after optional BlockPrologue and before the first runtime semantic item",
     "maximum_per_callable_body": 1,
-    "hash_role_policy": {
-      "parser": "reuse the existing same-physical-line trivia policy between # and static; comments and horizontal whitespace do not create a different surface",
-      "line_break_between_hash_and_static": "reject",
-      "formatter": "scope#static",
-      "one_off_no_trivia_rule": false
+    "contextual_commitment": {
+      "parser": "at the CallableBlock prologue position, static followed by { commits to function-static activation",
+      "ordinary_identifier_elsewhere": true,
+      "static_call_with_trailing_closure": "static() { ... } remains an ordinary CallExpr",
+      "formatter": "static { ... }"
+    },
+    "historical_surface_recovery": {
+      "surface": "scope#static { ... }",
+      "diagnostic": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
+      "normalized_hir_identity_equal": true,
+      "owner_recipe_spelling_input": false
     },
     "lossless_cst_node": "FunctionStaticActivationCst",
     "normalized_ast_node": {
@@ -2803,6 +2809,125 @@
       "closed_feature_p1": 0
     },
     "product_lanes": "15/15_NOT_RUN"
+  },
+  "concise_throws_effects_preview_frontend_contract": {
+    "status": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "current_binding": false,
+    "parser_cover_grammar_delta": 0,
+    "lossless_cst": {
+      "throws_clause_presence": "preserved",
+      "effects_clause_presence": "preserved",
+      "source_spelling_reaches_typed_identity": false
+    },
+    "successor_normalization": {
+      "omitted_throws": "Never",
+      "omitted_effects": [],
+      "typed_ast_hir_api_mir_rows_always_present": true,
+      "body_error_relation": "body_errors subset_of declared_errors",
+      "body_effect_relation": "body_effects subset_of declared_effects"
+    },
+    "excluded_owners": [
+      "ClosureExpr",
+      "accessor",
+      "typestate transition",
+      "another owner without ThrowsClause or EffectsClause"
+    ],
+    "compatibility": {
+      "trait_witness": "witness rows subset_of requirement rows",
+      "override": "exact current responsibility profile",
+      "function_value": "current variance plus row subsumption",
+      "callable_identity_and_api_digest": "exact normalized rows",
+      "overload_by_responsibility_only": false
+    },
+    "stable_promotion_gates": [
+      "explicit supersession of private_error_set_inference",
+      "deterministic private/local source inventory and migration",
+      "parser/checker/formatter/API digest evidence"
+    ],
+    "product_support": "NOT_RUN"
+  },
+  "nonescaping_lexical_access_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "source_activation": "none",
+    "capture_list_presence_states": [
+      "absent",
+      "present_empty_closed_assertion",
+      "present_nonempty_explicit_capture"
+    ],
+    "admission": {
+      "required_residence": "proven region-bounded",
+      "required_execution": "synchronous same-isolation nonsuspending",
+      "required_access": "read-only nonconsuming",
+      "required_place_state_at_invoke": "LiveReadable",
+      "rooted_borrow_escape_count": 0,
+        "initial_proof_routes": [
+          "immediate invocation",
+          "local function with block-closed use graph",
+          "bounded local binding with direct calls only",
+          "exact selected invocation-bounded #scoped formal"
+        ]
+    },
+    "normalized_callable_descriptor": {
+      "residence": "FrameIndependent | RegionBound(RegionId)",
+      "environment": "Empty | Explicit(CapturePlan)",
+      "closed_assertion": "bool",
+      "lexical_dependencies": "sorted unique resolved ancestor place rows",
+      "mixed_explicit_capture_and_lexical_dependency": true
+    },
+    "lexical_dependency_row": [
+      "ancestor_callable_body_id",
+      "ancestor_place_id",
+      "ancestor_depth",
+      "RegionId",
+      "access=Read",
+      "required_state=LiveReadable",
+      "canonical_use_spans_for_diagnostics"
+    ],
+    "no_capture_plan_events": true,
+    "bare_capture_item_preserved": true,
+    "region_id_exported_in_function_type_or_module_api": false,
+    "excluded": [
+      "write",
+      "move or consume",
+      "snapshot",
+      "escape",
+      "suspension",
+      "async or generator",
+      "task or actor isolation",
+      "FFI crossing",
+      "def#guard",
+      "unknown residence proof"
+    ],
+    "product_support": "NOT_RUN"
+  },
+  "function_static_namespace_preview_frontend_contract": {
+    "status": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "current_binding": false,
+    "parser_cover_grammar_delta": 0,
+    "proposed_slot_surface": "static#slot name: Type = Expr inside static activation",
+    "proposed_reference_surface": "static#slot::name",
+    "stable_grammar_collision_count": 0,
+    "lookup_domain": "FUNCTION_STATIC_NAMESPACE",
+    "lookup_owner": "exact enclosing FunctionStaticOwnerId",
+    "fallback_count": 0,
+    "slot_identity": "FunctionStaticSlotId(FunctionStaticOwnerId, canonical_name)",
+    "minimum_value_profile": {
+      "immutable": true,
+      "static_materializable": true,
+      "deeply_read_only_shareable": true,
+      "interior_mutable_state": false,
+      "resource_authority_borrow_needs_drop_count": 0
+    },
+    "initialization": {
+      "order": "declaration order",
+      "prior_staged_slot_read_operation": "HirFunctionStaticInitializingSlotRead",
+      "self_forward_cycle_count": 0,
+      "hidden_topological_reorder_count": 0,
+      "publication": "all slots atomically with Ready",
+      "failure_publication_count": 0,
+      "failure_identity": "existing FUNCTION_STATIC_ACTIVATION_FAILED"
+    },
+    "product_support": "NOT_RUN"
   },
   "concurrency_frontend_contract": {
     "source_owners": [

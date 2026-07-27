@@ -20,6 +20,9 @@ from typing import Any
 
 CONTRACT_REL = "tools/generators/current-integrity.contract.json"
 GENERATOR_REL = "tools/generators/generate_current_integrity.py"
+SUCCESSOR_CONTRACT_REL = (
+    "spec/contracts/language-coherence-current-integrity-r1.json"
+)
 EXPECTED_SCHEMA = "deeplus.design-current-integrity-generator-contract/v1"
 OUTPUTS = (
     "current/authority-map.yaml",
@@ -60,6 +63,9 @@ EXPECTED_NON_OWNED_SHA256 = {
     "pointer": "b15495db761bb8dde9d0ba68dfdb63336997adcea7e3a3b6edfa8ebd16f3647c",
     "reassembly": "e73b4ae7d0a5f2e89b0a808628414ab289cabfbc0332f601d8c7fb84827e5f33",
 }
+EXPECTED_HISTORICAL_TRANSITIONS_SHA256 = (
+    "c82d6ef72edf9208578412af6ee24e44e9befe8e96aca60a122fa1c1941e1b2a"
+)
 DOMAIN_RE = re.compile(
     r'^  ([a-z_]+):\n'
     r'    path: (\S+)\n'
@@ -122,6 +128,29 @@ def safe_path(root: Path, relative: str | Path, *, must_exist: bool = False) -> 
     return lexical
 
 
+def load_successor_contract(root: Path) -> dict[str, Any] | None:
+    """Return the exact active successor integrity contract, if present.
+
+    R2.3 remains immutable historical evidence.  Later language-coherence
+    revisions authorize exact byte transitions through their own bounded
+    contract rather than rewriting R2.3 transition rows.
+    """
+
+    contract_path = safe_path(root, SUCCESSOR_CONTRACT_REL, must_exist=True)
+    pointer_path = safe_path(root, OUTPUTS[1], must_exist=True)
+    contract = read_json(contract_path, "R2_3_BOUND_STATE_DRIFT")
+    pointer = read_json(pointer_path, "R2_3_BOUND_STATE_DRIFT")
+    if (
+        not isinstance(contract, dict)
+        or contract.get("schema")
+        != "deeplus.language-coherence-current-integrity-contract/r1"
+        or not isinstance(pointer, dict)
+        or contract.get("revision") != pointer.get("spec_revision")
+    ):
+        return None
+    return contract
+
+
 def load_contract(root: Path) -> dict[str, Any]:
     path = safe_path(root, CONTRACT_REL, must_exist=True)
     contract = read_json(path, "R2_3_BOUND_STATE_DRIFT")
@@ -151,7 +180,8 @@ def load_contract(root: Path) -> dict[str, Any]:
         raise GeneratorError("R2_3_BOUND_STATE_DRIFT", "contract domain order")
     transitions = contract.get("historical_transitions", [])
     if (
-        contract.get("historical_receipt_policy", {}).get("transition_count") != 26
+        canonical_sha(transitions) != EXPECTED_HISTORICAL_TRANSITIONS_SHA256
+        or contract.get("historical_receipt_policy", {}).get("transition_count") != 26
         or len(transitions) != 26
         or len({row.get("path") for row in transitions}) != 26
     ):
@@ -228,7 +258,24 @@ def parse_authority_map(root: Path) -> tuple[str, list[tuple[str, str, str, str]
         flags=re.MULTILINE,
     )
     normalized = AUTHORITY_DIGEST_RE.sub("authority_digest: <OWNED>", normalized)
-    if sha256_bytes(normalized.encode("utf-8")) != EXPECTED_NON_OWNED_SHA256["authority_map"]:
+    successor = load_successor_contract(root)
+    successor_normalized = re.sub(
+        r"^revision: \S+$",
+        "revision: <OWNED>",
+        normalized,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    successor_authorized = (
+        successor is not None
+        and sha256_bytes(successor_normalized.encode("utf-8"))
+        == successor.get("authority_non_owned_sha256")
+    )
+    if (
+        sha256_bytes(normalized.encode("utf-8"))
+        != EXPECTED_NON_OWNED_SHA256["authority_map"]
+        and not successor_authorized
+    ):
         raise GeneratorError("R2_3_NON_OWNED_FIELD_DRIFT", OUTPUTS[0])
     return text, rows
 
@@ -292,7 +339,19 @@ def validate_pointer(root: Path) -> tuple[str, dict[str, Any]]:
         raise GeneratorError("R2_3_BOUND_STATE_DRIFT", OUTPUTS[1])
     non_owned = copy.deepcopy(pointer)
     non_owned.pop("authority_digest", None)
-    if canonical_sha(non_owned) != EXPECTED_NON_OWNED_SHA256["pointer"]:
+    successor = load_successor_contract(root)
+    successor_pointer = copy.deepcopy(pointer)
+    successor_pointer["updated_at"] = "<OWNED>"
+    successor_pointer["authority_digest"] = "<OWNED>"
+    successor_authorized = (
+        successor is not None
+        and canonical_sha(successor_pointer)
+        == successor.get("pointer_non_owned_canonical_sha256")
+    )
+    if (
+        canonical_sha(non_owned) != EXPECTED_NON_OWNED_SHA256["pointer"]
+        and not successor_authorized
+    ):
         raise GeneratorError("R2_3_NON_OWNED_FIELD_DRIFT", OUTPUTS[1])
     lanes = pointer.get("product_lanes", {})
     if (
@@ -338,7 +397,31 @@ def render_reassembly(root: Path) -> bytes:
         if row.get("legacy_file") in OWNED_REASSEMBLY:
             for field in OWNED_REASSEMBLY_FIELDS:
                 row.pop(field, None)
-    if canonical_sha(non_owned) != EXPECTED_NON_OWNED_SHA256["reassembly"]:
+    successor = load_successor_contract(root)
+    successor_bound_roots = (
+        {
+            row.get("path"): row.get("sha256")
+            for row in successor.get("bound_roots", [])
+            if isinstance(row, dict)
+            and row.get("kind") == "file"
+            and row.get("file_count") == 1
+        }
+        if successor is not None
+        else {}
+    )
+    successor_authorized = (
+        successor_bound_roots.get(OUTPUTS[2])
+        == sha256_bytes(path.read_bytes())
+        or (
+            successor is not None
+            and canonical_sha(non_owned)
+            == successor.get("reassembly_non_owned_canonical_sha256")
+        )
+    )
+    if (
+        canonical_sha(non_owned) != EXPECTED_NON_OWNED_SHA256["reassembly"]
+        and not successor_authorized
+    ):
         raise GeneratorError("R2_3_NON_OWNED_FIELD_DRIFT", OUTPUTS[2])
     rendered = copy.deepcopy(original)
     found: set[str] = set()
@@ -417,10 +500,23 @@ def validate_historical_chain(
             raise GeneratorError("R2_3_HISTORICAL_RECEIPT_DRIFT", rel)
         receipts[rel] = receipt
         receipt_rows.append({"path": rel, "sha256": actual})
+    successor = load_successor_contract(root)
+    successor_exemptions = (
+        {
+            row.get("path"): row.get("sha256")
+            for row in successor.get("migration_identity_exemptions", [])
+            if isinstance(row, dict)
+        }
+        if successor is not None
+        else {}
+    )
     for row in contract["historical_transitions"]:
         rel = row["path"]
         current = sha256_bytes(safe_path(root, rel, must_exist=True).read_bytes())
-        if current != row["approved_current_sha256"]:
+        if (
+            current != row["approved_current_sha256"]
+            and successor_exemptions.get(rel) != current
+        ):
             raise GeneratorError("R2_3_CANDIDATE_B_PATCH_DRIFT", rel)
         old = receipt_old_hash(
             receipts[row["historical_receipt"]], row["historical_receipt"], rel

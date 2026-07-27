@@ -350,12 +350,12 @@ TraitFunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause*
 FunctionBody ::= "=" FunctionBodyContent ;
 FunctionBodyContent ::= CallableBlock | ReturnShorthand | ClauseFunctionBody ;
 (* A function-static activation is a dedicated callable-body prologue, not a
-   BlockItem. Optional compile-time use/import directives precede it; no
-   runtime semantic item may do so. Owner/profile admission is checked by the
-   Frontend Model and the function-static activation contract. *)
+   BlockItem. `static` is a callable-owned contextual introducer, not a new hard
+   keyword. Optional compile-time use/import directives precede it; no runtime
+   semantic item may do so. Owner/profile admission is checked by the Frontend
+   Model and the function-static activation contract. *)
 CallableBlock ::= "{" BlockPrologue? FunctionStaticActivation? BlockSequence "}" ;
-FunctionStaticActivation ::= "scope" FunctionStaticRole Block ;
-FunctionStaticRole ::= "#" "static" ;
+FunctionStaticActivation ::= "static" Block ;
 ReturnShorthand ::= "return" Expr StatementBoundary ;
 ClauseFunctionBody ::= "{{" LineBreakBoundary? MatchArmSequence "}}" ;
 
@@ -976,6 +976,14 @@ CaptureItem ::= ("let" | "var") Identifier "=" Expr
               | Identifier ;
 CaptureMode ::= "borrow" | "inout" | "move" | "clone" | "deep" | "copy" | "once" ;
 
+(* Capture-list presence is semantically significant.  Absence may admit a
+   proven synchronous, same-isolation, read-only nonescaping lexical
+   dependency.  Present `[]` asserts that there is no ancestor-frame
+   dependency.  Present nonempty lists remain explicit capture plans, and a
+   bare Identifier retains its historical explicit-capture meaning.  These
+   distinctions survive CST/AST/HIR; they do not add another source
+   production. *)
+
 (* ---------- Quotes, generators, tasks and Facet ---------- *)
 
 
@@ -1132,6 +1140,7 @@ PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
 (* Recognized-only historical/nonactivatable surfaces. Never part of admitted Stable/Preview language. *)
 
 RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
+                 | RecoveryFunctionStaticScopeHash
                  | RecoveryFacetPackExpr
                  | RecoveryFacetType
                  | RecoveryNullLiteral
@@ -1142,6 +1151,14 @@ RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
                  | RecoveryLazyBindingAt
                  | RecoveryUnitMiddleDot
                  | RecoveryQuarantineScope ;
+
+(* Historical function-static introducer. It is recognized only to emit
+   FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC and never creates an
+   admitted activation node under this spelling. Migration comparison
+   normalizes its Block to the canonical `static` activation without changing
+   semantic owner identity. *)
+RecoveryFunctionStaticScopeHash ::= "scope" FunctionStaticRole Block ;
+FunctionStaticRole ::= "#" "static" ;
 
 (* `null` is reserved only so the parser can emit
    NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE. It never creates a value node. *)

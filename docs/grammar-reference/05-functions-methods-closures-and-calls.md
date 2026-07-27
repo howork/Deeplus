@@ -47,7 +47,7 @@ ReturnShorthand    ::= "return" Expr StatementBoundary
 
 ### 함수 static activation
 
-`scope#static { ... }`은 이름 있는 동기 함수의 실제 구현에 결합되는
+`static { ... }`은 이름 있는 동기 함수의 실제 구현에 결합되는
 Stable activation prologue다. 함수 값의 생성, 이름 조회, overload 후보
 수집 또는 JIT compilation 때가 아니라, 최종 구현을 실제로 호출할 때
 처음 한 번만 실행된다. 이 기능은 persistent function-local value나 cache,
@@ -58,20 +58,33 @@ FunctionBodyContent      ::= CallableBlock | ReturnShorthand | ClauseFunctionBod
 CallableBlock            ::= "{" BlockPrologue?
                                   FunctionStaticActivation?
                                   BlockSequence "}"
-FunctionStaticActivation ::= "scope" "#" "static" StaticActivationBlock
+FunctionStaticActivation ::= "static" StaticActivationBlock
 StaticActivationBlock    ::= "{" BlockSequence "}"
 ```
 
-`#`와 `static`은 Deeplus의 공통 hash-role 규칙을 따른다. 같은 물리적 줄의
-수평 trivia와 comment는 parser가 받아들일 수 있고 formatter는
-`scope#static`으로 붙여 출력한다. activation은 optional `use`/`import`
-prologue 뒤, 첫 runtime semantic item 앞에 최대 하나만 놓인다. expression
-body와 clause body에는 직접 붙지 않는다.
+`static`은 hard keyword로 승격되지 않는 callable-owned contextual
+introducer다. CallableBlock의 optional `use`/`import` prologue 뒤, 첫
+runtime semantic item 앞에서 Block이 이어질 때 activation으로 commit한다.
+formatter는 `static { ... }`을 출력한다. activation은 이 위치에 최대
+하나이며 expression body와 clause body에는 직접 붙지 않는다.
+
+이전 철자는 Stable AST를 만들지 않는 recovery-only production이다.
+
+```ebnf
+RecoveryFunctionStaticScopeHash ::= "scope" "#" "static" Block
+```
+
+`FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC`는 Block을 보존하고
+introducer만 `static`으로 바꾸는 migration fix를 제시한다. migration
+비교에서는 구 철자와 canonical 철자가 같은 `FunctionStaticActivationDecl`
+로 정규화된다. source spelling과 trivia는 owner recipe와 activation
+contract digest의 입력이 아니므로 이 수정만으로
+`FunctionStaticOwnerId`가 달라지지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/function-static-activation.json -->
 ```deeplus
 def decode(bytes: Bytes) -> Packet = {
-    scope#static {
+    static {
         verifyDecoderTables()
     }
 
@@ -145,8 +158,9 @@ activation-bearing/dynamic/provider callee를 정적으로 거부하여
 cross-owner activation cycle을 구성할 수 없게 한다.
 
 Public callable metadata는 activation presence, owner recipe, semantics
-version, contract/safety digest, initializer entry, terminal cached failure
-profile과 release/acquire publication profile을 보존한다. activation을
+version, contract/safety/dependency digest, terminal cached failure profile과
+release/acquire publication profile을 보존한다. backend-local initializer
+entry와 state-cell address는 public digest에 들어가지 않는다. activation을
 추가·제거하거나 contract digest를 바꾸는 것은 relink가 필요한 API/link
 변경이다. formatter/LSP/runtime/backend 지원은 target-bound receipt가
 없으므로 여전히 `NOT_RUN`이다.
@@ -159,9 +173,59 @@ public static def warm() -> Unit = { }
 ```
 
 `STATIC_FUNCTION_DECLARATION_NOT_CURRENT`는 ordinary module function,
-owning nominal의 `def::`와 `scope#static`의 차이를 설명하지만 자동
+owning nominal의 `def::`와 함수 `static` activation의 차이를 설명하지만 자동
 rewrite하지 않는다. `static_once_value`, effectful/module/class activation은
 별도 Preview 설계이며 이 Stable 승급으로 활성화되지 않는다.
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+#### Preview Design: function-static namespace
+
+Persistent immutable slot은 Stable activation rename과 별개인
+`PREVIEW_DESIGN_NONACTIVATABLE` 설계다. 다음 철자는 설계 표면일 뿐
+current parser-cover grammar가 아니다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/function-static-namespace-preview-design.json -->
+```deeplus
+static {
+    static#slot table = buildTable()
+    let temp = verifyTableShape() // activation-local ordinary binding
+}
+
+let result = evaluate(borrow static#slot::table)
+```
+
+`static#slot`이 persistent slot을 명시하고 plain `let`/`var`는 기존
+activation-local 의미를 유지한다. 따라서 구 activation source를
+persistent storage로 blind rewrite하지 않는다.
+
+`static#slot::name`은 nominal `Type::item`, named extension,
+`<T as Trait>::item`, explicit runtime owner와 섞이지 않는 다섯 번째
+closed compile-time domain 후보다. exact lexical `FunctionStaticOwnerId`의
+한 `FunctionStaticSlotId`만 선택하며 fallback, runtime string lookup,
+external function access, import/use/export/alias/reflection/wildcard,
+bare-name fallback은 없다. lexical descendant의 참조는 stack capture가
+아니라 owner/slot HIR dependency다.
+
+M0 slot은 immutable, deterministic static-materializable, deeply
+immutable/read-only Shareable, no-drop, authority/resource/escaping-borrow-free
+값만 허용한다. reachable interior mutation, `SharedCell`/`SharedMutex`,
+direct persistent `var`, write/compound write, exclusive borrow, move/consume,
+implicit locking/atomicity는 허용하지 않는다.
+
+Initializer는 source order로 private staging에 값을 만들며 앞서 성공한
+slot만 읽을 수 있다. self/forward/cycle과 hidden topological reorder는
+거부한다. initializer staged read와 ordinary Ready read는 별도 HIR/MIR
+책임이다. 전체 activation이 성공한 뒤 모든 slot과 `Ready`를 한 번에
+publish하고, 실패하면 역순 cleanup 뒤 slot 0개와 기존 canonical
+`FUNCTION_STATIC_ACTIVATION_FAILED` identity를 publish한다.
+
+정확한 nonactivatable 계약은
+[`spec/contracts/function-static-namespace-preview-design.json`](../../spec/contracts/function-static-namespace-preview-design.json)에
+있다. 이 Preview는 semantic P0와 기존 OPEN P1 집합을 바꾸지 않고 모든
+제품 lane을 `NOT_RUN`으로 유지한다.
+
+<!-- deeplus-status-fence: CURRENT -->
 
 ### 매개변수 채널
 

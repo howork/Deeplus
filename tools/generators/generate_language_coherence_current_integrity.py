@@ -26,13 +26,23 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
-PREVIOUS_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
+PREVIOUS_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
 OUTPUTS = (AUTHORITY_REL, POINTER_REL)
 EXCLUDED_PARTS = {".git", "__pycache__", "target", "dist", "candidate", "tmp"}
+R2_REASSEMBLY_REL = "migration/catalog-reassembly.json"
+R2_OWNED_REASSEMBLY = {
+    "deeplus-0.1.2-baseline-r51f3-feature-registry.json",
+    "deeplus-0.1.2-baseline-r51f3-diagnostic-registry.json",
+}
+R2_OWNED_REASSEMBLY_FIELDS = {
+    "row_count",
+    "ordered_shard_paths",
+    "canonical_object_sha256",
+}
 DOMAIN_RE = re.compile(
     r'^  ([a-z_]+):\n'
     r'    path: (\S+)\n'
@@ -76,6 +86,19 @@ def canonical_sha(value: Any) -> str:
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")
     return sha256_bytes(data)
+
+
+def normalized_reassembly_sha(document: Any) -> str:
+    if not isinstance(document, dict) or not isinstance(document.get("contracts"), list):
+        raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", R2_REASSEMBLY_REL)
+    normalized = copy.deepcopy(document)
+    for row in normalized["contracts"]:
+        if not isinstance(row, dict):
+            raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", R2_REASSEMBLY_REL)
+        if row.get("legacy_file") in R2_OWNED_REASSEMBLY:
+            for field in R2_OWNED_REASSEMBLY_FIELDS:
+                row.pop(field, None)
+    return canonical_sha(normalized)
 
 
 def json_bytes(value: Any) -> bytes:
@@ -333,11 +356,16 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "separate actions")
     if len(contract.get("product_lanes", [])) != 15:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "product lanes")
+    if not re.fullmatch(
+        r"[0-9a-f]{64}",
+        contract.get("reassembly_non_owned_canonical_sha256", ""),
+    ):
+        raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "reassembly non-owned")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 705,
-        "predicates": 255,
-        "predicate_fixtures": 790,
+        "features": 708,
+        "predicates": 258,
+        "predicate_fixtures": 799,
         "no_go": 150,
         "hard_keywords": 30,
         "contextual_words": 101,
@@ -561,6 +589,13 @@ def refresh_contract(root: Path) -> dict[str, Any]:
     )
     pointer = read_json(safe_path(root, POINTER_REL), "LANGUAGE_COHERENCE_POINTER")
     contract["pointer_non_owned_canonical_sha256"] = normalized_pointer_sha(pointer)
+    reassembly = read_json(
+        safe_path(root, R2_REASSEMBLY_REL),
+        "LANGUAGE_COHERENCE_CONTRACT",
+    )
+    contract["reassembly_non_owned_canonical_sha256"] = normalized_reassembly_sha(
+        reassembly
+    )
     contract["canonical_counts"] = collect_counts(root)
     bound_paths = [row["path"] for row in contract["bound_roots"]]
     if "docs/grammar-reference" not in bound_paths:

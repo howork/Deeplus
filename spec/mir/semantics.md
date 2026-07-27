@@ -23,6 +23,15 @@ closed plan variants are `DirectImplementation`, `VirtualSlot`,
 formal binding order survive lowering and are never recovered from runtime
 selector search, provider order, expected result type, or source order.
 
+The nonactivatable concise throws/effects Preview creates no MIR syntax or
+presence bit. If later activated, the frontend normalizes every omitted
+declaration axis before MIR: missing `throws` becomes `Never` and missing
+`effects` becomes `{}`. MIR receives only complete normalized rows and checks
+every emitted throw/effect edge against them. Explicitly empty and omitted rows
+are indistinguishable below the lossless CST. Current private ErrorSet
+inference remains authoritative until a separate migration and supersession
+decision.
+
 Operator syntax and precedence remain closed. An intrinsic-reserved normalized
 operand pair lowers to its closed intrinsic MIR operation and performs no
 conformance lookup. A non-intrinsic exact binary `+`, `-`, or `*` may instead
@@ -73,7 +82,7 @@ An ordinary `mut` parameter is lowered as one callee-owned mutable local place. 
 
 ### 2.1 Function static activation
 
-An admitted synchronous named callable may own one `scope#static { ... }`
+An admitted synchronous named callable may own one `static { ... }`
 prologue. It is a dedicated callable-body declaration, not an ordinary block
 item. Optional compile-time `use`/`import` block prologue directives precede
 it, and it precedes every runtime semantic item. The exact admitted owner and
@@ -165,6 +174,25 @@ the selected witness operation's declared Error and EffectRow. A capture-level
 unless the closure independently has `#once`. Before environment commit, a
 failed capture acquisition cleans acquired temporaries in reverse order and
 publishes no partial closure.
+
+A proven lexical dependency is not a capture-plan item. The callable descriptor
+keeps residence and environment orthogonal, so a region-bound callable may
+also have an explicit environment for other names. Each lexical dependency
+lowers to an ordinary read whose place root is the exact ancestor frame/region
+and place identity. It emits no capture acquire, commit, snapshot, move, or
+cleanup event, and the hidden static-link representation is backend-private.
+The call boundary validates the ancestor place as `LiveReadable` and keeps any
+shared-read requirement active for the invocation region. A present empty
+capture list is a closed assertion and makes an ancestor-rooted read
+unreachable.
+
+The Preview function-static namespace adds no current MIR operation. Its future
+initialization plan distinguishes a read of a prior privately staged slot while
+the owner is `Initializing` from an ordinary Ready-slot read. It preserves
+declaration order, has no self/forward/cycle/topological-reorder route, and
+publishes every immutable M0 slot only with the existing atomic `Ready`
+transition. Failure and reentry retain the existing function-static diagnostic
+and identity families.
 
 ## 3. Ordinary and rightward local bindings
 

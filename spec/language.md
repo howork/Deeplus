@@ -234,16 +234,42 @@ The terminal valueless `return` is omitted canonically. Recursive functions are 
 
 Function signatures preserve parameter order, labels, context/witness channels, rest channels, effect/error rows, ownership profiles, and return types. Return type alone never selects an overload. Source order never resolves an otherwise ambiguous overload.
 
-An ordinary parameter is always a named parameter slot, optionally with an explicit ownership mode; it is not a refutable Pattern. Decomposition belongs in the function body or in an exhaustive declarative clause head. Local functions have lexical visibility only after their declaration and must list every captured outer local explicitly. Closure literals have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`), lifetime (`#scoped` where required), effects, errors, and isolation responsibilities. Lambda parameter lists contain identifiers, not general Patterns. Named-function `return` and local lambda/value-body `ret` remain different control owners.
+The concise responsibility proposal is a nonactivatable Preview Design. Under
+that successor, each callable owner that admits `throws` and `effects` clauses
+normalizes an omitted `throws` to `Never` and an omitted `effects` to `{}` before
+checking the body. The body ErrorSet and EffectRow must be subsets of those
+normalized declaration rows. Only the lossless CST retains whether a row was
+spelled; typed AST/HIR, callable identity, module API digest, and MIR always
+retain both normalized rows. Omission and an explicitly empty row are therefore
+type/API equivalent. This Preview does not change current
+`private_error_set_inference`: promotion requires an inventory and deterministic
+rewrite of affected private/local declarations and an explicit supersession of
+that feature. It also does not apply to lambdas, accessors, or another owner
+whose grammar has no responsibility clauses.
+
+Responsibility compatibility is not one undifferentiated equality check. A
+Trait witness may narrow its requirement's declared rows, an override preserves
+the exact current responsibility profile, and function-value conversion follows
+the current variance and row-subsumption laws. Exact normalized rows remain
+part of callable identity and public API digest. An overload is never selected
+only from responsibility-row differences. The existing `= return Expr`
+implicit-pure rule also remains current: the Preview does not turn an explicit
+responsibility clause into an implicit `#pure` assertion.
+
+An ordinary parameter is always a named parameter slot, optionally with an explicit ownership mode; it is not a refutable Pattern. Decomposition belongs in the function body or in an exhaustive declarative clause head. Local functions have lexical visibility only after their declaration. A proven synchronous, same-isolation, nonescaping read of an ancestor local or parameter may be a lexical dependency rather than an environment capture; every snapshot, write, ownership transfer, escape, suspension, isolation crossing, and unproven use still requires an explicit admitted carrier or capture route. Closure literals have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`), lifetime (`#scoped` where required), effects, errors, and isolation responsibilities. Lambda parameter lists contain identifiers, not general Patterns. Named-function `return` and local lambda/value-body `ret` remain different control owners.
 
 ### Function static activation
 
-`scope#static { ... }` is a Stable function-body activation prologue. It occurs
+`static { ... }` is a Stable function-body activation prologue. It occurs
 at most once after an optional block `use`/`import` prologue and before the first
-runtime semantic item of an admitted synchronous named function. The common
-hash-role trivia law applies: same-line horizontal trivia or comments may be
-accepted, while canonical formatting prints `scope#static`. It is not admitted
-on an expression body or clause body.
+runtime semantic item of an admitted synchronous named function. `static` is a
+contextual parser commitment only at that prologue position; it remains an
+ordinary identifier elsewhere, and `static() { ... }` remains an ordinary call
+with a trailing closure. It is not admitted on an expression body or clause
+body. Historical `scope#static { ... }` is recovery-only and deterministically
+suggests `static { ... }`; both spellings normalize to the same activation HIR
+and `FunctionStaticOwnerId` recipe, so migration changes no semantic owner
+identity.
 
 The admitted owner set is synchronous module and extension functions,
 instance/type-side members, Trait defaults with bodies, and explicit conformance
@@ -294,6 +320,28 @@ Top-level `static def` remains recovery-only
 `static_once_value`, effectful activation, module activation, and class
 activation remain separate Preview families. Product parser/checker/MIR/runtime
 and tooling support remain `NOT_RUN`.
+
+The persistent function-static namespace is a separate nonactivatable Preview
+Design and does not reinterpret activation-local bindings. Its proposed slot
+declaration is `static#slot name: Type = Expr` inside the activation block and
+its exact lexical reference is `static#slot::name`. This spelling avoids
+colliding with Stable type-side `let::name` and qualified static expressions.
+It owns a fifth closed lookup domain,
+`FUNCTION_STATIC_NAMESPACE`, bound only to the current
+`FunctionStaticOwnerId`; it performs no nominal, extension, Trait, provider,
+import, export, reflection, bare-name, runtime-string, or source-order fallback.
+The minimum slot value is deeply immutable, statically materializable,
+resource/authority/borrow/needsDrop-free, and has no interior mutable state.
+`SharedCell` and `SharedMutex` are explicit runtime owners and are not admitted
+as minimum-profile slots.
+
+Preview slot initialization follows declaration order. An initializer may read
+only a previously staged slot through a distinct initialization-plan operation;
+self, forward, and cyclic references are rejected and are never repaired by a
+hidden topological reorder. All slots publish atomically with `Ready`; failure
+publishes none, cleans staged values in reverse order, and retains the existing
+activation failure and reentry identities. No parser-cover production, current
+source activation, or product-support claim follows from this Preview Design.
 
 ## 9. Parameter channels
 
@@ -403,7 +451,7 @@ authority-free, acyclic이며 const-evaluable/static-materializable한 값만
 허용한다. nominal owner 안에 lexical하게 선언된 `def::`만 그 owner의
 private 생성 권한을 사용할 수 있다. 외부 `def Type::`, extension,
 conformance는 private 생성 권한을 새로 얻지 않는다. 이 분해는 companion
-singleton이나 metatype value를 만들지 않는다. 함수의 `scope#static`은
+singleton이나 metatype value를 만들지 않는다. 함수의 `static { ... }`은
 별개의 Stable activation owner이고, class의 `scope#static`은 계속
 Preview nonactivatable이다.
 
@@ -814,6 +862,36 @@ does not by itself turn a reusable closure into a `#once` callable. Capture
 acquisition is left-to-right and failure-atomic: before environment commit,
 acquired temporaries are cleaned in reverse order and no partial closure
 escapes.
+
+Lexical dependency and explicit capture are orthogonal. A callable with no
+capture list may read an ancestor place at invocation time only when the
+checker proves a synchronous same-isolation region-bounded residence, read-only
+nonconsuming access, rooted-borrow nonescape, and call-site `LiveReadable`
+state. The initial proof routes are an immediate invocation, a local function
+whose use graph is closed inside its declaring block, or an exact selected
+invocation-bounded `#scoped` formal. `#scoped` text without an exact selected
+formal contract is not proof.
+
+HIR records residence (`FrameIndependent` or `RegionBound`), environment
+(`Empty` or one ordered explicit `CapturePlan`), an explicit
+`closed_assertion` bit, and sorted unique lexical dependencies as separate
+fields. This admits an explicit capture and a distinct lexical read in one
+callable without merging their responsibilities. A lexical read creates no
+environment field, acquisition, snapshot, move, capture commit, or cleanup
+event; MIR uses an ancestor-rooted ordinary place read and keeps the hidden
+static link backend-private. A present empty capture list `[]` is a closed
+callable assertion and rejects ancestor callable-local or parameter references,
+but it does not ban module, Prelude, or other separately authorized names.
+The current bare `[name]` capture item remains an explicit-capture compatibility
+surface and is never reinterpreted as lexical access.
+
+`def#guard`, async/generator/task/actor owners, suspension, isolation crossing,
+mutation, move/consume, snapshot, lifetime extension, and unknown escape proof
+are excluded from the initial lexical profile. A `#pure` lexical callable may
+observe only an immutable pure-readable ancestor place. Between two calls an
+ordinary outer `var` read observes the then-current value; `[copy name]` instead
+captures a creation-time snapshot. Explicit capture wins for the same resolved
+place, so that body reference has no duplicate lexical residue.
 
 `defer` captures one admitted invocation and executes exactly once in deterministic LIFO cleanup order. Trailing closures, arbitrary inline callable construction, await, spawn, guards, and blocks are not silently converted into defer invocations. Cleanup during failure, cancellation, and normal return follows the cleanup budget algebra.
 
@@ -1264,6 +1342,10 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BYTES_NOT_IMPLICITLY_CONVERTIBLE_TO_STRING` [error]: Bytes is not implicitly convertible to String.
 - `BYTE_VIEW_PROFILE_NOT_ADMITTED` [error]: ByteView requires live Bytes-owner provenance, contiguous byte-addressable storage, and no assumed text encoding or String semantics.
 - `CALLABLE_PROFILE_ONLY_OVERLOAD_FORBIDDEN` [error]: Callable responsibility profiles cannot be the sole overload discriminator.
+- `CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION` [error]: Preview concise-responsibility checking found an effect outside the normalized declared EffectRow; this diagnostic is design-only until that Preview is activated.
+- `CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION` [error]: Preview concise-responsibility checking found an Error outside the normalized declared ErrorSet; this diagnostic is design-only until that Preview is activated.
+- `CAPTURE_LIST_NEWLINE_DETACHED` [error]: A capture list must remain attached to the local function or closure it describes; a line break cannot turn it into an unrelated list expression.
+- `CLOSED_CALLABLE_HAS_OUTER_REFERENCE` [error]: A callable with an explicit empty capture list `[]` cannot reference an ancestor callable local or parameter.
 - `CALLBACK_EFFECT_NOT_PROPAGATED` [error]: Callback effects must be propagated or handled explicitly.
 - `CALLBACK_THROWS_NOT_PROPAGATED` [error]: Callback throws row must be propagated or handled explicitly.
 - `CANNOT_INFER_REST_ELEMENT_TYPE_FROM_EMPTY_ARGUMENTS` [error]: The element type of an empty repeated-argument call cannot be inferred without an expected type or explicit generic argument.
@@ -1436,17 +1518,31 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED` [error]: This callable kind cannot own function static activation.
 - `FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN` [error]: Function static activation cannot observe receiver, parameters, defaults, Context, or caller execution identity.
 - `FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN` [error]: The initial Stable profile forbids a function static activation from calling another activation-bearing owner.
-- `FUNCTION_STATIC_ACTIVATION_DUPLICATE` [error]: A callable body may contain at most one scope#static activation prologue.
+- `FUNCTION_STATIC_ACTIVATION_DUPLICATE` [error]: A callable body may contain at most one `static` activation prologue.
 - `FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN` [error]: Function static activation may call only statically selected activation-safe helpers.
 - `FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN` [error]: Function static activation must be effect-free, authority-free, and nonthrowing.
 - `FUNCTION_STATIC_ACTIVATION_FAILED` [error]: The function static activation failed; all callers observe the same cached failure identity and no implicit retry occurs.
-- `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` [error]: scope#static is admitted only in a supported synchronous named callable owner.
-- `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` [error]: scope#static must follow the optional block import/use prologue and precede the first runtime semantic item.
+- `FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED` [error]: The `static` activation prologue is admitted only in a supported synchronous named callable owner.
+- `FUNCTION_STATIC_ACTIVATION_POSITION_INVALID` [error]: The `static` activation prologue must follow the optional block import/use prologue and precede the first runtime semantic item.
 - `FUNCTION_STATIC_ACTIVATION_REENTRANCY` [error]: A function static activation re-entered its own owner; the activation transitions to one canonical failed state.
 - `FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN` [error]: Function static activation cannot publish a Resource, mutable persistent state, or needsDrop residue.
 - `FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN` [error]: Function static activation cannot await, yield, suspend, or observe cancellation.
 - `FUNCTION_STATIC_METADATA_MISMATCH` [error]: Imported function static activation metadata does not match the selected implementation contract.
 - `FUNCTION_STATIC_OWNER_ID_COLLISION` [error]: Distinct function static owner recipes produced the same identity.
+- `FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC` [error]: Historical `scope#static { ... }` is recovery-only; use the current `static { ... }` prologue.
+- `FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION` [error]: A Preview function-static slot is referenced only as `static#slot::name`; bare-name fallback is forbidden.
+- `FUNCTION_STATIC_REFERENCE_NO_OWNER` [error]: A Preview `static#slot::name` reference has no enclosing function-static owner.
+- `FUNCTION_STATIC_SLOT_CYCLE` [error]: Preview function-static slot initialization contains a dependency cycle.
+- `FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID` [error]: Preview `static#slot` declarations must form the initial slot section of the function-static activation block.
+- `FUNCTION_STATIC_SLOT_DUPLICATE` [error]: A Preview function-static owner declares the same canonical slot name more than once.
+- `FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN` [error]: Preview M0 function-static slots cannot be borrowed exclusively.
+- `FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN` [error]: Preview function-static slots are private to the exact enclosing callable implementation.
+- `FUNCTION_STATIC_SLOT_FORWARD_REFERENCE` [error]: A Preview function-static slot initializer may read only a previously staged slot.
+- `FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN` [error]: Preview M0 function-static slots cannot be moved or consumed.
+- `FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT` [error]: Mutable function-static slots are not part of the Preview M0 profile.
+- `FUNCTION_STATIC_SLOT_NOT_FOUND` [error]: The exact enclosing function-static namespace has no slot with this canonical name.
+- `FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED` [error]: A Preview M0 slot must be deeply immutable, static-materializable, resource/authority/borrow/needsDrop-free, and free of interior mutable state.
+- `FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN` [error]: Preview M0 function-static slots are read-only after initialization.
 - `FUNCTION_SIGNATURE_MUST_PRESERVE_CONTROL_AXES` [note]: Function signatures must preserve throws/effects/suspension/call-domain axes; do not erase them into a bare callable façade.
 - `FUNCTION_TYPE_REQUIRES_THIN_ARROW` [error]: Function/result/signature arrows use ->.
 - `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` [error]: Function types and public API digests must preserve `T...` and `Record***` call-shape residues; neither may be erased to `Sequence<T>` or `Record`.
@@ -1464,6 +1560,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `GUARDED_RETURN_DOES_NOT_COMPLETE_ALL_PATHS` [error]: A guarded return does not complete all value paths; add an unconditional return or exhaustive control expression.
 - `GUARD_AND_RIGHTWARD_BINDING_CANNOT_COEXIST` [error]: Guard clause and rightward `$` binding cannot coexist in one statement.
 - `GUARD_CALLABLE_CONSUME_FORBIDDEN` [error]: A #guard callable cannot consume parameters or captures.
+- `GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT` [error]: The initial nonescaping lexical-access profile does not admit an ancestor-frame dependency in a `#guard` callable.
 - `GUARD_CALLABLE_RESULT_MUST_BE_BOOL` [error]: A #guard callable must return exactly Bool on every normal path.
 - `GUARD_CLAUSE_NOT_ALLOWED_HERE` [error]: Guard clauses are allowed only on approved control-transfer statements and loop headers.
 - `GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED` [error]: Guard condition must not contain control transfer.
@@ -1482,6 +1579,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS` [error]: Implicit @ cannot be checked until overload shape selects exactly one expected callable.
 - `IMPLICIT_OWNER_TO_SHARED_FORBIDDEN` [error]: An owner cannot be implicitly promoted to Shared<T> or reused across a sharing boundary.
 - `IMPLICIT_PURE_FUNCTION_HAS_EFFECTS` [error]: Implicit pure-elision function has effects and cannot elide #pure.
+- `IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION` [error]: A Preview concise-responsibility implicit-pure candidate violates a non-row `#pure` responsibility.
+- `IMPLICIT_PURE_FUNCTION_THROWS` [error]: A Preview concise-responsibility implicit-pure candidate has a nonempty ErrorSet.
 - `IMPLICIT_REUSE_REQUIRES_PLAIN_OR_SHARED_HANDLE` [error]: Value cannot be reused implicitly; use move, borrow, Plain, or Shared<T>.
 - `IMPLICIT_SUPER_NEW_NOT_AVAILABLE` [error]: Implicit `: super!()` is available only when the base no-argument `new` is accessible.
 - `INDEX_OPERATOR_MINIMUM_CORE_ONLY` [error]: the current profile index operator Stable law covers minimum indexing; effectful/custom index overloading is not enabled.
@@ -1517,6 +1616,9 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE` [error]: A List context may adapt an unsuffixed integer token or its direct prefix-minus mathematical candidate only when that candidate lies in the exact element domain.
 - `LIST_LITERAL_ELEMENT_JOIN_FAILED` [error]: Without an explicit expected element type, an ordinary List literal requires one normalized element type; automatic heterogeneous Union inference is not performed.
 - `LOCAL_IMPORT_RUNTIME_LOADING_FORBIDDEN` [error]: A block-local import is compile-time name visibility, never runtime module loading.
+- `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` [error]: A lexical dependency cannot cross a task, actor, FFI, or other isolation boundary.
+- `LEXICAL_DEPENDENCY_CROSSES_SUSPENSION` [error]: A lexical dependency cannot remain live across `await`, `yield`, or another suspension point.
+- `LEXICAL_DEPENDENCY_PLACE_NOT_LIVE` [error]: The ancestor place required by a lexical callable is not live and readable at this invocation.
 - `LOCAL_USE_RUNTIME_AUTHORITY_FORBIDDEN` [error]: A local use directive cannot acquire runtime authority or create evidence.
 - `LOCAL_USE_TARGET_NOT_SCOPE_ADMISSIBLE` [error]: The local use target does not define an admissible lexical activation domain.
 - `LOCAL_VALUE_BODY_REQUIRES_PATH_TOTAL_RET` [error]: A multi-statement local value body must produce a value with local ret on every reachable normal path.
@@ -1577,7 +1679,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NAMED_UNFOLD_CONSUMING_REQUIRES_MOVE` [error]: A consuming named destination requires an ownership-preserving moved projection source.
 - `NAMED_UNFOLD_REQUIRES_STATIC_PROJECTION_ROW` [error]: Named unfolding requires statically known labels from Record or a certified ProjectionRow.
 - `NEGATIVE_IMPL_NOT_CURRENT` [error]: General negative impl remains Preview-design and is not current Stable source.
-- `NESTED_DEF_CAPTURE_LIST_REQUIRED` [error]: A nested local function may use an outer local only when that capture is listed explicitly in its CaptureList.
+- `NESTED_DEF_CAPTURE_LIST_REQUIRED` [error]: A nested local function must capture an outer local explicitly unless the exact read qualifies for the Stable nonescaping lexical-dependency profile.
 - `NESTED_DEF_FORWARD_REFERENCE_FORBIDDEN` [error]: A local function is visible only after its declaration; forward reference and mutual-recursion groups are not current.
 - `NESTED_IMPLICIT_LAMBDA_ARG_NONCANONICAL` [warning]: Nested implicit `@` lambda is noncanonical; name at least one parameter explicitly.
 - `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT` [error]: This feature is a nonactivatable design projection in the current profile package; ordinary source must reject it.
@@ -1628,6 +1730,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` [error]: The selected fixed-operator witness must borrow both operands, throw Never, have no effects, and be synchronous, non-consuming and non-mutating.
 - `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` [error]: Only existing binary `+`, `-`, and `*` are admitted for fixed-glyph conformance overloading.
 - `OPERATOR_PRECEDENCE_TABLE_REQUIRED` [error]: Operator parsing requires the current profile operator precedence table.
+- `OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE` [error]: Moving or consuming an ancestor place requires an explicit `move`/`once` capture, parameter, or owner-transfer carrier.
+- `OUTER_MUTATION_REQUIRES_INOUT_CAPTURE` [error]: Mutating an ancestor place requires an explicit admitted `inout` route; lexical dependency is read-only.
 - `OPTION_BARE_NONE_REMOVED` [error]: Bare None is not current Deeplus source; use `::none` with expected Option type or `Option<T>::none`.
 - `OPTION_BARE_SOME_REMOVED` [error]: Bare Some(value) is not current Deeplus source; use `::some(value)` with expected Option type or `Option<T>::some(value)`.
 - `OPTION_COALESCE_AFFINE_LHS_REQUIRES_MOVE` [error]: Extracting an affine payload requires moving the owned Option into `?:`.
@@ -1685,6 +1789,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH` [error]: Prototype derivation must preserve the exact nominal type and satisfy its visible ConstructionRow and clone responsibilities.
 - `PUBLIC_API_HIDDEN_WITNESS` [error]: Public API depends on a trait, associated item, or witness that is not public/exportable.
 - `PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN` [error]: A #pure callable cannot capture var/inout/mutable shared state.
+- `PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE` [error]: A #pure lexical callable cannot observe an outer mutable place.
 - `PURE_CALLABLE_PROFILE_VIOLATION` [error]: A #pure callable must be nonthrowing, effect-free, nonsuspending, authority-free, and free of mutable/resource captures.
 - `PURE_FUNCTION_EFFECT_VIOLATION` [error]: def#pure body must have effects {}.
 - `PURE_FUNCTION_THROWS_VIOLATION` [error]: def#pure body must throw Never.
@@ -2031,6 +2136,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: Documentation comment is not attached to a documentable declaration.
 - `EFFECT_ROW_UNION_TOKEN_REQUIRED` [error]: Effect-row alternatives require the visible | token.
 - `ERROR_SET_UNION_TOKEN_REQUIRED` [error]: Error-set alternatives require the visible | token.
+- `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE` [error]: A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter.
 - `HARD_KEYWORD_MEMBER_REQUIRES_ESCAPE` [error]: A hard keyword used as a data member name must use the member-only escape, for example obj.\\class.
 - `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` [error]: A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode.
 - `INVALID_DIGIT_FOR_NUMERIC_RADIX` [error]: A digit is not valid for this numeric radix.

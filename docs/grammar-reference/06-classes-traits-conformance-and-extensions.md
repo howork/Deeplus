@@ -17,7 +17,7 @@ conformance evidence와 lexical extension을 설명한다. 네 관계는 서로
 | Trait method/associated requirement와 명시적 conformance | `CURRENT` |
 | `Type::item`, `Type::extension::item`, `<T as Trait>::item`의 분리된 정적 capability lookup | `STABLE_DESIGN` |
 | 암시적 companion object/singleton 또는 type-name의 runtime value 변환 | 현행 아님; 거부 |
-| 함수 body의 `scope#static` activation | `STABLE` |
+| 함수 body의 `static { ... }` activation | `STABLE` |
 | Class body의 `scope#static` activation | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 현재 소문자 `via` conformance route | `CURRENT` |
 | named extension set/pack과 lexical activation | `CURRENT` |
@@ -752,7 +752,7 @@ implementation 전에 정적 identity와 책임을 닫기 위한 후보 계약�
 **의미**
 
 - 이 Preview의 Class `scope#static`은 현행 함수 body
-  `scope#static { ... }`과 다른 미래 owner다. 함수 표면은
+  `static { ... }`과 다른 미래 owner다. 함수 표면은
   `FunctionStaticOwnerId`에 결합된 `STABLE` activation이고, Class 표면의
   current source acceptance/AST/HIR/MIR 수는 모두 0이다.
 - 함수 activation은 최초 실제 invocation에서 argument/default staging 뒤,

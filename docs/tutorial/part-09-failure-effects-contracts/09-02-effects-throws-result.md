@@ -37,6 +37,59 @@
 넣지 않는다. callable overload도 return type, effect/error row만으로
 애매한 승자를 고르지 않는다.
 
+<!-- deeplus-status-fence: PREVIEW_DESIGN_NONACTIVATABLE -->
+
+### 비활성 Preview: positive-only responsibility declaration
+
+이 절은 현행 Stable을 바꾸지 않는 `PREVIEW_DESIGN_NONACTIVATABLE`이다.
+source activation과 conformance 효력이 없고 제품 lane은
+`15/15 NOT_RUN`이다. 현행 `private_error_set_inference`도 계속
+`STABLE_DESIGN`이므로 아래 법칙은 장래 설계의 읽기 규칙일 뿐이다.
+
+Preview에서 clause를 문법적으로 소유하는 callable은 `throws` 생략을
+`Never`, `effects` 생략을 `{}`로 정규화한다. body의 residual ErrorSet과
+EffectRow는 각각 선언 row의 부분집합이어야 하며 body가 서명을 넓히지
+않는다. nonempty 책임은 계속 명시한다.
+
+<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; expected: DESIGN_ONLY; product: NOT_RUN -->
+```deeplus
+def parsePort(text: String) -> Result<Int, error PortError> = {
+    return parsePortValue(text)
+}
+```
+
+이 예의 Preview error/effect 계약은 `throws Never effects {}`다.
+`PortError`는 반환값 안의 domain failure이므로 recoverable throw
+channel과 중복되지 않는다.
+
+<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; expected: DESIGN_ONLY; product: NOT_RUN -->
+```deeplus
+def loadPort(path: String, context files: FileIO)
+    -> Result<Int, error PortError>
+    throws IOError
+    effects {io}
+= {
+    let text = decodeUtf8(load(path, context files))
+    return parsePort(text)
+}
+```
+
+두 번째 예처럼 `IOError`와 `{io}`가 남으면 두 nonempty row를 명시한다.
+capability channel은 생략 법칙과 무관하며 계속 별도로 필요하다.
+
+CST는 clause presence를 보존하지만 AST/HIR/API digest/MIR은 정규화된
+row만 받는다. 생략과 명시적 빈 row는 identity와 digest에서 같지만,
+Trait witness의 narrowing, class override의 exact profile, function
+value의 row subsumption은 서로 다른 기존 호환성 법칙을 유지한다.
+
+Stable 승격에는 기존 private/local 추론 결과를 명시적 `throws`로
+삽입하는 migrator와 `private_error_set_inference`의 명시적 supersession이
+선행되어야 한다. 정확한 owner matrix와 migration gate는
+[`concise-throws-effects-preview-design.json`](../../../spec/contracts/concise-throws-effects-preview-design.json)을
+따른다. 현재 설계 수치는 semantic P0 `0`, OPEN feature P1 `22`다.
+
+<!-- deeplus-status-fence: CURRENT -->
+
 ## 6. 단계별 예제
 
 capability 선언은 nominal non-value identity를 만들 뿐 global 권한을

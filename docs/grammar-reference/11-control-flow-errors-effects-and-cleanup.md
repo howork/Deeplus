@@ -57,6 +57,85 @@ recoverable error family를 `Result`와 `throws` 양쪽에 중복 노출하면
 Error, Defect, Cancellation, suspension은 별도 축이다. Cancellation은
 `ErrorSet` member가 아니고 suspension은 `EffectRow` 안에 숨지 않는다.
 
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+### 비활성 Preview 설계: 빈 `throws`/`effects` 절 생략
+
+이 절은
+[`concise-throws-effects-preview-design.json`](../../spec/contracts/concise-throws-effects-preview-design.json)의
+`PREVIEW_DESIGN_NONACTIVATABLE` 투영이다. 현행 Stable 의미를 바꾸지 않으며
+source activation, compiler 지원, conformance 증거가 없다. 특히 현행
+`private_error_set_inference`는 그대로 `STABLE_DESIGN`이다. 따라서 아래
+생략 법칙을 현재 프로그램에 적용하거나, 현행 private/local 추론이
+사라졌다고 해석하면 안 된다.
+
+Preview 설계가 장래 활성화될 경우 clause를 문법적으로 소유하는 callable은
+다음 닫힌 선언으로 정규화된다.
+
+```text
+omitted throws  => throws Never
+omitted effects => effects {}
+
+normalize(body error residual)  subset_of normalize(declared ErrorSet)
+normalize(body effect residual) subset_of normalize(declared EffectRow)
+```
+
+body가 선언을 넓히는 추론은 없다. `throws _`, `throws auto`, `effects _`,
+`effects auto` 같은 placeholder도 도입하지 않는다.
+
+| owner | 생략 정규화 | 추가 Preview 법칙 |
+|---|---|---|
+| module/entry/extension/local/member/Trait-default/conformance/extension-set 함수 | `Never`, `{}` | body residual은 선언 row의 부분집합 |
+| constructor와 cleanup | `Never`, `{}` | 기존 delegation과 cleanup failure 법칙 유지 |
+| bodyless Trait method/associated function | `Never`, `{}` | 정규화 row가 requirement |
+| actor `on`/`request` | `Never`, `{}` | mailbox·cancellation·suspension·isolation은 별도 축 |
+| bodyless actor protocol send/request | `Never`, `{}` | 정규화 row가 protocol requirement |
+| function type | `Never`, `{}` | 정규화 row가 semantic type identity에 포함 |
+| gated FFI declaration | `Never`, `{}` | 기존 FFI gate와 unsafe profile을 별도로 요구 |
+
+lambda/capture lambda, accessor, typestate transition에는 해당 clause 문법이
+없으므로 이 기본값을 적용하지 않는다. `#pure`와 `#guard`는 빈 row 외에도
+기존 suspension, authority, mutation, ownership, capture 제약을 계속
+요구한다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/concise-throws-effects-preview-design.json -->
+```deeplus
+private def magnitudeSquared(x: Int, y: Int) -> Int = {
+    return x * x + y * y
+}
+```
+
+Preview에서 위 서명은 `throws Never effects {}`와 동일하게 정규화된다.
+반대로 nonempty 책임은 계속 양수로 적는다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/concise-throws-effects-preview-design.json -->
+```deeplus
+def load(path: String, context files: FileIO) -> Bytes
+    throws IOError
+    effects {io}
+= {
+    return readFile(path, context files)
+}
+```
+
+CST는 사용자가 절을 적었는지 보존하지만 AST/HIR/API digest/MIR은 완전히
+정규화된 row만 본다. 따라서 생략과 명시적 빈 row는 semantic callable
+identity와 API digest가 같다. 이 동일성은 모든 호환성 관계를 하나의
+규칙으로 바꾸지 않는다.
+
+- Trait witness는 requirement보다 좁거나 같은 error/effect row를 허용한다.
+- class override는 기존 exact responsibility-profile 일치를 유지한다.
+- function value는 기존 variance와 row subsumption을 유지한다.
+- responsibility profile 차이만으로 overload slot을 나눌 수 없다.
+
+Stable 승격 전에는 `private_error_set_inference` supersession, 기존
+private/local source에 추론 결과를 명시적 `throws`로 삽입하는 migrator,
+digest 동치와 deterministic diagnostic fixture, 제품 receipt가 모두
+필요하다. 현재 수치는 semantic P0 `0`, OPEN feature P1 `22`, 제품 lane
+`15/15 NOT_RUN`이다.
+
+<!-- deeplus-status-fence: CURRENT -->
+
 이 네 축에 더해 named capability는 효과를 **설명**하는 row와 그 효과를
 수행할 **권한**을 구분한다.
 

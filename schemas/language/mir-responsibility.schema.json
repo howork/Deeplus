@@ -196,6 +196,14 @@
         "$ref": "#/$defs/callResponsibilityDescriptor"
       }
     },
+    "callable_residence_descriptors": {
+      "type": "array",
+      "uniqueItems": true,
+      "x-deeplus-unique-by": "callable_id",
+      "items": {
+        "$ref": "#/$defs/callableResidenceDescriptor"
+      }
+    },
     "evidence_events": {
       "type": "array",
       "items": {
@@ -423,6 +431,229 @@
           }
         }
       }
+    },
+    "callableResidenceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "callable_id",
+        "residence",
+        "environment",
+        "closed_ancestor_frame_assertion",
+        "lexical_dependencies"
+      ],
+      "properties": {
+        "callable_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "residence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "region_id"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "FrameIndependent",
+                "RegionBound"
+              ]
+            },
+            "region_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "FrameIndependent"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "region_id": {
+                    "type": "null"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "region_id": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "capture_plan_id"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "Empty",
+                "Explicit"
+              ]
+            },
+            "capture_plan_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "Empty"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "capture_plan_id": {
+                    "type": "null"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "capture_plan_id": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "closed_ancestor_frame_assertion": {
+          "type": "boolean"
+        },
+        "lexical_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "place_id",
+              "access",
+              "lifetime"
+            ],
+            "properties": {
+              "place_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "access": {
+                "const": "shared_read"
+              },
+              "lifetime": {
+                "const": "call_duration"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "residence": {
+                "properties": {
+                  "kind": {
+                    "const": "FrameIndependent"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              }
+            },
+            "required": [
+              "residence"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lexical_dependencies": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "closed_ancestor_frame_assertion": {
+                "const": true
+              }
+            },
+            "required": [
+              "closed_ancestor_frame_assertion"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lexical_dependencies": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lexical_dependencies": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "lexical_dependencies"
+            ]
+          },
+          "then": {
+            "properties": {
+              "residence": {
+                "properties": {
+                  "kind": {
+                    "const": "RegionBound"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "closed_ancestor_frame_assertion": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
     },
     "evaluateEvent": {
       "type": "object",
@@ -2801,7 +3032,8 @@
     "actor_turn": "for one actor_id/state_region_id the exact admitted lifecycle is turn_start, zero or more paired turn_suspend and turn_resume transitions that retain held state-region authority, then turn_finish/released before the next turn_start; overlapping turns are forbidden",
     "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
     "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id",
-    "fixed_operator_conformance": "an intrinsic-reserved pair has no fixed_operator_dispatches row; each admitted non-intrinsic binary +,-,* expression has one statically selected row whose identity fields survive HIR/MIR/API lowering and whose route, responsibility, runtime lookup and fallback constants are exact"
+    "fixed_operator_conformance": "an intrinsic-reserved pair has no fixed_operator_dispatches row; each admitted non-intrinsic binary +,-,* expression has one statically selected row whose identity fields survive HIR/MIR/API lowering and whose route, responsibility, runtime lookup and fallback constants are exact",
+    "nonescaping_lexical_access": "callable_residence_descriptors use unique callable_id values and keep residence and explicit environment as orthogonal axes; only a non-closed RegionBound callable may carry shared-read call-duration lexical dependencies, present-empty [] is represented by closed_ancestor_frame_assertion=true with zero dependencies, RegionId remains internal proof metadata and no lexical read creates a new observable event"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
   "x-product-runtime": "NOT_RUN"

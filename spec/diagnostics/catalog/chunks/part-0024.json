@@ -1081,5 +1081,493 @@
     "primary_source": "spec/contracts/numeric-system-std-math.json",
     "product_support": "NOT_RUN",
     "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The callable body exposes an Error outside the normalized declared ErrorSet.",
+    "feature_refs": [
+      "concise_throws_effects_declaration_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/concise-throws-effects-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The callable body performs an effect outside the normalized declared EffectRow.",
+    "feature_refs": [
+      "concise_throws_effects_declaration_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/concise-throws-effects-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "IMPLICIT_PURE_FUNCTION_THROWS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The concise-responsibility implicit-pure candidate has a nonempty ErrorSet.",
+    "feature_refs": [
+      "concise_throws_effects_declaration_preview_design"
+    ],
+    "related_feature_refs": [
+      "pure_elision_return_body_msp"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/concise-throws-effects-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The concise-responsibility implicit-pure candidate violates a non-row pure responsibility.",
+    "feature_refs": [
+      "concise_throws_effects_declaration_preview_design"
+    ],
+    "related_feature_refs": [
+      "pure_elision_return_body_msp"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/concise-throws-effects-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "choose an explicit capture mode or parameter after reviewing snapshot and ownership semantics",
+    "fixit_policy": "no automatic capture insertion"
+  },
+  {
+    "diagnostic_id": "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Mutating an ancestor place requires an explicit admitted inout route; lexical dependency is read-only.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Moving or consuming an ancestor place requires an explicit move or once capture, parameter, or owner-transfer carrier.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A lexical dependency cannot remain live across await, yield, or another suspension point.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A lexical dependency cannot cross a task, actor, FFI, or other isolation boundary.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A callable with an explicit empty capture list cannot reference an ancestor callable local or parameter.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The ancestor place required by a lexical callable is not live and readable at this invocation.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A pure lexical callable cannot observe an outer mutable place.",
+    "feature_refs": [
+      "nonescaping_lexical_access",
+      "pure_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The initial nonescaping lexical-access profile does not admit an ancestor-frame dependency in a guard callable.",
+    "feature_refs": [
+      "nonescaping_lexical_access",
+      "def_guard_refinement_proof"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "CAPTURE_LIST_NEWLINE_DETACHED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A capture list must remain attached to the local function or closure it describes.",
+    "feature_refs": [
+      "nonescaping_lexical_access"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Historical scope#static is recovery-only; use the current static activation prologue.",
+    "feature_refs": [
+      "function_static_activation"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-activation.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_hint": "replace scope#static with static",
+    "fixit_policy": "identity-preserving spelling rewrite"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview static#slot declarations must form the initial slot section of the function-static activation block.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_DUPLICATE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "A Preview function-static owner declares the same canonical slot name more than once.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_FORWARD_REFERENCE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "A Preview function-static slot initializer may read only a previously staged slot.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_CYCLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview function-static slot initialization contains a dependency cycle.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_REFERENCE_NO_OWNER",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "A Preview static#slot:: reference has no enclosing function-static owner.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_NOT_FOUND",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The exact enclosing function-static namespace has no slot with this canonical name.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "A Preview function-static slot is referenced only as static#slot::name; bare-name fallback is forbidden.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "A Preview M0 slot must be deeply immutable, static-materializable, and free of resource, authority, borrow, needsDrop, and interior mutable state.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Mutable function-static slots are outside the Preview M0 profile.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview M0 function-static slots cannot be moved or consumed.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview M0 function-static slots cannot be borrowed exclusively.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview M0 function-static slots are read-only after initialization.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Preview function-static slots are private to the exact enclosing callable implementation.",
+    "feature_refs": [
+      "function_static_namespace_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "design_only"
   }
 ]

@@ -1,0 +1,451 @@
+{
+  "schema": "deeplus.function-static-namespace-preview-design/r1",
+  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "language_version": "0.1.2-internal",
+  "feature_id": "function_static_namespace_preview_design",
+  "status": "PREVIEW_DESIGN_NONACTIVATABLE",
+  "design_verdict": "AMEND_WITH_EXPLICIT_SLOT_MARKER_AND_CLOSED_NAMESPACE",
+  "source_activation": "nonactivatable",
+  "parser_cover_grammar": false,
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "implementation_or_publication_claim": false,
+  "stable_dependency": {
+    "contract": "spec/contracts/function-static-activation.json",
+    "surface": "static { ... }",
+    "meaning": "callable-owned once activation with no persistent value publication",
+    "changed_by_this_preview": false,
+    "owner_identity": "FunctionStaticOwnerId",
+    "runtime_state_key": "(RuntimeInstanceId, FunctionStaticOwnerId)"
+  },
+  "authority_fence": {
+    "language_design": "PREVIEW_DESIGN_NONACTIVATABLE",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "hir_lowering": "NOT_RUN",
+    "mir_lowering": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "llvm_aot_backend": "NOT_RUN",
+    "llvm_orc_jit_backend": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "product_support": "NOT_RUN",
+    "current_source_acceptance_count": 0,
+    "current_ast_node_count": 0,
+    "current_hir_node_count": 0,
+    "current_mir_operation_count": 0
+  },
+  "open_feature_p1": {
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22,
+    "closed_by_this_contract": 0,
+    "created_by_this_contract": 0
+  },
+  "proposed_surface_not_current_grammar": {
+    "stable_activation_surface_unchanged": "static { ... }",
+    "persistent_slot": "static#slot name: Type = Expr",
+    "qualified_reference": "static#slot::name",
+    "illustrative_cover_only": [
+      "FunctionStaticActivationBlock ::= \"{\" BlockPrologue? FunctionStaticSlotDecl* BlockSequence \"}\"",
+      "FunctionStaticSlotDecl ::= \"static\" \"#\" \"slot\" Identifier TypeAnnotation? \"=\" Expr StatementBoundary",
+      "FunctionStaticReference ::= \"static\" \"#\" \"slot\" \"::\" Identifier"
+    ],
+    "stable_grammar_collision_count": 0,
+    "plain_let_meaning": "activation-local ordinary immutable binding",
+    "plain_var_meaning": "activation-local ordinary mutable binding whose lifetime is discharged before activation completion",
+    "persistent_plain_let_reinterpretation_count": 0,
+    "direct_persistent_var_count": 0,
+    "slot_declarations_precede_activation_BlockSequence": true,
+    "maximum_activation_regions_per_callable": 1
+  },
+  "migration_contract": {
+    "stable_surface_rename": "scope#static to static changes spelling only",
+    "old_plain_let_or_var": "remains activation-local and is never reinterpreted as a persistent slot",
+    "persistent_slot_requires_new_explicit_marker": "static#slot",
+    "blind_semantic_rewrite_count": 0,
+    "stable_FunctionStaticOwnerId_change_from_spelling_only": false
+  },
+  "closed_lookup_domain": {
+    "domain_id": "FUNCTION_STATIC_NAMESPACE",
+    "domain_ordinal_after_current_four_domains": 5,
+    "surface": "static#slot::Identifier",
+    "owner": "nearest lexically enclosing admitted FunctionStaticOwnerId",
+    "selection": "one compile-time FunctionStaticSlotId",
+    "runtime_string_lookup_count": 0,
+    "fallback_count": 0,
+    "nominal_type_side_candidate_count": 0,
+    "named_extension_candidate_count": 0,
+    "trait_associated_candidate_count": 0,
+    "provider_candidate_count": 0,
+    "external_callable_path_access_count": 0,
+    "namespace_first_class_value": false,
+    "importable": false,
+    "usable": false,
+    "exportable": false,
+    "aliasable": false,
+    "reflectable": false,
+    "wildcard_selectable": false,
+    "bare_name_fallback": false,
+    "parser_commitment_if_activated": "in a callable-descendant expression goal, contextual static followed by :: commits to FunctionStaticReference before QualifiedStaticExpr; failure in this domain is terminal",
+    "qualified_nominal_escape": "a nominal or module item named static remains reachable through an explicitly longer qualified owner path",
+    "middle_static_segment_rule": "a middle path segment named static has ordinary qualified-path meaning and never exposes another callable's function-static namespace"
+  },
+  "visibility_contract": {
+    "slot_visibility": "private to exact CallableImplementationId implementation namespace",
+    "owner_body_access": true,
+    "lexical_descendant_local_function_access": true,
+    "lexical_descendant_lambda_access": true,
+    "unrelated_callable_access": false,
+    "module_or_package_visibility_grant": false,
+    "member_visibility_marker_allowed": false,
+    "external_surface": null,
+    "static_reference_is_stack_capture": false,
+    "closure_hir_dependency": [
+      "FunctionStaticOwnerId",
+      "FunctionStaticSlotId"
+    ],
+    "closure_capture_list_entry_count": 0,
+    "cross_RuntimeInstance_transfer": "DEFERRED_NOT_ADMITTED_BY_THIS_PREVIEW",
+    "dynamic_module_unload": "DEFERRED_NOT_ADMITTED_BY_THIS_PREVIEW"
+  },
+  "owner_and_slot_identity": {
+    "owner_identity": "FunctionStaticOwnerId",
+    "owner_semantics_version_when_slots_exist": "function-static-activation/r2-preview",
+    "owner_recipe_inputs": [
+      "package identity",
+      "module identity",
+      "CallableImplementationId",
+      "normalized owner generic instantiation",
+      "normalized callable generic instantiation",
+      "ordered static-slot contract digest",
+      "stable activation body contract digest"
+    ],
+    "slot_identity": "FunctionStaticSlotId",
+    "slot_recipe": [
+      "full canonical FunctionStaticOwnerId recipe",
+      "canonical slot name"
+    ],
+    "slot_contract_digest_inputs": [
+      "source declaration order",
+      "canonical slot name",
+      "normalized TypeId",
+      "M0 value profile identity",
+      "canonical normalized initializer HIR",
+      "prior-slot dependency edges",
+      "sorted actually used WitnessId values",
+      "sorted actually used ConformanceId values",
+      "sorted helper CallableImplementationId and safety-summary digest records"
+    ],
+    "excluded_identity_inputs": [
+      "trivia",
+      "source path",
+      "source, import, use, or link order",
+      "unused ambient Witness or Context",
+      "runtime address",
+      "machine-code identity",
+      "inlining, LTO, or JIT compilation identity"
+    ],
+    "overload_state_separated": true,
+    "override_state_separated": true,
+    "generic_instantiation_state_separated": true,
+    "effective_trait_or_conformance_state_separated": true,
+    "machine_code_sharing_may_merge_state": false,
+    "hash_collision_policy": "equal ID with unequal canonical recipe is a terminal link error"
+  },
+  "m0_value_admission": {
+    "predicate": "FunctionStaticSlotValueM0Admitted",
+    "required": [
+      "immutable slot publication",
+      "const-evaluable or deterministic static-materializable initializer result",
+      "deeply immutable or explicitly read-only Shareable value",
+      "safe publication for every admitted invocation domain",
+      "pure synchronous nonthrowing initializer",
+      "no Resource, authority, escaping borrow, needsDrop, finalizer, or unload responsibility",
+      "no reachable interior mutable state",
+      "acyclic slot dependency graph"
+    ],
+    "forbidden": [
+      "SharedCell or SharedMutex carrier",
+      "persistent mutable cache or registry",
+      "runtime allocation with unspecified lifecycle",
+      "receiver, parameter, evaluated default, or caller Context observation",
+      "time, random, environment, locale, ambient provider, or mutable global observation",
+      "I/O, FFI, Actor operation, suspension, cancellation, lazy force",
+      "dynamic, indirect, provider-selected, or activation-bearing helper"
+    ],
+    "persistent_mutable_publication_count": 0,
+    "persistent_needs_drop_residue_count": 0,
+    "resource_escape_count": 0,
+    "authority_count": 0,
+    "normalized_error_set": [],
+    "normalized_effect_row": [],
+    "suspends": false
+  },
+  "initialization_and_staging": {
+    "trigger": "first actual invocation of final selected CallableImplementationId",
+    "call_boundary_order": [
+      "evaluate callee or receiver",
+      "evaluate explicit arguments left-to-right",
+      "evaluate defaults under current rules",
+      "validate inputs and acquire staging temporaries",
+      "ensure FunctionStaticOwnerId",
+      "existing atomic ownership_commit",
+      "callable invoke and ordinary body"
+    ],
+    "slot_initializer_order": "source declaration order",
+    "prior_slot_reference": "allowed through private initializer staging only",
+    "self_reference": "REJECT",
+    "forward_reference": "REJECT",
+    "cycle": "REJECT",
+    "hidden_topological_reorder_count": 0,
+    "success": [
+      "evaluate every slot initializer once into private staging",
+      "execute the existing activation BlockSequence under the stable admission contract",
+      "publish every slot and Ready in one terminal publication"
+    ],
+    "failure": [
+      "clean staged slot values and activation-local temporaries exactly once in reverse acquisition order",
+      "publish zero slots",
+      "publish one terminal Failed identity",
+      "perform zero retry and zero reset"
+    ],
+    "same_owner_reentry": "terminal Failed with existing FUNCTION_STATIC_ACTIVATION_REENTRANCY cause",
+    "ready_or_failed_happens_before_released_caller": true,
+    "partial_slot_publication_count": 0,
+    "backend_minimum_order": "release/acquire or stronger"
+  },
+  "ownership_and_access": {
+    "runtime_owner": "RuntimeInstance function-static store",
+    "shared_borrow": true,
+    "copy_acquire_if_normalized_type_admits": true,
+    "explicit_clone_if_selected_API_admits": true,
+    "move_or_consume": false,
+    "exclusive_borrow": false,
+    "direct_assignment": false,
+    "compound_assignment": false,
+    "implicit_locking": false,
+    "implicit_atomicity": false
+  },
+  "proposed_hir_not_current": {
+    "region_node": "HirFunctionStaticActivation with ordered FunctionStaticSlot records",
+    "slot_record_fields": [
+      "FunctionStaticSlotId",
+      "canonical name",
+      "TypeId",
+      "M0 profile identity",
+      "typed initializer",
+      "prior-slot dependency set"
+    ],
+    "reference_node": [
+      "FunctionStaticOwnerId",
+      "FunctionStaticSlotId",
+      "access mode"
+    ],
+    "initializer_staged_read": "HirFunctionStaticInitSlotRead",
+    "ordinary_ready_read": "HirFunctionStaticReadySlotRead",
+    "runtime_name_payload": false
+  },
+  "proposed_mir_not_current": {
+    "operations": [
+      "ensure_function_static owner_id",
+      "init_read_function_static_slot owner_id, slot_id",
+      "borrow_ready_function_static_slot owner_id, slot_id",
+      "copy_ready_function_static_slot owner_id, slot_id"
+    ],
+    "forbidden_operations": [
+      "move_function_static_slot",
+      "consume_function_static_slot",
+      "borrow_mut_function_static_slot",
+      "store_function_static_slot",
+      "lookup_function_static_slot_by_string"
+    ],
+    "initializer_read_is_ready_read": false,
+    "new_CALL_INPUT_COMMIT_event_count": 0
+  },
+  "module_api_residue": {
+    "required_if_slots_exist": [
+      "slot_profile_present",
+      "slot_semantics_version",
+      "FunctionStaticOwnerId recipe digest",
+      "ordered slot contract digest",
+      "ordered slot name, TypeId, profile, and initializer digest records",
+      "prior-slot dependency digest",
+      "used WitnessId and ConformanceId sets",
+      "helper identity and safety-summary records",
+      "terminal failure profile",
+      "publication profile"
+    ],
+    "backend_local_fields_forbidden": [
+      "initializer symbol",
+      "bytecode entry",
+      "runtime state-cell address",
+      "slot table index",
+      "machine-code address"
+    ],
+    "slot_add_remove_rename_type_initializer_or_order_change": "public semantic digest delta requiring compatible consumer rebuild or terminal stale-metadata rejection",
+    "runtime_reconstruction_from_name_count": 0
+  },
+  "mutable_state_fence": {
+    "direct_persistent_var": "REJECT",
+    "direct_write": "REJECT",
+    "hidden_lock_or_atomic_rewrite": "REJECT",
+    "explicit_shared_state_carrier_inside_slot": "DEFERRED_SEPARATE_PROFILE",
+    "reason": "the Stable companion contract requires stateful capabilities to have an explicit runtime value owner and visible lifecycle/effect responsibility",
+    "future_profile_must_define": [
+      "carrier identity and ownership",
+      "effect and error residue",
+      "synchronization and memory-order contract",
+      "reentry behavior",
+      "quiescence and teardown",
+      "actor and RuntimeInstance transfer"
+    ]
+  },
+  "separation_fences": {
+    "nominal_type_side": "Type::item remains a separate closed domain",
+    "named_type_side_extension": "Type::extension::item remains a separate closed domain",
+    "trait_associated_static": "<T as Trait>::item remains a separate closed domain",
+    "explicit_runtime_owner": "ordinary value/Actor/shared-state lookup remains a separate closed domain",
+    "class_scope_static": "PREVIEW_NONACTIVATABLE with a distinct future owner identity",
+    "companion_object_created": false,
+    "type_token_runtime_value_created": false
+  },
+  "diagnostic_families_proposed_not_active": [
+    "FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID",
+    "FUNCTION_STATIC_SLOT_DUPLICATE",
+    "FUNCTION_STATIC_SLOT_FORWARD_REFERENCE",
+    "FUNCTION_STATIC_SLOT_CYCLE",
+    "FUNCTION_STATIC_REFERENCE_NO_OWNER",
+    "FUNCTION_STATIC_SLOT_NOT_FOUND",
+    "FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION",
+    "FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED",
+    "FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT",
+    "FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN",
+    "FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN",
+    "FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN",
+    "FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN"
+  ],
+  "existing_diagnostic_identity_preserved": [
+    "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
+    "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
+    "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
+    "FUNCTION_STATIC_ACTIVATION_CALLABLE_KIND_NOT_ADMITTED",
+    "FUNCTION_STATIC_ACTIVATION_CAPTURE_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_EFFECT_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_RESOURCE_ESCAPE_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_DYNAMIC_CALL_FORBIDDEN",
+    "FUNCTION_STATIC_ACTIVATION_DEPENDENCY_FORBIDDEN",
+    "FUNCTION_STATIC_OWNER_ID_COLLISION",
+    "FUNCTION_STATIC_METADATA_MISMATCH",
+    "FUNCTION_STATIC_ACTIVATION_REENTRANCY",
+    "FUNCTION_STATIC_ACTIVATION_FAILED"
+  ],
+  "rules": [
+    {
+      "rule_id": "FSN-R001",
+      "contract": "This contract is Preview Design only and creates no current lexer, parser, AST, HIR, MIR, runtime, formatter, or product route."
+    },
+    {
+      "rule_id": "FSN-R002",
+      "contract": "Persistent slots require explicit static#slot declarations; plain let and var retain activation-local meaning and migration never reinterprets them."
+    },
+    {
+      "rule_id": "FSN-R003",
+      "contract": "FUNCTION_STATIC_NAMESPACE is a fifth closed compile-time lookup domain with no fallback into nominal, extension, Trait, provider, or runtime-value domains."
+    },
+    {
+      "rule_id": "FSN-R004",
+      "contract": "A function-static namespace is not a first-class value and cannot be imported, used, exported, aliased, reflected, wildcard-selected, or addressed through another callable."
+    },
+    {
+      "rule_id": "FSN-R005",
+      "contract": "M0 publishes only immutable static-materializable no-drop values with no interior mutable state, Resource, authority, escaping borrow, finalizer, or unload responsibility."
+    },
+    {
+      "rule_id": "FSN-R006",
+      "contract": "SharedCell, SharedMutex, persistent registries, and other mutable carriers are not smuggled through the M0 immutable slot profile."
+    },
+    {
+      "rule_id": "FSN-R007",
+      "contract": "Slot initialization is source ordered; only prior staged slots are visible and self, forward, cycle, and hidden topological reorder are rejected."
+    },
+    {
+      "rule_id": "FSN-R008",
+      "contract": "Initializer staged-slot reads and ordinary Ready-slot reads are distinct typed HIR and MIR responsibilities."
+    },
+    {
+      "rule_id": "FSN-R009",
+      "contract": "All slots and Ready publish atomically after the entire activation succeeds; failure cleans reverse order, publishes zero slots, and retains one cached terminal failure identity."
+    },
+    {
+      "rule_id": "FSN-R010",
+      "contract": "Move, consume, exclusive borrow, assignment, compound assignment, implicit locking, and implicit atomicity are absent."
+    },
+    {
+      "rule_id": "FSN-R011",
+      "contract": "Slot and owner identities are semantic, reproducible, specialization-separated, collision-checked, and independent of source path, order, addresses, machine code, inlining, LTO, and JIT identity."
+    },
+    {
+      "rule_id": "FSN-R012",
+      "contract": "A lexical descendant reference is a static owner/slot dependency, never a stack capture or a new first-class namespace value."
+    },
+    {
+      "rule_id": "FSN-R013",
+      "contract": "Module API residue binds ordered slot semantics and dependencies while excluding backend-local symbols, entries, addresses, and indices."
+    },
+    {
+      "rule_id": "FSN-R014",
+      "contract": "Stable activation failure, reentry, owner, ordering, and publication diagnostics retain their existing identities."
+    },
+    {
+      "rule_id": "FSN-R015",
+      "contract": "Semantic P0 remains zero, the exact OPEN P1 set remains 22, this Preview closes or creates no P1, and all 15 product lanes remain NOT_RUN."
+    }
+  ],
+  "machine_acceptance": {
+    "rule_count": 15,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "product_lane_count": 15,
+    "product_executed_count": 0,
+    "current_source_acceptance_count": 0,
+    "current_ast_node_count": 0,
+    "current_hir_node_count": 0,
+    "current_mir_operation_count": 0,
+    "runtime_name_lookup_count": 0,
+    "direct_persistent_var_count": 0,
+    "implicit_lock_or_atomic_surface_count": 0
+  }
+}

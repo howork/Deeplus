@@ -24,7 +24,7 @@ SCHEMA_REL = "schemas/language/tutorial-coverage.schema.json"
 MANIFEST_REL = "docs/tutorial/coverage-manifest.json"
 REPORT_REL = "docs/tutorial/coverage-report.md"
 MANIFEST_SCHEMA = "deeplus.tutorial-coverage/r1"
-REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
+REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
 POINTER_REL = "current/current-pointer.json"
 SOURCE_BINDING_RELS = (
     "spec/language.md",
@@ -201,7 +201,9 @@ def validate_authority_and_pointer(
         checked_file_identity(root, relative)
         for relative in SOURCE_BINDING_RELS
     ]
-    for expected, actual in zip(expected_bindings, source_bindings, strict=True):
+    # Length equality is established by the contract-shape check above. Keep the
+    # loop compatible with the repository's supported Python 3.9 validator host.
+    for expected, actual in zip(expected_bindings, source_bindings):
         if expected["sha256"] != actual["sha256"]:
             raise TutorialError(
                 f"tutorial source binding drift: {actual['path']}"

@@ -290,6 +290,21 @@ canonical cause rather than a second type/effect channel. The callable type
 does not gain a parameter or effect, but exported metadata and link identity
 retain the activation profile and digest.
 
+The current contextual surface is `static { ... }`; historical
+`scope#static { ... }` is recovery-only and normalizes to the same activation
+identity during migration. Persistent `static#slot name` declarations and
+`static#slot::name` references are a separate nonactivatable Preview Design.
+The explicit `#slot` marker avoids the Stable `let::` and
+`QualifiedStaticExpr` grammar domains. That design owns one
+closed `FUNCTION_STATIC_NAMESPACE` lookup domain and a distinct
+`FunctionStaticSlotId(FunctionStaticOwnerId, canonical_name)`. Its M0 slot type
+must be deeply immutable and static-materializable and must contain no interior
+mutable state, Resource, authority, borrow, finalizer, or `needsDrop`
+responsibility. A staged initializer may read only prior slots; self, forward,
+cyclic, hidden-reordered, mutable, exclusive-borrow, move/consume, and external
+access plans are rejected. Slot publication is atomic with the existing
+`Ready` state and creates no new retry or failure identity.
+
 ## 14. Rows, labels, Records, and schema materialization
 
 A structural Record type carries an ordered canonical label row for identity/digest purposes while source construction preserves declared evaluation order. Label equality is static identifier equality, not runtime string equality. Row combination requires provable disjointness or an explicit overriding law owned by the operation.
@@ -301,6 +316,28 @@ Typed labeled materialization checks the target schema/Record row, field default
 Each place has a state sufficient to reject use-after-move, overlapping inout access, mutable/shared alias violations, and borrow escape. A move consumes the source place unless the normalized type is reusable. A shared borrow prevents conflicting mutation for its admitted region. An inout borrow is exclusive and cannot be duplicated. Resource cleanup responsibility follows the owned value across moves.
 
 Closure capture, async suspension, actor isolation, Facet packaging, defer registration, and return are escape boundaries. The checker must prove every captured borrow outlives its use and every resource has exactly one cleanup path. Borrow Facet packaging is current because it cannot outlive its source region; owned and inout Facet packaging remain Preview-design.
+
+A free read of an ancestor local or parameter is classified independently from
+environment capture. It is admitted as a lexical dependency only for a
+synchronous same-isolation callable whose residence is proven region-bounded,
+whose access is normalized `Read`, whose rooted borrows do not escape, and
+whose target is `LiveReadable` at each call. Immediate invocation, a
+block-closed local-function use graph, a bounded local binding whose uses are
+all direct calls, and an exact selected invocation-bounded `#scoped` formal are
+the initial proof routes. An unknown or merely textual `#scoped` route is not
+evidence.
+
+The normalized callable descriptor is the product of
+`Residence = FrameIndependent | RegionBound(RegionId)`,
+`Environment = Empty | Explicit(CapturePlan)`, a `closed_assertion` bit, and a
+sorted unique lexical-dependency row. This form preserves mixed explicit
+capture and lexical read. RegionId is value-level and must not escape through a
+function type or module API digest. A region-bound callable converts only to a
+compatible `#scoped` use. Present empty `[]` asserts no ancestor-frame
+dependency; a bare `[name]` remains an explicit-capture compatibility form.
+Lexical access never creates a snapshot or capture-plan acquisition. Writes,
+moves, consume, suspension, async/generator/task/actor/FFI isolation,
+`def#guard`, place death, and escape require another explicit admitted route.
 
 `SharedCell<T>` admits only normalized Plain payload and exposes sequentially consistent `withValue` scoped observation plus `replace` owner exchange. The borrow cannot escape or suspend, and `replace` commits one new owner while returning the old owner; Plain supplies neither raw layout nor lock-free representation. `SharedMutex<T>` admits the no-lifecycle-payload minimum profile and grants one receiver-bound, non-reentrant, non-suspending scoped inout place to `withLock`. Unlock is an infallible exactly-once cleanup on every terminal path and establishes the mutex handoff edge to the next successful lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering, actor transferability, or hidden cleanup.
 
@@ -331,6 +368,18 @@ nonsuspending, nonconsuming pure Bool predicate profile. A callable value's
 type includes its effect row, error set, cancellation responsibility,
 ownership/capture responsibility, suspension capability, isolation, and
 relevant context/witness channels.
+
+The concise throws/effects successor is Preview Design and does not supersede
+current private ErrorSet inference. In that Preview, omission of a syntactically
+admitted `throws` axis normalizes to `Never`, omission of `effects` normalizes
+to `{}`, and a callable implementation is admitted only when its body rows are
+subsets of those normalized declaration rows. Lossless spelling presence is a
+CST concern only; typed AST/HIR, callable identity, API digest, and MIR always
+carry complete rows. Trait witness compatibility uses row narrowing, override
+compatibility retains its exact current profile law, and function-value
+compatibility uses row subsumption under current variance. Stable promotion
+requires a deterministic migration of every affected inferred private/local
+signature and an explicit supersession of `private_error_set_inference`.
 
 Errors, defects, and cancellation are distinct control outcomes. Propagation operators consume only their declared family. Cleanup executes under a deterministic budget before the outcome escapes. Async suspension preserves live-place and cleanup obligations, and cancellation cannot silently bypass a registered cleanup. Callable compatibility is contravariant/covariant only where the declared responsibility profile permits; default inference remains invariant and conservative.
 

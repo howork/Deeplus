@@ -39,6 +39,58 @@
 - `#pure`, `#async`, `#guard` 같은 profile은 임의 decorator가 아니라
   owner별 admitted matrix에서 선택한다.
 
+<!-- deeplus-status-fence: PREVIEW_DESIGN_NONACTIVATABLE -->
+
+### 비활성 Preview: 빈 책임 절을 쓰지 않는 표기
+
+다음은 현행 작성 관례를 대체하지 않는
+`PREVIEW_DESIGN_NONACTIVATABLE` 학습 예다. source에서 활성화할 수 없고
+제품 lane은 `15/15 NOT_RUN`이다. 현행 Stable의
+`private_error_set_inference`도 그대로 유지되므로, 이 절의 생략 의미를
+현재 checker 동작으로 간주하면 안 된다.
+
+Preview 설계에서는 clause를 소유하는 callable의 생략을 다음처럼 읽는다.
+
+```text
+throws 생략  => throws Never
+effects 생략 => effects {}
+```
+
+<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; expected: DESIGN_ONLY; product: NOT_RUN -->
+```deeplus
+private def distanceSquared(x: Int, y: Int) -> Int = {
+    return x * x + y * y
+}
+```
+
+위 함수의 완전한 Preview 계약은 `throws Never effects {}`다. body에서
+recoverable Error나 observable effect가 남으면 빈 선언 안에 들어가지
+않으므로 거부한다. body를 보고 서명을 자동으로 넓히지 않는다.
+
+`= return Expr`에서 두 책임 절을 모두 생략한 경우에는 기존 implicit-pure
+검사를 그대로 시도한다. 둘 중 하나라도 쓰면 ordinary shorthand로
+검사하고, 생략된 다른 절만 빈 row로 정규화한다.
+
+<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; expected: DESIGN_ONLY; product: NOT_RUN -->
+```deeplus
+def readText(path: String, context files: FileIO) -> String
+    effects {io}
+= return readFile(path, context files)
+```
+
+이 예는 ordinary callable이며 생략된 `throws`만 `Never`가 된다. 실제
+`readFile`이 `IOError`도 남긴다면 명시적 `throws IOError`가 필요하다.
+
+생략과 `throws Never effects {}`는 정규화 뒤 callable identity와 API
+digest가 같다. 다만 Trait witness는 더 좁은 row를 허용하고, class
+override는 exact profile을 요구하며, function value는 variance와 row
+subsumption을 사용한다. responsibility row 차이만으로 overload를 만들
+수도 없다. 정확한 owner 범위와 승격 gate는
+[`concise-throws-effects-preview-design.json`](../../../spec/contracts/concise-throws-effects-preview-design.json)에
+고정되어 있다.
+
+<!-- deeplus-status-fence: CURRENT -->
+
 ## 6. 단계별 예제
 
 가장 작은 순수 함수부터 읽어 보자.
@@ -72,7 +124,7 @@ let safeLevel: Int = clamp(120, lower: 0, upper: 100)
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-private def#pure failParse(error: ParseError) -> Never
+private def failParse(error: ParseError) -> Never
     throws ParseError
     effects {}
 = {
@@ -119,7 +171,7 @@ expression body에는 `return`을 넣지 않는다. `Unit` 함수는 정상 경�
 함수의 error/effect row는 closure type, overload identity, Trait
 conformance, cancellation과 연결된다. `Result<T, error E>`를 반환하는
 것과 `throws E`는 같은 channel이 아니며, 같은 오류를 두 채널에 중복
-표현하지 않는다. `scope#static` activation도 owning 함수의 pure/effect
+표현하지 않는다. `static { ... }` activation도 owning 함수의 pure/effect
 검사를 그대로 받는다.
 
 ## 9. Deeplus다운 작성 관례

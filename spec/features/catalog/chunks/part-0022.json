@@ -43,5 +43,196 @@
     "language_status": "Official tooling",
     "source_activation": "tooling",
     "notes": "Public layout digest preserves backing, order, ordered slots, masks, reserved policy, defaults and invariants."
+  },
+  {
+    "feature_id": "concise_throws_effects_declaration_preview_design",
+    "display_name": "Concise throws and effects declaration Preview Design",
+    "baseline": "0.1.2-baseline.r51f3",
+    "feature_kind": "design_proposal",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "primary_source": "spec/contracts/concise-throws-effects-preview-design.json",
+    "trace_class": "semantic",
+    "depends_on": [
+      "error_set_algebra_msp",
+      "callable_responsibility_profile_core"
+    ],
+    "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_Callable_Responsibility_Static_Lexical_Adoption_R1.md"
+    ],
+    "normative_trace_refs": {
+      "productions": [],
+      "semantic_reference_productions": [
+        "ThrowsClause",
+        "EffectsClause",
+        "FunctionTail",
+        "FunctionTypeTail"
+      ],
+      "diagnostics": [
+        "CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION",
+        "CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION",
+        "IMPLICIT_PURE_FUNCTION_THROWS",
+        "IMPLICIT_PURE_FUNCTION_PROFILE_VIOLATION"
+      ],
+      "predicates": [
+        "ConciseCallableResponsibilityPreviewAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-CRESP-PREVIEW-001",
+        "EX-R51f3-CRESP-PREVIEW-NG-001"
+      ]
+    },
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "status_enum": "PREVIEW_DESIGN",
+    "status_display": "Preview Design",
+    "language_status": "Preview Design",
+    "source_activation": "nonactivatable",
+    "notes": "Omitted throws/effects normalize to Never/{} only in this nonactivatable successor. Current private error inference remains authoritative until explicit migration and supersession."
+  },
+  {
+    "feature_id": "nonescaping_lexical_access",
+    "display_name": "Nonescaping lexical access",
+    "baseline": "0.1.2-baseline.r51f3",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "primary_source": "spec/contracts/nonescaping-lexical-access.json",
+    "trace_class": "semantic",
+    "depends_on": [
+      "nested_function_local_def_msp",
+      "scoped_callable_lifetime_profile",
+      "callable_responsibility_profile_core"
+    ],
+    "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_Callable_Responsibility_Static_Lexical_Adoption_R1.md"
+    ],
+    "normative_trace_refs": {
+      "productions": [
+        "LocalFunctionDecl",
+        "ClosureExpr",
+        "CaptureList",
+        "CaptureItem"
+      ],
+      "semantic_reference_productions": [],
+      "diagnostics": [
+        "ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE",
+        "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE",
+        "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE",
+        "LEXICAL_DEPENDENCY_CROSSES_SUSPENSION",
+        "LEXICAL_DEPENDENCY_CROSSES_ISOLATION",
+        "CLOSED_CALLABLE_HAS_OUTER_REFERENCE",
+        "LEXICAL_DEPENDENCY_PLACE_NOT_LIVE",
+        "PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE",
+        "GUARD_CALLABLE_LEXICAL_DEPENDENCY_NOT_CURRENT",
+        "CAPTURE_LIST_NEWLINE_DETACHED"
+      ],
+      "predicates": [
+        "NonescapingLexicalAccessAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-NLA-001",
+        "EX-R51f3-NLA-002",
+        "EX-R51f3-NLA-NG-001",
+        "EX-R51f3-NLA-NG-002"
+      ]
+    },
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "source_activation": "none",
+    "notes": "A proven synchronous same-isolation read may remain a region-bounded lexical dependency rather than an environment capture. Bare explicit captures remain compatible and [] is a closed ancestor-frame assertion."
+  },
+  {
+    "feature_id": "function_static_namespace_preview_design",
+    "display_name": "Function-static immutable namespace Preview Design",
+    "baseline": "0.1.2-baseline.r51f3",
+    "feature_kind": "design_proposal",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "RUNTIME"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / RUNTIME",
+    "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
+    "trace_class": "semantic",
+    "depends_on": [
+      "function_static_activation",
+      "static_once_value"
+    ],
+    "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_Callable_Responsibility_Static_Lexical_Adoption_R1.md"
+    ],
+    "normative_trace_refs": {
+      "productions": [],
+      "semantic_reference_productions": [
+        "FunctionStaticActivation"
+      ],
+      "diagnostics": [
+        "FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID",
+        "FUNCTION_STATIC_SLOT_DUPLICATE",
+        "FUNCTION_STATIC_SLOT_FORWARD_REFERENCE",
+        "FUNCTION_STATIC_SLOT_CYCLE",
+        "FUNCTION_STATIC_REFERENCE_NO_OWNER",
+        "FUNCTION_STATIC_SLOT_NOT_FOUND",
+        "FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION",
+        "FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED",
+        "FUNCTION_STATIC_SLOT_MUTABLE_NOT_CURRENT",
+        "FUNCTION_STATIC_SLOT_MOVE_FORBIDDEN",
+        "FUNCTION_STATIC_SLOT_EXCLUSIVE_BORROW_FORBIDDEN",
+        "FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN",
+        "FUNCTION_STATIC_SLOT_EXTERNAL_ACCESS_FORBIDDEN"
+      ],
+      "predicates": [
+        "FunctionStaticNamespacePreviewAdmitted"
+      ],
+      "examples": [
+        "EX-R51f3-FSNS-PREVIEW-001",
+        "EX-R51f3-FSNS-PREVIEW-NG-001"
+      ]
+    },
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "status_enum": "PREVIEW_DESIGN",
+    "status_display": "Preview Design",
+    "language_status": "Preview Design",
+    "source_activation": "nonactivatable",
+    "notes": "Proposes explicit static#slot declarations and static#slot:: references in a fifth closed function-static domain. The spelling is outside Stable let:: and QualifiedStaticExpr grammar. M0 is deeply immutable and initialization is declaration-ordered and atomically published."
   }
 ]

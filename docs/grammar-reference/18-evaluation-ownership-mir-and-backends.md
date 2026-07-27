@@ -147,6 +147,15 @@ extension, substitution, construction target, ownership/place, effect,
 ErrorSet, Defect, cancellation, suspension, isolation, authority, cleanup
 identity를 보존한다.
 
+`nonescaping_lexical_access` Stable design은 callable responsibility를
+하나의 `Closed | LexicalScoped | Captured` 합으로 압축하지 않는다.
+HIR의 residence는 `FrameIndependent | RegionBound(RegionId)`,
+environment는 `Empty | Explicit(CapturePlan)`이라는 독립 축이다.
+capture list의 absent/present-empty/present-nonempty 상태, present-empty의
+closed assertion, lexical dependency place set도 별도로 보존한다. 따라서
+explicit capture environment를 가지면서 residual lexical dependency로
+region-bound인 callable도 표현할 수 있다.
+
 반대로 다음 값의 canonical variant 수는 정확히 0이다.
 
 - recovery node
@@ -252,6 +261,12 @@ MIR state는 적어도 다음 개념을 보존한다.
 - task와 actor state
 - provider binding과 replay identity
 - source provenance
+
+qualified lexical read는 ordinary ancestor-rooted place access와 검증된
+region requirement로 내린다. 별도의 source-observable
+`ancestor_place_read` event나 capture가 0개인 `callable_create` event를
+합성하지 않는다. backend가 hidden static link를 사용할 수는 있지만
+그 link는 capture environment, observable event 또는 public ABI가 아니다.
 
 구현은 이 개념을 같은 Rust struct로 표현할 필요가 없다.
 그러나 backend가 관찰 가능한 차이를 만들지 않도록
@@ -382,9 +397,11 @@ witness identity는 runtime lookup을 하지 않지만
 그 channel이 signature와 MIR call descriptor에서 사라지지 않는다.
 
 ordinary call과 message call은 ordered trailing-closure channel을 공유한다.
-closure capture environment는 ordinary argument 뒤 source order로
-획득되고, 각 label과 선택된 function-typed formal identity가 HIR/MIR에
-남는다. surface brace attachment만 지울 수 있고 evaluation order나
+explicit closure capture environment는 ordinary argument 뒤 source
+order로 획득되고, 각 label과 선택된 function-typed formal identity가
+HIR/MIR에 남는다. qualified lexical dependency는 이 시점에 environment
+획득을 만들지 않고 call site에서 ancestor place의 live read requirement를
+사용한다. surface brace attachment만 지울 수 있고 evaluation order나
 selected dispatch identity는 지우지 않는다.
 
 ordinary/message/actor-message는 하나의 ordered argument vector를
@@ -1447,6 +1464,11 @@ hidden pointer, metadata로 표현할 수 있다.
 그러나 source channel을 지우거나
 runtime lookup으로 되돌릴 수 없다.
 
+지역 proof에 사용된 `RegionId`와 backend hidden static link는 public API
+digest에 export하지 않는다. region-bound callable이 public signature나
+escaping value가 될 수 없다는 admission이 먼저 닫혀야 하며, backend
+표현 선택이 그 실패를 ABI로 우회해서는 안 된다.
+
 ### 20.2 FFI
 
 foreign ABI는 별도 Preview gated boundary다.
@@ -1698,6 +1720,7 @@ source-observable 법칙을 다음처럼 고정한다.
 | Complex | 붙은 float-`i`, exact Rep, signed-zero-aware component residue | layout·ABI·stdlib/runtime 실행 PASS |
 | scalar power | static matrix, base-then-exponent once, closed operation/profile identity | HIR/MIR/backend 실행 PASS |
 | HIR-H1 bridge | closed verified phase types와 capability receipt 설계 | source activation·MIR-X1 채택·구현 |
+| nonescaping lexical access | exact closed proof, call-time read, orthogonal residence/environment | source activation·frontend/checker/MIR/backend 실행 PASS |
 
 정적 closure는 feature P1을 닫거나
 15개 제품 lane을 실행한 것으로 해석되지 않는다.
@@ -1816,6 +1839,8 @@ normative design을 설명하는 conceptual trace다.
   - closed HIR-H1 phase, literal/power plan, capability receipt
 - [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
   - evaluation, flow join, cleanup
+- [`spec/contracts/nonescaping-lexical-access.json`](../../spec/contracts/nonescaping-lexical-access.json)
+  - orthogonal HIR residence/environment와 ordinary ancestor-rooted place read
 - [`spec/contracts/type-refinement-narrowing-coherence.json`](../../spec/contracts/type-refinement-narrowing-coherence.json)
   - Pattern probe/commit과 flow proof
 - [`spec/contracts/actor-concurrency-coherence.json`](../../spec/contracts/actor-concurrency-coherence.json)

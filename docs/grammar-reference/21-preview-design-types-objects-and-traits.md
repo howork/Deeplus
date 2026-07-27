@@ -5,6 +5,145 @@
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
+<!-- deeplus-preview-feature-example: concise_throws_effects_declaration_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-concise_throws_effects_declaration_preview_design"></a>
+
+## 간결한 `throws`·`effects` 선언
+
+> **Feature metadata**
+> - Feature ID: `concise_throws_effects_declaration_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `LANGUAGE / TYPE_SYSTEM / HIR / MIR`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+오류를 던지지 않고 관찰 가능한 효과도 만들지 않는 함수는 매우 흔하다.
+이 설계는 그런 함수의 선언에서 `throws Never effects {}`를 생략할 수 있게
+하되, 생략을 추론 변수나 열린 책임으로 해석하지 않는다. 생략된 두 행은
+각각 `Never`와 `{}`로 즉시 닫힌다. 따라서 짧은 선언과 완전한 선언은
+typed AST, HIR, module API digest, MIR에서 같은 callable identity를 갖는다.
+다만 현행 private/local 함수의 error-set inference는 아직 current이므로,
+이 후보가 source에서 활성화되지는 않는다.
+
+**제안 표면**
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/concise-throws-effects-preview-design.json -->
+```deeplus
+// Preview Design: 다음 두 선언은 정규화 뒤 같은 책임 행을 가진다.
+private def magnitude(value: Int) -> UInt = {
+    return value.abs()
+}
+
+private def explicitMagnitude(value: Int) -> UInt
+    throws Never
+    effects {} = {
+    return value.abs()
+}
+```
+문법 토큰이나 production은 늘지 않는다. CST는 작성자가 절을 썼는지
+보존하고 formatter도 그 선택을 멋대로 바꾸지 않는다. 의미 계층만 완전한
+행으로 정규화한다.
+
+**정적 판정과 상호작용**
+body가 실제로 만들 수 있는 정규화 오류 집합과 효과 행은 선언 행의
+부분집합이어야 한다. Trait requirement의 witness는 더 좁은 행을 제공할 수
+있지만 requirement보다 넓힐 수 없다. Class override는 현행의 exact
+responsibility-profile equality를 유지하고, 함수 값 대입은 매개변수·결과
+variance와 error/effect row subsumption을 함께 검사한다. responsibility
+차이만으로 overload slot을 새로 만들지는 않는다.
+
+**평가·소유권·오류**
+생략은 runtime 동작을 추가하지 않고 MIR omission bit도 만들지 않는다.
+body가 선언보다 넓은 오류나 효과를 요구하면
+`CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION` 또는
+`CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION` 설계 진단이 우선한다.
+ReturnShorthand의 기존 implicit-pure 판정, constructor·cleanup·actor·FFI의
+owner별 강한 규칙도 그대로 적용된다.
+
+**현행 대안과 이행**
+현행에서는 책임이 API 의미인 곳에 `throws`와 `effects`를 명시하고,
+private/local error-set inference를 사용한다. Stable 전환을 검토할 때는
+기존 inferred ErrorSet을 계산해 명시적 `throws`로 삽입하는 결정적
+migration inventory가 먼저 필요하다. 기존 소스를 조용히 순수 함수로
+재해석하거나 explicit empty 절을 삭제하는 rewrite는 허용하지 않는다.
+
+**활성화 선행 조건**
+`private_error_set_inference`의 명시적 supersession, 전체 migration corpus,
+Trait/override/function-value 호환성 증거, 진단 span/order, formatter/LSP
+왕복, module API digest 동등성 및 target-bound parser/checker receipt가
+필요하다. 그 전까지 이 예시는 설계 검토용이며 제품 실행은 `NOT_RUN`이다.
+
+<!-- deeplus-preview-feature-example: function_static_namespace_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-function_static_namespace_preview_design"></a>
+
+## 함수 전용 persistent `static` namespace
+
+> **Feature metadata**
+> - Feature ID: `function_static_namespace_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `LANGUAGE / TYPE_SYSTEM / HIR / MIR / RUNTIME`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+현행 Stable `static { ... }`는 함수의 첫 실제 호출에서 한 번 실행되는
+activation prologue이지만 persistent 값을 body에 공개하지 않는다. 이
+Preview는 함수 구현 identity에 귀속되는 깊이 불변 값을 명시적으로
+공개할 수 있는 닫힌 namespace를 설계한다. module static, type static,
+Trait associated item, provider 또는 runtime value lookup과 섞지 않는 것이
+핵심이다.
+
+**제안 표면**
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/function-static-namespace-preview-design.json -->
+```deeplus
+// Preview Design: 현행 grammar에는 아직 들어오지 않은 후보 표면이다.
+public def classify(code: UInt) -> String = {
+    static {
+        static#slot known: Set<UInt> = #set{100, 200, 404}
+    }
+
+    return @if static#slot::known.contains(code) {
+        "known"
+    } else {
+        "custom"
+    }
+}
+```
+`static#slot known`만 persistent slot을 선언한다. plain `let`과 `var`는
+activation 안의 일시적 local이라는 현행 의미를 유지한다.
+`static#slot::known`은 가장
+가까운 admitted `FunctionStaticOwnerId`의 exact slot만 선택하며 bare-name
+fallback이나 다른 함수 namespace 접근은 없다.
+
+**정적 판정과 상호작용**
+`FUNCTION_STATIC_NAMESPACE`는 다섯 번째 닫힌 lookup domain이다. slot은
+깊이 불변이고 deterministic static-materializable이며 Resource, authority,
+escaping borrow, finalizer, 내부 mutable state를 포함하지 않는 M0
+프로필이어야 한다. initializer는 source declaration order로 실행되고
+오직 앞선 staged slot만 읽을 수 있다. self reference, forward reference,
+cycle 또는 hidden topological reorder는 terminal error다.
+
+**평가·소유권·오류**
+모든 explicit argument와 default를 현행 순서로 staging한 뒤 exact owner를
+ensure한다. 모든 slot initializer와 activation body가 성공한 경우에만
+slot 전체와 Ready를 한 번에 공개한다. 실패하면 staged 값을 역순으로
+정리하고 slot을 하나도 공개하지 않은 채 같은 Failed identity를 캐시한다.
+move, consume, exclusive borrow, assignment, compound assignment, implicit
+locking이나 runtime string lookup은 없다.
+
+**현행 대안과 이행**
+현행에서는 module/type static 또는 명시적 immutable owner object를 쓴다.
+기존 `scope#static`은 함수 activation에 한해 recovery-only이며 Stable
+`static`으로 identity-preserving 정규화한다. 기존 activation 안의 plain
+`let`/`var`를 persistent slot으로 자동 재해석하지 않는다. mutable cache가
+필요하면 SharedCell·SharedMutex 등 별도의 lifecycle/effect 책임 프로필을
+먼저 설계해야 한다.
+
+**활성화 선행 조건**
+exact parser/recovery와 CST, namespace lookup, owner/slot recipe digest,
+concurrent publication, failure/reentry, module API residue, formatter/LSP,
+xVM·LLVM 간 재현 가능한 실행 receipt와 별도 Design authority가 필요하다.
+현재 parser-cover, HIR/MIR operation, runtime route와 제품 지원 수는 모두
+0이며 15개 product lane은 `NOT_RUN`이다.
+
 <!-- deeplus-preview-feature-example: option_let_question_binding_preview_design; registry-status: PREVIEW_DESIGN -->
 <a id="preview-feature-option_let_question_binding_preview_design"></a>
 
@@ -555,9 +694,10 @@ Class owner에 공유 초기화와 수명 주기를 결합하려는 요구를 �
 개 생기는가이다.
 
 **제안 표면**
-새 declaration surface는 미선정이다. 따라서 아래 코드는 설계 철자를
-발명하지 않고 module binding과 ordinary function이라는 현행 대안을
-보인다. 양성 검토 시나리오는 owner와 초기화 호출이 명시된 경우,
+Class 후보 표면은 Class body의 `scope#static { ... }`로 선택되어 있지만
+여전히 `PREVIEW_DESIGN_NONACTIVATABLE`이며 현행 parser acceptance는 0이다.
+아래 현행 대안은 module binding과 ordinary function을 사용한다. 양성
+검토 시나리오는 owner와 초기화 호출이 명시된 경우,
 음성은 제거된 top-level static Class를 되살리는 경우, 경계는 generic
 Class별 cell 수가 불명확한 경우다.
 
