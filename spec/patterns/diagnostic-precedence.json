@@ -1,6 +1,6 @@
 {
-  "schema": "deeplus.pattern-diagnostic-precedence/r1",
-  "revision": "r51f3-current-type-refinement-narrowing-coherence-r1",
+  "schema": "deeplus.pattern-diagnostic-precedence/r2",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "authority": "LANGUAGE / DIAGNOSTICS / OFFICIAL_TOOLING",
   "evidence_level": "DESIGN_STATIC",
   "product_execution": "NOT_RUN",
@@ -12,55 +12,78 @@
     "insert_wildcard_automatically": false,
     "relax_exact_to_open_automatically": false,
     "replace_move_with_clone_automatically": false,
-    "open_private_or_foreign_representation_automatically": false
+    "open_private_or_foreign_representation_automatically": false,
+    "insert_middle_rest_closing_marker_only_when_unambiguous": true,
+    "rewrite_sequence_carrier_automatically": false,
+    "rewrite_local_assignment_target_automatically": false
   },
   "counts": {
-    "precedence_rows": 9
+    "precedence_rows": 11
   },
   "rows": [
     {
       "precedence": 1,
-      "family_id": "DPD-PARSER-RECOVERY-SHAPE",
+      "family_id": "DPD-PARSER-SHAPE",
       "stage": "parser",
-      "selection_rule": "Reject malformed delimiter, token ownership, multiple rest, nonfinal rest, and recovery shape before semantic analysis.",
+      "selection_rule": "Reject malformed delimiters, token ownership, multiple rest markers, an incomplete middle-rest pair, and comma products with fewer than two items before semantic analysis.",
       "representative_diagnostic_ids": [
         "PATTERN_MULTIPLE_REST",
-        "PATTERN_REST_MUST_BE_FINAL_IGNORED"
+        "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+        "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+        "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+        "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+        "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
+        "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+        "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS"
       ]
     },
     {
       "precedence": 2,
       "family_id": "DPD-LOCAL-IDENTITY",
       "stage": "checker",
-      "selection_rule": "Reject duplicate binders or duplicate semantic Record labels before external resolution.",
+      "selection_rule": "Reject duplicate binders, duplicate semantic labels or keys, and duplicate direct-local assignment PlaceId identities before external resolution.",
       "representative_diagnostic_ids": [
         "PATTERN_DUPLICATE_BINDING",
-        "RECORD_PATTERN_DUPLICATE_FIELD"
+        "RECORD_PATTERN_DUPLICATE_FIELD",
+        "PATTERN_MAP_DUPLICATE_KEY",
+        "PATTERN_ASSIGNMENT_TARGET_OVERLAP"
       ]
     },
     {
       "precedence": 3,
       "family_id": "DPD-RESOLUTION-VISIBILITY",
       "stage": "checker",
-      "selection_rule": "Resolve qualified variants and required Record labels, then enforce static visibility without consulting getters or runtime keys.",
+      "selection_rule": "Resolve qualified and named variants, Record labels, transparent nominal owners, static Map keys, and pin targets, then enforce visibility without invoking user code.",
       "representative_diagnostic_ids": [
         "RECORD_PATTERN_UNKNOWN_FIELD",
         "RECORD_PATTERN_PRIVATE_FIELD",
-        "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN"
+        "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN",
+        "PATTERN_PIN_REQUIRES_STABLE_VALUE"
       ]
     },
     {
       "precedence": 4,
-      "family_id": "DPD-SHAPE-REFUTABILITY",
+      "family_id": "DPD-CARRIER-DESCRIPTOR",
       "stage": "checker",
-      "selection_rule": "After resolution, reject impossible shape or a refutable pattern in an irrefutable-only context.",
+      "selection_rule": "Validate that Current sequence rest uses List<T>, produces the exact ListRestView<T> residual, and does not infer a universal Sequence witness for ReadonlyView<T>.",
       "representative_diagnostic_ids": [
-        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
-        "PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN"
+        "PATTERN_REST_CARRIER_NOT_ADMITTED",
+        "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
       ]
     },
     {
       "precedence": 5,
+      "family_id": "DPD-SHAPE-REFUTABILITY",
+      "stage": "checker",
+      "selection_rule": "After resolution, reject impossible exact/open shape constraints or a refutable pattern in a checker-proven-irrefutable context.",
+      "representative_diagnostic_ids": [
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+        "PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN",
+        "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH"
+      ]
+    },
+    {
+      "precedence": 6,
       "family_id": "DPD-OR-ALIAS-CONTRACT",
       "stage": "checker",
       "selection_rule": "Check the observable Or binder contract and same-subject alias compatibility; ProjectionPath and source-field-order differences are not errors by themselves.",
@@ -70,46 +93,57 @@
       ]
     },
     {
-      "precedence": 6,
+      "precedence": 7,
       "family_id": "DPD-OWNERSHIP-ESCAPE",
       "stage": "checker",
-      "selection_rule": "Reject overlapping mutable projections, premature moves, invalid partial moves, borrow escape, and cross-arm usable-place mismatch before guard checking.",
+      "selection_rule": "Reject overlapping mutable projections, premature moves, invalid partial moves, borrow or rest-view escape, and cross-arm usable-place mismatch before guard checking.",
       "representative_diagnostic_ids": [
         "PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN",
         "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
         "PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY",
-        "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
-      ]
-    },
-    {
-      "precedence": 7,
-      "family_id": "DPD-GUARD",
-      "stage": "checker",
-      "selection_rule": "A single guard sees read-only nonescaping probe binders; reject consume, mutation, throw, effect, authority acquisition, suspension, escape, and non-Bool type in deterministic order.",
-      "representative_diagnostic_ids": [
-        "MATCH_GUARD_CONSUME_NOT_ALLOWED",
-        "MATCH_GUARD_EFFECT_NOT_ALLOWED",
-        "MATCH_GUARD_THROWS_NOT_ALLOWED",
-        "MATCH_GUARD_NOT_BOOL",
-        "FOR_LET_FILTER_GUARD_NOT_BOOL"
+        "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
       ]
     },
     {
       "precedence": 8,
-      "family_id": "DPD-EXHAUSTIVENESS-USEFULNESS",
+      "family_id": "DPD-GUARD-CONTRACT",
       "stage": "checker",
-      "selection_rule": "After all admitted rows are typed, diagnose unreachable arms and a deterministic missing constructor witness; guarded arms add no unconditional coverage.",
+      "selection_rule": "Validate the single pure Bool guard after probe binders and descriptors are available but before any final binder or assignment commit.",
       "representative_diagnostic_ids": [
-        "MATCH_ARM_UNREACHABLE",
-        "MATCH_NOT_EXHAUSTIVE",
-        "MATCH_NONEXHAUSTIVE_AFTER_GUARDS"
+        "MATCH_GUARD_NOT_BOOL",
+        "MATCH_GUARD_EFFECT_NOT_ALLOWED",
+        "MATCH_GUARD_THROWS_NOT_ALLOWED",
+        "CATCH_PATTERN_GUARD_NOT_PURE"
       ]
     },
     {
       "precedence": 9,
-      "family_id": "DPD-ANALYSIS-RESOURCE-LIMIT",
+      "family_id": "DPD-LOCAL-ASSIGNMENT-GROUP",
       "stage": "checker",
-      "selection_rule": "When no semantic result is available within the deterministic symbolic-work budget, emit one resource-limit diagnostic and no partial HIR or MIR.",
+      "selection_rule": "Require direct mutable local targets, pairwise nonoverlapping PlaceId values, checker-proven irrefutability, one RHS staging, and one infallible logical group commit.",
+      "representative_diagnostic_ids": [
+        "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+        "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+        "PATTERN_ASSIGNMENT_REFUTABLE",
+        "PATTERN_ASSIGNMENT_SHARED_TARGET",
+        "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL"
+      ]
+    },
+    {
+      "precedence": 10,
+      "family_id": "DPD-EXHAUSTIVENESS",
+      "stage": "checker",
+      "selection_rule": "Compute coverage only after all admitted pattern, owner, carrier, guard, and ownership checks succeed; open Record and Map tails do not create unconditional coverage cells.",
+      "representative_diagnostic_ids": [
+        "MATCH_NOT_EXHAUSTIVE",
+        "MATCH_ARM_UNREACHABLE"
+      ]
+    },
+    {
+      "precedence": 11,
+      "family_id": "DPD-RESOURCE-LIMIT",
+      "stage": "checker",
+      "selection_rule": "Apply deterministic analysis limits last so a lower-precedence resource diagnostic never hides a concrete earlier semantic error.",
       "representative_diagnostic_ids": [
         "PATTERN_ANALYSIS_RESOURCE_LIMIT"
       ]

@@ -135,7 +135,7 @@ migration_rule:
 
 ### 6단계 — activation evidence와 판정을 쓴다
 
-최소 evidence는 exact grammar/recovery, Option-only checker, one-layer
+최소 evidence는 exact grammar/admission, Option-only checker, one-layer
 normalization, evaluation/ownership/guard/exhaustiveness law, deterministic
 diagnostics, formatter/LSP, positive/negative/boundary corpus, HIR/MIR
 preservation과 target-bound receipt다.
@@ -209,7 +209,7 @@ let optionValue = @match maybeValue {
   placement를 추가한 별도 카드를 만든다.
 - MIR-X1 draft를 대상으로 “유용한 설계 원칙”과 “아직 authority가 없는
   schema/backend 결정”을 두 열로 분리한다.
-- diagnostic family가 recovery AST/HIR residue를 만들지 않는지 negative
+- diagnostic family가 invalid source의 AST/HIR residue를 만들지 않는지 negative
   matrix를 보강한다.
 
 ## 완료 체크리스트

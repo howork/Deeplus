@@ -90,7 +90,7 @@
 - [09-02. effect, throws, Result](part-09-failure-effects-contracts/09-02-effects-throws-result.md)
 - [09-03. `try`, `@try`, `finally`](part-09-failure-effects-contracts/09-03-try-at-try-finally.md)
 - [09-04. law, contract, assert, `def#guard`](part-09-failure-effects-contracts/09-04-law-contract-assert-guard.md)
-- [09-05. 진단과 recovery](part-09-failure-effects-contracts/09-05-diagnostics-recovery.md)
+- [09-05. 진단 우선순위와 오류 경계](part-09-failure-effects-contracts/09-05-diagnostics.md)
 - [실습 09. 복원 가능한 입력 처리](part-09-failure-effects-contracts/lab-09-resilient-import.md)
 
 ## Part 10 — 비동기와 actor 동시성

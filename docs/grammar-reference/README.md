@@ -51,7 +51,7 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 | 값의 책임 추적 | [소유권, 대여 및 책임](12-ownership-borrowing-and-responsibility.md) |
 | 비동기 또는 액터 코드 사용 | [비동기, 태스크, 액터 및 동시성](13-async-tasks-actors-and-concurrency.md) |
 | 외부 경계 이해 | [FFI, unsafe, 컴파일러 트리 및 프로필](14-ffi-unsafe-metaprogramming-and-profiles.md) |
-| 제안되었거나 거부된 표기 확인 | [Preview, 복구 및 제거된 표면](15-preview-recovery-and-removed-surfaces.md) |
+| Preview와 Preview Design 확인 | [Preview 표면](15-preview-surfaces.md) |
 | 정확한 production이 쓰이는 문맥 찾기 | [문맥별 구문과 production 길잡이](16-contextual-syntax-and-production-guide.md) |
 | 이름·generic·호출 판정 순서 추적 | [이름 해석, 타입 추론 및 호출 판정](17-name-resolution-type-inference-and-calls.md) |
 | 평가·소유권·MIR·백엔드 관찰 추적 | [평가, 소유권, MIR 및 백엔드](18-evaluation-ownership-mir-and-backends.md) |
@@ -85,7 +85,7 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 위해 문법과 정적 의미를 네 개의 주제 절로 펼친 구조적 예외다.
 그 장의 “소스 루트”와 “모듈과 경로”는 문법, “import/use/export”와
 “최상위 가시성”은 수용·정적 의미 및 범위 효과를 함께 담당한다.
-`15-preview-recovery-and-removed-surfaces.md`는 현행 예제를 가르치는 장이
+`15-preview-surfaces.md`는 현행 예제를 가르치는 장이
 아니므로 다섯째 절의 이름을 “상태별 검토 예제”로 바꾸되 같은 증거
 역할을 유지한다. 나머지 본문 장은 위 여덟 절을 그대로 사용한다.
 
@@ -100,8 +100,6 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 | `CURRENT` | 의미론 검사를 조건으로 안정 소스 루트가 수용하는 형식 |
 | `PREVIEW_GATED` | 정확한 Preview 루트와 기능 gate를 통해서만 도달 가능한 형식 |
 | `PREVIEW_NONACTIVATABLE` | 도입 검토에 필요한 설계는 갖추었지만 현행 소스 경로와 활성화 권위가 없는 형식 |
-| `RECOVERY_ONLY` | 명확한 진단을 내기 위해서만 인식하며 수용된 AST/HIR/MIR 잔여물을 만들지 않는 형식 |
-| `REMOVED` | 명시적인 현행 대안이 있는 역사적 또는 거부된 표기 |
 | `LIBRARY` | 문법 키워드나 파서 내재 규칙이 아니라 Prelude 또는 제공자가 공급하는 항목 |
 | `PRODUCT_NOT_RUN` | 설계 정적 증거만 존재하며 구현 지원을 주장하지 않는 상태 |
 

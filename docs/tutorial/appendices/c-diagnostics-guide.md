@@ -63,25 +63,12 @@ borrow가 escape·suspension·actor crossing을 넘는 오류는 “lifetime을
 길게 쓰면” 자동 해결되지 않는다. 복사, move, owned snapshot, 작업
 분해 중 의미에 맞는 선택을 해야 한다.
 
-## 5. recovery 진단
-
-Recovery surface는 과거 spelling을 인식해 정확한 수정 방향을 제시할
-수 있지만 admitted AST/HIR/MIR/API residue를 만들지 않는다.
-
-- `async def` → 현재 named async spelling `def#async`
-- 제거된 임의 custom operator → admitted named function 또는 fixed
-  conformance로 재설계
-
-진단이 fix-it을 제안해도 의미, effect, ownership이 보존되는지 확인한다.
-automatic rewrite가 금지된 migration alternative는 사용자가 선택해야
-한다.
-
-## 6. 연쇄 오류 줄이기
+## 5. 연쇄 오류 줄이기
 
 가장 앞선 phase의 primary 진단부터 고친다. 예를 들어 Module path가
 해결되지 않아 type과 witness가 모두 사라졌다면, 뒤쪽 “conformance
-없음”을 먼저 고치지 않는다. compiler가 recovery node를 만들었는지도
-확인한다.
+없음”을 먼저 고치지 않는다. compiler가 문법에 없는 source를 의미
+node로 만들지 않았는지도 확인한다.
 
 좋은 진단 보고서는 다음을 포함한다.
 
@@ -91,9 +78,9 @@ automatic rewrite가 금지된 migration alternative는 사용자가 선택해�
 - 기대 type/effect/identity
 - 실제로 관찰된 값
 - 안전한 수정 방향
-- Preview/Recovery 상태
+- Preview 상태
 
-## 7. 연습 문제
+## 6. 연습 문제
 
 1. **따라 하기:** 위 `Positive` 예제를 parser/checker 단계로 나눠
    어디까지 성공하는지 적어라.
@@ -101,10 +88,10 @@ automatic rewrite가 금지된 migration alternative는 사용자가 선택해�
    작성하라.
 3. **직접 설계:** non-exhaustive Enum match 진단에 필요한 primary
    span, missing case list, fix-it 조건을 정하라.
-4. **경계 과제:** recovery parser가 AST를 남기면 안 되는 이유를
+4. **경계 과제:** 문법에 없는 source가 AST를 남기면 안 되는 이유를
    HIR-H1 관점에서 설명하라.
 
-## 8. 교육용 rule label과 registry ID
+## 7. 교육용 rule label과 registry ID
 
 이 튜토리얼은 diagnostic catalog에 실제로 존재하는 이름만
 `diagnostic-family` 또는 exact ID라고 부른다. 일반적인 block-scope
@@ -115,11 +102,11 @@ Message와 actor-message는 ordinary call과 같은 ordered argument
 이는 새 diagnostic, 새 P1, 구현 지원을 발명하는 표식이 아니다.
 
 향후 exact ID를 정본화하려면 resolver/checker owner, primary span,
-precedence, recovery, fix-it, example fixture와 catalog row를 하나의 변경
+precedence, admission, fix-it, example fixture와 catalog row를 하나의 변경
 집합으로 검토해야 한다. 비슷한 이름의 기존 진단을 단지 문구가
 가깝다는 이유로 재사용하지 않는다.
 
-## 9. 정본 근거
+## 8. 정본 근거
 
 - `spec/diagnostics/catalog/**`
 - `spec/diagnostics/relations/**`

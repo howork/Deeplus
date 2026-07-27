@@ -427,8 +427,29 @@ coordinate에서 bitwise AND를 수행한다. 이 예는 정적 설계 투영이
 ### 대입과 cast
 
 대입 대상은 허용된 mutable place여야 하며 결과 type은 `Unit`이다.
+bare comma 또는 Tuple target의 지역 병렬 대입은 서로 겹치지 않는 direct
+mutable Plain local에만 허용된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+left, right = right, left
+(x, y) = nextPair
+```
+
+target은 왼쪽부터 한 번 resolve되고 RHS Tuple은 한 번 평가된다. 모든
+type, ownership, overlap 검사가 끝난 뒤 하나의 logical commit을
+수행하므로 precommit 실패의 assignment write count는 0이다. 이 법칙은
+member/index/shared/actor place 또는 CPU multiword atomicity로 확장되지
+않는다.
+
 `as? T`는 `Option<T>`를 반환한다. `as! T`는 정해진 checked-or-defect
 cast law를 따른다. 어느 형식도 operator overloading 요청이 아니다.
+
+Pattern goal에서 prefix `^stableValue`는 power가 아니라 pin Pattern이다.
+Pattern parser가 선택한 owner에서만 기존 stable value와 strong equality를
+검사하며 arbitrary operator lookup을 하지 않는다. `0..<10`, `>= 10`
+같은 range/relational Pattern도 expression operator overload가 아니라
+닫힌 Pattern test node다.
 
 ### closed Union 타입 판정
 
@@ -474,8 +495,6 @@ branch, 두 lazy region과 하나의 responsibility join이 남는다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
 ```deeplus
 def choosePort(secure: Bool) -> Int
-    throws Never
-    effects {}
 = {
     let port = secure ? 443 : 80
     return port
@@ -749,7 +768,6 @@ snippet은 주변 선언을 전제로 한 정적 예이며 제품 checker 실행
 | shape가 다른 NumericArray에 `&&`/`||` 적용 | 거부; implicit broadcast 없음 |
 | `List<Bool> && List<Bool>` | 거부; generic collection은 pointwise carrier가 아님 |
 | standalone `!value` Bool negation | 거부; `not value` 사용 |
-| `operator <+> precedence 130` | 비수용; recovery-only `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT` |
 | left owner 밖에서 `+`, `-`, `*` conformance 선언 | 거부; `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` |
 | `/`, `%`, 비교·논리 glyph에 conformance 연결 | 거부; `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` |
 | mixed-width/signedness bitwise | 명시적 checked conversion 없이는 거부 |
@@ -789,7 +807,7 @@ Preview 후보도 아니다.
 - real power는 runtime 값에 따라 Complex로 자동 승격하지 않고, Complex
   principal branch는 imaginary signed zero를 보존한다.
 - `^`는 Pratt 위치에 따라 infix power, postfix transpose, unit static
-  power로 구분된다.
+  power로 구분된다. Pattern goal의 prefix `^`는 별도의 pin owner다.
 - `**`는 infix linear product와 argument/materialization의 named unfold를
   문맥별로 가진다. named-rest parameter는 `***`다.
 - message `~`, call, member, index, constructor, derivation, trailing closure는

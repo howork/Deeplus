@@ -265,7 +265,6 @@
       "data_shaping_callshape_model"
     ],
     "diagnostic_refs": [
-      "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
       "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
     ],
     "design_seed_diagnostic_refs": [],
@@ -293,13 +292,13 @@
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "classify the owner as parameter, function-type item, call argument, or materialization entry",
-      "for parameter/type owners admit attached suffix *** and reject ** with NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
-      "for call/materialization owners admit attached prefix ** and reject *** with TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+      "for parameter/type owners admit attached suffix ***",
+      "for call/materialization owners admit attached prefix ** and reject a misplaced *** with TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
       "defer Record/finality/cardinality checks to NamedRestParameterRecordAndLastPosition"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "NamedRestCollectorAdmitted",
-    "active_primary_diagnostic": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
+    "active_primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
     "secondary_diagnostics": [
       "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
     ],

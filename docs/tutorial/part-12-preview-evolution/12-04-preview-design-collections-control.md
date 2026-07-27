@@ -45,9 +45,9 @@ broadcast라면 어느 axis를 늘리고 mismatch는 언제 거부하는가? sna
 | record/ownership view | `literal_shaped_closed_record_type_surface_preview_design`, `immutable_first_collection_ownership_preview_design`, `freeze_snapshot_view_responsibility_preview_design` | row closure, alias/lifetime, copy/view/freeze, mutation visibility |
 | control sugar | `nullsafe_control` | exact `Option` layer, one evaluation, type/effect/ownership join |
 
-모두 `PREVIEW_DESIGN/nonactivatable`이다. 특히 과거의 일반화된 `&expr`
-아이디어는 NumericArray `&` polarity나 borrow처럼 보이는 surface와
-충돌할 수 있으므로 토큰 모양만으로 owner를 고르지 않는다.
+모두 `PREVIEW_DESIGN/nonactivatable`이다. 일반화된 `&expr` 표면은
+NumericArray `&` polarity나 borrow처럼 보이는 surface와 충돌할 수
+있으므로 토큰 모양만으로 owner를 고르지 않는다.
 
 ## 6. 단계별 예제
 
@@ -127,7 +127,7 @@ let result = matrix + &row
 ```
 
 이 spelling은 선택된 current/Preview Gated surface가 아니다. parser가
-context anchor나 broadcast로 임의 recovery admission해서는 안 된다.
+context anchor나 broadcast로 임의 source admission해서는 안 된다.
 
 경계: freeze/snapshot/view를 하나의 단어로 합치면 다음 차이가 사라진다.
 

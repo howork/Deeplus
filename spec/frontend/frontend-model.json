@@ -1,8 +1,8 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
-  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
-  "date": "2026-07-15",
+  "date": "2026-07-28",
   "authority_bundle": {
     "human_language_and_semantics": "spec/language.md",
     "exact_syntax": "spec/grammar/deeplus.ebnf",
@@ -50,7 +50,6 @@
       "match",
       "module",
       "not",
-      "null",
       "or",
       "repeat",
       "return",
@@ -271,25 +270,12 @@
       "@repeat"
     ],
     "hash_role_trivia": "allowed by parser; formatter canonicalizes to attached #word",
-    "removed_without_recovery": [
-      "source compiler-tree quotation families",
-      "attached logic-variable token family",
-      "obsolete prefixed collection spelling"
-    ],
-    "recovery_only": [
-      "let@lazy",
-      "unit middle dot",
-      "named-rest parameter/type written with **",
-      "null literal",
-      "infix ..> or ... range spelling",
-      "custom operator declaration"
-    ],
     "semantic_rejections": [
       "fixed-operator conformance outside exact binary +,-,* or outside its left-owner DIRECT_GLOBAL profile",
       "open or provider-driven runtime type tests",
       "accessor property header member visibility"
     ],
-    "value_absence": "::none or Option<T>::none; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor; null is recovery only",
+    "value_absence": "::none in an expected Option context or Option<T>::none explicitly; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor",
     "operator_token_vocabulary": "CLOSED",
     "operator_glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_BINARY_PLUS_MINUS_MULTIPLY",
     "range_delimiters": [
@@ -311,18 +297,7 @@
       "while let pattern = expr",
       "for let pattern in expr",
       "Preview Design only: if/while/guarded-local let? OptionPayloadPattern = expr; nonactivatable"
-    ],
-    "r51f_removed_surface_boundary": {
-      "status": "CURRENT",
-      "removed_surface_names": [
-        "Map String-key dot projection",
-        "increment/decrement expression",
-        "tail-recursion callable kind",
-        "regex literal",
-        "automatic heterogeneous List Union inference"
-      ],
-      "no_compatibility_gate": true
-    }
+    ]
   },
   "stage_names": [
     {
@@ -697,10 +672,6 @@
         "parameter_or_function_type": "attached_suffix_***_named_rest",
         "call_or_materialization": "attached_prefix_**_named_unfold",
         "linear_product_expression": "spaced_infix_**"
-      },
-      "recovery": {
-        "parameter_or_function_type_**": "reject and replace with ***",
-        "call_or_materialization_***": "reject and replace with **"
       }
     },
     {
@@ -883,8 +854,7 @@
       "grammar": "TypeAnnotation/TypeRef",
       "checker_owned": true,
       "function_type_residue_marker": "***",
-      "named_unfold_marker": "**",
-      "double_star_parameter_or_type": "RECOVERY_REJECT"
+      "named_unfold_marker": "**"
     },
     "class": {
       "ordinary_body": "REQUIRED",
@@ -1003,7 +973,7 @@
       "EffectRow",
       "ErrorSet"
     ],
-    "typed_pattern": "Pattern children use Identifier : TypeRef; a local BindingPattern owns one optional whole-pattern TypeAnnotation while excluding a second top-level TypedBindingPattern derivation; callable parameters use ParameterPatternSlot = Identifier and never reinterpret a refutable Pattern into a public signature",
+    "typed_pattern": "Pattern children use Identifier : TypeRef; a local BindingPattern owns one optional whole-pattern TypeAnnotation while excluding a second top-level TypedBindingPattern derivation; a callable parameter begins with a stable channel Identifier and may add only a checker-proven irrefutable structural body-entry Pattern that never changes the public signature",
     "field_dispatch_marker": "FORBIDDEN_CURRENT",
     "trait_associated_dispatch_marker": "FORBIDDEN_CURRENT"
   },
@@ -1234,10 +1204,9 @@
         "PreviewExecutableSourceFile",
         "PreviewScriptSourceFile"
       ],
-      "structural_candidate_may_omit_for_recovery": true,
       "admitted_visibility_required": true,
       "missing_diagnostic": "TYPE_DECL_VISIBILITY_REQUIRED",
-      "omission_disposition": "RECOVERY_ONLY_REJECT_BEFORE_HIR_IDENTITY",
+      "omission_disposition": "REJECT_BEFORE_HIR_IDENTITY",
       "omission_admitted_hir_node_count": 0,
       "omission_admitted_type_identity_count": 0,
       "omission_admitted_api_digest_entry_count": 0,
@@ -1569,11 +1538,7 @@
           "lbp": 120,
           "rbp": 121,
           "assoc": "nonassociative",
-          "parselet": "range",
-          "rejected_reserved_spellings": {
-            "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
-            "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
-          }
+          "parselet": "range"
         },
         {
           "id": "additive",
@@ -1711,7 +1676,6 @@
       "range_owner": "SliceRange",
       "scalar_expression_owner": "PrattSliceIndexExpr",
       "bounds_required": true,
-      "missing_bound_recovery": "use ^ or $ for the first or last logical coordinate",
       "terminates_before": [
         "..",
         "..<",
@@ -1722,17 +1686,12 @@
         "^",
         "$"
       ],
-      "anchor_outside_slice_bound_recovery": {
+      "full_axis": "* (NumericArray axis only)",
+      "empty_axis": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "anchor_outside_slice_bound_diagnostic": {
         "diagnostic": "SLICE_ANCHOR_OUTSIDE_SLICE",
         "stage": "parser",
         "semantic_anchor_node_count": 0
-      },
-      "full_axis": "* (NumericArray axis only)",
-      "empty_axis": "INDEX_SUFFIX_REQUIRES_AXIS",
-      "empty_axis_recovery_production": "RecoveryEmptyIndexSuffix",
-      "rejected_reserved_spellings": {
-        "..>": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
-        "...": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
       }
     },
     "type": {
@@ -1890,7 +1849,7 @@
         ],
         "interpolation": false,
         "selection_law": "emit this whole-token outcome only when no unescaped interpolation opener occurs",
-        "recovery": [
+        "invalid_forms": [
           "unknown escape",
           "invalid Unicode scalar or name",
           "physical newline",
@@ -1967,7 +1926,7 @@
         "direct_scalars": "every Unicode scalar except the closing quote and physical line terminator",
         "escapes": [],
         "interpolation": false,
-        "recovery": [
+        "invalid_forms": [
           "physical newline",
           "unterminated at EOF"
         ]
@@ -1985,13 +1944,13 @@
           "interpolation_path",
           "interpolation_expr"
         ],
-        "recovery": [
+        "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
+        "mir": "ConstString for plain content; ordered RenderParts for interpolation",
+        "invalid_forms": [
           "missing opener newline",
           "off-line closer",
           "unterminated at EOF"
-        ],
-        "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
-        "mir": "ConstString for plain content; ordered RenderParts for interpolation"
+        ]
       },
       "ScannerBytesLiteral": {
         "token": "BYTES_LITERAL",
@@ -2011,23 +1970,13 @@
         "unicode_escapes": false,
         "interpolation": false,
         "result_type": "Bytes",
-        "recovery": [
+        "invalid_forms": [
           "non-ASCII direct scalar",
           "unknown or Unicode escape",
           "invalid two-digit hex escape",
           "physical newline",
           "unterminated at EOF"
         ]
-      },
-      "ScannerRecoveryOperatorSymbol": {
-        "profile": "RECOVERY_ONLY",
-        "context": "only after a declaration-entry parser has committed to exact contextual lexeme operator",
-        "nonempty_character_set": "!%&*+-/<=>?^|~",
-        "termination": "trivia, precedence contextual lexeme, or StatementBoundary",
-        "longest_match": true,
-        "stable_token_identity": null,
-        "preview_token_identity": null,
-        "semantic_node_count": 0
       }
     }
   },
@@ -2049,12 +1998,12 @@
     },
     "function_static_activation": {
       "grammar": "CallableBlock owns at most one FunctionStaticActivation after optional BlockPrologue and before BlockSequence",
-      "cst": "FunctionStaticActivationCst preserves contextual static, body tokens, comments, and trivia; the historical scope#static surface is retained only by its recovery CST",
+      "cst": "FunctionStaticActivationCst preserves contextual static, body tokens, comments, and trivia",
       "ast": "FunctionStaticActivationDecl is one nullable field of CallableBodyAst and is never an ordinary BlockItem",
       "hir": "HirFunctionStaticActivation retains CallableImplementationId, normalized owner recipe, checked body, dependency summaries, contract digest, and source span",
       "mir": "the call wrapper ensures FunctionStaticOwnerId after receiver/argument/default staging and before the existing atomic ownership_commit; the activation block is never lowered as ordinary body control flow",
       "checker": "exact owner/profile admission, first-runtime-item placement, caller-data independence, effect/error/suspension/authority/resource closure, static helper closure, and owner identity",
-      "formatter": "print canonical static { ... }; recovery input scope#static is rewritten to the same normalized activation identity"
+      "formatter": "print canonical static { ... }"
     }
   },
   "feature_profiles": {
@@ -2064,26 +2013,6 @@
       "depends_on": [
         "ffi_minimum_sound_profile"
       ]
-    },
-    "recovery": "diagnostic-only; never admitted"
-  },
-  "parser_recovery_owners": {
-    "null_literal": {
-      "production": "RecoveryNullLiteral",
-      "diagnostic": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
-      "semantic_node_count": 0
-    },
-    "empty_index_suffix": {
-      "production": "RecoveryEmptyIndexSuffix",
-      "diagnostic": "INDEX_SUFFIX_REQUIRES_AXIS",
-      "context": "after an admitted postfix receiver only",
-      "semantic_node_count": 0
-    },
-    "custom_operator_declaration": {
-      "production": "RecoveryCustomOperatorDeclaration",
-      "diagnostic": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-      "context": "declaration entry after exact contextual operator lexeme only; ScannerRecoveryOperatorSymbol is recovery-only",
-      "semantic_node_count": 0
     }
   },
   "diagnostics": [
@@ -2097,17 +2026,14 @@
       "fix": "${...}"
     },
     {
-      "id": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
       "stage": "PARSER",
       "fix": "***"
     },
     {
-      "id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
       "stage": "PARSER",
       "fix": "::none"
     },
     {
-      "id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
       "stage": "PARSER",
       "fix": "named Trait method or function"
     },
@@ -2157,7 +2083,6 @@
       "fix": "use a named Trait method or API"
     },
     {
-      "id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
       "stage": "PARSER",
       "fix": ".. or ..<"
     },
@@ -2167,12 +2092,10 @@
       "fix": "declared first coordinate/key; [*] only for NumericArray"
     },
     {
-      "id": "LAZY_BINDING_USE_HASH",
       "stage": "PARSER",
       "fix": "let#lazy"
     },
     {
-      "id": "UNIT_MULTIPLICATION_USE_STAR",
       "stage": "PARSER",
       "fix": "*"
     },
@@ -2219,9 +2142,8 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 458,
-    "PREVIEW": 13,
-    "RECOVERY": 17
+    "STABLE": 516,
+    "PREVIEW": 13
   },
   "numeric_lexical_policy": {
     "sign_is_prefix_operator": true,
@@ -2280,8 +2202,7 @@
         "4i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
         "4.0 i": "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
         "4.0f64i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
-        "0x4.0i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
-        "4.0j": "HISTORICAL_IMAGINARY_J_NOT_CURRENT"
+        "0x4.0i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED"
       },
       "bare_i": "ordinary IDENTIFIER",
       "global_constant_i": false,
@@ -2489,9 +2410,15 @@
       "MovePattern",
       "TypedBindingPattern",
       "BindingPattern",
+      "PinPattern",
+      "RangePattern",
+      "RelationalPattern",
+      "TuplePattern",
       "RecordPattern",
       "ListPattern",
+      "MapPattern",
       "VariantPattern",
+      "NominalPattern",
       "WildcardPattern",
       "UnitPattern",
       "LiteralPattern",
@@ -2502,9 +2429,15 @@
       "PatternAliasBorrow",
       "PatternMove",
       "PatternBind",
-      "PatternRecordSubset",
-      "PatternListExactOrIgnoredTail",
+      "PatternPin",
+      "PatternRange",
+      "PatternRelational",
+      "PatternTupleExact",
+      "PatternRecordExactOrOpen",
+      "PatternListExactOrPositionalRest",
+      "PatternMapExactOrOpen",
       "PatternVariant",
+      "PatternNominalTransparent",
       "PatternWildcard",
       "PatternUnit",
       "PatternLiteral"
@@ -2534,7 +2467,15 @@
     "flow_proof_environment": {
       "name": "Phi",
       "join": "intersection of facts on all incoming edges",
-      "kill_events": ["subject assignment", "aliasing mutation", "exclusive borrow", "escape or mutable capture", "consume", "suspension that invalidates a stable-place proof", "call with possible subject mutation or consumption"],
+      "kill_events": [
+        "subject assignment",
+        "aliasing mutation",
+        "exclusive borrow",
+        "escape or mutable capture",
+        "consume",
+        "suspension that invalidates a stable-place proof",
+        "call with possible subject mutation or consumption"
+      ],
       "ordinary_bool_call_adds_fact": false,
       "def_guard_call_adds_fact": "only an exact direct def#guard call with a fresh valid GuardSummaryV1 and stable actual places",
       "def_guard_true_edge": "substitute stable actual places into P and add P",
@@ -2547,10 +2488,25 @@
     },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
-    "tuple_pattern_current": false,
-    "record_rest_current": false,
-    "list_rest_current": "zero or one final ignored .._",
-    "parameter_pattern_current": "Identifier only"
+    "tuple_pattern_current": "exact fixed product; (p) grouping, (p,) one-Tuple, no Tuple rest",
+    "record_rest_current": "exact by default; .._ open-ignore; ..name exact residual",
+    "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",
+    "list_rest_current": "exact, [.._], or exactly one attached leadings.. / ..tail / ..middle.. positional rest",
+    "list_rest_result": {
+      "borrowed_type": "ListRestView<T>",
+      "owned_moved_list_type": "List<T>",
+      "empty_residual": "RankSpan(start_rank,count=0,insertion_boundary)",
+      "preserves_source_logical_coordinates": true,
+      "ordinary_readonly_view_gains_sequence_witness": false,
+      "sequence_conformance_alone_activates_opening": false,
+      "temporary_owner_retention": "PREVIEW_GATED"
+    },
+    "parameter_pattern_current": "leading channel Identifier plus optional checker-proven irrefutable structural body-entry Pattern",
+    "assertive_binding_current": "let! / var! mismatch raises PatternMatchDefect",
+    "condition_chain_current": "left-to-right short-circuit `and then`; later terms see earlier binders",
+    "catch_pattern_current": "refutable first-match with unmatched propagation",
+    "parallel_assignment_current": "distinct mutable direct LocalPlaceIds; RHS staged once; one failure-atomic logical group commit; Unit",
+    "bare_tuple_surface_current": "return type/value, binding, and direct-local assignment owner sugar only; no general comma Expr"
   },
   "call_frontend_contract": {
     "surface_owners": {
@@ -2648,7 +2604,11 @@
       }
     ],
     "selection": {
-      "key": ["OperatorId", "normalized_left_type", "normalized_right_type"],
+      "key": [
+        "OperatorId",
+        "normalized_left_type",
+        "normalized_right_type"
+      ],
       "intrinsic_reserved_lookup_count": 0,
       "nonintrinsic_success_conformance_count": 1,
       "owner": "normalized left nominal type defining package",
@@ -2710,12 +2670,6 @@
       "static_call_with_trailing_closure": "static() { ... } remains an ordinary CallExpr",
       "formatter": "static { ... }"
     },
-    "historical_surface_recovery": {
-      "surface": "scope#static { ... }",
-      "diagnostic": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
-      "normalized_hir_identity_equal": true,
-      "owner_recipe_spelling_input": false
-    },
     "lossless_cst_node": "FunctionStaticActivationCst",
     "normalized_ast_node": {
       "node": "FunctionStaticActivationDecl",
@@ -2725,13 +2679,35 @@
       "normal_value": "Unit"
     },
     "admitted_synchronous_named_owners": {
-      "ModuleFunctionDecl": ["def", "def#pure"],
-      "ExtensionFunctionDecl": ["def"],
-      "nominal MemberFunctionDecl": ["def", "def#mut", "def#consume", "def#pure"],
-      "TypeSideMemberFunctionDecl": ["def"],
-      "TraitMethodDecl with body": ["def", "def#pure"],
-      "ConformanceMethodDecl": ["def", "def#mut", "def#consume", "def#pure"],
-      "ExtensionSetFunctionDecl": ["def"]
+      "ModuleFunctionDecl": [
+        "def",
+        "def#pure"
+      ],
+      "ExtensionFunctionDecl": [
+        "def"
+      ],
+      "nominal MemberFunctionDecl": [
+        "def",
+        "def#mut",
+        "def#consume",
+        "def#pure"
+      ],
+      "TypeSideMemberFunctionDecl": [
+        "def"
+      ],
+      "TraitMethodDecl with body": [
+        "def",
+        "def#pure"
+      ],
+      "ConformanceMethodDecl": [
+        "def",
+        "def#mut",
+        "def#consume",
+        "def#pure"
+      ],
+      "ExtensionSetFunctionDecl": [
+        "def"
+      ]
     },
     "excluded_owners_or_profiles": [
       "EntryFunctionDecl",
@@ -2746,13 +2722,21 @@
       "async or suspending named callable",
       "generator",
       "PreviewFfiFunctionDecl",
-      "recovery declaration",
       "bodyless Trait requirement",
       "def#guard"
     ],
     "checked_body_profile": {
       "caller_observation_count": 0,
-      "forbidden_caller_inputs": ["self", "receiver", "parameter", "evaluated default", "Context", "task identity", "actor identity", "thread identity"],
+      "forbidden_caller_inputs": [
+        "self",
+        "receiver",
+        "parameter",
+        "evaluated default",
+        "Context",
+        "task identity",
+        "actor identity",
+        "thread identity"
+      ],
       "normalized_error_set": [],
       "normalized_effect_row": [],
       "authority_count": 0,
@@ -2777,7 +2761,15 @@
       "contract_digest": "canonical normalized semantic body and dependency digest; excludes trivia, path spelling, source order, machine address, and backend code identity"
     },
     "call_boundary": {
-      "ordered_staging": ["callee or receiver", "explicit arguments left-to-right", "default arguments under current rules", "validation and temporary acquisition", "ensure FunctionStaticOwnerId", "existing atomic ownership_commit", "callable invoke and ordinary body"],
+      "ordered_staging": [
+        "callee or receiver",
+        "explicit arguments left-to-right",
+        "default arguments under current rules",
+        "validation and temporary acquisition",
+        "ensure FunctionStaticOwnerId",
+        "existing atomic ownership_commit",
+        "callable invoke and ordinary body"
+      ],
       "invented_CALL_INPUT_COMMIT_event": false,
       "activation_failure_ownership_commit_count": 0,
       "activation_failure_ordinary_body_count": 0,
@@ -2785,8 +2777,16 @@
       "staged_temporary_cleanup": "exactly once in reverse acquisition order"
     },
     "state_and_failure": {
-      "states": ["Dormant", "Initializing", "Ready", "Failed"],
-      "terminal_states": ["Ready", "Failed"],
+      "states": [
+        "Dormant",
+        "Initializing",
+        "Ready",
+        "Failed"
+      ],
+      "terminal_states": [
+        "Ready",
+        "Failed"
+      ],
       "winner_count": 1,
       "implicit_retry_count": 0,
       "implicit_reset_count": 0,
@@ -2860,12 +2860,12 @@
       "required_access": "read-only nonconsuming",
       "required_place_state_at_invoke": "LiveReadable",
       "rooted_borrow_escape_count": 0,
-        "initial_proof_routes": [
-          "immediate invocation",
-          "local function with block-closed use graph",
-          "bounded local binding with direct calls only",
-          "exact selected invocation-bounded #scoped formal"
-        ]
+      "initial_proof_routes": [
+        "immediate invocation",
+        "local function with block-closed use graph",
+        "bounded local binding with direct calls only",
+        "exact selected invocation-bounded #scoped formal"
+      ]
     },
     "normalized_callable_descriptor": {
       "residence": "FrameIndependent | RegionBound(RegionId)",
@@ -3061,7 +3061,7 @@
     "try_statement": "try Block followed by one-or-more catch clauses with optional finally, or finally only",
     "try_expression_statement": "not current",
     "at_try_expression": "@try ValueBody followed by one-or-more value catches with optional finally, or finally only",
-    "value_if_totality": "@if requires else after recovery",
+    "value_if_totality": "@if requires else",
     "guard_cardinality": "zero or one per admitting owner",
     "guard_chain_node_count": 0,
     "parenless_call_exception": "one AtomicCallArgument followed by one TrailingClosureGroup"
@@ -3080,7 +3080,7 @@
     {
       "id": "HASH_LITERAL",
       "owner": "literal-prefix dispatcher",
-        "lookahead": "attached map/set/mut/NumericArray/bytes/raw payload; obsolete-prefixed-collection is never a current owner"
+      "lookahead": "attached map/set/mut/NumericArray/bytes/raw payload; obsolete-prefixed-collection is never a current owner"
     },
     {
       "id": "TILDE_MESSAGE",
@@ -3163,13 +3163,28 @@
       "represented_in": "spec/contracts/unified-call-actor-transport.json",
       "normalized_ast_node": "CallExpr",
       "product_support": "NOT_RUN"
+    },
+    "pattern_sequence_multivalue": {
+      "feature_ids": [
+        "pattern_decomposition",
+        "sequence_positional_rest_pattern",
+        "tuple_product_destructuring",
+        "bare_tuple_multivalue_surface",
+        "local_failure_atomic_pattern_assignment"
+      ],
+      "status": "CURRENT_STABLE_DESIGN",
+      "represented_in": "spec/contracts/pattern-sequence-multivalue-r1.json",
+      "schema": "schemas/language/pattern-sequence-multivalue.schema.json",
+      "static_fixtures": "tests/fixtures/current/pattern-sequence-multivalue-r1.json",
+      "semantic_p0": 0,
+      "product_support": "NOT_RUN"
     }
   },
   "preview_design_nonactivatable": {
     "dynamic_unsafe_quarantine_scope_msp": {
-      "recognized_only_in": "RECOVERY",
       "source_activation": "nonactivatable",
-      "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open"
+      "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open",
+      "documentation_status": "PREVIEW_DESIGN_NONACTIVATABLE_NO_SOURCE_ROUTE"
     },
     "option_optional_binding": {
       "feature_id": "option_let_question_binding_preview_design",
@@ -3208,6 +3223,22 @@
       "parser_cover_grammar": false,
       "source_activation": "nonactivatable",
       "reason": "transactional MIR, borrow conflict, migration, actor evidence, diagnostics, and execution gates are not activated"
+    },
+    "advanced_pattern_profiles": {
+      "represented_in": "spec/contracts/pattern-sequence-multivalue-r1.json",
+      "parser_cover_grammar": false,
+      "source_activation": "nonactivatable",
+      "features": [
+        "and/not Pattern",
+        "Set/NumericArray Pattern",
+        "Pattern Synonym/View/completeness/find",
+        "generic Sequence automatic opening",
+        "temporary-owner-retaining residual",
+        "affine/resource permutation",
+        "field/index/property/shared/actor/FFI multi-assignment",
+        "top-level destructuring"
+      ],
+      "reason": "each profile needs separate ownership, finiteness, selection, cleanup, diagnostic, tooling, and target-bound execution evidence"
     }
   },
   "accepted_surface_families_current": {

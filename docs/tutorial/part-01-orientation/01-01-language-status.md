@@ -8,15 +8,14 @@
 이 장은 여러 상태를 비교한다. `CURRENT_DESIGN_PRODUCT_NOT_RUN`은 현행
 정본 설계, `PREVIEW_GATED_PRODUCT_NOT_RUN`은 명시적 gate가 필요한
 Preview, `PREVIEW_DESIGN_NONACTIVATABLE`은 아직 source로 활성화할 수 없는
-설계 검토면, `RECOVERY_ONLY`는 잘못된 과거 철자를 정확히 진단하기 위한
-표면이다. 어느 상태도 그 자체로 compiler나 runtime의 실행 PASS를
+설계 검토면이다. 어느 상태도 그 자체로 compiler나 runtime의 실행 PASS를
 뜻하지 않는다.
 
 ## 2. 학습 목표
 
 - 언어 설계 상태와 제품 실행 상태를 서로 다른 축으로 설명한다.
 - 문서가 충돌할 때 어떤 정본을 먼저 확인할지 안다.
-- Recovery node가 값이나 HIR/MIR을 만들지 않는 이유를 이해한다.
+- Preview Design이 current HIR/MIR을 만들지 않는 이유를 이해한다.
 - 예제의 예상 결과를 실행 영수증으로 오해하지 않는다.
 
 ## 3. 선수 지식
@@ -60,8 +59,6 @@ target-bound receipt가 없다는 뜻이다. Deeplus는 이 둘을 일부러 분
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure double(value: Int) -> Int
-    throws Never
-    effects {}
 = {
     return value * 2
 }
@@ -73,16 +70,15 @@ let answer: Int = double(21)
 profile이다. `answer`의 설계상 값은 `42`지만, 이 문서는 xVM이나 LLVM에서
 그 결과를 실행했다는 영수증이 아니다.
 
-다음은 Recovery가 현행 값으로 승격시키지 않는 대표적인 경우다.
+다음은 Preview Design 문서가 current source admission을 만들지 않는
+대표적인 경우다.
 
-<!-- deeplus-example: illustrative; surface: RECOVERY_ONLY; product: NOT_RUN; expected: REJECT; diagnostic-family: NULL_LITERAL_* -->
+<!-- deeplus-example: illustrative; surface: PREVIEW_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-let missing = null
+private type UserRow = ${id: Int, name: String}
 ```
 
-scanner/parser는 사용자가 무엇을 의도했는지 설명하기 위해 `null` 철자를
-알아볼 수 있다. 그러나 `null` 값 node를 만들지는 않는다. 부재는
-`::none` 또는 명시적인 `Option<T>::none`으로 표현한다.
+이 후보는 Preview Design 설명용이며 현행 source route가 없다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 
@@ -95,9 +91,9 @@ scanner/parser는 사용자가 무엇을 의도했는지 설명하기 위해 `nu
 CURRENT 예제도 세 번째 단계의 compiler/runtime receipt가 없으면 제품
 PASS라고 말할 수 없다.
 
-미니 사례로 새 nullable 표면을 본 독자는 “편리해 보인다”보다 먼저
-상태 토큰을 찾는다. Recovery 표면이면 현행 Option 대안을 배우기 위한
-진단 자료이고, Preview Design이면 설계 비교 자료다. 가장 흔한 오해는
+미니 사례로 새 표면을 본 독자는 “편리해 보인다”보다 먼저
+상태 토큰을 찾는다. Preview Design이면 current 대안과 비교하는 설계
+자료다. 가장 흔한 오해는
 `Stable`을 “모든 target에서 이미 구현됨”으로 번역하거나, `Preview`라는
 한 단어로 gated 기능과 nonactivatable 설계를 합치는 것이다. 상태는
 language admission을 말하고 `NOT_RUN`은 제품 증거를 말한다.
@@ -105,7 +101,7 @@ language admission을 말하고 `NOT_RUN`은 제품 증거를 말한다.
 ## 7. 허용·거부·경계 사례
 
 - **허용:** 현행 EBNF와 checker 계약에 모두 들어 있는 source.
-- **거부:** Recovery가 철자를 인식하더라도 현재 의미 owner가 없는 source.
+- **거부:** Current 또는 gated Preview route에 속하지 않는 source.
 - **경계:** Preview-gated FFI처럼 gate가 있어야 parse 후보가 되지만,
   target ABI 실행은 여전히 `NOT_RUN`인 기능.
 - **비활성:** Preview Design은 gate를 추가해도 켤 수 없다.
@@ -134,15 +130,15 @@ language admission을 말하고 `NOT_RUN`은 제품 증거를 말한다.
 1. **따라 하기:** 위 `double` 함수에서 입력을 `7`로 바꾸고 정본상 결과를
    종이에 계산하라. 실행 PASS라고 쓰지 말아야 하는 이유도 한 문장으로
    적는다.
-2. **빈칸 완성:** `CURRENT`, `PREVIEW_GATED`, `RECOVERY_ONLY` 중 “잘못된
-   철자를 진단하지만 의미 node는 만들지 않는 상태”를 고른다.
+2. **빈칸 완성:** `CURRENT`, `PREVIEW_GATED`,
+   `PREVIEW_DESIGN_NONACTIVATABLE` 중 “설계는 보존하지만 current 의미
+   node는 만들지 않는 상태”를 고른다.
 3. **스스로 설계하기:** 새 문서 예제를 하나 가정하고 surface 상태,
    product 상태, 근거 파일 세 항목을 포함한 머리말을 작성하라.
 
 ## 11. 빠른 복습
 
 - Stable/Current는 설계 권위이고 product PASS가 아니다.
-- Recovery는 정밀 진단을 돕지만 의미를 만들지 않는다.
 - Preview Design은 feature gate로 활성화할 수 없다.
 - 튜토리얼보다 current pointer와 spec이 우선한다.
 - 현행 불변값은 semantic P0 `0`, feature P1 `22 OPEN`,

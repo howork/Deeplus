@@ -12,7 +12,7 @@
 
  EBNF responsibilities:
    - token order and structural nesting
-   - stable/preview/recovery surface inventories
+   - Stable and Preview surface inventories
 
  External model responsibilities:
    - Pratt binding powers and parselet registration
@@ -180,8 +180,8 @@ Identifier ::= IDENTIFIER ;
 QualifiedPath ::= Identifier ("::" Identifier)* ;
 
 TopLevelVisibility ::= "public" | "private" | "common" ;
-(* TopLevelVisibility? is structurally optional for recovery and non-type
-   defaults. Checker admission requires it explicitly for exactly ClassDecl,
+(* TopLevelVisibility? supports private defaults for non-type declarations.
+   Checker admission requires it explicitly for exactly ClassDecl,
    TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl,
    ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl in each of the
    six stable/preview library, executable, and script roots. Omission for
@@ -234,8 +234,11 @@ RefinementClause ::= "where" PredicateExpr ;
 Initializer ::= "=" Expr ;
 NameAliasClause ::= "as" Identifier ;
 
-(* Function return types are deliberately non-function unless parenthesized by TypePolicy. *)
-ReturnClause ::= "->" NonFunctionTypeRef ;
+(* Function return types are deliberately non-function unless parenthesized by TypePolicy.
+   A bare comma list exists only in this return-type owner and normalizes to TupleType. *)
+ReturnClause ::= "->" ReturnTypeSurface ;
+ReturnTypeSurface ::= NonFunctionTypeRef | BareTupleTypeSurface ;
+BareTupleTypeSurface ::= NonFunctionTypeRef "," NonFunctionTypeRef ("," NonFunctionTypeRef)* ;
 ThrowsClause ::= "throws" ErrorSet ;
 EffectsClause ::= "effects" EffectRow ;
 ContractClause ::= RequiresClause | EnsuresClause ;
@@ -356,7 +359,7 @@ FunctionBodyContent ::= CallableBlock | ReturnShorthand | ClauseFunctionBody ;
    Model and the function-static activation contract. *)
 CallableBlock ::= "{" BlockPrologue? FunctionStaticActivation? BlockSequence "}" ;
 FunctionStaticActivation ::= "static" Block ;
-ReturnShorthand ::= "return" Expr StatementBoundary ;
+ReturnShorthand ::= "return" ReturnValueSurface StatementBoundary ;
 ClauseFunctionBody ::= "{{" LineBreakBoundary? MatchArmSequence "}}" ;
 
 MemberFunctionDecl ::= MemberVisibility? DefIntroducer Identifier ClassDispatchMarker FunctionRest ;
@@ -389,9 +392,15 @@ Parameter ::= StoredParameter
             | NamedRestParameter
             | ValueParameter ;
 ValueParameter ::= ParameterMode? ParameterPatternSlot TypeAnnotation ;
-(* Public callable signatures carry names, modes and types, never a refutable
-   decomposition contract. Destructure explicitly in the body. *)
-ParameterPatternSlot ::= Identifier ;
+(* The first Identifier remains the call-channel label, whole-value local and
+   public API identity. An optional following structural Pattern is an
+   irrefutable body-entry decomposition plan and does not alter call shape,
+   overload identity or ABI. *)
+ParameterPatternSlot ::= Identifier IrrefutableParameterPattern? ;
+IrrefutableParameterPattern ::= TuplePattern
+                              | ListPattern
+                              | RecordPattern
+                              | NominalPattern ;
 ParameterMode ::= "borrow" | "mut" | "move" | "inout" ;
 ContextParameter ::= "context" Identifier ":" TypeRef ;
 WitnessParameter ::= "using" Identifier ":" "witness" TypeRef ;
@@ -611,7 +620,7 @@ OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;
 ParenTypeSyntax ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail? ;
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","? ;
 ParenTypeItem ::= TypeRef | TypeRef "..." | TypeRef "***" ;
-FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause? EffectsClause? ;
+FunctionTypeTail ::= "->" ReturnTypeSurface ThrowsClause? EffectsClause? ;
 
 SharpShapeType ::= "#" StaticDimensionList "[" TypeRef "]" ;
 StaticDimensionList ::= StaticIntLiteral ("," StaticIntLiteral)* ;
@@ -646,9 +655,15 @@ MovePattern ::= "move"? PatternPrimary ;
 
 PatternPrimary ::= TypedBindingPattern
                  | Identifier
+                 | PinPattern
+                 | RangePattern
+                 | RelationalPattern
+                 | TuplePattern
                  | RecordPattern
                  | ListPattern
+                 | MapPattern
                  | VariantPattern
+                 | NominalPattern
                  | "_"
                  | UnitSyntax
                  | Literal
@@ -656,6 +671,16 @@ PatternPrimary ::= TypedBindingPattern
 
 TypedBindingPattern ::= Identifier ":" TypeRef ;
 ParenthesizedPattern ::= "(" Pattern ")" ;
+PinPattern ::= "^" StablePatternValue ;
+StablePatternValue ::= Identifier | QualifiedStaticExpr | Literal ;
+RangePattern ::= PatternBound (".." | "..<") PatternBound ;
+RelationalPattern ::= ("<" | "<=" | ">" | ">=") PatternBound ;
+PatternBound ::= Literal | PinPattern ;
+
+(* A comma is required for Tuple identity. `(p)` is grouping, `(p,)` is a
+   one-element Tuple Pattern, and an exact Tuple Pattern never owns sequence rest. *)
+TuplePattern ::= "(" TuplePatternItems ")" ;
+TuplePatternItems ::= Pattern "," | Pattern "," Pattern ("," Pattern)* ","? ;
 
 (* TypedBindingPattern has two checker-owned elaborations without adding syntax.
    It is an irrefutable static annotation by default. In a refutable owner whose
@@ -672,27 +697,70 @@ BindingOrPattern ::= BindingAliasPattern ("|" BindingAliasPattern)* ;
 BindingAliasPattern ::= BindingMovePattern ("as" Identifier)? ;
 BindingMovePattern ::= "move"? BindingPatternPrimary ;
 BindingPatternPrimary ::= Identifier
+                        | PinPattern
+                        | RangePattern
+                        | RelationalPattern
+                        | TuplePattern
                         | RecordPattern
                         | ListPattern
+                        | MapPattern
                         | VariantPattern
+                        | NominalPattern
                         | "_"
                         | UnitSyntax
                         | Literal
                         | ParenthesizedPattern ;
 
-RecordPattern ::= "${" PatternFieldList? "}" ;
-PatternFieldList ::= PatternField ("," PatternField)* ","? ;
-PatternField ::= Identifier | Identifier ":" Pattern ;
+(* Record and Map patterns are exact by default. `.._` deliberately ignores an
+   open remainder and `..name` captures its exact residual row/map. At entry
+   top level `:` maps destination Pattern to source field/key; a destination
+   that owns a colon itself must be parenthesized. *)
+RecordPattern ::= "${" RecordPatternEntries? "}" ;
+RecordPatternEntries ::= RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)*
+                         PatternEntrySeparator? ;
+RecordPatternEntry ::= Identifier | RecordDestination ":" Identifier | RecordRestPattern ;
+RecordDestination ::= Pattern ;
+RecordRestPattern ::= ".." RestBinder ;
 
-(* Current List decomposition is exact or has one ignored final remainder.
-   Captured, middle and multiple rests have no current carrier/ownership law. *)
-ListPattern ::= "[" (ListPatternPrefix ("," IgnoredListRest)? ","? | IgnoredListRest ","?)? "]" ;
-ListPatternPrefix ::= Pattern ("," Pattern)* ;
-IgnoredListRest ::= ".." "_" ;
+MapPattern ::= "#" "map" "{" MapPatternEntries? "}" ;
+MapPatternEntries ::= MapPatternEntry (PatternEntrySeparator MapPatternEntry)*
+                      PatternEntrySeparator? ;
+MapPatternEntry ::= MapDestination ":" MapKeyPattern | MapRestPattern ;
+MapDestination ::= Pattern ;
+MapKeyPattern ::= Literal | PinPattern ;
+MapRestPattern ::= ".." RestBinder ;
+PatternEntrySeparator ::= "," LineBreakBoundary? | LineBreakBoundary ;
+
+(* List decomposition has exactly one of four shapes. A captured prefix or
+   suffix needs fixed context; `[.._]` remains the unique all-remainder
+   wildcard. Middle capture has fixed children on both sides and closes with
+   an attached second `..`. *)
+ListPattern ::= "[" ListPatternBody? "]" ;
+ListPatternBody ::= IgnoredAllListRest
+                  | ExactListPattern
+                  | PrefixRestListPattern
+                  | SuffixRestListPattern
+                  | MiddleRestListPattern ;
+ExactListPattern ::= Pattern ("," Pattern)* ","? ;
+PrefixRestListPattern ::= PrefixListRest "," Pattern ("," Pattern)* ","? ;
+SuffixRestListPattern ::= Pattern ("," Pattern)* "," SuffixListRest ","? ;
+MiddleRestListPattern ::= Pattern ("," Pattern)* "," MiddleListRest ","
+                          Pattern ("," Pattern)* ","? ;
+PrefixListRest ::= RestBinder ".." ;
+SuffixListRest ::= ".." RestBinder ;
+MiddleListRest ::= ".." RestBinder ".." ;
+IgnoredAllListRest ::= ".." "_" ","? ;
+RestBinder ::= Identifier | "_" ;
 
 VariantPattern ::= VariantQualifier Identifier VariantPatternPayload? ;
 VariantQualifier ::= TypeRef "::" | "::" ;
-VariantPatternPayload ::= "(" PatternList? ")" ;
+VariantPatternPayload ::= VariantPositionalPatternPayload | RecordPattern ;
+VariantPositionalPatternPayload ::= "(" PatternList? ")" ;
+
+(* Only schema/data/value carriers or an explicitly pattern-transparent
+   descriptor may use this nominal surface. Ordinary Class private state,
+   getters, providers, Dyn, Facet and FFI representation remain closed. *)
+NominalPattern ::= TypeRef RecordPattern ;
 
 (* ==================================================================
    STATEMENTS AND MATCH/LOOP CONTROL
@@ -708,6 +776,9 @@ Stmt ::= ForLoop
        | MatchStatement
        | IfStmt
        | LocalBindingStmt
+       | AssertiveBindingStmt
+       | PatternAssignmentStmt
+       | ParallelAssignmentStmt
        | ControlTransferStmt
        | TryStmt
        | DeferStmt
@@ -727,17 +798,23 @@ BlockFinalItem ::= ControlTransfer | BindingCore | Expr ;
 
 (* Value-producing local bodies require an expression-only body or explicit final ret. *)
 ValueBody ::= SingleExpressionValueBody | ExplicitRetValueBody ;
-SingleExpressionValueBody ::= "{" Expr "}" ;
+SingleExpressionValueBody ::= "{" ReturnValueSurface "}" ;
 ExplicitRetValueBody ::= "{" BlockItem* RetTransfer "}" ;
-RetTransfer ::= "ret" Expr? GuardClause? ;
+RetTransfer ::= "ret" ReturnValueSurface? GuardClause? ;
 
 (* A local binding owns its optional whole-pattern annotation exactly once.
    BindingPattern excludes only a top-level TypedBindingPattern; recursive
    child patterns still use Pattern and therefore retain typed child binders. *)
-BindingCore ::= ("let" | "var") BindingPattern "=" Expr ;
+BindingCore ::= ("let" | "var") BindingHead "=" BindingValueSurface ;
+BindingHead ::= BindingPattern | BareTupleBindingSurface ;
+BareTupleBindingSurface ::= BindingPattern "," BindingPattern ("," BindingPattern)* ;
+BindingValueSurface ::= Expr | BareTupleValueSurface ;
+ReturnValueSurface ::= Expr | BareTupleValueSurface ;
+BareTupleValueSurface ::= Expr "," Expr ("," Expr)* ;
 LocalBindingStmt ::= BindingCore StatementBoundary | RightwardLocalBindingSurface | LazyBindingStmt | GuardedBindingStmt ;
 LazyBindingStmt ::= "let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary ;
-GuardedBindingStmt ::= "let" BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
+GuardedBindingStmt ::= ("let" | "var") BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
+AssertiveBindingStmt ::= ("let" | "var") "!" BindingPattern "=" Expr StatementBoundary ;
 (* Failure exits are structurally unconditional. yield, ret and guarded transfers are not admitted. *)
 GuardedBindingFailure ::= GuardedBindingExit | Pattern "=>" GuardedBindingExit ;
 GuardedBindingExit ::= GuardedReturnExit | GuardedThrowExit | GuardedBreakExit | GuardedContinueExit ;
@@ -749,7 +826,7 @@ GuardedContinueExit ::= ("break")* "continue" ;
 (* One control-transfer parser. Target supply and owner admissibility are policy-driven. *)
 ControlTransferStmt ::= ControlTransfer StatementBoundary ;
 ControlTransfer ::= ReturnTransfer | ThrowTransfer | BreakTransfer | ContinueTransfer | YieldTransfer ;
-ReturnTransfer ::= "return" Expr? GuardClause? ;
+ReturnTransfer ::= "return" ReturnValueSurface? GuardClause? ;
 ThrowTransfer ::= "throw" Expr GuardClause? ;
 BreakTransfer ::= ("break")+ Expr? GuardClause? ;
 ContinueTransfer ::= ("break")* "continue" GuardClause? ;
@@ -761,13 +838,17 @@ GuardClause ::= PositiveGuard | NegativeGuard ;
 PositiveGuard ::= "if" Expr ;
 NegativeGuard ::= "!" "if" Expr ;
 
-IfStmt ::= "if" PatternControlCondition Block ("else" (IfStmt | Block))? ;
+IfStmt ::= "if" PatternConditionChain Block ("else" (IfStmt | Block))? ;
+(* The condition-chain parser stops an Expr before owner-level `and then`
+   followed by a binding term. Later terms see earlier successful binders. *)
+PatternConditionChain ::= PatternControlCondition
+                          ("and" "then" PatternControlCondition)* ;
 PatternControlCondition ::= Expr | "let" Pattern "=" Expr ;
 
 (* The same MatchStatement parser handles an explicit subject and an attached implicit loop outcome. *)
 (* InputSupplyPolicy decides whether MatchSubjectSlot consumes Expr or injects the preceding loop. *)
 ForLoop ::= "for" ("let" Pattern | Pattern) "in" Expr GuardClause? Block MatchStatement? ;
-WhileLoop ::= "while" PatternControlCondition Block MatchStatement? ;
+WhileLoop ::= "while" PatternConditionChain Block MatchStatement? ;
 RepeatLoop ::= "repeat" Block "while" Expr MatchStatement? ;
 AsyncForLoop ::= "for" "await" ("let" Pattern | Pattern) "in" Expr GuardClause? Block ;
 
@@ -784,8 +865,8 @@ MatchArmBodySlot ::= MATCH_ARM_BODY_BY_CONTEXT ;
 (* A statement try must own at least one handler or a finally cleanup. Bare
    try blocks and unowned try-expression statements are not current source. *)
 TryStmt ::= "try" Block (CatchClause+ FinallyClause? | FinallyClause) ;
-CatchClause ::= "catch" Pattern? Block ;
-ValueCatchClause ::= "catch" Pattern? ValueBody ;
+CatchClause ::= "catch" Pattern? GuardClause? Block ;
+ValueCatchClause ::= "catch" Pattern? GuardClause? ValueBody ;
 FinallyClause ::= "finally" Block ;
 
 DeferStmt ::= "defer" DeferredCleanupInvocation StatementBoundary ;
@@ -801,6 +882,45 @@ DeferTargetSuffix ::= IndexSuffix | MemberSuffix ;
 (* A rightward local surface is CST-preserved sugar for ordinary BindingCore.
    It is never a separate semantic AST/HIR/MIR statement. *)
 RightwardLocalBindingSurface ::= Expr "->" DollarLocalBinding StatementBoundary ;
+(* Both assignment forms are statement-only. Checker policy admits only
+   distinct mutable direct LocalPlaceIds, evaluates/stages the RHS once, and
+   publishes one failure-atomic logical group commit. *)
+PatternAssignmentStmt ::= AssigneePattern "=" Expr StatementBoundary ;
+AssigneePattern ::= AssigneeTuplePattern
+                  | AssigneeListPattern
+                  | AssigneeRecordPattern
+                  | AssigneeNominalPattern ;
+AssigneePrimary ::= Identifier | "_" ;
+AssigneeTuplePattern ::= "(" AssigneeTupleItems ")" ;
+AssigneeTupleItems ::= AssigneePatternItem ","
+                     | AssigneePatternItem "," AssigneePatternItem
+                       ("," AssigneePatternItem)* ","? ;
+AssigneePatternItem ::= AssigneePrimary
+                      | AssigneeTuplePattern
+                      | AssigneeListPattern
+                      | AssigneeRecordPattern ;
+AssigneeListPattern ::= "[" AssigneeListBody? "]" ;
+AssigneeListBody ::= AssigneeIgnoredAllRest
+                   | AssigneeExactList
+                   | AssigneePrefixRestList
+                   | AssigneeSuffixRestList
+                   | AssigneeMiddleRestList ;
+AssigneeExactList ::= AssigneePatternItem ("," AssigneePatternItem)* ","? ;
+AssigneePrefixRestList ::= Identifier ".." "," AssigneeExactList ;
+AssigneeSuffixRestList ::= AssigneeExactList "," ".." Identifier ","? ;
+AssigneeMiddleRestList ::= AssigneeExactList "," ".." Identifier ".." ","
+                           AssigneeExactList ;
+AssigneeIgnoredAllRest ::= ".." "_" ","? ;
+AssigneeRestPattern ::= ".." ("_" | Identifier) ;
+AssigneeRecordPattern ::= "${" AssigneeRecordEntries? "}" ;
+AssigneeRecordEntries ::= AssigneeRecordEntry
+                          (PatternEntrySeparator AssigneeRecordEntry)*
+                          PatternEntrySeparator? ;
+AssigneeRecordEntry ::= Identifier | AssigneePrimary ":" Identifier | AssigneeRestPattern ;
+AssigneeNominalPattern ::= TypeRef AssigneeRecordPattern ;
+ParallelAssignmentStmt ::= BareTuplePlaceSurface "=" AssignmentValueSurface StatementBoundary ;
+BareTuplePlaceSurface ::= Identifier "," Identifier ("," Identifier)* ;
+AssignmentValueSurface ::= Expr | BareTupleValueSurface ;
 ScopedUseStmt ::= "use" ScopedPathList "in" Block ;
 ScopedImportStmt ::= "import" ScopedPathList "in" Block ;
 ScopedPathList ::= QualifiedPath ("," QualifiedPath)* ;
@@ -899,8 +1019,8 @@ AtomicCallArgument ::= Literal | Identifier | QualifiedStaticExpr | ExpectedVari
 TrailingClosureGroup ::= TrailingClosureArgument+ ;
 TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr ;
 
-(* An index suffix always supplies at least one axis. `[]` is recovery-only and
-   diagnoses INDEX_SUFFIX_REQUIRES_AXIS; a full slice axis is written `*`. *)
+(* An index suffix always supplies at least one axis; a full slice axis is
+   written `*`. *)
 IndexSuffix ::= "[" SliceAxisList "]" ;
 SliceAxisList ::= SliceAxis (";" SliceAxis)* ;
 SliceAxis ::= SliceRange | SliceIndexExpr | AxisWildcard ;
@@ -950,8 +1070,8 @@ TraitQualifiedAssociatedSelector ::= "<" TypeRef "as" QualifiedTypeReference ">"
 
 (* `@` forms below are exact expression/generator introducers. They do not use RoleWord or a generic AtTag. *)
 AtControlExpr ::= AtIfExpr | AtTryExpr | AtScopeExpr ;
-(* Omitted else is parsed only for recovery; a value @if is total. *)
-AtIfExpr ::= "@" "if" Expr ValueBody ("else" ValueBody)? ;
+(* A value-producing @if is total and therefore always has an else body. *)
+AtIfExpr ::= "@" "if" Expr ValueBody "else" ValueBody ;
 AtTryExpr ::= "@" "try" ValueBody (ValueCatchClause+ FinallyClause? | FinallyClause) ;
 AtScopeExpr ::= "@" "scope" ScopeModifier* ValueBody ;
 ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
@@ -964,8 +1084,9 @@ ClosureExpr ::= CaptureList? HashTag* "{" ClosureContent "}" ;
 ClosureContent ::= ExplicitLambdaContent | LambdaBody? ;
 ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody ;
 LambdaParameterList ::= LambdaParameter ("," LambdaParameter)* ","? ;
-LambdaParameter ::= ParameterMode? Identifier TypeAnnotation? ;
-LambdaBody ::= Expr | LineBreakBoundary LambdaBlockContent ;
+LambdaParameter ::= ParameterMode? LambdaParameterPattern TypeAnnotation? ;
+LambdaParameterPattern ::= Identifier | IrrefutableParameterPattern ;
+LambdaBody ::= ReturnValueSurface | LineBreakBoundary LambdaBlockContent ;
 LambdaBlockContent ::= BlockItem* LambdaFinalItem? ;
 LambdaFinalItem ::= RetTransfer | Expr ;
 
@@ -980,7 +1101,7 @@ CaptureMode ::= "borrow" | "inout" | "move" | "clone" | "deep" | "copy" | "once"
    proven synchronous, same-isolation, read-only nonescaping lexical
    dependency.  Present `[]` asserts that there is no ancestor-frame
    dependency.  Present nonempty lists remain explicit capture plans, and a
-   bare Identifier retains its historical explicit-capture meaning.  These
+   bare Identifier denotes an explicit borrow capture.  These
    distinctions survive CST/AST/HIR; they do not add another source
    production. *)
 
@@ -1110,7 +1231,8 @@ PrattUnitExpr ::= UNIT_PRATT_ENTRY ;
    PREVIEW OVERLAY
    PROFILE: PREVIEW
    ================================================================== *)
-(* Activatable Preview syntax only. Nonactivatable design probes live in recovery overlay. *)
+(* Activatable Preview syntax only. Nonactivatable Preview Design remains
+   documentary and has no source production until separately activated. *)
 
 DeeplusPreview ::= PreviewLibrarySourceFile | PreviewExecutableSourceFile | PreviewScriptSourceFile ;
 PreviewLibrarySourceFile ::= PreviewGate ModuleDecl? PreviewLibraryItem* ;
@@ -1132,73 +1254,3 @@ PreviewFfiBlockDecl ::= "extern" "c" "(" PLAIN_STRING_LITERAL ")"
                         "{" PreviewFfiBlockMember* "}" ;
 PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
                           ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
-
-(* ==================================================================
-   RECOVERY-ONLY OVERLAY
-   PROFILE: RECOVERY
-   ================================================================== *)
-(* Recognized-only historical/nonactivatable surfaces. Never part of admitted Stable/Preview language. *)
-
-RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
-                 | RecoveryFunctionStaticScopeHash
-                 | RecoveryFacetPackExpr
-                 | RecoveryFacetType
-                 | RecoveryNullLiteral
-                 | RecoveryEmptyIndexSuffix
-                 | RecoveryCustomOperatorDeclaration
-                 | RecoveryNamedRestDoubleStar
-                 | RecoveryFunctionTypeNamedRestDoubleStar
-                 | RecoveryLazyBindingAt
-                 | RecoveryUnitMiddleDot
-                 | RecoveryQuarantineScope ;
-
-(* Historical function-static introducer. It is recognized only to emit
-   FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC and never creates an
-   admitted activation node under this spelling. Migration comparison
-   normalizes its Block to the canonical `static` activation without changing
-   semantic owner identity. *)
-RecoveryFunctionStaticScopeHash ::= "scope" FunctionStaticRole Block ;
-FunctionStaticRole ::= "#" "static" ;
-
-(* `null` is reserved only so the parser can emit
-   NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE. It never creates a value node. *)
-RecoveryNullLiteral ::= "null" ;
-
-(* Context-bounded parser recovery only. Neither production creates a Stable
-   expression/declaration or an AST/HIR/MIR node. *)
-RecoveryEmptyIndexSuffix ::= "[" "]" ;
-RecoveryCustomOperatorDeclaration ::= "operator" RecoveryOperatorSymbol
-                                      ("precedence" StaticIntLiteral)? StatementBoundary ;
-(* ScannerRecoveryOperatorSymbol is emitted only after the parser has committed to
-   this recovery production at a declaration entry. It has no Stable/Preview token
-   identity and consumes one nonempty run from the bounded operator-punctuation set. *)
-RecoveryOperatorSymbol ::= ScannerRecoveryOperatorSymbol ;
-
-(* Generic entry is recognized only to emit the current dedicated rejection. *)
-RecoveryGenericEntryFunctionDecl ::= "def" "#" "entry" Identifier TypeParameterList ParameterList
-                                     ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody
-                                   | "def" "#" "entry" "#" "async" Identifier TypeParameterList ParameterList
-                                     ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody ;
-
-(* R51e parser-cover probes; feature registry marks them nonactivatable. *)
-RecoveryFacetPackExpr ::= "facet" "[" ("inout" | "move") Expr "as" QualifiedTypeReference
-                          AssociatedTypeConstraintList? "]" ;
-RecoveryFacetType ::= "Facet" "<" ("inout" | "move") "any" QualifiedTypeReference
-                      AssociatedTypeConstraintList? ">" ;
-
-(* Old named-rest spelling is contextually recognized for a migration diagnostic only.
-   "**" remains a current token for call-side unfold and operator roles. *)
-RecoveryNamedRestDoubleStar ::= Identifier "**" TypeAnnotation ;
-RecoveryFunctionTypeNamedRestDoubleStar ::= TypeRef "**" ;
-
-(* Historical lazy-binding sigil. Current successor spelling is let#lazy. *)
-RecoveryLazyBindingAt ::= "let" "@" "lazy" Identifier TypeAnnotation? "=" Expr StatementBoundary ;
-
-(* Historical unit multiplication display; current unit multiplication uses `*`. *)
-RecoveryUnitMiddleDot ::= UnitPrimary "·" UnitPrimary ;
-
-(* Nonactivatable design probe only; no current AST/HIR/MIR node is created. *)
-RecoveryQuarantineScope ::= "@" "scope" "#" ("dynamic" | "unsafe") Block QuarantineExport? ;
-QuarantineExport ::= "->" "$" Identifier TypeAnnotation
-                   | "->" "$" "(" QuarantineExportField ("," QuarantineExportField)* ")" ;
-QuarantineExportField ::= Identifier TypeAnnotation ;

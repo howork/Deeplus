@@ -84,7 +84,6 @@
 | `match` |
 | `module` |
 | `not` |
-| `null` |
 | `or` |
 | `repeat` |
 | `return` |

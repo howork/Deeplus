@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
-PREVIOUS_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
+REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
+PREVIOUS_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
@@ -363,11 +363,11 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "reassembly non-owned")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 708,
-        "predicates": 258,
-        "predicate_fixtures": 799,
-        "no_go": 150,
-        "hard_keywords": 30,
+        "features": 719,
+        "predicates": 268,
+        "predicate_fixtures": 819,
+        "no_go": 155,
+        "hard_keywords": 29,
         "contextual_words": 101,
     }
     if (

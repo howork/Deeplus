@@ -286,8 +286,6 @@ registry에서 같은 문자열을 다시 찾지도 않는다.
 ```deeplus
 public trait TextDecodable {
     def ::decode(text: String) -> Result<Self, error DecodeError>
-        throws Never
-        effects {}
 }
 
 private def decodeValue<T>(text: String) -> Result<T, error DecodeError>
@@ -385,8 +383,6 @@ special function과 calculus/numerical-integration family는 별도의
 
 Option은 absence를 값으로 표현한다.
 `::some`과 `::none` alternative가 명시적이다.
-recovery spelling `null`은
-Option 값을 만들지 않는다.
 
 `?:`는 lazy fallback을 가진
 Option-specific intrinsic이다.
@@ -1302,15 +1298,6 @@ checker가 필요하다는 이유로
 parser가 type information을 사용해
 다른 AST로 repair하면 안 된다.
 
-### 16.4 recovery
-
-Recovery node는 offending spelling과
-diagnostic span을 보존할 수 있다.
-그러나 HIR/MIR value를 만들지 않는다.
-
-formatter는 recovery spelling을
-Stable accepted source처럼 정규화해서는 안 된다.
-
 ## 17. fixture와 example evidence
 
 ### 17.1 positive fixture
@@ -1690,7 +1677,7 @@ diagnostic receipt는 다음을 결합해야 한다.
 - primary diagnostic ID
 - relevant span
 - ordered notes
-- recovery node disposition
+- invalid-source node disposition
 - output artifact count
 
 ### 24.2 nonemitting seed
@@ -1710,10 +1697,8 @@ product emission은 검증되지 않았다.
 
 ### 24.4 no MIR residue
 
-static rejection receipt는
-MIR artifact count가 0임을 확인해야 한다.
-recovery AST를 Stable HIR로 낮추지 않았다는
-증거가 필요하다.
+static rejection receipt는 MIR artifact count가 0임을 확인하고,
+거부된 AST를 Stable HIR로 낮추지 않았다는 증거를 포함해야 한다.
 
 ### 24.5 Companion capability 진단군
 
@@ -1910,8 +1895,7 @@ runtime effect를 삽입하지 않는다.
 formatter와 LSP는
 active grammar/profile과 diagnostic registry를 따라야 한다.
 
-Recovery-only spelling을
-Stable source로 자동 고치거나
+문법에 없는 source를 Stable source로 자동 고치거나
 design-seed diagnostic을 product error로
 표시해서는 안 된다.
 
@@ -2087,7 +2071,7 @@ receipt는 null이다.
 3. dependency order를 보존하는가.
 4. first failed condition이 deterministic한가.
 5. primary와 secondary를 구분하는가.
-6. recovery node가 HIR/MIR로 가지 않는가.
+6. 거부된 node가 HIR/MIR로 가지 않는가.
 7. fixture가 목표 branch를 분리하는가.
 8. execution receipt가 있는가.
 

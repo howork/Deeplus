@@ -52,8 +52,6 @@ module tutorial::orientation
 import tutorial::shared::{CourseName}
 
 private def#pure courseLabel(name: CourseName) -> CourseName
-    throws Never
-    effects {}
 = {
     return name
 }
@@ -67,8 +65,6 @@ private def#pure courseLabel(name: CourseName) -> CourseName
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure combine(array: Int, case: Int) -> Int
-    throws Never
-    effects {}
 = {
     return array + case
 }

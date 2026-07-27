@@ -4,15 +4,16 @@
 
 이 부는 새 문법을 “미리 써 보는 법”보다, 제안과 정본을 섞지 않고
 검토하는 법을 가르친다. Deeplus의 상태 축은 단순한 성숙도 순위가
-아니다. Current/Stable, Preview Gated, Preview Design, Recovery는 서로
-다른 admission route와 authority를 가진다. 어떤 상태에서도 제품 실행
+아니다. Current/Stable, Preview Gated와 Preview Design은 서로 다른
+admission route와 authority를 가진다. 구현 전 정본은 Current와 보존된
+Preview 상태만 설명한다. 어떤 상태에서도 제품 실행
 증거가 자동으로 생기지 않으며 현재 product lane은 `15/15 NOT_RUN`이다.
 
 ## 이 부에서 답할 질문
 
 - Current와 Stable은 무엇을 보장하고 무엇을 보장하지 않는가?
 - 정확히 세 개인 Preview Gated 기능은 어떻게 source root에서 선택되는가?
-- Preview Design 44개를 왜 현행 프로그램에 복사하면 안 되는가?
+- Preview Design을 왜 현행 프로그램에 복사하면 안 되는가?
 - 제안을 검토할 때 syntax만이 아니라 type, ownership, effect, HIR/MIR,
   diagnostic과 migration을 왜 함께 닫아야 하는가?
 - HIR-H1 verifier boundary와 비정규 DP-RFC의 구현 제안을 어떻게 구분하는가?
@@ -35,8 +36,6 @@
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def square(value: Int) -> Int
-    throws Never
-    effects {}
 = {
     return value * value
 }
@@ -66,10 +65,9 @@ let loader = #async{ => await loadProfile() }
 
 ## 정본 근거
 
-- [Preview·Recovery·Removed 상태 안내](../../grammar-reference/15-preview-recovery-and-removed-surfaces.md)
+- [Preview 상태 안내](../../grammar-reference/15-preview-surfaces.md)
 - [Preview Gated reference](../../grammar-reference/20-preview-gated-reference.md)
 - [Preview Design — 타입·객체·Trait](../../grammar-reference/21-preview-design-types-objects-and-traits.md)
 - [Preview Design — 컬렉션·context·제어](../../grammar-reference/22-preview-design-collections-context-and-control.md)
 - [Preview Design — 동시성·FFI·runtime](../../grammar-reference/23-preview-design-concurrency-ffi-and-runtime.md)
 - [Feature gate registry](../../../spec/features/gates.json)
-

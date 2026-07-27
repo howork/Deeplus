@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://deeplus-lang.org/schema/r51f3/pattern-lowering-row.schema.json",
-  "title": "Deeplus pattern lowering row R1",
+  "title": "Deeplus pattern lowering row R2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,12 +29,12 @@
       "pattern": "^PL-[A-Z0-9-]+$"
     },
     "revision": {
-      "const": "r51f3-current-type-refinement-narrowing-coherence-r1"
+      "const": "r51f3-current-pattern-sequence-multivalue-r1"
     },
     "status": {
       "enum": [
         "CURRENT_LOWERING_CONTRACT",
-        "DEFERRED_NO_LOWERING",
+        "PREVIEW_GATED_LOWERING_CONTRACT",
         "REJECTED_NO_LOWERING"
       ]
     },
@@ -68,6 +68,8 @@
       "enum": [
         "NONE",
         "LIMITED_NONOWNING_VIEW",
+        "INTRODUCES_REST_VIEW",
+        "INTRODUCES_REMAINDER",
         "DELEGATES_TO_CHILDREN",
         "JOINED_OBSERVABLE_BINDER_CONTRACT"
       ]
@@ -99,18 +101,18 @@
         "STATIC_ONLY_NO_EVENT",
         "TEST_PROBE_COMMIT_TRACE",
         "DELEGATE_CHILD_TRACE",
-        "NO_LOWERING_UNREACHABLE",
+        "PREVIEW_GATED_NO_EXECUTION",
         "NO_LOWERING_REJECTED"
       ]
     },
     "phase_profile": {
-      "const": "R2_PATTERN_PHASE_V1"
+      "const": "R3_PATTERN_PHASE_V1"
     },
     "failure_profile": {
-      "const": "R2_CONTEXT_FAILURE_V1"
+      "const": "R3_CONTEXT_FAILURE_V1"
     },
     "lifecycle_profile": {
-      "const": "R2_LIFECYCLE_SPLIT_V1"
+      "const": "R3_LIFECYCLE_SPLIT_V1"
     },
     "constraints": {
       "type": "array",
@@ -160,10 +162,7 @@
       "if": {
         "properties": {
           "status": {
-            "enum": [
-              "DEFERRED_NO_LOWERING",
-              "REJECTED_NO_LOWERING"
-            ]
+            "const": "REJECTED_NO_LOWERING"
           }
         },
         "required": [
@@ -200,7 +199,7 @@
       "if": {
         "properties": {
           "status": {
-            "const": "DEFERRED_NO_LOWERING"
+            "const": "PREVIEW_GATED_LOWERING_CONTRACT"
           }
         },
         "required": [
@@ -209,12 +208,15 @@
       },
       "then": {
         "properties": {
-          "test_kind": {
-            "const": "NO_TEST_UNREACHABLE"
-          },
-          "mir_disposition": {
-            "const": "NO_LOWERING_UNREACHABLE"
-          }
+          "cst_variant": {"type": "string", "minLength": 1},
+          "ast_variant": {"type": "string", "minLength": 1},
+          "hir_variant": {"type": "string", "minLength": 1},
+          "test_kind": {"const": "PREVIEW_GATE_ONLY_NO_CURRENT_TEST"},
+          "probe_binder_policy": {"const": "NONE"},
+          "move_policy": {"const": "NO_MOVE"},
+          "commit_policy": {"const": "NOT_APPLICABLE"},
+          "post_join_policy": {"const": "NOT_APPLICABLE"},
+          "mir_disposition": {"const": "PREVIEW_GATED_NO_EXECUTION"}
         }
       }
     },

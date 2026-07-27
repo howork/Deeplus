@@ -63,8 +63,6 @@ typed pattern은 검사와 binding을 함께 수행한다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure textLength(value: TextOrNumber) -> Int
-    throws Never
-    effects {}
 = {
     if let text: String = value {
         return text.length

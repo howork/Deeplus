@@ -5,8 +5,9 @@
 ## 1. 상태와 읽는 법
 
 fixed-glyph conformance는 Stable 설계이며 admitted glyph는 정확히
-`+`, `-`, `*`다. 임의 custom operator는 Preview 후보가 아니라 제거된
-표면이다. `/`, `%`, `^`, 비교·논리·대입·range glyph도 이 통로에 없다.
+`+`, `-`, `*`다. 임의 custom operator는 Current와 Preview Design
+모두에서 수용하지 않는다. `/`, `%`, `^`, 비교·논리·대입·range
+glyph도 이 통로에 없다.
 
 ## 2. 학습 목표
 
@@ -65,8 +66,8 @@ non-consuming·non-mutating 책임을 검사한다. 실패하면 ordinary method
 영이어야 한다.
 
 `/`도 익숙한 산술 glyph이니 같은 방식으로 추가할 수 있다는 생각은
-흔한 오해다. admitted set 밖 glyph와 임의 `operator <+>` declaration은
-Preview도 아니며 거부된다. 필요한 operation은 named API나 별도
+흔한 오해다. admitted set 밖 glyph은 conformance dispatch 대상이 아니다.
+필요한 operation은 named API나 별도
 수용된 intrinsic corridor를 사용한다.
 
 fixed glyph 식도 임의 method lookup으로 읽지 않는다. checker는 glyph가
@@ -150,12 +151,6 @@ set을 넓히지 않는다. `Rational / Rational`은 checked named
 `dividedBy`, `^`는 language intrinsic이다.
 
 ## 7. 허용·거부·경계 사례
-
-<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT; product: NOT_RUN -->
-```deeplus
-operator <+> precedence 130
-// CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT
-```
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: OPERATOR_NOT_CONFORMANCE_OVERLOADABLE; product: NOT_RUN -->
 ```deeplus

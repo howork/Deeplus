@@ -1,0 +1,415 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/pattern-sequence-multivalue.schema.json",
+  "title": "Deeplus Pattern, Sequence Rest and Multi-Value Contract",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema",
+    "revision",
+    "status",
+    "semantic_p0",
+    "product_lanes",
+    "source_packages",
+    "design_principles",
+    "stable_design",
+    "preview_gated",
+    "not_admitted",
+    "diagnostic_families",
+    "sequence_rest",
+    "tuple_and_multi_value",
+    "owner_policies",
+    "assignment",
+    "lowering_invariants",
+    "acceptance"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.pattern-sequence-multivalue-contract/r1"
+    },
+    "revision": {
+      "const": "r51f3-current-pattern-sequence-multivalue-r1"
+    },
+    "status": {
+      "const": "CURRENT_STABLE_DESIGN_WITH_PREVIEW_GATES"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "source_packages": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "filename",
+          "bytes",
+          "sha256",
+          "precedence"
+        ],
+        "properties": {
+          "filename": {
+            "type": "string",
+            "minLength": 1
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "precedence": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "stable_design": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "preview_gated": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "not_admitted": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "diagnostic_families": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "sequence_rest": {
+      "type": "object",
+      "required": [
+        "maximum_rest_per_pattern",
+        "prefix",
+        "suffix",
+        "middle",
+        "descriptor",
+        "sequence_conformance_alone_activates_pattern",
+        "rest_result",
+        "list_rest_view"
+      ],
+      "properties": {
+        "maximum_rest_per_pattern": {
+          "const": 1
+        },
+        "descriptor": {
+          "const": "SequenceDecompositionDescriptorV1"
+        },
+        "sequence_conformance_alone_activates_pattern": {
+          "const": false
+        },
+        "prefix": {
+          "type": "object",
+          "required": [
+            "surface",
+            "position"
+          ],
+          "properties": {
+            "surface": {
+              "const": "binder.."
+            },
+            "position": {
+              "const": "FIRST"
+            }
+          }
+        },
+        "suffix": {
+          "type": "object",
+          "required": [
+            "surface",
+            "position"
+          ],
+          "properties": {
+            "surface": {
+              "const": "..binder"
+            },
+            "position": {
+              "const": "LAST"
+            }
+          }
+        },
+        "middle": {
+          "type": "object",
+          "required": [
+            "surface",
+            "position",
+            "minimum_fixed_prefix",
+            "minimum_fixed_suffix"
+          ],
+          "properties": {
+            "surface": {
+              "const": "..binder.."
+            },
+            "position": {
+              "const": "BETWEEN_FIXED_PATTERNS"
+            },
+            "minimum_fixed_prefix": {
+              "const": 1
+            },
+            "minimum_fixed_suffix": {
+              "const": 1
+            }
+          }
+        },
+        "rest_result": {
+          "type": "object",
+          "required": [
+            "borrowed_type",
+            "moved_list_type",
+            "temporary_owner_retention",
+            "empty_representation",
+            "requires_sequence_conformance",
+            "coordinate_provenance_preserved",
+            "hidden_copy_or_allocation"
+          ],
+          "properties": {
+            "borrowed_type": {
+              "const": "ListRestView<T>"
+            },
+            "moved_list_type": {
+              "const": "List<T>"
+            },
+            "temporary_owner_retention": {
+              "const": "PREVIEW_GATED"
+            },
+            "requires_sequence_conformance": {
+              "const": true
+            },
+            "coordinate_provenance_preserved": {
+              "const": true
+            },
+            "hidden_copy_or_allocation": {
+              "const": false
+            }
+          }
+        },
+        "list_rest_view": {
+          "type": "object",
+          "required": [
+            "kind",
+            "explicit_builtin_sequence_witness",
+            "ordinary_readonly_view_sequence_witness_changed",
+            "logical_coordinates_rebased",
+            "source_owner_required",
+            "escapes_source_owner",
+            "activates_pattern_or_indexing_by_conformance"
+          ],
+          "properties": {
+            "kind": {
+              "const": "BORROWED_OWNER_BOUNDED_RANK_ONE_VIEW"
+            },
+            "explicit_builtin_sequence_witness": {
+              "const": true
+            },
+            "ordinary_readonly_view_sequence_witness_changed": {
+              "const": false
+            },
+            "logical_coordinates_rebased": {
+              "const": false
+            },
+            "source_owner_required": {
+              "const": true
+            },
+            "escapes_source_owner": {
+              "const": false
+            },
+            "activates_pattern_or_indexing_by_conformance": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "tuple_and_multi_value": {
+      "type": "object",
+      "required": [
+        "semantic_carrier",
+        "single_result_channel",
+        "minimum_bare_arity",
+        "normalizations",
+        "general_comma_operator",
+        "sequence_as_fixed_return_carrier"
+      ],
+      "properties": {
+        "semantic_carrier": {
+          "const": "Tuple"
+        },
+        "single_result_channel": {
+          "const": true
+        },
+        "minimum_bare_arity": {
+          "const": 2
+        },
+        "general_comma_operator": {
+          "const": false
+        },
+        "sequence_as_fixed_return_carrier": {
+          "const": false
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "required": [
+        "initial_targets",
+        "commit",
+        "hardware_atomicity",
+        "cross_thread_atomicity",
+        "result_type"
+      ],
+      "properties": {
+        "initial_targets": {
+          "const": "DISTINCT_DIRECT_MUTABLE_LOCALS"
+        },
+        "commit": {
+          "const": "ONE_FAILURE_ATOMIC_LOGICAL_GROUP_COMMIT"
+        },
+        "hardware_atomicity": {
+          "const": false
+        },
+        "cross_thread_atomicity": {
+          "const": false
+        },
+        "result_type": {
+          "const": "Unit"
+        }
+      }
+    },
+    "lowering_invariants": {
+      "type": "object",
+      "required": [
+        "subject_evaluation_count",
+        "precommit_irreversible_move_count",
+        "failed_probe_commit_count",
+        "false_guard_commit_count",
+        "hidden_allocation_count",
+        "user_extractor_call_count",
+        "backtracking_retry_count",
+        "successful_commit_count",
+        "product_execution_receipt_count"
+      ],
+      "properties": {
+        "subject_evaluation_count": {
+          "const": 1
+        },
+        "precommit_irreversible_move_count": {
+          "const": 0
+        },
+        "failed_probe_commit_count": {
+          "const": 0
+        },
+        "false_guard_commit_count": {
+          "const": 0
+        },
+        "hidden_allocation_count": {
+          "const": 0
+        },
+        "user_extractor_call_count": {
+          "const": 0
+        },
+        "backtracking_retry_count": {
+          "const": 0
+        },
+        "successful_commit_count": {
+          "const": 1
+        },
+        "product_execution_receipt_count": {
+          "const": 0
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stable_design_count",
+        "preview_gated_count",
+        "not_admitted_count",
+        "diagnostic_family_count",
+        "sequence_rest_form_count",
+        "maximum_rest_per_sequence_pattern",
+        "multi_value_semantic_carrier_count",
+        "general_comma_operator_count",
+        "hidden_allocation_count",
+        "partial_commit_count",
+        "semantic_p0",
+        "product_lanes_not_run"
+      ],
+      "properties": {
+        "stable_design_count": {
+          "const": 20
+        },
+        "preview_gated_count": {
+          "const": 11
+        },
+        "not_admitted_count": {
+          "const": 10
+        },
+        "diagnostic_family_count": {
+          "const": 20
+        },
+        "sequence_rest_form_count": {
+          "const": 3
+        },
+        "maximum_rest_per_sequence_pattern": {
+          "const": 1
+        },
+        "multi_value_semantic_carrier_count": {
+          "const": 1
+        },
+        "general_comma_operator_count": {
+          "const": 0
+        },
+        "hidden_allocation_count": {
+          "const": 0
+        },
+        "partial_commit_count": {
+          "const": 0
+        },
+        "semantic_p0": {
+          "const": 0
+        },
+        "product_lanes_not_run": {
+          "const": 15
+        }
+      }
+    }
+  }
+}

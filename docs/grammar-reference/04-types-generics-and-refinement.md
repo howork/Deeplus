@@ -585,7 +585,7 @@ residue를 만들지 않는다. 문서, fixture 또는 schema의 존재만으로
 **도입 조건**
 
 도입에는 별도 Design_ activation 판정, exact grammar/profile root,
-lossless recovery와 diagnostic, checker/MIR/cleanup 계약, ABI 또는
+lossless CST와 diagnostic, checker/MIR/cleanup 계약, ABI 또는
 backend 독립성 proof, 독립 Test_ corpus, formatter/LSP 보존 및
 target-bound product receipt가 모두 필요하다. 각 관련 OPEN P1은 해당
 closure authority가 독립 증거를 검토한 뒤에만 닫을 수 있다.

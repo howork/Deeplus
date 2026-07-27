@@ -43,7 +43,6 @@
     "surface_family": "named-rest parameter/type residue written with `**`",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR",
     "negative_fixture_ids": [
       "EX-R51c1-004",
       "EX-R51c1-005"
@@ -533,7 +532,6 @@
     "surface_family": "let@lazy",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "LAZY_BINDING_USE_HASH",
     "negative_fixture_ids": [
       "EX-R51b-GRAM-NG-002"
     ],
@@ -569,7 +567,6 @@
     "surface_family": "unit middle-dot multiplication",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "UNIT_MULTIPLICATION_USE_STAR",
     "negative_fixture_ids": [
       "EX-R51b-GRAM-NG-004"
     ],
@@ -582,7 +579,7 @@
   {
     "rejection_id": "NG-R51F-HETEROGENEOUS-LIST-INFERENCE",
     "feature_ids": [
-      "r51f_removed_surface_boundary_law",
+      "closed_source_surface_boundary_law",
       "ordinary_list_literal_surface",
       "closed_anonymous_union_type_msp"
     ],
@@ -602,7 +599,7 @@
   {
     "rejection_id": "NG-R51F-INCDEC",
     "feature_ids": [
-      "r51f_removed_surface_boundary_law",
+      "closed_source_surface_boundary_law",
       "numeric_operator_core"
     ],
     "surface_family": "prefix/postfix increment or decrement expression",
@@ -621,7 +618,7 @@
   {
     "rejection_id": "NG-R51F-MAP-DOT-KEY",
     "feature_ids": [
-      "r51f_removed_surface_boundary_law",
+      "closed_source_surface_boundary_law",
       "map_prefixed_literal"
     ],
     "surface_family": "Map String-key dot projection",
@@ -640,7 +637,7 @@
   {
     "rejection_id": "NG-R51F-REGEX-LITERAL",
     "feature_ids": [
-      "r51f_removed_surface_boundary_law",
+      "closed_source_surface_boundary_law",
       "raw_string_prefixed_literal"
     ],
     "surface_family": "regex literal",
@@ -659,7 +656,7 @@
   {
     "rejection_id": "NG-R51F-TAILREC-KIND",
     "feature_ids": [
-      "r51f_removed_surface_boundary_law",
+      "closed_source_surface_boundary_law",
       "function_profile_introducer_family"
     ],
     "surface_family": "tail-recursion callable kind",
@@ -1050,7 +1047,6 @@
     "surface_family": "unit multiplication written with middle dot",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "UNIT_MIDDLE_DOT_RECOVERY_ONLY",
     "negative_fixture_ids": [],
     "replacement_or_no_fix": "replace · with *",
     "feature_gate_policy": "no current gate",
@@ -1291,5 +1287,95 @@
     "recognition_stage": "checker",
     "current_ast_created": true,
     "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
+  },
+  {
+    "rejection_id": "NG-SEQUENCE-MIDDLE-REST-WITHOUT-CLOSING-DOTS",
+    "feature_ids": [
+      "sequence_positional_rest_pattern"
+    ],
+    "surface_family": "middle positional rest missing the attached closing dot pair",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+    "negative_fixture_ids": [
+      "EX-R52-PAT-NG-001"
+    ],
+    "replacement_or_no_fix": "write the bounded middle rest as `..binder..`",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "diagnose the missing attached closing dots; do not recover the spelling into an admitted Pattern"
+  },
+  {
+    "rejection_id": "NG-MAP-PATTERN-UNSTABLE-KEY",
+    "feature_ids": [
+      "structured_record_map_pattern"
+    ],
+    "surface_family": "Map Pattern selector whose key is neither a literal nor a pin of a stable value",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PATTERN_MAP_KEY_NOT_STABLE",
+    "negative_fixture_ids": [
+      "EX-R52-PAT-NG-002"
+    ],
+    "replacement_or_no_fix": "use a literal key or `^stableValue`",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "preserve the neutral Map Pattern AST, reject the unstable selector before lookup, and create no binding residue"
+  },
+  {
+    "rejection_id": "NG-ORDINARY-CLASS-AUTOMATIC-PATTERN-OPENING",
+    "feature_ids": [
+      "transparent_nominal_named_enum_pattern"
+    ],
+    "surface_family": "automatic structural opening of an ordinary Class, Dyn, Facet or FFI nominal",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN",
+    "negative_fixture_ids": [
+      "EX-R52-PAT-NG-003"
+    ],
+    "replacement_or_no_fix": "use a Record, schema, data class or explicitly Pattern-transparent product",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "reject before exposing owner representation, fields or layout"
+  },
+  {
+    "rejection_id": "NG-REFUTABLE-PARAMETER-ENTRY-PATTERN",
+    "feature_ids": [
+      "irrefutable_parameter_entry_pattern"
+    ],
+    "surface_family": "refutable Pattern used for function or lambda parameter-entry decomposition",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+    "negative_fixture_ids": [
+      "EX-R52-PAT-NG-004"
+    ],
+    "replacement_or_no_fix": "receive the value through an Identifier channel and match it in a refutable control context",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "reject before callable-entry lowering; preserve callable identity and create no partial parameter bindings"
+  },
+  {
+    "rejection_id": "NG-LOCAL-GROUP-ASSIGNMENT-OVERLAPPING-TARGETS",
+    "feature_ids": [
+      "local_group_tuple_assignment"
+    ],
+    "surface_family": "group assignment with duplicate or overlapping target places",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+    "negative_fixture_ids": [
+      "EX-R52-PAT-NG-005"
+    ],
+    "replacement_or_no_fix": "use exact-arity distinct direct mutable Plain local targets",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "checker",
+    "current_ast_created": true,
+    "recognition_contract": "reject before right-hand staging or target mutation; no partial commit is permitted"
   }
 ]

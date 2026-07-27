@@ -1332,7 +1332,7 @@
       "public borrowed type ReadonlyView<T>"
     ],
     "responsibility": "nonowning nonmutating owner-bounded coordinate-preserving view",
-    "notes": "Every view preserves its source owner's declared logical coordinates and provenance; ordinary one-based sources remain one-based, while bounded or sliced sources retain their domains. No implicit rebase, hidden copy, isolation crossing, or owner-lifetime escape is permitted.",
+    "notes": "Every view preserves its source owner's declared logical coordinates and provenance; ordinary one-based sources remain one-based, while bounded or sliced sources retain their domains. No implicit rebase, hidden copy, isolation crossing, owner-lifetime escape, or Sequence witness is inferred. Positional List-pattern capture uses the distinct ListRestView<T> identity.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1345,7 +1345,42 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "0e71ac5f79fa95c66911f8d026b0e0235f696311982af25364b868de50621d45"
+    "normalized_contract_sha256": "1e7b402f5af51ca2967ee4f6410ecf7c767a0f27a6f42126ea09a1146bee705b"
+  },
+  {
+    "entry_id": "list_rest_view_t",
+    "symbol": "ListRestView<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "pattern_decomposition",
+      "sequence_positional_rest_pattern"
+    ],
+    "signatures": [
+      "prelude intrinsic borrowed type ListRestView<T>",
+      "prelude intrinsic conformance ListRestView<T> conforms Sequence<T>"
+    ],
+    "responsibility": "owner-bounded positional List-rest view with exact ordinal span, source-coordinate provenance, and explicit intrinsic traversal evidence",
+    "notes": "Only the closed built-in List-pattern decomposition descriptor creates this borrowed identity. It records SourceOwnerId, BorrowRegionId, RankSpan(start_rank,count), and rank-to-source-coordinate projection; count = 0 is a valid empty residual at a preserved insertion boundary and is not an empty source Range. The explicit intrinsic Sequence<T> witness supplies traversal only and activates neither brackets nor generic Sequence pattern opening. No user conformance, hidden copy, allocation, rebase, mutation, isolation crossing, or owner-lifetime extension is admitted. A pure Pattern guard may observe a nonowning probe view; the final binder is published only by the whole-pattern commit.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic borrowed type ListRestView<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic conformance ListRestView<T> conforms Sequence<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "80b310a9e96cf677bca7ee1afc525d30198236db3800ea95e94669157d458c49"
   },
   {
     "entry_id": "replace_t",
@@ -1457,32 +1492,5 @@
       }
     ],
     "normalized_contract_sha256": "d4a00149ea61f2ea1ea1ddfa4175d640ab4d6692b05732526cf50e89c3178fef"
-  },
-  {
-    "entry_id": "shared_t",
-    "symbol": "Shared<T>",
-    "kind": "shared_handle",
-    "status": "stable_design",
-    "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
-    ],
-    "signatures": [
-      "public opaque type Shared<T>"
-    ],
-    "responsibility": "shared observation handle, not mutable alias permission",
-    "notes": "",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "public opaque type Shared<T>",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "cb5db79acc62e108dab0915467ab26bff6e6cfc80ef30bba30ef8ffd0425ffd9"
   }
 ]

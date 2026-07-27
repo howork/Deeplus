@@ -1,0 +1,415 @@
+[
+  {
+    "diagnostic_id": "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A bare Tuple product surface requires at least two items; use the parenthesized singleton Tuple form when needed.",
+    "feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Bare comma product syntax is admitted only by a return type, return/ret value, binding head/value, or direct-local group assignment owner.",
+    "feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A bare comma binding requires one fixed Tuple product; use a bracket Pattern for an admitted List-shaped subject.",
+    "feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "related_feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RETURN_TUPLE_ARITY_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The returned Tuple product arity does not match the normalized callable result Tuple type.",
+    "feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An exact Record Pattern must name the complete visible field set exactly once.",
+    "feature_refs": [
+      "structured_record_map_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_RECORD_TARGET_TYPE_REQUIRES_PARENS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A renamed Record field with a typed or nested destination Pattern must parenthesize that destination.",
+    "feature_refs": [
+      "structured_record_map_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_MAP_KEY_NOT_STABLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A Map Pattern key must be a literal or `^stableValue` with an exact stable key identity.",
+    "feature_refs": [
+      "structured_record_map_pattern"
+    ],
+    "related_feature_refs": [
+      "pin_range_relational_pattern"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_MAP_DUPLICATE_KEY",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A Map Pattern contains the same normalized key identity more than once.",
+    "feature_refs": [
+      "structured_record_map_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_NOMINAL_NOT_TRANSPARENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Direct nominal decomposition requires Record, schema, data class, or explicit pattern-transparent product authority.",
+    "feature_refs": [
+      "transparent_nominal_named_enum_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_NAMED_PATTERN_LABEL_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A named Enum payload Pattern must use the exact declared visible payload labels without duplication.",
+    "feature_refs": [
+      "transparent_nominal_named_enum_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A pin Pattern requires one stable readable nonconsuming value whose identity survives the complete test.",
+    "feature_refs": [
+      "pin_range_relational_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_PIN_STRONG_EQ_UNAVAILABLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A pin Pattern requires one exact compiler-selected strong equality relation for the subject and pinned value.",
+    "feature_refs": [
+      "pin_range_relational_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_RANGE_DOMAIN_UNSUPPORTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Range and relational Patterns require Int, UInt, Char, ordered Enum, or another exact admitted ordered domain; Float is Preview Gated.",
+    "feature_refs": [
+      "pin_range_relational_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_advanced_surface_preview_design"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ASSERTIVE_PATTERN_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An assertive let!/var! Pattern mismatch raises PatternMatchDefect after zero component commits.",
+    "feature_refs": [
+      "assertive_pattern_binding"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "runtime",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Every nonbinding term in a Pattern condition chain must have exact type Bool.",
+    "feature_refs": [
+      "pattern_condition_chain"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "CATCH_PATTERN_GUARD_NOT_PURE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A catch Pattern guard must be terminating, pure, synchronous, nonconsuming, and Bool.",
+    "feature_refs": [
+      "refutable_catch_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_PARAMETER_BINDER_COLLISION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A parameter entry Pattern binder collides with its channel identifier or another entry binder.",
+    "feature_refs": [
+      "irrefutable_parameter_entry_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A local group assignment requires the exact same Tuple arity on its target and value sides.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [
+      "tuple_bare_product_surface"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Every Stable group-assignment target must resolve to an existing direct mutable local.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Group-assignment targets must have pairwise distinct direct LocalPlaceIds.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_ASSIGNMENT_REFUTABLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Stable local group assignment admits only an exact irrefutable Tuple of direct local places.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_ASSIGNMENT_SHARED_TARGET",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Shared, actor, FFI, property, member, and index targets are outside Stable local group assignment.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [
+      "pattern_advanced_surface_preview_design"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A group assignment is rejected when all target replacements cannot be reserved for one infallible logical commit.",
+    "feature_refs": [
+      "local_group_tuple_assignment"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  }
+]

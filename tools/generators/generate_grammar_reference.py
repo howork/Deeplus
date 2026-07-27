@@ -55,42 +55,37 @@ PREVIEW_FEATURE_EXAMPLE_RE = re.compile(
     r"registry-status:\s*(PREVIEW|PREVIEW_DESIGN)\s*-->"
 )
 PROFILE_MARKER_RE = re.compile(
-    r"(?m)^[ \t]*PROFILE:[ \t]*(LEXICAL|STABLE|PREVIEW|RECOVERY)[ \t]*$"
+    r"(?m)^[ \t]*PROFILE:[ \t]*(LEXICAL|STABLE|PREVIEW)[ \t]*$"
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
-    "grammar_productions": 579,
-    "features": 708,
-    "diagnostics": 1395,
-    "predicates": 258,
-    "prelude_entries": 65,
-    "examples": 723,
-    "hard_keywords": 30,
+    "grammar_productions": 620,
+    "features": 719,
+    "diagnostics": 1414,
+    "predicates": 268,
+    "prelude_entries": 66,
+    "examples": 726,
+    "hard_keywords": 29,
     "contextual_words": 101,
 }
 EXPECTED_PROFILES = {
     "LEXICAL": 91,
-    "STABLE": 458,
+    "STABLE": 516,
     "PREVIEW": 13,
-    "RECOVERY": 17,
 }
 EXPECTED_FENCES = {
     "CURRENT",
     "PREVIEW_GATED",
     "PREVIEW_NONACTIVATABLE",
-    "RECOVERY_ONLY",
-    "REMOVED",
 }
 EXPECTED_PREVIEW_POLICY = {
     "chapter_path": (
-        "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md"
+        "docs/grammar-reference/15-preview-surfaces.md"
     ),
     "status_fence_scope": "UNTIL_NEXT_FENCE_OR_EOF",
     "required_status_fences": [
         "PREVIEW_GATED",
         "PREVIEW_NONACTIVATABLE",
-        "RECOVERY_ONLY",
-        "REMOVED",
     ],
     "activation_disclaimer": (
         "이 장의 Preview 설계 문서화는 구문, 구현, 제품 지원 또는 "
@@ -98,7 +93,7 @@ EXPECTED_PREVIEW_POLICY = {
     ),
     "required_registry_status_counts": {
         "PREVIEW": 3,
-        "PREVIEW_DESIGN": 49,
+        "PREVIEW_DESIGN": 50,
     },
     "review_card_begin_marker": (
         "<!-- deeplus-preview-design-review-cards: begin -->"
@@ -114,7 +109,7 @@ EXPECTED_PREVIEW_POLICY = {
         "open_alternatives",
         "activation_prerequisites",
     ],
-    "required_review_card_count": 49,
+    "required_review_card_count": 50,
     "detail_chapter_paths": [
         "docs/grammar-reference/20-preview-gated-reference.md",
         "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
@@ -125,9 +120,9 @@ EXPECTED_PREVIEW_POLICY = {
     "feature_anchor_prefix": "preview-feature-",
     "required_feature_example_status_counts": {
         "PREVIEW": 3,
-        "PREVIEW_DESIGN": 49,
+        "PREVIEW_DESIGN": 50,
     },
-    "required_feature_example_count": 52,
+    "required_feature_example_count": 53,
     "feature_example_required_fields": [
         "검토 목적",
         "제안 표면",
@@ -146,7 +141,6 @@ EXPECTED_MANUAL_QUALITY_POLICY = {
         "CURRENT_EXPLANATORY",
         "PREVIEW_GATED",
         "PREVIEW_NONACTIVATABLE",
-        "RECOVERY_ONLY",
         "REJECTED_EXPLANATORY",
     ],
     "generated_link_targets_are_planned_valid": True,
@@ -155,7 +149,6 @@ ILLUSTRATIVE_STATUS_FENCES = {
     "CURRENT_EXPLANATORY": "CURRENT",
     "PREVIEW_GATED": "PREVIEW_GATED",
     "PREVIEW_NONACTIVATABLE": "PREVIEW_NONACTIVATABLE",
-    "RECOVERY_ONLY": "RECOVERY_ONLY",
     "REJECTED_EXPLANATORY": "CURRENT",
 }
 EXPECTED_FEATURE_P1_IDS = [
@@ -191,7 +184,7 @@ EXPECTED_GOVERNANCE = {
     "source_mode": "VALIDATION_ONLY",
     "source_path": "current/current-pointer.json",
     "chapter_path": (
-        "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md"
+        "docs/grammar-reference/15-preview-surfaces.md"
     ),
     "semantic_p0": 0,
     "feature_p1_status": "OPEN",
@@ -825,18 +818,12 @@ def registry_example_status(
         {
             "PREVIEW": "PREVIEW_GATED",
             "PREVIEW_DESIGN": "PREVIEW_NONACTIVATABLE",
-            "RECOVERY": "RECOVERY_ONLY",
-            "RECOVERY_ONLY": "RECOVERY_ONLY",
-            "REMOVED": "REMOVED",
         }[feature_status_by_id[identifier]]
         for identifier in feature_ids
         if feature_status_by_id[identifier]
         in {
             "PREVIEW",
             "PREVIEW_DESIGN",
-            "RECOVERY",
-            "RECOVERY_ONLY",
-            "REMOVED",
         }
     }
     if len(noncurrent_statuses) > 1:
@@ -1621,7 +1608,7 @@ def render_productions(productions: list[dict[str, Any]], grammar_path: str) -> 
         "줄 번호는 원천을 찾아가기 위한 보조 정보이며 이 부록 자체가 별도 문법 권위는 아닙니다.",
         "",
     ]
-    for profile in ("LEXICAL", "STABLE", "PREVIEW", "RECOVERY"):
+    for profile in ("LEXICAL", "STABLE", "PREVIEW"):
         profile_rows = [row for row in productions if row["profile"] == profile]
         lines.extend(
             [
@@ -1714,6 +1701,11 @@ def render_vocabulary(
 def render_features(
     rows: list[dict[str, Any]], preview_detail_links: dict[str, str]
 ) -> bytes:
+    rows = [
+        row
+        for row in rows
+        if row.get("status_enum") not in {"ABSORBED_ALIAS", "SUPERSEDED"}
+    ]
     lines = [
         GENERATED_BANNER.rstrip(),
         "# 부록 C — 기능 상태와 추적 상세 참조",
@@ -1733,11 +1725,6 @@ def render_features(
         "CONFORMANCE_ONLY",
         "PREVIEW",
         "PREVIEW_DESIGN",
-        "RECOVERY",
-        "RECOVERY_ONLY",
-        "REMOVED",
-        "ABSORBED_ALIAS",
-        "SUPERSEDED",
     ]
     observed_statuses = sorted(
         set(str(row.get("status_enum")) for row in rows)
@@ -1815,6 +1802,11 @@ def render_diagnostics_predicates(
         "|---|---|---|---|---|",
     ]
     for row in diagnostics:
+        if (
+            row.get("diagnostic_status") == "retired"
+            or row.get("emission_domain") == "historical"
+        ):
+            continue
         lines.append(
             f"| `{markdown(row.get('diagnostic_id'))}` | "
             f"`{markdown(row.get('stage'))}` | "
@@ -1940,7 +1932,7 @@ def render_coverage_report(
             "|---|---:|",
             *[
                 f"| `{profile}` | {profile_counts[profile]} |"
-                for profile in ("LEXICAL", "STABLE", "PREVIEW", "RECOVERY")
+                for profile in ("LEXICAL", "STABLE", "PREVIEW")
             ],
             "",
             "## 결합된 의미론 원천",

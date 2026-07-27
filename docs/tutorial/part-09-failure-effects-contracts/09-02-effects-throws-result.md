@@ -113,8 +113,6 @@ pure parsing은 권한과 I/O effect가 필요 없다. domain failure를 값으�
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def parsePort(text: String) -> Result<Int, error PortError>
-    throws Never
-    effects {}
 = {
     return parsePortValue(text)
 }

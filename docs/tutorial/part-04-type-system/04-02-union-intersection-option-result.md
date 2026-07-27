@@ -57,8 +57,6 @@ closed Union은 먼저 이름을 주고 exact typed pattern으로 해체한다.
 private type TextOrNumber = Int | String
 
 private def#pure describe(value: TextOrNumber) -> String
-    throws Never
-    effects {}
 = {
     return @match value {
         number: Int => number ~ toString

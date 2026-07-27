@@ -1,0 +1,368 @@
+{
+  "schema": "deeplus.pattern-sequence-multivalue-fixtures/r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "contract": "spec/contracts/pattern-sequence-multivalue-r1.json",
+  "product_lanes": "15/15_NOT_RUN",
+  "fixtures": [
+    {
+      "fixture_id": "PSM-R1-POS-001",
+      "fixture_class": "positive",
+      "surface": "let (name, age) = personRow",
+      "rule": "EXACT_TUPLE_PATTERN",
+      "expected": "ADMIT",
+      "assertions": ["tuple_arity=2", "subject_evaluation_count=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-002",
+      "fixture_class": "positive",
+      "surface": "let (only,) = singleton",
+      "rule": "ONE_TUPLE_PATTERN",
+      "expected": "ADMIT",
+      "assertions": ["tuple_arity=1", "grouping=false"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-003",
+      "fixture_class": "positive",
+      "surface": "let [head, ..tail] = values",
+      "rule": "LIST_SUFFIX_REST",
+      "expected": "ADMIT_IF_IRREFUTABLE",
+      "assertions": ["rest_position=LAST", "rest_type=ListRestView<Int>"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-004",
+      "fixture_class": "positive",
+      "surface": "let [leading.., last] = values",
+      "rule": "LIST_PREFIX_REST",
+      "expected": "ADMIT_IF_IRREFUTABLE",
+      "assertions": ["rest_position=FIRST", "fixed_suffix_count=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-005",
+      "fixture_class": "positive",
+      "surface": "let [first, ..middle.., last] = values",
+      "rule": "LIST_MIDDLE_REST",
+      "expected": "ADMIT_IF_IRREFUTABLE",
+      "assertions": ["fixed_prefix_count=1", "fixed_suffix_count=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-006",
+      "fixture_class": "positive",
+      "surface": "if let [.._] = values { accept() }",
+      "rule": "LIST_ALL_REMAINDER_WILDCARD",
+      "expected": "ADMIT",
+      "assertions": ["binder_count=0", "all_lengths_covered=true"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-007",
+      "fixture_class": "positive",
+      "surface": "if let [first, ..tail] = oneValue { use(tail) }",
+      "rule": "EMPTY_LIST_REST",
+      "expected": "ADMIT",
+      "assertions": ["rank_span_count=0", "invalid_empty_source_range_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-008",
+      "fixture_class": "positive",
+      "surface": "let ${name, age} = exactPerson",
+      "rule": "EXACT_RECORD_PATTERN",
+      "expected": "ADMIT_IF_EXACT_ROW",
+      "assertions": ["record_shape=EXACT", "extra_field_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-009",
+      "fixture_class": "positive",
+      "surface": "let ${name, .._} = person",
+      "rule": "OPEN_IGNORE_RECORD_PATTERN",
+      "expected": "ADMIT",
+      "assertions": ["record_shape=OPEN_IGNORE", "residual_binder_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-010",
+      "fixture_class": "positive",
+      "surface": "let ${displayName: name, ..rest} = person",
+      "rule": "OPEN_CAPTURE_RECORD_MAPPING",
+      "expected": "ADMIT",
+      "assertions": ["mapping=DESTINATION_COLON_SOURCE", "residual_type=EXACT_RECORD_ROW"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-011",
+      "fixture_class": "positive",
+      "surface": "if let #map{value: \"answer\", .._} = table { use(value) }",
+      "rule": "MAP_PATTERN_STABLE_KEY",
+      "expected": "ADMIT",
+      "assertions": ["key_kind=LITERAL", "provider_lookup_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-012",
+      "fixture_class": "positive",
+      "surface": "let Point${x, y} = point",
+      "rule": "TRANSPARENT_NOMINAL_PATTERN",
+      "expected": "ADMIT_IF_PATTERN_TRANSPARENT",
+      "assertions": ["ordinary_class_private_open_count=0", "getter_call_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-013",
+      "fixture_class": "positive",
+      "surface": "let ::found${payload: value} = result",
+      "rule": "NAMED_ENUM_PAYLOAD_PATTERN",
+      "expected": "ADMIT_IF_LABEL_DECLARED",
+      "assertions": ["variant_identity_checked=true", "payload_label=payload"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-014",
+      "fixture_class": "positive",
+      "surface": "match value { ^expected => same() otherwise => different() }",
+      "rule": "STABLE_PIN_PATTERN",
+      "expected": "ADMIT_IF_STABLE_PLACE",
+      "assertions": ["pin_read_count=1", "strong_equality_descriptor_count=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-015",
+      "fixture_class": "positive",
+      "surface": "match score { 1..10 => low() > 10 => high() otherwise => zero() }",
+      "rule": "EXACT_ORDERED_RANGE_RELATIONAL_PATTERN",
+      "expected": "ADMIT",
+      "assertions": ["domain=Int", "float_range_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-016",
+      "fixture_class": "positive",
+      "surface": "let! ::found(value) = result",
+      "rule": "ASSERTIVE_PATTERN_BINDING",
+      "expected": "ADMIT",
+      "assertions": ["mismatch=PatternMatchDefect", "partial_commit_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-017",
+      "fixture_class": "positive",
+      "surface": "if let ::found(value) = result and then value > 0 { use(value) }",
+      "rule": "PATTERN_CONDITION_CHAIN",
+      "expected": "ADMIT",
+      "assertions": ["evaluation_order=LEFT_TO_RIGHT", "later_term_sees_prior_binder=true"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-018",
+      "fixture_class": "positive",
+      "surface": "catch NetworkError${status: code, .._} if status >= 500 { retry() }",
+      "rule": "REFUTABLE_ORDERED_CATCH_PATTERN",
+      "expected": "ADMIT",
+      "assertions": ["first_match=true", "unmatched=NEXT_CATCH_OR_PROPAGATE"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-019",
+      "fixture_class": "positive",
+      "surface": "public def length(point ${x, y}: Point) -> Int = { return x + y }",
+      "rule": "IRREFUTABLE_PARAMETER_ENTRY_PATTERN",
+      "expected": "ADMIT_IF_IRREFUTABLE",
+      "assertions": ["call_channel_label=point", "public_api_pattern_binder_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-020",
+      "fixture_class": "positive",
+      "surface": "{ (x, y) => x + y }",
+      "rule": "IRREFUTABLE_LAMBDA_PARAMETER_PATTERN",
+      "expected": "ADMIT_IF_ONE_TUPLE_PARAMETER",
+      "assertions": ["lambda_parameter_count=1", "tuple_arity=2"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-021",
+      "fixture_class": "positive",
+      "surface": "public def split() -> String, Int = { return \"ready\", 1 }",
+      "rule": "BARE_TUPLE_RETURN_SURFACE",
+      "expected": "NORMALIZE_TO_TUPLE",
+      "assertions": ["semantic_result_channel_count=1", "abi_multi_return_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-022",
+      "fixture_class": "positive",
+      "surface": "let name, count = \"ready\", 1",
+      "rule": "BARE_TUPLE_BINDING_SURFACE",
+      "expected": "NORMALIZE_TO_TUPLE",
+      "assertions": ["binding_arity=2", "general_comma_operator_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-023",
+      "fixture_class": "positive",
+      "surface": "left, right = right, left",
+      "rule": "DIRECT_LOCAL_PARALLEL_ASSIGNMENT",
+      "expected": "ADMIT",
+      "assertions": ["rhs_evaluation_count=2", "group_commit_count=1", "precommit_write_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-POS-024",
+      "fixture_class": "positive",
+      "surface": "(left, right) = pair",
+      "rule": "DIRECT_LOCAL_STRUCTURAL_ASSIGNMENT",
+      "expected": "ADMIT_IF_IRREFUTABLE",
+      "assertions": ["target_kind=DIRECT_LOCAL", "result_type=Unit"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-001",
+      "fixture_class": "negative",
+      "surface": "let [first, ..middle, last] = values",
+      "rule": "MIDDLE_REST_REQUIRES_CLOSING_DOT_DOT",
+      "expected": "REJECT",
+      "assertions": ["admitted_ast_count=0", "recovery_surface_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-002",
+      "fixture_class": "negative",
+      "surface": "let [..middle..] = values",
+      "rule": "MIDDLE_REST_REQUIRES_BOTH_SIDES",
+      "expected": "REJECT",
+      "assertions": ["fixed_prefix_count=0", "fixed_suffix_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-003",
+      "fixture_class": "negative",
+      "surface": "let [prefix.., ..suffix] = values",
+      "rule": "PATTERN_MULTIPLE_REST",
+      "expected": "REJECT",
+      "assertions": ["rest_count=2", "final_binding_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-004",
+      "fixture_class": "negative",
+      "surface": "let [head, ..tail] = customSequence",
+      "rule": "SEQUENCE_PATTERN_CARRIER_NOT_ADMITTED",
+      "expected": "REJECT_WITHOUT_CLOSED_DESCRIPTOR",
+      "assertions": ["sequence_conformance_only=true", "descriptor_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-005",
+      "fixture_class": "negative",
+      "surface": "let [head, ..tail] = makeList(); return tail",
+      "rule": "REST_VIEW_WOULD_OUTLIVE_SOURCE",
+      "expected": "REJECT",
+      "assertions": ["temporary_owner_retention=FORBIDDEN_CURRENT", "hidden_copy_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-006",
+      "fixture_class": "negative",
+      "surface": "let (left, right) = singleton",
+      "rule": "TUPLE_PATTERN_ARITY_MISMATCH",
+      "expected": "REJECT",
+      "assertions": ["pattern_arity=2", "subject_arity=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-007",
+      "fixture_class": "negative",
+      "surface": "let ${name} = personWithAge",
+      "rule": "RECORD_PATTERN_SHAPE_MISMATCH",
+      "expected": "REJECT",
+      "assertions": ["record_shape=EXACT", "unmatched_source_field_count=1"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-008",
+      "fixture_class": "negative",
+      "surface": "match value { ^nextValue() => same() otherwise => different() }",
+      "rule": "PATTERN_PIN_VALUE_NOT_STABLE",
+      "expected": "REJECT",
+      "assertions": ["call_during_probe_count=0", "stable_place=false"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-009",
+      "fixture_class": "negative",
+      "surface": "consume(left, right)",
+      "rule": "COMMA_PRODUCT_NOT_GENERAL_EXPRESSION",
+      "expected": "ORDINARY_TWO_ARGUMENT_CALL_NOT_TUPLE_PRODUCT",
+      "assertions": ["general_comma_operator_count=0", "call_argument_count=2"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-010",
+      "fixture_class": "negative",
+      "surface": "left, left = right, other",
+      "rule": "PARALLEL_ASSIGNMENT_TARGET_OVERLAP",
+      "expected": "REJECT",
+      "assertions": ["duplicate_local_place_count=1", "group_commit_count=0"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-011",
+      "fixture_class": "negative",
+      "surface": "object.left, object.right = right, left",
+      "rule": "PARALLEL_ASSIGNMENT_TARGET_PROFILE_NOT_ADMITTED",
+      "expected": "REJECT_CURRENT",
+      "assertions": ["target_kind=MEMBER", "preview_gate_required=true"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-NEG-012",
+      "fixture_class": "negative",
+      "surface": "public def use(result ::found(value): Result<Int, Error>) -> Int = { return value }",
+      "rule": "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+      "expected": "REJECT",
+      "assertions": ["parameter_pattern_irrefutable=false", "public_api_changed=false"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-PRE-001",
+      "fixture_class": "preview",
+      "surface": "match pair { left and right => both() }",
+      "rule": "AND_NOT_PATTERN_PREVIEW",
+      "expected": "PREVIEW_GATED",
+      "assertions": ["stable_activation=false", "product_support=NOT_RUN"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-PRE-002",
+      "fixture_class": "preview",
+      "surface": "match value { #set{1, 2, .._} => selected() }",
+      "rule": "SET_NUMERIC_ARRAY_PATTERN_PREVIEW",
+      "expected": "PREVIEW_GATED",
+      "assertions": ["stable_activation=false", "product_support=NOT_RUN"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-PRE-003",
+      "fixture_class": "preview",
+      "surface": "match value { view geometry::point(${x, y}) => use(x, y) }",
+      "rule": "PATTERN_ABSTRACTION_PREVIEW",
+      "expected": "PREVIEW_GATED",
+      "assertions": ["dynamic_view_selection_count=0", "product_support=NOT_RUN"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "PSM-R1-PRE-004",
+      "fixture_class": "preview",
+      "surface": "resourceLeft, resourceRight = resourceRight, resourceLeft",
+      "rule": "AFFINE_RESOURCE_PARALLEL_ASSIGNMENT_PREVIEW",
+      "expected": "PREVIEW_GATED",
+      "assertions": ["stable_activation=false", "cleanup_contract_required=true"],
+      "execution": "DESIGN_STATIC_NOT_RUN"
+    }
+  ]
+}

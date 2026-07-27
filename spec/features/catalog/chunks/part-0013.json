@@ -1298,13 +1298,13 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "removed-surface boundary law",
-    "feature_id": "r51f_removed_surface_boundary_law",
+    "display_name": "closed source-surface boundary law",
+    "feature_id": "closed_source_surface_boundary_law",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Map dot-key projection, inc/dec expressions, tailrec callable kind, regex literals, and automatic heterogeneous-List Union inference are absent from current Deeplus. No Stable, Preview, or nonactivatable feature row restores them. Current replacements are explicit indexing/API calls, explicit assignment, ordinary recursion, library construction from String/Bytes, and an explicit expected List union.",
+    "notes": "The closed current surface uses explicit indexing or APIs for Map keys, explicit assignment for mutation, ordinary recursion, library construction from String or Bytes for patterns, and an explicitly expected union for heterogeneous List elements. Dot Map-key projection, increment/decrement expressions, a tailrec callable kind, regex literals, and implicit heterogeneous-List union inference have no language route.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1425,7 +1425,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current range delimiters are exactly .. and ..<. No step or descending delimiter is admitted: ... has only repeated-positional/comprehension-unfold structural owners and ..> is reserved recovery. Use an explicit named step/reverse API.",
+    "notes": "Current range delimiters are exactly .. and ..<. The ... token has only repeated-positional and comprehension-unfold structural owners. Step and reverse traversal use explicit named APIs.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1436,9 +1436,7 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [
-        "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
-      ],
+      "diagnostics": [],
       "predicates": [
         "OperatorPrecedenceTablePhaseAAdmitted",
         "SliceRangeAdmitted"

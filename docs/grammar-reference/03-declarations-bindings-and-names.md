@@ -42,10 +42,12 @@ TopLevelBindingDecl ::= TopLevelVisibility? ("let" | "var")
                         Identifier TypeAnnotation? "=" Expr StatementBoundary
 
 BindingCore         ::= ("let" | "var") BindingPattern "=" Expr
+AssertiveBindingStmt ::= ("let" | "var") "!" BindingPattern "=" Expr
 LocalBindingStmt    ::= BindingCore StatementBoundary
                       | RightwardLocalBindingSurface
                       | LazyBindingStmt
                       | GuardedBindingStmt
+                      | AssertiveBindingStmt
 
 LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
                         StatementBoundary
@@ -53,6 +55,22 @@ LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
 
 `let`은 불변 바인딩, `var`는 가변 바인딩이다. 지연 바인딩의 현행 표기는
 `let#lazy`이며 `var#lazy`는 없다.
+
+plain `let`/`var`의 Pattern은 checker가 irrefutable임을 증명해야 한다.
+`let!`/`var!`은 refutable Pattern의 성공을 프로그래머가 assert하며,
+mismatch는 `PatternMatchDefect`다. ordinary 입력 검증에는 guarded
+binding을 사용한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let [head, ..tail] = values
+else return
+
+let! [x, y] = protocolGuaranteedPair
+```
+
+두 형식 모두 subject를 한 번 평가하고 성공 전에 component binder나
+move를 공개하지 않는다.
 
 오른쪽 방향 로컬 바인딩은 다음 두 형식만 쓴다.
 
@@ -97,6 +115,9 @@ AccessorDecl         ::= MemberVisibility? "get" Block
 - 오른쪽 방향 바인딩 대상은 같은 block에서 새로 생기는 단일
   identifier여야 한다. member/index/place/pattern이나 기존 이름을
   대상으로 삼을 수 없다.
+- bare comma binding `let id, name = pair`는 Tuple Pattern으로
+  정규화된다. List/Record/Map의 refutable 구조는 guarded binding,
+  `if let`, `match` 또는 명시적 `let!` owner를 사용한다.
 - 로컬 함수 이름은 선언 뒤부터 보이며 `public/common/private`를 붙일
   수 없다.
 - 프로퍼티 값과 접근자는 저장소 소유권, 변경 권한, 수명 책임을
@@ -108,6 +129,12 @@ AccessorDecl         ::= MemberVisibility? "get" Block
 일반 바인딩과 오른쪽 방향 바인딩은 initializer를 정확히 한 번 평가한다.
 평가가 성공한 뒤에만 새 이름과 move/borrow 책임을 원자적으로 commit한다.
 실패하면 부분 바인딩이나 별도 flow-binding node가 남지 않는다.
+
+지역 direct mutable Plain place의 병렬 대입도 같은 transaction 원칙을
+따른다. `left, right = right, left`는 target을 왼쪽부터 한 번 resolve하고
+RHS Tuple을 한 번 평가한 뒤 하나의 logical commit을 수행한다. target
+overlap, member/index/shared place와 commit 중 user callback은 Stable
+profile에서 거부한다.
 
 지연 바인딩에는 initialization owner와 commit이 각각 하나뿐이다. 동시
 force는 하나의 불변 결과만 공개해야 하며, cycle과 재진입은 결정적으로
@@ -173,10 +200,8 @@ def incrementCount() -> Int = {
 | 로컬 함수에 최상위 가시성 사용 | 거부 |
 | 프로퍼티 헤더에 `+/-/#` 사용 | 거부; sigil은 개별 접근자에 둔다 |
 | 접근자 구분자로 `=` 사용 | 거부; `:=`가 필요하다 |
-| `let@lazy` | recovery-only; `let#lazy`를 사용한다 |
 | `var#lazy` | 거부 |
 | 숨은 실패 채널을 memoize하는 lazy 값 | 거부; 명시적 `Result`를 사용한다 |
-| `expr -> let name` | 제거된 형식 |
 | `expr -> object.field`, `expr -> values[i]` | 거부; fresh local만 가능하다 |
 | 오른쪽 방향 바인딩 chaining | 거부 |
 

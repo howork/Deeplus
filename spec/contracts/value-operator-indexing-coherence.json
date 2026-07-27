@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-contract/r1",
-  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -144,12 +144,7 @@
           "::none",
           "Option<T>::none"
         ],
-        "null_source_value": false,
-        "null_lexical_role": "RESERVED_RECOVERY_SPELLING",
-        "null_diagnostic": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
-        "recovery_AST_value_count": 0,
-        "recovery_HIR_value_count": 0,
-        "recovery_MIR_value_count": 0
+        "null_source_value": false
       }
     },
     {
@@ -167,7 +162,6 @@
         "runtime_lookup_count": 0,
         "source_order_tie_break_count": 0,
         "user_extension_route": "NAMED_TRAIT_METHOD_OR_NAMED_API",
-        "arbitrary_custom_operator": "REJECTED_NOT_CURRENT_HISTORICAL_TRACE_ONLY",
         "fixed_operator_conformance_overloading": "STABLE_DESIGN",
         "fixed_operator_stable_profile": {
           "admitted_operator_ids": [
@@ -223,7 +217,14 @@
       "title": "homogeneous scalar operators use one exact normalized domain and specialized owners delegate",
       "contract": {
         "literal_context_adaptation": "a signless unsuffixed integer may adopt an exact representable Int/UInt/IntN/UIntN target; only direct PrefixExpr(-, UnsuffixedIntegerLiteral) may instead adapt its signed -magnitude candidate; no arbitrary folding; ISize/USize require suffix or checked conversion; unsuffixed float remains Float64",
-        "homogeneous_scalar_operators": ["+", "-", "*", "/", "%", "integer ^"],
+        "homogeneous_scalar_operators": [
+          "+",
+          "-",
+          "*",
+          "/",
+          "%",
+          "integer ^"
+        ],
         "homogeneous_scalar_operand_domain_count": 1,
         "specialized_intrinsic_routes": {
           "Measure ^ StaticInt": "measure_static_power_law",
@@ -459,45 +460,290 @@
       "normalized_type": "contextual Option<T>",
       "current": true,
       "notes": "current absence value"
-    },
-    {
-      "literal_id": "LIT-NULL-RECOVERY",
-      "source_family": "null",
-      "normalized_type": null,
-      "current": false,
-      "notes": "reserved recovery spelling; no value node survives"
     }
   ],
   "expression_operator_precedence_matrix": [
-    {"rank": 10, "operator_id": "assignment", "tokens": ["=", "+=", "-=", "*=", "/=", "%="], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 20, "operator_id": "ternary", "tokens": ["?", ":"], "fixity": "structured", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 30, "operator_id": "otherwise", "tokens": ["otherwise"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 40, "operator_id": "or", "tokens": ["or"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 50, "operator_id": "and_then", "tokens": ["and then"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 60, "operator_id": "and", "tokens": ["and"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 70, "operator_id": "comparison", "tokens": ["==", "!=", "<", "<=", ">", ">=", "in", "! in", "is", "! is"], "fixity": "infix", "associativity": "checker_bounded_chain", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 80, "operator_id": "option_coalesce", "tokens": ["?:"], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 90, "operator_id": "bitwise_or", "tokens": ["||"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 100, "operator_id": "bitwise_xor", "tokens": ["^^"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 110, "operator_id": "bitwise_and", "tokens": ["&&"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 120, "operator_id": "range", "tokens": ["..", "..<"], "fixity": "infix", "associativity": "nonassociative", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 130, "operator_id": "additive", "tokens": ["+", "-"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE"},
-    {"rank": 140, "operator_id": "multiplicative", "tokens": ["*", "/", "%"], "fixity": "infix", "associativity": "left", "dispatch": "*_INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE;_DIVIDE_AND_REMAINDER_INTRINSIC_ONLY"},
-    {"rank": 150, "operator_id": "linear_product", "tokens": ["**", "*+"], "fixity": "infix", "associativity": "left", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 160, "operator_id": "power", "tokens": ["^"], "fixity": "infix", "associativity": "right", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 170, "operator_id": "prefix", "tokens": ["+", "-", "not", "~~", "move", "borrow", "&", "await"], "fixity": "prefix", "associativity": "right", "dispatch": "INTRINSIC_ONLY", "right_binding_power_by_family": {"numeric_sign_+_-": 159, "all_other_prefix_parselets": 170}, "power_interaction": "-2 ^ 2 parses as -(2 ^ 2); 2 ^ -3 parses as 2 ^ (-3)"},
-    {"rank": 180, "operator_id": "cast", "tokens": ["as?", "as!"], "fixity": "infix", "associativity": "nonassociative", "dispatch": "INTRINSIC_ONLY"},
-    {"rank": 190, "operator_id": "postfix", "tokens": ["call", "tuple ordinal", "index", "member", "message", "transpose", "constructor", "derivation", "trailing closure"], "fixity": "structured", "associativity": "left", "dispatch": "CLOSED_STRUCTURED_PARSELETS"}
+    {
+      "rank": 10,
+      "operator_id": "assignment",
+      "tokens": [
+        "=",
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "%="
+      ],
+      "fixity": "infix",
+      "associativity": "right",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 20,
+      "operator_id": "ternary",
+      "tokens": [
+        "?",
+        ":"
+      ],
+      "fixity": "structured",
+      "associativity": "right",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 30,
+      "operator_id": "otherwise",
+      "tokens": [
+        "otherwise"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 40,
+      "operator_id": "or",
+      "tokens": [
+        "or"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 50,
+      "operator_id": "and_then",
+      "tokens": [
+        "and then"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 60,
+      "operator_id": "and",
+      "tokens": [
+        "and"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 70,
+      "operator_id": "comparison",
+      "tokens": [
+        "==",
+        "!=",
+        "<",
+        "<=",
+        ">",
+        ">=",
+        "in",
+        "! in",
+        "is",
+        "! is"
+      ],
+      "fixity": "infix",
+      "associativity": "checker_bounded_chain",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 80,
+      "operator_id": "option_coalesce",
+      "tokens": [
+        "?:"
+      ],
+      "fixity": "infix",
+      "associativity": "right",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 90,
+      "operator_id": "bitwise_or",
+      "tokens": [
+        "||"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 100,
+      "operator_id": "bitwise_xor",
+      "tokens": [
+        "^^"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 110,
+      "operator_id": "bitwise_and",
+      "tokens": [
+        "&&"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 120,
+      "operator_id": "range",
+      "tokens": [
+        "..",
+        "..<"
+      ],
+      "fixity": "infix",
+      "associativity": "nonassociative",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 130,
+      "operator_id": "additive",
+      "tokens": [
+        "+",
+        "-"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE"
+    },
+    {
+      "rank": 140,
+      "operator_id": "multiplicative",
+      "tokens": [
+        "*",
+        "/",
+        "%"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "*_INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE;_DIVIDE_AND_REMAINDER_INTRINSIC_ONLY"
+    },
+    {
+      "rank": 150,
+      "operator_id": "linear_product",
+      "tokens": [
+        "**",
+        "*+"
+      ],
+      "fixity": "infix",
+      "associativity": "left",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 160,
+      "operator_id": "power",
+      "tokens": [
+        "^"
+      ],
+      "fixity": "infix",
+      "associativity": "right",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 170,
+      "operator_id": "prefix",
+      "tokens": [
+        "+",
+        "-",
+        "not",
+        "~~",
+        "move",
+        "borrow",
+        "&",
+        "await"
+      ],
+      "fixity": "prefix",
+      "associativity": "right",
+      "dispatch": "INTRINSIC_ONLY",
+      "right_binding_power_by_family": {
+        "numeric_sign_+_-": 159,
+        "all_other_prefix_parselets": 170
+      },
+      "power_interaction": "-2 ^ 2 parses as -(2 ^ 2); 2 ^ -3 parses as 2 ^ (-3)"
+    },
+    {
+      "rank": 180,
+      "operator_id": "cast",
+      "tokens": [
+        "as?",
+        "as!"
+      ],
+      "fixity": "infix",
+      "associativity": "nonassociative",
+      "dispatch": "INTRINSIC_ONLY"
+    },
+    {
+      "rank": 190,
+      "operator_id": "postfix",
+      "tokens": [
+        "call",
+        "tuple ordinal",
+        "index",
+        "member",
+        "message",
+        "transpose",
+        "constructor",
+        "derivation",
+        "trailing closure"
+      ],
+      "fixity": "structured",
+      "associativity": "left",
+      "dispatch": "CLOSED_STRUCTURED_PARSELETS"
+    }
   ],
   "numeric_operator_matrix": [
-    {"operator": "+", "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance", "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result", "failure": "checked integer overflow Defect before commit; IEEE floating addition; no conversion search, result-directed selection, fallback, or runtime relookup"},
-    {"operator": "-", "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance", "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result", "failure": "checked integer overflow Defect before commit; IEEE floating subtraction; no conversion search, result-directed selection, fallback, or runtime relookup"},
-    {"operator": "*", "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance", "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result", "failure": "checked integer overflow Defect before commit; IEEE floating multiplication; no conversion search, result-directed selection, fallback, or runtime relookup"},
-    {"operator": "/", "admitted_domains": "one exact integer or Float32/Float64 domain, or one exact Complex<Float32|Float64> domain through the language-owned intrinsic pair", "result": "same exact domain", "failure": "integer quotient truncates toward zero; zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating and Complex division follow their canonical numeric-semantics profile; Rational division remains the named checked API dividedBy"},
-    {"operator": "%", "admitted_domains": "one exact integer domain only", "result": "same exact integer domain; a = trunc(a/b)*b + r, and r is zero or has the dividend sign with |r| < |b|", "failure": "zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating remainder requires a named API"},
-    {"operator": "^", "admitted_domains": "checked exact integer base with statically nonnegative exact integer exponent; same-width Float base with exact signed integer exponent; same-width Float/Float; Complex<Float64> with exact signed integer, Float64, or Complex<Float64> exponent; Float64 base with Complex<Float64> exponent; Measure<Rep,Dim> with StaticInt; Float32 cells retain Float32 only where the closed power-domain matrix admits them", "result": "statically fixed checked integer, Float32, Float64, Complex<Float64>, or normalized Measure domain; expected result never creates a route", "failure": "no Pow Trait or conformance lookup; unsupported or inexact adaptation rejects before MIR; integer overflow raises ArithmeticDefect before commit; real negative-base nonintegral floating exponent produces canonical NaN rather than Complex; NumericArray infix power remains Preview"},
-    {"operator": "|| | ^^ | && | ~~", "admitted_domains": "one exact known-width integral domain; one admitted finite bitfield/#flags domain; or exact same-shape NumericArray operands whose elements share one exact known-width integer domain", "result": "the same exact normalized packed domain, or the same exact NumericArray rank/shape/orientation and integer element domain", "failure": "scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast, mixed width/signedness/domain, user-defined carrier dispatch, and result-as-control use reject; no short circuit or flow narrowing occurs"},
-    {"operator": "** | *+", "admitted_domains": "closed intrinsic linear-algebra owners only", "result": "owner-specific exact intrinsic result", "failure": "no Trait fallback or structural operator admission"}
+    {
+      "operator": "+",
+      "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance",
+      "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result",
+      "failure": "checked integer overflow Defect before commit; IEEE floating addition; no conversion search, result-directed selection, fallback, or runtime relookup"
+    },
+    {
+      "operator": "-",
+      "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance",
+      "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result",
+      "failure": "checked integer overflow Defect before commit; IEEE floating subtraction; no conversion search, result-directed selection, fallback, or runtime relookup"
+    },
+    {
+      "operator": "*",
+      "admitted_domains": "one exact integer or Float32/Float64 domain; Rational/Rational; exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global fixed conformance",
+      "result": "same exact primitive domain, Rational, or the uniquely selected same-Rep Complex result",
+      "failure": "checked integer overflow Defect before commit; IEEE floating multiplication; no conversion search, result-directed selection, fallback, or runtime relookup"
+    },
+    {
+      "operator": "/",
+      "admitted_domains": "one exact integer or Float32/Float64 domain, or one exact Complex<Float32|Float64> domain through the language-owned intrinsic pair",
+      "result": "same exact domain",
+      "failure": "integer quotient truncates toward zero; zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating and Complex division follow their canonical numeric-semantics profile; Rational division remains the named checked API dividedBy"
+    },
+    {
+      "operator": "%",
+      "admitted_domains": "one exact integer domain only",
+      "result": "same exact integer domain; a = trunc(a/b)*b + r, and r is zero or has the dividend sign with |r| < |b|",
+      "failure": "zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating remainder requires a named API"
+    },
+    {
+      "operator": "^",
+      "admitted_domains": "checked exact integer base with statically nonnegative exact integer exponent; same-width Float base with exact signed integer exponent; same-width Float/Float; Complex<Float64> with exact signed integer, Float64, or Complex<Float64> exponent; Float64 base with Complex<Float64> exponent; Measure<Rep,Dim> with StaticInt; Float32 cells retain Float32 only where the closed power-domain matrix admits them",
+      "result": "statically fixed checked integer, Float32, Float64, Complex<Float64>, or normalized Measure domain; expected result never creates a route",
+      "failure": "no Pow Trait or conformance lookup; unsupported or inexact adaptation rejects before MIR; integer overflow raises ArithmeticDefect before commit; real negative-base nonintegral floating exponent produces canonical NaN rather than Complex; NumericArray infix power remains Preview"
+    },
+    {
+      "operator": "|| | ^^ | && | ~~",
+      "admitted_domains": "one exact known-width integral domain; one admitted finite bitfield/#flags domain; or exact same-shape NumericArray operands whose elements share one exact known-width integer domain",
+      "result": "the same exact normalized packed domain, or the same exact NumericArray rank/shape/orientation and integer element domain",
+      "failure": "scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast, mixed width/signedness/domain, user-defined carrier dispatch, and result-as-control use reject; no short circuit or flow narrowing occurs"
+    },
+    {
+      "operator": "** | *+",
+      "admitted_domains": "closed intrinsic linear-algebra owners only",
+      "result": "owner-specific exact intrinsic result",
+      "failure": "no Trait fallback or structural operator admission"
+    }
   ],
   "exact_numeric_value_profiles": {
     "Rational": {
@@ -581,7 +827,6 @@
   },
   "pointwise_logical_operator_contract": {
     "feature_identity": "double_glyph_bitwise_operator_family_msp",
-    "historical_identity_retained": true,
     "semantic_family": "POINTWISE_LOGICAL",
     "tokens": [
       "||",
@@ -652,26 +897,129 @@
     "product_support": "NOT_RUN"
   },
   "index_carrier_matrix": [
-    {"carrier": "List<T>", "surface": "value[index]", "index_domain": "Int in 1..length", "result": "read-only T; range slice returns ReadonlyView<T>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "ReadonlyView<T>", "surface": "value[index]", "index_domain": "source owner's declared logical coordinates", "result": "borrowed T; range slice returns ReadonlyView<T> preserving the source domain", "slice": true, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "String", "surface": "value[index]", "index_domain": "Int in 1..UnicodeScalarCount", "result": "Char; range slice returns ReadonlyView<Char>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "Bytes", "surface": "value[index]", "index_domain": "Int in 1..byteCount", "result": "UInt8; range slice returns ReadonlyView<UInt8>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "BoundedList<T,L,U>", "surface": "value[index]", "index_domain": "declared L..U", "result": "read-only T; range slice returns ReadonlyView<T>", "slice": true, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "NumericArray<T,rank R>", "surface": "value[axis1; ...; axisR]", "index_domain": "typed coordinate per axis; built-in default 1..dimension", "result": "all R scalar axes return T; otherwise a ReadonlyView<T> preserves or reduces selected-axis shape/rank according to non-scalar selectors without implicit collapse or rebase", "slice": true, "activation": "BUILTIN_INTRINSIC_WITH_TYPED_AXES"},
-    {"carrier": "Map<K,V>", "surface": "value[key]", "index_domain": "exact K", "result": "V; an absent exact-K key raises IndexError::keyNotFound", "slice": false, "activation": "BUILTIN_INTRINSIC"},
-    {"carrier": "tuple", "surface": "value.1 through value.arity", "index_domain": "static ordinal only", "result": "statically selected element", "slice": false, "activation": "CLOSED_STRUCTURED_POSTFIX"},
-    {"carrier": "Record", "surface": "value.label", "index_domain": "static declared label only", "result": "statically selected field", "slice": false, "activation": "CLOSED_STRUCTURED_POSTFIX"},
-    {"carrier": "user type by Sequence/Indexable/LogicalIndexDomain conformance alone", "surface": "value[index]", "index_domain": "none", "result": "REJECT", "slice": false, "activation": "NONACTIVATABLE"}
+    {
+      "carrier": "List<T>",
+      "surface": "value[index]",
+      "index_domain": "Int in 1..length",
+      "result": "read-only T; range slice returns ReadonlyView<T>",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "ReadonlyView<T>",
+      "surface": "value[index]",
+      "index_domain": "source owner's declared logical coordinates",
+      "result": "borrowed T; range slice returns ReadonlyView<T> preserving the source domain",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "String",
+      "surface": "value[index]",
+      "index_domain": "Int in 1..UnicodeScalarCount",
+      "result": "Char; range slice returns ReadonlyView<Char>",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "Bytes",
+      "surface": "value[index]",
+      "index_domain": "Int in 1..byteCount",
+      "result": "UInt8; range slice returns ReadonlyView<UInt8>",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "BoundedList<T,L,U>",
+      "surface": "value[index]",
+      "index_domain": "declared L..U",
+      "result": "read-only T; range slice returns ReadonlyView<T>",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "NumericArray<T,rank R>",
+      "surface": "value[axis1; ...; axisR]",
+      "index_domain": "typed coordinate per axis; built-in default 1..dimension",
+      "result": "all R scalar axes return T; otherwise a ReadonlyView<T> preserves or reduces selected-axis shape/rank according to non-scalar selectors without implicit collapse or rebase",
+      "slice": true,
+      "activation": "BUILTIN_INTRINSIC_WITH_TYPED_AXES"
+    },
+    {
+      "carrier": "Map<K,V>",
+      "surface": "value[key]",
+      "index_domain": "exact K",
+      "result": "V; an absent exact-K key raises IndexError::keyNotFound",
+      "slice": false,
+      "activation": "BUILTIN_INTRINSIC"
+    },
+    {
+      "carrier": "tuple",
+      "surface": "value.1 through value.arity",
+      "index_domain": "static ordinal only",
+      "result": "statically selected element",
+      "slice": false,
+      "activation": "CLOSED_STRUCTURED_POSTFIX"
+    },
+    {
+      "carrier": "Record",
+      "surface": "value.label",
+      "index_domain": "static declared label only",
+      "result": "statically selected field",
+      "slice": false,
+      "activation": "CLOSED_STRUCTURED_POSTFIX"
+    },
+    {
+      "carrier": "user type by Sequence/Indexable/LogicalIndexDomain conformance alone",
+      "surface": "value[index]",
+      "index_domain": "none",
+      "result": "REJECT",
+      "slice": false,
+      "activation": "NONACTIVATABLE"
+    }
   ],
   "slice_form_matrix": [
-    {"form": "value[i..j]", "status": "CURRENT_CANONICAL", "meaning": "inclusive logical coordinates i through j"},
-    {"form": "value[i..<j]", "status": "CURRENT_ACCEPTED_NONCANONICAL", "meaning": "logical coordinates i through the predecessor of j", "diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL"},
-    {"form": "value[^..$]", "status": "CURRENT_CANONICAL", "meaning": "first through last logical coordinate"},
-    {"form": "value[*]", "status": "CURRENT_CANONICAL", "meaning": "full axis selector where an axis selector is admitted"},
-    {"form": "value[]", "status": "REJECT", "meaning": "empty index or full-axis shorthand is absent"},
-    {"form": "value[..]", "status": "REJECT", "meaning": "both range bounds are required; use ^/$ for endpoints, or * only for an admitted NumericArray full axis"},
-    {"form": "value[i..>j]", "status": "REJECT", "meaning": "reserved spelling has no current range identity"},
-    {"form": "value[i...j]", "status": "REJECT", "meaning": "three dots have only repeated-positional and comprehension-unfold structural owners, never a range owner"}
+    {
+      "form": "value[i..j]",
+      "status": "CURRENT_CANONICAL",
+      "meaning": "inclusive logical coordinates i through j"
+    },
+    {
+      "form": "value[i..<j]",
+      "status": "CURRENT_ACCEPTED_NONCANONICAL",
+      "meaning": "logical coordinates i through the predecessor of j",
+      "diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+    },
+    {
+      "form": "value[^..$]",
+      "status": "CURRENT_CANONICAL",
+      "meaning": "first through last logical coordinate"
+    },
+    {
+      "form": "value[*]",
+      "status": "CURRENT_CANONICAL",
+      "meaning": "full axis selector where an axis selector is admitted"
+    },
+    {
+      "form": "value[]",
+      "status": "REJECT",
+      "meaning": "empty index or full-axis shorthand is absent"
+    },
+    {
+      "form": "value[..]",
+      "status": "REJECT",
+      "meaning": "both range bounds are required; use ^/$ for endpoints, or * only for an admitted NumericArray full axis"
+    },
+    {
+      "form": "value[i..>j]",
+      "status": "REJECT",
+      "meaning": "reserved spelling has no current range identity"
+    },
+    {
+      "form": "value[i...j]",
+      "status": "REJECT",
+      "meaning": "three dots have only repeated-positional and comprehension-unfold structural owners, never a range owner"
+    }
   ],
   "map_literal_plan_contract": {
     "plan_identity": "MapLiteralPlan<K,V>",
@@ -726,16 +1074,6 @@
   },
   "new_rejection_diagnostic_matrix": [
     {
-      "diagnostic_id": "NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE",
-      "surface": "null",
-      "semantic_residue_count": 0
-    },
-    {
-      "diagnostic_id": "CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT",
-      "surface": "arbitrary custom operator declaration at the bounded recovery entry",
-      "semantic_residue_count": 0
-    },
-    {
       "diagnostic_id": "OPERATOR_CONFORMANCE_MISSING",
       "surface": "admitted non-intrinsic +, -, or * pair with no left-owner direct-global conformance",
       "semantic_residue_count": 0
@@ -781,11 +1119,6 @@
       "semantic_residue_count": 0
     },
     {
-      "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
-      "surface": "..> or ... in range/operator position",
-      "semantic_residue_count": 0
-    },
-    {
       "diagnostic_id": "INDEX_SUFFIX_REQUIRES_AXIS",
       "surface": "empty [] index suffix",
       "semantic_residue_count": 0
@@ -799,13 +1132,12 @@
   "machine_acceptance": {
     "rule_count": 12,
     "rule_ids_unique": true,
-    "literal_domain_row_count": 13,
+    "literal_domain_row_count": 12,
     "expression_precedence_row_count": 19,
     "expression_precedence_ranks_strictly_increasing": true,
     "operator_dispatch_mode": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE",
     "custom_operator_current_count": 0,
     "custom_operator_preview_design_count": 0,
-    "custom_operator_disposition": "REJECTED_NOT_CURRENT_HISTORICAL_TRACE_ONLY",
     "fixed_operator_conformance_overloading_current_count": 1,
     "fixed_operator_stable_profile_count": 1,
     "fixed_operator_stable_operator_count": 3,
@@ -823,7 +1155,7 @@
     "ordinary_sequence_first_index": 1,
     "negative_from_end_rewrite_count": 0,
     "slice_form_row_count": 8,
-    "new_rejection_diagnostic_count": 14,
+    "new_rejection_diagnostic_count": 11,
     "implicit_rebase_count": 0,
     "map_literal_entry_kind_count": 2,
     "map_literal_failure_publish_count": 0,

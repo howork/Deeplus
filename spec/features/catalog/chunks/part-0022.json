@@ -234,5 +234,519 @@
     "language_status": "Preview Design",
     "source_activation": "nonactivatable",
     "notes": "Proposes explicit static#slot declarations and static#slot:: references in a fifth closed function-static domain. The spelling is outside Stable let:: and QualifiedStaticExpr grammar. M0 is deeply immutable and initialization is declaration-ordered and atomically published."
+  },
+  {
+    "feature_id": "sequence_positional_rest_pattern",
+    "display_name": "Sequence positional rest Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / PRELUDE",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition",
+      "readonly_view"
+    ],
+    "notes": "Closed List-shaped carriers admit exactly one attached positional rest: leadings.. first, ..tail last, or ..middle.. with fixed children on both sides. Captures have exact borrowed ListRestView<T>; [.._] remains the all-ignored form. Generic Sequence conformance never opens the Pattern.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_MULTIPLE_REST",
+        "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+        "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+        "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+        "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+        "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
+        "PATTERN_REST_CARRIER_NOT_ADMITTED",
+        "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
+      ],
+      "predicates": [
+        "SequencePositionalRestAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "ListPattern",
+        "PrefixListRestPattern",
+        "SuffixListRestPattern",
+        "MiddleListRestPattern"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "tuple_bare_product_surface",
+    "display_name": "Tuple Pattern and bare product surface",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "Tuple Pattern is a fixed-product Pattern. Bare return type, return/ret value, and let/var binding comma surfaces of arity at least two normalize to existing Tuple identities; there is one result channel and no general comma operator, ValuePack, Sequence carrier, or ABI identity.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS",
+        "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
+        "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
+        "RETURN_TUPLE_ARITY_MISMATCH"
+      ],
+      "predicates": [
+        "TupleProductSurfaceAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "TuplePattern",
+        "BareTupleTypeSurface",
+        "BareTupleValueSurface",
+        "BareTupleBindingSurface"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "structured_record_map_pattern",
+    "display_name": "Exact and open Record/Map Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "Record ${...} and Map #map{...} Patterns have exact, open-ignore .._, and one residual ..name form. Record entries are target-first; a typed or nested renamed target is parenthesized. Map keys are literals or pinned stable values and are evaluated as closed key identities without getters or extractors.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH",
+        "PATTERN_RECORD_TARGET_TYPE_REQUIRES_PARENS",
+        "PATTERN_MAP_KEY_NOT_STABLE",
+        "PATTERN_MAP_DUPLICATE_KEY"
+      ],
+      "predicates": [
+        "StructuredRecordMapPatternAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "RecordPattern",
+        "MapPattern",
+        "RecordPatternRest",
+        "MapPatternRest"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "transparent_nominal_named_enum_pattern",
+    "display_name": "Transparent nominal and named Enum payload Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "Type${...} opens only Record, schema, data class, or an explicitly pattern-transparent product. Ordinary Class, Dyn, Facet, FFI and opaque values never auto-open. Labeled Enum payloads use ::case${...}; positional payloads retain ::case(...).",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_NOMINAL_NOT_TRANSPARENT",
+        "ENUM_NAMED_PATTERN_LABEL_MISMATCH"
+      ],
+      "predicates": [
+        "TransparentNominalPatternAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "TransparentNominalPattern",
+        "VariantNamedPatternPayload"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "pin_range_relational_pattern",
+    "display_name": "Pin, bounded range, and relational Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "^stableValue pins one stable readable value. Bounded range and relational Patterns are closed to Int, UInt, Char, ordered Enum, and other exact ordered domains with compiler-known strong equality/order evidence. Float remains Preview Gated.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+        "PATTERN_PIN_STRONG_EQ_UNAVAILABLE",
+        "PATTERN_RANGE_DOMAIN_UNSUPPORTED"
+      ],
+      "predicates": [
+        "PinRangeRelationalPatternAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "PinPattern",
+        "RangePattern",
+        "RelationalPattern"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "assertive_pattern_binding",
+    "display_name": "Assertive let!/var! Pattern binding",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "RUNTIME"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / RUNTIME",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "let!/var! evaluates one subject, probes transactionally, and either commits every binder once or raises PatternMatchDefect with zero partial binding, move, borrow, or residual publication. Guarded var is admitted under the same failure-atomic Pattern kernel.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "ASSERTIVE_PATTERN_MISMATCH"
+      ],
+      "predicates": [
+        "AssertivePatternBindingAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "AssertiveBindingStmt",
+        "GuardedBindingStmt"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "pattern_condition_chain",
+    "display_name": "Pattern condition chain",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "if condition chains use left-to-right `and then` terms. A later Pattern or Bool term sees earlier successful binders and facts; each binding commits exactly once before the next term, while a failed term selects the false path without exposing its tentative binders.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL"
+      ],
+      "predicates": [
+        "PatternConditionChainAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "PatternConditionChain"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "refutable_catch_pattern",
+    "display_name": "Refutable catch Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "Statement and value catch arms admit refutable Patterns and one pure guard. Arms are tested in source order; the first successful Pattern and guard commits, and an unmatched recoverable error propagates unchanged.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "CATCH_PATTERN_GUARD_NOT_PURE"
+      ],
+      "predicates": [
+        "RefutableCatchPatternAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "CatchArm",
+        "ValueCatchArm"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "irrefutable_parameter_entry_pattern",
+    "display_name": "Irrefutable callable parameter entry Pattern",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "source_activation": "none",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "A callable retains one channel Identifier and may attach one checker-proven-irrefutable structural entry Pattern. The Pattern adds no overload, ABI, public API, argument-label, or callable-type identity and commits only after ordinary parameter admission. Lambda entry follows the same irrefutability rule.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PATTERN_PARAMETER_BINDER_COLLISION",
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT"
+      ],
+      "predicates": [
+        "IrrefutableParameterEntryAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "ParameterEntryPattern",
+        "LambdaParameterEntryPattern"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "local_group_tuple_assignment",
+    "display_name": "Direct-local group Tuple assignment",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "RUNTIME"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / RUNTIME",
+    "source_activation": "none",
+    "depends_on": [
+      "tuple_bare_product_surface"
+    ],
+    "notes": "A bare comma LHS denotes at least two distinct direct mutable local Plain places. The exact-arity Tuple RHS evaluates and stages left-to-right before one failure-atomic logical group commit; Unit is returned. Member, index, property, shared, actor, FFI, affine, and potentially aliasing targets are outside this Stable lane.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+        "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+        "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+        "PATTERN_ASSIGNMENT_REFUTABLE",
+        "PATTERN_ASSIGNMENT_SHARED_TARGET",
+        "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL"
+      ],
+      "predicates": [
+        "LocalGroupAssignmentAdmitted"
+      ],
+      "examples": [],
+      "productions": [
+        "ParallelAssignmentStmt"
+      ],
+      "semantic_reference_productions": []
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "pattern_advanced_surface_preview_design",
+    "display_name": "Advanced Pattern surface Preview Design",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "PREVIEW_DESIGN",
+    "status_display": "Preview Design",
+    "language_status": "Preview Design",
+    "feature_kind": "design_proposal",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "source_activation": "nonactivatable",
+    "depends_on": [
+      "pattern_decomposition"
+    ],
+    "notes": "Nonactivatable Preview inventory: And/Not Pattern, let?, member/index Pattern assignment, Set/NumericArray Pattern, Synonym/View/completeness/find/top-level Pattern, Float range Pattern, clone binder, generic Sequence opening, owner-retaining temporary residual, and affine or nonlocal group assignment. Dynamic/effectful extractors and shared/actor assignment remain deferred with no source route.",
+    "primary_source": "spec/language.md",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "Pattern"
+      ]
+    },
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
   }
 ]

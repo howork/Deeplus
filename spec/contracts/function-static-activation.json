@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.function-static-activation-contract/r1",
-  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "language_version": "0.1.2-internal",
   "feature_id": "function_static_activation",
   "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
@@ -96,16 +96,6 @@
       "commit_context": "after optional BlockPrologue in CallableBlock, before BlockSequence, when the next token opens Block",
       "formatter_output": "static",
       "ordinary_identifier_outside_owned_context": true
-    },
-    "legacy_recovery": {
-      "surface": "scope#static { ... }",
-      "production": "RecoveryFunctionStaticScopeHash",
-      "status": "RECOVERY_ONLY",
-      "diagnostic": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
-      "admitted_activation_node_count": 0,
-      "automatic_fix": "replace the introducer with static while preserving the Block and safely rehoming trivia",
-      "identity_equivalence": "the recovery spelling and canonical spelling normalize to the same FunctionStaticActivationDecl for migration comparison; source spelling and trivia are excluded from FunctionStaticOwnerId and activation contract digest",
-      "semantic_reinterpretation_count": 0
     }
   },
   "admitted_synchronous_named_owner_matrix": [
@@ -173,7 +163,6 @@
     "async or suspending named callable",
     "generator",
     "PreviewFfiFunctionDecl",
-    "recovery declaration",
     "bodyless Trait requirement",
     "def#guard"
   ],
@@ -358,7 +347,6 @@
     "trait_successor_via_auto_specialization_or_local_witness": "NOT_ACTIVATED"
   },
   "diagnostic_families": [
-    "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
     "FUNCTION_STATIC_ACTIVATION_OWNER_REQUIRED",
     "FUNCTION_STATIC_ACTIVATION_POSITION_INVALID",
     "FUNCTION_STATIC_ACTIVATION_DUPLICATE",
@@ -398,7 +386,7 @@
     {
       "rule_id": "FSA-R005",
       "title": "Excluded callables remain excluded",
-      "contract": "Entry/local/constructor/cleanup/actor/closure/async/generator/FFI/recovery/bodyless-Trait/guard owners create no admitted activation HIR."
+      "contract": "Entry/local/constructor/cleanup/actor/closure/async/generator/FFI/bodyless-Trait/guard owners create no admitted activation HIR."
     },
     {
       "rule_id": "FSA-R006",
@@ -468,7 +456,7 @@
     {
       "rule_id": "FSA-R019",
       "title": "Removed and Preview families do not inherit activation",
-      "contract": "The old scope#static spelling is recovery-only and migration-normalizes without changing owner identity; top-level static def remains rejected without automatic rewrite, and value/effectful/module/class static plus Trait VIA/AUTO/specialization/local-witness successors remain nonactivated."
+      "contract": "Top-level static def remains rejected, and value/effectful/module/class static plus Trait VIA/AUTO/specialization/local-witness successors remain nonactivated."
     },
     {
       "rule_id": "FSA-R020",

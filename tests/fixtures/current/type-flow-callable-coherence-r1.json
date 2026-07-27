@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/type-flow-callable-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "contract": "spec/contracts/type-flow-callable-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -795,10 +795,11 @@
       ],
       "paired_outcomes": {
         "checker_proven_irrefutable_catch": "accept",
-        "refutable_runtime_dispatch_catch": "reject",
+        "refutable_ordered_catch": "accept when the first structural-and-pure-guard success commits",
+        "pattern_mismatch_or_false_guard": "continue to the next catch with zero partial publication",
         "later_catch_after_irrefutable_catch": "statically unreachable"
       },
-      "boundary": "current catch performs no runtime pattern fallthrough; finally still executes exactly once"
+      "boundary": "an unmatched recoverable Error propagates unchanged after finally; Defect and Cancellation remain outside catch"
     },
     {
       "fixture_id": "TFC-B-013-EXPECTED-TYPE-FLOW-JOIN",

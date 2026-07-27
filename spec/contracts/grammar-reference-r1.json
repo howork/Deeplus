@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.grammar-reference-contract/r1",
-  "revision": "r51f3-current-callable-responsibility-static-lexical-r1",
+  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
   "reference_root": "docs/grammar-reference",
   "authority": {
     "kind": "CANONICAL_DOCUMENTATION_PROJECTION",
@@ -16,23 +16,19 @@
   "allowed_status_fences": [
     "CURRENT",
     "PREVIEW_GATED",
-    "PREVIEW_NONACTIVATABLE",
-    "RECOVERY_ONLY",
-    "REMOVED"
+    "PREVIEW_NONACTIVATABLE"
   ],
   "preview_documentation_policy": {
-    "chapter_path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
+    "chapter_path": "docs/grammar-reference/15-preview-surfaces.md",
     "status_fence_scope": "UNTIL_NEXT_FENCE_OR_EOF",
     "required_status_fences": [
       "PREVIEW_GATED",
-      "PREVIEW_NONACTIVATABLE",
-      "RECOVERY_ONLY",
-      "REMOVED"
+      "PREVIEW_NONACTIVATABLE"
     ],
     "activation_disclaimer": "이 장의 Preview 설계 문서화는 구문, 구현, 제품 지원 또는 활성화 권위를 부여하지 않는다.",
     "required_registry_status_counts": {
       "PREVIEW": 3,
-      "PREVIEW_DESIGN": 49
+      "PREVIEW_DESIGN": 50
     },
     "review_card_begin_marker": "<!-- deeplus-preview-design-review-cards: begin -->",
     "review_card_end_marker": "<!-- deeplus-preview-design-review-cards: end -->",
@@ -44,7 +40,7 @@
       "open_alternatives",
       "activation_prerequisites"
     ],
-    "required_review_card_count": 49,
+    "required_review_card_count": 50,
     "detail_chapter_paths": [
       "docs/grammar-reference/20-preview-gated-reference.md",
       "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
@@ -55,9 +51,9 @@
     "feature_anchor_prefix": "preview-feature-",
     "required_feature_example_status_counts": {
       "PREVIEW": 3,
-      "PREVIEW_DESIGN": 49
+      "PREVIEW_DESIGN": 50
     },
-    "required_feature_example_count": 52,
+    "required_feature_example_count": 53,
     "feature_example_required_fields": [
       "검토 목적",
       "제안 표면",
@@ -79,7 +75,6 @@
       "CURRENT_EXPLANATORY",
       "PREVIEW_GATED",
       "PREVIEW_NONACTIVATABLE",
-      "RECOVERY_ONLY",
       "REJECTED_EXPLANATORY"
     ],
     "generated_link_targets_are_planned_valid": true
@@ -87,7 +82,7 @@
   "governance": {
     "source_mode": "VALIDATION_ONLY",
     "source_path": "current/current-pointer.json",
-    "chapter_path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
+    "chapter_path": "docs/grammar-reference/15-preview-surfaces.md",
     "semantic_p0": 0,
     "feature_p1_status": "OPEN",
     "feature_p1_ids": [
@@ -225,8 +220,8 @@
     },
     {
       "id": "15",
-      "path": "docs/grammar-reference/15-preview-recovery-and-removed-surfaces.md",
-      "title": "프리뷰, 복구 및 제거된 표면"
+      "path": "docs/grammar-reference/15-preview-surfaces.md",
+      "title": "Preview 표면"
     },
     {
       "id": "16",
@@ -347,12 +342,11 @@
   "grammar": {
     "path": "spec/grammar/deeplus.ebnf",
     "frontend_model_path": "spec/frontend/frontend-model.json",
-    "expected_total": 579,
+    "expected_total": 620,
     "expected_profile_counts": {
       "LEXICAL": 91,
-      "STABLE": 458,
-      "PREVIEW": 13,
-      "RECOVERY": 17
+      "STABLE": 516,
+      "PREVIEW": 13
     }
   },
   "registries": {
@@ -361,42 +355,42 @@
       "chunks_root": "spec/features/catalog/chunks",
       "count_field": "feature_count",
       "id_field": "feature_id",
-      "expected_count": 708
+      "expected_count": 719
     },
     "diagnostics": {
       "metadata_path": "spec/diagnostics/catalog/catalog-metadata.json",
       "chunks_root": "spec/diagnostics/catalog/chunks",
       "count_field": "diagnostic_count",
       "id_field": "diagnostic_id",
-      "expected_count": 1395
+      "expected_count": 1414
     },
     "predicates": {
       "metadata_path": "spec/types/predicates/catalog-metadata.json",
       "chunks_root": "spec/types/predicates/chunks",
       "count_field": "predicate_count",
       "id_field": "predicate_id",
-      "expected_count": 258
+      "expected_count": 268
     },
     "prelude": {
       "metadata_path": "library/prelude/signatures/catalog-metadata.json",
       "chunks_root": "library/prelude/signatures/chunks",
       "count_field": "entry_count",
       "id_field": "entry_id",
-      "expected_count": 65
+      "expected_count": 66
     },
     "examples": {
       "metadata_path": "examples/manifests/by-outcome/catalog-metadata.json",
       "chunks_root": "examples/manifests/by-outcome/chunks",
       "count_field": "example_count",
       "id_field": "example_id",
-      "expected_count": 723
+      "expected_count": 726
     }
   },
   "vocabulary": {
     "path": "spec/grammar/keyword-vocabulary.json",
     "hard_field": "hard_keywords",
     "contextual_field": "contextual_words",
-    "expected_hard_count": 30,
+    "expected_hard_count": 29,
     "expected_contextual_count": 101
   },
   "generated_outputs": [
@@ -410,13 +404,13 @@
     "docs/grammar-reference/coverage-manifest.json"
   ],
   "coverage_targets": {
-    "grammar_productions": 579,
-    "features": 708,
-    "diagnostics": 1395,
-    "predicates": 258,
-    "prelude_entries": 65,
-    "examples": 723,
-    "hard_keywords": 30,
+    "grammar_productions": 620,
+    "features": 719,
+    "diagnostics": 1414,
+    "predicates": 268,
+    "prelude_entries": 66,
+    "examples": 726,
+    "hard_keywords": 29,
     "contextual_words": 101
   }
 }

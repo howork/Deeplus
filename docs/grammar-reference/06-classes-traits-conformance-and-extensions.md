@@ -23,7 +23,6 @@ conformance evidence와 lexical extension을 설명한다. 네 관계는 서로
 | named extension set/pack과 lexical activation | `CURRENT` |
 | sealed Class constructor-pattern 또는 Class 내부 분해 pattern | 현행 아님 |
 | 미래 `VIA`/`AUTO`, specialization, 자식 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
-| 임의 custom operator declaration | 현행 아님; 거부 및 recovery/no-go 진단만 유지 |
 | fixed glyph Trait conformance overloading | `STABLE_DESIGN` (`+`, `-`, `*` 제한 프로필) |
 | 제품 parser/checker/MIR/runtime/formatter/LSP | `NOT_RUN` |
 
@@ -69,7 +68,6 @@ ClassBody             ::= "{" MemberDecl* "}"
 ordering, display, clone, serialization 또는 Trait evidence가 합성되지는
 않는다.
 
-문법의 optional visibility는 lossless parse/recovery를 위한 구조다.
 현행 type declaration admission은 `private`, `common`, `public` 중 하나의
 정확한 visibility를 요구한다. `private`는 module-local, `common`은
 package-wide이지만 외부 export 불가, `public`은 적법한 export/module
@@ -492,9 +490,7 @@ specialization이나 child-local witness를 만들지 않는다.
 그 밖의 glyph와 임의 operator 철자는 named Trait method 또는 named API로
 표현한다.
 
-임의 custom operator declaration은 현행이 아니며 거부된다. 해당 철자는
-recovery/no-go 진단에서만 보존되고 Preview activation 후보로 해석하지
-않는다. fixed-glyph conformance overloading의 Stable 승급은 기존
+fixed-glyph conformance overloading의 Stable 계약은 기존
 `conformance T conforms Trait` 표면과 exact `+`, `-`, `*` mapping만
 사용한다. `TCC-P1-002..008`은 제품·실행 검증 항목으로 계속 OPEN이다.
 
@@ -610,8 +606,6 @@ public conformance Token conforms DefaultToken {
     let ::code = 0
 
     def ::make() -> Token
-        throws Never
-        effects {}
     = {
         return Token::fromInt(<Token as DefaultToken>::code)
     }
@@ -682,7 +676,6 @@ public sealed class Node {
 | sealed family scope 밖의 direct subclass | 거부 |
 | sealed direct child의 disposition 생략 | 거부 |
 | sealed Class를 constructor pattern으로 분해 | 현행 pattern 문법 없음 |
-| `class#sealed` 같은 제거된 철자 | 거부; `sealed class` 사용 |
 | stored field에 dispatch marker 부여 | 거부 |
 | Class marker와 Trait marker identity를 합침 | 거부 |
 | structural shape 또는 extension만으로 conformance 추론 | 거부 |
@@ -695,15 +688,14 @@ public sealed class Node {
 | `companion` object/keyword 또는 hidden per-type singleton | 거부; `COMPANION_OBJECT_NOT_CURRENT` |
 | conformance/extension/top-level helper가 nominal owner-private constructor authority 획득 | 거부; `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN` |
 | mutable/cache/resource/ambient-authority associated `let::` | 거부; `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` |
-| 임의 custom operator declaration | 거부; recovery/no-go 진단만 유지 |
 | admitted set 밖의 fixed glyph conformance overload | 거부; Stable 집합은 `+`, `-`, `*`뿐 |
 | successor `VIA`/`AUTO`, specialization, fallback 경로 | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 자식/case 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 동적 attach/detach, 일급/로컬 Witness | `PREVIEW_DESIGN_NONACTIVATABLE` |
 
 비활성 설계는 현행 소문자 `via`, 현행 marker 또는 current evidence
-selection을 재해석하지 않는다. recovery로 인식된 철자는 admitted
-AST/HIR/MIR/API residue를 만들지 않는다.
+selection을 재해석하지 않으며 current AST/HIR/MIR/API residue를 만들지
+않는다.
 
 ### 대표 거부 예
 
@@ -838,7 +830,7 @@ Trait successor는 `TC-R001..R016` 의미를 보존하는
 
 도입 순서는 대략 다음과 같다.
 
-1. `TCC-P1-002`: root/profile/recovery 및 current/successor 격리;
+1. `TCC-P1-002`: root/profile 및 current/successor 격리;
 2. `TCC-P1-003`: 정본 ID, 정규화, locality, overlap, termination 및
    parent/associated/link 알고리즘;
 3. `TCC-P1-004`: current marker 공존과 정확한 diagnostic registry;

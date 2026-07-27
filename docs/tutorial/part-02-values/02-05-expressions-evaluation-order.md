@@ -43,8 +43,6 @@ named binding과 source order를 분리해 읽는다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#pure difference(first: Int, second: Int) -> Int
-    throws Never
-    effects {}
 = {
     return first - second
 }

@@ -170,23 +170,6 @@
     "emission_domain": "source"
   },
   {
-    "diagnostic_id": "HISTORICAL_IMAGINARY_J_NOT_CURRENT",
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "The historical imaginary marker j is not current; use an attached i marker.",
-    "feature_refs": [
-      "complex_core_numeric_value"
-    ],
-    "related_feature_refs": [],
-    "stage": "lexer",
-    "severity": "error",
-    "primary_source": "spec/contracts/rational-complex-numeric-coherence.json",
-    "product_support": "NOT_RUN",
-    "emission_domain": "source"
-  },
-  {
     "diagnostic_id": "COMPLEX_REP_PROFILE_NOT_ADMITTED",
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_status": "active",
@@ -1330,26 +1313,6 @@
     "emission_domain": "source"
   },
   {
-    "diagnostic_id": "FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC",
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "Historical scope#static is recovery-only; use the current static activation prologue.",
-    "feature_refs": [
-      "function_static_activation"
-    ],
-    "related_feature_refs": [],
-    "stage": "parser",
-    "severity": "error",
-    "primary_source": "spec/contracts/function-static-activation.json",
-    "product_support": "NOT_RUN",
-    "emission_domain": "source",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_hint": "replace scope#static with static",
-    "fixit_policy": "identity-preserving spelling rewrite"
-  },
-  {
     "diagnostic_id": "FUNCTION_STATIC_SLOT_DECLARATION_POSITION_INVALID",
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_status": "seed",
@@ -1569,5 +1532,136 @@
     "primary_source": "spec/contracts/function-static-namespace-preview-design.json",
     "product_support": "NOT_RUN",
     "emission_domain": "design_only"
+  },
+  {
+    "diagnostic_id": "PATTERN_PREFIX_REST_MUST_BE_FIRST",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A `name..` List rest must be the first item and must precede at least one fixed Pattern.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A `..name` List rest must be the last item; a bounded middle rest closes as `..name..`.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A `..name..` middle rest requires at least one fixed Pattern on each side.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A List rest followed by another fixed Pattern must close with a second `..` marker.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "A positional List-rest marker and its binder must be attached with no intervening trivia.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_REST_CARRIER_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "This subject has no closed built-in List-rest decomposition descriptor; Sequence conformance alone is insufficient.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "pattern_decomposition"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The captured ListRestView would outlive, cross isolation from, or survive move/drop of its source owner.",
+    "feature_refs": [
+      "sequence_positional_rest_pattern"
+    ],
+    "related_feature_refs": [
+      "readonly_view"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
   }
 ]

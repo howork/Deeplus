@@ -14,7 +14,7 @@
     ],
     "feature_refs": [
       "ordinary_list_literal_surface",
-      "r51f_removed_surface_boundary_law"
+      "closed_source_surface_boundary_law"
     ],
     "diagnostic_refs": [
       "LIST_LITERAL_ELEMENT_JOIN_FAILED",
@@ -113,7 +113,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "LocalValueBodyAdmitted",
     "source_name": "LocalValueBodyAdmitted",
-    "summary": "a value-producing @if has an else branch; the optional grammar tail is recovery-only; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value",
+    "summary": "a value-producing @if has an else branch; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "normalized_type",
@@ -128,7 +128,7 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "a value-producing @if has an else branch; the optional grammar tail is recovery-only",
+      "a value-producing @if has an else branch",
       "exactly one expression is admitted directly",
       "otherwise every reachable normal path ends in local ret",
       "return is an enclosing-function transfer and finally never creates the local value"
@@ -144,7 +144,7 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "a value-producing @if has an else branch; the optional grammar tail is recovery-only",
+      "a value-producing @if has an else branch",
       "exactly one expression is admitted directly",
       "otherwise every reachable normal path ends in local ret",
       "return is an enclosing-function transfer and finally never creates the local value"
@@ -153,7 +153,7 @@
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right in listed order",
-      "apply LocalValueBodyAdmitted local rule: a value-producing @if has an else branch; the optional grammar tail is recovery-only; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value",
+      "apply LocalValueBodyAdmitted local rule: a value-producing @if has an else branch; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value",
       "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",

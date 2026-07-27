@@ -32,8 +32,6 @@ private def#pure parseThenCheck(
         throws Never
         effects {},
 ) -> Result<CheckedPort, error ParseError>
-    throws Never
-    effects {}
 = {
     return @match parse(text) {
         Result::ok(raw) => Result::ok(Port::check(raw))
@@ -66,8 +64,6 @@ private def#pure explainPort(
         throws Never
         effects {},
 ) -> String
-    throws Never
-    effects {}
 = {
     return @match parseThenCheck(text, parse: parse) {
         Result::ok(checked) => @match checked {

@@ -121,7 +121,7 @@ let unit = Complex::i
 ```
 
 `i` 자체는 일반 식별자이고 전역 허수 상수가 아니다. `4.0 * i`는 그
-식별자를 곱하는 평범한 식이다. 정수형 `4i`, 분리된 `4.0 i`, `4.0j`,
+식별자를 곱하는 평범한 식이다. 정수형 `4i`, 분리된 `4.0 i`,
 radix 허수, suffix를 연쇄한 `4.0f64i`, 그리고 `4.0index`를 유효 prefix와
 식별자로 분할하는 행위는 허용하지 않는다. 음수 허수는
 `-4.0i`처럼 언어 예약 prefix 부호를 사용한다.
@@ -142,7 +142,9 @@ String escape processing is Unicode-based. Invalid scalar values, unknown
 Unicode names, unterminated escapes, and invalid delimiter nesting are lexical
 diagnostics.
 
-`null` is not a current Deeplus value and has no type, constant, AST/HIR value node, or MIR constant. The spelling remains reserved only for deterministic recovery with `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`. Recoverable absence is written as `::none` in an expected `Option` context or as `Option<T>::none` explicitly; it is never inferred from a null sentinel.
+Absence is written as `::none` in an expected `Option` context or as
+`Option<T>::none` explicitly. Deeplus does not infer an implicit nullable type
+or sentinel conversion.
 
 ## 5. Punctuation responsibility table
 
@@ -178,11 +180,10 @@ one explicit `public`, `common`, or `private` word in every
 a preview gate changes neither the explicit-visibility requirement for these
 nine owners nor the `private` default for other top-level visibility owners.
 
-The exact Grammar keeps `TopLevelVisibility?` on these owners for deterministic
-recovery. If the word is omitted, the parser may retain a structural candidate,
-but the checker emits `TYPE_DECL_VISIBILITY_REQUIRED` and admits zero HIR type
+The exact Grammar keeps `TopLevelVisibility?` on these owners so the checker can
+apply one uniform owner rule. If the word is omitted, the checker emits
+`TYPE_DECL_VISIBILITY_REQUIRED` and admits zero HIR type
 declaration nodes, type identities, or API-digest entries from that candidate.
-This recovery form is never an implicit `private` type declaration.
 
 Other top-level owners that grammatically carry `TopLevelVisibility?` are not
 type-producing owners. Their omitted word normalizes to `private`; an explicit
@@ -199,14 +200,14 @@ Member declarations use `+`, `-`, and `#`, not top-level visibility words. The
 hierarchy-protected `#` member visibility is visible in the declaring nominal
 type and its nominal subclasses, not in arbitrary conforming or structurally
 similar types. Public API residue records visibility exactly. The structural
-Grammar accepts an omitted type-producing-owner visibility only for the
-recovery path described above.
+Grammar never turns an omitted type-producing-owner visibility into an implicit
+`private` declaration.
 
-Annotations are structural attachments and must not float to a different declaration across recovery. Modifier sequences are closed by declaration owner. Duplicate or reordered modifiers that are not in the owner matrix are rejected.
+Annotations are structural attachments and must not float to a different declaration after an error. Modifier sequences are closed by declaration owner. Duplicate or reordered modifiers that are not in the owner matrix are rejected.
 
 ## 7. Bindings, mutability, lazy values, and properties
 
-`let` introduces an immutable binding; `var` introduces a mutable binding. A `var` cannot acquire lazy or guard semantics by decoration. Current lazy binding uses `let#lazy`, not `let@lazy`. Lazy initialization has one owner, one initialization result, deterministic failure caching policy, and no hidden repeated evaluation.
+`let` introduces an immutable binding; `var` introduces a mutable binding. A `var` cannot acquire lazy or guard semantics by decoration. Lazy binding uses `let#lazy`. Lazy initialization has one owner, one initialization result, deterministic failure caching policy, and no hidden repeated evaluation.
 
 Rightward local binding is surface sugar, not a separate semantic statement:
 
@@ -256,7 +257,22 @@ only from responsibility-row differences. The existing `= return Expr`
 implicit-pure rule also remains current: the Preview does not turn an explicit
 responsibility clause into an implicit `#pure` assertion.
 
-An ordinary parameter is always a named parameter slot, optionally with an explicit ownership mode; it is not a refutable Pattern. Decomposition belongs in the function body or in an exhaustive declarative clause head. Local functions have lexical visibility only after their declaration. A proven synchronous, same-isolation, nonescaping read of an ancestor local or parameter may be a lexical dependency rather than an environment capture; every snapshot, write, ownership transfer, escape, suspension, isolation crossing, and unproven use still requires an explicit admitted carrier or capture route. Closure literals have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`), lifetime (`#scoped` where required), effects, errors, and isolation responsibilities. Lambda parameter lists contain identifiers, not general Patterns. Named-function `return` and local lambda/value-body `ret` remain different control owners.
+An ordinary parameter always begins with one named call-channel slot, optionally
+with an explicit ownership mode. It may additionally carry an irrefutable
+structural Pattern that is executed only at body entry. The leading name remains
+the call label, whole-value local, overload identity and public API/ABI identity;
+the child binders are body locals and never turn parameter admission into a
+runtime filter. Lambda parameters admit the same irrefutable structural subset.
+Refutable callback filtering stays in the body or at the caller. Local functions
+have lexical visibility only after their declaration. A proven synchronous,
+same-isolation, nonescaping read of an ancestor local or parameter may be a
+lexical dependency rather than an environment capture; every snapshot, write,
+ownership transfer, escape, suspension, isolation crossing, and unproven use
+still requires an explicit admitted carrier or capture route. Closure literals
+have their own capture descriptor, call-right (`ordinary`, `#mut`, or `#once`),
+lifetime (`#scoped` where required), effects, errors, and isolation
+responsibilities. Named-function `return` and local lambda/value-body `ret`
+remain different control owners.
 
 ### Function static activation
 
@@ -266,17 +282,14 @@ runtime semantic item of an admitted synchronous named function. `static` is a
 contextual parser commitment only at that prologue position; it remains an
 ordinary identifier elsewhere, and `static() { ... }` remains an ordinary call
 with a trailing closure. It is not admitted on an expression body or clause
-body. Historical `scope#static { ... }` is recovery-only and deterministically
-suggests `static { ... }`; both spellings normalize to the same activation HIR
-and `FunctionStaticOwnerId` recipe, so migration changes no semantic owner
-identity.
+body.
 
 The admitted owner set is synchronous module and extension functions,
 instance/type-side members, Trait defaults with bodies, and explicit conformance
 methods. A `def#pure` owner is admitted only when the activation body satisfies
 the same pure proof. Entry and local functions, constructors, cleanup/drop,
 lambdas and anonymous closures, actor handlers/requests, async/generator/FFI
-owners, recovery declarations, and `def#guard` are excluded.
+owners, and `def#guard` are excluded.
 
 Activation is triggered only by an actual invocation after final
 `CallableImplementationId` selection and receiver/argument/default staging, but
@@ -315,8 +328,7 @@ is not constructible.
 
 Adding, removing, or changing activation metadata is a relink-relevant
 API-digest change. It does not introduce source-level parameters or effects.
-Top-level `static def` remains recovery-only
-`STATIC_FUNCTION_DECLARATION_NOT_CURRENT`, with no automatic rewrite.
+Top-level `static def` is not admitted.
 `static_once_value`, effectful activation, module activation, and class
 activation remain separate Preview families. Product parser/checker/MIR/runtime
 and tooling support remain `NOT_RUN`.
@@ -373,15 +385,8 @@ The responsibilities are disjoint:
 | function-type item | attached suffix `***` | preserve the named-rest call-shape residue |
 | call/materialization entry | attached prefix `**` | unfold a structural Record into static labels |
 
-The following are rejected:
-
-```deeplus
-def bad(options**: Record) -> Unit = { }  // parameter/type owner requires ***
-private type Bad = (Record**) -> Unit     // type residue requires ***
-configure(***options)                     // unfold owner requires **
-```
-
-Parameter/type `**` is removed completely and no current profile admits it. No feature gate, formatter preference, or role-specific interpretation may restore `**` as a named-rest parameter/type suffix. The `**` glyph remains current only for named unfold and its independent operator role.
+The `**` glyph is current for named unfold and its independent operator role;
+`***` is the named-rest parameter and function-type residue.
 
 Named unfold requires a structural Record whose label set is statically known. A `Map` has runtime keys and cannot feed named arguments. Overlapping unfolded labels, missing required labels, or indeterminate label disjointness are checker errors.
 
@@ -466,11 +471,9 @@ Resolution considers nominal members, active extension sets, and conformance evi
 ## 16. Operator policy
 
 The operator token vocabulary, fixity, binding power and associativity table are
-closed. Arbitrary custom operator declarations are not a Deeplus Preview
-family: the recovery grammar recognizes old `operator <glyph> precedence N`
-only to emit `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`, and no AST/HIR/MIR
-operator declaration is created. Named Trait methods, functions, messages and
-APIs are the explicit alternative.
+closed. Deeplus has no arbitrary custom-operator declaration family, including
+in Preview. Named Trait methods, functions, messages and APIs are the explicit
+general extension path.
 
 Fixed-glyph conformance overloading is Stable design for exactly the existing
 strict binary `+`, `-`, and `*` glyphs. It adds no glyph, fixity, binding power,
@@ -604,7 +607,7 @@ Strict Boolean `and` and `or` evaluate both operands left-to-right. Sequential `
 
 Linear product is left-folded over the exact operator family `**` and `*+`; the current abstract shape is `PowerExpr` followed by zero or more operator/right-power pairs. Numeric exponentiation uses spaced infix `^` and is right-associative where its numeric law applies. Attached `A^` is NumericArray transpose. Mixed attachment is rejected rather than guessed.
 
-`..` and `..<` are the only current range/slice delimiters. `...` has exactly the closed structural owners repeated positional parameter/type residue and `for ... Pattern in Expr` comprehension unfold; it is never a range delimiter or inferred upper bound. `..>` is reserved recovery and is rejected with `RANGE_OPERATOR_SPELLING_NOT_CURRENT`. A bounded List literal uses exactly `[L..U: elements]`, preserves its declared inclusive logical domain, and requires the element count to equal `U - L + 1`.
+`..` and `..<` are the only current range/slice delimiters. `...` has exactly the closed structural owners repeated positional parameter/type residue and `for ... Pattern in Expr` comprehension unfold; it is never a range delimiter or inferred upper bound. A bounded List literal uses exactly `[L..U: elements]`, preserves its declared inclusive logical domain, and requires the element count to equal `U - L + 1`.
 
 # Part IV — Expressions and control flow
 
@@ -622,7 +625,7 @@ Statement `match` and value `@match` are distinct owners. `MatchExpr` is represe
 
 An `@match` expression arm contains one expression result, or a block whose local `ret` supplies the arm result. Ordinary `return` exits the function and is not an arm result.
 
-Conditions are exactly `Bool`; Deeplus has no truthiness conversion. A statement `try` owns either one or more `catch` clauses with an optional `finally`, or one `finally` clause. Bare `try` blocks and `try Expr` statements are not current. Value `@try` has the same nonempty handler/finalizer requirement, and value `@if` is total: omission of `else` is recovery-only. `catch` handles recoverable Error values and cannot absorb Defect or Cancellation.
+Conditions are exactly `Bool`; Deeplus has no truthiness conversion. A statement `try` owns either one or more `catch` clauses with an optional `finally`, or one `finally` clause. Bare `try` blocks and `try Expr` statements are not current. Value `@try` has the same nonempty handler/finalizer requirement, and value `@if` is total and requires `else`. `catch` handles recoverable Error values and cannot absorb Defect or Cancellation.
 
 The spaced conditional expression `condition ? whenTrue : whenFalse` evaluates
 the Bool condition once and exactly one arm once. Its two arms must have the
@@ -634,18 +637,26 @@ therefore contains one condition branch, two lazy arm regions, and one explicit
 responsibility join. A long or multiline form should use total `@if`, but that
 style guidance does not change semantics.
 
-A `catch` header admits only a binder, wildcard, or checker-proven
-irrefutable transactional Pattern for the caught ErrorSet. It is not a runtime
-pattern-dispatch list: a refutable variant, value, List, or guarded Pattern
-cannot silently skip to the next `catch`. Once an irrefutable catch covers the
-remaining declared ErrorSet, every later catch is unreachable. Refutable typed
-multi-handler dispatch is not current and would require a separately admitted
-closed ErrorSet partition. Defect and Cancellation remain outside every catch
-partition.
+A `catch` header admits a transactional Pattern and zero or one terminating,
+pure, synchronous, nonconsuming Bool guard. Catch clauses are tried in source
+order. The first structural-and-guard success commits its binders; a Pattern
+mismatch or false guard publishes no partial binding, move, borrow, authority,
+or residual and continues to the next `catch`. An unmatched recoverable Error
+propagates unchanged after `finally`. Once an irrefutable catch covers the
+remaining declared ErrorSet, every later catch is unreachable. Defect and
+Cancellation remain outside every catch partition.
 
 ## 19. Loops and structured transfer
 
-`for`, `while`, and `repeat` follow their exact Grammar roots. Every admitting owner accepts at most one pure `if` or `!if` GuardClause. Guard chains are removed. A refutable `for let` first creates nonowning probe binders; the optional header guard may read those binders, but may not move, escape, suspend, mutate through, or acquire authority from them. Only a true guard commits final bindings and ownership. Pattern mismatch or a false guard skips exactly that candidate with no body event or component move. Structured break depth is expressed by repeated `break` words and the admitted continue form; label/depth aliases are not current unless explicitly listed.
+`for`, `while`, and `repeat` follow their exact Grammar roots. Every admitting
+owner accepts at most one pure `if` or `!if` GuardClause. A refutable `for let`
+first creates nonowning probe binders; the optional header guard may read those
+binders, but may not move, escape, suspend, mutate through, or acquire authority
+from them. Only a true guard commits final bindings and ownership. Pattern
+mismatch or a false guard skips exactly that candidate with no body event or
+component move. Structured break depth is expressed by repeated `break` words
+and the admitted continue form; label/depth aliases are not current unless
+explicitly listed.
 
 The checker owns target depth, payload type, and cleanup order. A control transfer cannot skip required cleanup. Loop-outcome match receives its subject through InputSupply rather than an optional global grammar slot.
 
@@ -718,7 +729,13 @@ An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logi
 
 Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment under the single-place transaction law in §17. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains. Each built-in default source-visible NumericArray axis nevertheless has the explicit domain `1..dimension`; its axis type is not supplied by an ordinary sequence witness. A complete rank-matching coordinate list selects one element. Wrong axis type/count is rejected statically, and a dynamic coordinate outside its axis domain raises `IndexError::outOfLogicalDomain`.
 
-The obsolete legacy `#array{...}` constructor is completely removed; current NumericArray literals remain `#[...]` and rank-qualified `#N[...]`. `array` and `case` are ordinary identifiers with no special token, parser role, resolver namespace, checker intrinsic, or formatter rule. Deeplus supplies no predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling may be introduced by an ordinary user declaration and then resolves normally. There is no `case` declaration keyword. Enum alternatives remain variants identified by their declared name and nominal enum path. No Stable, Preview, Recovery, formatter, AST/HIR, or diagnostic path may reintroduce the removed legacy constructor.
+NumericArray literals are `#[...]` and rank-qualified `#N[...]`. `array` and
+`case` are ordinary identifiers with no special token, parser role, resolver
+namespace, checker intrinsic, or formatter rule. Deeplus supplies no
+predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling
+may be introduced by an ordinary user declaration and then resolves normally.
+Enum alternatives remain variants identified by their declared name and nominal
+enum path.
 
 ## 25. Strings, interpolation, and rendering
 
@@ -920,13 +937,97 @@ Cancellation must not bypass cleanup. Async failure aggregation preserves the de
 
 ## 35. Patterns and exhaustiveness
 
-One lossless Pattern CST and one normalized Pattern AST are shared by every admitting owner; a context-policy row, not a second semantic grammar, decides refutability, guard admission, failure disposition, and exhaustiveness. Plain `let`/`var`, bare `for`, and ordinary callable parameters are irrefutable owners. Guarded `let`, statement `if let`/`while let`/`for let`, and `match` are refutable owners. Callable clause heads may be refutable only when their declared clause family is statically disjoint and exhaustive. Enum cases use `::case` or `Type::case`; dot-case shorthand is removed. A local `BindingPattern` owns its optional whole-pattern type annotation once and excludes a second top-level typed-binder derivation; recursive child patterns retain `Identifier : TypeRef`. The Binding owner carries that whole-pattern annotation through normalized AST and HIR in the nullable `binding_owner_expected_subject_type` field. This field constrains the independently evaluated subject before Pattern admission and never creates a runtime type-test Pattern node. Typed-pattern colon ownership never collides with a parameter type annotation because ordinary parameters contain an Identifier rather than a Pattern.
+One lossless Pattern CST and one normalized Pattern AST are shared by every
+admitting owner; a context-policy row, not a second semantic grammar, decides
+refutability, guard admission, failure disposition, and exhaustiveness. Plain
+`let`/`var`, bare `for`, callable parameter decomposition, lambda parameter
+decomposition and local Pattern assignment are irrefutable owners. Guarded
+`let`/`var`, assertive `let!`/`var!`, statement `if let`/`while let`/`for let`,
+ordered `catch`, and `match` are refutable owners with distinct failure
+dispositions. Callable clause heads may be refutable only when their declared
+clause family is statically disjoint and exhaustive. Enum cases use `::case` or
+`Type::case`. A local `BindingPattern` owns its optional whole-pattern type
+annotation once and excludes a second top-level typed-binder derivation;
+recursive child patterns retain `Identifier : TypeRef`. The Binding owner
+carries that whole-pattern annotation through normalized AST and HIR in the
+nullable `binding_owner_expected_subject_type` field. This field constrains the
+independently evaluated subject before Pattern admission and never creates a
+runtime type-test Pattern node. A callable's leading parameter Identifier owns
+the public type annotation; an optional following structural Pattern is checked
+for irrefutability and lowers only as body-entry decomposition.
 
-Every refutable owner follows one phase order: evaluate the subject once; acquire its place/owner; build and execute a nonconsuming structural TestPlan; expose nonowning probe binders; evaluate zero or one terminating pure Bool guard; atomically commit moves/borrows/bindings; expose final binders; run the body; then perform the owner-specific exit or join. A failed structural test or guard performs no component move, irreversible borrow, authority acquisition, escape, suspension, or partial binding. Mismatch disposition belongs to the context: skip a loop candidate, choose the next match arm or clause, take the false branch, or emit the irrefutability diagnostic.
+Every refutable owner follows one phase order: evaluate the subject once;
+acquire its place/owner; build and execute a nonconsuming structural TestPlan;
+expose nonowning probe binders; evaluate zero or one terminating pure Bool
+guard; atomically commit moves/borrows/bindings; expose final binders; run the
+body; then perform the owner-specific exit or join. A failed structural test or
+guard performs no component move, irreversible borrow, authority acquisition,
+escape, suspension, residual-view publication, or partial binding. Mismatch
+disposition belongs to the context: skip a loop candidate, choose the next
+match arm/clause/catch, take the false branch, run the required guarded-binding
+exit, or raise `PatternMatchDefect` for an explicit assertive binding.
 
-The current destructuring carriers are nominal variant payloads, statically known Record labels, and List. Record patterns require a statically known label subset and do not contribute an open-tail/rest fact to coverage. List patterns are exact-length or end in one ignored final `.._`; captured, middle, and multiple rests are not current. Tuple-pattern syntax is not current. An Or-pattern requires identical observable binders with the same canonical types, ownership modes, mutability, and regions on every branch; path/source order is not identity. `pattern as name` creates a borrow alias rather than a clone, and it cannot coexist with a moved or exclusive descendant. Cross-arm place joins preserve only capabilities valid on every incoming arm.
+Current structural carriers are exact Tuple products; closed List/bounded-List
+descriptors; exact/open structural Record and Map rows; Enum positional or
+declared named payloads; and schema/data/value or explicitly
+pattern-transparent nominal products. Ordinary Class private state, getters,
+providers, Dyn, Facet, FFI and opaque representation do not open. Record and Map
+patterns are exact when no rest appears, `.._` explicitly ignores an open
+remainder, and `..name` captures the exact residual. A mapped entry writes the
+destination Pattern before `:` and the source field/key after it; a destination
+that itself owns a colon is parenthesized. Map keys are literals or pinned
+stable values under one compiler-selected pure total key/equality descriptor.
 
-Ordinary `match` chooses the first admitted arm in source order after structural admission and its optional guard; source order never repairs overlap in a declarative callable-clause family. Option, Result, union, enum, List exactness, Record required-label subsets, and loop outcome each use their explicit current alternatives. Sealed-Class closure may inform subtype analysis but supplies no constructor-pattern syntax. An undecidable or incomplete partition is rejected rather than assumed exhaustive. Pattern opening does not directly inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never performs backtracking.
+Tuple Patterns are exact fixed products: `(p)` groups, `(p,)` is a one-element
+Tuple, and `(p, q)` is a two-element Tuple. Tuple rest is not admitted. List
+Patterns admit exact shape, the all-remainder wildcard `[.._]`, or exactly one
+attached positional rest: `leadings..` first, `..tail` last, or
+`..middle..` between at least one fixed Pattern on each side. A borrowed rest
+has the exact owner-bounded type `ListRestView<T>`, an explicit intrinsic
+`Sequence<T>` witness, one ordinal `RankSpan(start_rank, count)` and the source
+logical-coordinate projection. `count = 0` represents an empty residual without
+inventing an invalid empty source Range. Existing `ReadonlyView<T>` does not
+gain a Sequence witness. Sequence conformance alone activates neither Pattern
+opening nor indexing, and a temporary owner may not be retained by a Stable
+rest binding.
+
+Pin Patterns read one stable place or static value exactly once. Bounded range
+and relational Patterns are current only for closed exactly ordered domains
+such as Int, UInt, Char and an ordered Enum; Float ranges remain Preview. An
+Or-pattern requires identical observable binders with the same canonical types,
+ownership modes, mutability, and regions on every branch; path/source order is
+not identity. `pattern as name` creates a borrow alias rather than a clone, and
+it cannot coexist with a moved or exclusive descendant. Cross-arm place joins
+preserve only capabilities valid on every incoming arm.
+
+The owner-level condition separator `and then` evaluates left to right,
+short-circuits, and exposes successful earlier binders to later terms. A plain
+Boolean expression still owns its ordinary Pratt operators; the parser commits
+to a Pattern condition term only in this statement context. Ordered catch
+Patterns choose the first structural-and-guard success, and an unmatched
+recoverable error continues to the next catch or propagates.
+
+Bare comma surfaces are fixed Tuple sugar in their closed owners only:
+`-> T1, T2`, `return`/`ret e1, e2`, `let`/`var p1, p2 = value`, and direct-local
+`x, y = y, x`. They normalize to TupleType, TupleExpr or TuplePattern and keep
+one semantic result channel. Deeplus has no general comma operator, ValuePack,
+Sequence multi-return carrier, ABI multi-return identity, or type-dependent
+dual lowering. Direct-local parallel and structural assignment requires
+distinct mutable LocalPlaceIds, stages the complete RHS once, and publishes one
+failure-atomic logical group commit returning Unit. It promises neither
+hardware nor cross-thread atomicity. Resource/affine permutation and
+field/index/property/shared/actor/FFI targets remain Preview.
+
+Ordinary `match` chooses the first admitted arm in source order after structural
+admission and its optional guard; source order never repairs overlap in a
+declarative callable-clause family. Option, Result, union, enum, exact Tuple,
+List length/rest cells, exact/open Record and Map rows, transparent nominal
+products, scalar interval cells and loop outcome each use their explicit current
+alternatives. Sealed-Class closure may inform subtype analysis but supplies no
+constructor-pattern syntax by itself. An undecidable or incomplete partition is
+rejected rather than assumed exhaustive. Pattern opening does not directly
+inspect Class, Dyn, Facet, FFI, or user-defined extractor internals, and it never
+performs backtracking.
 
 `Identifier : TypeRef` remains an irrefutable static typed binder except in a refutable owner over an already normalized closed Union. There, and only when `TypeRef` is exactly one declared alternative identity, the checker elaborates it to a union-alternative binder and tests the Union's stored injection identity. This bounded discriminator read is not a general runtime type test: it performs no subtyping search, refinement execution, reflection, provider lookup, or Trait discovery.
 
@@ -966,11 +1067,18 @@ Shared mutable state is admitted only through an explicit stdlib profile. `Share
 
 ## 39. Compiler tree boundary
 
-Source AST quote and logic-variable surfaces are completely removed. `@ast`, its mode spellings, attached `^{...}`, and attached `?Identifier` have no Stable, Preview, Recovery, no-go, formatter, AST/HIR, or MIR identity. This removal does not affect the compiler's internal Rust lossless CST, AST, typed HIR, or Deeplus MIR pipeline. The infix/postfix `^` and spaced ternary `?` keep only their independently declared current owners.
+Compiler-internal Rust lossless CST, AST, typed HIR and Deeplus MIR are not
+source-level values. Deeplus provides no source quotation or transformation
+surface for these compiler trees.
 
 ## 40. FFI, unsafe, and quarantine boundary
 
-The proposed `@scope#dynamic` / `@scope#unsafe` quarantine family is retained only as nonactivatable Preview-design and a Recovery recognition probe. Its minimum sound profile requires typed immutable export, forbids outer mutation, suspension and every pointer/authority/borrow/resource/closure/task/actor escape, and preserves one Deeplus MIR meaning across xVM and LLVM. Source activation waits for provenance, authority, escape and backend-equivalence proof.
+The proposed `@scope#dynamic` / `@scope#unsafe` quarantine family is retained as
+nonactivatable Preview Design. Its minimum sound profile requires typed
+immutable export, forbids outer mutation, suspension and every
+pointer/authority/borrow/resource/closure/task/actor escape, and preserves one
+Deeplus MIR meaning across xVM and LLVM. Source activation waits for provenance,
+authority, escape and backend-equivalence proof.
 
 FFI/unsafe/native interop remains Preview. Foreign ABI, layout, provenance, callbacks, variadics, unwind behavior, ownership transfer, and cleanup must be explicit before promotion. No current Stable design implies that the LLVM backend alone makes an FFI sound.
 
@@ -1000,7 +1108,7 @@ flag를 붙이는 대신 분석 중간 상태와 MIR 입력 권위를 서로 다
 분리한다. `CanonicalHirH1`은 모든 타입, declaration/member/label,
 conformance/witness/extension, substitution, ownership, effect/error,
 cancellation, isolation, cleanup 및 responsibility identity가 해결된 뒤에만
-`Verified`가 될 수 있다. recovery, unresolved lookup, generic operator,
+`Verified`가 될 수 있다. invalid syntax, unresolved lookup, generic operator,
 placeholder type은 이 경계를 통과하지 못한다. `ExecutableHirH1`은 target
 capability receipt를 추가할 뿐 의미를 다시 결정하지 않는다.
 
@@ -1068,13 +1176,9 @@ The exact minimum contracts and negative boundaries are in the tooling/profile c
 
 `session_protocol_lite_provider`, generic extension-set targets and sealed multimethods remain Preview design. Fixed operator conformance overloading and function static activation are Stable design under their exact bounded contracts, while product execution remains `NOT_RUN`. The current actor admission contract is design-closed, but actor parser/checker/MIR/xVM execution remains `NOT_RUN`; no product promotion follows from the static contract.
 
-## 45. Preview and noncurrent boundaries
-
-Five families are removed without a compatibility gate: Map String-key dot projection, increment/decrement expressions, the `#tailrec` callable kind, regex literals, and automatic heterogeneous-List Union inference. Their current replacements are explicit Map indexing or APIs, explicit assignment, ordinary recursive functions, explicit pattern-library construction from String/Bytes, and an explicit expected `List<A | B>` type. No removed family has a feature row, Preview gate, scanner mode, special AST/HIR/MIR node, or callable residue. Rejected examples exist only to pin diagnostics.
+## 45. Preview boundaries
 
 The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, effectful/module/class activation, static-once values, and Dyn-RCTS. Fixed operator conformance overloading is Stable only for its exact `+`/`-`/`*` profile. Arbitrary custom operators are rejected rather than Preview.
-
-Removed surfaces have no implicit compatibility entitlement because Deeplus has not yet had a public 0.3.x release. Recovery recognition is permitted only where the Recovery profile and active diagnostic explicitly require it. Recovery syntax never becomes current AST or MIR.
 
 # Part IX — Exact Grammar authority and conformance
 
@@ -1084,12 +1188,11 @@ The exact syntax authority is `spec/grammar/deeplus.ebnf`. This specification
 does not duplicate EBNF productions. `docs/grammar-reference` is a
 generated-and-validated reader projection, not a second syntax authority. The
 Grammar is an inseparable normative component of the R51f3 package and
-contains four profiles:
+contains three profiles:
 
 - LEXICAL: scanner-level structure and external scanner contracts;
 - STABLE: current source reachable from the declared Deeplus roots;
-- PREVIEW: source admitted only by an explicit current feature gate;
-- RECOVERY: diagnostic recognition only, never current AST/MIR admission.
+- PREVIEW: source admitted only by an explicit current feature gate.
 
 The Frontend Model supplies the owner policies that EBNF deliberately delegates: Pratt binding, contextual words, exact introducer attachment, input supply, role admission, token/trivia boundary, CST/AST/HIR/MIR responsibility, and formatter convention. An implementation must consume both files with this specification.
 
@@ -1102,20 +1205,24 @@ The Frontend Model supplies the owner policies that EBNF deliberately delegates:
 - `**` has no named-rest parameter/type role.
 - Source roots consume EOF.
 - `@match` is the only MatchExpr surface.
-- The obsolete legacy `#array{...}` constructor has no lexical, Stable, Preview, Recovery, diagnostic, example, or migration identity; current `#[...]` and `#N[...]` NumericArray literals are distinct.
 - Class and Trait marker domains lower separately.
 - Law bodies do not contain ordinary statements.
 - Source AST quotes and attached logic variables have no production.
 - Regex literals have no token, scanner mode, production, or literal AST kind.
 - The callable profile table contains no tail-recursion kind.
 - Every guard owner admits at most one GuardClause; GuardChain has no production.
-- Ordinary callable parameters contain identifiers rather than refutable Patterns.
-- List patterns are exact or end in one ignored `.._`; tuple patterns, captured rests, middle rests, and Record rest patterns have no current production.
+- Callable parameters begin with a stable channel Identifier and may add only a
+  checker-proven irrefutable body-entry structural Pattern.
+- Tuple patterns are exact. List patterns admit exact shape, `[.._]`, or one
+  attached prefix/suffix/middle rest. Record and Map patterns are exact by
+  default and use explicit `.._`/`..name` open remainder forms.
+- Bare comma surfaces exist only in the fixed-product return, binding and
+  direct-local parallel-assignment owners; Expr has no comma operator.
 - `array` and `case` are ordinary identifiers with no special token, declaration keyword, predeclared/intrinsic nominal-type binding, parser, checker, or formatter owner; ordinary user declarations of those spellings resolve normally.
 - Statement `try` and value `@try` each own at least one catch or one finally; `try Expr` is not current.
-- Value `@if` is total after recovery and every condition has type Bool.
+- Value `@if` is total, requires `else`, and every condition has type Bool.
 - Multiline String, grouped forwarding, scoped activation groups, enum comma cases, field puns, and pattern-binding controls are root-connected Stable syntax.
-- Quarantine scope appears only under RecoverySyntax and is nonactivatable Preview-design.
+- Quarantine scope is nonactivatable Preview Design with no current source route.
 
 ## 48. Example and conformance status
 
@@ -1129,22 +1236,30 @@ Publication closure requires canonical hashes, ID parity, grammar closure, curre
 
 The Rust scanner must preserve enough span and trivia information for a lossless CST and deterministic diagnostics. It tokenizes the longest admitted glyph, but it does not decide semantic admission. In particular, it may produce `TRIPLE_STAR` and `DOUBLE_STAR`; the parser owner decides whether that token is attached to a parameter, a function-type item, a call/materialization entry, or is an infix operator. Splitting `***` into `**` plus `*`, or reconstructing it from separated tokens, is forbidden.
 
-The handwritten recursive-descent parser owns declaration and statement structure. A Pratt parser owns the expression precedence table declared by the Frontend Model. Neither parser may use type information to repair an otherwise ambiguous token stream. Stable, Preview, and Recovery entry points are distinct. Recovery nodes retain the offending spelling and diagnostic, but never masquerade as current Stable AST.
+The handwritten recursive-descent parser owns declaration and statement
+structure. A Pratt parser owns the expression precedence table declared by the
+Frontend Model. Neither parser may use type information to repair an otherwise
+ambiguous token stream. Stable and Preview entry points are distinct.
 
-For the named-rest family, the parser must implement all four cells below rather than a single glyph substitution:
+For the named-rest family, the parser must preserve the three current owner
+domains below:
 
-| Owner | Accepted | Rejected | Required recovery result |
-|---|---|---|---|
-| final named-rest parameter | `options***: Record` | `options**: Record` | retain source span, emit `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`, build no current parameter node |
-| function-type named residue | `Record***` | `Record**` | retain source span, emit the same removal diagnostic, build no current type residue |
-| call/materialization named unfold | `**options` | `***options` | emit `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`, build no current unfold node |
-| linear product expression | spaced infix `a ** b` | owner-invalid attachment | follow expression/operator diagnostics, not the named-rest fix-it |
+| Owner | Accepted |
+|---|---|
+| final named-rest parameter | `options***: Record` |
+| function-type named residue | `Record***` |
+| call/materialization named unfold | `**options` |
+| linear product expression | spaced infix `a ** b` |
 
 The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Source roots must consume EOF, and a parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
 
 ## 50. AST, HIR, resolver, and checker obligations
 
-AST construction removes recovery-only forms. HIR assigns static identities to modules, declarations, members, labels, associated items, witnesses, extensions, and entry candidates. Resolution must not convert runtime strings into any of those identities. The resolver records the selected evidence origin so that module API digests and MIR lowering do not repeat an unstable lookup.
+AST construction rejects invalid forms. HIR assigns static identities to
+modules, declarations, members, labels, associated items, witnesses, extensions,
+and entry candidates. Resolution must not convert runtime strings into any of
+those identities. The resolver records the selected evidence origin so that
+module API digests and MIR lowering do not repeat an unstable lookup.
 
 The checker evaluates callable channels in this order: ordinary parameters, repeated positional residue, named-rest residue, ownership/place requirements, effect/error rows, isolation/context, and return compatibility. It then applies overload specificity. Named unfold first proves a structural Record with a statically known label row; it then contributes each label once. Duplicate or possibly overlapping labels are rejected before body lowering. A `Map` cannot pass this proof because its key set is a runtime value.
 
@@ -1160,7 +1275,10 @@ The xVM bytecode interpreter is the first executable oracle for development, val
 
 ## 52. Formatter, LSP, documentation, and API obligations
 
-The formatter is syntax-aware and owner-aware. It prints named-rest parameters as `name***: Record`, function-type residue as `Record***`, and named unfold as `**value`. It must never offer a preference or compatibility setting that prints parameter/type `**`. It may issue a safe fix from removed parameter/type `**` to `***` only after the parser has identified that owner; a blind text replacement would corrupt legitimate unfold and linear-product expressions.
+The formatter is syntax-aware and owner-aware. It prints named-rest parameters
+as `name***: Record`, function-type residue as `Record***`, and named unfold as
+`**value`. It must never offer a preference or compatibility setting that
+prints parameter/type `**`.
 
 The LSP shares parser/checker identities. Completion for a final named-rest parameter inserts `***`; signature help displays `Record***`; unfold completion inserts `**`; hover text names the owner rather than calling both forms “spread.” Rename and formatting preserve static labels. Diagnostics expose the primary ID, exact span, owner-sensitive fix, and current profile.
 
@@ -1168,7 +1286,10 @@ Language guides, design galleries, examples, Prelude signatures, code actions, s
 
 ## 53. Test corpus and receipt requirements
 
-Every feature family has positive, negative, boundary, and mutation evidence. For the named-rest split, the minimum deterministic set contains accepted parameter `***`, accepted type residue `Record***`, accepted unfold `**record`, rejected parameter `**`, rejected type residue `Record**`, and rejected unfold `***record`. Tests must also distinguish a spaced infix `**` expression so that an owner-insensitive ban cannot pass.
+Every feature family has positive, negative, boundary, and mutation evidence.
+For the named-rest split, the minimum deterministic set contains accepted
+parameter `***`, accepted type residue `Record***`, accepted unfold `**record`,
+and a spaced infix `**` expression so the owner domains remain distinct.
 
 A design-static fixture states an expected outcome and checks registry/schema consistency. A parser receipt requires actual Rust parser execution over identified source bytes. A checker receipt additionally identifies diagnostics and normalized responsibility. A MIR receipt records canonical MIR or a stable digest. An xVM or LLVM receipt records runtime target, toolchain, exit/result behavior, and the MIR identity it executed. The publication must not synthesize a higher evidence lane from lower-lane success.
 
@@ -1179,7 +1300,8 @@ Mutation tests must flip one authority at a time: Grammar token, Frontend owner,
 All Deeplus roles are bound by the following current-source directive:
 
 - The language designer maintains the disjoint constitutional rule: named-rest parameter `***`, function-type residue `***`, named unfold `**`.
-- Grammar and frontend owners reject parameter/type `**` in Recovery and admit no Stable or Preview route for it.
+- Grammar and frontend owners preserve the exact `***` named-rest and `**`
+  named-unfold owner split.
 - Type-system and checker owners preserve `Record***` in callable compatibility, RCTS descriptors, public API digests, and diagnostics.
 - Implementer and MIR owners create no AST, HIR, MIR, xVM, or LLVM current node from parameter/type `**`.
 - Formatter/LSP owners print and suggest `***` for named rest and `**` only for unfold; no configuration may reverse them.
@@ -1230,7 +1352,13 @@ public def classify(value: Option<Int>) -> String =
     }
 ```
 
-The class spelling is `sealed class`; `class#sealed` is removed. The MatchExpr owner is `@match`. Lambda parameters use their dedicated typed form. Value-less final `return` is omitted in canonical source. Associated projection uses direct `::` qualification without redundant parentheses. Declaration methods do not acquire a leading tilde. These surface choices, the numeric lexical policy, and the linear-product precedence in the exact Grammar are current even though product execution remains `NOT_RUN`.
+The class spelling is `sealed class`. The MatchExpr owner is `@match`. Lambda
+parameters use their dedicated typed form. Value-less final `return` is omitted
+in canonical source. Associated projection uses direct `::` qualification
+without redundant parentheses. Declaration methods do not acquire a leading
+tilde. These surface choices, the numeric lexical policy, and the
+linear-product precedence in the exact Grammar are current even though product
+execution remains `NOT_RUN`.
 
 Current R51f consolidated examples are illustrated without changing the authority order:
 
@@ -1251,9 +1379,14 @@ if let Option::some(value) = candidate {
 ```
 
 
-## 57. Removed-surface boundary
+## 57. Closed source-surface boundary
 
-The removal boundary is checked across all package authorities. `MemberSuffix` remains for real members, extensions, and witnesses but acquires no Map-key rule. `DefIntroducer` remains structurally generic while the Frontend Model supplies the closed owner table without `tailrec`. The scanner has no regex mode. `ListLiteralElementJoinAdmitted` may check against an explicit expected union but cannot invent one. No current projection contains any of the five removed feature identities.
+The source boundary is checked across all package authorities. `MemberSuffix`
+serves real members, extensions, and witnesses but acquires no Map-key rule.
+`DefIntroducer` is structurally generic while the Frontend Model supplies its
+closed owner table. The scanner has no regex-literal mode.
+`ListLiteralElementJoinAdmitted` may check against an explicitly expected
+union but cannot invent one.
 
 
 ## Package self-containment law
@@ -1261,12 +1394,13 @@ The removal boundary is checked across all package authorities. `MemberSuffix` r
 The repository root is the complete current authority workspace and requires
 no external authority package. Every current filename, schema identity,
 fixture pointer, profile identifier, and checksum resolves through a tracked
-path in this source tree. Historical external packs are provenance evidence
-only. The exact Grammar and Frontend Model remain separate first-class
+path in this source tree. External review packs are evidence only and do not
+define an additional language surface. The exact Grammar and Frontend Model remain separate first-class
 canonical artifacts, while `docs/grammar-reference` is their validated
 documentation projection.
 
-This edition consolidates terminology and removes non-normative version history without changing language surfaces, type rules, diagnostic status, example outcomes, Grammar productions or MIR behavior. Static validation is E2 evidence; product lanes remain `NOT_RUN`.
+This edition states only the current and Preview language profiles. Static
+validation is E2 evidence; product lanes remain `NOT_RUN`.
 
 # Part XI — Active diagnostics
 
@@ -1529,7 +1663,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FUNCTION_STATIC_ACTIVATION_SUSPENSION_FORBIDDEN` [error]: Function static activation cannot await, yield, suspend, or observe cancellation.
 - `FUNCTION_STATIC_METADATA_MISMATCH` [error]: Imported function static activation metadata does not match the selected implementation contract.
 - `FUNCTION_STATIC_OWNER_ID_COLLISION` [error]: Distinct function static owner recipes produced the same identity.
-- `FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC` [error]: Historical `scope#static { ... }` is recovery-only; use the current `static { ... }` prologue.
 - `FUNCTION_STATIC_BARE_NAME_REQUIRES_QUALIFICATION` [error]: A Preview function-static slot is referenced only as `static#slot::name`; bare-name fallback is forbidden.
 - `FUNCTION_STATIC_REFERENCE_NO_OWNER` [error]: A Preview `static#slot::name` reference has no enclosing function-static owner.
 - `FUNCTION_STATIC_SLOT_CYCLE` [error]: Preview function-static slot initialization contains a dependency cycle.
@@ -1570,7 +1703,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `GUARD_CONDITION_THROWS_NOT_ALLOWED` [error]: Guard condition must not throw.
 - `GUARD_EVALUATION_CONTRACT_VIOLATION` [error]: Guard evaluation must precede ownership commit and payload evaluation; a false guard leaves payload responsibilities unobserved.
 - `IDENTITY_OPERATION_REQUIRES_IDENTITY_BEARING` [error]: The operation requires an identity-bearing descriptor.
-- `IF_EXPR_REQUIRES_ELSE` [error]: A value-producing `@if` requires an `else` branch; the optional grammar tail exists only so recovery can emit this diagnostic.
+- `IF_EXPR_REQUIRES_ELSE` [error]: A value-producing `@if` requires an `else` branch.
 - `IMPLICIT_AT_OUTSIDE_SINGLE_PARAMETER_CLOSURE` [error]: Implicit @ requires the nearest omitted-parameter closure to have one expected parameter.
 - `IMPLICIT_AT_WITH_EXPLICIT_PARAMETER` [error]: An explicit closure parameter cannot be mixed with the implicit @ parameter.
 - `IMPLICIT_LAMBDA_ARG_OUTSIDE_LAMBDA` [error]: Standalone `@` placeholder is allowed only inside implicit one-argument lambda bodies.
@@ -1902,7 +2035,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SLICE_FIRST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from ^ must be an integer index expression.
 - `SLICE_HALF_OPEN_RANGE_NONCANONICAL` [warning]: `i..<j` is accepted for explicit exclusive-end slices but is noncanonical in ordinary cases.
 - `SLICE_LAST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from $ must be an integer index expression.
-- `SLICE_LAST_INDEX_DOLLAR_OUTSIDE_SLICE` [note]: This historical diagnostic is superseded by parser-owned `SLICE_ANCHOR_OUTSIDE_SLICE` and is not emitted by current Deeplus.
 - `SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN` [error]: A slice preserves selected logical coordinates; call an explicit rebase operation if new coordinates are required.
 - `SLICE_MUTABLE_ALIAS_CONFLICT` [error]: Mutable slice would create an aliasing conflict.
 - `SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED` [error]: Mutable slice assignment is not admitted in Phase A.
@@ -1981,14 +2113,28 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TRAIT_VARIANCE_POSITION_VIOLATION` [error]: Trait-only variance parameter appears in an invalid responsibility position.
 - `TRY_REQUIRES_CATCH_OR_FINALLY` [error]: A statement `try` or value `@try` requires at least one `catch` clause or one `finally` clause.
 - `TRY_EXPRESSION_STATEMENT_NOT_CURRENT` [error]: Statement `try` requires a block body; `try Expr` is not current Deeplus.
-- `TUPLE_PATTERN_NOT_CURRENT` [error]: Tuple decomposition is not a current Pattern; parentheses group one Pattern only.
 - `PATTERN_MULTIPLE_REST` [error]: A List pattern may contain at most one rest form.
-- `PATTERN_REST_MUST_BE_FINAL_IGNORED` [error]: The only current List-pattern rest is one ignored `.._` in final position.
+- `PATTERN_REST_POSITION_INVALID` [error]: A captured prefix rest must be first, a captured suffix rest must be last, and a middle rest must occur between fixed Patterns.
+- `MIDDLE_REST_REQUIRES_BOTH_SIDES` [error]: A `..name..` middle rest requires at least one fixed Pattern before and after it.
+- `MIDDLE_REST_REQUIRES_CLOSING_DOT_DOT` [error]: A rest followed by another fixed Pattern must use the attached middle spelling `..name..`.
+- `SEQUENCE_PATTERN_CARRIER_NOT_ADMITTED` [error]: Bracket decomposition requires a closed built-in finite descriptor; Sequence conformance alone is insufficient.
+- `REST_VIEW_WOULD_OUTLIVE_SOURCE` [error]: A captured `ListRestView` cannot outlive or retain its source owner.
+- `TUPLE_PATTERN_ARITY_MISMATCH` [error]: An exact Tuple Pattern has a different arity from its subject.
 - `RECORD_PATTERN_DUPLICATE_FIELD` [error]: A Record pattern names the same required label more than once.
 - `RECORD_PATTERN_UNKNOWN_FIELD` [error]: A Record pattern names a label outside the subject's statically known Record row.
 - `RECORD_PATTERN_PRIVATE_FIELD` [error]: A Record pattern cannot project a label that is not visible in the current authority domain.
+- `RECORD_PATTERN_SHAPE_MISMATCH` [error]: An exact Record Pattern and subject row differ; write `.._` or `..name` only when an open remainder is intentional.
+- `MAP_PATTERN_DUPLICATE_KEY` [error]: A Map Pattern names the same canonical key more than once.
+- `PATTERN_PIN_VALUE_NOT_STABLE` [error]: A pin Pattern requires one stable value whose strong equality is selected statically.
+- `PATTERN_RANGE_DOMAIN_NOT_ADMITTED` [error]: This Pattern range/relational domain is not a closed exact ordered domain.
 - `PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN` [error]: Pattern decomposition cannot open a Class, Dyn, Facet, FFI, or opaque private representation.
 - `REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT` [error]: This context requires the checker to prove the Pattern irrefutable for its admitted subject type.
+- `ASSERTIVE_PATTERN_MISMATCH` [defect]: An explicit `let!` or `var!` Pattern did not match its subject.
+- `COMMA_PRODUCT_NOT_GENERAL_EXPRESSION` [error]: A bare comma product is admitted only by a fixed Tuple return, binding, or direct-local parallel-assignment owner.
+- `RETURN_PRODUCT_ARITY_MISMATCH` [error]: A bare Tuple return value has a different arity from the declared Tuple result.
+- `PARALLEL_ASSIGNMENT_ARITY_MISMATCH` [error]: Direct-local parallel assignment requires equal target and Tuple value arity.
+- `PARALLEL_ASSIGNMENT_TARGET_OVERLAP` [error]: Every parallel-assignment target must be a distinct mutable LocalPlaceId.
+- `PARALLEL_ASSIGNMENT_TARGET_PROFILE_NOT_ADMITTED` [error]: Resource, nonlocal, member, index, property, shared, actor, or FFI targets require a separately activated Preview profile.
 - `ALIAS_PATTERN_OWNERSHIP_CONFLICT` [error]: A Pattern alias cannot coexist with a moved or exclusively borrowed descendant of the same subject.
 - `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` [error]: Normally returning Pattern arms leave incompatible usable-place states at the join.
 - `PATTERN_ANALYSIS_RESOURCE_LIMIT` [error]: Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness.
@@ -2148,7 +2294,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID` [error]: A numeric underscore must occur exactly between two digits of the same component.
 - `NUMERIC_RADIX_FLOAT_NOT_CURRENT` [error]: Radix floating-point literals are not current Deeplus source; use a decimal float or an explicit conversion.
 - `NUMERIC_SUFFIX_KIND_MISMATCH` [error]: The numeric suffix kind does not match the integer or decimal-float literal.
-- `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE` [error]: `null` is reserved recovery spelling, not a Deeplus value; use `::none` in an expected `Option` context or `Option<T>::none` explicitly.
 - `OPTION_COALESCE_TOKEN_MUST_BE_ADJACENT` [error]: Option coalescing uses the adjacent compound token `?:`; separated `? :` belongs to ternary syntax.
 - `RAW_MULTILINE_STRING_NOT_CURRENT` [error]: Raw multiline String syntax is not current; use the Unicode multiline String or `#raw"..."`.
 - `RAW_STRING_DELIMITER_INVALID` [error]: Stable raw String uses exactly the attached `#raw"..."` delimiter family.
@@ -2189,7 +2334,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONSTRUCTOR_OR_CLEANUP_DISPATCH_MARKER_FORBIDDEN` [error]: Constructors and def#cleanup declarations cannot use dispatch markers.
 - `CONSTRUCTOR_REQUIRES_NAME` [error]: Constructor declarations require a name: write `def! new(...)` or `def! name(...)`.
 - `CONSTRUCTOR_SPELLING_REMOVED_USE_DEF_BANG` [error]: Constructors use def! only; def#ctor, def#constructor, and $! are removed.
-- `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT` [error]: Arbitrary custom operator declarations are rejected; express behavior with the admitted fixed-glyph conformance profile or a named Trait method/API.
 - `DECLARATION_TILDE_FORBIDDEN` [error]: A declared body selector has no leading tilde; retain tilde only on receiver calls or the top-level target separator.
 - `DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL` [error]: A defer block is not current; register exactly one cleanup invocation.
 - `DEFER_REQUIRES_SINGLE_INVOCATION` [error]: Defer requires exactly one direct, message, or type-side invocation.
@@ -2222,7 +2366,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` [error]: Complex interpolation expression requires ${...}.
 - `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` [error]: Interpolation format spec is admitted only in braced form ${expr:format}.
 - `LAMBDA_PARAM_LIST_PARENS_NOT_CURRENT` [error]: Lambda parameters are written directly before `=>`; write `{ x: T => ... }`.
-- `LAZY_BINDING_USE_HASH` [error]: The current lazy-binding spelling is `let#lazy`; `let@lazy` is recovery-only.
 - `MAP_UNFOLD_SPELLING_AMBIGUOUS` [error]: Map unfold spelling is `**expr` in admitted `#map{...}` unfold positions; `...expr` map unfold is not current source in the current profile.
 - `MATCH_ARM_SINGLE_GUARD_ONLY` [error]: A match arm admits at most one `if` or attached `!if` guard.
 - `MATCH_EXPR_REQUIRES_AT_PREFIX` [error]: A value-producing match expression must use `@match`; bare `match` is statement-only.
@@ -2233,7 +2376,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `MULTIPLE_GUARD_CLAUSES_NOT_CURRENT` [error]: This owner admits at most one `if` or `!if` GuardClause.
 - `MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT` [error]: A trailing-closure group with two or more closures requires every closure to have a unique explicit label.
 - `NAMED_ARGUMENT_EQUALS_REMOVED_USE_COLON` [error]: Named arguments use `label: value`; `label = value` is not current call syntax.
-- `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR` [error]: Double-star is not a named-rest parameter or function-type residue; use attached `***`. Double-star remains the named-unfold prefix.
 - `NEGATED_RELATION_MUST_BE_ADJACENT` [error]: The `!` prefix must be adjacent to `in`, `is`, or `if` in a negated relation or guard.
 - `NESTED_DEF_VISIBILITY_FORBIDDEN` [error]: A nested local function has lexical visibility and cannot carry a public/private/common modifier.
 - `NESTED_TERNARY_REQUIRES_PARENTHESES_OR_AT_IF` [warning]: Nested ternary should use parentheses or @if for readability.
@@ -2255,7 +2397,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PROTOTYPE_DELTA_REQUIRES_FEATURE_GATE` [error]: Feature `prototype_delta` is PREVIEW_DESIGN/nonactivatable and has no current source gate.
 - `PROTOTYPE_DERIVATION_BRACE_FORM_REQUIRED` [error]: Prototype derivation must use source!{...} or source!!{...}; dollar-brace and unbraced cover forms are not current source or invalid.
 - `QUARANTINE_SCOPE_NOT_ACTIVATABLE` [error]: Dynamic/unsafe quarantine scope is a nonactivatable design probe, not current source.
-- `RANGE_OPERATOR_SPELLING_NOT_CURRENT` [error]: Current range and slice delimiters are `..` and `..<`; `...` belongs only to repeated-positional or comprehension-unfold structural owners, and `..>` is rejected recovery spelling.
 - `SCOPED_ACTIVATION_REQUIRES_IN_BLOCK` [error]: A scoped import/use group must be followed by `in` and a block.
 - `SCOPED_IMPORT_BLOCK_IS_STATEMENT_ONLY` [error]: A scoped import block is a statement and cannot produce a value.
 - `SCOPED_USE_BLOCK_IS_STATEMENT_ONLY` [error]: A scoped use block is a statement and cannot produce a value.
@@ -2277,8 +2418,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TRAIT_ASSOCIATED_ITEM_DISPATCH_MARKER_FORBIDDEN` [error]: A non-method associated requirement cannot carry a Trait witness marker.
 - `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE` [error]: Triple-star is admitted only as the attached named-rest parameter suffix or function-type named-rest residue; named unfold uses prefix `**`.
 - `UNIT_EXPONENT_REQUIRES_STATIC_INT` [error]: A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, suffixed integer, decimal point, or exponent-form number is not admitted.
-- `UNIT_MIDDLE_DOT_RECOVERY_ONLY` [error]: Unit multiplication uses `*`; the middle dot is recognized only for recovery.
-- `UNIT_MULTIPLICATION_USE_STAR` [error]: The current unit multiplication spelling is `*`; the middle dot is recovery-only.
 - `WEAK_ATOMIC_ORDERING_REQUIRES_FEATURE_GATE` [error]: Feature `weak_atomic_ordering` is PREVIEW_DESIGN/nonactivatable and has no current source gate.
 - `WHERE_COLON_RELATION_AMBIGUOUS` [error]: `where T : U` is ambiguous in the current profile. Use `where T conforms Trait` for conformance or an explicit future subtype-bound relation.
 - `WHERE_COLON_TRAIT_CONSTRAINT_NOT_CURRENT` [error]: The surface `where T : Trait` is recognized but is not current Deeplus.
@@ -2384,7 +2523,7 @@ Each link-relevant schema emits a deterministic summary with authority, normaliz
 <!-- POST_PR16_UNIT_BEGIN:TC-R014 -->
 ### TC-R014 — frontend closure
 
-One root-connected grammar route must construct one normalized semantic route. This candidate selects no spelling. Current `ConformanceDecl` and current `ConformanceViaClause` remain unchanged and isolated. A future surface needs exact EBNF, reachability, lossless CST ownership, AST/HIR mapping, profile gates, recovery, and diagnostics. Selection closes before MIR.
+One root-connected grammar route must construct one normalized semantic route. This candidate selects no spelling. Current `ConformanceDecl` and current `ConformanceViaClause` remain unchanged and isolated. A future surface needs exact EBNF, reachability, lossless CST ownership, AST/HIR mapping, profile gates, and diagnostics. Selection closes before MIR.
 <!-- POST_PR16_UNIT_END:TC-R014 -->
 
 <!-- POST_PR16_UNIT_BEGIN:TC-R015 -->
@@ -2567,7 +2706,7 @@ Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is 
 <!-- POST_PR16_UNIT_END:C-07 -->
 
 <!-- POST_PR16_UNIT_BEGIN:C-08 -->
-8. `C-08`: Class variance remains `REJECT_AT_CLASS_OWNER_ADMISSION`; rejected or recovery syntax creates zero admitted AST/HIR/MIR/API residue. Explicit Trait views or adapters are the alternatives.
+8. `C-08`: Class variance remains `REJECT_AT_CLASS_OWNER_ADMISSION`; rejected syntax creates zero admitted AST/HIR/MIR/API residue. Explicit Trait views or adapters are the alternatives.
 <!-- POST_PR16_UNIT_END:C-08 -->
 
 <!-- POST_PR16_UNIT_BEGIN:C-09 -->
@@ -2579,7 +2718,7 @@ Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is 
 <!-- POST_PR16_UNIT_END:C-10 -->
 
 <!-- POST_PR16_UNIT_BEGIN:C-11 -->
-11. `C-11`: logical diagnostic families and stable fields may be materialized locally, but final registry codes remain null. Recovery cannot create admitted semantic residue and tooling cannot perform an unproved rewrite.
+11. `C-11`: logical diagnostic families and stable fields may be materialized locally, but final registry codes remain null. Rejected source cannot create admitted semantic residue and tooling cannot perform an unproved rewrite.
 <!-- POST_PR16_UNIT_END:C-11 -->
 
 <!-- POST_PR16_UNIT_BEGIN:E-01 -->
@@ -2631,7 +2770,7 @@ Only active forms may enter formatter/LSP behavior. No semantic auto-rewrite is 
 <!-- POST_PR16_UNIT_END:E-12 -->
 
 <!-- POST_PR16_UNIT_BEGIN:E-13 -->
-13. `E-13`: logical owner diagnostic families and their field contract are materialized without inventing final registry IDs. Recovery creates zero admitted AST/HIR/MIR/API residue.
+13. `E-13`: logical owner diagnostic families and their field contract are materialized without inventing final registry IDs. Rejected source creates zero admitted AST/HIR/MIR/API residue.
 <!-- POST_PR16_UNIT_END:E-13 -->
 
 ### Enum-derived capabilities: Stable design
@@ -3094,7 +3233,7 @@ lane remains `NOT_RUN`.
                      "failure":  "borrow returns checked failure; owned mismatch returns exact original owner",
                      "cleanup":  "no owner loss and no double drop",
                      "user_selected_alternative":  "closed union match",
-                     "impossible_case":  "unchecked recovery or owner destruction on failed recovery",
+                     "impossible_case":  "unchecked failure or owner destruction after failed validation",
                      "compiler_retry_count":  0,
                      "fallback_count":  0
                  },
@@ -3195,7 +3334,7 @@ lane remains `NOT_RUN`.
     "precedence":  [
                        {
                            "rank":  1,
-                           "check":  "profile, source-surface and recovery admission",
+                           "check":  "profile and source-surface admission",
                            "suppresses":  "all later stages"
                        },
                        {

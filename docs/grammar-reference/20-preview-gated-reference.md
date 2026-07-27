@@ -73,7 +73,7 @@ diagnostic에 분리해 보여야 한다.
 
 **활성화 선행 조건**
 정확한 ABI별 representability 표, raw pointer provenance와 lifetime
-법칙, ownership/unwind/cleanup mapping, 결정적 diagnostic와 recovery,
+법칙, ownership/unwind/cleanup mapping, 결정적 diagnostic과 admission,
 formatter/LSP round-trip, MIR foreign-call identity, xVM/LLVM 동등성
 corpus, 다중 target의 artifact-bound receipt와 별도 Design_ 판정이
 필요하다. 문서·schema·정적 fixture는 이 조건을 대체하지 않고 어떤 P1도
@@ -240,8 +240,8 @@ source 첫 위치의
 **정적 판정과 상호작용**
 base는 admitted NumericArray이고 exponent와 element domain은
 feature-local power law를 만족해야 한다. 이 기능은 implicit broadcast,
-`matrix .^ n` 같은 과거 철자, arbitrary operator overloading 또는
-Trait witness dispatch를 열지 않는다. matrix multiplication `**`,
+arbitrary operator overloading 또는 Trait witness dispatch를 열지
+않는다. matrix multiplication `**`,
 ordinary scalar infix power와 attached postfix transpose는 각각 별도
 owner다. shape/rank/orientation과 result-shape가 정적으로 결정되지 않으면
 gate가 있어도 거부해야 한다.
@@ -261,8 +261,7 @@ API나 이미 승인된 element transform을 사용한다. formatter는
 `values^`와 `values ^ 2` 사이의 공백을 미용상 변경해서는 안 되고,
 migration 도구도 transpose를 power로 또는 power를 transpose로 자동
 rewrite해서는 안 된다. LSP는 hover에서 postfix/infix owner, gate 상태,
-shape와 element result를 함께 보여야 하며 과거 `. ^` 계열 철자를 이
-기능의 양성 예시로 제시해서는 안 된다.
+shape와 element result를 함께 보여야 한다.
 
 **활성화 선행 조건**
 정확한 operand/result shape 법칙, exponent domain, overflow/error와

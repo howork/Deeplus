@@ -73,7 +73,16 @@ Subclassing, Trait conformance, extension activation, containment/association, a
 
 ## 5. Generics and function types
 
-Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet; rows and labels are checker identities, not further user generic kinds. Generic constructors are invariant by default. Function compatibility preserves value/context/witness/rest channels, ownership, callable profile, effect/error rows, cancellation, suspension, isolation, capture, and return type. Return type and source order are not overload tie-breakers. Ordinary callable parameters contain identifiers, modes, labels, and types rather than refutable Patterns; decomposition occurs in the body or an exhaustive declarative clause family.
+Current parameter kinds are type, StaticInt, EffectRow, and ErrorSet; rows and
+labels are checker identities, not further user generic kinds. Generic
+constructors are invariant by default. Function compatibility preserves
+value/context/witness/rest channels, ownership, callable profile, effect/error
+rows, cancellation, suspension, isolation, capture, and return type. Return
+type and source order are not overload tie-breakers. An ordinary callable
+parameter begins with an Identifier that retains its call label, whole-value
+local, overload identity and public API/ABI identity. An optional following
+structural Pattern is checker-proven irrefutable and lowers only as body-entry
+decomposition; its child binders do not alter the call channel.
 
 Ordinary and message calls share one trailing-closure binding judgment. One
 trailing closure may be unlabeled or labeled; two or more are well formed only
@@ -117,7 +126,9 @@ typed-alternative judgment and creates no wrapper, runtime membership test, case
 `STABLE_DESIGN`; parser, checker, backend, and tooling product lanes remain
 `NOT_RUN`.
 
-Absence is an explicit `Option` alternative. The recovery spelling `null` has no typing judgment, does not infer `Option<T>`, and produces `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`; only `::none` in an expected `Option` context or explicit `Option<T>::none` constructs the absent alternative.
+Absence is an explicit `Option` alternative. `::none` in an expected `Option`
+context or explicit `Option<T>::none` constructs the absent alternative; no
+implicit nullable type or sentinel conversion is inferred.
 
 ## 7. Ownership, effects, and cleanup
 
@@ -125,7 +136,50 @@ Move, borrow, inout, resource, isolation, suspension, effect, error, defect, can
 
 ## 8. Patterns, clauses, and laws
 
-Every Pattern owner uses one normalized Pattern AST plus an explicit context policy. Plain `let`/`var`, bare `for`, and ordinary parameters require irrefutability; guarded `let`, `if let`, `while let`, `for let`, and `match` admit refutable patterns under their own failure disposition. The subject is evaluated once, structural testing is nonconsuming, probe binders are nonowning, the optional guard is terminating/pure/Bool, and final moves/borrows/bindings commit atomically only after success. Failure commits no binding, partial move, irreversible borrow, escape, suspension, or authority. `while let` failure completes the loop and `for let` failure skips the candidate. Pattern coverage is closed over enum, union, Option, Result, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcome. Sealed-Class closure does not create constructor patterns. Tuple patterns, scalar-interval patterns, and Record rest patterns are not current. Declarative clauses use the finite partition algorithm. Law bodies admit only pure predicate assertions.
+Every Pattern owner uses one normalized Pattern AST plus an explicit context
+policy. Plain `let`/`var`, bare `for`, callable/lambda parameter decomposition,
+and direct-local Pattern assignment require irrefutability; guarded
+`let`/`var`, `if let`, `while let`, `for let`, ordered `catch`, and `match`
+admit refutable patterns under their own failure dispositions. `let!`/`var!`
+are explicitly refutable and raise `PatternMatchDefect` on mismatch. The
+subject is evaluated once, structural testing is nonconsuming, probe binders
+are nonowning, the optional guard is terminating/pure/Bool, and final
+moves/borrows/bindings commit atomically only after success. Failure commits no
+binding, partial move, irreversible borrow, rest view, escape, suspension, or
+authority. `while let` failure completes the loop, `for let` failure skips the
+candidate, and an unmatched catch continues or propagates.
+
+Current coverage domains include enum/union/Option/Result alternatives, exact
+Tuple products, exact/open Record and Map rows, closed List length/rest cells,
+transparent nominal products, exact ordered scalar intervals, and loop
+outcome. Record and Map are exact by default; `.._` ignores and `..name`
+captures an exact residual. A nominal type opens only through schema/data/value
+identity or an explicit pattern-transparent descriptor. Sealed-Class closure
+does not expose private fields or create a constructor Pattern. Pin keys/bounds
+must be stable and use statically selected pure total equality/order. Float
+interval patterns, arbitrary Class/getter/provider opening, dynamic extractors,
+and backtracking remain outside the Stable domain. Declarative clauses use the
+same finite partition algorithm. Law bodies admit only pure predicate
+assertions.
+
+A List Pattern has exact shape, `[.._]`, or one positional rest:
+`leadings..`, `..tail`, or `..middle..`; middle rest requires fixed children
+on both sides. The closed built-in descriptor returns borrowed
+`ListRestView<T>` with an explicit intrinsic `Sequence<T>` witness,
+`SourceOwnerId`, `BorrowRegionId`, `RankSpan(start_rank,count)` and original
+logical-coordinate projection. Empty rest uses `count = 0`, not an invalid
+source Range. The view cannot outlive or retain its source, and ordinary
+`ReadonlyView<T>` gains no Sequence witness. A moved List may return an exact
+owned `List<T>` residual only through its closed descriptor. Generic Sequence
+opening and temporary-owner retention remain Preview.
+
+Bare comma return types/values/bindings and direct-local parallel assignment
+normalize to existing Tuple identities. They have arity at least two and one
+semantic result channel; Expr has no comma operator. Parallel assignment
+requires distinct mutable direct LocalPlaceIds, stages the complete RHS
+left-to-right exactly once, performs one failure-atomic logical group commit,
+and has result Unit. It promises no hardware/cross-thread atomicity. Resource,
+field/index/property/shared/actor/FFI targets remain Preview.
 
 ## 9. NumericArray, bitfield, and measures
 
@@ -154,7 +208,7 @@ RCTS-V5 descriptors are closed discriminated inputs to design predicates and pre
 The typed frontend boundary is
 `HirSkeleton -> CheckSession -> TypedHirDraft ->
 Verified<CanonicalHirH1> -> ExecutableHirH1`. Only the verified form may be a
-MIR input. It contains no unresolved/recovery type, name, operator, witness,
+MIR input. It contains no unresolved or invalid type, name, operator, witness,
 extension, responsibility, or capability field. The verifier independently
 recomputes every selected declaration, conformance and intrinsic operation from
 the normalized input residue. `ExecutableHirH1` adds a target capability
@@ -215,8 +269,8 @@ The exact type-producing owner set is `ClassDecl`, `TraitDecl`, `EnumDecl`,
 `TypeAliasDecl`, `SchemaDecl`, `ActorDecl`, `ActorProtocolDecl`,
 `TypestateResourceDecl`, and `BitfieldDecl`. Each of those nine owners requires
 an explicit domain in all library, executable, script, preview-library,
-preview-executable, and preview-script roots. Omission is checker recovery
-only: it emits `TYPE_DECL_VISIBILITY_REQUIRED` and produces zero admitted HIR
+preview-executable, and preview-script roots. Omission is rejected by the
+checker: it emits `TYPE_DECL_VISIBILITY_REQUIRED` and produces zero admitted HIR
 type nodes, type identities, and API-digest entries.
 
 Package and Module identity remain separate type/linking axes. PackageId is
@@ -290,9 +344,8 @@ canonical cause rather than a second type/effect channel. The callable type
 does not gain a parameter or effect, but exported metadata and link identity
 retain the activation profile and digest.
 
-The current contextual surface is `static { ... }`; historical
-`scope#static { ... }` is recovery-only and normalizes to the same activation
-identity during migration. Persistent `static#slot name` declarations and
+The current contextual surface is `static { ... }`. Persistent
+`static#slot name` declarations and
 `static#slot::name` references are a separate nonactivatable Preview Design.
 The explicit `#slot` marker avoids the Stable `let::` and
 `QualifiedStaticExpr` grammar domains. That design owns one
@@ -414,7 +467,16 @@ nonactivatable until the Preview profile receives separate activation evidence.
 
 ## 17. Pattern partition and exhaustiveness
 
-Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcomes. Sealed-Class closure informs nominal analysis but has no current constructor-pattern carrier. Tuple patterns, scalar-interval patterns, captured/middle/multiple List rests, and Record rest patterns are not current. A guard refines only the already admitted structural partition and may read probe binders without moving, escaping, suspending, mutating through, or acquiring authority from them. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
+Pattern checking first normalizes the subject domain, then constructs disjoint
+partitions for enum/union/Option/Result alternatives, exact Tuple arity and
+child cells, exact/open Record and Map rows, closed List length/rest cells,
+transparent nominal products, admitted ordered scalar intervals, and loop
+outcome. Sealed-Class closure informs nominal analysis but does not expose an
+ordinary Class representation. A guard refines only the already admitted
+structural partition and may read ephemeral probe binders, including a probe
+rest, without moving, escaping, suspending, mutating through, publishing a
+final view, or acquiring authority from them. Enum cases use `::case` or
+`Type::case`.
 
 Exhaustiveness succeeds only when the finite current pattern partition is
 covered. Redundant or unreachable arms are diagnosed deterministically. A
@@ -488,7 +550,7 @@ Field punning elaborates `label` to `label: label` before construction-row check
 The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, task, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 
 
-## 23. Removed-surface typing laws
+## 23. Closed typing boundaries
 
 `Map<String,V>.name` has no key-projection judgment. Dot selection performs only nominal member, active extension, or witness lookup; a missing selector produces `MEMBER_NOT_FOUND`. Map key access uses indexing or an explicit API and preserves ordinary lookup failure.
 
@@ -652,7 +714,7 @@ new mutable Prelude family is selected by this contract.
                                 {
                                     "id":  "DOWNCAST_OWNED",
                                     "signature":  "downcastOwned\u003cT\u003e(move value: Dyn) -\u003e OwnedDowncast\u003cT,Dyn\u003e",
-                                    "kind":  "OWNER_PRESERVING_RECOVERY",
+                                    "kind":  "OWNER_PRESERVING_RESULT",
                                     "success":  "exactly one T owner",
                                     "mismatch":  "exact original Dyn owner",
                                     "both_or_zero_owner_count":  0
@@ -838,7 +900,7 @@ new mutable Prelude family is selected by this contract.
                                "mode":  "OWNED",
                                "status":  "GUARDED_PREVIEW_NONACTIVATABLE",
                                "authorized_source_spelling":  null,
-                               "recovery_operation":  "move",
+                               "failure_owner_operation":  "move",
                                "payload_relation":  "one moved owner",
                                "failure":  "exact owner returned or discharged exactly once"
                            }

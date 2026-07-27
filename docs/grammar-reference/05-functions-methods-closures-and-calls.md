@@ -68,19 +68,6 @@ runtime semantic item 앞에서 Block이 이어질 때 activation으로 commit�
 formatter는 `static { ... }`을 출력한다. activation은 이 위치에 최대
 하나이며 expression body와 clause body에는 직접 붙지 않는다.
 
-이전 철자는 Stable AST를 만들지 않는 recovery-only production이다.
-
-```ebnf
-RecoveryFunctionStaticScopeHash ::= "scope" "#" "static" Block
-```
-
-`FUNCTION_STATIC_SCOPE_HASH_DEPRECATED_USE_STATIC`는 Block을 보존하고
-introducer만 `static`으로 바꾸는 migration fix를 제시한다. migration
-비교에서는 구 철자와 canonical 철자가 같은 `FunctionStaticActivationDecl`
-로 정규화된다. source spelling과 trivia는 owner recipe와 activation
-contract digest의 입력이 아니므로 이 수정만으로
-`FunctionStaticOwnerId`가 달라지지 않는다.
-
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/function-static-activation.json -->
 ```deeplus
 def decode(bytes: Bytes) -> Packet = {
@@ -102,7 +89,7 @@ def decode(bytes: Bytes) -> Packet = {
 | `def#pure` | activation body가 같은 pure proof를 통과할 때 허용 |
 | entry/local function, constructor, cleanup/drop | 거부 |
 | lambda, anonymous closure, actor handler/request | 거부 |
-| async, generator, FFI, recovery declaration | 거부 |
+| async, generator, FFI declaration | 거부 |
 | `def#guard` | 거부; guard의 total narrowing 계약과 terminal activation failure를 섞지 않음 |
 
 정확한 once owner는 source 이름 하나가 아니라
@@ -165,17 +152,8 @@ entry와 state-cell address는 public digest에 들어가지 않는다. activati
 변경이다. formatter/LSP/runtime/backend 지원은 target-bound receipt가
 없으므로 여전히 `NOT_RUN`이다.
 
-다음과 같은 과거 철자는 계속 거부한다. 이 진단 경계는
-`EX-R51a1-NG-066`에 고정한다.
-
-```deeplus
-public static def warm() -> Unit = { }
-```
-
-`STATIC_FUNCTION_DECLARATION_NOT_CURRENT`는 ordinary module function,
-owning nominal의 `def::`와 함수 `static` activation의 차이를 설명하지만 자동
-rewrite하지 않는다. `static_once_value`, effectful/module/class activation은
-별도 Preview 설계이며 이 Stable 승급으로 활성화되지 않는다.
+`static_once_value`, effectful/module/class activation은 별도 Preview
+설계이며 이 Stable 승급으로 활성화되지 않는다.
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
@@ -237,8 +215,8 @@ Parameter ::= StoredParameter
             | NamedRestParameter
             | ValueParameter
 
-ValueParameter    ::= ParameterMode? ParameterPatternSlot TypeAnnotation
-ParameterPatternSlot ::= Identifier
+ValueParameter    ::= ParameterMode? ParameterEntrySlot TypeAnnotation
+ParameterEntrySlot ::= Identifier IrrefutableParameterPattern?
 ParameterMode     ::= "borrow" | "mut" | "move" | "inout"
 ContextParameter  ::= "context" Identifier ":" TypeRef
 WitnessParameter  ::= "using" Identifier ":" "witness" TypeRef
@@ -248,9 +226,24 @@ StoredParameter   ::= MemberVisibility? ("let" | "var") Identifier
                       TypeAnnotation?
 ```
 
-일반 parameter와 lambda parameter는 identifier를 bind하며 refutable
-Pattern을 받지 않는다. 반복 positional channel은 `values...: T`, named
-rest channel은 유일하고 마지막인 `options***: Record`다.
+일반 parameter는 call channel `Identifier`를 보존하면서 선택적으로
+irrefutable structural Pattern을 body-entry plan으로 가질 수 있다.
+Pattern은 overload, named-argument label, function type 또는 public ABI
+identity에 참여하지 않는다. refutable Pattern은 formal에서 정적으로
+거부한다. 반복 positional channel은 `values...: T`, named rest channel은
+유일하고 마지막인 `options***: Record`다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+private def distance(point Point${x, y}: Point) -> Float = {
+    return sqrt(x ^ 2 + y ^ 2)
+}
+```
+
+`point`는 외부 call channel과 whole-value local이고 `Point${x, y}`는
+인수 결합과 parameter ownership commit 뒤 body 진입에서 실행된다.
+구조 분해 실패 가능성이 있는 동적 List는 parameter에서 직접 열지 않고
+body의 guarded `let`으로 처리한다.
 
 `mut x: T`는 callee가 소유하는 mutable local place다. argument를 한 번
 얻고, affine owner라면 그 place로 이전하며, caller에 write-back alias를
@@ -295,7 +288,7 @@ dispatch marker가 없고 associated nonmethod에도 witness marker가 없다.
 ClosureExpr       ::= CaptureList? HashTag* "{" ClosureContent "}"
 ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody
 LambdaParameterList ::= LambdaParameter ("," LambdaParameter)* ","?
-LambdaParameter   ::= ParameterMode? Identifier TypeAnnotation?
+LambdaParameter   ::= ParameterMode? IrrefutableParameterPattern TypeAnnotation?
 
 CaptureItem       ::= ("let" | "var") Identifier "=" Expr
                     | CaptureMode Identifier
@@ -304,9 +297,12 @@ CaptureMode       ::= "borrow" | "inout" | "move" | "clone"
                     | "deep" | "copy" | "once"
 ```
 
-lambda parameter 목록에는 괄호를 쓰지 않는다. 명시적 nullary lambda는
-`{ => body }`다. `{ x: T => body }`의 단일 expression은 로컬 결과가
-되며 multiline non-Unit 경로에는 각 정상 경로의 `ret`가 필요하다.
+lambda parameter 목록 자체에는 바깥 괄호를 쓰지 않는다. 다만
+`{ (x, y): (Int, Int) => ... }`의 괄호는 Tuple parameter 하나를
+분해하고, `{ x: Int, y: Int => ... }`는 parameter 둘을 받는다. 두
+형식의 call arity는 같다고 추측되지 않는다. 명시적 nullary lambda는
+`{ => body }`다. 단일 expression은 로컬 결과가 되며 multiline
+non-Unit 경로에는 각 정상 경로의 `ret`가 필요하다.
 
 ### 호출
 
@@ -407,8 +403,10 @@ task를 추출한 뒤 그 task에 `await`을 적용한다.
   오류다.
 - named rest의 carrier는 정적 label을 가진 canonical `Record`다. runtime
   key를 가진 Map은 named argument를 만들 수 없다.
-- local function은 선언 뒤부터 보이고 사용한 outer local을 앞의
-  CaptureList에 모두 명시한다. 현행 mutual recursion은 없다.
+- local function은 선언 뒤부터 보인다. 증명된 비탈출·동기·same-isolation
+  read-only outer use는 lexical dependency이며 CaptureList에 반복하지
+  않는다. snapshot, mutation, ownership transfer, escape 또는 suspension은
+  명시적 capture가 필요하다. 현행 mutual recursion은 없다.
 - closure profile은 lifetime(`ordinary/#scoped`), call-right
   (`repeatable/#once`), 환경 receiver(`shared/#mut`), 동작
   (`ordinary/#pure/#guard`)와 effects/errors/isolation/suspension을
@@ -513,7 +511,7 @@ let add = { x: Int, y: Int => x + y }
 
 ```deeplus
 def outer(x: Int) -> Int = {
-    [borrow x] def inner(y: Int) -> Int = {
+    def inner(y: Int) -> Int = {
         return x + y
     }
     return inner(1)
@@ -602,17 +600,15 @@ def#guard validPort(port: Int) -> Bool = {
 | message/actor call을 payload aggregate로 해석 | 거부; ordinary argument channel을 그대로 사용한다 |
 | actor operation에 `~` 사용 | 거부; exact actor operation은 `:~`를 사용한다 |
 | named argument의 `name = value` | 거부; `name: value`를 사용한다 |
-| parameter/type의 `**` named rest | recovery-only; `***`를 사용한다 |
 | call-side `***record` | 거부; unfold는 `**record`다 |
-| `async def` 또는 `entry def` | 제거됨; `def#async`, `def#entry`를 사용한다 |
 | ordinary `def#unsafe` | 거부; `extern#C def#unsafe`는 명시적 Preview gate의 FFI 전용이다 |
 
 ## 상호작용
 
 - class dispatch marker와 Trait witness marker는 glyph가 같아도 의미 영역이
   다르다.
-- parameter는 identifier-only지만 body의 `if let`이나 guarded let은
-  refutable Pattern을 사용할 수 있다.
+- parameter의 structural Pattern은 irrefutable body-entry plan이다.
+  refutable 구조는 body의 `if let`이나 guarded let에서 처리한다.
 - trailing closure는 capture, effect, error, ownership 검사를 완화하지
   않는다.
 - `~` message call은 ordinary call과 별도 postfix owner이고 payload는

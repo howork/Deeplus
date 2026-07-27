@@ -510,8 +510,6 @@ public extension UserId as audit {
 use UserId::audit
 
 private def describe(id: UserId) -> String
-    throws Never
-    effects {}
 = {
     let ordinary = id ~ display
     let qualified = id ~ UserId::audit::auditLabel
@@ -647,8 +645,6 @@ public schema UserRow {
 }
 
 private def makeRow(id: Int, state: ProfileState) -> UserRow
-    throws Never
-    effects {}
 = {
     let metadata = ${
         source: "import"
@@ -762,6 +758,44 @@ let invalid = UserRow${ **values }
 - schema default가 effectful이면 별도 admission과 effect 예산이 필요하다.
 - resource constructor의 cleanup 책임을 schema materialization으로
   우회할 수 없다.
+
+### 6.7 exact/open Pattern과 named payload
+
+같은 data plane을 분해할 때 Record와 Enum Pattern의 exact/open 의도를
+소스에 남긴다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+private def describe(row UserRow${id, state, metadata, enabled}: UserRow)
+    -> String
+= {
+    let ${sourceName: source, .._} = metadata
+
+    return @match state {
+        ::draft => "${id}:draft:${sourceName}"
+        ::active => "${id}:active:${sourceName}"
+        ::blocked${message: reason, .._} => "${id}:blocked:${message}"
+    }
+}
+```
+
+parameter의 `UserRow${...}`는 field set이 고정된 schema에 대해
+irrefutable인 body-entry Pattern이다. `metadata`는 확장 가능한 Record로
+취급하므로 `${sourceName: source, .._}`처럼 추가 field를 명시적으로
+허용한다. colon 왼쪽의 `sourceName`이 destination이고 오른쪽 `source`가
+원본 field다.
+
+검사와 commit 순서는 다음과 같다.
+
+1. call channel `row`를 한 번 얻고 parameter ownership을 commit한다.
+2. `UserRow`의 pattern-visible field identity를 정적으로 확인한다.
+3. body-entry binder `id`, `state`, `metadata`, `enabled`를 한 번 만든다.
+4. metadata Record에서 source field를 nonconsuming probe한다.
+5. Record Pattern 성공 뒤 `sourceName`을 commit한다.
+6. Enum `VariantId`를 확인하고 selected active payload만 읽는다.
+
+ordinary Class 내부 field, Map runtime key 또는 inactive Enum payload는 이
+경로에 끼어들지 않는다.
 
 ## 7. 사례 6 — 1-based collection과 NumericArray
 
@@ -1788,8 +1822,8 @@ worker ~ process job
 // MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT
 ```
 
-두 번째 진단 ID는 historical 이름을 유지하지만 현행 message는
-“둘 이상이면 모두 unique named”라는 구조 규칙을 뜻한다.
+두 번째 진단의 현행 message는 “둘 이상이면 모두 unique named”라는
+구조 규칙을 뜻한다.
 
 ## 15. 사례 14 — Rational, Complex, power와 HIR-H1 경계
 
@@ -1926,7 +1960,7 @@ documentation projection이지만 `source_activation: none`이고 제품
 4. `CheckSession`이 type, literal normalization, operator row, power
    operation, ownership/effect/cleanup responsibility를 fixed point로 닫는다.
 5. `TypedHirDraft`는 모든 선택을 담고 verifier 전 상태로 남는다.
-6. verifier는 recovery, unresolved, candidate, placeholder, generic
+6. verifier는 invalid, unresolved, candidate, placeholder, generic
    operator가 0개일 때만 `Verified<CanonicalHirH1>`을 만든다.
 7. exact `MirCapabilityReceipt`가 required/provided capability를 같은
    집합으로 증명하고 unsupported reachable variant 수가 0일 때만
@@ -1994,13 +2028,11 @@ let integerImaginary = 4i
 let chainedSuffix = 4.0f64i
 // IMAGINARY_LITERAL_FORM_NOT_ADMITTED
 
-let historical = 4.0j
-// HISTORICAL_IMAGINARY_J_NOT_CURRENT
 ```
 
 분모 0은 exact literal shape를 성공적으로 인식한 뒤 checker가 거부한다.
 반면 malformed Rational과 잘못된 imaginary suffix는 canonical literal
-node를 만들기 전에 끝난다. 어느 경우도 recovery node가 HIR/MIR value로
+node를 만들기 전에 끝난다. 어느 경우도 거부된 node가 HIR/MIR value로
 내려가지 않는다.
 
 #### power domain과 result-directed 선택
@@ -2081,14 +2113,13 @@ deterministic precedence로 첫 진단을 선택해야 한다.
 
 | 예 | parse 결과 | checker 결과 |
 |---|---|---|
-| `names[]` | recovery CST | current index node 0 |
 | class의 `out T` | 구조 CST 가능 | owner variance 거부 |
 | ordinary arg로 context 전달 | call CST 가능 | role mismatch |
 | schema unknown field | materialization CST 가능 | label admission 거부 |
 | `effects {unsafe}` | effect-row CST 가능 | axis separation 거부 |
 
 문서와 IDE는 이 차이를 사용자에게 보여 주어야 한다.
-parser recovery가 source를 current program으로 승인한 것처럼 표시하거나,
+parser가 잘못된 source를 current program으로 승인한 것처럼 표시하거나,
 checker 오류를 syntax highlighting 실패로 축소하면 안 된다.
 
 ### 17.3 실패 원자성 질문

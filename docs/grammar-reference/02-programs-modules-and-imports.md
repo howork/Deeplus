@@ -28,7 +28,7 @@
 
 소스 역할 루트는 위의 stable 3개와 Preview 3개, 정확히 6개다. Preview
 파일은 대응하는 `Preview*SourceFile` 루트와 정확한 `#preview(...)`
-gate를 사용한다. 복구 구문은 별도의 일곱 번째 프로그램 종류가 아니다.
+gate를 사용한다.
 
 ```ebnf
 Deeplus ::= LibrarySourceFile | ExecutableSourceFile | ScriptSourceFile ;
@@ -137,9 +137,8 @@ UseExportDecl ::= "use" "export" QualifiedPath StatementBoundary ;
 9. `BitfieldDecl`
 
 이 법칙은 위의 6개 source root에 동일하게 적용된다. 이 9개 owner에서
-가시성을 생략한 parse는 recovery에만 존재하며
-`TYPE_DECL_VISIBILITY_REQUIRED`를 낸다. 그 결과에서 admitted HIR type
-node, type identity, API-digest entry는 모두 0이다. 그 밖에
+가시성을 생략하면 `TYPE_DECL_VISIBILITY_REQUIRED`를 내며 admitted HIR
+type node, type identity, API-digest entry는 모두 0이다. 그 밖에
 `TopLevelVisibility?`를 가진 최상위 owner는 단어를 생략하면
 `private`로 정규화한다.
 

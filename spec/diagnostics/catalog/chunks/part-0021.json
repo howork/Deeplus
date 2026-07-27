@@ -190,63 +190,6 @@
     "emission_domain": "source"
   },
   {
-    "authority": "LANGUAGE / PARSER",
-    "authority_set": [
-      "LANGUAGE",
-      "PARSER"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "UNIT_MIDDLE_DOT_RECOVERY_ONLY",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
-    "feature_refs": [
-      "measure_semantic_core"
-    ],
-    "fixit_hint": "replace · with *",
-    "fixit_kind": "replace",
-    "fixit_policy": "replace · with *",
-    "message": "Unit multiplication uses `*`; the middle dot is recognized only for recovery.",
-    "notes": "Current design diagnostic; product emission receipt NOT_RUN.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "related_feature_refs": [],
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "error",
-    "stage": "parser",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source"
-  },
-  {
-    "authority": "LANGUAGE / PARSER",
-    "authority_set": [
-      "LANGUAGE",
-      "PARSER"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "UNIT_MULTIPLICATION_USE_STAR",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
-    "feature_refs": [
-      "unit_operation_policy_msp"
-    ],
-    "fixit_hint": "replace · with *",
-    "fixit_kind": "replace",
-    "fixit_policy": "place the annotation immediately before its target declaration",
-    "message": "The current unit multiplication spelling is `*`; the middle dot is recovery-only.",
-    "notes": "integrated grammar boundary diagnostic.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "related_feature_refs": [
-      "r51e_frontend_grammar_current_canonical",
-      "unit_operation_policy_msp"
-    ],
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "error",
-    "stage": "parser",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source"
-  },
-  {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
     "authority_set": [
       "LANGUAGE",
@@ -394,7 +337,7 @@
     "diagnostic_status": "active",
     "feature_refs": [
       "set_prefixed_literal",
-      "r51f_removed_surface_boundary_law"
+      "closed_source_surface_boundary_law"
     ],
     "fixit_hint": "use a current prefixed literal or an explicit library constructor",
     "fixit_kind": "none",
@@ -1377,33 +1320,6 @@
     "notes": "Current diagnostic contract; product execution remains NOT_RUN."
   },
   {
-    "diagnostic_id": "TUPLE_PATTERN_NOT_CURRENT",
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source",
-    "message": "Tuple decomposition is not a current Pattern; parentheses group one Pattern only.",
-    "feature_refs": [
-      "pattern_decomposition"
-    ],
-    "related_feature_refs": [],
-    "stage": "parser",
-    "severity": "error",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "authority_set": [
-      "LANGUAGE",
-      "PARSER"
-    ],
-    "authority": "LANGUAGE / PARSER",
-    "fixit_kind": "manual_review",
-    "fixit_hint": "use an admitted nominal variant, Record, or List pattern",
-    "fixit_policy": "do not guess a carrier conversion or tuple-to-List rewrite",
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN."
-  },
-  {
     "diagnostic_id": "PATTERN_MULTIPLE_REST",
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_status": "active",
@@ -1425,35 +1341,8 @@
     ],
     "authority": "LANGUAGE / PARSER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "retain only one final ignored .._ rest",
+    "fixit_hint": "retain exactly one positional rest or the all-ignored [.._] form",
     "fixit_policy": "do not infer which elements or binders the author intended",
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN."
-  },
-  {
-    "diagnostic_id": "PATTERN_REST_MUST_BE_FINAL_IGNORED",
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source",
-    "message": "The only current List-pattern rest is one ignored `.._` in final position.",
-    "feature_refs": [
-      "pattern_decomposition"
-    ],
-    "related_feature_refs": [],
-    "stage": "parser",
-    "severity": "error",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "authority_set": [
-      "LANGUAGE",
-      "PARSER"
-    ],
-    "authority": "LANGUAGE / PARSER",
-    "fixit_kind": "manual_review",
-    "fixit_hint": "move one ignored .._ rest to the end or remove it",
-    "fixit_policy": "never create a captured or middle rest",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN."
   },

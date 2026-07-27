@@ -114,6 +114,7 @@ let servesTls = 443 in ports
 |---|---|---|
 | `List<T>` | `Int`의 `1..length` | read-only `T`, range는 `ReadonlyView<T>` |
 | `ReadonlyView<T>` | source owner에서 보존된 coordinate | borrowed element 또는 coordinate-preserving view |
+| `ListRestView<T>` | Pattern source에서 보존된 coordinate span | borrowed remainder element; intrinsic `Sequence<T>` traversal |
 | `String` | `1..UnicodeScalarCount` | `Char` |
 | `Bytes` | `1..byteCount` | `UInt8` |
 | bounded List | 선언한 `L..U` | read-only element 또는 view |
@@ -125,6 +126,14 @@ let servesTls = 443 in ports
 현행 runtime bracket matrix는 `MutableList`, `FrozenList`, `ListSnapshot`을
 명시적으로 제외한다. 사용자 type이 `Sequence`, `Indexable`,
 `LogicalIndexDomain`을 만족해도 bracket이 생기지 않는다.
+
+`ListRestView<T>`는 List Pattern이 borrowed subject의 positional
+remainder를 capture할 때만 compiler가 만드는 closed built-in carrier다.
+원본 owner region, 1-based 또는 bounded coordinate projection과 길이가
+0일 수 있는 `RankSpan`을 보존한다. intrinsic `Sequence<T>` witness는 이
+carrier에만 결합되며, 일반 `Sequence` conformance가 bracket이나 Pattern
+decomposition을 활성화하지 않는다. capture에는 숨은 copy, allocation,
+rebase 또는 lifetime extension이 없다.
 
 ### 1-based 좌표와 슬라이스
 
@@ -141,6 +150,20 @@ bounded List는 선언한 `L..U`, Map은 정확한 `K`를 사용하므로 1-base
 - `value[*]`: 허용된 axis owner의 full axis
 - slice는 coordinate와 provenance를 보존하며 암시적으로 rebase/copy하지
   않는다.
+
+Pattern rest도 같은 coordinate 보존 법칙을 따른다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+if let [first, ..middle.., last] = values {
+    // middle: ListRestView<T>
+    inspect(middle)
+}
+```
+
+`middle`의 첫 element coordinate는 원본 List에서 차지하던 coordinate다.
+별도 `rebase`/copy API를 호출하지 않는 한 1부터 다시 시작한다고
+가정하지 않는다.
 
 단계 지정, 역방향 slice, mutable slice 대입, lifetime escape, isolation
 crossing은 현행이 아니다.
@@ -330,7 +353,6 @@ Map-to-Record 변환은 없고, 어느 field가 실패하면 partial `Config`와
 |---|---|
 | ordinary sequence의 `values[0]` | 거부; 기본 domain은 1부터 시작 |
 | 음수 from-end index | 거부 |
-| `value[]` | recovery-only, `INDEX_SUFFIX_REQUIRES_AXIS` |
 | `value[..]` | 거부; 두 bound 모두 필요 |
 | `value[i..>j]`, `value[i...j]` | range로 거부 |
 | `value[i..<j]` | 허용되지만 noncanonical warning |
@@ -400,7 +422,7 @@ let row: ${id: UserId, name: String}
 ```
 
 위 코드는 현행 accept 예제가 아니다. 도입에는 exact type-goal grammar와
-recovery, canonical identity와 closed Record row 판정, CST/HIR/API
+diagnostic, canonical identity와 closed Record row 판정, CST/HIR/API
 정규화, transactional freeze/snapshot lowering, positive/negative/
 boundary/migration 실행 증거, formatter/LSP 보존 및 별도 Design_
 activation authority가 모두 필요하다.

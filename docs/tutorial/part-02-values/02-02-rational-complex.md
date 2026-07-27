@@ -41,7 +41,7 @@ zero == 0/1
 
 허수 리터럴은 decimal floating literal 뒤에 `i`가 붙은 scanner token이다.
 `4.0i`는 `Complex<Float64>`, `4.0f32i`는 `Complex<Float32>`다. `4i`,
-`4.0 i`, `4.0f64i`, `4.0j`는 허용되지 않는다.
+`4.0 i`, `4.0f64i`는 허용되지 않는다.
 
 ## 6. 단계별 예제
 

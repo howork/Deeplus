@@ -49,11 +49,10 @@ scanner hard keyword 30개는 다음과 같다.
 
 ```text
 and as catch class def defer else enum false finally for if import in
-let match module not null or repeat return throw trait true try type
+let match module not or repeat return throw trait true try type
 use var while
 ```
 
-`null`은 정밀한 recovery 진단을 위한 예약어일 뿐 현행 값 literal이 아니다.
 `actor`, `async`, `await`, `conformance`, `effects`, `entry`, `guard`,
 `move`, `public`, `schema`, `throws`, `where` 같은 contextual word는
 소유 parser 문맥에서만 허용한다. `array`와 `case`는 이 두 keyword
@@ -204,7 +203,7 @@ multiplication을 제공하지 않으므로 `4.0 i`를 `4.0 * i`로 보정하지
 최장 일치는 유효한 prefix만 떼어 내지 않는다. 따라서 `4.0index`를
 `4.0i`와 `ndex`로 쪼개거나, `4.0f64i`를 `4.0f64`와 `i`로 쪼개지 않는다.
 정수형 `4i`는 별도의 nonactivatable Preview Design에만 속한다.
-bare `i`, 분리된 `4.0 i`, historical `4.0j`, radix 형식 `0x4.0i`,
+bare `i`, 분리된 `4.0 i`, radix 형식 `0x4.0i`,
 suffix 연쇄 `4.0f64i`는 현행에서 거부된다. 진단은 다음 책임을 구분한다.
 
 | source | 판정 |
@@ -212,7 +211,6 @@ suffix 연쇄 `4.0f64i`는 현행에서 거부된다. 진단은 다음 책임을
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED` |
 | `4i` | `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVATABLE` |
 | `0x4.0i`, `4.0f64i`, chained suffix | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` |
-| `4.0j` | `HISTORICAL_IMAGINARY_J_NOT_CURRENT` |
 | bare `i` | ordinary identifier; 허수 literal이 아님 |
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/rational-complex-numeric-coherence.json -->
@@ -301,7 +299,6 @@ owner만 가진다. `&&`는 Bool conjunction이 아니라 bitwise operator다.
 - bytes literal의 type은 `Bytes`다.
 - `()`는 유일한 `Unit` 값이다.
 - absence는 `::none` 또는 `Option<T>::none`이다.
-- `null` recovery는 value AST/HIR/MIR node를 만들지 않는다.
 - contextual word는 owner syntax가 commit된 뒤에만 해당 역할을 얻는다.
 
 ## 평가·소유권·효과
@@ -359,19 +356,16 @@ let path = #raw"C:\temp\$name"
 
 | 형식 | 판정과 대안 |
 |---|---|
-| `null` | recovery-only; `::none` 또는 `Option<T>::none` 사용 |
 | 숫자 token으로 쓴 `NaN`, `Infinity` | 거부; type-side constant 사용 |
 | raw multiline String | 거부 |
 | regex literal | 없음; named API에 String/Bytes 전달 |
 | 단독 `_`를 이름으로 사용 | wildcard이므로 거부 |
 | `array`, `case`를 hard keyword로 취급 | 잘못된 해석 |
-| 임의 custom operator punctuation | recovery-only이며 stable token route가 아님 |
 | `<2/0>` | 전체 Rational literal로 인식한 뒤 `RATIONAL_LITERAL_DENOMINATOR_ZERO` |
 | `<-2/3>`, `<2 / 3>`, `<0x2/3>` | `RATIONAL_LITERAL_MALFORMED`; 부호는 바깥 prefix에 두고 component는 붙은 10진 magnitude로 쓴다 |
 | `4i` | integer-imaginary literal 확장 Preview Design; 현행 profile에서는 활성화되지 않음 |
 | `0x4.0i`, `4.0f64i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`; 붙은 marker는 현행 10진 `Float64` 또는 `Float32` literal만 허용 |
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED`; implicit multiplication 없음 |
-| `4.0j` | `HISTORICAL_IMAGINARY_J_NOT_CURRENT`; current marker는 ASCII `i` |
 | bare `i`를 내장 허수 단위로 가정 | ordinary identifier다. `Complex::i`를 사용 |
 
 Preview source는 첫머리에 명시적 `#preview(...)` gate가 필요하다. 이 장은

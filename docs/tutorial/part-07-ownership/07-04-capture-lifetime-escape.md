@@ -151,13 +151,14 @@ explicit capture environment에 복사된다. lexical access가 outer `var`를
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let prefix = "user:"
-let labels = users ~ map [borrow prefix] { user =>
+let labels = users ~ map { user =>
     "${prefix}${user.name}"
 }
 ```
 
-선택된 `map`의 closure lifetime이 borrow region을 넘지 않는지 검사한다.
-trailing syntax가 capture/effect/error 검사를 완화하지 않는다.
+선택된 `map`의 callback이 정확한 `#scoped` 동기 경로이고 `prefix`를
+읽기만 하므로 이 use는 call-time lexical dependency다. trailing syntax가
+escape·mutation·capture·effect/error 검사를 완화하지는 않는다.
 
 ### 6.4 once owner를 environment로 옮기기
 

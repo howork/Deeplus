@@ -3,7 +3,7 @@
 > 상태: `MIXED_STATUS`
 >
 > Module/API/Prelude/HIR-H1 verifier boundary는 current design이다. FFI는
-> 정확한 gate가 필요한 Preview이고 quarantine은 nonactivatable recovery
+> 정확한 gate가 필요한 Preview이고 quarantine은 nonactivatable Preview Design
 > probe다. compiler와 backend 제품 레인은 `15/15 NOT_RUN`이다.
 
 이 Part는 source code만 보는 시야를 넓힌다. 이름은 어느 Module에서

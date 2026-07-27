@@ -88,10 +88,6 @@ exact gate 조건이 있어야 admission을 검토할 수 있는 Preview 상태.
 **Qualified path**  
 하나 이상의 식별자를 `::`로 연결한 owner/name path.
 
-**Recovery only**  
-과거 또는 잘못된 surface를 진단·이행하기 위한 parser 경로. 정상
-AST/HIR/MIR residue를 만들지 않는다.
-
 **Refinement type**  
 기반 type의 값 가운데 predicate를 만족한다는 proof를 가진 type.
 
@@ -119,4 +115,3 @@ type. Enum case identity와 같지 않다.
 - `spec/contracts/normative-terminology.json`
 - `spec/types/type-system.md`
 - [상태와 authority](../../grammar-reference/00-status-authority-and-notation.md)
-

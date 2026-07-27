@@ -37,7 +37,11 @@ Deeplus의 데이터 모델링 표면은 비슷해 보이는 문법을 의도적
 - successor Enum의 uniform payload나 final-dot-only member는
   `PREVIEW_DESIGN_NONACTIVATABLE`이며 현행 예제에 섞지 않는다.
 - Record label과 Map key를 서로 바꾸지 않는다.
-- Tuple pattern은 현행이 아니다.
+- Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다.
+- Record/Map Pattern은 exact-by-default이며 subset 의도는 `.._`로
+  명시한다.
+- List rest는 tail `..tail`, prefix `leadings..`, middle
+  `..middle..`의 방향을 구분한다.
 - pattern 실패나 false guard는 partial binding, partial move 또는
   exclusive borrow를 남기지 않는다.
 
@@ -53,4 +57,3 @@ Deeplus의 데이터 모델링 표면은 비슷해 보이는 문법을 의도적
 
 이 부의 예시는 정본 설계에 따른 설명용 코드다. 실제 parser/checker,
 MIR, xVM 또는 LLVM 실행을 증명하지 않는다.
-

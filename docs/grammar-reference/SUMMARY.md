@@ -21,7 +21,7 @@
 - [12 — 소유권, 대여 및 책임](12-ownership-borrowing-and-responsibility.md)
 - [13 — 비동기, 태스크, 액터 및 동시성](13-async-tasks-actors-and-concurrency.md)
 - [14 — FFI, unsafe 경계, 메타프로그래밍 및 프로파일](14-ffi-unsafe-metaprogramming-and-profiles.md)
-- [15 — 프리뷰, 복구 및 제거된 표면](15-preview-recovery-and-removed-surfaces.md)
+- [15 — Preview 표면](15-preview-surfaces.md)
 - [16 — 문맥별 구문과 production 길잡이](16-contextual-syntax-and-production-guide.md)
 - [17 — 이름 해석, 타입 추론 및 호출 판정](17-name-resolution-type-inference-and-calls.md)
 - [18 — 평가, 소유권, MIR 및 백엔드](18-evaluation-ownership-mir-and-backends.md)
@@ -85,6 +85,7 @@
 | [`numeric_array_elementwise_power_msp`](20-preview-gated-reference.md#preview-feature-numeric_array_elementwise_power_msp) | `PREVIEW` | NumericArray elementwise power law |
 | [`numeric_capability_lattice_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-numeric_capability_lattice_preview_design) | `PREVIEW_DESIGN` | Closed numeric capability lattice Preview design |
 | [`option_let_question_binding_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-option_let_question_binding_preview_design) | `PREVIEW_DESIGN` | Option optional payload binding Preview design |
+| [`pattern_advanced_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-pattern_advanced_surface_preview_design) | `PREVIEW_DESIGN` | Advanced Pattern surface Preview Design |
 | [`prototype_delta`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-prototype_delta) | `PREVIEW_DESIGN` | Prototype delta |
 | [`rational_operator_completion_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-rational_operator_completion_preview_design) | `PREVIEW_DESIGN` | Rational operator completion Preview design |
 | [`sealed_multimethod_family`](21-preview-design-types-objects-and-traits.md#preview-feature-sealed_multimethod_family) | `PREVIEW_DESIGN` | Sealed multimethod family |

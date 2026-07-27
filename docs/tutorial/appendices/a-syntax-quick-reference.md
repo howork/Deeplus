@@ -57,6 +57,15 @@ signature identity에는 parameter 순서·label·role·ownership mode,
 return, throws, effect가 모두 참여한다. ordinary, context, witness
 argument를 위치만 같다고 서로 바꿀 수 없다.
 
+call-channel identifier 뒤에는 parameter type에 대해 irrefutable인
+body-entry Pattern을 둘 수 있다.
+
+```deeplus
+private def length(point Point${x, y}: Point) -> Float = {
+    return sqrt(x ^ 2 + y ^ 2)
+}
+```
+
 이름 있는 async 함수는 `def#async`, entry는 `def#entry`, guard는
 `def#guard`다. 함수 body의 `static { ... }` activation은 Stable이지만
 Class body의 같은 표면은 Preview Design nonactivatable이다.
@@ -117,11 +126,30 @@ pattern binding은 구조·type·guard가 성공한 edge에서만 commit된다.
 closed input에는 exhaustive match를 선호한다. guard는 Bool이어야 하며
 허용되지 않은 effect/error를 숨기지 않는다.
 
+| 의도 | 표면 |
+|---|---|
+| Tuple/bare product | `(x, y)`, `let x, y = pair` |
+| List tail/prefix/middle rest | `..tail`, `leadings..`, `..middle..` |
+| exact Record | `${x, y}` |
+| open/captured Record | `${x, y, .._}`, `${x, y, ..rest}` |
+| Record rename | `${destination: source, .._}` |
+| Map Pattern | `#map{destination: "key", .._}` |
+| named Enum payload | `::case${field, .._}` |
+| pin/range | `^expected`, `0..<10`, `>= 10` |
+| assertive binding | `let! Pattern = value` |
+| condition chain | `if let ... and then let ... and then condition` |
+| 지역 병렬 대입 | `left, right = right, left` |
+
+Record와 Map은 exact-by-default다. 추가 field/key를 허용하려면 `.._`를
+생략하지 않는다.
+
 ## 7. 컬렉션과 index
 
 Deeplus의 일반 indexing은 **1부터 시작**한다. 첫 원소는 `items[1]`이며
 `items[0]`을 첫 원소로 가르치지 않는다. slice의 경계와 view provenance는
 단일 index 규칙보다 더 많은 정보를 가지므로 컬렉션 Part를 함께 본다.
+borrowed List rest는 `ListRestView<T>`로 원본 coordinate와 owner region을
+보존한다.
 
 postfix `A^`와 infix `A ^ 2`를 구분한다. 전자는 Stable transpose,
 후자의 NumericArray elementwise power는 Preview gated profile이다.
@@ -153,7 +181,6 @@ lowercase `via`가 보이는 현행 contract와 inactive successor
   실행은 `NOT_RUN`.
 - `PREVIEW_GATED`: exact 세 feature와 gate 조건을 함께 표기.
 - `PREVIEW_DESIGN_NONACTIVATABLE`: 설계 검토 예제만 허용.
-- `RECOVERY_ONLY`: 잘못된 과거 표면을 진단하고 고치는 데만 사용.
 - `REMOVED`: negative 예제에만 사용.
 
 ## 10. 더 정확한 근거

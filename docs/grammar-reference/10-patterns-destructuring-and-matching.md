@@ -5,17 +5,18 @@
 
 ## 상태
 
-이 장은 현행 Pattern 문법, 문맥별 허용 정책, 구조 분해, guarded binding,
-statement `match`, value `@match`, exhaustiveness와 flow narrowing을 설명한다.
-모든 Pattern owner는 하나의 lossless CST와 하나의 정규화 AST를 공유한다.
+Pattern은 `match`에만 붙는 보조 문법이 아니다. Deeplus에서는 지역
+바인딩, 조건, 반복, 함수 진입, 예외 처리와 지역 병렬 대입이 같은
+정규화 Pattern AST를 사용한다. 문맥은 Pattern을 다시 정의하지 않고
+성공 조건, 실패 경로, 소유권 commit과 coverage 의무만 공급한다.
 
-예제는 현행 corpus의 `accept`, `source_activation: none` 항목이다. 제품
-parser/checker/lowering/runtime 실행은 `NOT_RUN`이며 정적 fixture를 제품
-conformance PASS로 해석하지 않는다.
+이 장의 Stable 설계는 source 정본이다. 제품 lexer, parser, checker,
+HIR/MIR, xVM과 backend의 실행 증거는 여전히 `NOT_RUN`이다. Preview
+표면은 해당 절에서 별도로 표시하며 Stable이라고 해석하지 않는다.
 
 ## 문법
 
-### Pattern 형식
+### 공통 Pattern 대수
 
 ```ebnf
 Pattern      ::= OrPattern
@@ -25,297 +26,461 @@ MovePattern  ::= "move"? PatternPrimary
 
 PatternPrimary ::= TypedBindingPattern
                  | Identifier
-                 | RecordPattern
-                 | ListPattern
-                 | VariantPattern
                  | "_"
                  | UnitSyntax
                  | Literal
                  | ParenthesizedPattern
-
-TypedBindingPattern ::= Identifier ":" TypeRef
-RecordPattern       ::= "${" PatternFieldList? "}"
-ListPattern         ::= "["
-                        (ListPatternPrefix ("," IgnoredListRest)? ","?
-                        | IgnoredListRest ","?)?
-                        "]"
-IgnoredListRest     ::= ".." "_"
-VariantPattern      ::= VariantQualifier Identifier VariantPatternPayload?
-VariantQualifier    ::= TypeRef "::" | "::"
+                 | TuplePattern
+                 | ListPattern
+                 | RecordPattern
+                 | MapPattern
+                 | VariantPattern
+                 | NominalPattern
+                 | PinPattern
+                 | RangePattern
+                 | RelationalPattern
 ```
 
-괄호는 하나의 Pattern을 묶을 뿐 tuple Pattern을 만들지 않는다. Record
-Pattern은 정적으로 알려진 label subset을 열며 rest 형식이 없다. List
-Pattern은 exact length이거나 마지막에 단 하나의 ignored remainder
-`.._`만 둘 수 있다.
+`(p)`는 grouping이고 `(p,)`는 원소가 하나인 Tuple Pattern이다. 쉼표가
+둘 이상의 항목을 나누면 Tuple Pattern이다. bare comma product도 같은
+Tuple로 정규화되므로 별도의 다중 값 runtime carrier를 만들지 않는다.
 
-### 바인딩 문맥
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let (id, name) = pair
+let singleton = (13,)
+let id, name = pair
+```
+
+마지막 두 바인딩 형식의 결과 type은 모두 Tuple이다. 문맥이 다르더라도
+Tuple 요소를 임의의 `Sequence`로 다시 해석하지 않는다.
+
+### Sequence rest
+
+List의 위치 기반 rest는 marker의 방향으로 역할을 드러낸다. Stable
+Tuple Pattern은 exact fixed product이며 rest를 갖지 않는다.
 
 ```ebnf
-BindingCore       ::= ("let" | "var") BindingPattern "=" Expr
-GuardedBindingStmt ::= "let" BindingPattern "=" Expr
-                       "else" GuardedBindingFailure StatementBoundary?
-
-PatternControlCondition ::= Expr | "let" Pattern "=" Expr
-ForLoop          ::= "for" ("let" Pattern | Pattern) "in" Expr
-                     GuardClause? Block MatchStatement?
-WhileLoop        ::= "while" PatternControlCondition Block MatchStatement?
-MatchStatement   ::= "match" MatchCore
-MatchExpr        ::= "@" "match" MatchCore
+TailRestPattern   ::= ".." RestBinding
+PrefixRestPattern ::= RestBinding ".."
+MiddleRestPattern ::= ".." RestBinding ".."
+RestBinding       ::= Identifier | "_"
 ```
 
-`BindingPattern`의 마지막 type annotation은 binding subject 전체의 정적
-expected type을 정한다. recursive child의 `name: Type`은 계속 child typed
-binder다.
+Stable 철자는 다음과 같다.
 
-### match 분기
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+[head, ..tail]                  // 뒤쪽 remainder
+[leadings.., last]              // 앞쪽 remainder
+[first, ..middle.., last]       // 양쪽 고정 항목 사이
+[.._]                           // 전체 remainder를 무시
+```
+
+marker는 이름에 붙으며 한 Pattern에 rest는 최대 하나다. middle rest에는
+앞뒤로 적어도 하나의 고정 child가 있어야 한다. `[first, ..middle, last]`
+처럼 tail marker 뒤에 child를 계속 쓰는 형식은 허용하지 않는다.
+
+동적 List의 길이는 runtime에 판정하므로 일반적으로 refutable하다.
+borrowed List에서 capture한 remainder는 `ListRestView<T>`다. 이 view는
+원본 owner region, 원래 1-based coordinate projection과 길이가 0일 수도
+있는 `RankSpan`을 보존한다. compiler가 부여하는 intrinsic
+`Sequence<T>` witness 외에 일반 `Sequence` conformance가 rest 분해를
+활성화하지 않으며, 숨은 복사·할당·수명 연장은 없다.
+
+### Record Pattern
 
 ```ebnf
-MatchArm ::= MatchHead GuardClause? "=>" MatchArmBodySlot
-MatchHead ::= Pattern | "otherwise"
+RecordPattern ::= "${" RecordPatternEntries? "}"
+RecordPatternEntry ::= Identifier
+                     | RecordTarget ":" Identifier
+                     | RecordRestPattern
+RecordRestPattern ::= ".." ("_" | Identifier)
 ```
 
-statement `match`는 statement body를 실행한다. value `@match`는 각 정상
-arm에서 값을 만들어야 한다. value arm의 block은 마지막 `ret`로 로컬
-값을 전달할 수 있다.
+Record는 exact-by-default다.
 
-## 허용과 정적 의미
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+${x, y}          // field set이 정확히 x, y
+${x, y, .._}    // x, y를 요구하고 나머지는 명시적으로 무시
+${x, y, ..rest} // 나머지를 residual Record로 capture
+```
 
-### 문맥별 refutability
+mapping의 왼쪽은 destination Pattern이고 오른쪽은 source field다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let ${horizontal: x, vertical: y} = point
+```
+
+위 코드는 `point.x`를 `horizontal`에, `point.y`를 `vertical`에
+바인딩한다. source와 destination이 같은 `${x}`만 colon을 생략한다.
+destination 자체가 typed 또는 nested Pattern이면 colon owner가 보이도록
+괄호로 묶는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let ${(id: UserId): id, .._} = payload
+let ${(${city, zip}): address, .._} = user
+```
+
+field order는 의미 identity가 아니지만 source ordinal은 진단과 평가
+provenance에 남는다. 같은 source field를 두 번 요구하거나 보이지 않는
+field를 여는 Pattern은 정적으로 거부한다.
+
+### Map Pattern
+
+```ebnf
+MapPattern ::= "#" "map" "{" MapPatternEntries? "}"
+MapPatternEntry ::= MapValueTarget ":" MapKeyPattern
+                  | MapRestPattern
+MapKeyPattern ::= Literal | PinPattern
+MapRestPattern ::= ".." ("_" | Identifier)
+```
+
+Map도 exact-by-default이며 mapping 방향은 Record와 같다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+if let #map{
+    userId: "id"
+    displayName: "name"
+    ..rest
+} = payload {
+    publish(userId, displayName)
+}
+```
+
+왼쪽은 destination value Pattern, 오른쪽은 source key다. key에는 literal
+또는 `^stableValue`만 쓸 수 있다. key normalization과 equality는
+compiler가 선택한 pure·total key law를 사용하고 arbitrary call,
+provider lookup이나 iteration-order winner를 만들지 않는다. normalized
+duplicate key는 정적 오류다.
+
+### transparent nominal product와 Enum
+
+Record, schema, data class와 명시적으로 pattern-transparent인 nominal
+product는 field identity로 분해한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let Point${x, y} = point
+let User${displayName: name, .._} = user
+```
+
+ordinary Class가 `sealed` 또는 `final`이라는 이유만으로 내부 field가
+열리지는 않는다. Dyn, Facet, FFI와 opaque representation도 자동으로
+Pattern carrier가 되지 않는다.
+
+Enum의 positional payload와 labeled payload는 서로 다른 모양을 보존한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+match result {
+    ::ok(value) => consume(value)
+    ::error${message, code, .._} => report(code, message)
+}
+```
+
+case identity를 먼저 확인한 뒤 active payload만 projection한다. inactive
+payload의 place, serialization tag, runtime discriminant 또는 ABI
+identity를 Pattern binder로 취급하지 않는다.
+
+### pin, range와 relational Pattern
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+match measurement {
+    ^expected => ::same
+    0..<10 => ::low
+    >= 10 => ::high
+}
+```
+
+`^expected`는 새 binder가 아니다. 이미 존재하는 stable value를 정확히
+한 번 읽어 compiler-selected strong equality로 비교한다. mutable place,
+arbitrary call 또는 equality evidence가 없는 값은 pin operand가 아니다.
+
+range와 relational Pattern의 Stable domain은 `Int`, `UInt`, `Char`,
+명시적으로 ordered인 Enum과 exact total-order domain이다. Float는 NaN,
+signed zero와 partial-order 문제 때문에 Preview다. Pattern 검사는
+사용자 정의 operator lookup을 수행하지 않는다.
+
+### 바인딩과 제어 문맥
+
+```ebnf
+BindingCore          ::= ("let" | "var") BindingPattern "=" Expr
+AssertiveBindingStmt ::= ("let" | "var") "!" BindingPattern "=" Expr
+GuardedBindingStmt   ::= ("let" | "var") BindingPattern "=" Expr
+                         "else" GuardedBindingFailure
+PatternConditionChain ::= PatternCondition
+                          ("and" "then" PatternCondition)*
+PatternCondition      ::= Expr | "let" Pattern "=" Expr
+```
+
+`BindingPattern`은 top-level type annotation의 owner를 보존한다. child의
+`name: Type`과 binding subject 전체의 `: Type`을 parser가 추측으로
+뒤집지 않는다.
+
+plain `let`/`var`는 checker가 irrefutable임을 증명해야 한다. `let!`과
+`var!`는 refutable Pattern을 명시적으로 assert하며 mismatch 때
+`PatternMatchDefect`를 만든다. 실패 전에 component binding, move,
+exclusive borrow 또는 assignment write가 생기지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let! [head, ..tail] = nonemptyValues
+
+let ::ok(document) = parse(text)
+else ::err(error) => throw error
+```
+
+condition chain은 왼쪽에서 오른쪽으로 진행하며 뒤 condition은 앞에서
+성공한 probe binder를 읽을 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+if let ::some(user) = lookup(id)
+    and then let ${email, .._} = user.profile
+    and then isVerified(email)
+{
+    publish(user)
+}
+```
+
+중간 단계가 실패하면 뒤 단계는 평가하지 않고 tentative binder는 모두
+폐기한다.
+
+### 함수·lambda parameter
+
+이름 있는 함수는 call channel identifier를 보존한 채 body-entry에
+irrefutable structural Pattern을 둘 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+private def distance(point Point${x, y}: Point) -> Float = {
+    return sqrt(x ^ 2 + y ^ 2)
+}
+```
+
+`point`는 call label과 whole-value local identity다. `Point${x, y}`는
+호출 인수 결합과 ownership commit이 끝난 뒤 body 진입에서 수행된다.
+Pattern은 overload 선택, function type 또는 public ABI identity에
+참여하지 않는다. refutable parameter Pattern은 거부한다.
+
+lambda에서도 irrefutable Pattern만 허용한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let sumPair = { (x, y): (Int, Int) => x + y }
+let add = { x: Int, y: Int => x + y }
+```
+
+첫 lambda는 Tuple parameter 하나를 분해하고, 둘째는 parameter 두 개를
+받는다.
+
+### catch
+
+catch Pattern은 refutable할 수 있다. error subject는 한 번 평가되고 첫
+성공 catch가 선택된다. 어느 catch에도 맞지 않는 recoverable Error는
+바깥 error 경계로 전파된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+try {
+    loadConfiguration()
+}
+catch IOError${path, .._} if isConfigPath(path) {
+    useDefaults(path)
+}
+catch error: IOError {
+    throw error
+}
+```
+
+catch guard도 pure Bool, nonthrowing, nonsuspending이며 probe binder를
+소비하거나 escape시키지 않는다.
+
+### 지역 병렬 대입
+
+bare comma product와 Tuple Pattern assignment는 하나의 Tuple plan으로
+정규화된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+left, right = right, left
+(x, y) = nextPair
+```
+
+Stable target은 서로 겹치지 않는 direct local mutable Plain place와
+`_`뿐이다. target을 왼쪽부터 한 번 resolve하고 RHS를 한 번 평가한 뒤,
+모든 type·ownership·overlap 검사가 성공해야 하나의 logical commit을
+수행한다. 이는 CPU multiword atomic instruction이나 actor isolation
+bypass를 뜻하지 않는다. member/index/shared/actor target은 Preview 또는
+별도 synchronized authority가 필요하다.
+
+## 문맥별 refutability
 
 | 문맥 | 허용 정책 | mismatch |
 |---|---|---|
-| ordinary/lambda parameter | identifier-only | 정적 거부 |
-| plain `let`/`var` | checker가 irrefutable임을 증명 | 정적 거부 |
-| bare `for` | iteration item에 대해 irrefutable | 정적 거부 |
-| guarded `let` | refutable | 구조적으로 unconditional인 `else` exit |
-| `if let` | refutable | false 분기 |
+| ordinary/lambda parameter | subject type에 대해 irrefutable | 정적 거부 |
+| plain `let`/`var` | checker-proven irrefutable | 정적 거부 |
+| bare `for` | item type에 대해 irrefutable | 정적 거부 |
+| `let!`/`var!` | refutable | `PatternMatchDefect` |
+| guarded `let`/`var` | refutable | unconditional `else` exit |
+| `if let` | refutable | false branch |
 | `while let` | refutable | loop 종료 |
 | `for let` | refutable | 해당 candidate를 건너뜀 |
 | statement/value match | refutable | 다음 arm |
-| declarative function clause | 정적으로 disjoint하고 exhaustive인 partition | 다음 clause 또는 정적 거부 |
-
-guard는 최대 하나이며 terminating, pure, nonthrowing, nonsuspending Bool
-이어야 한다. probe binder를 consume/escape하거나 authority를 얻지 않는다.
-guarded arm은 usefulness에는 참여하지만 unconditional coverage를
-제공하지 않는다.
-
-### 타입 바인더와 Union
-
-`name: Type`은 기본적으로 irrefutable 정적 typed binder다. 다만 refutable
-owner의 subject가 이미 정규화된 closed Union이고 `Type`이 그 Union의
-정확한 한 alternative identity일 때만 `UnionAlternativeBindPattern`으로
-정교화된다. 이때 읽는 것은 Union injection identity뿐이다.
-
-이 형식은 일반 runtime type test가 아니다. subtype search, refinement
-실행, reflection, Trait discovery, provider lookup을 하지 않는다.
-
-### 현재 구조 분해 carrier
-
-- Enum, Option, Result와 다른 nominal variant payload
-- 정적으로 알려진 Record label subset
-- exact List 또는 마지막 `.._`가 있는 List
-- 명시적인 closed Union alternative binder
-
-ordinary Class, Dyn, Facet, FFI/opaque representation은 Pattern이 직접 열지
-않는다. 필요한 경우 정본이 허용한 explicit Record view, refinement,
-borrowed refinement, verified adapter를 사용한다.
-
-### 완전성과 유용성
-
-분석은 하나의 순서 있는 유한 partition pass다.
-
-- 새 structural cell을 더하지 않는 arm은 `MATCH_ARM_UNREACHABLE`이다.
-- guard는 coverage cell을 제거하지 않는다.
-- guard 때문에 residual이 남으면 `MATCH_NONEXHAUSTIVE_AFTER_GUARDS`다.
-- residual이 없는데 `otherwise`가 오면 `OTHERWISE_UNREACHABLE`이다.
-- 나머지 final residual은 `MATCH_NOT_EXHAUSTIVE`다.
-
-Option, Result, closed Union, Enum, List exactness, loop outcome은 각자의
-명시적 Pattern universe를 사용한다. sealed Class family의 닫힘은 subtype
-분석과 명목적 도달 가능성에는 정보를 제공하지만 constructor Pattern
-cell을 만들지 않는다. 따라서 sealed family가 닫혀 있다는 사실만으로
-`Circle(radius)` 같은 Class 구조 분해나 Class 기반 exhaustiveness를
-허용해서는 안 된다. 불완전하거나 결정할 수 없는 partition을
-exhaustive라고 추정하지 않는다.
+| catch | refutable | 다음 catch 또는 error 전파 |
+| declarative clause | disjoint하고 exhaustive인 partition | 정적 거부 |
+| 지역 Pattern assignment | irrefutable·distinct local places | 정적 거부 |
 
 ## 평가·소유권·효과
 
 모든 refutable owner는 다음 순서를 지킨다.
 
 1. subject를 정확히 한 번 평가한다.
-2. place/owner를 얻는다.
-3. nonconsuming structural `TestPlan`을 만들고 실행한다.
-4. nonowning probe binder를 노출한다.
-5. 있으면 pure Bool guard를 평가한다.
-6. 성공할 때만 move/borrow/binding을 한 번 원자적으로 commit한다.
-7. final binder를 노출하고 body를 실행한다.
-8. owner별 exit 또는 join을 수행한다.
+2. place와 owner를 얻는다.
+3. nonconsuming structural `TestPlan`을 만든다.
+4. 구조, case, length, field/key와 value 조건을 검사한다.
+5. nonowning probe binder를 노출한다.
+6. 있으면 pure Bool guard를 한 번 평가한다.
+7. 필요한 acquisition을 private staging에 준비한다.
+8. 성공할 때만 move·borrow·binding을 한 번 commit한다.
+9. final binder와 body를 노출한다.
+10. owner별 exit, join과 cleanup을 수행한다.
 
-구조 실패나 false guard는 binding, move, exclusive borrow, authority를
-부분 commit하지 않는다. `pattern as name`은 clone이 아니라 borrow alias며,
-같은 subject의 moved/exclusive descendant와 함께 존재할 수 없다.
+commit 전 실패의 관찰값은 다음과 같다.
 
-flow proof 환경은 선언 type과 별도다. 성공한 Enum/Union Pattern은 해당
-case/alternative fact를 더할 수 있다. join은 모든 incoming edge에 있는
-fact만 남긴다. subject 대입, alias mutation, exclusive borrow, escape,
-capture, consume, 또는 subject를 바꿀 수 있는 호출은 관련 fact를 죽인다.
-
-## 현행 예제
-
-### 값 match와 문장 match
-
-현행 예제 `EX-R51a1-004`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-let label = @match state {
-    ::ready => "ready"
-    otherwise => "other"
-}
-match state {
-    ::ready => start()
-    otherwise => stop()
-}
+```text
+final_bind_count = 0
+move_commit_count = 0
+exclusive_borrow_commit_count = 0
+assignment_write_count = 0
+authority_acquisition_count = 0
 ```
 
-### guarded let의 Result 잔여
-
-현행 예제 `EX-R51a1-GLET-P-001`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-let ::ok(document) = parse(text)
-else ::err(error) => throw error
-persist(document)
-```
-
-### 패턴 제어군
-
-현행 예제 `EX-R51e-013`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-if let Option::some(value) = candidate {
-    consume(value)
-}
-```
-
-현행 예제 `EX-R51e-014`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-while let Option::some(job) = queue.next() {
-    process(job)
-}
-```
-
-현행 예제 `EX-R51e-015`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-for let Result::ok(value) in results if value > 0 {
-    consume(value)
-}
-```
-
-### List의 무시된 나머지
-
-현행 예제 `EX-R51f3-COH-001`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-if let [head, .._] = values {
-    consume(head)
-}
-```
-
-### 닫힌 Union 대안 바인더
-
-현행 예제 `EX-R51a1-RCTS-UNION-P-001`,
-원본 `examples/guide/review-corpus.md`:
-
-```deeplus
-private type TextOrNumber = Int | String
-let value: TextOrNumber = 13
-let text = @match value {
-    n: Int => n ~ toString
-    s: String => s
-}
-```
-
-## 거부되거나 격리된 형식
-
-sealed Class도 현행 constructor Pattern carrier가 아니다. 다음 예시는
-명목 family가 닫혀 있더라도 Class 내부 표현을 Pattern으로 열려고 하므로
+`pattern as whole`은 clone이 아니라 borrow alias다. moved 또는
+exclusively borrowed descendant와 함께 살아야 하는 형식은 commit 전에
 거부된다.
 
-<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/types/type-system.md -->
-```deeplus
-public sealed class Shape {}
-public final class Circle : Shape {
-    +let radius: Int
-}
+## 완전성과 narrowing
 
-let area = @match shape {
-    Circle(radius) => radius * radius
-    otherwise => 0
+coverage engine은 Enum/Option/Result, closed Union, Tuple product, List
+length와 rest, exact/open Record row, exact/open Map key set, bounded scalar
+interval과 transparent nominal product를 구분한다.
+
+- Or Pattern은 cell union이다.
+- guard는 usefulness에는 참여하지만 unconditional coverage를 만들지
+  않는다.
+- exact `${x}`와 open `${x, .._}`는 서로 다른 row cell이다.
+- opaque Preview Pattern View는 completeness를 만들지 않는다.
+- `def#guard`의 검증된 `GuardSummaryV1`은 stable actual의 branch-local
+  flow fact만 추가하며 Pattern coverage를 늘리지 않는다.
+
+typed child binder는 일반 runtime subtype/refinement search가 아니다.
+closed Union의 exact alternative identity를 읽거나 정적으로 증명된
+refinement boundary를 적용할 뿐이다. runtime predicate가 필요하면
+Pattern guard 또는 정확히 선택된 `def#guard`를 사용한다.
+
+## Preview 표면
+
+다음은 보존되는 nonactivatable Preview 설계이며 Stable과 섞지 않는다.
+별도 activation authority와 실행 증거 전에는 source route를 만들지
+않는다.
+
+- And/Not Pattern
+- 한 층의 Option payload만 여는 `let? ... else ...`
+- Set과 NumericArray Pattern
+- Pattern Synonym과 direct pure Pattern View
+- completeness manifest
+- 명시적 search/find Pattern
+- top-level destructuring
+- member/index Pattern assignment
+- Float range Pattern
+- clone binder acquisition
+
+Not Pattern은 binder를 만들 수 없다. And Pattern은 같은 subject를
+검사하되 binder type·mode·region과 ownership이 충돌하면 거부한다.
+Pattern View는 direct static identity, pure, nonthrowing, nonsuspending,
+nonauthority, deterministic이어야 하며 completeness manifest 없이는
+coverage cell을 만들지 않는다.
+
+effectful/dynamic extractor, arbitrary getter, unbounded backtracking,
+shared/actor multi-place assignment와 probe 중 suspension에는 Stable source
+경로가 없다.
+
+## 예제
+
+### exact/open Record와 Map
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let ${x, y} = exactPoint
+let ${x, y, .._} = extensiblePoint
+let ${horizontal: x, vertical: y, ..rest} = extensiblePoint
+
+if let #map{id: "id", .._} = payload {
+    consume(id)
 }
 ```
 
-Class가 명시적으로 제공하는 Record view 또는 별도의 안전한 adapter를
-통해 Pattern carrier로 변환한 뒤 매칭해야 한다. 이 구분은 Class의
-봉인성, layout, 생성자 형식과 Pattern의 데이터 공개 권위를 섞지 않게
-한다.
+### Sequence rest와 실패 경로
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let [head, ..tail] = values
+else return
+
+if let [leadings.., last] = values {
+    consume(last)
+}
+
+if let [first, ..middle.., last] = values {
+    consume(first, middle, last)
+}
+```
+
+### pin, range와 Enum
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
+```deeplus
+let expected = 200
+let description = @match response {
+    ::ok${status: code, body, .._} if status == expected => body
+    ::ok${status: code, .._} if status >= 200 and then status < 300 => "ok"
+    ::error${message, .._} => message
+}
+```
+
+pin 자체는 Pattern 위치에서 쓴다. 일반 Bool 표현식에서는 ordinary
+stable-place comparison을 사용한다.
+
+## 거부 경계
 
 | 형식 또는 주장 | 판정 |
 |---|---|
-| ordinary parameter의 구조 분해 Pattern | 거부; identifier를 받은 뒤 body에서 분해한다 |
-| tuple Pattern `(a, b)` | 현행 아님; 괄호는 Pattern 하나만 묶는다 |
-| Record rest/open tail Pattern | 현행 아님 |
-| captured List rest `..tail` | 현행 아님 |
-| middle 또는 여러 List rest | 현행 아님 |
-| dot-case `.ready` | 제거됨; `::ready` 또는 `State::ready`를 사용한다 |
-| bare `Some`/`None` | 제거됨; Option case qualification을 사용한다 |
-| ordinary Class 내부를 직접 여는 Pattern | 거부 |
-| typed binder를 일반 runtime `is-a` test로 사용 | 거부 |
-| guard 안의 effect, throw, suspend, consume, authority acquisition | 거부 |
-| Or-pattern branch마다 다른 binder/type/mode/region | 거부 |
-| Pattern 실패 뒤 부분 move 또는 부분 binding | 금지 |
-| user-defined extractor/backtracking Pattern | 현행 아님 |
-
-## 상호작용
-
-- Enum case expression payload는 argument plane이고 Pattern payload는 Pattern
-  plane이므로 각각 별도 검사를 거친다.
-- 검증된 `GuardSummaryV1`이 있는 `def#guard` direct truth-test는 stable
-  actual의 true/false edge에 보완적인 유한 narrowing fact를 더한다.
-  stored Bool, wrapper와 unstable actual은 opaque하다.
-- Union injection과 normalization이 먼저 닫혀 있어야 typed alternative
-  binder가 작동한다.
-- ownership mode `move`는 structural test 때가 아니라 atomic commit 때
-  적용된다.
-- List/Record value literal 문법과 Pattern 문법은 opener를 공유해도 서로
-  다른 parser goal이다.
-- closed Union의 `is`/`!is`는 `Bool`과 보완적인 flow fact만 만들고 값을
-  바인딩하지 않는다. alternative 값을 바인딩하는 owner는 이 장의 typed
-  pattern이다.
-- callable clause의 source order는 겹침을 해결하지 않는다. clause family는
-  먼저 disjoint/exhaustive여야 한다.
+| `[first, ..middle, last]` | 거부; middle rest는 `..middle..` |
+| Pattern 안의 rest 둘 이상 | 거부 |
+| `${x, y}`를 subset으로 해석 | 거부; subset 의도는 `${x, y, .._}` |
+| source field를 colon 왼쪽에 두기 | 거부; destination이 왼쪽 |
+| arbitrary Map key call | 거부 |
+| mutable/unstable pin | 거부 |
+| ordinary Class 내부 자동 개방 | 거부 |
+| refutable parameter Pattern | 거부 |
+| guard의 effect, throw, suspend, consume, authority 획득 | 거부 |
+| Or branch마다 다른 binder/type/mode/region | 거부 |
+| 실패 뒤 부분 move·binding·assignment | 금지 |
+| generic Sequence conformance로 bracket/rest Pattern 활성화 | 거부 |
 
 ## 정본 근거
 
-- Pattern 및 match 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
-- 문맥 정책:
-  [`spec/patterns/pattern-context-policies.json`](../../spec/patterns/pattern-context-policies.json)
-- Pattern 종류:
-  [`spec/patterns/pattern-kinds.json`](../../spec/patterns/pattern-kinds.json)
-- lowering 책임:
-  [`spec/patterns/pattern-lowering.json`](../../spec/patterns/pattern-lowering.json)
-- narrowing 계약:
-  [`spec/contracts/type-refinement-narrowing-coherence.json`](../../spec/contracts/type-refinement-narrowing-coherence.json)
-- 정본 설명과 진단:
-  [`spec/language.md`](../../spec/language.md)
-- 예제 원본:
-  [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
+- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/patterns/pattern-context-policies.json`](../../spec/patterns/pattern-context-policies.json)
+- [`spec/patterns/pattern-kinds.json`](../../spec/patterns/pattern-kinds.json)
+- [`spec/patterns/pattern-lowering.json`](../../spec/patterns/pattern-lowering.json)
+- [`spec/contracts/type-refinement-narrowing-coherence.json`](../../spec/contracts/type-refinement-narrowing-coherence.json)
+- [`spec/language.md`](../../spec/language.md)
+- [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)

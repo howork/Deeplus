@@ -1,7 +1,7 @@
 <!-- deeplus-reference: narrative; authority: documentation-projection -->
 <!-- deeplus-grammar-reference-status: CURRENT_CANONICAL_DOCUMENTATION_PROJECTION -->
 
-# Preview, 복구 및 제거된 표면
+# Preview 표면
 
 <!-- deeplus-status-fence: CURRENT -->
 
@@ -16,9 +16,8 @@
 | 분류 | 현재 관측값 | 소스 의미 |
 |---|---:|---|
 | feature registry의 `PREVIEW` | 3 | `explicit_feature_gate`가 있는 Preview 루트에서만 허용 가능 |
-| feature registry의 `PREVIEW_DESIGN` | 47 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
+| feature registry의 `PREVIEW_DESIGN` | 50 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
 | EBNF `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
-| EBNF `RECOVERY` profile | 15 production | 진단 인식 전용; 허용된 AST/HIR/MIR residue 0 |
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
 | 제품 lane | 15/15 `NOT_RUN` | 정적 설계와 예제만으로 실행을 주장하지 않음 |
 
@@ -156,35 +155,6 @@ PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
 FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 및
 프로필](14-ffi-unsafe-metaprogramming-and-profiles.md)에 있다.
 
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
-
-### Recovery overlay
-
-Recovery root는 별도 프로그램 종류가 아니며 Stable/Preview parse 실패를
-의미론적으로 수선하지 않는다.
-
-```ebnf
-RecoverySyntax ::= RecoveryGenericEntryFunctionDecl
-                 | RecoveryFacetPackExpr
-                 | RecoveryFacetType
-                 | RecoveryNullLiteral
-                 | RecoveryEmptyIndexSuffix
-                 | RecoveryCustomOperatorDeclaration
-                 | RecoveryNamedRestDoubleStar
-                 | RecoveryFunctionTypeNamedRestDoubleStar
-                 | RecoveryLazyBindingAt
-                 | RecoveryUnitMiddleDot
-                 | RecoveryQuarantineScope ;
-```
-
-47개 `PREVIEW_DESIGN` feature 가운데 quarantine과 owned/inout Facet
-family만 현재 Recovery overlay에 직접 대응하는 형태가 있다.
-`dynamic_unsafe_quarantine_scope_msp`는 `RecoveryQuarantineScope`의 정밀
-진단 probe를 사용하고, owned/inout Facet은 `RecoveryFacetPackExpr`와
-`RecoveryFacetType`을 사용한다. 현재 허용되는 Facet은 borrow뿐이다.
-나머지 설계는 exact EBNF가 없는 design-only 상태이며, 문서가 임의
-production을 발명해서는 안 된다.
-
 ## 허용과 정적 의미
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -200,8 +170,7 @@ production을 발명해서는 안 된다.
   변경하지 않는다.
 - 정확한 source route가 없는 경우 후보 철자를 예시할 수는 있어도
   current syntax라고 가르치지 않는다.
-- parser-cover grammar가 `false`인 설계는 Recovery가 대신 활성화하지
-  않는다.
+- parser-cover grammar가 `false`인 설계는 source에서 사용할 수 없다.
 - 문서, fixture, schema, registry 행은 P1, 구현 또는 product lane을
   닫지 않는다.
 - source activation에는 Design_ 판정, exact EBNF와 root/profile,
@@ -230,7 +199,7 @@ production을 발명해서는 안 된다.
 | `dyn_inspection` | privileged inspection service 또는 checked API 미선정 | static type·label·conformance·authority를 만들어서는 안 되며 effect/ownership surface가 열려 있음 |
 | `dyn_rcts_family` | explicit owned Dyn checked-carrier family; exact syntax 미선정 | ambient dynamic fallback, structural conformance 및 dynamic Trait mutation은 금지 |
 | `dynamic_trait_attach_detach_stateless_preview_design` | attach/detach syntax 미선정 | statelessness, atomicity, concurrency, reflection, state capture 및 witness coherence가 미결 |
-| `dynamic_unsafe_quarantine_scope_msp` | `@scope#dynamic` / `@scope#unsafe`와 typed export probe | Recovery-only; provenance, authority, escape, suspension 및 backend equivalence가 열려 있음 |
+| `dynamic_unsafe_quarantine_scope_msp` | `@scope#dynamic` / `@scope#unsafe`와 typed export 후보 | nonactivatable; provenance, authority, escape, suspension 및 backend equivalence가 열려 있음 |
 | `facet_inout_pack_preview_design` | `facet[inout value as Trait]`, `Facet<inout any Trait>` | exclusive nonescaping place, alias/isolation 및 suspension law 필요 |
 | `facet_owned_pack_preview_design` | `facet[move value as Trait]`, `Facet<move any Trait>` | exact owner 반환/소비, cleanup, transfer, ABI 및 actor crossing을 닫아야 함 |
 
@@ -238,7 +207,7 @@ production을 발명해서는 안 된다.
 
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
-| `class_static_activation` | 과거 후보 `static class`; exact successor 미선정 | declaration identity, initialization, inheritance, authority 및 API residue가 열려 있어 현행 grammar에서 제거 |
+| `class_static_activation` | Class body의 `scope#static { ... }` 후보 | declaration identity, initialization, inheritance, authority 및 API residue가 열려 있어 nonactivatable |
 | `effectful_static_activation` | exact surface/API 미선정 | compile-time과 runtime effect, failure, ordering, cache 및 authority를 분리해야 함 |
 | `module_static_entrance` | 후보 `static { ... }` | storage identity, multi-file order/cycle, failure 및 cleanup이 열려 있음 |
 | `static_once_value` | once-initialized static value API 미선정 | publication, retry/failure, thread/actor isolation, drop 및 module lifecycle 필요 |
@@ -305,7 +274,7 @@ actor crossing을 암시하지 않는다.
 
 ### 기계 검증 가능한 Preview Design 도입 검토 카드
 
-다음 47개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
+다음 50개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
 일대일이다. 각 필드는 비어 있을 수 없으며, 구문이나 API가 아직
 선택되지 않은 경우에도 그 사실과 현재 대안을 명시한다. 카드의 존재는
 활성화가 아니라 도입 검토 가능성을 보장한다.
@@ -372,7 +341,7 @@ actor crossing을 암시하지 않는다.
     "motivation": "비동기 원천의 변환과 수집을 하나의 구조화된 표현으로 기술하려는 제안이다.",
     "surface_or_api": "exact source surface와 결과 collection 또는 stream API는 미선정이다.",
     "static_semantics_and_interactions": "finite-source 조건, 순서, backpressure, transform error-set union, cancellation과 부분 결과 cleanup을 닫아야 한다.",
-    "diagnostics_migration_tooling": "for await를 자동 rewrite하지 않으며 recovery, formatter round-trip과 cancellation span 진단을 새로 정해야 한다.",
+    "diagnostics_migration_tooling": "for await를 자동 rewrite하지 않으며 parser diagnostic, formatter round-trip과 cancellation span 진단을 새로 정해야 한다.",
     "open_alternatives": "현행 for await statement와 stdlib AsyncCollector 조합이 대안이고 이를 comprehension으로 암묵 승격하는 방식은 거부한다.",
     "activation_prerequisites": "exact grammar, collector identity, ownership/effect 규칙, lowering 및 positive/negative/boundary 실행 증거가 필요하다."
   },
@@ -406,7 +375,7 @@ actor crossing을 암시하지 않는다.
   {
     "feature_id": "state_machine_source_syntax",
     "motivation": "상태와 전이를 직접 언어 표면에서 선언하려는 제안이다.",
-    "surface_or_api": "과거 아이디어와 달리 exact current-compatible source syntax는 미선정이다.",
+    "surface_or_api": "exact current-compatible source syntax는 미선정이다.",
     "static_semantics_and_interactions": "state identity, transition totality, reentrancy, actor isolation, error/effect와 persistence 경계를 정해야 한다.",
     "diagnostics_migration_tooling": "현행 UML provider 출력을 새 syntax로 재해석하거나 자동 rewrite하지 않으며 formatter와 diagram round-trip 계약이 필요하다.",
     "open_alternatives": "ordinary Enum과 match 또는 uml_state_machine_provider가 현행 대안이고 provider evidence를 syntax authority로 쓰는 방식은 거부한다.",
@@ -478,7 +447,7 @@ actor crossing을 암시하지 않는다.
   {
     "feature_id": "dynamic_unsafe_quarantine_scope_msp",
     "motivation": "불가피한 legacy, dynamic 또는 unsafe 작업의 권위와 escape를 한 lexical owner에 가두려는 제안이다.",
-    "surface_or_api": "Recovery probe는 @scope#dynamic 또는 @scope#unsafe와 typed export를 인식하지만 activatable route는 없다.",
+    "surface_or_api": "후보는 @scope#dynamic 또는 @scope#unsafe와 typed export이며 activatable route는 없다.",
     "static_semantics_and_interactions": "outer mutation, suspension, pointer, authority, borrow, resource, closure, task와 actor escape를 금지해야 한다.",
     "diagnostics_migration_tooling": "현행은 QUARANTINE_SCOPE_NOT_ACTIVATABLE만 내고 자동 이행은 없으며 formatter는 offending spelling을 보존한다.",
     "open_alternatives": "typed wrapper와 explicit FFI boundary가 현행 대안이고 untyped result escape 및 ambient unsafe는 거부한다.",
@@ -487,7 +456,7 @@ actor crossing을 암시하지 않는다.
   {
     "feature_id": "facet_inout_pack_preview_design",
     "motivation": "은닉된 concrete payload에 receiver-bound exclusive mutable view를 제공하려는 제안이다.",
-    "surface_or_api": "후보는 facet[inout value as Trait]와 Facet<inout any Trait>이며 현행에는 Recovery probe만 있다.",
+    "surface_or_api": "후보는 facet[inout value as Trait]와 Facet<inout any Trait>이며 현행 source route는 없다.",
     "static_semantics_and_interactions": "unique place, alias exclusion, nonescape, suspension 금지, isolation과 witness coherence를 보장해야 한다.",
     "diagnostics_migration_tooling": "borrow Facet을 자동 inout으로 승격하지 않으며 alias/escape 진단과 lifetime-aware IDE 표시가 필요하다.",
     "open_alternatives": "현행 borrow Facet과 명시적 inout parameter가 대안이고 shared mutable existential은 거부한다.",
@@ -504,10 +473,10 @@ actor crossing을 암시하지 않는다.
   },
   {
     "feature_id": "class_static_activation",
-    "motivation": "Class owner 수준의 초기화와 공유 상태를 명시하려는 과거 제안이다.",
-    "surface_or_api": "과거 static class 철자는 제거되었고 exact successor surface는 미선정이다.",
+    "motivation": "Class owner 수준의 초기화와 공유 상태를 명시하려는 제안이다.",
+    "surface_or_api": "Class body의 scope#static { ... }가 nonactivatable 후보이며 exact lifecycle contract는 미선정이다.",
     "static_semantics_and_interactions": "declaration identity, initialization order, inheritance, visibility, authority와 API residue를 닫아야 한다.",
-    "diagnostics_migration_tooling": "제거된 철자를 자동 복원하지 않으며 current type-side API로의 수동 이행 안내만 허용한다.",
+    "diagnostics_migration_tooling": "current type-side API를 hidden Class storage로 재해석하지 않으며 명시적 owner 선택만 안내한다.",
     "open_alternatives": "module-level binding과 type-side def::가 현행 대안이고 hidden eager initialization은 거부한다.",
     "activation_prerequisites": "새 Design_ 선택, exact grammar, cycle/failure law, linker identity와 multi-module execution receipt가 필요하다."
   },
@@ -680,7 +649,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "Option<T> 한 겹만 ::some(Pattern)으로 정규화하고 subject 단일 평가, nonconsuming test, atomic binding commit과 owner별 mismatch disposition을 보존한다.",
     "diagnostics_migration_tooling": "let과 ?는 붙여 쓰며 Result, arbitrary Enum, nullability, force unwrap, propagation, bare local let?와 condition chain으로 확대하지 않는다.",
     "open_alternatives": "현행 if let/while let/guarded let과 명시적 ::some pattern이 대안이다.",
-    "activation_prerequisites": "exact grammar/recovery, Option-only typing, ownership/guard/exhaustiveness corpus, formatter/LSP와 target receipt가 필요하다."
+    "activation_prerequisites": "exact grammar와 diagnostic, Option-only typing, ownership/guard/exhaustiveness corpus, formatter/LSP와 target receipt가 필요하다."
   },
   {
     "feature_id": "solver_backed_general_refinement",
@@ -707,7 +676,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "각 표면은 canonical List, MutableList, Set, Map identity로만 normalize하며 value/pattern/index goal과 one-based indexing은 불변이다.",
     "diagnostics_migration_tooling": "기존 canonical type을 자동 rewrite하지 않으며 goal ambiguity 진단, formatter round-trip과 LSP canonical hover가 필요하다.",
     "open_alternatives": "현행 canonical generic spelling이 대안이고 syntax identity를 새 nominal identity로 만드는 방식은 거부한다.",
-    "activation_prerequisites": "goal-separated parser, exact recovery, canonicalization proof, Prelude/API compatibility와 target parser receipt가 필요하다."
+    "activation_prerequisites": "goal-separated parser, exact diagnostic, canonicalization proof, Prelude/API compatibility와 target parser receipt가 필요하다."
   },
   {
     "feature_id": "literal_shaped_closed_record_type_surface_preview_design",
@@ -716,7 +685,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "label order 정규화, exact row identity, Record materialization, Union과 API serialization을 보존해야 한다.",
     "diagnostics_migration_tooling": "open/optional/rest/string label과 empty row는 진단하며 canonical Record schema 자동 rewrite는 별도 선택 없이 하지 않는다.",
     "open_alternatives": "현행 named Record/schema type이 대안이고 structural row를 nominal schema로 추정하는 방식은 거부한다.",
-    "activation_prerequisites": "exact grammar/recovery, label uniqueness, canonical row schema, formatter/LSP와 compatibility corpus가 필요하다."
+    "activation_prerequisites": "exact grammar와 diagnostic, label uniqueness, canonical row schema, formatter/LSP와 compatibility corpus가 필요하다."
   },
   {
     "feature_id": "immutable_first_collection_ownership_preview_design",
@@ -751,9 +720,18 @@ actor crossing을 암시하지 않는다.
     "motivation": "함수별 persistent immutable 값을 activation과 같은 owner identity 아래 두되 module/type static과 혼동하지 않는 닫힌 namespace를 설계한다.",
     "surface_or_api": "후보 표면은 함수 body의 static 블록 안에서 static#slot name을 선언하고 함수 body에서 static#slot::name으로 참조한다. 현행 Stable 표면은 activation만 수행하는 static { ... }이며 slot 문법은 비활성 Preview다.",
     "static_semantics_and_interactions": "FUNCTION_STATIC_NAMESPACE는 다섯 번째 닫힌 lookup domain이다. slot 값은 깊이 불변 M0 프로필이고 선언 순서상 앞선 slot만 initializer에서 참조할 수 있으며 activation 성공 후 Ready 상태로 원자적으로 공개된다.",
-    "diagnostics_migration_tooling": "old scope#static은 현행 recovery-only로 static에 identity-preserving 정규화한다. slot Preview에는 forward reference, cycle, bare-name, mutable/move/write, 외부 접근을 각각 고정 진단하고 자동 module/type static rewrite를 제공하지 않는다.",
+    "diagnostics_migration_tooling": "slot Preview에는 forward reference, cycle, bare-name, mutable/move/write, 외부 접근을 각각 고정 진단하고 자동 module/type static rewrite를 제공하지 않는다.",
     "open_alternatives": "module static 또는 명시적 memoization object가 현행 대안이다. mutable slot, lazy per-slot initialization, caller 입력 기반 key, public slot export는 이번 후보에서 제외한다.",
     "activation_prerequisites": "exact grammar와 CST, namespace lookup/owner recipe, concurrency publication, failure/reentry, API digest, formatter/LSP, cross-backend 실행 receipt와 별도 Design authority가 필요하다."
+  },
+  {
+    "feature_id": "pattern_advanced_surface_preview_design",
+    "motivation": "Stable Pattern의 subject-once, pure probe, one-commit 법칙을 보존하면서 검색·추상화·비지역 대입처럼 비용과 책임이 큰 확장을 따로 검토하기 위한 경계다.",
+    "surface_or_api": "And/Not, Set/NumericArray, let?, Pattern Synonym/View/completeness/find, Float range, clone binder, generic Sequence opening, temporary-owner residual, affine·member·index·shared·actor·FFI 대입이 후보이며 exact source route는 미선정이다.",
+    "static_semantics_and_interactions": "각 후보는 binder parity, finiteness, shape, equality/order, view selection, ownership, effect/error, cleanup, isolation과 rollback을 독립적으로 닫아야 하며 Stable ListRestView나 Tuple product를 일반화했다고 추정하지 않는다.",
+    "diagnostics_migration_tooling": "Preview 표면을 current로 자동 rewrite하지 않고 gate별 deterministic diagnostic, formatter round-trip, hover의 Stable 대안, migration inventory와 부정 corpus를 제공해야 한다.",
+    "open_alternatives": "Stable match/guarded binding, named pure adapter, 명시적 loop/search API, direct-local group assignment가 현행 대안이며 dynamic/effectful extractor와 ambient shared mutation은 source route 없이 deferred다.",
+    "activation_prerequisites": "후보별 exact EBNF와 owner policy, terminating checker algorithm, MIR event/cleanup contract, formatter/LSP, positive·negative·boundary·mutation corpus, target-bound xVM/LLVM receipt와 별도 Design activation authority가 필요하다."
   }
 ]
 ```
@@ -761,7 +739,8 @@ actor crossing을 암시하지 않는다.
 
 이 revision에서 추가된 비활성 설계는
 `concise_throws_effects_declaration_preview_design`과
-`function_static_namespace_preview_design`이다. 두 항목은 canonical
+`function_static_namespace_preview_design`,
+`pattern_advanced_surface_preview_design`이다. 이 항목들은 canonical
 설계 기록이지만 source gate, 구현 또는 제품 지원을 활성화하지 않는다.
 
 ### Controlling decision 및 frontend 결합
@@ -770,7 +749,7 @@ actor crossing을 암시하지 않는다.
 |---|---|---|
 | `DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW` | literal-shaped type와 immutable-first/freeze-snapshot-view 책임 | nonactivatable, current indexing/Prelude 불변 |
 | `DSGN-OPTION-LET-QUESTION-BINDING-PREVIEW` | Option 한 겹의 `let?` binding sugar | nonactivatable, 기존 pattern engine과 Option identity 불변 |
-| `DSGN-QUARANTINE` | dynamic/unsafe quarantine minimum profile | Recovery probe만 존재 |
+| `DSGN-QUARANTINE` | dynamic/unsafe quarantine minimum profile | nonactivatable Preview Design |
 | `DSGN-POST-PR16-TRAIT-BASE` | `TC-R001..R016` | successor only, current conformance/`via` 불변 |
 | `DSGN-POST-PR16-TRAIT-GUARDS` | `TCC-DG-001..008`, `TCC-DG-P2-009/A/B` | VIA/AUTO, specialization, child-local witness 비활성 |
 | `DSGN-POST-PR16-CE-G6` | Class `C-01..C-11`, Enum `E-01..E-13`, `X-01..X-10`, `PC-09/10` | current Class/Enum authority 불변 |
@@ -787,12 +766,12 @@ actor crossing을 암시하지 않는다.
 | Static-first Dyn/Facet | 닫힌 정적 대안을 먼저 사용하고 open-world boundary에서만 명시적 dynamic carrier를 허용 | explicit owned Dyn pack, immutable `FacetRegistry<Trait>` borrow projection 등의 설계 identity; exact source route 미선정 | compiler retry/fallback/order winner 0, provenance·drop·owner·cast failure를 명시, borrow Facet current 유지 | `SFD-P1-001..008` 정적 폐쇄를 되돌리지 않음; 실행은 별도 `SFD-P1-009`; formatter/runtime route와 product claim 없음 |
 | Stable Enum-derived capability | order/display/subset을 raw/tag/layout이나 case-local witness 없이 owner 수준에서 표현 | `enum#increasing`/`enum#decreasing`, case `~>` template, `+type` exact subset | whole-Enum witness 하나, restricted pure template, finite same-owner subset 및 checked narrowing | `STABLE_DESIGN`; explicit same-ground witness conflict는 terminal이고 제품 실행은 `NOT_RUN` |
 | Literal-shaped collection | 값 literal과 닮은 읽기 쉬운 type spelling 및 immutable-first 책임 모델 | `[T]`, `#mut[T]`, `#set{T}`, `#map{K:V}`, `${label:T,...}`와 freeze/snapshot/view successor | type-goal에서 canonical identity로만 normalize; one-based index, bracket matrix, Union, ABI/serialization 불변 | parser-goal 분리, formatter round-trip, Prelude migration, borrow/MIR/actor evidence 및 target receipt 필요 |
-| Dynamic/unsafe quarantine | 불가피한 legacy/dynamic/unsafe 작업의 authority와 escape를 한 lexical owner에 가두기 | `@scope#dynamic` / `@scope#unsafe`와 typed immutable export probe | outer mutation·suspension·모든 authority/resource escape 금지, xVM/LLVM에서 하나의 MIR 의미 | 현행은 Recovery 진단만; provenance, authority accounting, escape proof 및 differential execution이 열려 있음 |
+| Dynamic/unsafe quarantine | 불가피한 dynamic/unsafe 작업의 authority와 escape를 한 lexical owner에 가두기 | `@scope#dynamic` / `@scope#unsafe`와 typed immutable export 후보 | outer mutation·suspension·모든 authority/resource escape 금지, xVM/LLVM에서 하나의 MIR 의미 | nonactivatable; provenance, authority accounting, escape proof 및 differential execution이 열려 있음 |
 
 Frontend model은 Enum-derived 3개를 `stable_design_surfaces_current`에
 결합하고, quarantine, literal-shaped 3개, immutable-first 및
 freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목록은 대표적인
-상세 결합이며 registry의 47개를 축소하는 대체 registry가 아니다.
+상세 결합이며 registry의 50개를 축소하는 대체 registry가 아니다.
 
 ## 평가·소유권·효과
 
@@ -827,7 +806,7 @@ freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목
 | `CE-E-P1-006` | `OPEN` | raw/ordinal/FFI mapping과 semantic identity 분리 |
 | `CE-E-P1-007` | `OPEN` | whole-Enum synthesis와 one Trait origin |
 | `CE-E-P1-008` | `OPEN` | complete evolution residue와 8개 독립 lane |
-| `TCC-P1-002` | `OPEN` | root-connected surface/profile/recovery/current 격리 |
+| `TCC-P1-002` | `OPEN` | root-connected surface/profile/current 격리 |
 | `TCC-P1-003` | `OPEN` | canonical identity, normalization, overlap 및 link algorithm |
 | `TCC-P1-004` | `OPEN` | current marker coexistence와 exact diagnostic 결합 |
 | `TCC-P1-005` | `OPEN` | DIRECT-only initial successor, VIA/AUTO 비활성 |
@@ -913,20 +892,7 @@ private type UserRow = ${id: Int, name: String}
 이는 각각 `List<String>`, `Map<String,Int>`, closed required-label Record
 row로 normalize하는 후보일 뿐 current parser syntax가 아니다.
 
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
-
-### 비활성 설계 예시 — quarantine
-
-<!-- deeplus-example: illustrative; status: RECOVERY_ONLY; authority-source: spec/contracts/quarantine-scope.json -->
-```deeplus
-@scope#dynamic {
-    legacyCall()
-} -> $result: PlainResult
-```
-
-현행에서는 `QUARANTINE_SCOPE_NOT_ACTIVATABLE`로 거부된다.
-
-## 거부되거나 격리된 형식
+## gate와 비활성 경계
 
 <!-- deeplus-status-fence: PREVIEW_GATED -->
 
@@ -940,49 +906,6 @@ row로 normalize하는 후보일 뿐 current parser syntax가 아니다.
 | transitive dependency 누락 | `PREVIEW_GATE_DEPENDENCY_MISSING` |
 | gate가 root 첫머리에 없음 | `PREVIEW_GATE_PLACEMENT_INVALID` |
 | 비활성 design surface를 ordinary source로 사용 | `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT` 또는 feature별 진단 |
-
-<!-- deeplus-status-fence: RECOVERY_ONLY -->
-
-### `RECOVERY_ONLY` 표면
-
-Recovery는 offending spelling과 diagnostic span을 보존하지만 허용된
-semantic node를 만들지 않는다.
-
-| 복구 표면 | 현행 대안 또는 주 진단 |
-|---|---|
-| generic `def#entry name<T>(...)` | `ENTRY_SIGNATURE_NOT_ADMITTED`; non-generic entry 사용 |
-| `facet[inout ...]`, `facet[move ...]` | owned/inout Facet 비활성; borrow Facet만 current |
-| `Facet<inout ...>`, `Facet<move ...>` | 비활성 타입 probe; admitted HIR 0 |
-| `null` | `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`; `::none` 또는 `Option<T>::none` |
-| `value[]` | `INDEX_SUFFIX_REQUIRES_AXIS`; scalar/range/`*` axis 명시 |
-| `operator <symbol> precedence N` | `CUSTOM_OPERATOR_DECLARATION_NOT_CURRENT`; named API 사용 |
-| parameter `name**: T` | `NAMED_REST_DOUBLE_STAR_REMOVED_USE_TRIPLE_STAR`; `name***: Record` |
-| function type `T**` | 같은 진단; `Record***` |
-| `let@lazy` | `LAZY_BINDING_USE_HASH`; `let#lazy` |
-| unit `A · B` | `UNIT_MULTIPLICATION_USE_STAR`; `A * B` |
-| `@scope#dynamic` / `@scope#unsafe` | `QUARANTINE_SCOPE_NOT_ACTIVATABLE` |
-
-<!-- deeplus-status-fence: REMOVED -->
-
-### `REMOVED` 표면
-
-다음 다섯 family는 compatibility gate 없이 제거되었다.
-
-| 제거된 표면 | 현행 대안 | 대표 진단 |
-|---|---|---|
-| Map String-key dot projection `map.key` | `map["key"]` 또는 명시적 Map API | `MEMBER_NOT_FOUND` |
-| prefix/postfix `++`, `--` | 명시적 assignment | `POSTFIX_MUTATION_OPERATOR_NOT_CURRENT` 등 |
-| callable kind `def#tailrec` | ordinary recursive function; tail 분석은 tooling | `CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED` |
-| regex literal | `String`/`Bytes`를 받는 명시적 pattern library | `UNKNOWN_PREFIXED_LITERAL` |
-| automatic heterogeneous-List Union inference | expected `List<A | B>` 명시 | `LIST_LITERAL_ELEMENT_JOIN_FAILED` |
-
-source AST quote `@ast`, 그 mode spelling, 붙은 `^{...}`, 붙은
-`?Identifier`, legacy `#array{...}` constructor도 완전히 제거되어
-Stable/Preview/Recovery production, scanner mode, AST/HIR/MIR identity가
-없다. `class#sealed`, parameter/type named-rest `**`, `expr${...}`와 같은
-역사적 철자는 각각 현행 `sealed class`, `***`, `!{}`/`!!{}` 경계를
-따른다. Recovery production이 명시되지 않은 removed spelling을
-formatter나 migration option이 다시 활성화해서는 안 된다.
 
 <!-- deeplus-status-fence: CURRENT -->
 
@@ -1010,7 +933,7 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
 1. exact design decision과 current 대안/비활성 fence
 2. exact EBNF root/route와 frontend owner/admission
 3. terminating type/ownership/effect/coherence algorithm
-4. deterministic diagnostics, recovery 및 migration policy
+4. deterministic diagnostics 및 migration policy
 5. formatter/LSP와 public API/metadata residue
 6. MIR identity와 xVM/LLVM observable equivalence
 7. positive/negative/boundary/mutation corpus
@@ -1022,9 +945,9 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
   [`spec/language.md`](../../spec/language.md)
 - exact profile production:
   [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
-- source root, gate, Recovery 및 비활성 상세 결합:
+- source root, gate 및 비활성 상세 결합:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
-- 695-row feature registry:
+- 719-row feature registry:
   [`spec/features/catalog`](../../spec/features/catalog)
 - activatable/nonactivatable gate map:
   [`spec/features/gates.json`](../../spec/features/gates.json)

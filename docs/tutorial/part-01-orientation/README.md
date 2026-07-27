@@ -6,9 +6,8 @@
 이 부는 Deeplus 코드를 처음 보는 독자가 “무엇을 입력할 수 있는가”보다
 먼저 “어떤 자료가 정본이고, 예제를 어느 수준까지 믿어야 하는가”를
 판단하도록 돕는다. Deeplus 저장소에는 현행 설계, gate가 필요한 Preview,
-활성화할 수 없는 Preview Design, 정밀 진단만을 위한 Recovery 표면이 함께
-기록되어 있다. 이 차이를 모르면 문서에 보이는 철자를 곧바로 실행 가능한
-기능으로 오해하기 쉽다.
+활성화할 수 없는 Preview Design이 함께 기록되어 있다. 이 차이를 모르면
+문서에 보이는 후보 철자를 곧바로 실행 가능한 기능으로 오해하기 쉽다.
 
 이 부의 모든 예제는 설계 정적 설명이다. 현재 제품 lane은
 `15/15 NOT_RUN`이며, 예제의 예상값과 예상 진단은 실제 compiler/runtime
@@ -16,7 +15,7 @@
 
 ## 학습 순서
 
-1. [Deeplus와 상태](01-01-language-status.md) — 정본, Preview, Recovery,
+1. [Deeplus와 상태](01-01-language-status.md) — 정본, Preview,
    제품 증거를 구분한다.
 2. [소스와 진단 읽기](01-02-source-diagnostics.md) — source에서
    CST/AST/HIR로 가는 책임과 첫 진단을 읽는다.
@@ -32,11 +31,11 @@
 ## 이 부의 학습 판정 trace
 
 초보자는 예제를 볼 때 세 질문을 같은 순서로 적용한다. 첫째, 이 표면은
-현행·Preview·Recovery 중 어디에 속하는가. 둘째, scanner와 parser가
+Current·Preview Gated·Preview Design 중 어디에 속하는가. 둘째, scanner와 parser가
 구조를 만들 수 있는가. 셋째, 구조가 만들어져도 type과 responsibility
 검사를 통과하는가. 예를 들어 `private type Count = 1..10`은 현행
 type-producing declaration이므로 visibility와 범위를 함께 검사하지만,
-옛 철자 하나를 Recovery scanner가 알아본다는 사실은 정상 AST를 만든다는
+Preview Design의 후보 철자가 문서에 있다는 사실은 정상 AST를 만든다는
 뜻이 아니다. 이 trace를 종이에 세 칸으로 적는 습관을 들이면 이후 장의
 복잡한 진단도 “문법 오류인가, 의미 오류인가, 실행 실패인가”로 나누어
 볼 수 있다.
