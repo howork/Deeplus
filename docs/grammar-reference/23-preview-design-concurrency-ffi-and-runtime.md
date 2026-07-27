@@ -199,8 +199,8 @@ receipt가 필요하다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
 ```deeplus
 // 현행 명시적 대안: application API가 dependency와 cleanup token을 노출한다.
-let subscription = profile ~ subscribe(observer: handleProfileChange)
-defer subscription ~ close()
+let subscription = profile ~ subscribe observer: handleProfileChange
+defer subscription ~ close
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -334,7 +334,7 @@ MIR callback identity, concurrency mutation corpus와 native target receipt가
 // 현행 명시적 대안: wrapper가 registration lifetime과 cleanup을 소유한다.
 let registration: CallbackRegistration =
     registerOwnedCallback(callback: handleEvent)
-defer registration ~ close()
+defer registration ~ close
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -538,7 +538,7 @@ receipt가 필요하다.
 // 현행 명시적 대안: runtime alternatives를 closed Union으로 고정한다.
 private type Payload = Int | String
 let text = @match payload {
-    number: Int => number ~ toString()
+    number: Int => number ~ toString
     string: String => string
 }
 ```

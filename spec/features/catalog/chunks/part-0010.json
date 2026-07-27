@@ -1563,7 +1563,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable group",
-    "notes": "Numeric tokens exclude sign. NumericLiteralAdmitted returns an exact value or unsuffixed-integer magnitude fact. With an exact integer target, the checker may adapt only direct PrefixExpr(-, literal) by testing -magnitude; no other fold or hidden conversion. IntN/UIntN use N={8,16,32,64,128}; ISize/USize need suffix/conversion; Float defaults Float64 and Float32 needs f32. Product NOT_RUN.",
+    "notes": "Numeric tokens exclude sign. NumericLiteralAdmitted returns an exact value or unsuffixed-integer magnitude fact. A signless unsuffixed integer may adapt to one exact representable UInt, IntN, or UIntN target; otherwise it defaults to Int. With an exact Int, IntN, or UIntN target, the checker may adapt only direct PrefixExpr(-, literal) by testing -magnitude; UInt has no negative adapter. No other fold or hidden conversion occurs. IntN/UIntN use N={8,16,32,64,128}; ISize/USize need suffix/conversion; Float defaults Float64 and Float32 needs f32. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

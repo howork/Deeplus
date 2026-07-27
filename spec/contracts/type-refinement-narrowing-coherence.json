@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-refinement-narrowing-coherence-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -10,7 +10,7 @@
   "authority_fence": {
     "new_surface_syntax": false,
     "open_runtime_type_test": false,
-    "def_guard_narrowing_summary": false,
+    "def_guard_narrowing_summary": true,
     "implementation_authority": false,
     "feature_p1_closed": 0,
     "feature_p1_created": 0
@@ -26,13 +26,29 @@
   "flow_environment": {
     "symbol": "Phi",
     "declared_type_is_immutable": true,
-    "facts": ["remaining closed-union alternative identities", "finite R0 refinement facts", "enum case identity", "usable-place state"],
-    "true_edge": "add only facts proved by the current structural partition and admitted inline R0 guard",
-    "false_edge": "retain the complement only when the finite partition engine proves it",
+    "facts": ["remaining closed-union alternative identities", "finite R0 refinement facts", "valid GuardSummaryV1 substitutions", "enum case identity", "usable-place state"],
+    "true_edge": "add only facts proved by the current structural partition, admitted inline R0 guard, or an exact direct def#guard call with a valid GuardSummaryV1 and stable actual places",
+    "false_edge": "retain the exact complement only when the finite partition engine or valid GuardSummaryV1 proves it",
     "join": "intersection of facts true on every incoming edge",
-    "kill": ["assignment to the subject or an aliased place", "exclusive borrow", "escape or capture with possible mutation", "call whose responsibility summary may mutate or consume the subject"],
+    "kill": ["assignment to the subject or an aliased place", "exclusive borrow", "escape or capture with possible mutation", "consume", "suspension that invalidates a stable-place proof", "call whose responsibility summary may mutate or consume the subject"],
     "ordinary_bool_call_adds_fact": false,
-    "def_guard_call_adds_fact": false
+    "def_guard_call_adds_fact": "only exact direct calls with a fresh valid GuardSummaryV1 and stable actual places"
+  },
+  "guard_refinement_summary": {
+    "contract": "spec/contracts/guard-refinement-summary.json",
+    "schema": "schemas/language/guard-summary-v1.schema.json",
+    "summary_id": "GuardSummaryV1",
+    "required_for_def_guard_narrowing": true,
+    "opaque_fallback": false,
+    "formula_domain": "finite normalized R0 Boolean reflection calculus",
+    "identity_binding": ["CallableImplementationId", "normalized parameter type identities", "normalized formula", "body digest", "summary digest", "language profile version"],
+    "call_site_preconditions": ["exact direct callable selection", "stable actual places", "fresh matching body and API digests", "no wrapper, stored Bool, indirect callable, or dynamic dispatch"],
+    "true_edge": "substitute the stable actual places into P and add P to Phi",
+    "false_edge": "substitute the stable actual places into not(P) and add the exact complement to Phi",
+    "declared_type_change": false,
+    "runtime_proof_object": false,
+    "second_guard_evaluation": false,
+    "guarded_arm_exhaustiveness_effect": false
   },
   "closed_union_type_test": {
     "predicate_id": "ClosedUnionTypeTestAdmitted",
@@ -99,8 +115,8 @@
     },
     {
       "rule_id": "TRN-R007",
-      "title": "def#guard is pure Bool but opaque for narrowing",
-      "contract": "A def#guard callable must be total, pure, terminating, nonsuspending, nonconsuming, authority-free and return exactly Bool. Until a separate canonical summary surface and API digest exist, a call to it creates no refinement or union fact."
+      "title": "def#guard narrowing requires one exact proof summary",
+      "contract": "A def#guard callable must be total, pure, terminating, nonsuspending, nonconsuming, authority-free and return exactly Bool. Narrowing requires a mandatory fresh GuardSummaryV1 in the finite normalized R0 calculus, exact direct callable selection, and stable actual places. The true edge receives substituted P and the false edge receives substituted not(P); opaque, missing, stale, indirect, wrapper, stored-Bool, or unstable-actual paths create no fact and never fall back heuristically."
     },
     {
       "rule_id": "TRN-R008",
@@ -155,6 +171,12 @@
     "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
     "GUARD_CALLABLE_RESULT_MUST_BE_BOOL",
     "GUARD_CALLABLE_CONSUME_FORBIDDEN",
+    "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+    "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+    "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+    "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+    "GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
+    "GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
     "REFINEMENT_PROOF_REQUIRED",
     "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
     "UNION_MEMBER_SUBSUMED",
@@ -176,6 +198,6 @@
     {"fixture_id":"TRN-DESC-R0-POS","predicate_id":"R0GuardSafe","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"this >= 1 and this <= 65535","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
     {"fixture_id":"TRN-DESC-R0-NEG","predicate_id":"R0GuardSafe","expected":"rejected","diagnostic_or_null":"R0_GUARD_NOT_GUARD_SAFE","descriptor":{"subject":"1 / this > 0","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":true,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
     {"fixture_id":"TRN-DESC-REFINE-POS","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"443","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"ARGUMENT","proof_state":"PROVED","type_relation":"IMPLIES","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Port","commit_count":1}},
-    {"fixture_id":"TRN-DESC-REFINE-NEG","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"rejected","diagnostic_or_null":"REFINEMENT_PROOF_REQUIRED","descriptor":{"subject":"dynamic Int x","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"DEF_GUARD_OPAQUE","guard_result_type":"Bool","boundary_kind":"RETURN","proof_state":"UNKNOWN","type_relation":"UNKNOWN","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}}
+    {"fixture_id":"TRN-DESC-REFINE-NEG","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"rejected","diagnostic_or_null":"REFINEMENT_PROOF_REQUIRED","descriptor":{"subject":"stored Bool from validPort(x)","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"DEF_GUARD_STORED_BOOL","guard_result_type":"Bool","boundary_kind":"RETURN","proof_state":"UNKNOWN","type_relation":"UNKNOWN","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}}
   ]
 }

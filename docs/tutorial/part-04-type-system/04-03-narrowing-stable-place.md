@@ -130,8 +130,9 @@ escape/capture, consume 또는 value를 바꿀 수 있는 call을 통과하면
 ## 8. 다른 기능과의 연결
 
 Enum case pattern도 같은 `Phi`에 case fact를 남긴다. refinement는 허용된
-inline R0 predicate에서만 유한 fact를 더할 수 있다. ordinary Bool
-함수와 `def#guard` 호출은 opaque하므로 자동 summary를 만들지 않는다.
+inline R0 predicate와 검증된 `GuardSummaryV1` direct truth-test에서
+유한 fact를 더할 수 있다. ordinary Bool 함수, summary 없는 guard,
+stored Bool과 unstable actual은 opaque하다.
 MIR은 discrimination과 binding/move commit 순서를 보존한다.
 
 ## 9. Deeplus다운 작성 관례

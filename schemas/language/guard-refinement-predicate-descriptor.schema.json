@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/guard-refinement-predicate-descriptor.schema.json",
+  "title": "Deeplus GuardSummaryV1 admission and call-application descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "predicate_kind",
+    "summary_status",
+    "selected_call_kind",
+    "actual_place_stability",
+    "edge"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.guard-refinement-predicate-descriptor/r1"
+    },
+    "predicate_kind": {
+      "enum": [
+        "SUMMARY_ADMISSION",
+        "CALL_APPLICATION"
+      ]
+    },
+    "summary": {
+      "oneOf": [
+        {
+          "$ref": "./guard-summary-v1.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "summary_status": {
+      "enum": [
+        "VALID",
+        "MISSING",
+        "NON_R0",
+        "IDENTITY_MISMATCH",
+        "METADATA_STALE"
+      ]
+    },
+    "selected_call_kind": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "EXACT_DIRECT",
+        "WRAPPER",
+        "INDIRECT_CALLABLE",
+        "DYNAMIC_DISPATCH",
+        "STORED_BOOL"
+      ]
+    },
+    "actual_place_stability": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "STABLE",
+        "UNSTABLE"
+      ]
+    },
+    "edge": {
+      "enum": [
+        "NOT_APPLICABLE",
+        "TRUE",
+        "FALSE"
+      ]
+    },
+    "substituted_formula_or_null": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "body_digest_matches": {
+      "type": "boolean"
+    },
+    "api_digest_matches": {
+      "type": "boolean"
+    }
+  }
+}

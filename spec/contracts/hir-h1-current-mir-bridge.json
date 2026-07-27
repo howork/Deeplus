@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.hir-h1-current-mir-bridge-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
   "feature_id": "hir_h1_current_mir_bridge",
   "status": "STABLE_DESIGN",
@@ -186,6 +186,56 @@
       "cleanup_or_outcome_policy_invention",
       "actor_message_to_method_fallback"
     ]
+  },
+  "call_plan_contract": {
+    "node": "HirCallPlan",
+    "surface_node": "CallExpr",
+    "call_mode_enum": [
+      "Ordinary",
+      "Message",
+      "ActorMessage"
+    ],
+    "call_argument_family": [
+      "Positional",
+      "Named",
+      "PositionalUnfold",
+      "NamedUnfold",
+      "Context",
+      "Witness",
+      "TrailingClosure"
+    ],
+    "resolved_plan_enum": [
+      "DirectImplementation",
+      "VirtualSlot",
+      "TraitWitness",
+      "ExtensionStatic",
+      "ActorTransport",
+      "ReservedOperation"
+    ],
+    "invariants": {
+      "message_payload_aggregate_count": 0,
+      "tuple_or_record_projection_to_formals_count": 0,
+      "return_type_directed_selection_count": 0,
+      "runtime_selector_search_count": 0,
+      "source_order_winner_count": 0,
+      "actor_method_fallback_count": 0,
+      "actor_transport_implicit_suspend_count": 0,
+      "actor_transport_implicit_retry_count": 0
+    },
+    "actor_transport_required_fields": [
+      "actor_id",
+      "actor_protocol_id",
+      "operation_kind",
+      "selector_id",
+      "canonical_call_shape_id",
+      "mailbox_profile_id",
+      "argument_binding_plan",
+      "transfer_plan",
+      "admission_error_set",
+      "request_responsibility_or_null"
+    ],
+    "source_evaluation_law": "evaluate receiver and CallArgument nodes left-to-right exactly once, validate all static and transfer obligations, then commit one envelope and one ownership transition failure-atomically",
+    "defer_actor_transport_admitted": false
   },
   "power_plan_contract": {
     "node": "HirPowerPlan",
@@ -475,6 +525,11 @@
     "power_operation_count": 6,
     "power_adaptation_count": 5,
     "literal_variant_count": 2,
+    "call_mode_count": 3,
+    "resolved_call_plan_count": 6,
+    "message_payload_aggregate_count": 0,
+    "actor_transport_implicit_suspend_count": 0,
+    "actor_transport_implicit_retry_count": 0,
     "fixture_count": 48,
     "positive_fixture_count": 16,
     "negative_fixture_count": 16,

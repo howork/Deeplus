@@ -17,8 +17,9 @@ measure/unit 표면을 설명한다.
 | unsigned strict bitfield와 `bitfield#flags` | `CURRENT` |
 | measure literal, 단위 곱/몫/거듭제곱, exact-ratio catalog | `CURRENT` |
 | dynamic/calendar/market conversion | 명시적 `STDLIB_PROFILE`/provider만 |
+| Enum declaration-order `Ord`, case display mapping, exact-variant subset alias | `STABLE_DESIGN`, 제품 실행 `NOT_RUN` |
 | successor uniform-within-case payload와 final-dot-only Enum member | `PREVIEW_DESIGN_NONACTIVATABLE` |
-| Enum order/display/subset, raw/ABI profile, external residual spelling, A3, empty Enum | `PREVIEW_DESIGN_NONACTIVATABLE` 또는 deferred |
+| raw/ABI profile, external residual spelling, A3, empty Enum | `PREVIEW_DESIGN_NONACTIVATABLE` 또는 deferred |
 | 제품 parser/checker/MIR/runtime/formatter/LSP | `NOT_RUN` |
 
 현행 mixed Enum payload와 현행 marker reachability를 바꾸지 않는다.
@@ -399,8 +400,8 @@ let speed = distance / time
 ```deeplus
 use std::units::si
 let d = 2500[m]
-let km = d ~ asUnit(1[km])
-let scalar = d ~ scalarIn(1[m])
+let km = d ~ asUnit 1[km]
+let scalar = d ~ scalarIn 1[m]
 ```
 
 ### `EX-R48E1-031` — 명시적 dynamic provider profile
@@ -408,7 +409,7 @@ let scalar = d ~ scalarIn(1[m])
 이 예제만 `source_activation: stdlib`이며 core exact-ratio 규칙이 아니다.
 
 ```deeplus
-let converted = price ~ asUnitUsing(provider, 1[USD])
+let converted = price ~ asUnitUsing provider, 1[USD]
 ```
 
 ## 거부되거나 격리된 형식
@@ -422,7 +423,7 @@ let converted = price ~ asUnitUsing(provider, 1[USD])
 | 현행 mixed payload를 자동 label-all/unlabel-all/Record로 rewrite | 금지 |
 | successor uniform-within-case payload | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | successor final-dot-only member로 marker 자동 rewrite | 금지/비활성 |
-| Enum order/display/subset 자동 합성 | `PREVIEW_DESIGN_NONACTIVATABLE` |
+| 명시적인 Stable marker 없이 Enum order/display/subset witness를 암시적으로 합성 | 거부 |
 | Enum source order를 raw/tag/ordinal/layout/ABI로 사용 | 거부 |
 | case-local Trait witness 생성/교체 | 거부 |
 | runtime Map key를 Record/schema label로 사용 | 거부 |
@@ -507,55 +508,47 @@ current_admission: false
 open_guards: CE-E-P1-001..008
 ```
 
-### PREVIEW_NONACTIVATABLE — Enum-derived capabilities
+<!-- deeplus-status-fence: CURRENT -->
 
-세 기능은 조정된 Preview 설계로 수용되어 있지만 current parser에
-도달하는 source route는 없다.
+<a id="stable-enum-derived-capabilities"></a>
 
-1. **declaration-order semantic ordering**: 미래
+### Stable — Enum-derived capabilities
+
+다음 세 기능은 현행 Stable Enum 표면이다. 세 기능은 서로 독립적으로
+선택할 수 있지만, 한 선언 안에서 선택한 기능의 totality와 identity
+guard는 선언 전체에 적용된다.
+
+1. **declaration-order semantic ordering**:
    `enum#increasing` 또는 `enum#decreasing` 중 하나가 nominal,
    nonempty, payload-free, nongeneric Enum에 whole-Enum `Ord<E>` witness
    하나를 합성하는 후보이다. order vector는 raw/tag/ordinal/layout/ABI,
    match priority, range 또는 iteration이 아니다. explicit same-ground
    `Ord<E>`와 충돌하며 comparison glyph overload를 활성화하지 않는다.
-2. **case display mapping**: 미래 case의 `~>` restricted String template
-   후보이다. 한 inhabitable case가 mapping을 가지면 모두 정확히 하나씩
+2. **case display mapping**: case의 `~>` restricted String template다.
+   한 inhabitable case가 mapping을 가지면 모두 정확히 하나씩
    가져야 한다. named payload는 read-only borrow binder이고 각
    interpolation hole은 이미 선택된 `Display` witness를 요구한다. hidden
    locale/provider, move, mutation, throw, suspension, spawn, escape와
    fallback은 없다. 이것은 serialization/parser/reverse map이 아니다.
-3. **exact variant subset**: 미래 `+type Weekend = Sat | Sun` 같은 명시적
-   associated alias 후보이다. subset identity는 같은 `EnumId`, frozen
+3. **exact variant subset**: `+type Weekend = Sat | Sun` 같은 명시적
+   associated alias다. subset identity는 같은 `EnumId`, frozen
    `VariantId` set과 universe digest이고 새 case, wrapper, storage, tag,
    allocation, raw mapping 또는 witness를 만들지 않는다. subset-to-owner는
    bounded widening, owner-to-subset은 `as?`/pattern 등 checked boundary를
    요구한다.
 
-**의존성과 guard**
+**닫힌 guard**
 
-이 세 기능은 `CE-E-P1-004`, `CE-E-P1-007`, `CE-E-P1-008`과
-`TCC-P1-002..008` 전체에 의존한다. ordering은 order-independent stable
-VariantId와 별도의 order vector를, display는 total mapping과 기존
-Display evidence를, subset은 `CE-E-P1-001`의 frozen universe를 추가로
-필요로 한다. payload ordering, payload-bearing exact variant type, 제네릭
-조건부 합성, 역파싱, 부분집합 순회/범위, 묶음 Trait derivation은
-deferred다.
+ordering은 order-independent stable `VariantId`와 별도의 declaration
+order vector를 사용한다. display는 total mapping과 이미 선택 가능한
+`Display` evidence만 사용한다. subset은 owner의 frozen variant universe
+안에서만 형성된다. payload ordering, payload-bearing exact variant type,
+제네릭 조건부 합성, 역파싱, 부분집합 순회/범위와 묶음 Trait derivation은
+이 Stable 표면에 포함되지 않는다.
 
-**도입 조건**
+**현행 source 예**
 
-각 표면의 exact grammar/recovery/diagnostic이 ratify되고, generated
-witness 충돌/coherence/termination 법칙과 HIR/MIR/API residue가 닫히며,
-exhaustiveness·link permutation·formatter corpus가 독립 실행된 후
-Design_이 별도로 활성화해야 한다. 한 기능의 증거가 다른 기능이나
-product lane의 PASS로 전파되어서는 안 된다.
-
-**비활성 source 예**
-
-다음은 controlling Preview 설계의 의도를 보이는 예시이며 current
-Deeplus source로 제출하면 `FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE`로
-거부되어야 한다.
-
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
 public enum#increasing Day {
     Mon
@@ -564,7 +557,7 @@ public enum#increasing Day {
 }
 ```
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
 public enum Status {
     ready ~> "ready"
@@ -572,7 +565,7 @@ public enum Status {
 }
 ```
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
 public enum Day {
     Mon
@@ -584,9 +577,9 @@ public enum Day {
 }
 ```
 
-이 철자 예시는 activation도, corpus `accept`도, 구현 handoff도 아니다.
-세 기능은 모두 `PREVIEW_DESIGN_NONACTIVATABLE`이며 관련 P1과
-`15/15 NOT_RUN`을 그대로 유지한다.
+세 기능은 Stable language contract다. 다만 이 문서의 정적 설계 검증은
+제품 parser/checker/formatter 실행 PASS나 배포·ABI 지원을 주장하지
+않으며 제품 lane은 계속 `15/15 NOT_RUN`이다.
 
 <!-- deeplus-status-fence: CURRENT -->
 

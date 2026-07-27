@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 32,
+  "law_count": 33,
   "laws": [
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
@@ -14,13 +14,13 @@
       "effective_revision": "r51f3-current-literal-shaped-collection-design-r1"
     },
     {
-      "id": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-PREVIEW",
-      "law": "Enum declaration-order Ord derivation, case-owned Display mapping, and payload-free exact-variant subset aliases are accepted only as PREVIEW_DESIGN and remain nonactivatable. The order profile uses exactly one of enum#increasing or enum#decreasing, forms one whole-Enum Ord witness, and keeps SemanticOrderRank separate from VariantId, raw, serialization, layout, ABI, match priority, and operator glyph routing. A case-owned ~> mapping is all-or-none, uses a restricted read-only String template, and forms one whole-Enum Display witness. An enum-associated subset uses explicit type syntax, finite same-owner VariantId membership, owner representation and witnesses, lossless owner widening, and checked narrowing. Current Enum syntax and markers remain unchanged; semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "id": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-STABLE",
+      "law": "Enum declaration-order Ord derivation, case-owned Display mapping, and payload-free exact-variant subset aliases are Stable design. The order profile uses exactly one of enum#increasing or enum#decreasing, forms one whole-Enum Ord witness, and keeps SemanticOrderRank separate from VariantId, raw, serialization, layout, ABI, match priority, and operator glyph routing. A case-owned ~> mapping is all-or-none, uses a restricted read-only String template, and forms one whole-Enum Display witness. An enum-associated +type alias uses finite same-owner payload-free VariantId membership, reuses owner representation and witnesses, widens losslessly to its owner, and narrows only through an explicit checked boundary. Existing Enum markers remain unchanged; semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Supp1 Enum Declaration-Order Derived Ord Review R1; Supp1 Enum Display Mapping and Variant-Subset Union Review R1; spec/contracts/enum-derived-capabilities.json",
-      "effective_revision": "r51f3-current-enum-derived-capabilities-r1"
+      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
     },
     {
       "id": "USR-NAMED-REST",
@@ -242,12 +242,12 @@
     },
     {
       "id": "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE",
-      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable inside closed Union pattern owners; the existing closed-Union-only `is`/`!is` forms parse an exact TypeRef alternative, evaluate the subject and stored injection identity once, and produce complementary Bool edge facts without binding. `is` intersects/removes the target on true/false edges and `!is` swaps them; `and then` receives the left true fact, `otherwise` the left false fact, and strict `and`/`or` do not pre-narrow. Durable facts require a stable place and die on assignment, aliasing mutation, exclusive borrow, escape/capture, consume, or a may-mutate/may-consume call. Neither form introduces open RTTI. def#guard call results are opaque to narrowing. Union formation requires a finite pairwise DISJOINT proof, guarded match arms never establish exhaustiveness, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
+      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable inside closed Union pattern owners; the existing closed-Union-only `is`/`!is` forms evaluate the subject and stored injection identity once and produce complementary Bool edge facts. Every admitted def#guard exports one verified finite-R0 GuardSummaryV1. A direct exact call over stable actual places may substitute that summary once and add P/not(P) to the true/false Phi edges without changing declared types, producing a proof object, or reevaluating the predicate. Stored Bool values, wrappers, dynamic dispatch, unstable actuals, and guarded-arm exhaustiveness gain no fact. Durable facts die on assignment, aliasing mutation, exclusive borrow, escape/capture, consume, suspension, or a may-mutate/may-consume call. Float complements remain logical negation and are not algebraically strengthened across NaN. Union formation requires a finite pairwise DISJOINT proof, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/type-refinement-narrowing-coherence.json and user comprehensive review direction",
-      "effective_revision": "r51f3-current-type-refinement-narrowing-coherence-r1"
+      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-TOP-LEVEL-TYPE-VISIBILITY-COHERENCE",
@@ -260,16 +260,25 @@
     },
     {
       "id": "DSGN-CURRENT-MESSAGE-CALL-TRAILING-CLOSURE-COHERENCE",
-      "law": "A MessageSuffix preserves a plain or statically qualified selector and carries exactly zero or one normalized payload aggregate, never an ordinary ArgumentList. Positional parenthesized content is one Tuple payload, all-named content is one structural Record payload, empty parentheses are a no-payload compatibility spelling, and mixed positional/named payload is rejected. Ordinary and message calls share one ordered TrailingClosureGroup: one closure may be unlabeled or labeled, while two or more must all have unique labels and bind exact function-typed formals. Qualified selector resolution is static and terminal in its selected nominal, Trait, extension, actor, or actor-protocol domain; actor dispatch has no ordinary-method fallback. HIR/MIR preserve selected identity, payload projection, closure labels, source evaluation order, ownership, effects, errors, isolation, and cleanup. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
-      "status": "CURRENT",
+      "law": "Superseded payload-aggregate message-call design retained as immutable decision history. The controlling current call design is DSGN-CURRENT-UNIFIED-CALL-ACTOR-TRANSPORT.",
+      "status": "SUPERSEDED",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Design_Deeplus_Message_Call_and_Trailing_Closure_Consistency_Report_R1.md and current cross-artifact reconciliation",
       "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
     },
     {
+      "id": "DSGN-CURRENT-UNIFIED-CALL-ACTOR-TRANSPORT",
+      "law": "Ordinary, message ~, and actor-transport :~ calls normalize to one CallExpr with a discriminating CallMode and one ordered CallArgument family. All three modes share positional, named, unfold, context, witness, and trailing-closure binding judgments. Structured ~ and :~ are Pratt led parselets at rank 15; ~ is left-associative and :~ is terminal and nonassociative. A comma after a nested tilde call requires explicit grouping. There is no message payload aggregate or Tuple/Record-to-formal projection. :~ statically selects one actor on/request operation with no ordinary fallback, performs immediate failure-atomic mailbox admission, and never implicitly suspends or retries. on and request with the same selector and canonical call shape are rejected early, and actor transport is forbidden in defer. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Design Deeplus Unified Call AST Pratt and Actor ColonTilde Review R3; spec/contracts/unified-call-actor-transport.json",
+      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
+    },
+    {
       "id": "DSGN-CURRENT-VOCABULARY-RAW-PATH-PACKAGE-MODULE-COHERENCE",
-      "law": "array and case are ordinary IDENTIFIER spellings and occur in no keyword or sigil-role vocabulary. Stable raw String uses exactly the attached #raw\"...\" surface; prefixless raw\"...\" and alternate delimiter families are rejected while exact body scalars remain uninterpreted. QualifiedPath contains one or more identifier segments joined by ::. Learner-facing material teaches this positive path model without repeatedly foregrounding invalid punctuation, while exact diagnostics and negative fixtures remain available when an error occurs. Package is the distribution, dependency, build, artifact, and provenance unit; Module is the namespace, visibility, name-resolution, and source-composition unit. ModuleId combines PackageId and ModulePath, and filesystem layout is not language identity. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "law": "array and case are ordinary IDENTIFIER spellings and occur in no keyword or sigil-role vocabulary. Stable raw String uses the attached #raw\"...\" surface and preserves exact body scalars without escape or interpolation. QualifiedPath contains one or more identifier segments joined by ::. Learner-facing material teaches this positive path model without repeatedly foregrounding invalid punctuation, while exact diagnostics and negative fixtures remain available when an error occurs. Package is the distribution, dependency, build, artifact, and provenance unit; Module is the namespace, visibility, name-resolution, and source-composition unit. ModuleId combines PackageId and ModulePath, and filesystem layout is not language identity. Semantic P0 remains 0, the existing feature P1 set remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
@@ -287,12 +296,12 @@
     },
     {
       "id": "DSGN-CURRENT-EXACT-NUMERIC-COMPANION-HIR-H1-COHERENCE",
-      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep in the initial profile, bare Complex normalizes to Complex<Float64>, and an attached floating i token makes 3.0 + 4.0i canonical without creating a global i binding or public ABI. Stable fixed-glyph conformance remains exactly binary +,-,*; scalar real/Complex ^ is a closed static language intrinsic with mathematical unary precedence, right associativity, a real-preserving route and signed-zero-aware principal Complex route. Static capability lookup separates Type::item, Type::extension::item, <T as Trait>::item and explicit runtime owners without a companion object or runtime Trait search. The verified fully typed/resolved/responsibility-closed HIR-H1 boundary is adopted as the current design bridge, while its RFC, MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
+      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep, bare Complex normalizes to Complex<Float64>, and attached floating 3.0 + 4.0i is canonical. Float is a closed alias of Float64. UInt is the distinct default unsigned semantic domain 0..2^64-1, not an alias of UInt64 and not eligible for the negative literal adapter. Stable fixed-glyph conformance remains exactly binary +,-,*; scalar real/Complex ^ is a closed static intrinsic. The type-directed std::math elementary facade is a bounded STDLIB_PROFILE. Numeric capability evidence, Rational operator completion, integer-magnitude 4i, and std::math special/calculus families remain PREVIEW_DESIGN. Static capability lookup and the verified HIR-H1 boundary remain as previously adopted; MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Five attached companion, Complex/Rational and exponentiation authority proposals; explicit user i-literal/HIR-H1/canonicalization direction; bounded multi-role reconciliation",
-      "effective_revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1"
+      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
     }
   ],
   "authority_policy": "USER_DIRECT records current user direction and receives strong presumptive weight, but remains reviewable against contradictions and evidence; no decision row is immutable constitutional law. Explicit decisions adopted for this release control its projections until revised. DESIGNER_ACCEPTED decisions are reviewable; DERIVED_PROJECTION rows have no independent authority."

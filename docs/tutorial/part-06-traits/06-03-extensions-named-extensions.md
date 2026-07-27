@@ -99,8 +99,8 @@ public extension Int as metric {
 
 use Int::metric
 
-let short = 3 ~ m()
-let explicit = 3 ~ Int::metric::m()
+let short = 3 ~ m
+let explicit = 3 ~ Int::metric::m
 ```
 
 두 호출은 같은 extension set/member identity를 가리킨다. explicit selector는
@@ -112,11 +112,11 @@ let explicit = 3 ~ Int::metric::m()
 ```deeplus
 private def measure() -> Length = {
     use Int::metric
-    let inside = 5 ~ m()
+    let inside = 5 ~ m
     return inside
 }
 
-let outside = 5 ~ Int::metric::m()
+let outside = 5 ~ Int::metric::m
 ```
 
 unqualified `m` lookup은 함수 scope를 벗어나지 않는다. qualified selector는
@@ -133,7 +133,7 @@ public extension UserId as audit {
 }
 
 use UserId::audit
-let label = id ~ auditLabel()
+let label = id ~ auditLabel
 ```
 
 이 선언은 `UserId conforms Display`를 만들지 않는다. audit API와 Display
@@ -187,7 +187,7 @@ nominal/Trait/provider domain으로 fallback하지 않는다.
 
 1. **복사:** `String as audit` extension에 `redacted()` 함수를 추가하라.
 2. **빈칸 완성:** 같은 target의 두 set을
-   `value ~ Target::___::render()`와 `value ~ Target::___::render()`로
+   `value ~ Target::___::render`와 `value ~ Target::___::render`로
    호출하도록 `ui`, `storage` 빈칸을 채워라.
 3. **설계:** 날짜 formatting API가 extension인지 runtime locale service인지
    effect/authority/lifecycle을 기준으로 결정하라.

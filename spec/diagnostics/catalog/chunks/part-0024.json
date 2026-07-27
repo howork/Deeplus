@@ -633,5 +633,453 @@
     "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
     "product_support": "NOT_RUN",
     "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An admitted def#guard must export one verified finite-R0 GuardSummaryV1.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [
+      "guard_callable_refinement_summary_preview_design"
+    ],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The def#guard body cannot be normalized to the finite R0 refinement calculus; use def#pure for an opaque Bool helper.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The guard summary callable identity or normalized parameter types do not match the selected def#guard implementation.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The guard body, API, or summary digest is stale and cannot authorize flow refinement.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Only a direct call to the exact summarized def#guard can contribute a refinement fact.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "note",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "This guard result is Boolean-only because an actual place is not stable for the refinement lifetime.",
+    "feature_refs": [
+      "guard_callable_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "note",
+    "primary_source": "spec/contracts/guard-refinement-summary.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_ORDER_ROLE_CONFLICT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An Enum may select exactly one declaration-order role and may not conflict with an explicit same-ground Ord conformance.",
+    "feature_refs": [
+      "enum_declaration_order_ord_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Declaration-order Ord requires a nonempty, payload-free, nongeneric Enum owner.",
+    "feature_refs": [
+      "enum_declaration_order_ord_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_DISPLAY_MAPPING_INCOMPLETE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "If one inhabitable Enum case has a display mapping, every inhabitable case must have exactly one mapping.",
+    "feature_refs": [
+      "enum_case_display_mapping_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An Enum display template must be pure, synchronous, read-only, total, and use only preselected Display evidence.",
+    "feature_refs": [
+      "enum_case_display_mapping_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_VARIANT_SUBSET_OWNER_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Every member of an exact Enum variant subset must belong to the declaring Enum owner.",
+    "feature_refs": [
+      "enum_exact_variant_subset_alias_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An exact Enum variant subset may contain only payload-free variants.",
+    "feature_refs": [
+      "enum_exact_variant_subset_alias_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/enum-derived-capabilities.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "UINT_LITERAL_CONTEXT_OUT_OF_RANGE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The signless integer literal is outside the exact UInt range 0..2^64-1.",
+    "feature_refs": [
+      "uint_default_unsigned_integer_domain"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "UInt has no negative contextual literal adapter or implicit signedness conversion.",
+    "feature_refs": [
+      "uint_default_unsigned_integer_domain"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Parenthesize a nested tilde call before a comma that belongs to the outer call.",
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Actor :~ is terminal and nonassociative; explicitly restructure a chained transport call.",
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Actor transport uses :~; ~ is the ordinary message-call mode.",
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes",
+      "actor_protocol_family"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ACTOR_OPERATION_KIND_COLLISION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Actor on and request operations cannot share the same selector and canonical call shape.",
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes",
+      "actor_protocol_family",
+      "actor_request_reply"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "An actor :~ admission result cannot be silently discarded by defer.",
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes",
+      "actor_request_reply"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "OPTIONAL_BINDING_SOURCE_NOT_CURRENT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Optional payload binding with let? is a nonactivatable Preview design; use an explicit ::some pattern in current source.",
+    "feature_refs": [
+      "option_let_question_binding_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/option-optional-binding-preview-design.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "NUMERIC_CAPABILITY_PROFILE_NOT_ACTIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The closed numeric capability lattice is a nonactivatable Preview design.",
+    "feature_refs": [
+      "numeric_capability_lattice_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RATIONAL_OPERATOR_PROFILE_NOT_ACTIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Rational division and integral-exponent power completion are a nonactivatable Preview design.",
+    "feature_refs": [
+      "rational_operator_completion_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "INTEGER_IMAGINARY_LITERAL_NOT_ACTIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "Integer-magnitude imaginary literals such as 4i are a nonactivatable Preview design; current source uses 4.0i.",
+    "feature_refs": [
+      "integer_imaginary_literal_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "lexer",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "STD_MATH_DOMAIN_NOT_ADMITTED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The selected std::math core function does not admit this exact normalized numeric domain.",
+    "feature_refs": [
+      "std_math_core_profile"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "STD_MATH_SPECIAL_PROFILE_NOT_ACTIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The std::math special-function family is a nonactivatable Preview design.",
+    "feature_refs": [
+      "std_math_special_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "STD_MATH_CALCULUS_PROFILE_NOT_ACTIVE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "seed",
+    "diagnostic_maturity": "design_seed",
+    "diagnostic_class": "design_seed",
+    "message": "The std::math calculus family is a nonactivatable Preview design.",
+    "feature_refs": [
+      "std_math_calculus_preview_design"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
   }
 ]

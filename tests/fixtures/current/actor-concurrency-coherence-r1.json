@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-fixtures/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "contract": "spec/contracts/actor-concurrency-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -54,7 +54,7 @@
         "ACC-R008",
         "ACC-R011"
       ],
-      "source": "def#async readStatus(worker: Worker) -> Int throws ActorMessageError = {\n    let Result::ok(task) = worker ~ status()\n    else Result::err(error) => throw error\n    return await task\n}",
+      "source": "def#async readStatus(worker: Worker) -> Int throws ActorMessageError = {\n    let Result::ok(task) = worker :~ status\n    else Result::err(error) => throw error\n    return await task\n}",
       "expected_outcome": "accept_design_static",
       "assertion": "a request immediately returns Result<Task<Int>, error ActorMessageError>; source extracts Task<Int> before explicit await"
     },
@@ -77,7 +77,7 @@
       ],
       "source": "let child = worker ~ spawn { => worker ~ run(job) }",
       "expected_outcome": "accept_design_static",
-      "assertion": "message spawn is recognized from ordinary MessageSuffix and does not create TaskSpawnSuffix"
+      "assertion": "message spawn is recognized from CallExpr mode Message produced by ordinary ~ TildeCallLed and does not create TaskSpawnSuffix"
     },
     {
       "fixture_id": "ACC-P-006-ASYNC-ITERATION-SURFACE",
@@ -347,17 +347,23 @@
         "ACC-R005",
         "ACC-R006"
       ],
-      "source": "let outcome = worker ~ WorkerProtocol::moveTo (x, y)",
+      "source": "let outcome = worker :~ WorkerProtocol::moveTo (x, y)",
       "descriptor": {
         "selector_kind": "actor_protocol",
         "selector_segment_count": 2,
-        "payload_count": 1,
-        "payload_kind": "tuple",
-        "payload_element_count": 2,
+        "call_mode": "ActorMessage",
+        "ordered_argument_count": 1,
+        "argument_kinds": [
+          "Positional"
+        ],
+        "argument_expression_types": [
+          "Tuple"
+        ],
+        "message_payload_node_count": 0,
         "ordinary_method_fallback": false
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "the qualified actor-protocol identity and one Tuple payload are fixed before enqueue admission"
+      "assertion": "the qualified actor-protocol identity and one positional Tuple argument are fixed before enqueue admission without a message-payload node"
     },
     {
       "fixture_id": "ACC-P-020-RECORD-PAYLOAD-NAMED-TRAILING-GROUP",
@@ -365,14 +371,19 @@
         "ACC-R005",
         "ACC-R006"
       ],
-      "source": "let outcome = worker ~ process(job: move job, priority: priority)\n  success:[move successToken] #once { value => publish(successToken, value) }\n  failure:[move failureToken] #once { error => recover(failureToken, error) }",
+      "source": "let outcome = worker :~ process job: move job, priority: priority\n  success:[move successToken] #once { value => publish(successToken, value) }\n  failure:[move failureToken] #once { error => recover(failureToken, error) }",
       "descriptor": {
-        "payload_count": 1,
-        "payload_kind": "record",
-        "payload_labels": [
+        "call_mode": "ActorMessage",
+        "ordered_argument_count": 2,
+        "argument_kinds": [
+          "Named",
+          "Named"
+        ],
+        "argument_labels": [
           "job",
           "priority"
         ],
+        "message_payload_node_count": 0,
         "trailing_closure_labels": [
           "success",
           "failure"
@@ -380,7 +391,7 @@
         "closure_transfer_evidence_required": true
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "one Record payload and two uniquely labeled independently transferable closure environments preserve source order"
+      "assertion": "two ordered named arguments and two uniquely labeled independently transferable closure environments preserve source order without Record projection"
     }
   ],
   "negative": [
@@ -645,7 +656,7 @@
         "ACC-R008",
         "ACC-R011"
       ],
-      "source": "def#async invalid(worker: Worker) -> Int = {\n    return await worker ~ status()\n}",
+      "source": "def#async invalid(worker: Worker) -> Int = {\n    return await worker :~ status\n}",
       "descriptor": {
         "message_expression_type": "Result<Task<Int>, error ActorMessageError>",
         "task_extracted_before_await": false
@@ -732,14 +743,14 @@
       "violated_condition": "an ordinary async task is incorrectly assigned actor-request correlation and transport-failure responsibility"
     },
     {
-      "fixture_id": "ACC-N-022-MIXED-MESSAGE-PAYLOAD-CHANNELS",
+      "fixture_id": "ACC-N-022-DUPLICATE-MESSAGE-ARGUMENT-LABEL",
       "rule_ids": [
         "ACC-R005"
       ],
-      "source": "let outcome = worker ~ process(job, priority: priority)",
+      "source": "let outcome = worker :~ process job: job, job: other",
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
-      "violated_condition": "one message payload envelope mixes positional Tuple content and named Record content"
+      "violated_condition": "the ordered argument list repeats one static named-argument label"
     },
     {
       "fixture_id": "ACC-N-023-BORROWED-TRAILING-CLOSURE-CROSSES-ACTOR",
@@ -747,7 +758,7 @@
         "ACC-R005",
         "ACC-R006"
       ],
-      "source": "let outcome = worker ~ process job completion:[borrow local] { value => use(local, value) }",
+      "source": "let outcome = worker :~ process job completion:[borrow local] { value => use(local, value) }",
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "BORROW_ESCAPE_OWNER_REGION",
       "violated_condition": "the trailing surface does not make a borrowed closure environment transferable across actor isolation"
@@ -982,20 +993,24 @@
         "ACC-R006"
       ],
       "descriptor": {
-        "source": "worker ~ moveTo (traceX(), traceY()) completion:{ => done() }",
+        "source": "worker :~ moveTo (traceX(), traceY()) completion:{ => done() }",
         "receiver_evaluation_count": 1,
-        "payload_aggregate_count": 1,
-        "payload_child_order": [
+        "ordered_argument_count": 1,
+        "argument_kinds": [
+          "Positional"
+        ],
+        "argument_expression_child_order": [
           "traceX",
           "traceY"
         ],
+        "message_payload_node_count": 0,
         "trailing_closure_environment_order": [
           "completion"
         ],
         "ownership_commit_count": 1
       },
       "expected_outcome": "bounded_design_assertion",
-      "boundary": "receiver, one payload aggregate, and trailing closure environment prepare in source order before the single enqueue ownership commit"
+      "boundary": "receiver, one positional Tuple argument expression, and the trailing closure environment prepare in source order before the single enqueue ownership commit"
     }
   ],
   "cross_module": [

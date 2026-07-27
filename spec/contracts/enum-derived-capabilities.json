@@ -1,25 +1,25 @@
 {
   "schema": "deeplus.enum-derived-capabilities-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
-  "status": "CURRENT_NORMATIVE_PREVIEW_DESIGN_CONTRACT",
-  "design_verdict": "ACCEPTED_PREVIEW_DESIGN_WITH_GUARDS",
-  "source_activation": "nonactivatable",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "design_verdict": "ACCEPTED_STABLE_DESIGN_WITH_GUARDS",
+  "source_activation": "none",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
-  "current_binding": false,
+  "current_binding": true,
   "semantic_p0": 0,
   "product_lanes": "15/15_NOT_RUN",
   "controlling_authority": {
-    "decision": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-PREVIEW",
+    "decision": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-STABLE",
     "source_reports": [
       "Supp1_Deeplus_Enum_Declaration_Order_Derived_Ord_Review_R1",
       "Supp1_Deeplus_Enum_Display_Mapping_And_Variant_Subset_Union_Review_R1"
     ],
-    "adoption_scope": "design contract only; no grammar, parser, checker, MIR, runtime, tooling, publication, or product activation"
+    "adoption_scope": "stable grammar and normative design surface; parser, checker, MIR, runtime, tooling, publication, and product execution remain NOT_RUN"
   },
   "authority_fence": {
-    "current_enum_changed": false,
-    "grammar_activation": false,
+    "current_enum_changed": true,
+    "grammar_activation": true,
     "implementation_authority": false,
     "operator_glyph_activation": false,
     "feature_p1_closed": 0,
@@ -44,9 +44,9 @@
     "order_role_words_outside_owner": "ordinary_identifier",
     "display_mapping": "EnumCaseCore ~> RestrictedStringTemplate",
     "display_token_owner": "enum_case_only",
-    "associated_subset": "MemberVisibility? type Identifier = ExactVariantUnion; canonical example: +type Weekend = Sat | Sun",
+    "associated_subset": "exact +type Identifier = ExactVariantUnion; no other visibility or omitted + form is admitted",
     "bare_subset_assignment": "rejected",
-    "parser_cover_grammar": false
+    "parser_cover_grammar": true
   },
   "trait_contracts": {
     "Ord<T>": {
@@ -72,18 +72,18 @@
     }
   },
   "rules": [
-    {"rule_id":"EDC-R001","title":"accepted design remains nonactivatable","contract":"All three facilities are canonical PREVIEW_DESIGN decisions with no current source, grammar, implementation, publication, promotion, P1 closure, or product-lane effect."},
-    {"rule_id":"EDC-R002","title":"order role is owner-specific and singular","contract":"A future Enum may select exactly one of enum#increasing or enum#decreasing; both words remain ordinary identifiers outside the exact Enum introducer role."},
+    {"rule_id":"EDC-R001","title":"accepted facilities are stable design surfaces","contract":"All three facilities are canonical STABLE_DESIGN decisions in grammar and normative design. Their adoption closes no existing P1 and claims no parser, checker, MIR, runtime, tooling, publication, or product execution."},
+    {"rule_id":"EDC-R002","title":"order role is owner-specific and singular","contract":"An Enum may select exactly one of enum#increasing or enum#decreasing; both words remain ordinary identifiers outside the exact Enum introducer role."},
     {"rule_id":"EDC-R003","title":"semantic order is representation-independent","contract":"SemanticOrderRank and the ordered VariantId vector determine declaration order but are never VariantId numeric value, raw value, tag, discriminant, serialization, layout, ABI, match priority, range, iteration, or transition authority."},
     {"rule_id":"EDC-R004","title":"minimum Ord synthesis profile is closed","contract":"Only a nominal nonempty payload-free nongeneric Enum is eligible; compare borrows, is pure, synchronous, throws Never, consumes nothing, observes sign only, and returns zero exactly for the same EnumId and VariantId."},
     {"rule_id":"EDC-R005","title":"Ord synthesis has one evidence origin","contract":"The marker forms exactly one whole-Enum Ord witness and zero case witnesses; an explicit same-ground conformance conflicts and no priority, specialization, provider lookup, fallback, or operator glyph activation exists."},
     {"rule_id":"EDC-R006","title":"order evolution has independent residue","contract":"Marker, direction, case order, and case-universe changes update ordered-vector and behavior digests while stable VariantIds remain stable; incompatible summaries reject at import or link validation."},
-    {"rule_id":"EDC-R007","title":"display mapping is all-or-none and enum-owned","contract":"The future ~> token belongs only to Enum case mapping, requires exactly one restricted String template for every inhabitable case once selected, permits duplicate display strings, and supplies no case-name fallback."},
+    {"rule_id":"EDC-R007","title":"display mapping is all-or-none and enum-owned","contract":"The ~> token belongs only to Enum case mapping, requires exactly one restricted String template for every inhabitable case once selected, permits duplicate display strings, and supplies no case-name fallback."},
     {"rule_id":"EDC-R008","title":"display template has a bounded borrowed scope","contract":"Only named payload binders and admitted read-only paths rooted in them are visible; each hole requires one preselected Display witness and cannot move, mutate, throw, suspend, spawn, escape, or perform hidden provider or locale lookup."},
     {"rule_id":"EDC-R009","title":"display synthesis has one evidence origin","contract":"A complete mapping forms exactly one whole-Enum Display witness and zero case witnesses; an explicit same-ground conformance conflicts and runtime witness lookup and source-order fallback are zero."},
     {"rule_id":"EDC-R010","title":"display is behavior not identity","contract":"Display text is not raw, serialization, parsing, localization, redaction, ABI, layout, or reverse-map identity; a template mutation changes only Display behavior residue."},
     {"rule_id":"EDC-R011","title":"exact variant is a finite owner identity","contract":"The minimum exact-variant type is payload-free (EnumId, VariantId), disjoint from sibling variants, independent of declaration order and representation, and never an open runtime subtype test."},
-    {"rule_id":"EDC-R012","title":"associated subset alias is explicit","contract":"A future Enum member uses MemberVisibility? type Name = ExactVariantUnion; bare assignment is rejected and case/type namespace collision is deterministic."},
+    {"rule_id":"EDC-R012","title":"associated subset alias is explicit and plus-owned","contract":"An Enum member uses exactly +type Name = ExactVariantUnion; omitted +, every other visibility, and bare assignment are rejected, and case/type namespace collision is deterministic."},
     {"rule_id":"EDC-R013","title":"subset normalization is finite and same-owner","contract":"VariantSubsetType contains one EnumId, a deduplicated order-insensitive allowed VariantId set, and a frozen enum-universe digest; cross-owner unions reject. If the allowed set equals that complete frozen universe, the canonical type is the nominal owner Enum and the alias spelling has no independent identity."},
     {"rule_id":"EDC-R014","title":"widening and narrowing are asymmetric","contract":"Exact variants and subsets widen to their owner through VariantOwnerWidening; subset inclusion permits subset widening, while owner-to-subset and unrelated subset narrowing require an explicit checked boundary."},
     {"rule_id":"EDC-R015","title":"subset patterns use exact finite coverage","contract":"An admitted subset pattern uses its frozen allowed set for usefulness, exhaustiveness, guards, and Phi facts; it does not invoke general subtype search or alter the closed-Union alternative judgment."},
@@ -101,6 +101,7 @@
     "rule_count": 18,
     "fixture_count": 35,
     "accepted_surface_count": 3,
+    "stable_design_facility_count": 3,
     "source_activation_count": 0,
     "generated_ord_witness_max": 1,
     "generated_display_witness_max": 1,

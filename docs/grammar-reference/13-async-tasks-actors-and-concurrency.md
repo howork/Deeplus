@@ -16,7 +16,8 @@
 - `for await` 비동기 순회;
 - `actor`, 선택적 `#mailbox(capacity: N)`, `on`, `request`;
 - actor protocol의 `send`와 `request` 요구 사항;
-- `receiver ~ message(...)` 형태의 비동기 메시지 전송.
+- `receiver ~ selector ...` message call과
+  `actor :~ operation ...` actor-transport call.
 
 이 장의 현행 예제는
 `examples/guide/review-corpus.md`에서 `expected_outcome: accept`,
@@ -66,7 +67,7 @@ StructuredTaskScope ::= "task" "scope" Block ;
 소속된다.
 
 `receiver ~ spawn`은 별도의 task-spawn suffix가 아니다. 일반
-`MessageSuffix`가 `spawn` selector를 파싱하고 HIR이 예약된 의미를
+`TildeCallLed`가 `spawn` selector를 파싱하고 HIR이 예약된 의미를
 결정한다. 같은 표면을 소유하는 두 번째 suffix 문법은 허용되지 않는다.
 
 ### 액터와 액터 프로토콜
@@ -102,30 +103,34 @@ ActorProtocolRequestRequirement ::= "request" Identifier ParameterList?
 one-way handler이고 `request`는 응답형을 갖는 handler다. protocol의
 `send`와 `request`는 각각 이 두 handler 계열의 요구 사항이다.
 
-### 메시지 접미 구문
+### 통합 message와 actor-transport 구문
 
 ```ebnf
-MessageSuffix ::= "~" MessageSelector MessagePayload?
-                  TrailingClosureGroup? ;
+TildeCallLed ::= TildeCallToken MessageSelector
+                 TildeArgumentSequence? TrailingClosureGroup? ;
+TildeCallToken ::= "~" | ":~" ;
 MessageSelector ::= Identifier | QualifiedMessageSelector ;
 QualifiedMessageSelector ::= TypeRef "::" Identifier
                              ("::" Identifier)? ;
-MessagePayload ::= AtomicCallArgument | MessagePayloadEnvelope ;
+TildeArgumentSequence ::= TildeArgument ("," TildeArgument)* ;
 TrailingClosureGroup ::= TrailingClosureArgument+ ;
 ```
 
-`MessageSuffix`는 ordinary function의 `ArgumentList`를 재사용하지 않는다.
-메시지는 payload가 없거나 하나만 있다.
+ordinary/message/actor-message 호출은 하나의 `CallExpr`와 같은 ordered
+argument family를 공유한다. message 전용 payload aggregate는 없다.
 
-- `worker ~ ping`: payload 없음.
-- `worker ~ run job`: scalar payload 하나.
-- `worker ~ moveTo (x, y)`: Tuple payload 하나.
-- `worker ~ configure(name: "Ada", retries: 3)`: Record payload 하나.
+- `worker ~ ping`: 인수 0개.
+- `worker ~ run job`: positional 인수 하나.
+- `worker ~ moveTo x, y`: positional 인수 두 개.
+- `worker ~ moveTo (x, y)`: Tuple 인수 하나.
+- `worker ~ configure base, retries: 3`: positional 하나와 named 하나.
+- `actor :~ submit move job`: actor one-way operation.
+- `actor :~ find id: id`: actor request operation.
 
-괄호 안이 전부 positional이면 Tuple이고 전부 named이면 static-label
-Record다. positional과 named를 섞지 않는다. 예전의 빈 괄호
-`worker ~ ping()`은 payload 없음으로 정규화하는 호환 표기지만 canonical
-formatter는 `worker ~ ping`으로 쓴다.
+`worker ~ ping()`은 zero-argument 호환 표기가 아니다. 괄호는 ordinary
+argument container가 아니라 식 자체이므로 zero-argument message는
+`worker ~ ping`으로 쓴다. `worker ~ moveTo (x, y)`의 괄호는 Tuple 값
+하나를 만든다.
 
 selector는 plain identifier, `SomeProtocol::selector`,
 `Type::ExtensionSet::selector`를 보존할 수 있다. grammar는 경로만
@@ -133,9 +138,9 @@ selector는 plain identifier, `SomeProtocol::selector`,
 identity를 정적으로 결정한다. 런타임 문자열 lookup, source order에
 따른 overload 승자, ordinary method fallback은 없다.
 
-ordinary call과 message call은 trailing closure 구조만 공유한다.
-closure가 하나면 unnamed/named가 모두 가능하고, 둘 이상이면 모두
-서로 다른 label을 가져야 한다.
+모든 call mode는 trailing closure 구조도 공유한다. closure가 하나면
+unnamed/named가 모두 가능하고, 둘 이상이면 모두 서로 다른 label을
+가져야 한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
@@ -144,7 +149,8 @@ worker ~ process job
     failure:{ error => recover(error) }
 ```
 
-이 표면은 closure를 actor-safe로 만들지 않는다. actor isolation을
+이 예제는 ordinary message mode다. `:~` 표면도 closure를 actor-safe로
+만들지 않는다. actor isolation을
 건너면 capture environment가 transfer 가능하고 borrow/inout가 escape하지
 않으며 effect, error, suspension, cleanup 책임을 모두 만족해야 한다.
 
@@ -341,14 +347,14 @@ actor Directory {
 
 def#async inspect(directory: Directory, id: Int) -> Status
     throws ActorMessageError | LookupError = {
-    let Result::ok(task) = directory ~ find(id)
+    let Result::ok(task) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
 
     return await task
 }
 ```
 
-`directory ~ find(id)`가 실패하는 순간에는 task 자체가 아직 없으므로
+`directory :~ find id: id`가 실패하는 순간에는 task 자체가 아직 없으므로
 `mailboxFull` 또는 `receiverClosedBeforeAdmission`만 admission error로
 다룬다. `Result::ok(task)` 뒤에는 correlation이 존재하고, `await task`는
 handler의 `LookupError` 또는 유일한 terminal transport failure인
@@ -383,9 +389,9 @@ fairness, distributed delivery, exactly-once delivery는 보장하지 않는다.
 
 ### 메시지 평가와 커밋
 
-메시지 전송은 receiver를 정확히 한 번 평가하고, 0/1 payload aggregate의
-child expression을 왼쪽에서 오른쪽으로 정확히 한 번 평가한다. 그 뒤
-trailing closure environment를 source order로 획득한다. prepare
+메시지 전송은 receiver를 정확히 한 번 평가하고, ordered argument를
+왼쪽에서 오른쪽으로 정확히 한 번 평가한다. 그 뒤 trailing closure
+environment를 source order로 획득한다. prepare
 단계에서는 아직 owner를 넘기지 않는다. 성공한 enqueue commit이 유일한
 소유권 이전점이다.
 
@@ -449,13 +455,14 @@ def#async fetch(url: String) -> Bytes
     throws NetworkError
     effects {io}
 = {
-    return await client ~ get(url)
+    return await (client ~ get url)
 }
 ```
 
 호출자는 `url`을 한 번 평가하고 이름 있는 `def#async` 호출로
 `Bytes` 성공 channel, `NetworkError` 오류 집합과 `io` effect를 가진 task
-책임을 얻는다. body의 `client ~ get(url)` message/call 결과를 `await`하는
+책임을 얻는다. body의 `client ~ get url` message/call 전체를 괄호로
+묶어 `await`하는
 지점만 명시적 suspension point이며 성공하면 그 `Bytes`를 반환한다.
 failure나 Cancellation은 숨은 `Option`으로 바뀌지 않고 cleanup region을
 통과해 선언된 channel로 전파된다. 실제 task 생성·suspend·resume과 backend
@@ -522,18 +529,18 @@ public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
 = {
     task scope {
-        let Result::ok(_) = counter ~ add(value: 1)
+        let Result::ok(_) = counter :~ add value: 1
         else Result::err(error) => throw error
-        let Result::ok(_) = counter ~ add(value: 2)
+        let Result::ok(_) = counter :~ add value: 2
         else Result::err(error) => throw error
-        let Result::ok(replyTask) = counter ~ current()
+        let Result::ok(replyTask) = counter :~ current
         else Result::err(error) => throw error
         return await replyTask
     }
 }
 ```
 
-두 `add` 전송과 한 `current` 요청은 source order로 준비된다. 각 `~`는
+두 `add` 전송과 한 `current` 요청은 source order로 준비된다. 각 `:~`는
 receiver와 argument를 한 번 평가하고 mailbox capacity/admission을 통과한
 enqueue commit에서만 message와 이동 owner를 actor에 넘긴다. 전송의
 `Result::ok`는 성공 enqueue를, 요청의 `Result::ok(replyTask)`는 reply를
@@ -576,12 +583,12 @@ public actor Worker {
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
 = {
-    return worker ~ run(move job)
+    return worker :~ run move job
 }
 ```
 
 이 예제의 생략된 clause는 `logical_unbounded_v1`을 선택한다. `move job`의
-owner는 enqueue commit에서만 actor로 넘어간다. `worker ~ run(move job)`의
+owner는 enqueue commit에서만 actor로 넘어간다. `worker :~ run move job`의
 정적 결과는 `Result<Unit, error ActorMessageError>`이고 receiver와 `job`을
 한 번씩 평가한다. admission이나 enqueue가 실패하면 `job`은 actor에
 부분 전달되지 않고 caller 쪽 실패 경계가 owner를 보존한다. 성공하면
@@ -601,6 +608,8 @@ request task는 생성되지 않는다. logical-unbounded는 물리적 무한 �
 | actor 경계의 borrow 또는 `inout` payload | 격리 위반으로 거부 |
 | actor state의 외부 직접 변경 | actor isolation 위반으로 거부 |
 | message selector의 ordinary method 폴백 | 거부 |
+| actor operation에 `~` 사용 | 거부; exact actor transport는 `:~`를 사용 |
+| actor `:~` 호출을 `defer`에 등록 | admission `Result`를 버릴 수 없으므로 거부 |
 | request admission `Result`를 풀지 않고 바로 `await` | 거부 |
 | `catch ...: Cancellation`으로 회복 | Cancellation/Error 분리 위반 |
 | lexical scope를 벗어나는 detached child | 현행 authority 없음 |
@@ -689,8 +698,8 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
   refutable binding 규칙을 따른다.
 - `AsyncSequence<T, E>`의 `E`는 ErrorSet이며 Cancellation을 포함하지
   않는다.
-- actor message는 `~` suffix를 사용하지만 ordinary method dispatch와
-  actor admission은 서로 다른 의미 owner다.
+- actor transport는 terminal `:~` call mode를 사용하고 ordinary `~`
+  message dispatch로 fallback하지 않는다.
 - shared-state closure는 중단할 수 없다. 그 안에서 `await`하거나 scoped
   observation을 escape하면 거부된다.
 
@@ -699,12 +708,14 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 - `spec/grammar/deeplus.ebnf`
   - `DefIntroducer`, `AsyncForLoop`, `TaskGroupStmt`, `SpawnExpr`,
     `StructuredTaskScope`, `ActorDecl`, `ActorProtocolDecl`,
-    `MessageSuffix`, `AtScopeExpr`.
+    `TildeCallLed`, `TildeArgumentSequence`, `AtScopeExpr`.
 - `spec/language.md`
   - 비동기 함수·task·suspension, actor와 message, Preview·비현행 경계.
 - `spec/contracts/actor-concurrency-coherence.json`
   - `ACC-R001..R018`, mailbox profile, actor admission, structured task,
     Cancellation, ordering, MIR와 제품 증거 경계.
+- `spec/contracts/unified-call-actor-transport.json`
+  - 통합 `CallExpr`, `~`/`:~`, argument channel과 actor result contract.
 - `spec/contracts/type-flow-callable-coherence.json`
   - 이름 있는 async 선언과 비활성 async callable literal의 구분.
 - `spec/contracts/shared-state-coherence.json`

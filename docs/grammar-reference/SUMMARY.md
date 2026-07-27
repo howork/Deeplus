@@ -62,9 +62,6 @@
 | [`dynamic_trait_attach_detach_stateless_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-dynamic_trait_attach_detach_stateless_preview_design) | `PREVIEW_DESIGN` | Stateless dynamic trait attach/detach design placeholder |
 | [`dynamic_unsafe_quarantine_scope_msp`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-dynamic_unsafe_quarantine_scope_msp) | `PREVIEW_DESIGN` | Dynamic/unsafe quarantine scope minimum sound profile |
 | [`effectful_static_activation`](21-preview-design-types-objects-and-traits.md#preview-feature-effectful_static_activation) | `PREVIEW_DESIGN` | Effectful static activation |
-| [`enum_case_display_mapping_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-enum_case_display_mapping_preview_design) | `PREVIEW_DESIGN` | Enum case Display mapping Preview design |
-| [`enum_declaration_order_ord_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-enum_declaration_order_ord_preview_design) | `PREVIEW_DESIGN` | Enum declaration-order Ord derivation Preview design |
-| [`enum_exact_variant_subset_alias_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-enum_exact_variant_subset_alias_preview_design) | `PREVIEW_DESIGN` | Enum exact-variant subset alias Preview design |
 | [`explicit_broadcast_marker_msp`](22-preview-design-collections-context-and-control.md#preview-feature-explicit_broadcast_marker_msp) | `PREVIEW_DESIGN` | Explicit NumericArray broadcast operand marker candidate |
 | [`explicit_context_argument_ampersand_spelling`](22-preview-design-collections-context-and-control.md#preview-feature-explicit_context_argument_ampersand_spelling) | `PREVIEW_DESIGN` | \`&expr\` context-argument spelling candidate |
 | [`extension_dot_call_sugar`](21-preview-design-types-objects-and-traits.md#preview-feature-extension_dot_call_sugar) | `PREVIEW_DESIGN` | Extension dot-call sugar |
@@ -75,8 +72,8 @@
 | [`first_class_witness_value_not_current`](21-preview-design-types-objects-and-traits.md#preview-feature-first_class_witness_value_not_current) | `PREVIEW_DESIGN` | First-class Witness value not current |
 | [`freeze_snapshot_view_responsibility_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-freeze_snapshot_view_responsibility_preview_design) | `PREVIEW_DESIGN` | Freeze snapshot view responsibility Preview design |
 | [`generic_named_extension_set_target`](21-preview-design-types-objects-and-traits.md#preview-feature-generic_named_extension_set_target) | `PREVIEW_DESIGN` | Generic named extension set target |
-| [`guard_callable_refinement_summary_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-guard_callable_refinement_summary_preview_design) | `PREVIEW_DESIGN` | \`def#guard\` refinement summary |
 | [`immutable_first_collection_ownership_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-immutable_first_collection_ownership_preview_design) | `PREVIEW_DESIGN` | Immutable-first collection ownership Preview design |
+| [`integer_imaginary_literal_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-integer_imaginary_literal_preview_design) | `PREVIEW_DESIGN` | Integer-magnitude imaginary literal Preview design |
 | [`literal_shaped_closed_record_type_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-literal_shaped_closed_record_type_surface_preview_design) | `PREVIEW_DESIGN` | Literal-shaped closed Record type surface Preview design |
 | [`literal_shaped_collection_type_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-literal_shaped_collection_type_surface_preview_design) | `PREVIEW_DESIGN` | Literal-shaped collection type surface Preview design |
 | [`local_witness_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-local_witness_preview_design) | `PREVIEW_DESIGN` | Local witness preview-design |
@@ -84,13 +81,18 @@
 | [`negative_impl_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-negative_impl_preview_design) | `PREVIEW_DESIGN` | Negative impl preview-design |
 | [`nullsafe_control`](22-preview-design-collections-context-and-control.md#preview-feature-nullsafe_control) | `PREVIEW_DESIGN` | Nullsafe control |
 | [`numeric_array_elementwise_power_msp`](20-preview-gated-reference.md#preview-feature-numeric_array_elementwise_power_msp) | `PREVIEW` | NumericArray elementwise power law |
+| [`numeric_capability_lattice_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-numeric_capability_lattice_preview_design) | `PREVIEW_DESIGN` | Closed numeric capability lattice Preview design |
+| [`option_let_question_binding_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-option_let_question_binding_preview_design) | `PREVIEW_DESIGN` | Option optional payload binding Preview design |
 | [`prototype_delta`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-prototype_delta) | `PREVIEW_DESIGN` | Prototype delta |
+| [`rational_operator_completion_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-rational_operator_completion_preview_design) | `PREVIEW_DESIGN` | Rational operator completion Preview design |
 | [`sealed_multimethod_family`](21-preview-design-types-objects-and-traits.md#preview-feature-sealed_multimethod_family) | `PREVIEW_DESIGN` | Sealed multimethod family |
 | [`session_protocol_lite_provider`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-session_protocol_lite_provider) | `PREVIEW_DESIGN` | Session protocol lite provider |
 | [`solver_backed_general_refinement`](21-preview-design-types-objects-and-traits.md#preview-feature-solver_backed_general_refinement) | `PREVIEW_DESIGN` | Solver backed general refinement |
 | [`specialization_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-specialization_preview_design) | `PREVIEW_DESIGN` | Specialization preview-design |
 | [`state_machine_source_syntax`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-state_machine_source_syntax) | `PREVIEW_DESIGN` | State machine source syntax |
 | [`static_once_value`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-static_once_value) | `PREVIEW_DESIGN` | Static once value |
+| [`std_math_calculus_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-std_math_calculus_preview_design) | `PREVIEW_DESIGN` | std::math calculus Preview design |
+| [`std_math_special_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-std_math_special_preview_design) | `PREVIEW_DESIGN` | std::math special functions Preview design |
 | [`structural_prototype_extension`](21-preview-design-types-objects-and-traits.md#preview-feature-structural_prototype_extension) | `PREVIEW_DESIGN` | Structural prototype extension |
 | [`use_site_projection_dmad`](21-preview-design-types-objects-and-traits.md#preview-feature-use_site_projection_dmad) | `PREVIEW_DESIGN` | Use-site generic projection D-MAD |
 | [`weak_atomic_ordering`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-weak_atomic_ordering) | `PREVIEW_DESIGN` | Weak atomic ordering |

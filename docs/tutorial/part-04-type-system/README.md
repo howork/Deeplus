@@ -31,11 +31,12 @@ parameter channel, effect/error/cancellation 책임을 identity에 남긴다.
 
 ## 흔한 오해와 미니 사례
 
-`def#guard`가 true를 돌려주면 값의 타입이 자동으로 좁혀진다고 생각하거나,
+`def#guard`라는 이름만으로 어떤 호출도 좁혀진다고 생각하거나,
 `A | B`를 compiler가 필요할 때 만드는 동적 묶음으로 보는 것이 흔한
-오해다. 미니 사례에서 raw `Int`와 checked `Port`를 서로 다른 이름으로
-두고, Bool predicate의 true edge와 `Port::check`의 success payload를
-비교한다. 두 경계는 비슷한 조건을 읽더라도 생성하는 정적 증거가 다르다.
+오해다. guard narrowing은 검증된 summary, direct truth-test와 stable
+actual을 요구한다. 미니 사례에서 raw `Int`의 branch-local fact와
+checked `Port` success payload를 비교한다. 두 경계는 비슷한 조건을
+읽더라도 생성하는 정적 증거가 다르다.
 
 ## 이 부의 공통 원칙
 

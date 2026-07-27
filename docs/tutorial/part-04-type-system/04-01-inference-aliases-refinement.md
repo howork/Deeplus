@@ -110,8 +110,10 @@ predicate를 만들지 않고 `PROVED` construction을 사용할 수 있다.
 ## 8. 다른 기능과의 연결
 
 refinement 성공 payload는 pattern matching과 flow proof에 연결된다.
-`def#guard`는 pure total `Bool` callable이지만 현행 API metadata에
-refinement-summary owner가 없으므로 호출 자체가 타입을 좁히지 않는다.
+`def#guard`는 pure total `Bool` callable이다. 검증된
+`GuardSummaryV1`이 있고 stable actual을 직접 truth-test하면 true/false
+edge에 보완적인 branch-local refinement fact를 남긴다. stored Bool,
+wrapper 또는 unstable actual은 좁히지 않는다.
 MIR lowering도 `as?`, `as!`, `check`의 Option/Defect/Result edge를 서로
 바꾸지 않는다.
 

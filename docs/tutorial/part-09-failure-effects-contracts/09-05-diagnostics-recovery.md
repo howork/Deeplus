@@ -90,12 +90,12 @@ named-rest, `let @ lazy`, unit middle dot, Facet probe, quarantine probe가
 
 ### 판정 추적
 
-예를 들어 prefix 없는 `raw"..."`를 보면 lexer가 legacy shape를 bounded
-recognition하고 `#raw"..."` 대안을 가리키는 전용 진단을 낸다. 그
-다음 parser가 편의상 current string node를 만들거나 checker가 type을
-붙이지 않는다. admitted AST, HIR-H1, MIR residue가 모두 0인지가 recovery
-경계의 핵심 검증이다. 수정된 source는 처음부터 다시 lexer→parser→checker
-순으로 판정한다.
+예를 들어 old named-rest `options**: T`를 보면 parser가 legacy shape를
+bounded recognition하고 `options***: T` 대안을 가리키는 전용 진단을
+낸다. 그 다음 parser가 편의상 current parameter node를 만들거나
+checker가 call shape를 붙이지 않는다. admitted AST, HIR-H1, MIR
+residue가 모두 0인지가 recovery 경계의 핵심 검증이다. 수정된 source는
+처음부터 다시 lexer→parser→checker 순으로 판정한다.
 
 미니 사례로 old named-rest `options**: T`가 보이면 triple-star
 `options***: T`를 제안할 수 있다. 그러나 quick fix는 call shape와 label,

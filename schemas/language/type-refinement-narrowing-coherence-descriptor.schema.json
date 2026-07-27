@@ -13,7 +13,7 @@
     "arm_order": {"type": "array", "items": {"type": "string"}},
     "arms": {"type": "array", "items": {"$ref": "#/$defs/arm"}},
     "union_pairs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/union_pair"}},
-    "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_OPAQUE"]},
+    "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_SUMMARY", "DEF_GUARD_STORED_BOOL", "DEF_GUARD_INVALID"]},
     "guard_result_type": {"enum": ["Bool", "NON_BOOL", "NOT_APPLICABLE"]},
     "boundary_kind": {"enum": ["NONE", "CONSTRUCTION", "TYPED_PATTERN", "ARGUMENT", "RETURN", "AS_OPTION", "AS_ASSERT", "CHECK_RESULT", "IMPLICIT"]},
     "proof_state": {"enum": ["PROVED", "DISPROVED", "UNKNOWN", "NOT_APPLICABLE"]},
@@ -36,7 +36,7 @@
       "properties": {
         "arm_id": {"type": "string"}, "kind": {"enum": ["PATTERN", "OTHERWISE"]},
         "coverage_cells": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
-        "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_OPAQUE"]},
+        "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_SUMMARY", "DEF_GUARD_STORED_BOOL", "DEF_GUARD_INVALID"]},
         "binder_contract": {"type": "array", "items": {"type": "string"}},
         "entry_place_state": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
         "exit_place_state": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}

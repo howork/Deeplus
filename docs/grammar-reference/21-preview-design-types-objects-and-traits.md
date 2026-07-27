@@ -5,39 +5,442 @@
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
-<!-- deeplus-preview-feature-example: guard_callable_refinement_summary_preview_design; registry-status: PREVIEW_DESIGN -->
-<a id="preview-feature-guard_callable_refinement_summary_preview_design"></a>
+<!-- deeplus-preview-feature-example: option_let_question_binding_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-option_let_question_binding_preview_design"></a>
 
-## `def#guard` refinement summary
+## Option optional-binding sugar
+
+> **Feature metadata**
+> - Feature ID: `option_let_question_binding_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `LANGUAGE / PARSER / CHECKER`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+이 후보는 `Option<T>`의 정확히 한 겹을 검사하고 `::some` payload를
+기존 pattern engine으로 전달하는 짧은 표면이다. 새로운 unwrap 연산,
+truthiness, nullability나 runtime node가 아니다.
+
+**제안 표면**
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/option-optional-binding-preview-design.json -->
+```deeplus
+// Preview Design — current source로 활성화할 수 없다.
+if let? value = maybeValue {
+    consume(value)
+}
+
+while let? item = iterator ~ next {
+    consume(item)
+}
+
+let? config = loadConfig() else {
+    return defaultConfig()
+}
+```
+
+**정적 판정과 상호작용**
+정규화는 각각 `if let ::some(value) = maybeValue`,
+`while let ::some(item) = ...`, 실패 disposition이 명시된 guarded
+`let`으로 환원된다. `let?`의 `let`과 `?` 사이에는 trivia가 없다.
+subject는 정확히 한 번 평가하고 structural test가 성공하기 전에는
+move/borrow/binding을 commit하지 않는다. nested `Option<Option<T>>`은
+한 번에 한 겹만 열며 Result, arbitrary Enum, force unwrap, propagation,
+bare local `let?` without `else`, `for`, comprehension, match와 condition
+chain으로 확장하지 않는다.
+
+**평가·소유권·오류**
+subject는 ordinary expression 규칙으로 정확히 한 번 평가한다. `::some`
+검사가 끝나기 전에 payload move, borrow 또는 pattern binding을
+commit하지 않으며 mismatch는 `if`의 false path, `while`의 종료,
+guarded `let`의 명시적 `else`로만 전달한다. `Option` 바깥의 Error,
+Defect 또는 effect를 흡수하거나 nullable truthiness로 바꾸지 않는다.
+
+**현행 대안과 이행**
+현행 source는 `if let ::some(value) = maybeValue`, `while let
+::some(item) = ...`와 명시적 guarded `let`을 사용한다. formatter나 IDE는
+기존 pattern을 `let?`로 자동 축약하지 않으며 Result, arbitrary Enum,
+force unwrap 또는 propagation spelling을 이 후보와 합치지 않는다.
+
+**활성화 선행 조건**
+exact EBNF와 trivia/recovery, Option 한 겹의 type rule, mismatch
+disposition, ownership commit 및 nested-pattern 상호작용을 먼저
+ratify해야 한다. positive/negative/boundary corpus, diagnostic/fix-it,
+formatter/LSP round-trip과 target-bound checker receipt가 모두 필요하다.
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+## Numeric capability와 Rational completion
+
+이 묶음은 `spec/contracts/numeric-system-std-math.json`의
+`PREVIEW_DESIGN_NONACTIVATABLE` 부분이다. `std::math` core facade 자체는
+현행 `STDLIB_PROFILE`이며, 이 절은 그 facade를 활성화하는 내용이 아니다.
+
+초기 capability lattice는 `Numeric`, `ExactNumeric`,
+`ApproximateNumeric`, `IntegralNumeric`, `RealScalar`, `BinaryFloating`,
+`ComplexScalar`의 정확한 일곱 이름만 가진다. capability는 generic
+요구를 표현하지만 representation subtyping, implicit conversion,
+`Ord`/`Hash`/`Keyable`, remainder, transcendental function 또는 glyph
+activation을 자동으로 제공하지 않는다.
+
+Rational completion 후보는 다음 세 경계를 묶는다.
+
+- `Rational / Rational -> Rational`; 0 divisor는 commit 전에
+  `RationalError::divisionByZero`다.
+- `Rational ^ ExactBuiltinInteger -> Rational`; 음수 지수를 허용하지만
+  0의 음수 거듭제곱은 commit 전에 실패한다.
+- `remainderTrunc`, `modEuclid`, `divRemTrunc`의 named API를 분리한다.
+  Rational remainder glyph는 여전히 deferred다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design — current source로 활성화할 수 없다.
+let half: Rational = <1/1> / <2/1>
+let reciprocalPower: Rational = <2/3> ^ -2
+let remainder = <7/3> ~ remainderTrunc <2/3>
+```
+
+붙은 정수 허수 literal `4i`도 이 Preview 묶음이다. unsuffixed 10진
+정수만 허용하고 `Complex<Float64>`로 정규화한다. `4u8i`, `0x4i`,
+`4index`와 결과 타입으로 유도하는 hidden adaptation은 거부한다.
+special function과 calculus는 별도 Preview profile이며, calculus는
+`Result<Estimate<T>, error NumericAnalysisError<T>>`처럼 오차와 실패를
+드러낸다. correctly-rounded/portable-accuracy, symbolic differentiation,
+automatic differentiation 주장은 없다.
+
+<!-- deeplus-preview-feature-example: numeric_capability_lattice_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-numeric_capability_lattice_preview_design"></a>
+
+## 수치 capability lattice
+
+> **Feature metadata**
+> - Feature ID: `numeric_capability_lattice_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `TYPE_SYSTEM / PRELUDE`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+generic 수치 알고리즘이 구체 표현 형식 하나에 묶이지 않으면서도 필요한
+연산 능력을 정확히 요구할 수 있는지 검토한다. 후보 lattice는
+`Numeric`, `ExactNumeric`, `ApproximateNumeric`, `IntegralNumeric`,
+`RealScalar`, `BinaryFloating`, `ComplexScalar`의 정확한 일곱 이름만
+갖는다. 이 이름은 값의 표현이나 상속 계층이 아니라 capability 요구를
+기술하기 위한 분류다.
+
+**제안 표면**
+아래 코드는 후보 이름을 generic 제약에서 읽는 방법을 보여 주는
+설계 예시다. 현재 parser·checker가 이 표면을 수용한다는 뜻은 아니다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design: exact 합계를 요구하는 후보 API
+public def sumExact<T: ExactNumeric>(values: List<T>) -> T = {
+    var total = T ~ zero
+    for value in values {
+        total += value
+    }
+    return total
+}
+```
+
+**정적 판정과 상호작용**
+membership는 independently resolved generic requirement일 뿐
+representation subtyping, implicit conversion, 공통 ABI 또는 동일 type
+identity를 만들지 않는다. 또한 `Numeric`이라는 이유만으로 `Ord`,
+`Hash`, `Keyable`, remainder, transcendental function이나 새 operator
+glyph를 얻지 않는다. overload resolution은 normalized argument type과
+명시된 capability만 사용하고 expected result 또는 runtime value로
+후보를 고르지 않는다.
+
+**평가·소유권·오류**
+lattice 자체는 runtime dispatch, allocation, mutation, owner transfer나
+새 오류를 만들지 않는 정적 분류다. 실제 연산의 overflow, division by
+zero, approximation error와 ownership은 선택된 concrete operation의
+기존 계약을 그대로 따른다. capability 확인 실패는 실행 전 checker
+진단이어야 하며 dynamic fallback으로 바뀌지 않는다.
+
+**현행 대안과 이행**
+현행 코드는 `Int`, `UInt`, `Float64`, `Rational`,
+`Complex<Float64>`처럼 닫힌 concrete type 또는 기존 Trait bound를
+명시한다. tooling은 이 코드를 후보 lattice로 자동 rewrite하지 않으며
+기존 Trait 이름을 후보 capability의 alias로 재해석하지 않는다.
+
+**활성화 선행 조건**
+Design_이 정확한 partial order와 각 capability의 최소 operation set을
+정하고, Spec_이 generic satisfaction 및 ambiguity 규칙을 고정해야 한다.
+그 뒤 checker/lowering 계약, diagnostic oracle, 표준 라이브러리
+conformance matrix와 target-bound 실행 증거가 모두 있어야 한다.
+
+<!-- deeplus-preview-feature-example: rational_operator_completion_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-rational_operator_completion_preview_design"></a>
+
+## Rational 연산 완성 후보
+
+> **Feature metadata**
+> - Feature ID: `rational_operator_completion_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `TYPE_SYSTEM / PRELUDE / DIAGNOSTICS`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+`Rational`의 exact 성질을 보존하면서 나눗셈, 정수 지수 거듭제곱과
+나머지 계열의 빈틈을 닫을 수 있는지 검토한다. 목표는 새 임의 glyph를
+허용하는 것이 아니라 이미 고정된 연산자와 이름 있는 API의 결과·실패
+경계를 명시하는 것이다. remainder glyph는 이 후보에서도 deferred다.
+
+**제안 표면**
+다음은 후보 결과 형식을 설명하는 예시이며 Preview Design 밖의 current
+source 권위를 만들지 않는다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design: exact Rational 연산 후보
+let half: Rational = <1/1> / <2/1>
+let reciprocalPower: Rational = <2/3> ^ -2
+let remainder: Rational = <7/3> ~ remainderTrunc <2/3>
+```
+
+**정적 판정과 상호작용**
+division은 `Rational / Rational -> Rational`, integral power는
+`Rational ^ ExactBuiltinInteger -> Rational`의 닫힌 행이다. 음수 지수는
+admitted이지만 지수 type을 임의 `Numeric`으로 넓히지 않는다.
+`remainderTrunc`, `modEuclid`, `divRemTrunc`는 서로 다른 rounding
+정책을 이름으로 드러내며 implicit mixed-type conversion이나 custom
+operator 등록을 유도하지 않는다.
+
+**평가·소유권·오류**
+0 divisor는 결과를 commit하기 전에
+`RationalError::divisionByZero`로 실패한다. 0을 음수 지수로 올리는
+경우도 commit 전에 실패해야 한다. 실패 전 operand 평가 순서,
+temporary ownership 및 cleanup은 ordinary call/고정 연산자의 현행
+규칙을 따르며 부분 결과를 관측 가능하게 남기지 않는다.
+
+**현행 대안과 이행**
+현행 사용자는 명시적인 Rational library function으로 같은 계산을
+작성한다. formatter나 IDE는 named remainder를 glyph로 바꾸지 않고,
+integer·floating 계산을 Rational로 자동 승격하지 않으며, 기존
+division의 오류 정책을 추측하여 rewrite하지 않는다.
+
+**활성화 선행 조건**
+exact result/error algebra, `ExactBuiltinInteger` 폐쇄 집합, zero와 부호
+경계, canonical normalization 및 cross-module metadata를 확정해야 한다.
+positive/negative/boundary corpus, diagnostics, xVM/LLVM parity와
+결정적 실행 receipt가 확보되기 전에는 source gate를 만들 수 없다.
+
+<!-- deeplus-preview-feature-example: integer_imaginary_literal_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-integer_imaginary_literal_preview_design"></a>
+
+## 정수 허수 리터럴 후보
+
+> **Feature metadata**
+> - Feature ID: `integer_imaginary_literal_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `LEXER / PARSER / TYPE_SYSTEM`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+`3.0 + 4.0i`와 같은 Deeplus 복소수 표면에서 정수처럼 보이는 허수부도
+`4i`로 간결하게 쓸 수 있는지 검토한다. 후보는 붙어 있는 `i`를 arbitrary
+identifier suffix가 아니라 unsuffixed 10진 정수 하나에만 적용하며
+lexical maximal munch와 type adaptation을 동시에 닫는다.
+
+**제안 표면**
+아래 첫 표현만 후보가 의도하는 형태다. 나머지는 경계 설명을 위한
+거부 예시이며 current parser 지원을 주장하지 않는다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design
+let z: Complex<Float64> = 3.0 + 4i
+
+// rejected candidates: typed/radix imaginary와 suffix 분할은 없다.
+let typed = 4u8i
+let radix = 0x4i
+let maximalMunch = 4index
+```
+
+**정적 판정과 상호작용**
+admitted 후보는 identifier boundary에서 끝나는 unsuffixed decimal
+integer와 붙은 `i`다. 기본 결과는 `Complex<Float64>`이며 expected
+type으로 typed integer imaginary를 제조하지 않는다. `4index`는 `4i`
+뒤 `ndex`로 분해되지 않고 하나의 invalid numeric-suffix candidate로
+진단된다. `4u8i`와 `0x4i`도 별도 typed/radix adaptation 없이 거부한다.
+
+**평가·소유권·오류**
+리터럴은 값을 소유하거나 effect를 실행하는 새 runtime protocol을
+만들지 않는다. representability와 lexical 오류는 실행 전에 닫혀야
+하고, overflow나 suffix 오류를 runtime conversion으로 미루지 않는다.
+ordinary `Complex` 산술의 평가 순서와 Defect/Error 계약은 기존 선택된
+operation을 따르며 literal 자체가 새 dispatch를 만들지 않는다.
+
+**현행 대안과 이행**
+현행 코드는 `3.0 + 4.0i`처럼 floating imaginary literal을 사용한다.
+tooling은 이를 `4i`로 자동 축약하지 않고, 기존 identifier 또는 잘못된
+numeric suffix를 후보 리터럴로 자동 해석하지 않는다. source migration은
+명시적인 사용자 선택과 parser 활성화 뒤에만 가능하다.
+
+**활성화 선행 조건**
+lexer maximal-munch 표, identifier boundary, decimal magnitude 범위,
+unary minus와 postfix precedence, diagnostic/fix-it 정책을 확정해야 한다.
+AST/HIR/MIR literal identity, formatter round-trip, negative corpus와
+모든 backend의 동일 Complex 값 증거가 필요하다.
+
+<!-- deeplus-preview-feature-example: std_math_special_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-std_math_special_preview_design"></a>
+
+## `std::math` special 함수 후보
+
+> **Feature metadata**
+> - Feature ID: `std_math_special_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `STDLIB / NUMERICS`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+gamma, error function, Bessel 계열처럼 기본 초월 함수보다 강한
+정확도·정의역 계약이 필요한 특수 함수를 `std::math`의 별도 profile로
+제공할 수 있는지 검토한다. core facade가 `STDLIB_PROFILE`이라는 사실은
+special 함수 집합이나 그 정확도 주장을 자동 활성화하지 않는다.
+
+**제안 표면**
+구체 함수 이름과 overload 행은 아직 normative하게 닫히지 않았다.
+따라서 아래 코드는 namespace와 explicit error 처리를 설명하는 후보
+모양이며 current API로 복사해 사용할 수 있다는 뜻이 아니다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design: 이름과 결과 계약은 formal ratification 전 후보이다.
+let gammaResult = std::math::special ~ gamma value: 4.5
+@match gammaResult {
+    ::ok(value) => consume(value)
+    ::err(problem) => report(problem)
+}
+```
+
+**정적 판정과 상호작용**
+overload는 normalized argument type으로만 고르고 expected result 또는
+runtime value로 행을 선택하지 않는다. real/complex domain, poles,
+branch cut와 result/error carrier는 함수 family별로 닫혀야 한다.
+`ApproximateNumeric` membership만으로 special 함수 전체가 생기지 않으며
+새 implicit conversion, operator glyph 또는 ambient precision을 만들지
+않는다.
+
+**평가·소유권·오류**
+argument는 ordinary call 순서대로 한 번 평가한다. domain error,
+nonconvergence, overflow와 loss-of-significance의 Error/Defect/값
+분류는 함수별 계약에서 명시해야 하며 hidden global precision이나
+platform별 조용한 fallback은 허용하지 않는다. 입력·출력 ownership은
+선택한 closed signature를 따르고 예상 결과로 dispatch하지 않는다.
+
+**현행 대안과 이행**
+사용자는 현재 `std::math` core 함수 또는 검증된 별도 library를
+명시적으로 사용한다. 기존 호출을 special namespace로 자동 이동하거나
+플랫폼 C 라이브러리 결과를 Deeplus portability 보증으로 재표시하지
+않는다. correctly-rounded 및 portable-accuracy 주장은 현재 없다.
+
+**활성화 선행 조건**
+함수 폐쇄 목록, 각 domain/codomain과 branch 정책, accuracy metric,
+determinism, diagnostic carrier와 versioning을 확정해야 한다. 참조값
+corpus, 다중 정밀도 비교, xVM/LLVM/backend parity 및 supply-chain
+evidence가 갖춰진 뒤 별도 Design_ 활성화 판정이 필요하다.
+
+<!-- deeplus-preview-feature-example: std_math_calculus_preview_design; registry-status: PREVIEW_DESIGN -->
+<a id="preview-feature-std_math_calculus_preview_design"></a>
+
+## `std::math` calculus 후보
+
+> **Feature metadata**
+> - Feature ID: `std_math_calculus_preview_design`
+> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Authority: `STDLIB / NUMERICS`
+> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
+
+**검토 목적**
+수치 미분·적분·근 찾기처럼 근삿값뿐 아니라 오차 추정과 수렴 실패를
+함께 다뤄야 하는 계산을 Deeplus다운 명시적 carrier로 제공할 수 있는지
+검토한다. 이 후보는 symbolic differentiation이나 automatic
+differentiation을 core language 기능으로 도입하는 제안이 아니다.
+
+**제안 표면**
+성공 값만 반환하지 않고 `Result<Estimate<T>, error
+NumericAnalysisError<T>>`를 드러내는 것이 핵심이다. 아래 API 이름은
+설명용 후보이며 아직 current stdlib surface가 아니다.
+
+<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+// Preview Design: 추정값과 오차를 분리한다.
+let area = std::math::calculus ~ integrate
+    from: 0.0,
+    to: 1.0,
+    function: { x: Float64 => x * x }
+
+@match area {
+    ::ok(estimate) => print("${estimate.value} ± ${estimate.errorBound}")
+    ::err(problem) => report(problem)
+}
+```
+
+**정적 판정과 상호작용**
+callback argument/return type, effect set, interval orientation,
+tolerance와 iteration budget은 signature에서 명시되어야 한다. result의
+expected type이나 첫 runtime sample이 algorithm overload를 고르지
+않는다. `Estimate<T>`는 exact 값으로 승격되지 않고, `Numeric` 또는
+`RealScalar` membership만으로 무제한 calculus capability가 생기지 않는다.
+
+**평가·소유권·오류**
+callback의 평가 횟수와 순서는 algorithm contract가 관측 가능한 범위로
+정해야 하며 capture ownership, mutation, cancellation과 thrown error를
+숨기지 않는다. nonconvergence, invalid interval, nonfinite sample과
+budget exhaustion은 `NumericAnalysisError<T>`의 닫힌 분류로 전달해야
+한다. 부분 추정치를 성공으로 가장하거나 silent fallback하지 않는다.
+
+**현행 대안과 이행**
+현행 사용자는 application 또는 외부 library에서 반복 알고리즘,
+허용오차와 실패 carrier를 직접 정의한다. tooling은 ordinary closure
+호출을 calculus API로 자동 감싸지 않고, finite difference를 symbolic
+proof 또는 automatic differentiation으로 표시하지 않는다.
+
+**활성화 선행 조건**
+algorithm family, tolerance semantics, `Estimate<T>` invariant,
+callback effect/ownership, cancellation과 reproducibility를 먼저
+ratify해야 한다. oracle corpus, convergence/실패 경계, deterministic
+seed 정책, backend 성능·정확도 receipt와 별도 Design_ authority 없이는
+source 또는 stdlib activation을 주장할 수 없다.
+
+<!-- deeplus-status-fence: CURRENT -->
+<!-- deeplus-stable-feature-example: guard_callable_refinement_summary_preview_design; registry-status: STABLE_DESIGN -->
+<a id="stable-feature-guard_callable_refinement_summary_preview_design"></a>
+
+## Stable 승급 기록 — `def#guard` refinement summary
 
 > **Feature metadata**
 > - Feature ID: `guard_callable_refinement_summary_preview_design`
-> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Registry status: `STABLE_DESIGN`; activation: `none`
 > - Authority: `TYPE_SYSTEM / CHECKER`
 > - Dependencies: `r0_guard_predicate_calculus`,
 >   `guard_callable_profile`, `guard_function_for_clause_predicates`
 > - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
 
-**검토 목적**
-현행 `def#guard`는 pure·total Bool callable이지만 호출 결과는
-flow-proof 환경 `Phi`에 아무 fact도 만들지 않는다. 이 후보는 함수로
+**Stable 목적**
+현행 `def#guard`는 pure·total Bool callable이며 검증된
+`GuardSummaryV1`이 있는 direct truth-test는 flow-proof 환경 `Phi`에
+branch-local fact를 만든다. 이 profile은 함수로
 재사용한 finite-R0 predicate의 참·거짓 조건을 separate compilation
 경계에서도 안전하게 전달해, 직접 inline으로 쓴 조건과 호출한 조건이
 같은 narrowing 능력을 가질 수 있는지 검토한다. 선언 타입은 바꾸지
 않고 branch-local fact만 더한다.
 
-**제안 표면**
-초기 profile은 새 source spelling을 추가하지 않는다. checker가 정확히
+**현행 표면**
+이 profile은 새 source spelling을 추가하지 않는다. checker가 정확히
 하나의 매개변수 기반 finite-R0 식으로 환원할 수 있는 `def#guard`에
 대해서만 정규화된 `true_summary`와 그 보완인 `false_summary`를 만든다.
 summary는 함수의 public API digest에 versioned metadata로 결합된다.
 body가 arbitrary helper call, capture, runtime data, effect 또는
-비결정적 연산을 포함하면 summary를 만들지 않고 현행처럼 opaque하다.
+비결정적 연산을 포함하면 summary를 만들지 않고 opaque Bool로 남는다.
 
-다음 예제는 문법상 현행 코드이지만, 두 번째 `describe`의 호출 결과가
-`Phi`를 좁힌다는 해석만 Preview Design이다.
+다음 예제의 `isPositive(value)` direct truth-test는 Stable
+`GuardSummaryV1`에 따라 `Phi`를 좁힌다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/features/catalog/chunks/part-0007.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/guard-refinement-summary.json -->
 ```deeplus
 public enum Lookup {
     found(value: Int)
@@ -81,23 +484,22 @@ body/API와 맞지 않거나 summary가 finite R0 밖이면 import 또는 checke
 단계에서 terminal diagnostic을 내고 opaque Bool fallback으로
 조용히 계속해서는 안 된다.
 
-**현행 대안과 이행**
-현행에서는 `value > 0` 같은 inline admitted R0 guard를 직접 쓰거나
-`as? PositiveInt` 같은 checked refinement conversion으로 proof를
-만든다. `def#guard`라는 이름, 함수 이름의 영어 의미 또는 성공한 test를
-근거로 summary를 추측하지 않는다. Migration 도구는 summary 후보와
+**대안과 이행**
+`value > 0` 같은 inline admitted R0 guard나 `as? PositiveInt` 같은
+checked refinement conversion도 proof를 만든다. `def#guard`라는 이름,
+함수 이름의 영어 의미 또는 성공한 test만으로 summary를 추측하지
+않는다. Migration 도구는 summary 후보와
 불가능한 이유를 보고할 수 있지만 body rewrite나 public API 변경을
 자동 수행하지 않는다. IDE는 declared `Int`와 branch-local
 `value > 0` fact를 서로 다른 항목으로 보여야 한다.
 
-**활성화 선행 조건**
-Spec_이 summary schema, finite-R0 extraction과 canonical substitution,
-true/false complement, generic 및 cross-module API digest 법칙을
-ratify해야 한다. Impl_/Test_는 stable-place kill, overload, wrapper,
-stored Bool, mutation, alias, capture, generic substitution 및 stale
-metadata mutant를 실행해야 한다. Devel_은 hover와 diagnostic UX를
-검증하고 Design_이 별도 activation을 승인해야 한다. formatter/LSP,
-checker 및 모든 제품 lane은 현재 `NOT_RUN`이다.
+**제품 검증 경계**
+summary schema, finite-R0 extraction, canonical substitution,
+true/false complement, generic과 cross-module API digest는 Stable
+계약이다. stable-place kill, overload, wrapper, stored Bool, mutation,
+alias, capture, generic substitution과 stale metadata mutant의 제품
+실행은 별도 target-bound receipt가 필요하다. formatter/LSP, checker 및
+모든 제품 lane은 현재 `NOT_RUN`이다.
 
 **설계 검토 시나리오**
 - **양성 전제·기대:** `isPositive(value)`가 direct truth-test이고
@@ -198,7 +600,7 @@ identity, cleanup MIR, multi-module mutation corpus와 target-bound receipt가
 // 현행 명시적 대안: Class activation을 암시하지 않는다.
 private let cache = Cache!()
 public def warmCache() -> Unit = {
-    cache ~ warm()
+    cache ~ warm
 }
 ```
 
@@ -273,11 +675,11 @@ checker와 formatter/LSP receipt가 필요하다. 모든 제품 실행 상태는
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
 ```deeplus
 public conformance UserId conforms Display {
-    +def display+() -> String = { return self.raw ~ toString() }
+    +def display+() -> String = { return self.raw ~ toString }
 }
 // 현행 대안: 법칙은 별도 test/proof artifact로 검증한다.
 def displayIsStable(id: UserId) -> Bool = {
-    return id ~ display() == id ~ display()
+    return id ~ display == id ~ display
 }
 ```
 
@@ -427,7 +829,7 @@ non-forging proof, negative/mutation corpus, SFD-P1-009 target evidence와
 private type InputValue = Int | String
 let input: InputValue = readValue()
 let text = @match input {
-    n: Int => n ~ toString()
+    n: Int => n ~ toString
     s: String => s
 }
 ```
@@ -495,7 +897,7 @@ dispatch, concurrency/rollback corpus와 xVM/LLVM target receipt가 필요하다
 public conformance User conforms Display {
     +def display+() -> String = { return self.name }
 }
-let text = user ~ display()
+let text = user ~ display
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -567,16 +969,16 @@ public def initializeCache() -> Cache
 }
 ```
 
-<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+<!-- deeplus-status-fence: CURRENT -->
 
-<!-- deeplus-preview-feature-example: enum_case_display_mapping_preview_design; registry-status: PREVIEW_DESIGN -->
-<a id="preview-feature-enum_case_display_mapping_preview_design"></a>
+<!-- deeplus-stable-feature-example: enum_case_display_mapping_preview_design; registry-status: STABLE_DESIGN -->
+<a id="stable-feature-enum_case_display_mapping_preview_design"></a>
 
 ## Enum case-owned Display mapping
 
 > **Feature metadata**
 > - Feature ID: `enum_case_display_mapping_preview_design`
-> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Registry status: `STABLE_DESIGN`; activation: `none`
 > - Authority: `LANGUAGE / PRELUDE / TYPE_SYSTEM`; dependencies:
 >   `string_interpolation_braced_expr_core`, `trait_witness_formal_judgment_core`
 > - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
@@ -587,9 +989,9 @@ localization과 혼동하지 않게 하는 수용된 설계다. inhabitable case
 all-or-none으로 매핑해 partial fallback과 case-local witness를 없애는
 것이 목적이다.
 
-**제안 표면**
-case 뒤의 `~>`와 restricted String template가 선택된 후보다. 아래 코드는
-설계 검토용이며 current source가 아니다. 양성은 모든 case의 pure mapping,
+**현행 표면**
+case 뒤의 `~>`와 restricted String template가 Stable이다. 양성은 모든
+case의 pure mapping,
 음성은 일부 case 누락, 경계는 payload expression이 effect나 비허용
 formatting을 요구하는 경우다.
 
@@ -601,9 +1003,11 @@ source order fallback이 없다.
 
 **평가·소유권·오류**
 template는 허용된 payload field를 읽는 순수한 String 구성으로 제한되고
-payload를 이동하거나 effect를 실행하지 않는다. mapping 누락·중복·impure
-template의 final diagnostic ID는 아직 미선정이다. 정적 예시의 parser,
-checker와 runtime은 `NOT_RUN`이다.
+payload를 이동하거나 effect를 실행하지 않는다. mapping 누락과 guard-safe
+위반은 각각 `ENUM_DISPLAY_MAPPING_INCOMPLETE`와
+`ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE`가 소유한다. duplicate/conflict의 더
+세분된 registry row가 필요하면 별도 authority로 추가해야 한다. 정적
+예시의 parser, checker와 runtime은 `NOT_RUN`이다.
 
 **현행 대안과 이행**
 ordinary exhaustive `match` display 함수가 대안이다. migration은 기존
@@ -611,28 +1015,28 @@ ordinary exhaustive `match` display 함수가 대안이다. migration은 기존
 formatter는 case/template 결합을 보존하고 LSP는 synthesized witness와
 serialization identity를 분리한다.
 
-**활성화 선행 조건**
-restricted template grammar/purity, all-or-none checker, TCC/CE P1,
-witness conflict와 link summary, diagnostic binding, formatter 및 target
-corpus가 필요하다. 별도 activation 전에는 지원을 주장할 수 없다.
+**제품 검증 경계**
+restricted template grammar/purity, all-or-none checker, witness conflict,
+link summary와 formatter/target corpus는 Stable contract를 따른다. 이
+문서만으로 제품 실행 PASS를 주장하지 않는다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
-// 비활성 설계 표면: 현행 parser에는 들어가지 않는다.
+// Stable: 모든 inhabitable case를 정확히 한 번 매핑한다.
 private enum Status {
     Ready ~> "ready"
     Busy ~> "busy"
 }
 ```
 
-<!-- deeplus-preview-feature-example: enum_declaration_order_ord_preview_design; registry-status: PREVIEW_DESIGN -->
-<a id="preview-feature-enum_declaration_order_ord_preview_design"></a>
+<!-- deeplus-stable-feature-example: enum_declaration_order_ord_preview_design; registry-status: STABLE_DESIGN -->
+<a id="stable-feature-enum_declaration_order_ord_preview_design"></a>
 
 ## Enum declaration-order Ord derivation
 
 > **Feature metadata**
 > - Feature ID: `enum_declaration_order_ord_preview_design`
-> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Registry status: `STABLE_DESIGN`; activation: `none`
 > - Authority: `LANGUAGE / PRELUDE / TYPE_SYSTEM`; dependencies:
 >   `trait_witness_formal_judgment_core`
 > - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
@@ -643,9 +1047,9 @@ private enum Status {
 semantic order로 재사용하지 않아 evolution과 foreign mapping을 분리하는
 것이 핵심이다.
 
-**제안 표면**
-정확히 하나의 `enum#increasing` 또는 `enum#decreasing` modifier가 선택된
-후보다. 아래 코드는 비활성 설계 예시다. 양성은 payload-free nonempty
+**현행 표면**
+정확히 하나의 `enum#increasing` 또는 `enum#decreasing` modifier가
+Stable이다. 양성은 payload-free nonempty
 nongeneric Enum, 음성은 두 modifier 동시 사용, 경계는 reorder가 public
 order behavior를 바꾸는 경우다.
 
@@ -658,8 +1062,9 @@ deterministic terminal error다.
 **평가·소유권·오류**
 비교는 payload나 foreign tag를 읽지 않고 selected declaration rank만
 비교한다. empty/generic/payload-bearing Enum은 거부하며 one-case Enum은
-자명한 순서만 갖는다. final diagnostic registry code와 runtime lowering은
-미결이고 제품 evidence는 `NOT_RUN`이다.
+자명한 순서만 갖는다. 역할 충돌과 부적격 owner는 각각
+`ENUM_ORDER_ROLE_CONFLICT`와 `ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER`가
+소유한다. runtime lowering과 제품 evidence는 `NOT_RUN`이다.
 
 **현행 대안과 이행**
 explicit compare 함수나 ranking match가 대안이다. migration은 기존 Enum을
@@ -667,14 +1072,14 @@ explicit compare 함수나 ranking match가 대안이다. migration은 기존 En
 formatter는 modifier와 declaration order를 보존하고 API diff는 raw/layout
 변화와 semantic-order 변화를 별도 lane으로 표시한다.
 
-**활성화 선행 조건**
-TCC/CE P1 closure, witness synthesis/conflict, link metadata, reorder
-diagnostics, formatter/LSP와 permutation·serialization·ABI 분리 corpus,
-target receipt가 필요하다.
+**제품 검증 경계**
+witness synthesis/conflict, link metadata, reorder diagnostics,
+formatter/LSP와 permutation·serialization·ABI 분리 corpus는 Stable
+contract를 검증한다. 이 문서만으로 target 실행 PASS를 주장하지 않는다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
-// 비활성 설계 표면: source order를 raw/tag로 사용하지 않는다.
+// Stable: source order를 raw/tag로 사용하지 않는다.
 private enum#increasing Priority {
     Low
     Normal
@@ -682,14 +1087,14 @@ private enum#increasing Priority {
 }
 ```
 
-<!-- deeplus-preview-feature-example: enum_exact_variant_subset_alias_preview_design; registry-status: PREVIEW_DESIGN -->
-<a id="preview-feature-enum_exact_variant_subset_alias_preview_design"></a>
+<!-- deeplus-stable-feature-example: enum_exact_variant_subset_alias_preview_design; registry-status: STABLE_DESIGN -->
+<a id="stable-feature-enum_exact_variant_subset_alias_preview_design"></a>
 
 ## Enum exact-variant subset alias
 
 > **Feature metadata**
 > - Feature ID: `enum_exact_variant_subset_alias_preview_design`
-> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
+> - Registry status: `STABLE_DESIGN`; activation: `none`
 > - Authority: `LANGUAGE / TYPE_SYSTEM`; dependencies:
 >   `closed_anonymous_union_type_msp`, `enum_member_declaration_surface`
 > - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
@@ -700,9 +1105,9 @@ private enum#increasing Priority {
 수용된 설계다. widening은 lossless이고 owner 값의 narrowing은 명시적으로
 실패 가능해야 한다.
 
-**제안 표면**
-Enum body의 `+type Name = CaseA | CaseB`가 선택된 후보다. 아래 코드는
-비활성 설계 예시다. 양성은 same-owner finite set, 음성은 foreign 또는
+**현행 표면**
+Enum body의 `+type Name = CaseA | CaseB`가 Stable이다. 양성은 same-owner
+finite set, 음성은 foreign 또는
 payload-bearing case, 경계는 owner universe 변경 후 stored subset
 metadata의 digest mismatch다.
 
@@ -715,8 +1120,11 @@ witness, range/iteration, implicit narrowing과 cross-owner Union을 만들지
 **평가·소유권·오류**
 subset-to-owner widening은 값 이동 없이 identity proof로 성립한다.
 owner-to-subset은 checked result이며 실패 시 owner를 손실하지 않는다.
-foreign/payload variant와 stale universe의 final diagnostic는 미결이다.
-parser/checker/backend는 모두 `NOT_RUN`이다.
+foreign owner와 payload variant는 각각
+`ENUM_VARIANT_SUBSET_OWNER_MISMATCH`와
+`ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN`이 소유한다. stale-universe
+세분 진단만 아직 별도 registry authority가 필요하다. parser/checker/backend는
+모두 `NOT_RUN`이다.
 
 **현행 대안과 이행**
 closed Union, explicit predicate와 checked constructor가 대안이다.
@@ -724,14 +1132,14 @@ migration은 case 목록을 자동 subset alias로 만들지 않고 rename과 un
 change를 보고한다. IDE는 owner와 allowed cases, narrowing channel을
 탐색 가능하게 보여야 한다.
 
-**활성화 선행 조건**
+**제품 검증 경계**
 frozen `VariantId` universe, exact grammar, narrowing API와 ownership,
-exhaustiveness integration, API digest/versioning, CE/TCC evidence와 target
-receipt가 필요하다.
+exhaustiveness integration, API digest/versioning은 Stable contract다.
+이 문서만으로 target 실행 PASS를 주장하지 않는다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/enum-derived-capabilities.json -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-derived-capabilities.json -->
 ```deeplus
-// 비활성 설계 표면: owner widening은 lossless, 반대 방향은 checked다.
+// Stable: owner widening은 lossless, 반대 방향은 checked다.
 private enum Day {
     Mon
     Tue
@@ -740,6 +1148,8 @@ private enum Day {
     +type Weekend = Sat | Sun
 }
 ```
+
+<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
 <!-- deeplus-preview-feature-example: extension_dot_call_sugar; registry-status: PREVIEW_DESIGN -->
 <a id="preview-feature-extension_dot_call_sugar"></a>
@@ -777,7 +1187,7 @@ ambiguity는 평가 전에 terminal error이고 receiver를 소비하지 않는�
 제품 실행은 `NOT_RUN`이다.
 
 **현행 대안과 이행**
-`value ~ name(...)`과 `value ~ Set::name(...)`가 대안이다. migration은
+`value ~ name arguments`와 `value ~ Set::name arguments`가 대안이다. migration은
 tilde를 자동 dot으로 바꾸지 않고 candidate origin을 보존한다. completion은
 ordinary member와 active extension을 다른 범주로 표시해야 한다.
 
@@ -859,7 +1269,7 @@ positive/negative/escape corpus, TCC evidence와 target receipt가 필요하다.
 ```deeplus
 // 비활성 설계 표면: 현재는 Recovery 진단만 가능하다.
 let editable = facet[inout value as Editable]
-editable ~ update()
+editable ~ update
 ```
 
 <!-- deeplus-preview-feature-example: facet_owned_pack_preview_design; registry-status: PREVIEW_DESIGN -->
@@ -1172,7 +1582,7 @@ target receipt가 필요하다.
 public def encode<T>(value: T) -> Bytes
     where T conforms Encodable
 = {
-    return value ~ encode()
+    return value ~ encode
 }
 ```
 
@@ -1240,11 +1650,11 @@ private type Number = Int | Float64
 def combine(left: Number, right: Number) -> Float64 = {
     return @match left {
         i: Int => @match right {
-            j: Int => i ~ toFloat64() + j ~ toFloat64()
-            g: Float64 => i ~ toFloat64() + g
+            j: Int => i ~ toFloat64 + j ~ toFloat64
+            g: Float64 => i ~ toFloat64 + g
         }
         f: Float64 => @match right {
-            j: Int => f + j ~ toFloat64()
+            j: Int => f + j ~ toFloat64
             g: Float64 => f + g
         }
     }
@@ -1381,7 +1791,7 @@ public def encodeBytesFast(value: Bytes) -> Bytes = {
 public def encodeGeneric<T>(value: T) -> Bytes
     where T conforms Encodable
 = {
-    return value ~ encode()
+    return value ~ encode
 }
 ```
 
@@ -1451,7 +1861,7 @@ public extension Int as metric {
     }
 }
 use Int::metric
-let length = 12 ~ centimeters()
+let length = 12 ~ centimeters
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->

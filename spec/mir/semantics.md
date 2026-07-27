@@ -10,15 +10,18 @@ A step state contains the current MIR frame, ordered operand stack, places and o
 
 Operands, arguments, guards, interpolation segments, collection entries and cleanup registrations evaluate left-to-right unless a named law fixes another order. Calls preserve value, context, witness, repeated positional and named channels. `options***: Record` declares a named-rest channel; `**record` supplies static labels. Labels, witness ids, extension ids and providers are fixed before MIR execution.
 
-An ordinary `CallExpr` and a `MessageCallExpr` share the ordered
-`TrailingClosureArg` channel but retain distinct value carriers. An ordinary
-call lowers its argument channels directly. A message lowers exactly zero or
-one payload aggregate: absent, scalar, Tuple, or structural Record. The
-payload projection map is fixed before MIR (`none -> zero value formals`,
-`scalar -> one`, `Tuple -> positional`, `Record -> statically named`).
-Trailing closure labels and selected function-typed formal identities are
-preserved through lowering. Surface attachment is erased, but source
-evaluation order and the selected call or dispatch identity are not.
+Every ordinary, message, and actor-transport surface normalizes to one
+`CallExpr` carrying one `CallMode` (`Ordinary`, `Message`, or `ActorMessage`),
+one ordered `CallArgument` sequence, and one closed `ResolvedCallPlan`.
+`CallArgument` preserves positional, named, positional-unfold, named-unfold,
+context, witness, and trailing-closure channels. There is no message payload
+aggregate and no Tuple/Record-to-formal projection. `receiver ~ send ()`
+therefore carries one Unit argument, while `receiver ~ ping` carries none. The
+closed plan variants are `DirectImplementation`, `VirtualSlot`,
+`TraitWitness`, `ExtensionStatic`, `ActorTransport`, and
+`ReservedOperation`. Labels, selected formals, source evaluation order, and
+formal binding order survive lowering and are never recovered from runtime
+selector search, provider order, expected result type, or source order.
 
 Operator syntax and precedence remain closed. An intrinsic-reserved normalized
 operand pair lowers to its closed intrinsic MIR operation and performs no
@@ -216,7 +219,31 @@ For `lhs ?: fallback`, `lhs` is evaluated first. When it is `some(v)`, `v` is re
 
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
-Message send is not a method call. Prepare-send evaluates the receiver once and then evaluates exactly zero or one normalized payload aggregate without transferring ownership; Tuple or Record children evaluate left-to-right once. A message trailing-closure channel is prepared after the payload in source order. A closure crossing actor isolation is admitted only when its capture environment independently satisfies transfer, suspension, effect, error, and cleanup rules; the trailing spelling never creates that evidence. The absence of a mailbox clause binds `logical_unbounded_v1`; positive static `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never blocks, retries, suspends, or drops: full capacity emits an immediate `Result::err(ActorMessageError::mailboxFull)`, and receiver closure before admission emits `Result::err(ActorMessageError::receiverClosedBeforeAdmission)`. Both are precommit events, leave ownership with the sender, and allocate no sequence. Admission records exactly one successful enqueue plus exactly one ownership commit. A one-way commit returns `Result::ok` with a Unit payload; a request commit creates one CorrelationId and ReplyId and returns `Result::ok` with a `Task<T>` payload plus its non-forgeable `TaskResponsibility` descriptor. That descriptor preserves the normalized result type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and terminal transport failure. Await restores exactly the normalized handler ErrorSet plus `ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the nominal `Task<T>` spelling. If the receiver closes before the correlated reply, that admitted task terminates through `ActorMessageError::receiverClosedBeforeReply`. Exactly one correlated reply/failure/cancellation terminal event is admitted. Distributed and exactly-once delivery events have no current MIR identity.
+Actor transport is not a method call. The Stable `:~` surface selects one
+`ActorTransport` plan before MIR; it has no ordinary-message or method fallback.
+Prepare-send evaluates the receiver and every `CallArgument` left-to-right
+exactly once without transferring ownership, binds the selected formals, proves
+transfer/isolation, and stages one compiler-internal envelope. A trailing
+closure crossing actor isolation is admitted only when its capture environment
+independently satisfies transfer, suspension, effect, error, and cleanup rules.
+The absence of a mailbox clause binds `logical_unbounded_v1`; positive static
+`#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never
+blocks, retries, suspends, or drops. All failures before commit retain every
+sender owner and allocate neither envelope nor sequence. Admission commits
+exactly one envelope, one ownership transition, and one sequence. A one-way
+commit returns `Result::ok(Unit)`; a request commit creates one CorrelationId and
+ReplyId and returns `Result::ok(Task<T>)` plus its non-forgeable
+`TaskResponsibility` descriptor. The descriptor preserves normalized result
+type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and
+terminal transport failure. `:~` itself never suspends or retries; source
+extracts an admitted request task and then awaits it explicitly. If `on` and
+`request` share one selector and canonical call shape, the declaration or link
+is rejected before MIR. Actor transport is forbidden in `defer`. Await restores
+exactly the normalized handler ErrorSet plus
+`ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the
+nominal `Task<T>` spelling. Exactly one correlated reply/failure/cancellation
+terminal event is admitted. Distributed and exactly-once delivery events have
+no current MIR identity.
 
 The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound task lifecycle under the existing cancellation law.
 
@@ -346,7 +373,7 @@ mutation, exclusive borrow, escape or capture with possible mutation, consume,
 or a may-mutate/may-consume call kills the durable fact. MIR does not materialize
 `Phi`, and these facts never change the declared semantic type.
 
-Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. A `def#guard` call carries no hidden narrowing summary and cannot erase a later refinement check.
+Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. For a direct truth test, checker/HIR may substitute facts from a verified finite `GuardSummaryV1` and omit a redundant later refinement check. No summary or proof value is carried into MIR or runtime; stored, indirect, wrapped, or invalidated guard results remain opaque.
 
 ## 15. Post-PR16 nonactivatable Preview operational contracts
 

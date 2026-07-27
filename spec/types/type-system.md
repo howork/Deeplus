@@ -2,6 +2,8 @@
 
 This companion is a checker-oriented projection of the canonical specification. It does not override the specification or exact Grammar. Product checker support is `NOT_RUN`.
 
+Revision: `r51f3-current-numeric-guard-call-enum-coherence-r1`
+
 ## 1. Judgment families
 
 The checker owns well-formedness, expression typing, subtyping, conformance evidence, call-shape admission, ownership/place access, effect/error rows, construction, pattern coverage, and Deeplus MIR handoff judgments.
@@ -10,7 +12,9 @@ The checker owns well-formedness, expression typing, subtyping, conformance evid
 
 Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, cancellation, measures, shapes, and witness identities normalize before comparison. Normalization is terminating, performs an occurs check, and preserves every responsibility-bearing distinction. Inference is bidirectional and local: it never invents an implicit generic, anonymous union, hidden authority, cancellation conversion, or open runtime type test.
 
-A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `IntN`, `UIntN`, `ISize`, and `USize` are separate domains; contextual adaptation of a signless unsuffixed integer succeeds only for one exact representable `IntN` or `UIntN` target. A sign remains an AST prefix operator. With an independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated magnitude fact, compute `-magnitude`, and test that signed candidate against the exact target domain. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. `ISize`/`USize` require an exact suffix or explicit checked conversion. An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
+A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `UInt` is the separate default unsigned mathematical domain `0..18446744073709551615`; it is not an alias of `UInt64`, `USize`, `Int`, or `Int64` and grants no storage or ABI identity. `IntN`, `UIntN`, `ISize`, and `USize` remain separate domains. Contextual adaptation of a signless unsuffixed integer succeeds only for one independently fixed exact and representable `UInt`, `IntN`, or `UIntN` target; absent such a target, the literal still normalizes to `Int`. A sign remains an AST prefix operator. With an independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated magnitude fact, compute `-magnitude`, and test that signed candidate against the exact target domain. Negative source never adapts to `UInt`. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. `ISize`/`USize` require an exact suffix or explicit checked conversion.
+
+An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. `Float` is a Stable closed alias of `Float64`: normalization erases the alias spelling before comparison, so it creates no distinct nominal, precision, serialization, runtime-discriminant, storage, layout, or ABI identity. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
 
 `Rational` normalizes to one opaque `(BigInt numerator, BigInt denominator)`
 identity with positive denominator, relatively prime magnitudes, and canonical
@@ -29,6 +33,35 @@ literal has real component positive zero and Float64 imaginary component;
 `4.0f32i` selects Float32. Integer `4i`, separated or radix forms do not enter
 this judgment. Float-profile Complex uses partial IEEE equality and supplies
 no implicit strong `Eq`, `Ord`, `Hash`, or `Keyable` evidence.
+
+The numeric-system successor is `PREVIEW_DESIGN_NONACTIVATABLE`. It introduces
+only a thin capability taxonomy—`Numeric`, `ExactNumeric`,
+`ApproximateNumeric`, `IntegralNumeric`, `RealScalar`, `BinaryFloating`, and
+`ComplexScalar`—for stating generic requirements. Membership does not imply
+representation subtyping, implicit conversion, ordering, hashing, keyability,
+remainder, transcendental support, operator activation, or a common runtime
+layout. This Preview design neither changes the Stable fixed-glyph set nor
+creates a universal numeric supervalue.
+
+The same Preview profile proposes attached decimal-integer imaginary literals.
+At an expression-primary goal, an unsuffixed decimal integer followed
+immediately by `i` and then an identifier boundary may normalize to
+`Complex<Float64>`; thus `4i` means `Complex!(real: +0.0, imag: 4.0)`.
+Radix, width-suffixed, separated, and chained identifier forms remain rejected,
+and `4index` is one invalid numeric-suffix candidate rather than `4i` plus
+`ndex`. This paragraph is a design contract only: current source admission and
+product execution remain unchanged.
+
+Preview Rational completion adds checked exact `/`, integral `^`, and named
+`remainderTrunc`, `modEuclid`, and `divRemTrunc` operations.
+The `%` glyph remains deferred because its single language-wide quotient law is
+not selected. The `std::math` core facade is a current `STDLIB_PROFILE` covering
+constants, classification, basic arithmetic helpers, rounding, exact helpers,
+power and roots, exponential and logarithmic functions, trigonometric and
+hyperbolic functions, complex functions, and approximation helpers. Special
+functions and calculus remain separate Preview profiles. Neither the current
+facade nor either Preview inventory supplies an operator witness, hidden
+conversion, or product-support receipt.
 
 ## 3. Named rest, function-type residue, and unfold
 
@@ -51,21 +84,23 @@ Defaults cannot be skipped through trailing syntax, and the spelling changes
 none of the capture, ownership, effect, error, cancellation, isolation, or
 cleanup judgments.
 
-Message call typing uses one payload aggregate rather than an ordinary
-argument list. Absence supplies no value parameter, a scalar supplies one, a
-Tuple projects in order to positional value parameters, and a structural
-Record projects its static unique labels to named value parameters.
-Parenthesized positional source therefore creates one Tuple payload even when
-it projects to several handler parameters. Parenthesized all-named source
-creates one Record payload. Mixed positional/named payload entries, duplicate
-labels, unknown labels, and arity mismatches reject before overload ranking.
-Context and witness channels cannot be synthesized from payload fields.
+Every call normalizes to one `CallExpr` with mode `Ordinary`, `Message`, or
+`ActorMessage`. It preserves one ordered zero-or-more `CallArgument` list whose
+kinds are positional, named, positional unfold, named unfold, context, and
+witness, followed by the ordered trailing-closure group. Message and actor
+message calls reuse the ordinary static channel matcher; they do not create a
+message-payload AST node and do not project a Tuple or Record into hidden
+arguments. Parentheses group an expression, so `(x, y)` is one Tuple argument,
+whereas `x, y` are two positional arguments. Duplicate or unknown labels,
+invalid ordering or unfolds, and arity mismatches reject before overload
+ranking. Context and witness channels remain explicit argument kinds and
+cannot be synthesized from ordinary value arguments.
 
 ## 6. Union, intersection, Option, Result, and Facet
 
 Union injection is unique after normalization. Contract intersections require every constituent obligation. Option and Result have explicit alternatives. Every Result use-site spells its error channel `Result<T, error E>`; the generic declaration may bind `E: ErrorSet` without repeating the role marker. Borrow Facet is current; owned/inout Facet packages remain Preview-design.
 
-The accepted nonactivatable Enum subset design adds no open subtyping search. A
+The accepted Stable Enum subset design adds no open subtyping search. A
 payload-free exact variant is normalized to `(EnumId, VariantId)`, and a named
 subset is normalized to one owner `EnumId`, a finite allowed-`VariantId` set,
 and the frozen enum-universe digest. Distinct variants of one owner are disjoint.
@@ -78,8 +113,9 @@ in the exhaustiveness residual. When the normalized allowed set equals the froze
 owner universe, the canonical type is the nominal owner Enum; an associated alias
 is only a non-identifying source spelling. This judgment is separate from the closed-Union
 typed-alternative judgment and creates no wrapper, runtime membership test, case,
-`VariantId`, storage, or alias-local Trait witness. The surface remains
-`PREVIEW_DESIGN`/nonactivatable.
+`VariantId`, storage, or alias-local Trait witness. The surface is current
+`STABLE_DESIGN`; parser, checker, backend, and tooling product lanes remain
+`NOT_RUN`.
 
 Absence is an explicit `Option` alternative. The recovery spelling `null` has no typing judgment, does not infer `Option<T>`, and produces `NULL_LITERAL_NOT_CURRENT_USE_OPTION_NONE`; only `::none` in an expected `Option` context or explicit `Option<T>::none` constructs the absent alternative.
 
@@ -268,13 +304,18 @@ Closure capture, async suspension, actor isolation, Facet packaging, defer regis
 
 `SharedCell<T>` admits only normalized Plain payload and exposes sequentially consistent `withValue` scoped observation plus `replace` owner exchange. The borrow cannot escape or suspend, and `replace` commits one new owner while returning the old owner; Plain supplies neither raw layout nor lock-free representation. `SharedMutex<T>` admits the no-lifecycle-payload minimum profile and grants one receiver-bound, non-reentrant, non-suspending scoped inout place to `withLock`. Unlock is an infallible exactly-once cleanup on every terminal path and establishes the mutex handoff edge to the next successful lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering, actor transferability, or hidden cleanup.
 
-Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the one-payload projection above. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. Only a successfully admitted actor-request Task value carries a non-forgeable `TaskResponsibility` descriptor in typed HIR, module API digest, and MIR; an ordinary async Task has no actor transport descriptor. The actor-request descriptor records the normalized result type, handler ErrorSet, cancellation axis, isolation owner, correlation identity, and terminal transport failure. Module API identity stores the static `correlation_id = per_value_non_forgeable` policy marker, while each committed request keeps its concrete correlation identity only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second Task type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
+Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. Only a successfully admitted actor-request Task value carries a non-forgeable `TaskResponsibility` descriptor in typed HIR, module API digest, and MIR; an ordinary async Task has no actor transport descriptor. The actor-request descriptor records the normalized result type, handler ErrorSet, cancellation axis, isolation owner, correlation identity, and terminal transport failure. Module API identity stores the static `correlation_id = per_value_non_forgeable` policy marker, while each committed request keeps its concrete correlation identity only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second Task type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
 
 `AsyncSequence<T, E: ErrorSet>` binds its source failure set instead of leaving a free terminal type. Its `next` operation throws `E`, while cancellation remains a distinct control outcome. For `AsyncCollector::list<T, U, ES, ET>`, the source is `AsyncSequence<T, ES>`, the named asynchronous transform throws `ET`, and the result throws exactly `normalize(ES | ET)`. Neither source nor transform errors may be erased or converted to cancellation.
 
 Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
 
 An assignment target is checked and evaluated as one place. Compound assignment reads that place once, checks one exact intrinsic operand domain, evaluates the right operand once, and commits at most one result. A precommit `ArithmeticDefect`, `IndexError`, or other failure leaves the prior owner and value unchanged. Assignment expressions have result type `Unit`. Every admitted slice result is a `ReadonlyView`, never an assignable place; its borrow cannot escape its owner, cross isolation, hide a copy, or be implicitly rebased.
+
+For a simple mutable place and the same admitted operator domain, the canonical
+source spelling is the compound form—for example, `count += 1`. This is a
+source-style rule over the existing single-evaluation compound-assignment
+judgment, not an increment operator.
 
 ## 16. Effects, errors, cancellation, and callable profiles
 
@@ -316,6 +357,12 @@ identities become HIR-H1 residue and are recomputed by the verifier before MIR.
 NumericArray infix power, transpose and linear algebra retain their separate
 intrinsic judgments.
 
+The Preview numeric successor may extend this finite judgment with
+`RationalPowInteger` and exact literal adaptation plans, but it does not add a
+`Power` Trait, runtime integrality test, expected-result route, mixed-width
+conversion, or current product cell. `Rational ^ Int` remains
+nonactivatable until the Preview profile receives separate activation evidence.
+
 ## 17. Pattern partition and exhaustiveness
 
 Pattern checking first normalizes the subject domain, then constructs disjoint partitions for enum cases, union alternatives, Option, Result, Record required-label subsets, exact-or-final-ignored-tail List shapes, and loop outcomes. Sealed-Class closure informs nominal analysis but has no current constructor-pattern carrier. Tuple patterns, scalar-interval patterns, captured/middle/multiple List rests, and Record rest patterns are not current. A guard refines only the already admitted structural partition and may read probe binders without moving, escaping, suspending, mutating through, or acquiring authority from them. Dot-case shorthand is not current; enum cases use `::case` or `Type::case`.
@@ -348,7 +395,16 @@ For a closed Union scrutinee only, a typed child binder naming exactly one decla
 
 Refinement admission at construction, typed-pattern, argument, return, and explicit cast boundaries is three-valued: `PROVED` admits, `DISPROVED` emits the exact literal/range contradiction, and `UNKNOWN` emits `REFINEMENT_PROOF_REQUIRED`. A silent conversion outside those boundaries emits `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN`. `as?`, `as!`, and `T::check` retain their distinct Option, defect, and Result outcomes.
 
-`def#guard` is an exact Bool, pure, total, terminating, nonsuspending, nonconsuming, authority-free callable profile. Because current source and API metadata contain no refinement-summary owner, calling one is opaque to `Phi`; only an inline admitted R0 guard may contribute a refinement fact. A guarded arm never subtracts from exhaustiveness coverage.
+`def#guard` is an exact Bool, pure, total, terminating, nonsuspending,
+nonconsuming, authority-free callable profile. An exact direct call contributes
+branch-local facts to `Phi` only when the selected declaration exports a fresh,
+valid `GuardSummaryV1` whose predicate is in finite R0 and whose formal
+parameters substitute capture-free to stable actual places. The true edge adds
+the normalized summary and the false edge adds its normalized complement.
+Stored Bool results, wrappers, indirect calls, invalid or stale summaries, and
+unstable actuals remain opaque. Existing mutation, aliasing, borrow, capture,
+consume, suspension, and may-mutate/may-consume-call rules kill such facts. A
+guarded arm never subtracts from exhaustiveness coverage.
 
 ## 18. MIR responsibility projection and evidence boundary
 

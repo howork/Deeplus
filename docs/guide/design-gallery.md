@@ -32,7 +32,7 @@ let timeout = options.timeout
 
 ```deeplus
 var value = 0
-value = value + 1
+value += 1
 ```
 
 ## G-R51f-004 — Postfix increment is not current
@@ -170,7 +170,7 @@ public conformance UserId conforms Display {
 
 ```deeplus
 let printable: Facet<borrow any Printable> = facet[borrow user as Printable]
-let text = printable ~ print()
+let text = printable ~ print
 ```
 
 ## G-R51f3-015 — Typed labeled materialization preserves construction authority
@@ -221,7 +221,7 @@ public def#async run(job: Job) -> Result
     effects {task}
 = {
     return await task {
-        Worker!() ~ compute(job)
+        Worker!() :~ compute job
     }
 }
 ```

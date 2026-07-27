@@ -1,5 +1,6 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
   "date": "2026-07-15",
   "authority_bundle": {
@@ -303,12 +304,13 @@
     "stored_field_dispatch_marker": "forbidden",
     "trait_associated_non_method_marker": "forbidden",
     "member_visibility_hash": "hierarchy-protected: declaring type and nominal subclasses only",
-    "message_spawn": "ordinary MessageSuffix selector reserved semantically by HIR",
+    "message_spawn": "ordinary CallExpr mode Message with selector spawn, produced by ~ TildeCallLed and reserved semantically by HIR",
     "single_guard_clause": "at most one if/!if GuardClause per guard owner; GuardChain removed",
     "pattern_binding_controls": [
       "if let pattern = expr",
       "while let pattern = expr",
-      "for let pattern in expr"
+      "for let pattern in expr",
+      "Preview Design only: if/while/guarded-local let? OptionPayloadPattern = expr; nonactivatable"
     ],
     "r51f_removed_surface_boundary": {
       "status": "CURRENT",
@@ -2217,7 +2219,7 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 454,
+    "STABLE": 459,
     "PREVIEW": 13,
     "RECOVERY": 15
   },
@@ -2312,10 +2314,10 @@
     "exponent": "decimal_only_with_required_digits",
     "radix_floats": "not_current",
     "unsuffixed_integer_default": "Int",
-    "unsuffixed_integer_contextual_targets": "representable Int, IntN, or UIntN for N in {8,16,32,64,128} only",
+    "unsuffixed_integer_contextual_targets": "representable Int, UInt, IntN, or UIntN for N in {8,16,32,64,128} only",
     "unsuffixed_integer_excluded_contextual_targets": "ISize and USize require isize/usize or explicit checked conversion",
     "unsuffixed_float_default": "Float64",
-    "unsuffixed_float_contextual_targets": "Float64 only; Float32 requires f32",
+    "unsuffixed_float_contextual_targets": "after closed-alias normalization, Float64 only (therefore Float is included); Float32 requires f32",
     "normalization_owner": "NumericLiteralAdmitted",
     "nonfinite_policy": "not lexical literals; use Float32/Float64 static nan and positiveInfinity members",
     "candidate_scanner": {
@@ -2532,10 +2534,16 @@
     "flow_proof_environment": {
       "name": "Phi",
       "join": "intersection of facts on all incoming edges",
-      "kill_events": ["subject assignment", "aliasing mutation", "exclusive borrow", "escape or mutable capture", "consume", "call with possible subject mutation"],
+      "kill_events": ["subject assignment", "aliasing mutation", "exclusive borrow", "escape or mutable capture", "consume", "suspension that invalidates a stable-place proof", "call with possible subject mutation or consumption"],
       "ordinary_bool_call_adds_fact": false,
-      "def_guard_call_adds_fact": false,
-      "inline_r0_guard_may_add_fact": true
+      "def_guard_call_adds_fact": "only an exact direct def#guard call with a fresh valid GuardSummaryV1 and stable actual places",
+      "def_guard_true_edge": "substitute stable actual places into P and add P",
+      "def_guard_false_edge": "substitute stable actual places into not(P) and add the exact complement",
+      "def_guard_opaque_fallback": false,
+      "wrapper_or_stored_bool_adds_fact": false,
+      "inline_r0_guard_may_add_fact": true,
+      "summary_contract": "spec/contracts/guard-refinement-summary.json",
+      "summary_schema": "schemas/language/guard-summary-v1.schema.json"
     },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
@@ -2547,43 +2555,42 @@
   "call_frontend_contract": {
     "surface_owners": {
       "ordinary": "CallSuffix",
-      "message": "MessageSuffix",
+      "message": "~ TildeCallLed",
+      "actor_message": ":~ TildeCallLed",
       "shared_trailing_closures": "TrailingClosureGroup"
     },
     "lossless_cst_nodes": {
       "ordinary_call": "CallExprCst",
-      "message_call": "MessageCallExprCst",
+      "tilde_call": "TildeCallExprCst",
       "message_selector": "MessageSelectorPathCst",
-      "message_payload": "MessagePayloadCst | null",
+      "ordered_argument": "CallArgumentCst",
       "trailing_closure": "TrailingClosureArgCst"
     },
     "normalized_ast_nodes": {
       "CallExpr": {
-        "callee": "Expr",
-        "arguments": "ordered Argument[]",
+        "mode": "Ordinary | Message | ActorMessage",
+        "head": "callee Expr for Ordinary; receiver Expr plus preserved selector path for Message or ActorMessage",
+        "arguments": "ordered CallArgument[]",
         "trailing_closures": "ordered TrailingClosureArg[]"
       },
-      "MessageCallExpr": {
-        "receiver": "Expr",
-        "selector_path": "ordered selector segments plus optional type syntax",
-        "payload": "Expr | null",
-        "payload_kind": "none | scalar | tuple | record",
-        "trailing_closures": "ordered TrailingClosureArg[]"
+      "CallArgument": {
+        "kind": "Positional | Named | PositionalUnfold | NamedUnfold | Context | Witness",
+        "label": "Identifier | null",
+        "expression": "Expr"
       },
       "TrailingClosureArg": {
         "label": "Identifier | null",
         "closure": "ClosureExpr"
       }
     },
-    "message_payload_normalization": {
-      "omitted": "payload=null, payload_kind=none",
-      "empty_parentheses": "compatibility spelling; payload=null, payload_kind=none",
-      "bare_atomic": "payload=scalar expression",
-      "one_parenthesized_expression": "payload=grouped scalar expression",
-      "two_or_more_parenthesized_positional_expressions": "payload=TupleExpr",
-      "all_named_parenthesized_entries": "payload=RecordExpr with static unique labels",
-      "mixed_positional_and_named_entries": "reject before AST admission",
-      "ordinary_argument_list_reuse_count": 0
+    "mode_and_pratt_contract": {
+      "ordinary": "CallSuffix produces CallMode Ordinary",
+      "message": "~ produces CallMode Message at Pratt rank 15 and is left-associative",
+      "actor_message": ":~ produces CallMode ActorMessage at Pratt rank 15 and is nonassociative terminal",
+      "mode_fallback_count": 0,
+      "message_payload_node_count": 0,
+      "tuple_or_record_payload_projection_count": 0,
+      "ordinary_argument_list_reuse_count": 1
     },
     "structural_validation": {
       "single_trailing_closure": "label optional",
@@ -2591,17 +2598,18 @@
       "duplicate_label_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
       "unlabeled_multiple_diagnostic": "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT",
       "selector_path_shape": "one plain segment or an admitted qualified path",
-      "postfix_attachment": "TrailingClosureGroup is consumed maximally by its immediately preceding CallSuffix or MessageSuffix; a later postfix applies to the completed call result"
+      "postfix_attachment": "TrailingClosureGroup is consumed maximally by its immediately preceding CallExpr owner; a later postfix applies to the completed call result",
+      "actor_ordinary_fallback": false,
+      "implicit_actor_suspend_or_retry": false
     },
     "hir_lowering": {
-      "ordinary_call": "preserve selected callable identity, normalized channels, closure labels, source evaluation order, ownership and cleanup",
-      "message_call": "preserve selected dispatch identity, exactly zero or one payload aggregate, payload projection map, closure labels, source evaluation order, ownership and cleanup",
-      "payload_projection": "none->zero value formals; scalar->one; tuple->positional; record->static named",
+      "all_modes": "preserve CallMode, selected callable or dispatch identity, ordered normalized channels, closure labels, source evaluation order, ownership and cleanup",
+      "actor_result_shapes": "one-way Result<Unit,error ActorMessageError>; request Result<Task<T>,error ActorMessageError>",
+      "actor_request_await": "extract Task<T> from Result before explicit await",
       "surface_sugar_erased_before_mir": true,
       "dispatch_identity_erased": false
     },
     "formatter": {
-      "empty_message_payload_parentheses": "omit",
       "single_unlabeled_trailing_closure": "same line when short, otherwise indented",
       "single_labeled_trailing_closure": "label immediately followed by colon and closure",
       "multiple_labeled_trailing_closures": "one labeled closure per indented line",
@@ -2808,7 +2816,7 @@
       "StructuredTaskScope",
       "AtScopeExpr",
       "PrefixExpr(await)",
-      "MessageSuffix"
+      "TildeCallLed(:~)"
     ],
     "lossless_cst_nodes": [
       "ActorDeclCst",
@@ -2821,7 +2829,7 @@
       "StructuredTaskScopeCst",
       "AtScopeExprCst",
       "AwaitExprCst",
-      "MessageSendCst"
+      "TildeCallExprCst"
     ],
     "normalized_ast_nodes": [
       "ActorDeclaration",
@@ -2834,7 +2842,7 @@
       "StructuredTaskScope",
       "ValueTaskScope",
       "Await",
-      "MessageSend"
+      "CallExpr(mode=ActorMessage)"
     ],
     "typed_hir_identities": [
       "ActorId",
@@ -2854,7 +2862,7 @@
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
-    "message_send_owner": "MessageSuffix with call_frontend_contract payload and trailing-closure normalization; reserved spawn selector is recognized in HIR without a second syntax owner",
+    "message_send_owner": ":~ TildeCallLed normalizes to CallExpr mode ActorMessage with the shared ordered CallArgument and trailing-closure contracts; actor dispatch never falls back to ordinary call resolution",
     "mailbox_profile_binding": {
       "clause_absent": "logical_unbounded_v1",
       "positive_static_capacity_clause": "bounded_reject_v1",
@@ -2951,8 +2959,8 @@
     },
     {
       "id": "TILDE_MESSAGE",
-      "owner": "MessageSuffix",
-      "lookahead": "selector; HIR reserves spawn"
+      "owner": "TildeCallLed",
+      "lookahead": "~ selects Message and :~ selects terminal nonassociative ActorMessage; the selector path is preserved statically and HIR reserves ordinary-message spawn"
     },
     {
       "id": "CARET_ATTACHMENT",
@@ -2994,29 +3002,57 @@
       "patterns_places_members_indexes": false
     }
   ],
+  "stable_design_surfaces_current": {
+    "enum_declaration_order_ord": {
+      "feature_id": "enum_declaration_order_ord_preview_design",
+      "status": "STABLE_DESIGN",
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "grammar_owner": "EnumOrderRole",
+      "product_support": "NOT_RUN"
+    },
+    "enum_case_display_mapping": {
+      "feature_id": "enum_case_display_mapping_preview_design",
+      "status": "STABLE_DESIGN",
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "grammar_owner": "EnumCaseDisplayMapping",
+      "product_support": "NOT_RUN"
+    },
+    "enum_exact_variant_subset_alias": {
+      "feature_id": "enum_exact_variant_subset_alias_preview_design",
+      "status": "STABLE_DESIGN",
+      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+      "grammar_owner": "EnumVariantSubsetAliasDecl",
+      "product_support": "NOT_RUN"
+    },
+    "def_guard_refinement_summary": {
+      "feature_id": "def_guard_refinement_proof",
+      "status": "STABLE_DESIGN",
+      "represented_in": "spec/contracts/guard-refinement-summary.json",
+      "summary_schema": "schemas/language/guard-summary-v1.schema.json",
+      "opaque_fallback": false,
+      "product_support": "NOT_RUN"
+    },
+    "unified_call_actor_transport": {
+      "feature_id": "unified_call_ast_and_actor_colon_tilde",
+      "status": "STABLE_DESIGN",
+      "represented_in": "spec/contracts/unified-call-actor-transport.json",
+      "normalized_ast_node": "CallExpr",
+      "product_support": "NOT_RUN"
+    }
+  },
   "preview_design_nonactivatable": {
     "dynamic_unsafe_quarantine_scope_msp": {
       "recognized_only_in": "RECOVERY",
       "source_activation": "nonactivatable",
       "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open"
     },
-    "enum_declaration_order_ord_derivation": {
-      "represented_in": "spec/contracts/enum-derived-capabilities.json",
+    "option_optional_binding": {
+      "feature_id": "option_let_question_binding_preview_design",
+      "represented_in": "spec/contracts/option-optional-binding-preview-design.json",
       "parser_cover_grammar": false,
       "source_activation": "nonactivatable",
-      "reason": "CE-E-P1-007 and TCC gates remain open; current EnumDecl and intrinsic comparison glyph routing are unchanged"
-    },
-    "enum_case_display_mapping": {
-      "represented_in": "spec/contracts/enum-derived-capabilities.json",
-      "parser_cover_grammar": false,
-      "source_activation": "nonactivatable",
-      "reason": "the enum-owned token, restricted template calculus, witness manifest, diagnostics, and execution evidence remain open"
-    },
-    "enum_exact_variant_subset_alias": {
-      "represented_in": "spec/contracts/enum-derived-capabilities.json",
-      "parser_cover_grammar": false,
-      "source_activation": "nonactivatable",
-      "reason": "exact-variant identity, associated alias ownership, subset-pattern judgment, API residue, and execution evidence remain open"
+      "payload_pattern_owner": "OptionPayloadPattern ::= Pattern",
+      "reason": "if/while/guarded-local let? is a one-layer Option binding design only; parser, checker, MIR, runtime, tooling, and product evidence are not activated"
     },
     "literal_shaped_list_type_surface": {
       "represented_in": "spec/contracts/literal-shaped-collection-design.json",
@@ -3055,8 +3091,11 @@
     "scoped_activation": "import/use comma-separated paths in { block }",
     "multiline_unicode_string": "triple-quoted, newline-delimited, common-indent-stripped String",
     "enum_case_commas": "same-line enum case list separated by commas",
+    "enum_derived_capabilities": "stable design: enum order-derived Ord, all-or-none case display mapping, and exact-variant subset aliases",
     "guards": "one GuardClause only",
-    "pattern_controls": "if let / while let / for let transactional bindings"
+    "def_guard_refinement": "stable design: valid GuardSummaryV1 direct calls refine true and false Phi edges without changing the declared type",
+    "calls": "stable design: CallExpr modes Ordinary, Message (~), and ActorMessage (:~) share ordered arguments and trailing closures",
+    "pattern_controls": "if let / while let / for let transactional bindings; let? remains Preview Design"
   },
   "removed_surface_contracts_current": [
     {

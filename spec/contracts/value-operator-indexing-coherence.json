@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-contract/r1",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -89,7 +89,7 @@
         "sign_ast_owner": "PrefixExpr",
         "contextual_prefix_sign_adapter": {
           "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
-          "required_context": "one independently fixed exact Int, IntN, or UIntN target",
+          "required_context": "one independently fixed exact Int, UInt, IntN, or UIntN target",
           "candidate": "negative of the validated token magnitude",
           "admission": "signed candidate is mathematically representable in the exact target",
           "ISize_or_USize_target": false,
@@ -222,7 +222,7 @@
       "domain": "numeric_operator_typing",
       "title": "homogeneous scalar operators use one exact normalized domain and specialized owners delegate",
       "contract": {
-        "literal_context_adaptation": "a signless unsuffixed integer may adopt an exact representable Int/IntN/UIntN target; only direct PrefixExpr(-, UnsuffixedIntegerLiteral) may instead adapt its signed -magnitude candidate; no arbitrary folding; ISize/USize require suffix or checked conversion; unsuffixed float remains Float64",
+        "literal_context_adaptation": "a signless unsuffixed integer may adopt an exact representable Int/UInt/IntN/UIntN target; only direct PrefixExpr(-, UnsuffixedIntegerLiteral) may instead adapt its signed -magnitude candidate; no arbitrary folding; ISize/USize require suffix or checked conversion; unsuffixed float remains Float64",
         "homogeneous_scalar_operators": ["+", "-", "*", "/", "%", "integer ^"],
         "homogeneous_scalar_operand_domain_count": 1,
         "specialized_intrinsic_routes": {

@@ -83,9 +83,9 @@ rollback은 “과거의 외부 effect를 지운다”는 뜻이 아니라 아�
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let handle = open(path)
-defer handle ~ close()
+defer handle ~ close
 
-let bytes = handle ~ readAll()
+let bytes = handle ~ readAll
 process(bytes)
 ```
 

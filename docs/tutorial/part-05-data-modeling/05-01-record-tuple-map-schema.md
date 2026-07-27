@@ -165,10 +165,11 @@ constructor alias처럼 쓰면
 
 ## 8. 다른 기능과의 연결
 
-Record는 all-named message payload, named-rest `Record***`, schema
-materialization과 연결된다. Pattern의 `${name}`은 Record value literal이
-아니라 별도 parser goal이다. Class constructor와 schema construction의
-차이는 다음 장에서 다룬다.
+Record는 named-rest `Record***`, schema materialization, 그리고 call에
+명시적으로 전달하는 하나의 Record expression과 연결된다. Named message
+arguments는 ordered call labels이지 자동 생성된 Record가 아니다.
+Pattern의 `${name}`은 Record value literal이 아니라 별도 parser goal이다.
+Class constructor와 schema construction의 차이는 다음 장에서 다룬다.
 
 ## 9. Deeplus다운 작성 관례
 

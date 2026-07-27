@@ -126,8 +126,8 @@ let distance = 2500[m]
 let time = 125[s]
 let speed = distance / time
 
-let kilometers = distance ~ asUnit(1[km])
-let scalarMeters = distance ~ scalarIn(1[m])
+let kilometers = distance ~ asUnit 1[km]
+let scalarMeters = distance ~ scalarIn 1[m]
 ```
 
 `distance / time`은 normalized `Length/Time` dimension을 만든다.

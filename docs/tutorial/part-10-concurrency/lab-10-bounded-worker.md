@@ -62,7 +62,7 @@ checker가 별도 identity 결합을 검증해야 한다.
 def submit(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
 = {
-    return worker ~ run(move job)
+    return worker :~ run move job
 }
 ```
 
@@ -76,7 +76,7 @@ mailbox message가 owner를 얻는다.
 def#async query(worker: Worker) -> WorkerStatus
     throws ActorMessageError
 = {
-    let Result::ok(replyTask) = worker ~ status
+    let Result::ok(replyTask) = worker :~ status
     else Result::err(admissionError) => throw admissionError
     return await replyTask
 }
@@ -116,7 +116,7 @@ public actor #mailbox(capacity: 0) InvalidWorker {
     on run(job: Job) = { }
 }
 
-let status = await worker ~ status
+let status = await (worker :~ status)
 ```
 
 첫 오류는 mailbox bound admission, 두 번째는 request admission Result

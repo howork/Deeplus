@@ -52,10 +52,11 @@ checked refinement conversion이 성공한 뒤에만 만들 수 있는 도메인
 
 ## 3. 검증과 정규화
 
-`def#guard`는 순수하고 전체적인 Bool callable profile이지만, 현재
-authority에서 임의 호출 결과가 자동 narrowing summary로 등록되지는
-않는다. 따라서 “guard를 호출했으니 이후 값의 타입이 좁아진다”고
-가정하지 않는다. checked cast 또는 직접 판정 가능한 흐름을 사용한다.
+`def#guard`는 순수하고 전체적인 Bool callable profile이다. eligible
+body의 `GuardSummaryV1`은 direct truth-test와 stable actual에서만
+branch-local narrowing을 제공한다. stored Bool이나 arbitrary wrapper의
+결과까지 proof로 확대하지 않는다. exact refined payload나 상세 실패가
+필요하면 checked cast를 사용한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -165,7 +166,7 @@ checked named division 정책을 건너뛴다. 문법상 쓸 수 있는지와 �
 - `Rational`과 artifact SHA, serialization tag는 서로 다른 identity
   domain이다.
 - pattern 성공 전에는 payload binding을 공개하지 않는다.
-- `def#guard` 호출만으로 `Phi`가 좁혀진다고 가정하지 않는다.
+- `def#guard` narrowing의 summary/direct-test/stable-place 조건을 확인한다.
 - 실행 결과나 성능 수치는 아직 주장하지 않는다.
 
 ### 7.1 한 거래를 끝까지 추적하기

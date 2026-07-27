@@ -18,7 +18,8 @@ expected reject probe다. 이 장은 새 syntax, P1 closure, 구현 authority
 - 타입·객체·Trait Preview Design을 문제군별로 분류한다.
 - current explicit alternative와 candidate surface를 구분한다.
 - coherence, witness, identity와 ownership 검토 질문을 세운다.
-- Enum proposal이 current Enum authority를 바꾸지 않음을 설명한다.
+- Option optional-binding 후보가 current pattern authority를 재사용하는
+  경계를 설명한다.
 
 ## 3. 선수 지식
 
@@ -38,7 +39,7 @@ coherence와 link identity를 닫지 못한다.
 
 ## 5. 핵심 모델
 
-이 문서군의 21개 exact feature ID를 다섯 문제군으로 읽을 수 있다.
+이 문서군의 19개 exact feature ID를 네 문제군으로 읽을 수 있다.
 
 1. **활성화·공유 상태**
    - `class_static_activation`
@@ -55,11 +56,8 @@ coherence와 link identity를 닫지 못한다.
    - `solver_backed_general_refinement`
    - `dyn_rcts_family`
    - `dynamic_trait_attach_detach_stateless_preview_design`
-4. **Enum successor capability**
-   - `enum_case_display_mapping_preview_design`
-   - `enum_declaration_order_ord_preview_design`
-   - `enum_exact_variant_subset_alias_preview_design`
-5. **extension·facet·projection**
+   - `option_let_question_binding_preview_design`
+4. **extension·facet·projection**
    - `extension_dot_call_sugar`
    - `generic_named_extension_set_target`
    - `structural_prototype_extension`
@@ -84,7 +82,7 @@ module binding과 named entry point로 storage/effect owner를 드러낸다.
 private let cache = Cache!()
 
 public def warmCache() -> Unit = {
-    cache ~ warm()
+    cache ~ warm
 }
 ```
 
@@ -100,11 +98,11 @@ formal proof block은 아니다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 public conformance UserId conforms Display {
-    +def display+() -> String = { return self.raw ~ toString() }
+    +def display+() -> String = { return self.raw ~ toString }
 }
 
 def displayIsStable(id: UserId) -> Bool = {
-    return id ~ display() == id ~ display()
+    return id ~ display == id ~ display
 }
 ```
 
@@ -112,50 +110,29 @@ def displayIsStable(id: UserId) -> Bool = {
 termination, artifact binding을 검토하는 이름이다. 위 test의 존재만으로
 proposal이 활성화되거나 법칙이 기계 증명되었다고 말하지 않는다.
 
-### 3단계: Enum successor probe를 current Enum과 분리한다
+### 3단계: Option optional binding을 기존 pattern과 비교한다
 
-case display mapping은 candidate spelling이 선택되어 있지만
-nonactivatable이다.
-
-<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
-```deeplus
-// feature: enum_case_display_mapping_preview_design
-private enum Status {
-    Ready ~> "ready"
-    Busy ~> "busy"
-}
-```
-
-declaration-order `Ord`도 마찬가지다.
+`let?`는 `Option<T>` 한 겹의 `::some` pattern을 짧게 쓰려는
+nonactivatable 후보다.
 
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-// feature: enum_declaration_order_ord_preview_design
-private enum#increasing Priority {
-    Low
-    Normal
-    High
+// feature: option_let_question_binding_preview_design
+if let? user = findUser(id) {
+    show(user)
+}
+
+let? config = loadConfig() else {
+    return defaultConfig()
 }
 ```
 
-exact subset alias는 owner의 finite `VariantId` set을 후보 identity로
-사용하지만 implicit narrowing이나 새 runtime wrapper를 만들지 않는다.
-
-<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
-```deeplus
-// feature: enum_exact_variant_subset_alias_preview_design
-private enum Day {
-    Mon
-    Tue
-    Sat
-    Sun
-    +type Weekend = Sat | Sun
-}
-```
-
-current mixed Enum payload와 current marker reachability는 이 probe 때문에
-바뀌지 않는다. serialization tag, declaration order, `OrdinalValue`,
-runtime discriminant와 semantic `VariantId`도 자동으로 동일시하지 않는다.
+정규화는 각각 현행 `if let ::some(user) = ...`와 mismatch disposition을
+가진 guarded `let`을 재사용한다. `Option<T>` 한 겹만 열고 subject를 한
+번 평가하며 성공 전에는 binding/move를 commit하지 않는다. Result,
+arbitrary Enum, nullability, force unwrap, propagation, bare local
+`let?` without `else`, `for`/comprehension/match/condition-chain으로
+확대하지 않는다.
 
 ## 7. 허용·거부·경계 사례
 
@@ -176,7 +153,7 @@ let total = mergeScores(a, b)
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
 ```deeplus
 #preview(local_witness_preview_design,specialization_preview_design)
-let shown = value ~ display()
+let shown = value ~ display
 ```
 
 expected family는 nonactivatable feature를 gate 목록에 넣었다는 진단이다.
@@ -193,8 +170,9 @@ compile-time erased라 하면 dynamic carriage use case를 설명하지 못한�
 
 Trait proposal은 fixed-glyph operator, indexing, method dispatch와 이어진다.
 하지만 임의 custom operator는 Preview 후보도 아니며 다시 만들지 않는다.
-Enum proposal은 pattern exhaustiveness와 serialization에 영향을 주므로
-semantic `VariantId`와 외부 tag를 분리해야 한다. facet/projection proposal은
+Enum order/display/subset은 이미 Stable이며 Preview proposal로 세지
+않는다. Option binding proposal은 기존 pattern의 evaluation/commit과
+exhaustiveness 책임을 보존해야 한다. facet/projection proposal은
 borrow/move/inout 책임, mutation commit, cleanup을 HIR-H1에 lossless하게
 남겨야 한다.
 
@@ -221,7 +199,7 @@ child-local parent witness replacement나 specialization을 활성화하지
 
 - syntax보다 owner identity와 failure boundary를 먼저 쓴다.
 - 같은 type pair의 witness가 하나로 닫히는지 항상 검토한다.
-- current Enum과 successor Enum 표면을 한 declaration에 섞지 않는다.
+- Stable Enum derived capability를 Preview 목록에 되돌려 넣지 않는다.
 - semantic identity, serialization tag, runtime discriminant, ordinal,
   layout/ABI identity를 별도 열로 기록한다.
 - 임의 custom operator 대신 named API 또는 admitted fixed-glyph
@@ -243,11 +221,11 @@ child-local parent witness replacement나 specialization을 활성화하지
 
 ## 11. 빠른 복습
 
-- 타입·객체·Trait Preview Design은 21개 exact ID의 검토면이다.
+- 타입·객체·Trait Preview Design은 이 장의 19개 exact ID 검토면이다.
 - 모두 `NONACTIVATABLE`이며 current source가 아니다.
 - current explicit alternative는 proposal의 문제를 설명하되 proposal을
   몰래 구현하지 않는다.
-- Enum successor capability는 current Enum authority를 바꾸지 않는다.
+- Option binding 후보는 Option/pattern identity를 새 runtime node로 바꾸지 않는다.
 - static example이나 schema 존재만으로 P1/product 상태는 바뀌지 않는다.
 
 ## 12. 정본 근거와 다음 장

@@ -329,10 +329,57 @@ Enum case, 허용된 유한 R0 refinement fact와 usable-place 상태를
 assignment, aliasing mutation, exclusive borrow, escape/capture, consume 및
 subject를 바꿀 수 있는 call은 관련 fact를 제거한다.
 
-`def#guard`는 순수하고 전체적인 Bool callable profile이지만, 현재 API
-metadata에는 refinement summary owner가 없다. 그러므로
-`def#guard` 호출 자체는 `Phi`를 좁히지 않는다. inline으로 판정 가능한
-R0 predicate만 narrowing fact를 제공한다.
+<a id="guard-callable-refinement-summary"></a>
+
+### `def#guard` 직접 호출 narrowing
+
+Stable `GuardSummaryV1`은 eligible `def#guard`의 body가 나타내는 하나의
+유한 R0 predicate를 API metadata에 기록한다. 호출 지점은 함수 이름이나
+반환된 `Bool`을 추측하지 않는다. checker가 선언 body와 summary의
+일치를 검증한 뒤, stable actual place를 인자로 한 **직접 truth-test**에서만
+summary를 actual에 치환해 `Phi`에 fact를 추가한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/guard-refinement-summary.json -->
+```deeplus
+public type PositiveInt = Int where this > 0
+
+public def#guard isPositive(value: Int) -> Bool = {
+    return value > 0
+}
+
+public def describe(value: Int) -> String = {
+    if isPositive(value) {
+        // 이 edge의 flow fact: value satisfies Int where this > 0
+        // 선언 타입은 계속 Int다.
+        return "positive: ${value}"
+    }
+    return "not positive: ${value}"
+}
+```
+
+true edge에는 `P(actual)`, false edge에는 정확한 보완 fact
+`not P(actual)`를 남긴다. 호출은 runtime에서 정확히 한 번 실행되고,
+summary는 그 결과를 대신 계산하는 optimizer 허가가 아니다. 선언 타입,
+`TypeId`, storage, serialization 또는 ABI identity도 바꾸지 않는다.
+
+summary가 narrowing을 제공하려면 다음 조건을 모두 만족해야 한다.
+
+1. 선언이 total, terminating, pure, nonthrowing, nonsuspending
+   `def#guard`이고 결과 타입이 `Bool`이다.
+2. summary는 closed finite-R0 식 하나이며 버전이 정확히
+   `GuardSummaryV1`이다.
+3. 호출은 `if guard(x)`, `while guard(x)` 또는 match-arm guard처럼
+   결과를 바로 분기하는 direct truth-test다.
+4. actual은 재평가 없이 같은 저장 위치를 가리키는 stable place이고,
+   summary 치환 뒤 predicate가 해당 actual에 대해 well-formed다.
+5. assignment, alias mutation, exclusive borrow, escape/capture, consume나
+   actual을 변경·소비할 수 있는 call이 있으면 fact를 즉시 제거한다.
+
+stored `Bool`, wrapper를 통과한 호출, arbitrary helper, summary가 없는
+`def#guard`, unstable actual은 narrowing하지 않는다. 이 fact는 guarded
+match arm 안에서는 사용할 수 있지만 arm의 structural coverage cell을
+늘리지 않으므로 exhaustiveness를 증명하지 않는다. summary를 제공할 수
+없는 재사용 helper는 `def#pure`로 선언하는 것이 더 정직하다.
 
 ### closed Union에 한정된 `is`/`!is`
 
@@ -408,7 +455,7 @@ Union target에 대한 runtime type test는 거부한다. 선택된 값을
 private type TextOrNumber = Int | String
 let value: TextOrNumber = 13
 let text = @match value {
-    n: Int => n ~ toString()
+    n: Int => n ~ toString
     s: String => s
 }
 ```
@@ -477,7 +524,7 @@ let length = 13[cm]
 | closed Union이 아니거나 정확한 alternative가 아닌 `value is T`/`value !is T` | 거부 |
 | refinement로의 silent implicit narrowing | 거부 |
 | effectful, throwing, suspending, provider/authority-bearing refinement predicate | 거부 |
-| `def#guard` 호출 결과를 자동 narrowing summary로 사용 | 거부 |
+| 검증된 `GuardSummaryV1` 없이 `def#guard` 이름만으로 narrowing | 거부 |
 | Class variance | Class owner admission에서 거부 |
 | bare associated projection `I.Item` | 거부; `<I as Trait>::Item` 사용 |
 | Facet의 concrete payload spelling 또는 mode 생략 | 거부 |

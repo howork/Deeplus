@@ -342,6 +342,43 @@ Trait identity는 runtime decoder value가 아니다. 동적 decoder가 필요�
 그 service의 concrete type, construction/injection, capability와 effect를
 ordinary program value로 드러내야 한다.
 
+### 3.7 `std::math` type-directed core facade
+
+`std::math`의 core facade는 현행 `STDLIB_PROFILE`이다. 함수 선택은
+정규화된 argument type만 사용한다. expected result, runtime 값의 부호나
+정수성, import 순서, provider 또는 fallback은 overload row를 선택하지
+않는다. `Float`는 먼저 `Float64`로 정규화되고 `UInt`는 독립된 기본
+부호 없는 semantic domain으로 판정된다.
+
+core inventory는 constants, classification, basic, rounding, exact,
+power/root, exponential/logarithmic, trigonometric, hyperbolic, Complex
+principal-branch와 approximation group을 분리한다. 각 callable은 exact
+scalar/result family, 비정상 값 처리, error/effect row와 approximation
+책임을 signature catalog에 명시한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/numeric-system-std-math.json -->
+```deeplus
+use std::math
+
+let root: Float = math::sqrt(9.0)
+let wave: Float64 = math::sin(math::pi / 2.0)
+let finite: Bool = math::isFinite(root)
+let phase: Complex = math::sqrt(3.0 + 4.0i)
+```
+
+이 예시는 이름과 type-directed dispatch를 설명하는 정적 stdlib profile
+투영이다. 모든 target에서 correctly-rounded 결과나 bit-identical
+portable accuracy를 주장하지 않는다. `Complex` 연산은 정해진 principal
+branch와 signed-zero law를 보존하고 real 입력을 결과 annotation만으로
+Complex row에 보내지 않는다.
+
+special function과 calculus/numerical-integration family는 별도의
+`PREVIEW_DESIGN_NONACTIVATABLE`이다. calculus 후보가 성공 값을 만들 때도
+단일 숫자로 정확성을 숨기지 않고
+`Result<Estimate<T>, error NumericAnalysisError<T>>`처럼 추정값과 오류
+경계를 드러낸다. symbolic/automatic differentiation은 이 후보에
+포함되지 않는다.
+
 ## 4. Option, Result 및 failure identity
 
 ### 4.1 Option
@@ -1755,7 +1792,7 @@ tooling이 더 큰 budget으로 몰래 retry하면
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/provider-derive-via.json -->
 ```deeplus
 public def generatedPublic(value: PrivateModel) -> String = {
-    return value ~ toString()
+    return value ~ toString
 }
 ```
 

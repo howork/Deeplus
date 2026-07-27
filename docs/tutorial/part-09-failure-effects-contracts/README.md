@@ -17,7 +17,7 @@ callable 계약이 결합된다.
 1. 호출자가 회복할 실패와 값으로 다룰 실패를 어떻게 구분하는가?
 2. `throws`, `effects`, `Result`는 왜 서로 대체 관계가 아닌가?
 3. `try`와 값 식 `@try`는 어떤 결과와 cleanup을 소유하는가?
-4. 계약과 `def#guard`는 실행 코드나 자동 narrowing과 어떻게 다른가?
+4. 계약과 `def#guard`의 검증된 direct-call narrowing은 어떻게 다른가?
 5. 복구 parser가 철자를 알아본다는 사실이 왜 기능 활성화가 아닌가?
 
 ## 학습 순서
@@ -60,7 +60,8 @@ def invalid(bytes: Bytes) -> Result<Image, error DecodeError>
 - `defer`는 block이 아니라 정확히 하나의 cleanup invocation을 등록한다.
 - cleanup은 정상 반환, Error, Defect, Cancellation에서 건너뛰지 않는다.
 - `law`는 실행 함수가 아니라 제한된 pure predicate metadata다.
-- `def#guard` 호출은 현재 자동 narrowing summary를 만들지 않는다.
+- `def#guard` direct truth-test는 검증된 `GuardSummaryV1`과 stable actual이
+  있을 때만 branch-local narrowing fact를 만든다.
 - 설계 정적 예시는 compiler 실행 영수증이 아니다.
 
 ## 정본 지도
@@ -70,4 +71,3 @@ def invalid(bytes: Bytes) -> Result<Image, error DecodeError>
 - [MIR failure와 cleanup](../../../spec/mir/semantics.md)
 - [정확 문법](../../../spec/grammar/deeplus.ebnf)
 - [진단 색인](../../grammar-reference/appendices/d-diagnostic-predicate-index.md)
-

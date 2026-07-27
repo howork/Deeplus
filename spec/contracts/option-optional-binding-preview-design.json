@@ -1,0 +1,78 @@
+{
+  "schema": "deeplus.option-optional-binding-preview-design/r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "language_version": "0.1.2-internal",
+  "status": "PREVIEW_DESIGN",
+  "source_activation": "nonactivatable",
+  "product_lanes": "15/15_NOT_RUN",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "feature_id": "option_let_question_binding_preview_design",
+  "carrier": {
+    "required_normal_form": "Option<T>",
+    "optional_surface_equivalence": "T? == Option<T>",
+    "layers_removed": 1,
+    "other_carriers": "REJECT"
+  },
+  "surfaces": [
+    {
+      "id": "OPTIONAL_BINDING_IF",
+      "surface": "if let? OptionPayloadPattern = Expr Block",
+      "normalizes_to": "if let ::some(OptionPayloadPattern) = Expr Block",
+      "mismatch": "false_branch"
+    },
+    {
+      "id": "OPTIONAL_BINDING_WHILE",
+      "surface": "while let? OptionPayloadPattern = Expr Block",
+      "normalizes_to": "while let ::some(OptionPayloadPattern) = Expr Block",
+      "mismatch": "loop_termination"
+    },
+    {
+      "id": "OPTIONAL_BINDING_GUARDED_LOCAL",
+      "surface": "let? OptionPayloadPattern = Expr else GuardedBindingFailure",
+      "normalizes_to": "let ::some(OptionPayloadPattern) = Expr else GuardedBindingFailure",
+      "mismatch": "unconditional_declared_exit"
+    }
+  ],
+  "annotation_owner_repair": {
+    "payload_production": "OptionPayloadPattern ::= Pattern",
+    "subject_type": "resolved independently before the Option check",
+    "payload_annotation": "an annotation inside OptionPayloadPattern constrains T, not Option<T>",
+    "binding_pattern_subject_annotation_reuse": false
+  },
+  "lexical_contract": {
+    "canonical": "let?",
+    "trivia_between_let_and_question": "FORBIDDEN",
+    "formatter": "print_attached"
+  },
+  "normalization": {
+    "cst": "preserve question token and sugar origin",
+    "ast": "existing expected-type VariantPattern for Option::some",
+    "hir": "existing TypedVariantPattern with resolved Option::some VariantId",
+    "mir": "NO_NEW_NODE",
+    "runtime": "NO_NEW_OPERATION"
+  },
+  "excluded": [
+    "Result let?",
+    "arbitrary Enum let?",
+    "nullable-reference let?",
+    "truthiness let?",
+    "force unwrap",
+    "failure propagation",
+    "bare let? without else",
+    "for let?",
+    "comprehension if let?",
+    "match let?",
+    "condition-chain let?",
+    "user-defined extractor"
+  ],
+  "machine_acceptance": {
+    "surface_count": 3,
+    "option_layers_removed": 1,
+    "runtime_operation_count": 0,
+    "source_activation_count": 0,
+    "product_execution_receipt_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0
+  }
+}

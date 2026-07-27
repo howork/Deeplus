@@ -55,7 +55,7 @@ public def totalEnergy(signal: Signal) -> Float64
 = {
     var total = 0.0
     for sample in signal {
-        total = total + energy(sample)
+        total += energy(sample)
     }
     return total
 }

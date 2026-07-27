@@ -239,7 +239,7 @@ if let [head, .._] = values {
 private type TextOrNumber = Int | String
 let value: TextOrNumber = 13
 let text = @match value {
-    n: Int => n ~ toString()
+    n: Int => n ~ toString
     s: String => s
 }
 ```
@@ -288,8 +288,9 @@ Class가 명시적으로 제공하는 Record view 또는 별도의 안전한 ada
 
 - Enum case expression payload는 argument plane이고 Pattern payload는 Pattern
   plane이므로 각각 별도 검사를 거친다.
-- `def#guard` 호출은 Bool을 만들지만 호출 자체는 narrowing fact를 만들지
-  않는다. 정본이 허용한 inline R0 guard만 true edge에 유한 fact를 더한다.
+- 검증된 `GuardSummaryV1`이 있는 `def#guard` direct truth-test는 stable
+  actual의 true/false edge에 보완적인 유한 narrowing fact를 더한다.
+  stored Bool, wrapper와 unstable actual은 opaque하다.
 - Union injection과 normalization이 먼저 닫혀 있어야 typed alternative
   binder가 작동한다.
 - ownership mode `move`는 structural test 때가 아니라 atomic commit 때

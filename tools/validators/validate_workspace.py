@@ -20,8 +20,8 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-operator-function-static-coherence-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-numeric-guard-call-enum-coherence-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-exact-numeric-hir-h1-coherence-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-type-refinement-narrowing-coherence-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
@@ -31,11 +31,12 @@ EXCLUDED_TREE_PARTS = {
     "target",
     "dist",
     "candidate",
+    "tmp",
     "__pycache__",
 }
 EXPECTED = {
-    "features": 695, "diagnostics": 1341, "predicates": 250,
-    "predicate_fixtures": 780, "no_go": 150,
+    "features": 705, "diagnostics": 1367, "predicates": 255,
+    "predicate_fixtures": 790, "no_go": 150,
     "hard_keywords": 30, "contextual_words": 101,
 }
 REQUIRED_FEATURE_IDS = (
@@ -274,9 +275,9 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 695
-                and fixed_counts.get("predicates") == 250
-                and fixed_counts.get("predicate_fixtures") == 780
+                and fixed_counts.get("features") == 705
+                and fixed_counts.get("predicates") == 255
+                and fixed_counts.get("predicate_fixtures") == 790
                 and fixed_counts.get("no_go") == 150
                 and fixed_counts.get("hard_keywords") == 30
                 and fixed_counts.get("contextual_words") == 101,
@@ -968,7 +969,7 @@ def main() -> int:
         and raw_delimiter_diagnostic.get("message")
         == 'Stable raw String uses exactly the attached `#raw"..."` delimiter family.'
         and set(raw_no_go.get("negative_fixture_ids", []))
-        == {"EX-R51d-002", "EX-R51d-002A"}
+        == {"EX-R51d-002"}
         and raw_no_go.get("replacement_or_no_fix") == 'use #raw"..."',
         "STABLE_RAW_STRING_SURFACE_CLOSURE",
         f"feature={raw_feature.get('status_enum')} surface={raw_phase.get('surface')} no_go={raw_no_go.get('negative_fixture_ids')}",
@@ -1315,6 +1316,11 @@ def main() -> int:
         and hir_machine.get("pipeline_stage_count") == 7
         and hir_machine.get("power_operation_count") == 6
         and hir_machine.get("power_adaptation_count") == 5
+        and hir_machine.get("call_mode_count") == 3
+        and hir_machine.get("resolved_call_plan_count") == 6
+        and hir_machine.get("message_payload_aggregate_count") == 0
+        and hir_machine.get("actor_transport_implicit_suspend_count") == 0
+        and hir_machine.get("actor_transport_implicit_retry_count") == 0
         and hir_machine.get("fixture_count")
         == hir_counts.get("cases")
         == len(hir_fixture.get("cases", []))
@@ -1406,52 +1412,71 @@ def main() -> int:
     call_frontend = parsed.get(
         root / "spec/frontend/frontend-model.json", {}
     ).get("call_frontend_contract", {})
-    message_ast = (
+    call_ast = (
         call_frontend.get("normalized_ast_nodes", {})
-        .get("MessageCallExpr", {})
+        .get("CallExpr", {})
     )
     message_grammar = (
         root / "spec/grammar/deeplus.ebnf"
     ).read_text(encoding="utf-8")
     check(
         trailing_contract.get("trailing_closure_owner")
-        == "TrailingClosureGroup shared by CallSuffix and MessageSuffix"
+        == "TrailingClosureGroup shared by every CallExpr mode"
         and "every closure is labeled" in trailing_contract.get(
             "multiple_trailing_closures", ""
         )
-        and message_call_contract.get("payload_cardinality") == "zero_or_one"
+        and message_call_contract.get("argument_cardinality") == "zero_to_many"
         and message_call_contract.get("ordinary_argument_list_owner_reused")
-        is False
+        is True
+        and message_call_contract.get("message_payload_node_count") == 0
+        and message_call_contract.get("tuple_or_record_payload_projection_count")
+        == 0
         and message_call_contract.get("trailing_closure_contract")
         == "TFC-R011"
         and tfc_contract.get("machine_acceptance", {}).get(
             "message_payload_max_count"
         )
-        == 1
+        == 0
         and tfc_contract.get("machine_acceptance", {}).get(
             "message_argument_list_reuse_count"
         )
-        == 0
+        == 1
+        and tfc_contract.get("machine_acceptance", {}).get(
+            "normalized_call_node_count"
+        )
+        == 1
+        and tfc_contract.get("machine_acceptance", {}).get("call_mode_count") == 3
+        and tfc_contract.get("machine_acceptance", {}).get(
+            "actor_colon_tilde_surface_count"
+        )
+        == 1
         and tfc_contract.get("machine_acceptance", {}).get(
             "multiple_trailing_closures_require_all_named"
         )
         is True,
         "MESSAGE_CALL_CONTRACT_MACHINE_CLOSURE",
-        f"payload={message_call_contract.get('payload_cardinality')} trailing={trailing_contract.get('multiple_trailing_closures')}",
+        f"arguments={message_call_contract.get('argument_cardinality')} trailing={trailing_contract.get('multiple_trailing_closures')}",
     )
     check(
         'CallSuffix ::= ArgumentList TrailingClosureGroup?' in message_grammar
-        and 'MessageSuffix ::= "~" MessageSelector MessagePayload? TrailingClosureGroup?' in message_grammar.replace("\n", " ")
+        and 'TildeCallLed ::= TildeCallToken MessageSelector' in message_grammar
+        and 'TildeCallToken ::= "~" | ":~" ;' in message_grammar
+        and 'TildeArgumentSequence ::= TildeArgument ("," TildeArgument)* ;'
+        in message_grammar
         and 'TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr ;'
         in message_grammar
-        and "MessageArguments" not in message_grammar
-        and 'DeferredMessageCall ::= DeferredReceiver "~" MessageSelector MessagePayload? ;'
+        and "MessagePayload" not in message_grammar
+        and 'DeferredMessageCall ::= DeferredReceiver "~" MessageSelector TildeArgumentSequence? ;'
         in message_grammar
-        and message_ast.get("payload_kind") == "none | scalar | tuple | record"
-        and call_frontend.get("message_payload_normalization", {}).get(
-            "ordinary_argument_list_reuse_count"
+        and call_ast.get("mode") == "Ordinary | Message | ActorMessage"
+        and call_frontend.get("mode_and_pratt_contract", {}).get(
+            "message_payload_node_count"
         )
         == 0
+        and call_frontend.get("mode_and_pratt_contract", {}).get(
+            "ordinary_argument_list_reuse_count"
+        )
+        == 1
         and parsed.get(
             root / "spec/frontend/frontend-model.json", {}
         ).get("control_frontend_contract", {}).get(
@@ -1459,7 +1484,7 @@ def main() -> int:
         )
         == "one AtomicCallArgument followed by one TrailingClosureGroup",
         "MESSAGE_CALL_GRAMMAR_FRONTEND_PARITY",
-        "MessageSuffix payload=0|1 shared-trailing-group",
+        "Unified CallExpr modes and structured tilde arguments",
     )
     rcts_schema = parsed.get(
         root / "schemas/language/rcts-v5-descriptor.schema.json", {}
@@ -1514,29 +1539,29 @@ def main() -> int:
         .get("all_named")
         is True
         and tfc_by_id.get(
-            "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-PAYLOAD", {}
+            "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-ARGUMENT", {}
         )
         .get("assertions", {})
-        .get("payload_kind")
-        == "tuple"
+        .get("argument_expression_type")
+        == "Tuple"
         and tfc_by_id.get(
-            "TFC-P-027-MESSAGE-RECORD-PAYLOAD-MULTIPLE-CLOSURES", {}
+            "TFC-P-027-MESSAGE-NAMED-ARGUMENTS-MULTIPLE-CLOSURES", {}
         )
         .get("assertions", {})
-        .get("payload_kind")
-        == "record"
+        .get("ordered_argument_count")
+        == 2
         and tfc_by_id.get(
             "TFC-N-027-MIXED-NAMED-UNNAMED-TRAILING-CLOSURES", {}
         )
         .get("expected_existing_diagnostic")
         == "MULTIPLE_UNLABELED_TRAILING_CLOSURES_NOT_CURRENT"
         and tfc_by_id.get(
-            "TFC-N-029-MIXED-MESSAGE-PAYLOAD-CHANNELS", {}
+            "TFC-N-029-DUPLICATE-MESSAGE-ARGUMENT-LABEL", {}
         )
         .get("expected_existing_diagnostic")
         == "STATIC_CALL_SHAPE_NOT_ADMITTED",
         "MESSAGE_CALL_FIXTURE_MATRIX",
-        "positive=tuple|record|multiple-named negative=mixed-group|mixed-payload",
+        "positive=tuple-argument|named-arguments|multiple-named negative=mixed-group|duplicate-label",
     )
     check(
         [row.get("mode") for row in tfc_parameter_modes]
@@ -1809,9 +1834,9 @@ def main() -> int:
         and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
         and trn_contract.get("open_feature_p1", {}).get("total") == 22
         and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 14)]
-        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 40
-        and trn_admit == trn_counts.get("admit") == 13
-        and trn_reject == trn_counts.get("reject") == 27
+        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 45
+        and trn_admit == trn_counts.get("admit") == 16
+        and trn_reject == trn_counts.get("reject") == 29
         and all(
             row.get("rule_ids")
             and set(row["rule_ids"]).issubset(set(trn_rule_ids))
@@ -1825,7 +1850,7 @@ def main() -> int:
         and trn_counts.get("runtime_union_pattern_tests") == 2
         and trn_counts.get("closed_union_expression_tests") == 5
         and trn_counts.get("open_runtime_type_tests") == 0
-        and trn_counts.get("def_guard_narrowing_facts") == 0
+        and trn_counts.get("def_guard_narrowing_facts") == 3
         and trn_counts.get("p1_closed") == 0
         and trn_counts.get("p1_created") == 0,
         "TRN_CONTRACT_FIXTURE_CLOSURE",
@@ -1858,10 +1883,10 @@ def main() -> int:
     }
     edc_features = [feature_by_id.get(feature_id, {}) for feature_id in edc_feature_ids]
     edc_frontend = parsed.get(root / "spec/frontend/frontend-model.json", {}).get(
-        "preview_design_nonactivatable", {}
+        "stable_design_surfaces_current", {}
     )
     edc_frontend_ids = {
-        "enum_declaration_order_ord_derivation",
+        "enum_declaration_order_ord",
         "enum_case_display_mapping",
         "enum_exact_variant_subset_alias",
     }
@@ -1875,8 +1900,8 @@ def main() -> int:
         edc.get("revision") == revision
         and edc_contract.get("revision") == revision
         and edc_contract.get("semantic_p0") == 0
-        and edc_contract.get("current_binding") is False
-        and edc_contract.get("source_activation") == "nonactivatable"
+        and edc_contract.get("current_binding") is True
+        and edc_contract.get("source_activation") == "none"
         and edc_contract.get("product_lanes") == "15/15_NOT_RUN"
         and edc_contract.get("open_feature_p1", {}).get("total") == 22
         and edc_contract.get("compatibility_lanes") == edc_pc10_lanes
@@ -1905,7 +1930,6 @@ def main() -> int:
         and all(
             row.get("rule_ids")
             and set(row["rule_ids"]).issubset(set(edc_rule_ids))
-            and row.get("current_source_outcome") == "NONACTIVATABLE_NOT_CURRENT"
             and row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
             for row in edc_rows
         )
@@ -1922,8 +1946,8 @@ def main() -> int:
     )
     check(
         all(
-            feature.get("status_enum") == "PREVIEW_DESIGN"
-            and feature.get("source_activation") == "nonactivatable"
+            feature.get("status_enum") == "STABLE_DESIGN"
+            and feature.get("source_activation") == "none"
             and feature.get("product_support") == "NOT_RUN"
             and feature.get("production_lexer") == "NOT_RUN"
             and feature.get("production_parser") == "NOT_RUN"
@@ -1931,19 +1955,21 @@ def main() -> int:
             and feature.get("runtime_xvm") == "NOT_RUN"
             and feature.get("artifact_trace_refs")
             == ["spec/contracts/enum-derived-capabilities.json"]
-            and feature.get("normative_trace_refs", {}).get("productions") == []
+            and bool(feature.get("normative_trace_refs", {}).get("productions"))
             for feature in edc_features
         )
         and all(
-            edc_frontend.get(feature_id, {}).get("parser_cover_grammar") is False
-            and edc_frontend.get(feature_id, {}).get("source_activation")
-            == "nonactivatable"
+            edc_frontend.get(feature_id, {}).get("status") == "STABLE_DESIGN"
+            and edc_frontend.get(feature_id, {}).get("product_support")
+            == "NOT_RUN"
+            and bool(edc_frontend.get(feature_id, {}).get("grammar_owner"))
             for feature_id in edc_frontend_ids
         )
-        and "enum#increasing" not in grammar
-        and "enum#decreasing" not in grammar
-        and "~>" not in grammar,
-        "EDC_NONACTIVATABLE_FEATURE_FENCE",
+        and '"increasing" | "decreasing"' in grammar
+        and 'EnumCaseDisplayMapping ::= "~>" RestrictedEnumDisplayTemplate ;'
+        in grammar
+        and 'EnumVariantSubsetAliasDecl ::= "+" "type" Identifier' in grammar,
+        "EDC_STABLE_DESIGN_FEATURE_FENCE",
         f"features={sorted(edc_feature_ids)} frontend={sorted(edc_frontend_ids)}",
     )
 
@@ -2218,19 +2244,19 @@ def main() -> int:
         "TRN_PREDICATE_DESCRIPTOR_BINDING",
         f"inputs={len(trn_inputs)} predicates={sorted(trn_predicate_rows)} match={match_binding_ok} pairs={union_pair_binding_ok}",
     )
-    opaque_guard = next(
+    stored_guard = next(
         (row for row in trn_inputs if row.get("fixture_id") == "TRN-DESC-REFINE-NEG"), {}
     ).get("descriptor", {})
     as_option_case = next(
         (row for row in trn_rows if row.get("fixture_id") == "TRN-R1-POS-009"), {}
     )
     check(
-        opaque_guard.get("guard_origin") == "DEF_GUARD_OPAQUE"
-        and opaque_guard.get("proof_state") == "UNKNOWN"
-        and opaque_guard.get("commit_count") == 0
+        stored_guard.get("guard_origin") == "DEF_GUARD_STORED_BOOL"
+        and stored_guard.get("proof_state") == "UNKNOWN"
+        and stored_guard.get("commit_count") == 0
         and as_option_case.get("flow_in") == as_option_case.get("flow_join"),
-        "TRN_OPAQUE_GUARD_AND_AS_OPTION_FLOW",
-        f"guard={opaque_guard.get('proof_state')} phi={as_option_case.get('flow_in')}->{as_option_case.get('flow_join')}",
+        "TRN_STORED_GUARD_BOOL_AND_AS_OPTION_FLOW",
+        f"guard={stored_guard.get('proof_state')} phi={as_option_case.get('flow_in')}->{as_option_case.get('flow_join')}",
     )
 
     module_fixtures = parsed.get(root / "tests/fixtures/imported/module-api-digest-fixtures.json", {})

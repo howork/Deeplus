@@ -8,20 +8,20 @@
   "properties": {
     "schema": {"const": "deeplus.type-refinement-narrowing-coherence-fixtures/r1"},
     "fixture_schema": {"const": "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"},
-    "revision": {"const": "r51f3-current-exact-numeric-hir-h1-coherence-r1"},
+    "revision": {"const": "r51f3-current-numeric-guard-call-enum-coherence-r1"},
     "contract": {"const": "spec/contracts/type-refinement-narrowing-coherence.json"},
     "semantic_p0": {"const": 0},
     "current_binding": {"const": false},
     "open_feature_p1": {"type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true, "items": {"type": "string"}},
     "product_lanes": {"type": "object", "minProperties": 15, "maxProperties": 15, "additionalProperties": {"const": "NOT_RUN"}},
-    "cases": {"type": "array", "minItems": 40, "maxItems": 40, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
+    "cases": {"type": "array", "minItems": 45, "maxItems": 45, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
     "expected_counts": {
       "type": "object", "additionalProperties": false,
       "required": ["cases", "admit", "reject", "runtime_union_pattern_tests", "closed_union_expression_tests", "open_runtime_type_tests", "def_guard_narrowing_facts", "p1_closed", "p1_created"],
       "properties": {
-        "cases": {"const": 40}, "admit": {"const": 13}, "reject": {"const": 27},
+        "cases": {"const": 45}, "admit": {"const": 16}, "reject": {"const": 29},
         "runtime_union_pattern_tests": {"const": 2}, "closed_union_expression_tests": {"const": 5}, "open_runtime_type_tests": {"const": 0},
-        "def_guard_narrowing_facts": {"const": 0}, "p1_closed": {"const": 0}, "p1_created": {"const": 0}
+        "def_guard_narrowing_facts": {"const": 3}, "p1_closed": {"const": 0}, "p1_created": {"const": 0}
       }
     }
   },
@@ -35,7 +35,7 @@
         "subject": {"type": "string", "minLength": 1},
         "pattern_or_boundary": {"type": "string", "minLength": 1},
         "proof_state": {"enum": ["PROVED", "DISPROVED", "UNKNOWN", "NOT_APPLICABLE"]},
-        "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_OPAQUE"]},
+        "guard_origin": {"enum": ["NONE", "INLINE_R0", "DEF_GUARD_SUMMARY", "DEF_GUARD_STORED_BOOL", "DEF_GUARD_INVALID"]},
         "expected": {"enum": ["ADMIT", "REJECT"]},
         "diagnostic_or_null": {"type": ["string", "null"]},
         "flow_in": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},

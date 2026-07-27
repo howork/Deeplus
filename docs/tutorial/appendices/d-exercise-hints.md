@@ -37,7 +37,8 @@ message selector가 ordinary call과 같은지 먼저 확인한다.
 ### Part 04–06
 
 Union, refinement, Enum, Trait witness의 identity를 표의 별도 열에 둔다.
-`def#guard` 호출이 자동 narrowing을 만든다고 가정하지 않는다.
+`def#guard` 이름만으로 narrowing한다고 가정하지 않는다. 검증된
+`GuardSummaryV1`, direct truth-test와 stable actual을 확인한다.
 conformance 문제는 DIRECT exact witness부터 찾고, inactive `AUTO`나
 successor `VIA`를 끌어오지 않는다.
 
@@ -87,4 +88,3 @@ design-static expectation:
 - borrow를 escape나 suspension 너머로 보냈는가?
 - source order와 tie rule을 우연에 맡겼는가?
 - product `NOT_RUN`을 PASS로 바꾸지 않았는가?
-

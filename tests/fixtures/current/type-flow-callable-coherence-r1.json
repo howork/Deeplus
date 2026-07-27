@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/type-flow-callable-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-exact-numeric-hir-h1-coherence-r1",
+  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
   "contract": "spec/contracts/type-flow-callable-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -230,7 +230,7 @@
         "TFC-R011",
         "TFC-R020"
       ],
-      "source": "def adjust(mut local: Box) -> Int = {\n  local.value = local.value + 1\n  return local.value\n}\nlet observed = adjust(owner)",
+      "source": "def adjust(mut local: Box) -> Int = {\n  local.value += 1\n  return local.value\n}\nlet observed = adjust(owner)",
       "expected_outcome": "accept",
       "expected_existing_diagnostic": null,
       "assertions": {
@@ -248,7 +248,7 @@
         "TFC-R011",
         "TFC-R020"
       ],
-      "source": "def adjust(inout place: Box) -> Unit = {\n  place.value = place.value + 1\n}\nadjust(owner)",
+      "source": "def adjust(inout place: Box) -> Unit = {\n  place.value += 1\n}\nadjust(owner)",
       "expected_outcome": "accept",
       "expected_existing_diagnostic": null,
       "assertions": {
@@ -288,7 +288,7 @@
       }
     },
     {
-      "fixture_id": "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-PAYLOAD",
+      "fixture_id": "TFC-P-026-QUALIFIED-MESSAGE-TUPLE-ARGUMENT",
       "rule_ids": [
         "TFC-R021"
       ],
@@ -296,25 +296,33 @@
       "expected_outcome": "accept",
       "expected_existing_diagnostic": null,
       "assertions": {
-        "message_payload_count": 1,
-        "payload_kind": "tuple",
-        "tuple_element_count": 2,
+        "message_payload_count": 0,
+        "ordered_argument_count": 1,
+        "argument_kind": "Positional",
+        "argument_expression_type": "Tuple",
         "selector_segment_count": 2
       }
     },
     {
-      "fixture_id": "TFC-P-027-MESSAGE-RECORD-PAYLOAD-MULTIPLE-CLOSURES",
+      "fixture_id": "TFC-P-027-MESSAGE-NAMED-ARGUMENTS-MULTIPLE-CLOSURES",
       "rule_ids": [
         "TFC-R011",
         "TFC-R021"
       ],
-      "source": "let outcome = worker ~ process(job: job, priority: priority)\n  success:{ value => publish(value) }\n  failure:{ error => recover(error) }",
+      "source": "let outcome = worker ~ process job: job, priority: priority\n  success:{ value => publish(value) }\n  failure:{ error => recover(error) }",
       "expected_outcome": "accept",
       "expected_existing_diagnostic": null,
       "assertions": {
-        "message_payload_count": 1,
-        "payload_kind": "record",
-        "payload_label_count": 2,
+        "message_payload_count": 0,
+        "ordered_argument_count": 2,
+        "argument_kinds": [
+          "Named",
+          "Named"
+        ],
+        "argument_labels": [
+          "job",
+          "priority"
+        ],
         "trailing_closure_count": 2,
         "all_trailing_closures_named": true
       }
@@ -628,18 +636,18 @@
       }
     },
     {
-      "fixture_id": "TFC-N-029-MIXED-MESSAGE-PAYLOAD-CHANNELS",
+      "fixture_id": "TFC-N-029-DUPLICATE-MESSAGE-ARGUMENT-LABEL",
       "rule_ids": [
         "TFC-R021"
       ],
-      "source": "let value = calendar ~ addUsing(policy, amount: duration)",
+      "source": "let value = calendar ~ addUsing policy: policy, policy: fallback",
       "expected_outcome": "reject",
-      "expected_rejection_reason": "one parenthesized message payload is either all positional Tuple content or all named Record content",
+      "expected_rejection_reason": "one ordered call argument list cannot repeat a static named-argument label",
       "expected_existing_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
       "assertions": {
         "message_payload_count": 0,
-        "positional_entry_count": 1,
-        "named_entry_count": 1
+        "named_argument_count": 2,
+        "unique_named_label_count": 1
       }
     }
   ],
@@ -933,24 +941,25 @@
         "ordinary": "let a = function(x, y)",
         "message": "let b = receiver ~ selector (x, y)"
       },
-      "boundary": "ordinary source has two arguments while message source has one Tuple payload; trivia before the payload parenthesis is nonsemantic"
+      "boundary": "ordinary source has two arguments while message source has one positional Tuple argument; trivia before the grouping parenthesis is nonsemantic"
     },
     {
-      "fixture_id": "TFC-B-021-MESSAGE-EMPTY-COMPATIBILITY-AND-POSTFIX",
+      "fixture_id": "TFC-B-021-MESSAGE-ZERO-VS-UNIT-ARGUMENT",
       "rule_ids": [
         "TFC-R011",
         "TFC-R021"
       ],
       "paired_sources": {
-        "compatibility": "let a = receiver ~ ping()",
-        "canonical": "let b = receiver ~ ping"
+        "zero_arguments": "let a = receiver ~ ping",
+        "one_unit_argument": "let b = receiver ~ ping ()"
       },
       "assertions": {
-        "normalized_payload_count": 0,
-        "canonical_formatter_parenthesis_count": 0,
-        "later_postfix_attaches_to_completed_call": true
+        "message_payload_count": 0,
+        "zero_argument_count": 0,
+        "unit_argument_count": 1,
+        "formatter_preserves_semantic_difference": true
       },
-      "boundary": "empty message parentheses normalize to no payload, and a suffix after a trailing group applies to the completed call result"
+      "boundary": "parenthesized Unit is one argument and is never normalized to a zero-argument message"
     }
   ],
   "expected_counts": {

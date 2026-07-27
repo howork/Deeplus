@@ -330,7 +330,7 @@ dispatch는 현행이 아니다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
 ```deeplus
 private def renderName(value: User) -> String = {
-    return value ~ displayName()
+    return value ~ displayName
 }
 ```
 
@@ -846,7 +846,7 @@ private def command(
 
 ### 9.1 source-order scan
 
-checker는 ordinary argument list 또는 message payload syntax를 왼쪽에서
+checker는 모든 `CallExpr` mode의 ordered argument syntax를 왼쪽에서
 오른쪽으로 읽는다.
 각 인수는 아직 실행하지 않고
 먼저 다음 structural descriptor를 만든다.
@@ -862,18 +862,10 @@ checker는 ordinary argument list 또는 message payload syntax를 왼쪽에서
 같은 인수를 둘 이상의 descriptor에 넣지 않는다.
 label token을 runtime String으로 평가하지 않는다.
 
-message call은 ordinary descriptor 목록을 그대로 쓰지 않는다. 먼저
-정확히 하나의 payload descriptor를 만든다.
-
-- 생략 또는 호환형 `()` → `none`
-- bare/grouped expression → `scalar`
-- positional `(x, y, ...)` → `tuple`
-- all-named `(x: a, y: b, ...)` → `record`
-
-`function(x, y)`의 두 ordinary argument와
-`receiver ~ selector (x, y)`의 Tuple payload 하나를 이 단계에서
-구분한다. 공백 유무는 의미가 아니므로 `selector(x, y)`와
-`selector (x, y)`의 payload shape는 같다.
+message와 actor-message도 이 descriptor 목록을 그대로 사용한다.
+`receiver ~ selector x, y`의 두 argument와
+`receiver ~ selector (x, y)`의 Tuple argument 하나를 이 단계에서
+구분한다. message 전용 payload descriptor는 없다.
 
 ### 9.2 formal channel 결합
 
@@ -892,12 +884,11 @@ message call은 ordinary descriptor 목록을 그대로 쓰지 않는다. 먼저
 10. 남은 named는 named-rest channel 하나에만 결합한다.
 11. 인수가 빠지거나 두 번 결합되면 후보를 제거한다.
 
-message payload는 선택된 selector의 value-input product에 투영한다.
-`none`은 0개, scalar는 1개, Tuple은 declaration order의 positional
-formal, Record는 exact static label의 named formal을 채운다. 한 Tuple
-formal 후보와 여러 positional formal 후보가 둘 다 맞는다면 임의로
-선택하지 않고 ambiguity다. payload가 context/witness channel을 채우거나
-actor isolation evidence를 합성하지 않는다.
+message/actor-message argument는 ordinary formal channel에 직접 결합한다.
+Tuple expression 하나는 formal 하나에만 결합하며 field projection으로
+여러 formal을 채우지 않는다. Record 값도 named argument source가
+아니다. context/witness channel이나 actor isolation evidence를 ordinary
+argument에서 합성하지 않는다.
 
 이 단계는 overload ranking보다 먼저 끝난다.
 declaration order와 반환 타입은
@@ -1130,10 +1121,10 @@ allocation freedom까지 자동으로 증명하지 않는다.
 
 `#guard`는 terminating, nonsuspending,
 nonconsuming pure Bool callable이다.
-하지만 `def#guard`를 호출했다는 사실만으로
-flow narrowing fact가 생기지 않는다.
-정본이 허용한 inline R0 predicate만
-true edge에 유한 proof fact를 더할 수 있다.
+검증된 `GuardSummaryV1`이 있고 stable actual을
+direct truth-test하면 true/false edge에 보완적인
+유한 flow fact를 더한다. stored Bool, wrapper와
+unstable actual은 opaque하다.
 
 `#once` callable은 첫 invocation attempt에서
 call-right를 원자적으로 소비한다.
@@ -1529,11 +1520,11 @@ implicit async conversion을 만들지 않는다.
 
 ### 18.5 actor와 call channel
 
-actor message는 `~` suffix를 사용하며
-ordinary call/method fallback이 아니다.
+actor transport는 terminal `:~` call mode를 사용하며
+ordinary `~` message/call fallback이 아니다.
 selector path는 AST/HIR에 보존되고 admission 전에 actor/protocol
-domain의 exact identity로 결정된다. message에는 0/1 payload aggregate가
-있고 Tuple/Record payload가 handler value formal에 투영된다.
+domain의 exact identity로 결정된다. actor message도 같은 ordered
+`CallArgument` family를 사용하며 Tuple/Record projection을 하지 않는다.
 context 또는 witness argument가 있더라도
 actor isolation과 message ownership transfer를 완화하지 않는다.
 message trailing closure가 isolation을 건너면 그 closure environment가

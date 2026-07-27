@@ -191,7 +191,7 @@ let moved = move node
 원본 `examples/guide/review-corpus.md`:
 
 ```deeplus
-let outcome: OwnedDowncast<Target, Source> = value ~ downcastOwned()
+let outcome: OwnedDowncast<Target, Source> = value ~ downcastOwned
 @match outcome {
     ::matched(target) => use(target)
     ::unmatched(original) => recover(original)
@@ -205,7 +205,7 @@ let outcome: OwnedDowncast<Target, Source> = value ~ downcastOwned()
 
 ```deeplus
 let printable: Facet<borrow any Printable> = facet[borrow user as Printable]
-let text = printable ~ print()
+let text = printable ~ print
 ```
 
 ### 표준 라이브러리 프로필 경계

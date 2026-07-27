@@ -12,7 +12,7 @@
 - `requires`와 `ensures` callable contract를 읽는다.
 - `law`가 실행 함수나 proof block이 아님을 설명한다.
 - law body의 pure predicate 제한을 적용한다.
-- `def#guard`의 책임과 narrowing 한계를 이해한다.
+- `def#guard`의 책임과 검증된 direct-call narrowing 경계를 이해한다.
 
 ## 3. 선수 지식
 
@@ -34,8 +34,8 @@ guard는 실제 Bool callable이다.
   predicate.
 - `def#guard`: total, terminating, pure, nonsuspending, nonconsuming Bool
   callable.
-- 현재 guard 호출에는 refinement summary owner가 없으므로 자동
-  narrowing fact를 만들지 않는다.
+- eligible guard의 검증된 `GuardSummaryV1`은 direct truth-test와 stable
+  actual에 branch-local narrowing fact를 만든다.
 
 ## 6. 단계별 예제
 
@@ -84,9 +84,10 @@ if validPort(candidate) {
 }
 ```
 
-위 branch가 `candidate`의 declared type을 자동 refinement type으로
-바꾸지는 않는다. inline R0 predicate와 typed pattern이 만드는 flow fact와
-guard call result를 구분해야 한다.
+위 direct truth-test의 true edge에는 `candidate >= 1 and
+candidate <= 65_535` fact가 생기지만 declared type은 바뀌지 않는다.
+stored Bool, wrapper, summary 없는 guard와 unstable place는 narrowing하지
+않으며, guarded arm의 structural coverage도 늘지 않는다.
 
 거부: law body에서 I/O와 arbitrary call을 실행한다.
 
@@ -118,12 +119,14 @@ mutation, I/O, `await`, `spawn`, `throw`, cleanup도 같은 이유로 거부된�
 Trait·conformance tooling metadata에 등록하고, body item이 제한된 pure
 predicate family인지 검사한다. `def#guard` 호출은 ordinary Bool 결과를
 만들되 total·terminating·pure·nonsuspending·nonconsuming 조건을 먼저
-검사한다. 이 세 경로는 이름이 비슷해도 HIR residue가 다르다.
+검사한다. eligible summary와 direct truth-test가 있으면 true/false edge에
+보완 fact를 기록한다. 이 세 경로는 이름이 비슷해도 HIR residue가 다르다.
 
-미니 사례로 `validPort(candidate)`가 참이면 그 branch에서 Bool 사실은
-알 수 있지만 `candidate: Port`라는 새 typed fact는 생기지 않는다.
-정말 `Port`가 필요하면 refinement construction, checked conversion 또는
-typed pattern 같은 증명 owner를 사용해야 한다.
+미니 사례로 `validPort(candidate)`가 참이면 그 branch에서 Port
+predicate를 만족한다는 flow fact를 사용할 수 있지만 `candidate`의
+declared type과 identity가 새 `Port`로 바뀌지는 않는다. exact Port 값을
+경계 밖에 보존하려면 refinement construction, checked conversion 또는
+typed pattern 같은 증명 owner를 사용한다.
 
 ### 흔한 오해
 
@@ -163,7 +166,7 @@ instrumentation이 실행되었다는 사실을 구분한다. 이 튜토리얼�
 
 - contract, law, guard는 서로 다른 owner다.
 - law는 ordinary MIR statement가 아니다.
-- guard는 Bool callable이지만 자동 narrowing summary는 없다.
+- eligible guard의 direct truth-test는 검증된 summary에 한해 narrowing한다.
 - runtime `assert` API를 이 장이 새로 정의하지 않는다.
 
 ## 12. 정본 근거와 다음 장

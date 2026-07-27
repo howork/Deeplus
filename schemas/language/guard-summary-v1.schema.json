@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/guard-summary-v1.schema.json",
+  "title": "Deeplus GuardSummaryV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "callable_implementation_id",
+    "normalized_parameter_type_ids",
+    "normalized_formula",
+    "body_digest",
+    "summary_digest",
+    "profile_version"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.guard-summary/v1"
+    },
+    "callable_implementation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normalized_parameter_type_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "normalized_formula": {
+      "type": "object",
+      "description": "A canonical finite-R0 Boolean formula; its concrete node vocabulary is versioned by profile_version."
+    },
+    "body_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "summary_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "profile_version": {
+      "const": "deeplus.guard-refinement.r0/v1"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

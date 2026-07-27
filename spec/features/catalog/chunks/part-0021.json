@@ -334,30 +334,36 @@
       "guard_callable_profile",
       "guard_function_for_clause_predicates"
     ],
-    "display_name": "`def#guard` refinement summary",
+    "display_name": "`def#guard` refinement summary (absorbed)",
     "feature_id": "guard_callable_refinement_summary_preview_design",
-    "feature_kind": "design_proposal",
+    "feature_kind": "absorbed_alias",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Preview design",
-    "notes": "A nonactivatable successor may export one canonical finite-R0 true/false refinement summary for an eligible def#guard. A direct truth test may substitute that summary into Phi without changing the binding's declared type. Current def#guard calls remain opaque; stored Bool results, arbitrary helper calls, unstable places, and guarded-arm exhaustiveness gain no fact.",
-    "primary_source": "docs/grammar-reference/21-preview-design-types-objects-and-traits.md",
+    "language_status": "Absorbed alias",
+    "notes": "Historical proposal identity retained after the finite-R0 GuardSummaryV1 and direct-call refinement law were absorbed into the Stable guard_callable_profile. Stored Bool results, arbitrary helper calls, unstable places, and guarded-arm exhaustiveness still gain no fact.",
+    "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
-    "source_activation": "nonactivatable",
-    "status_display": "Preview design",
-    "status_enum": "PREVIEW_DESIGN",
+    "source_activation": "none",
+    "status_display": "Absorbed alias",
+    "status_enum": "ABSORBED_ALIAS",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "R0_GUARD_NOT_GUARD_SAFE",
-        "RCTS_FLOW_STATE_EMBEDDED_IN_TYPE_DESCRIPTOR"
+        "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+        "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+        "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+        "GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
+        "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+        "GUARD_REFINEMENT_ACTUAL_NOT_STABLE"
       ],
       "predicates": [
         "GuardCallableAdmitted",
-        "R0GuardSafe"
+        "R0GuardSafe",
+        "GuardRefinementSummaryAdmitted",
+        "GuardCallRefinementApplied"
       ],
       "examples": [],
       "productions": [
@@ -368,7 +374,471 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/guard-refinement-summary.json",
+      "schemas/language/guard-summary-v1.schema.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Float closed alias of Float64",
+    "feature_id": "float_alias_float64",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Float is a closed Prelude alias that normalizes exactly to Float64 and creates no independent precision, TypeId, conversion, representation, serialization, or ABI domain.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "numeric_operator_core"
+    ],
+    "display_name": "UInt default unsigned integer domain",
+    "feature_id": "uint_default_unsigned_integer_domain",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "UInt is the distinct default unsigned semantic domain 0..2^64-1, analogous to Int but not an alias of UInt64. An independently fixed UInt target may admit an exactly representable signless unsuffixed literal; no negative adapter or implicit signedness conversion is created.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "UINT_LITERAL_CONTEXT_OUT_OF_RANGE",
+        "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "pattern_match_expression_msp"
+    ],
+    "display_name": "Option optional payload binding Preview design",
+    "feature_id": "option_let_question_binding_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "Nonactivatable design for if/while/let-else forms that open exactly one Option layer and transactionally apply an OptionPayloadPattern as ::some(pattern). Result, arbitrary Enum, force unwrap, propagation, for/comprehension and user extractors remain excluded.",
+    "primary_source": "spec/contracts/option-optional-binding-preview-design.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "OPTIONAL_BINDING_SOURCE_NOT_CURRENT"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "Pattern"
+      ]
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/option-optional-binding-preview-design.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "TYPE_SYSTEM / PRELUDE",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "PRELUDE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "numeric_operator_core"
+    ],
+    "display_name": "Closed numeric capability lattice Preview design",
+    "feature_id": "numeric_capability_lattice_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "A nonactivatable closed capability lattice may constrain generic numeric APIs without changing nominal identity, inventing implicit conversions, or selecting operators through runtime search.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "NUMERIC_CAPABILITY_PROFILE_NOT_ACTIVE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "rational_exact_numeric_value",
+      "scalar_real_complex_power"
+    ],
+    "display_name": "Rational operator completion Preview design",
+    "feature_id": "rational_operator_completion_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "Nonactivatable design for exact Rational division and exact integral-exponent power. Remainder remains named Euclidean/truncating APIs; Rational % and arbitrary glyph expansion are excluded.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "RATIONAL_OPERATOR_PROFILE_NOT_ACTIVE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / LEXER / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "LEXER",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "complex_core_numeric_value"
+    ],
+    "display_name": "Integer-magnitude imaginary literal Preview design",
+    "feature_id": "integer_imaginary_literal_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "A nonactivatable 4i spelling may normalize to the existing Complex construction. Radix imaginary forms, chained suffixes, and a distinct imaginary semantic type remain excluded.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "INTEGER_IMAGINARY_LITERAL_NOT_ACTIVE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ImaginaryLiteralExpr"
+      ]
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "STDLIB / TYPE_SYSTEM",
+    "authority_set": [
+      "STDLIB",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "numeric_operator_core"
+    ],
+    "display_name": "Type-directed std::math core profile",
+    "feature_id": "std_math_core_profile",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stdlib profile",
+    "notes": "The type-directed elementary std::math facade is the bounded standard-library profile. It is explicit, deterministic, and creates neither core syntax nor implicit conversion; provider and product execution remain NOT_RUN.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stdlib profile",
+    "status_enum": "STDLIB_PROFILE",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "library",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "STD_MATH_DOMAIN_NOT_ADMITTED"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json",
+      "library/prelude/prelude.md"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "STDLIB / TYPE_SYSTEM",
+    "authority_set": [
+      "STDLIB",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "std_math_core_profile"
+    ],
+    "display_name": "std::math special functions Preview design",
+    "feature_id": "std_math_special_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "Special functions are a separate nonactivatable stdlib design profile with no wildcard Prelude export or product-support claim.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "library",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "STD_MATH_SPECIAL_PROFILE_NOT_ACTIVE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "STDLIB / TYPE_SYSTEM",
+    "authority_set": [
+      "STDLIB",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "std_math_core_profile"
+    ],
+    "display_name": "std::math calculus Preview design",
+    "feature_id": "std_math_calculus_preview_design",
+    "feature_kind": "design_proposal",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Preview design",
+    "notes": "Calculus facilities are a separate nonactivatable stdlib design profile; numerical method, precision, convergence, effect, and error contracts require independent authority.",
+    "primary_source": "spec/contracts/numeric-system-std-math.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "nonactivatable",
+    "status_display": "Preview design",
+    "status_enum": "PREVIEW_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "library",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "STD_MATH_CALCULUS_PROFILE_NOT_ACTIVE"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/numeric-system-std-math.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / HIR",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM",
+      "HIR"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "data_shaping_callshape_model",
+      "actor_protocol_family"
+    ],
+    "display_name": "Unified CallExpr and structured tilde modes",
+    "feature_id": "unified_call_expression_and_tilde_modes",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Ordinary, message ~, and actor-transport :~ calls normalize to one CallExpr discriminated by CallMode and share one ordered CallArgument family plus trailing closures. ~ is left-associative; :~ is terminal and nonassociative at rank 15. Actor transport performs immediate admission and never implicitly suspends or retries.",
+    "primary_source": "spec/contracts/unified-call-actor-transport.json",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+        "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+        "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+        "ACTOR_OPERATION_KIND_COLLISION",
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [
+        "TildeCallLed",
+        "TildeCallToken",
+        "TildeArgumentSequence",
+        "TildeArgument"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/unified-call-actor-transport.json",
+      "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/type-flow-callable-coherence.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

@@ -85,7 +85,7 @@ move와 join은 exact type 책임 규칙을 따라야 한다.
 let taxRate: Rational = <1/10>
 var subtotal: Rational = <50/1>
 
-subtotal = subtotal + <5/1>
+subtotal += <5/1>
 let total = subtotal + subtotal * taxRate
 ```
 

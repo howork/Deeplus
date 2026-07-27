@@ -962,7 +962,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "#guard includes the pure behavior law and additionally requires Bool result, non-consuming parameters/captures, no mutation, no external control transfer, and no task/actor/resource obligation.",
+    "notes": "#guard includes the pure behavior law, Bool result, non-consuming parameters/captures, no mutation, no external control transfer, and no task/actor/resource obligation. Every admitted declaration also exports one verified finite-R0 GuardSummaryV1. A direct exact call over stable actual places may add the substituted true/false facts to Phi without changing the declared type, evaluating twice, or making a guarded arm exhaustive.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -973,17 +973,29 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/guard-refinement-summary.json",
+      "schemas/language/guard-summary-v1.schema.json",
+      "spec/contracts/type-refinement-narrowing-coherence.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
         "GUARD_CALLABLE_CONSUME_FORBIDDEN",
-        "GUARD_CALLABLE_RESULT_MUST_BE_BOOL"
+        "GUARD_CALLABLE_RESULT_MUST_BE_BOOL",
+        "GUARD_REFINEMENT_SUMMARY_REQUIRED",
+        "GUARD_REFINEMENT_SUMMARY_NOT_R0",
+        "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
+        "GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
+        "GUARD_REFINEMENT_CALL_NOT_DIRECT",
+        "GUARD_REFINEMENT_ACTUAL_NOT_STABLE"
       ],
       "predicates": [
-        "GuardCallableAdmitted"
+        "GuardCallableAdmitted",
+        "GuardRefinementSummaryAdmitted",
+        "GuardCallRefinementApplied"
       ],
       "examples": [
         "EX-R51a1-AUD-NG-018",

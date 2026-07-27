@@ -76,7 +76,7 @@ scoped import/use는 block 안의 lexical frame만 만든다.
 ```deeplus
 def calculate(value: Decimal) -> Decimal = {
     use finance::rounding in {
-        return value ~ rounded()
+        return value ~ rounded
     }
 }
 ```

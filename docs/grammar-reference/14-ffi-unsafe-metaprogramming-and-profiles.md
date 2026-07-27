@@ -306,7 +306,7 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 def readByte(pointer: RawPtr<Byte>) -> Byte
 = {
     unsafe {
-        return pointer ~ load()
+        return pointer ~ load
     }
 }
 ```
