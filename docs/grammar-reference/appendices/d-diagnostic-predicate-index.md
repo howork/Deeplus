@@ -134,6 +134,7 @@
 | `CHECKER_INTERNAL_FEATURE_NOT_SOURCE` | `checker` | `error` | `seed` | checker_internal feature is not ordinary source syntax in R49. |
 | `CHOICE_REQUIRES_PREVIEW_FEATURE` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `CLASS_BODY_REQUIRED` | `parser` | `error` | `active` | An ordinary, value, or resource class requires a body; only a data class may omit it. |
+| `CLASS_COLON_INHERITANCE_REMOVED` | `parser` | `error` | `active` | Class inheritance uses \`derives\`; colon inheritance has no current production. |
 | `CLASS_HASH_SEALED_SPELLING_REMOVED` | `parser` | `error` | `active` | The hash-combined sealed-class spelling is removed; write \`sealed class\`. |
 | `CLASS_INSTANCE_METHOD_REQUIRES_DISPATCH_MARKER` | `parser` | `error` | `active` | A class-like instance method requires exactly one dispatch marker: \`.\`, \`+\`, \`*.\`, or \`*+\`. |
 | `CLASS_IS_FINAL_BY_DEFAULT` | `checker` | `error` | `active` | A concrete class is final unless declared open or sealed class; it cannot be subclassed here. |
@@ -186,12 +187,17 @@
 | `COMPLEX_TYPED_INTEGER_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | A typed integer operand does not implicitly become a Complex component; convert it explicitly. |
 | `COMPREHENSION_FOR_AWAIT_REQUIRES_ASYNC_ITERATION` | `checker` | `error` | `active` | \`for await\` requires the async iteration design profile and does not imply general async task support. |
 | `CONDITION_HAS_EFFECTFUL_OPERAND` | `checker` | `error` | `active` | A condition operand has effects; use explicit sequencing or a pure guard. |
-| `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` | `lexer` | `error` | `active` | Conformance declarations use \`conformance Type conforms Trait\`, not \`impl Trait for Type\` or \`T: Trait\`. |
+| `CONFORMANCE_AUTO_BODY_FORBIDDEN` | `parser` | `error` | `active` | A \`by auto\` conformance is bodyless. |
+| `CONFORMANCE_AUTO_POLICY_NOT_REGISTERED` | `checker` | `error` | `active` | \`by auto\` requires one closed synthesis policy registered by a Trait that declares \`supports auto\`. |
+| `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` | `parser` | `error` | `active` | Conformance declarations use \`type Target conforms Trait\`; a type alias instead uses \`type Name = Type\`. |
 | `CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE` | `checker` | `error` | `active` | A root conformance evidence selector must resolve to exactly one visible coherent nominal conformance. |
 | `CONFORMANCE_EXTENSION_DELEGATION_MUST_BE_EXPLICIT` | `checker` | `error` | `active` | Delegation from a conformance requirement to an extension selector must be explicit and fully identified. |
 | `CONFORMANCE_LAW_PROOF_BLOCK_REQUIRES_PREVIEW` | `checker` | `error` | `active` | Conformance proof blocks require a future proof preview; Stable law declarations are documentation contracts only. |
 | `CONFORMANCE_LAW_UNCHECKED_BY_PRODUCT` | `checker` | `info` | `seed` | Conformance law declaration is language-design Stable but has no product checker receipt in this package. |
+| `CONFORMANCE_LOCAL_SCOPE_FORBIDDEN` | `parser` | `error` | `active` | Conformance evidence may be declared only at top level or through a nominal header. |
+| `CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED` | `parser` | `error` | `active` | The former \`conformance Target conforms Trait\` introducer is removed. |
 | `CONFORMANCE_REQUIREMENT_BINDING_MISSING` | `checker` | `error` | `active` | A conformance must explicitly bind every required trait item. |
+| `CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP` | `parser` | `error` | `active` | A witness inside \`conform Trait { ... }\` already has an exact Trait owner and must use the unqualified requirement name. |
 | `CONFORMS_REQUIRES_KEYWORD` | `lexer` | `error` | `active` | Trait/capability conformance must use \`conforms\` in the stable profile. |
 | `CONSTRAINT_USED_AS_EXISTENTIAL` | `checker` | `error` | `active` | A responsibility constraint is not a value type. Use \`any Trait\` or \`any Plain\` for an existential boundary. |
 | `CONSTRUCTOR_CHAIN_TERMINAL_MUST_BE_NEW` | `checker` | `error` | `active` | A same-type constructor chain must terminate at root \`new\`. |
@@ -502,7 +508,6 @@
 | `INDEX_OUT_OF_LOGICAL_DOMAIN` | `checker` | `error` | `active` | The index is outside the receiver's declared logical domain. |
 | `INDEX_SUFFIX_REQUIRES_AXIS` | `parser` | `error` | `active` | An index suffix requires a scalar index, a bounded slice range whose bounds may use ^ or $, or an admitted NumericArray * axis. |
 | `INITIALIZED_LET_FIELD_CANNOT_BE_REASSIGNED_IN_POST_INIT_BODY` | `checker` | `error` | `active` | A post-init constructor body cannot reassign an already initialized \`let\` field. |
-| `INLINE_CONFORMANCE_HEADER_NOT_CURRENT_USE_CONFORMANCE_DECL` | `parser` | `error` | `active` | Inline class/enum header conformance is not current; conformance is an explicit nominal declaration. |
 | `INOUT_ALIAS_CONFLICT` | `checker` | `error` | `seed` | inout access conflicts with an existing alias or shared observation. |
 | `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVE` | `lexer` | `error` | `seed` | Integer-magnitude imaginary literals such as 4i are a nonactivatable Preview design; current source uses 4.0i. |
 | `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` | `lexer` | `error` | `active` | A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode. |
@@ -597,6 +602,7 @@
 | `MAP_WILDCARD_KEY_REQUIRES_STRING_LITERAL` | `checker` | `error` | `seed` | Map wildcard key requires string literal |
 | `MATCH_ARM_SINGLE_GUARD_ONLY` | `parser` | `error` | `active` | A match arm admits at most one \`if\` or attached \`!if\` guard. |
 | `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because an earlier arm already covers it. |
+| `MATCH_CHAIN_BINDER_DIRECTION_MIXED` | `checker` | `error` | `active` | A chained binder Pattern must use one monotone comparison direction. |
 | `MATCH_EXPR_REQUIRES_AT_PREFIX` | `parser` | `error` | `active` | A value-producing match expression must use \`@match\`; bare \`match\` is statement-only. |
 | `MATCH_GUARD_CONSUME_NOT_ALLOWED` | `checker` | `error` | `active` | match/@match guard may not consume or move tentative pattern bindings. |
 | `MATCH_GUARD_EFFECT_NOT_ALLOWED` | `checker` | `error` | `active` | match/@match arm guard must be pure and have effects {}. |
@@ -711,8 +717,8 @@
 | `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` | `checker` | `error` | `active` | A fixed-operator conformance must be declared by the package defining the normalized left nominal operand type. |
 | `OPERATOR_CONFORMANCE_MISSING` | `checker` | `error` | `active` | No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair. |
 | `OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Fixed-operator selection never inserts an implicit operand conversion. |
-| `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, total, synchronous responsibility profile. |
-| `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Only existing binary +, -, and * are admitted for fixed-glyph conformance overloading. |
+| `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, synchronous, throws-Never responsibility profile or introduces a terminal other than the admitted precommit ArithmeticDefect. |
+| `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Fixed-glyph conformance overloading admits only the exact 13 unary, arithmetic, equality, and total-order roles. |
 | `OPERATOR_PRECEDENCE_TABLE_REQUIRED` | `checker` | `error` | `active` | Operator parsing requires the current profile operator precedence table. |
 | `OPTIONAL_BINDING_SOURCE_NOT_CURRENT` | `parser` | `error` | `seed` | Optional payload binding with let? is a nonactivatable Preview design; use an explicit ::some pattern in current source. |
 | `OPTIONAL_CALLABLE_INVOCATION_NOT_CURRENT` | `parser` | `error` | `active` | Optional callable invocation \`callee?(args)\` is not current Deeplus source. Use explicit Option flow. |
@@ -863,7 +869,7 @@
 | `RATIONAL_LITERAL_RESOURCE_LIMIT` | `checker` | `error` | `active` | Rational literal normalization exceeded the declared deterministic compile-time resource budget. |
 | `RATIONAL_LITERAL_SIGN_MUST_BE_PREFIX` | `parser` | `error` | `active` | Write a Rational sign outside the literal, for example -<2/3>. |
 | `RATIONAL_LITERAL_TRIVIA_FORBIDDEN` | `lexer` | `error` | `active` | Rational literal delimiters, numerator, slash, and denominator must be contiguous. |
-| `RATIONAL_OPERATOR_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | Rational division and integral-exponent power completion are a nonactivatable Preview design. |
+| `RATIONAL_OPERATOR_PROFILE_NOT_ACTIVE` | `checker` | `error` | `seed` | Rational integral-exponent power and optional alternative rounding APIs are a nonactivatable Preview design; Stable Rational division and remainder remain available. |
 | `RATIONAL_OVER_REQUIRES_EXACT_INTEGERS` | `checker` | `error` | `active` | Rational construction through over requires two exact integer operands. |
 | `RAW_MULTILINE_STRING_NOT_CURRENT` | `lexer` | `error` | `active` | Raw multiline String syntax is not current; use the Unicode multiline String or \`#raw"..."\`. |
 | `RAW_POINTER_ARITHMETIC_OPERATOR_FORBIDDEN` | `checker` | `error` | `active` | Use named unsafe pointer operations instead of ordinary arithmetic operators. |
@@ -909,6 +915,8 @@
 | `REFINEMENT_ASSERTION_MAY_DEFECT` | `checker` | `warning` | `active` | \`as!\` may raise RefinementAssertionDefect if the predicate fails. |
 | `REFINEMENT_DETAILED_CHECK_RETURNS_RESULT` | `checker` | `info` | `active` | Detailed validation uses \`T::check(value)\` or a named factory returning \`Result<T, error E>\`; \`as?\` returns \`Option<T>\`. |
 | `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN` | `checker` | `error` | `active` | Implicit narrowing to a refinement type is forbidden. |
+| `REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED` | `parser` | `error` | `active` | A concise refinement relation requires the explicit \`where\` boundary. |
+| `REFINEMENT_INTERVAL_BOUNDS_REQUIRED` | `parser` | `error` | `active` | A refinement interval requires a lower bound, \`..\` or \`..<\`, and an upper bound. |
 | `REFINEMENT_LITERAL_OUT_OF_RANGE` | `checker` | `error` | `active` | The literal value is outside the refinement range. |
 | `REFINEMENT_PREDICATE_EFFECT_FORBIDDEN` | `checker` | `error` | `active` | Refinement predicates must have effects {}. |
 | `REFINEMENT_PREDICATE_NOT_PHASE_A` | `checker` | `error` | `active` | This refinement predicate is outside Phase A. |
@@ -1109,6 +1117,7 @@
 | `TRAIT_OVERRIDE_MARKER_REQUIRES_INHERITED_SLOT` | `checker` | `error` | `active` | \`*+\` or \`*.\` requires a compatible inherited open trait witness slot. |
 | `TRAIT_OVERRIDE_SIGNATURE_INCOMPATIBLE` | `checker` | `error` | `active` | Trait witness slot override is not responsibility-compatible with the inherited slot. |
 | `TRAIT_REQUIREMENT_VISIBILITY_MISMATCH` | `checker` | `error` | `active` | Witness member visibility does not satisfy the trait requirement visibility. |
+| `TRAIT_REQUIRES_INHERITANCE_REMOVED` | `parser` | `error` | `active` | Trait inheritance uses repeated \`derives\`; \`requires\` remains callable-contract syntax. |
 | `TRAIT_SUPER_CYCLE` | `checker` | `error` | `active` | Supertrait graph contains a cycle. |
 | `TRAIT_SUPER_WITNESS_MISSING` | `checker` | `error` | `active` | Selected witness does not provide a required supertrait witness. |
 | `TRAIT_VARIANCE_POSITION_VIOLATION` | `checker` | `error` | `active` | Trait-only variance parameter appears in an invalid responsibility position. |
@@ -1304,7 +1313,7 @@
 | `EnumCaseCommaListAdmitted` | EnumCaseCommaListAdmitted | R51f3 owner-specific static design seed for enum_case_comma_list; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumCaseDisplayMappingAdmitted` | EnumCaseDisplayMappingAdmitted | Admit one complete all-or-none enum-owned display mapping and synthesize at most one whole-Enum Display witness. | `` |
 | `EnumCaseDoubleColonAdmitted` | Enum case double-colon injection | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `EnumDeclarationOrderWitnessAdmitted` | EnumDeclarationOrderWitnessAdmitted | Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Ord witness. | `` |
+| `EnumDeclarationOrderWitnessAdmitted` | EnumDeclarationOrderWitnessAdmitted | Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Eq/Ord pair plus semantic-ascending explicit range authority. | `` |
 | `EnumPayloadPlaneSeparated` | EnumPayloadPlaneSeparated | Enum declaration, expression, and pattern payload planes are separated. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumVariantSubsetAliasAdmitted` | EnumVariantSubsetAliasAdmitted | Admit one explicit associated exact-variant subset alias over a finite payload-free same-owner VariantId set. | `` |
 | `ErrorRowForwardingAdmitted` | higher-order error forwarding | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |

@@ -36,7 +36,7 @@ private def#pure inClosedRange(
     upper: Int,
 ) -> Bool
 = {
-    return value >= lower and then value <= upper
+    return lower <= value <= upper
 }
 ```
 

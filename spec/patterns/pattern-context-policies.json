@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.pattern-context-policy-registry/r2",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "row_schema": "schemas/language/pattern-context-policy-row.schema.json",
   "authority": "LANGUAGE / TYPE_SYSTEM",
   "evidence_level": "DESIGN_STATIC",
@@ -39,6 +39,7 @@
     "PK-PIN",
     "PK-RANGE",
     "PK-RELATIONAL",
+    "PK-BOUNDED-BINDER",
     "PK-OR",
     "PK-ALIAS",
     "PK-MOVE"
@@ -77,7 +78,7 @@
   "rows": [
     {
       "context_id": "PCTX-ORDINARY-PARAMETER",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ValueParameter",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -116,7 +117,7 @@
     },
     {
       "context_id": "PCTX-LAMBDA-PARAMETER",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "LambdaParameter",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -155,7 +156,7 @@
     },
     {
       "context_id": "PCTX-PLAIN-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "BindingCore.let",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -194,7 +195,7 @@
     },
     {
       "context_id": "PCTX-PLAIN-VAR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "BindingCore.var",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -233,7 +234,7 @@
     },
     {
       "context_id": "PCTX-ASSERTIVE-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "guard_binder_access": "PROBE_BINDERS_READ_ONLY_NO_ESCAPE",
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
@@ -280,7 +281,7 @@
     },
     {
       "context_id": "PCTX-ASSERTIVE-VAR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "guard_binder_access": "PROBE_BINDERS_READ_ONLY_NO_ESCAPE",
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
@@ -327,7 +328,7 @@
     },
     {
       "context_id": "PCTX-GUARDED-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GuardedBindingStmt",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -374,7 +375,7 @@
     },
     {
       "context_id": "PCTX-GUARDED-LET-RESIDUAL",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GuardedBindingFailure.Pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -407,7 +408,7 @@
     },
     {
       "context_id": "PCTX-IF-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "PatternControlCondition.if-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -454,7 +455,7 @@
     },
     {
       "context_id": "PCTX-WHILE-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "PatternControlCondition.while-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -501,7 +502,7 @@
     },
     {
       "context_id": "PCTX-PATTERN-CONDITION-CHAIN",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "guard_binder_access": "PROBE_BINDERS_READ_ONLY_NO_ESCAPE",
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
@@ -548,7 +549,7 @@
     },
     {
       "context_id": "PCTX-BARE-FOR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForLoop.bare-pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -581,7 +582,7 @@
     },
     {
       "context_id": "PCTX-FOR-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForLoop.for-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -628,7 +629,7 @@
     },
     {
       "context_id": "PCTX-ASYNC-BARE-FOR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "AsyncForLoop.bare-pattern",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -658,7 +659,7 @@
     },
     {
       "context_id": "PCTX-ASYNC-FOR-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "AsyncForLoop.for-let",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -689,7 +690,7 @@
     },
     {
       "context_id": "PCTX-STATEMENT-MATCH",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "MatchStatement",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -719,6 +720,7 @@
         "PK-PIN",
         "PK-RANGE",
         "PK-RELATIONAL",
+        "PK-BOUNDED-BINDER",
         "PK-OR",
         "PK-ALIAS",
         "PK-MOVE"
@@ -731,12 +733,12 @@
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
       "coverage_duty": "FULL_CONSTRUCTOR_SPACE",
       "suspension_policy": "NO_SUSPENSION_IN_PATTERN_OR_GUARD",
-      "notes": "The first source arm whose structural test and one guard succeed is selected; later arms are not reordered.",
+      "notes": "The match subject is evaluated exactly once before arm selection. The first source arm whose structural test and one guard succeed is selected; later arms are not reordered. A bounded-binder arm reads its pinned or literal bounds in written source order, exposes one probe binder, and contributes structural interval coverage rather than hidden guard coverage.",
       "product_execution": "NOT_RUN"
     },
     {
       "context_id": "PCTX-VALUE-MATCH",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "MatchExpr",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -766,6 +768,7 @@
         "PK-PIN",
         "PK-RANGE",
         "PK-RELATIONAL",
+        "PK-BOUNDED-BINDER",
         "PK-OR",
         "PK-ALIAS",
         "PK-MOVE"
@@ -778,12 +781,12 @@
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
       "coverage_duty": "FULL_CONSTRUCTOR_SPACE",
       "suspension_policy": "NO_SUSPENSION_IN_PATTERN_OR_GUARD",
-      "notes": "Every successful value arm produces its result after commit; ordinary return remains outside the arm-result contract.",
+      "notes": "The match subject is evaluated exactly once before arm selection. Every successful value arm produces its result after commit; ordinary return remains outside the arm-result contract. A bounded-binder arm reads its pinned or literal bounds in written source order, exposes one probe binder, and contributes structural interval coverage rather than hidden guard coverage.",
       "product_execution": "NOT_RUN"
     },
     {
       "context_id": "PCTX-DECLARATIVE-CLAUSE",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ClauseFunctionBody",
       "admitted_form": "DECLARATIVE_DISJOINT_PARTITION",
@@ -822,7 +825,7 @@
     },
     {
       "context_id": "PCTX-CATCH",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "CatchClause",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -869,7 +872,7 @@
     },
     {
       "context_id": "PCTX-VALUE-CATCH",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ValueCatchClause",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -916,7 +919,7 @@
     },
     {
       "context_id": "PCTX-GENERATOR-FOR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "GeneratorCore",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -946,7 +949,7 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-FOR",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "ForClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -976,7 +979,7 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-IF-LET",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "IfLetClause",
       "admitted_form": "EXPLICIT_REFUTABLE",
@@ -1008,7 +1011,7 @@
     },
     {
       "context_id": "PCTX-COMPREHENSION-UNFOLD",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "UnfoldClause",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -1038,7 +1041,7 @@
     },
     {
       "context_id": "PCTX-LOCAL-PATTERN-ASSIGNMENT",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "CURRENT",
       "grammar_owner": "LocalPatternAssignment",
       "admitted_form": "CHECKER_PROVEN_IRREFUTABLE",
@@ -1065,7 +1068,7 @@
     },
     {
       "context_id": "PCTX-PREVIEW-PATTERN-OWNER",
-      "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+      "revision": "r51f3-current-trait-operator-refinement-r1",
       "policy_state": "PREVIEW_GATED",
       "grammar_owner": "PreviewPatternOwner",
       "admitted_form": "PREVIEW_GATED",

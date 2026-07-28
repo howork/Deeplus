@@ -105,7 +105,7 @@ public trait StorageModel {
 public final class FileStore {
 }
 
-public conformance FileStore conforms StorageModel {
+public type FileStore conforms StorageModel {
     type Key = Token
 }
 
@@ -128,7 +128,7 @@ public trait DefaultToken {
         effects {}
 }
 
-public conformance Token conforms DefaultToken {
+public type Token conforms DefaultToken {
     let ::code = 0
 
     def ::make() -> Token

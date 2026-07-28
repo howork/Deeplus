@@ -470,7 +470,8 @@ Bool expression을 받지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
 ```deeplus
-public type Positive = Int where this > 0
+public type Positive = Int where > 0
+public type Percentage = Int in 0..100
 
 public def clamp<T>(value: T, lower: T, upper: T) -> T
     throws Never

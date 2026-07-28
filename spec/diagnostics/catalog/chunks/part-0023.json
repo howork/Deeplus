@@ -114,10 +114,10 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "recheck against the Stable +, -, and * admitted profile",
+    "fixit_hint": "recheck against the Stable exact 13-role admitted profile",
     "fixit_policy": "do not emit this retired identity for current source",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "notes": "Retired when the exact bounded +,-,* fixed-operator profile became STABLE_DESIGN; retained only for immutable historical evidence."
+    "notes": "Retired when the bounded fixed-operator framework became STABLE_DESIGN; retained only for immutable historical evidence and not emitted by the current exact 13-role profile."
   },
   {
     "diagnostic_id": "OPERATOR_CONFORMANCE_MISSING",
@@ -144,7 +144,7 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "declare one admitted left-owner DIRECT_GLOBAL Add, Subtract, or Multiply conformance, or call a named API",
+    "fixit_hint": "declare one admitted left-owner DIRECT_GLOBAL UnaryPlus, UnaryMinus, Add, Subtract, Multiply, Divide, Remainder, Eq, or Ord conformance, or call a named API",
     "fixit_policy": "never synthesize fallback, conversion, or alternate evidence",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "Stable bounded fixed-glyph diagnostic; product execution remains NOT_RUN."
@@ -275,7 +275,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "The selected fixed-operator witness violates the borrowed, pure, total, synchronous responsibility profile.",
+    "message": "The selected fixed-operator witness violates the borrowed, pure, synchronous, throws-Never responsibility profile or introduces a terminal other than the admitted precommit ArithmeticDefect.",
     "feature_refs": [
       "fixed_operator_conformance_overloading"
     ],
@@ -293,7 +293,7 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "borrow both operands and use throws Never effects {} with no mutation, consume, suspension, or authority",
+    "fixit_hint": "borrow every operand and use throws Never effects {} with no mutation, consume, suspension, or authority; expose only the declared nonrecoverable ArithmeticDefect before commit",
     "fixit_policy": "never erase responsibility to make the witness fit",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "The checker validates responsibility before HIR/MIR residue is admitted."
@@ -365,7 +365,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "Only existing binary +, -, and * are admitted for fixed-glyph conformance overloading.",
+    "message": "Fixed-glyph conformance overloading admits only the exact 13 unary, arithmetic, equality, and total-order roles.",
     "feature_refs": [
       "fixed_operator_conformance_overloading"
     ],
@@ -383,10 +383,10 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "use a named Trait method or API for this operator family",
+    "fixit_hint": "use UnaryPlus, UnaryMinus, Add, Subtract, Multiply, Divide, Remainder, Eq, or Ord for an admitted role; otherwise use a named Trait method or API",
     "fixit_policy": "never expand the Stable admitted set implicitly",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "notes": "Division, remainder, logical, comparison, assignment, range, and short-circuit families remain excluded."
+    "notes": "Assignment, range, power, bitwise, logical, membership, identity, short-circuit, and arbitrary custom glyph hooks remain excluded; compound assignment derives its base arithmetic role."
   },
   {
     "diagnostic_id": "INDEX_SUFFIX_REQUIRES_AXIS",
@@ -719,5 +719,173 @@
     "primary_source": "spec/contracts/function-static-activation.json",
     "product_support": "NOT_RUN",
     "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "The former `conformance Target conforms Trait` introducer is removed.",
+    "feature_refs": [
+      "conformance_declaration_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_hint": "write `type Target conforms Trait`",
+    "fixit_policy": "preserve target, Trait, visibility, route, body, and responsibility",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
+  },
+  {
+    "diagnostic_id": "CLASS_COLON_INHERITANCE_REMOVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Class inheritance uses `derives`; colon inheritance has no current production.",
+    "feature_refs": [
+      "conformance_declaration_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_hint": "write `class Child derives Parent`",
+    "fixit_policy": "rewrite only a uniquely parsed direct class base",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
+  },
+  {
+    "diagnostic_id": "TRAIT_REQUIRES_INHERITANCE_REMOVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Trait inheritance uses repeated `derives`; `requires` remains callable-contract syntax.",
+    "feature_refs": [
+      "conformance_declaration_surface",
+      "trait_witness_coherence_phase_a"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_hint": "write `trait Child derives Parent`",
+    "fixit_policy": "rewrite only a Trait-header inheritance relation",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
+  },
+  {
+    "diagnostic_id": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "`by auto` requires one closed synthesis policy registered by a Trait that declares `supports auto`.",
+    "feature_refs": [
+      "conformance_declaration_surface",
+      "trait_witness_coherence_phase_a"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "write explicit witnesses or use one registered closed policy",
+    "fixit_policy": "never infer synthesis from same-named methods, extensions, providers, or runtime state",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
+  },
+  {
+    "diagnostic_id": "CONFORMANCE_AUTO_BODY_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "A `by auto` conformance is bodyless.",
+    "feature_refs": [
+      "conformance_declaration_surface"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "remove the body or replace `by auto` with an explicit direct body",
+    "fixit_policy": "do not discard witness implementations automatically",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
+  },
+  {
+    "diagnostic_id": "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "message": "Conformance evidence may be declared only at top level or through a nominal header.",
+    "feature_refs": [
+      "conformance_declaration_surface",
+      "trait_witness_coherence_phase_a"
+    ],
+    "related_feature_refs": [],
+    "stage": "parser",
+    "severity": "error",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
+    "product_support": "NOT_RUN",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM"
+    ],
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "move the declaration to top level or a nominal header",
+    "fixit_policy": "never hoist automatically across visibility, coherence, or authority boundaries",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN."
   }
 ]

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-contract/r1",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -154,7 +154,7 @@
       "contract": {
         "token_vocabulary": "CLOSED",
         "precedence_table": "CLOSED",
-        "glyph_dispatch": "INTRINSIC_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_BINARY_PLUS_MINUS_MULTIPLY",
+        "glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_13_OPERATOR_ROLES",
         "conformance_lookup_count": "0_FOR_INTRINSIC_RESERVED_PAIR_OTHERWISE_EXACTLY_1_ON_SUCCESS",
         "extension_lookup_count": 0,
         "witness_lookup_count": "0_FOR_INTRINSIC_RESERVED_PAIR_OTHERWISE_EXACTLY_1_ON_SUCCESS",
@@ -165,42 +165,174 @@
         "fixed_operator_conformance_overloading": "STABLE_DESIGN",
         "fixed_operator_stable_profile": {
           "admitted_operator_ids": [
+            "UnaryPlus",
+            "UnaryMinus",
             "BinaryAdd",
             "BinarySubtract",
-            "BinaryMultiply"
+            "BinaryMultiply",
+            "BinaryDivide",
+            "BinaryRemainder",
+            "BinaryEqual",
+            "BinaryNotEqual",
+            "BinaryLessThan",
+            "BinaryLessThanOrEqual",
+            "BinaryGreaterThan",
+            "BinaryGreaterThanOrEqual"
+          ],
+          "trait_roots": [
+            "UnaryPlus",
+            "UnaryMinus",
+            "Add",
+            "Subtract",
+            "Multiply",
+            "Divide",
+            "Remainder",
+            "Eq",
+            "Ord"
           ],
           "operator_trait_mapping": [
             {
+              "operator_id": "UnaryPlus",
+              "glyph": "+",
+              "fixity": "prefix",
+              "trait_id": "UnaryPlus",
+              "method_id": "UnaryPlus.positive",
+              "result": "UnaryPlus::Output",
+              "projection": "ASSOCIATED_OUTPUT"
+            },
+            {
+              "operator_id": "UnaryMinus",
+              "glyph": "-",
+              "fixity": "prefix",
+              "trait_id": "UnaryMinus",
+              "method_id": "UnaryMinus.negate",
+              "result": "UnaryMinus::Output",
+              "projection": "ASSOCIATED_OUTPUT"
+            },
+            {
               "operator_id": "BinaryAdd",
               "glyph": "+",
+              "fixity": "binary_infix",
               "trait_id": "Add<Rhs>",
               "method_id": "Add.add",
-              "result": "Add<Rhs>::Output"
+              "result": "Add<Rhs>::Output",
+              "projection": "ASSOCIATED_OUTPUT"
             },
             {
               "operator_id": "BinarySubtract",
               "glyph": "-",
+              "fixity": "binary_infix",
               "trait_id": "Subtract<Rhs>",
               "method_id": "Subtract.subtract",
-              "result": "Subtract<Rhs>::Output"
+              "result": "Subtract<Rhs>::Output",
+              "projection": "ASSOCIATED_OUTPUT"
             },
             {
               "operator_id": "BinaryMultiply",
               "glyph": "*",
+              "fixity": "binary_infix",
               "trait_id": "Multiply<Rhs>",
               "method_id": "Multiply.multiply",
-              "result": "Multiply<Rhs>::Output"
+              "result": "Multiply<Rhs>::Output",
+              "projection": "ASSOCIATED_OUTPUT"
+            },
+            {
+              "operator_id": "BinaryDivide",
+              "glyph": "/",
+              "fixity": "binary_infix",
+              "trait_id": "Divide<Rhs>",
+              "method_id": "Divide.divide",
+              "result": "Divide<Rhs>::Output",
+              "projection": "ASSOCIATED_OUTPUT"
+            },
+            {
+              "operator_id": "BinaryRemainder",
+              "glyph": "%",
+              "fixity": "binary_infix",
+              "trait_id": "Remainder<Rhs>",
+              "method_id": "Remainder.remainder",
+              "result": "Remainder<Rhs>::Output",
+              "projection": "ASSOCIATED_OUTPUT"
+            },
+            {
+              "operator_id": "BinaryEqual",
+              "glyph": "==",
+              "fixity": "binary_infix",
+              "trait_id": "Eq<Rhs>",
+              "method_id": "Eq.equals",
+              "result": "Bool",
+              "projection": "IDENTITY"
+            },
+            {
+              "operator_id": "BinaryNotEqual",
+              "glyph": "!=",
+              "fixity": "binary_infix",
+              "trait_id": "Eq<Rhs>",
+              "method_id": "Eq.equals",
+              "result": "Bool",
+              "projection": "BOOL_NEGATION"
+            },
+            {
+              "operator_id": "BinaryLessThan",
+              "glyph": "<",
+              "fixity": "binary_infix",
+              "trait_id": "Ord<Rhs>",
+              "method_id": "Ord.compare",
+              "result": "Bool",
+              "projection": "COMPARE_SIGN_LT_ZERO"
+            },
+            {
+              "operator_id": "BinaryLessThanOrEqual",
+              "glyph": "<=",
+              "fixity": "binary_infix",
+              "trait_id": "Ord<Rhs>",
+              "method_id": "Ord.compare",
+              "result": "Bool",
+              "projection": "COMPARE_SIGN_LE_ZERO"
+            },
+            {
+              "operator_id": "BinaryGreaterThan",
+              "glyph": ">",
+              "fixity": "binary_infix",
+              "trait_id": "Ord<Rhs>",
+              "method_id": "Ord.compare",
+              "result": "Bool",
+              "projection": "COMPARE_SIGN_GT_ZERO"
+            },
+            {
+              "operator_id": "BinaryGreaterThanOrEqual",
+              "glyph": ">=",
+              "fixity": "binary_infix",
+              "trait_id": "Ord<Rhs>",
+              "method_id": "Ord.compare",
+              "result": "Bool",
+              "projection": "COMPARE_SIGN_GE_ZERO"
             }
           ],
+          "derived_family_laws": {
+            "BinaryNotEqual": "logical negation of the same Eq<Rhs>.equals result selected for BinaryEqual",
+            "ordering_glyphs": "all four order projections share one Ord<Rhs>.compare witness and compare result",
+            "Ord_zero": "exactly the Eq<Rhs> equality relation",
+            "independent_not_equal_or_per_glyph_order_conformance_count": 0
+          },
           "builtin_operand_pairs": "INTRINSIC_RESERVED_NO_OVERRIDE_OR_FALLBACK",
           "user_evidence_route": "UNIQUE_LEFT_NOMINAL_OWNER_DIRECT_GLOBAL_ONLY",
-          "selection_key": [
-            "OperatorId",
-            "normalized_left_operand_type",
-            "normalized_right_operand_type"
-          ],
-          "result_type_role": "DERIVED_FROM_SELECTED_ASSOCIATED_OUTPUT_NEVER_A_SELECTION_KEY",
-          "responsibility_profile": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "selection_keys": {
+            "unary": [
+              "OperatorId",
+              "normalized_operand_type"
+            ],
+            "binary": [
+              "OperatorId",
+              "normalized_left_operand_type",
+              "normalized_right_operand_type"
+            ]
+          },
+          "result_type_role": "ARITHMETIC_OUTPUT_DERIVED_AFTER_SELECTION;_COMPARISON_RESULT_FIXED_BOOL;_NEVER_A_SELECTION_KEY",
+          "responsibility_profile": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "comparison_chain_profile": "CHAIN_OWNS_SHORT_CIRCUIT;_EACH_SELECTED_EQ_OR_ORD_CALL_IS_PURE_AND_EVALUATES_ITS_OPERANDS_ONCE;_MIDDLE_OPERAND_RETAINED_ONCE",
+          "range_operator_conformance_hook_count": 0,
+          "arbitrary_custom_operator_count": 0,
           "implicit_conversion_count": 0,
           "via_VIA_AUTO_local_case_extension_provider_specialization_candidate_count": 0,
           "runtime_relookup_or_fallback_count": 0,
@@ -260,7 +392,17 @@
         "successful_commit_count": 1,
         "precommit_failure_commit_count": 0,
         "precommit_failure_preserves_original": true,
-        "expression_result_type": "Unit"
+        "expression_result_type": "Unit",
+        "compound_operator_derivation": {
+          "+=": "BinaryAdd",
+          "-=": "BinarySubtract",
+          "*=": "BinaryMultiply",
+          "/=": "BinaryDivide",
+          "%=": "BinaryRemainder"
+        },
+        "independent_compound_assignment_conformance_hook_count": 0,
+        "derived_result_requirement": "exactly assignable to the original place type without implicit conversion",
+        "arithmetic_defect_before_commit": "preserve the original place value and perform zero writes"
       }
     },
     {
@@ -476,7 +618,7 @@
       ],
       "fixity": "infix",
       "associativity": "right",
-      "dispatch": "INTRINSIC_ONLY"
+      "dispatch": "LANGUAGE_OWNED_ASSIGNMENT;_COMPOUND_FORMS_DERIVE_THEIR_BASE_FIXED_OPERATOR_WITHOUT_A_SEPARATE_HOOK"
     },
     {
       "rank": 20,
@@ -546,7 +688,7 @@
       ],
       "fixity": "infix",
       "associativity": "checker_bounded_chain",
-      "dispatch": "INTRINSIC_ONLY"
+      "dispatch": "EQ_AND_ORDER_GLYPHS_INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE;_IN_AND_IS_FAMILIES_INTRINSIC_ONLY"
     },
     {
       "rank": 80,
@@ -620,7 +762,7 @@
       ],
       "fixity": "infix",
       "associativity": "left",
-      "dispatch": "*_INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE;_DIVIDE_AND_REMAINDER_INTRINSIC_ONLY"
+      "dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE"
     },
     {
       "rank": 150,
@@ -658,7 +800,7 @@
       ],
       "fixity": "prefix",
       "associativity": "right",
-      "dispatch": "INTRINSIC_ONLY",
+      "dispatch": "NUMERIC_+_-_INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE;_OTHER_PREFIX_FAMILIES_INTRINSIC_ONLY",
       "right_binding_power_by_family": {
         "numeric_sign_+_-": 159,
         "all_other_prefix_parselets": 170
@@ -716,15 +858,15 @@
     },
     {
       "operator": "/",
-      "admitted_domains": "one exact integer or Float32/Float64 domain, or one exact Complex<Float32|Float64> domain through the language-owned intrinsic pair",
-      "result": "same exact domain",
-      "failure": "integer quotient truncates toward zero; zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating and Complex division follow their canonical numeric-semantics profile; Rational division remains the named checked API dividedBy"
+      "admitted_domains": "one exact intrinsic integer or Float32/Float64 domain; Rational/Rational and exact sealed integer/Rational in either direction; same-Rep Complex/Complex or real/Complex in either direction through one Prelude-owned direct-global Divide conformance",
+      "result": "same exact primitive domain, normalized Rational, or the uniquely selected same-Rep Complex result",
+      "failure": "integer quotient truncates toward zero; a zero divisor, including Rational zero and exact Complex zero, or signed MIN/-1 raises ArithmeticDefect before commit; the named Rational dividedBy API remains the recoverable explicit-Result path"
     },
     {
       "operator": "%",
-      "admitted_domains": "one exact integer domain only",
-      "result": "same exact integer domain; a = trunc(a/b)*b + r, and r is zero or has the dividend sign with |r| < |b|",
-      "failure": "zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating remainder requires a named API"
+      "admitted_domains": "one exact intrinsic integer domain; Rational/Rational and exact sealed integer/Rational in either direction through one Prelude-owned direct-global Remainder conformance",
+      "result": "same exact integer domain or normalized Rational; q = truncTowardZero(a / b), r = a - q * b, and a = q * b + r",
+      "failure": "zero divisor or signed MIN/-1 raises ArithmeticDefect before commit; floating and Complex remainder are not admitted"
     },
     {
       "operator": "^",
@@ -1075,7 +1217,7 @@
   "new_rejection_diagnostic_matrix": [
     {
       "diagnostic_id": "OPERATOR_CONFORMANCE_MISSING",
-      "surface": "admitted non-intrinsic +, -, or * pair with no left-owner direct-global conformance",
+      "surface": "admitted non-intrinsic fixed-glyph role with no left-owner DIRECT_GLOBAL UnaryPlus, UnaryMinus, Add, Subtract, Multiply, Divide, Remainder, Eq, or Ord conformance",
       "semantic_residue_count": 0
     },
     {
@@ -1100,7 +1242,7 @@
     },
     {
       "diagnostic_id": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
-      "surface": "fixed-operator witness is consuming, mutating, throwing, effectful, suspending, or authority-bearing",
+      "surface": "fixed-operator witness is consuming, mutating, recoverably throwing, effectful, suspending, or authority-bearing; ArithmeticDefect remains the sole admitted nonrecoverable arithmetic terminal",
       "semantic_residue_count": 0
     },
     {
@@ -1115,7 +1257,7 @@
     },
     {
       "diagnostic_id": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
-      "surface": "conformance attempt for a fixed glyph outside exact binary +, -, and *",
+      "surface": "conformance attempt outside the exact 13 unary, arithmetic, equality, and total-order roles; assignment, range, power, bitwise, logical, membership, identity, and arbitrary custom glyph hooks remain closed",
       "semantic_residue_count": 0
     },
     {
@@ -1140,7 +1282,11 @@
     "custom_operator_preview_design_count": 0,
     "fixed_operator_conformance_overloading_current_count": 1,
     "fixed_operator_stable_profile_count": 1,
-    "fixed_operator_stable_operator_count": 3,
+    "fixed_operator_stable_operator_count": 13,
+    "fixed_operator_trait_root_count": 9,
+    "fixed_operator_derived_comparison_projection_count": 5,
+    "fixed_operator_independent_compound_assignment_hook_count": 0,
+    "fixed_operator_range_hook_count": 0,
     "fixed_operator_tcc_open_count": 7,
     "trait_operator_lookup_max_per_nonintrinsic_admitted_expression": 1,
     "pointwise_logical_stable_builtin_carrier_count": 3,

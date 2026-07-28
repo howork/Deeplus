@@ -134,9 +134,11 @@ def command(name: String, args...: String, options***: Record) -> Unit = {
 module expr
 public sealed class Expr {
 }
-public final class Literal : Expr {
+public final class Literal
+derives Expr {
 }
-public open class Binary : Expr {
+public open class Binary
+derives Expr {
 }
 ```
 
@@ -153,7 +155,7 @@ public trait Display {
         effects {}
 }
 
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String
         throws Never
         effects {}

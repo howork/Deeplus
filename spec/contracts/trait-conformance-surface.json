@@ -1,0 +1,152 @@
+{
+  "schema": "deeplus.trait-conformance-surface/r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "status": "STABLE_DESIGN",
+  "authority": "DESIGN_TRAIT_CONFORMANCE_SUCCESSOR_SURFACE_R1",
+  "date": "2026-07-28",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "grammar_owner": "spec/grammar/deeplus.ebnf",
+  "semantic_owners": [
+    "spec/language.md",
+    "spec/types/type-system.md"
+  ],
+  "frontend_owner": "spec/frontend/frontend-model.json",
+  "fixture_owner": "tests/fixtures/current/trait-conformance-surface-r1.json",
+  "surface": {
+    "external_direct": "type Target conforms Trait [as name] [where ...] { ... }",
+    "external_bodyless": "type Target conforms Trait [as name] [where ...]",
+    "external_provider": "type Target conforms Trait [as name] via Provider [where ...] { ... }",
+    "external_auto": "type Target conforms Trait [as name] by auto [where ...]",
+    "class_base": "derives Base",
+    "class_trait": "conforms Trait",
+    "trait_parent": "derives Parent",
+    "trait_auto_opt_in": "supports auto",
+    "nominal_group": "conform Trait { ... }",
+    "qualified_witness": "Trait::member",
+    "associated_projection": "<T as Trait>::Item",
+    "evidence_selector": "using conformance(Type conforms Trait)"
+  },
+  "parser": {
+    "type_alias_decisive_token": "=",
+    "external_conformance_decisive_token": "conforms",
+    "class_direct_base_maximum": 1,
+    "class_conformance_clause_repeated": true,
+    "trait_parent_clause_repeated": true,
+    "nominal_relation_boundary": "PHYSICAL_LINE",
+    "clause_local_where_ends_at_relation_line": true,
+    "old_conformance_introducer_accepted": false,
+    "class_colon_inheritance_accepted": false,
+    "trait_requires_inheritance_accepted": false,
+    "callable_requires_preserved": true
+  },
+  "admitted_nominal_kinds": [
+    "ordinary_class",
+    "value_class",
+    "resource_class",
+    "data_class",
+    "enum"
+  ],
+  "routes": {
+    "direct": {
+      "body_allowed": true,
+      "bodyless_requires_complete_defaults": true
+    },
+    "lowercase_via": {
+      "body_allowed": true,
+      "semantic_identity_discriminator": false
+    },
+    "by_auto": {
+      "body_allowed": false,
+      "closed_registered_policy_required": true,
+      "runtime_or_provider_search_count": 0
+    }
+  },
+  "witness": {
+    "marker_set": [
+      ".",
+      "+",
+      "*.",
+      "*+"
+    ],
+    "external_qualification_allowed": true,
+    "matching_group_qualification_allowed": false,
+    "associated_binding_allowed": true,
+    "storage_or_layout_creation_allowed": false,
+    "constructor_authority_creation_allowed": false,
+    "general_extension_api_creation_allowed": false
+  },
+  "coherence": {
+    "top_level_visibility_domains": [
+      "private",
+      "common",
+      "public"
+    ],
+    "function_or_block_local_conformance": false,
+    "structural_or_runtime_conformance": false,
+    "specialization_or_priority": false,
+    "child_local_parent_witness_replacement": false,
+    "source_or_import_order_is_evidence": false,
+    "orphan_overlap_visibility_and_termination_checks": true
+  },
+  "preserved_identity_fields": [
+    "TraitId",
+    "ConformanceId",
+    "TraitWitnessId",
+    "RequirementId",
+    "ImplementationId",
+    "SubstitutionId",
+    "ResponsibilityId",
+    "AuthorityId"
+  ],
+  "tcc_evolution_lanes": [
+    "SOURCE",
+    "RESOLUTION",
+    "BEHAVIOR",
+    "BINARY_ABI"
+  ],
+  "open_feature_p1": [
+    "TCC-P1-002",
+    "TCC-P1-003",
+    "TCC-P1-004",
+    "TCC-P1-005",
+    "TCC-P1-006",
+    "TCC-P1-007",
+    "TCC-P1-008"
+  ],
+  "global_open_feature_p1": [
+    "CE-C-P1-001",
+    "CE-C-P1-002",
+    "CE-C-P1-003",
+    "CE-C-P1-004",
+    "CE-C-P1-005",
+    "CE-C-P1-006",
+    "CE-E-P1-001",
+    "CE-E-P1-002",
+    "CE-E-P1-003",
+    "CE-E-P1-004",
+    "CE-E-P1-005",
+    "CE-E-P1-006",
+    "CE-E-P1-007",
+    "CE-E-P1-008",
+    "TCC-P1-002",
+    "TCC-P1-003",
+    "TCC-P1-004",
+    "TCC-P1-005",
+    "TCC-P1-006",
+    "TCC-P1-007",
+    "TCC-P1-008",
+    "SFD-P1-009"
+  ],
+  "diagnostics": [
+    "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
+    "CLASS_COLON_INHERITANCE_REMOVED",
+    "TRAIT_REQUIRES_INHERITANCE_REMOVED",
+    "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+    "CONFORMANCE_AUTO_BODY_FORBIDDEN",
+    "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
+    "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP"
+  ]
+}

@@ -15,12 +15,12 @@
     },
     {
       "id": "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-STABLE",
-      "law": "Enum declaration-order Ord derivation, case-owned Display mapping, and payload-free exact-variant subset aliases are Stable design. The order profile uses exactly one of enum#increasing or enum#decreasing, forms one whole-Enum Ord witness, and keeps SemanticOrderRank separate from VariantId, raw, serialization, layout, ABI, match priority, and operator glyph routing. A case-owned ~> mapping is all-or-none, uses a restricted read-only String template, and forms one whole-Enum Display witness. An enum-associated +type alias uses finite same-owner payload-free VariantId membership, reuses owner representation and witnesses, widens losslessly to its owner, and narrows only through an explicit checked boundary. Existing Enum markers remain unchanged; semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "law": "Enum declaration-order Eq/Ord derivation, case-owned Display mapping, and payload-free exact-variant subset aliases are Stable design. The order profile uses exactly one of enum#increasing or enum#decreasing, is restricted to payload-free nongeneric Enums, forms one whole-Enum Eq and Ord witness, and keeps SemanticOrderRank separate from VariantId, raw, serialization, layout, ABI, and match priority. The four ordering glyphs and enum ranges consume only SemanticOrderRank; `..` and `..<` advance in semantic Ord order and reverse traversal is explicit through downTo. A case-owned ~> mapping is all-or-none, uses a restricted read-only String template, and forms one whole-Enum Display witness. An enum-associated +type alias uses finite same-owner payload-free VariantId membership, reuses owner representation and witnesses, widens losslessly to its owner, and narrows only through an explicit checked boundary. Existing Enum markers remain unchanged; semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Supp1 Enum Declaration-Order Derived Ord Review R1; Supp1 Enum Display Mapping and Variant-Subset Union Review R1; spec/contracts/enum-derived-capabilities.json",
-      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "USR-NAMED-REST",
@@ -141,7 +141,7 @@
     },
     {
       "id": "USR-KEYWORDS",
-      "law": "The lexical vocabulary contains 29 hard keywords and 101 contextual words after removal of obsolete source roles.",
+      "law": "The lexical vocabulary contains 29 hard keywords and 106 contextual words. `auto`, `by`, `conform`, `derives`, and `supports` are contextual owner words for the Stable Trait Conformance surface, while `array` and `case` remain ordinary identifiers.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT",
       "ratification_status": "CURRENT_USER_DIRECTION",
@@ -150,21 +150,21 @@
     },
     {
       "id": "DSGN-POST-PR16-TRAIT-BASE",
-      "law": "TC-R001..R016 are accepted only as PREVIEW_DESIGN nonactivatable successor law; current Trait Conformance and lowercase via remain unchanged.",
+      "law": "TC-R001..R016 are Stable current coherence law. The canonical successor surface is `type A conforms Trait`, repeated nominal-header `conforms`, class/Trait `derives`, qualified `Trait::member`, and `conform Trait { ... }`; the former introducer, class colon inheritance, and Trait-inheritance `requires` surfaces are removed. Existing lowercase `via`, `as name`, `<T as Trait>::Item`, and the exact `.`, `+`, `*.`, `*+` witness markers remain unchanged.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_REVIEWABLE",
-      "source_evidence": "Design_Deeplus_Post_PR16_Canonical_Adoption_Normative_Source_R4.md",
-      "effective_revision": "r51f3-post-pr16-preview-design-r4"
+      "source_evidence": "Design_Deeplus_Trait_Conformance_Shared_Design_Report_R1(8).md; decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-POST-PR16-TRAIT-GUARDS",
-      "law": "TCC-DG-001..008 and TCC-DG-P2-009/A/B are PREVIEW_DESIGN nonactivatable guards with no VIA/AUTO, specialization, or child-local witness activation.",
+      "law": "TCC-DG-001..008 and TCC-DG-P2-009/A/B remain the current identity, witness, overlap, termination, diagnostic, and evolution guards. `supports auto` and `by auto` are admitted only when a canonical closed synthesis-policy record exists; lowercase `via` keeps its current route and body semantics. Local/runtime conformance, structural fallback, specialization, and child-local parent-witness replacement remain absent.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_REVIEWABLE",
-      "source_evidence": "Design_Deeplus_Post_PR16_Canonical_Adoption_Normative_Source_R4.md",
-      "effective_revision": "r51f3-post-pr16-preview-design-r4"
+      "source_evidence": "Design_Deeplus_Trait_Conformance_Shared_Design_Report_R1(8).md; decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-POST-PR16-CE-G6",
@@ -242,21 +242,21 @@
     },
     {
       "id": "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
-      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default, and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary, fixity, binding power, and associativity are closed. Arbitrary custom operators are not part of the language. Fixed existing-glyph conformance dispatch is Stable only for exact binary +, -, and * under intrinsic reservation plus one left-owner DIRECT_GLOBAL conformance with no conversion, order ranking, fallback, or runtime relookup. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
+      "law": "Deeplus values keep semantic identity separate from storage, serialization, discriminant, ABI, and backend layout. Int is the checked signed 64-bit default, and absence uses ::none in an expected Option context or Option<T>::none explicitly. The current operator vocabulary, fixity, binding power, and associativity are closed. Arbitrary custom operators are not part of the language. Fixed existing-glyph conformance dispatch is Stable for exactly thirteen unary, binary-arithmetic, equality, and total-order roles through nine Prelude Trait roots under intrinsic reservation plus one left-owner DIRECT_GLOBAL conformance with no conversion, order ranking, fallback, or runtime relookup. Derived inequality, ordering projections, and compound assignment create no independent witness; range remains a closed intrinsic carrier rule rather than a conformance hook. Stable ternary evaluates one Bool condition and exactly one lazy arm and joins type, ownership, effect, error, cancellation, place, and cleanup responsibility without synthesizing a Union. Map literals evaluate direct entries and Map unfolds once from left to right, replace duplicate keys deterministically inside one failure-atomic plan, and publish no partial Map. Basic String interpolation preselects deterministic synchronous Display witnesses, evaluates holes once in source order, and grants no hidden locale, provider, serialization, parsing, or redaction authority; colon format-spec semantics remain DEFERRED_PRODUCT_HANDOFF. Attached NumericArray transpose is a semantic nonowning, owner-bounded read-only coordinate view with no implicit element copy, language-observable allocation authority, mutation, adjoint, or isolation crossing; backend representation remains unselected. Built-in ordered sequences and default NumericArray axes are one-based, bounded lists preserve declared coordinates, slices preserve coordinates and owner provenance, and [] is activated only by the closed built-in carrier matrix.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/value-operator-indexing-coherence.json and user canonicalization direction",
-      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-CURRENT-TYPE-REFINEMENT-NARROWING-COHERENCE",
-      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable inside closed Union pattern owners; the existing closed-Union-only `is`/`!is` forms evaluate the subject and stored injection identity once and produce complementary Bool edge facts. Every admitted def#guard exports one verified finite-R0 GuardSummaryV1. A direct exact call over stable actual places may substitute that summary once and add P/not(P) to the true/false Phi edges without changing declared types, producing a proof object, or reevaluating the predicate. Stored Bool values, wrappers, dynamic dispatch, unstable actuals, and guarded-arm exhaustiveness gain no fact. Durable facts die on assignment, aliasing mutation, exclusive borrow, escape/capture, consume, suspension, or a may-mutate/may-consume call. Float complements remain logical negation and are not algebraically strengthened across NaN. Union formation requires a finite pairwise DISJOINT proof, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
+      "law": "Flow facts live in Phi and never mutate declared types. Exact typed alternatives are refutable inside closed Union pattern owners; the existing closed-Union-only `is`/`!is` forms evaluate the subject and stored injection identity once and produce complementary Bool edge facts. `T where > rhs` is exact sugar for `T where this > rhs`, while `T in a..b` and `T in a..<b` are inclusive and upper-exclusive interval refinements; bare `T > rhs` is not a type surface. A monotone chained binder Pattern such as `0 <= value <= 100` binds the match subject once and exposes the corresponding refinement fact in its arm; mixed direction rejects. Every admitted def#guard exports one verified finite-R0 GuardSummaryV1. A direct exact call over stable actual places may substitute that summary once and add P/not(P) to the true/false Phi edges without changing declared types, producing a proof object, or reevaluating the predicate. Stored Bool values, wrappers, dynamic dispatch, unstable actuals, and guarded-arm exhaustiveness gain no fact. Durable facts die on assignment, aliasing mutation, exclusive borrow, escape/capture, consume, suspension, or a may-mutate/may-consume call. Float complements remain logical negation and are not algebraically strengthened across NaN. Union formation requires a finite pairwise DISJOINT proof, and pattern probes commit ownership only after structural success and a true admitted guard. Product execution remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "spec/contracts/type-refinement-narrowing-coherence.json and user comprehensive review direction",
-      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-CURRENT-TOP-LEVEL-TYPE-VISIBILITY-COHERENCE",
@@ -296,21 +296,21 @@
     },
     {
       "id": "DSGN-CURRENT-OPERATOR-FUNCTION-STATIC-INTAKE",
-      "law": "Arbitrary glyph/fixity/precedence custom operators are not a Deeplus feature. Existing fixed-glyph conformance overloading is STABLE_DESIGN for exact binary +, -, and *: it freezes a direct-global, left-owner, intrinsic-reserved, pure borrowed, no-fallback/no-relookup profile without closing TCC-P1-002..008. The Stable &&/||/^^/~~ family is described as pointwise logical: current packed-bit behavior is preserved and exact same-shape NumericArray values over one known-width integer element domain gain the pure total built-in lift, while scalar Bool, NumericArray<Bool>, broadcast, dynamic/heterogeneous/generic collections and user carriers remain excluded or deferred. Stable `static { ... }` is an exact function-body prologue owned by an admitted synchronous named CallableImplementationId. It runs once per normalized specialization at first actual invocation after input staging and before ownership commit, observes no caller input/authority, calls no activation-bearing or dynamic target, publishes exactly Ready or one cached Failed identity with release/acquire, never retries or deadlocks on reentry, and carries exact HIR/MIR/API identity while every product lane remains NOT_RUN. The older Trait shared-design report contributes only identity/coherence/no-order/no-runtime-relookup principles already represented by TC-R001..R016 and TCC-DG; its alternate type/derives/auto/conform/local-witness/specialization surfaces do not replace current conformance/requires/lowercase-via authority. Semantic P0 remains 0 and the existing feature P1 set remains exactly 22 OPEN.",
+      "law": "Arbitrary glyph/fixity/precedence custom operators are not a Deeplus feature. Fixed-glyph conformance overloading is STABLE_DESIGN for exactly unary +/-, binary +,-,*,/,%, equality ==/!=, and ordering </<=/>/>=. The Prelude roots are UnaryPlus, UnaryMinus, Add<Rhs>, Subtract<Rhs>, Multiply<Rhs>, Divide<Rhs>, Remainder<Rhs>, Eq<Rhs>, and Ord<Rhs>; != is derived from Eq and the four ordering glyphs from one Ord.compare result. Compound +=,-=,*=,/=,%= is derived from the corresponding binary operation and exact assignment admission and creates no independent witness. Every non-intrinsic expression uses at most one direct-global left-owner conformance with intrinsic reservation and no conversion, source order, fallback, specialization, alternate route, or runtime relookup. Division and remainder faults raise ArithmeticDefect before commit. The Stable &&/||/^^/~~ family remains closed built-in pointwise logical behavior and supplies no user-carrier hook. Stable `static { ... }` retains its exact function-body prologue contract. The accepted Trait shared-design surface uses type/conforms, repeated conforms, derives, supports auto/by auto under a closed policy, qualified Trait::member, and conform blocks while preserving lowercase via, as-name identity, and associated projections. Semantic P0 remains 0 and the existing feature P1 set remains exactly 22 OPEN; every product lane remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
-      "source_evidence": "Eight attached Trait/operator/function-static design reports, explicit user rejection of arbitrary custom operators, and current authority reconciliation",
-      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+      "source_evidence": "Design_Deeplus_Trait_Conformance_Shared_Design_Report_R1(8).md; explicit user fixed-glyph expansion and refinement direction; decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-CURRENT-EXACT-NUMERIC-COMPANION-HIR-H1-COHERENCE",
-      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep, bare Complex normalizes to Complex<Float64>, and attached floating 3.0 + 4.0i is canonical. Float is a closed alias of Float64. UInt is the distinct default unsigned semantic domain 0..2^64-1, not an alias of UInt64 and not eligible for the negative literal adapter. Stable fixed-glyph conformance remains exactly binary +,-,*; scalar real/Complex ^ is a closed static intrinsic. The type-directed std::math elementary facade is a bounded STDLIB_PROFILE. Numeric capability evidence, Rational operator completion, integer-magnitude 4i, and std::math special/calculus families remain PREVIEW_DESIGN. Static capability lookup and the verified HIR-H1 boundary remain as previously adopted; MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
+      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep, bare Complex normalizes to Complex<Float64>, and attached floating 3.0 + 4.0i is canonical. Float is a closed alias of Float64. UInt is the distinct default unsigned semantic domain 0..2^64-1, not an alias of UInt64 and not eligible for the negative literal adapter. Rational supplies the Stable +,-,*,/,%,Eq,Ord profile; a zero divisor raises ArithmeticDefect before commit, while named dividedBy remains the recoverable checked API. Complex supplies its closed arithmetic and existing equality profile but never Ord. Scalar real/Complex ^ remains a closed static intrinsic. The type-directed std::math elementary facade is a bounded STDLIB_PROFILE. Integer-magnitude 4i and std::math special/calculus families remain PREVIEW_DESIGN. Static capability lookup and the verified HIR-H1 boundary remain as previously adopted; MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Five attached companion, Complex/Rational and exponentiation authority proposals; explicit user i-literal/HIR-H1/canonicalization direction; bounded multi-role reconciliation",
-      "effective_revision": "r51f3-current-numeric-guard-call-enum-coherence-r1"
+      "effective_revision": "r51f3-current-trait-operator-refinement-r1"
     },
     {
       "id": "DSGN-CURRENT-NONESCAPING-LEXICAL-ACCESS",

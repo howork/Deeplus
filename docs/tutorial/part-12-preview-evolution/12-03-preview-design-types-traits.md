@@ -97,7 +97,7 @@ formal proof block은 아니다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String = { return self.raw ~ toString }
 }
 

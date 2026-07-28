@@ -20,9 +20,10 @@ from typing import Any
 
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
-LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
-PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
-PATTERN_COMPONENT_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
+LANGUAGE_COHERENCE_REVISION = "r51f3-current-trait-operator-refinement-r1"
+TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
+PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
+PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -35,9 +36,9 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1414, "predicates": 268,
+    "features": 719, "diagnostics": 1423, "predicates": 268,
     "predicate_fixtures": 819, "no_go": 155,
-    "hard_keywords": 29, "contextual_words": 101,
+    "hard_keywords": 29, "contextual_words": 106,
 }
 REQUIRED_FEATURE_IDS = (
     "named_rest_parameter_record_msp",
@@ -108,6 +109,170 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
 EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
+FIXED_OPERATOR_IDS = [
+    "UnaryPlus", "UnaryMinus",
+    "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide",
+    "BinaryRemainder", "BinaryEqual", "BinaryNotEqual", "BinaryLessThan",
+    "BinaryLessThanOrEqual", "BinaryGreaterThan", "BinaryGreaterThanOrEqual",
+]
+FIXED_OPERATOR_TRAIT_ROOTS = [
+    "UnaryPlus", "UnaryMinus", "Add", "Subtract", "Multiply", "Divide",
+    "Remainder", "Eq", "Ord",
+]
+FIXED_OPERATOR_MAPPING = [
+    (
+        "UnaryPlus", "+", "prefix", "UnaryPlus", "UnaryPlus.positive",
+        "UnaryPlus::Output", "ASSOCIATED_OUTPUT", "UnaryPlus::Output",
+    ),
+    (
+        "UnaryMinus", "-", "prefix", "UnaryMinus", "UnaryMinus.negate",
+        "UnaryMinus::Output", "ASSOCIATED_OUTPUT", "UnaryMinus::Output",
+    ),
+    (
+        "BinaryAdd", "+", "binary_infix", "Add<Rhs>", "Add.add",
+        "Add<Rhs>::Output", "ASSOCIATED_OUTPUT", "Add<Rhs>::Output",
+    ),
+    (
+        "BinarySubtract", "-", "binary_infix", "Subtract<Rhs>",
+        "Subtract.subtract", "Subtract<Rhs>::Output", "ASSOCIATED_OUTPUT",
+        "Subtract<Rhs>::Output",
+    ),
+    (
+        "BinaryMultiply", "*", "binary_infix", "Multiply<Rhs>",
+        "Multiply.multiply", "Multiply<Rhs>::Output", "ASSOCIATED_OUTPUT",
+        "Multiply<Rhs>::Output",
+    ),
+    (
+        "BinaryDivide", "/", "binary_infix", "Divide<Rhs>", "Divide.divide",
+        "Divide<Rhs>::Output", "ASSOCIATED_OUTPUT", "Divide<Rhs>::Output",
+    ),
+    (
+        "BinaryRemainder", "%", "binary_infix", "Remainder<Rhs>",
+        "Remainder.remainder", "Remainder<Rhs>::Output", "ASSOCIATED_OUTPUT",
+        "Remainder<Rhs>::Output",
+    ),
+    (
+        "BinaryEqual", "==", "binary_infix", "Eq<Rhs>", "Eq.equals",
+        "Bool", "IDENTITY", "Bool.identity",
+    ),
+    (
+        "BinaryNotEqual", "!=", "binary_infix", "Eq<Rhs>", "Eq.equals",
+        "Bool", "BOOL_NEGATION", "Bool.not",
+    ),
+    (
+        "BinaryLessThan", "<", "binary_infix", "Ord<Rhs>", "Ord.compare",
+        "Bool", "COMPARE_SIGN_LT_ZERO", "compare_sign_lt_zero",
+    ),
+    (
+        "BinaryLessThanOrEqual", "<=", "binary_infix", "Ord<Rhs>",
+        "Ord.compare", "Bool", "COMPARE_SIGN_LE_ZERO", "compare_sign_le_zero",
+    ),
+    (
+        "BinaryGreaterThan", ">", "binary_infix", "Ord<Rhs>", "Ord.compare",
+        "Bool", "COMPARE_SIGN_GT_ZERO", "compare_sign_gt_zero",
+    ),
+    (
+        "BinaryGreaterThanOrEqual", ">=", "binary_infix", "Ord<Rhs>",
+        "Ord.compare", "Bool", "COMPARE_SIGN_GE_ZERO", "compare_sign_ge_zero",
+    ),
+]
+FIXED_OPERATOR_COMPARISON_IDS = {
+    "BinaryEqual", "BinaryNotEqual", "BinaryLessThan",
+    "BinaryLessThanOrEqual", "BinaryGreaterThan",
+    "BinaryGreaterThanOrEqual",
+}
+FIXED_OPERATOR_ARITHMETIC_PROFILE_ID = (
+    "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_"
+    "ARITHMETIC_DEFECT_PRECOMMIT"
+)
+FIXED_OPERATOR_COMPARISON_PROFILE_ID = (
+    "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+)
+FIXED_OPERATOR_HIR_REQUIRED_FIELDS = [
+    "operator_id",
+    "operand_arity",
+    "normalized_left_type_id",
+    "normalized_right_type_id_or_null",
+    "conformance_id",
+    "witness_id",
+    "method_id",
+    "substitution",
+    "output_type_id",
+    "responsibility_profile_id",
+]
+FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS = [
+    "operator_id",
+    "operand_arity",
+    "normalized_left_type_id",
+    "normalized_right_type_id",
+    "conformance_id",
+    "witness_id",
+    "method_id",
+    "substitution_id",
+    "output_type_id",
+    "responsibility_profile_id",
+    "dispatch_route",
+    "runtime_relookup_count",
+    "fallback_count",
+]
+FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP = {
+    "operator_id": "operator_id",
+    "operand_arity": "operand_arity",
+    "normalized_left_type_id": "normalized_left_type_id",
+    "normalized_right_type_id_or_null": "normalized_right_type_id",
+    "conformance_id": "conformance_id",
+    "witness_id": "witness_id",
+    "method_id": "method_id",
+    "substitution": "substitution_id",
+    "output_type_id": "output_type_id",
+    "responsibility_profile_id": "responsibility_profile_id",
+}
+FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
+    "dispatch_route": "DIRECT_GLOBAL",
+    "runtime_relookup_count": 0,
+    "fallback_count": 0,
+}
+TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
+    "TCS-R1-POS-001": "200a65fcdb4f4048e8ca3a9c47ee9a6a3b064d0e1a4c3cb213cee813eaa93964",
+    "TCS-R1-POS-002": "bcf8175f86f6beeb7a2f408fb2c6caf0b01b3d7f22a330359a28c9de9a6bc987",
+    "TCS-R1-POS-003": "702e9ad35b10a6e6423b6fac2ad91ef026aff2401f7b5cc34f913f6aea0ad3fb",
+    "TCS-R1-POS-004": "cddc9ba52088a8455525c352e564f6f2f0d984d3788ec59ac7868c92cc6e7de9",
+    "TCS-R1-POS-005": "a3d5f4ac2214934e98d4c46becf91e46c5c0a5ce85a7ffb4627fe0104c8d8677",
+    "TCS-R1-POS-006": "6c9343d277a11511992a25c3d57f2bc442332529ef21e739aa2da664f208becb",
+    "TCS-R1-POS-007": "7efc43d30b3ed5d4914c0fc06de63c57efcdf761d705d8ac5140af1ce6b20d60",
+    "TCS-R1-POS-008": "720eb7a5e2c34957aed727753021715c349265dbb2fca89e73ae35a0b8531065",
+    "TCS-R1-POS-009": "a517e10df764ba6e632ed864e19da000ea1de90591e59f62fcc6d86ae1248cc9",
+    "TCS-R1-POS-010": "c16cab0427163c5821fb444476cfa070043d26fb4893e42e0482ce0d03bdd056",
+    "TCS-R1-POS-011": "770707cc84b0399689e885e0be7132d03ef76b404bbf17bd0ae65bd63a5f31da",
+    "TCS-R1-POS-012": "4dcf319599787633d85666851aea9503495e5fba4825c20c6f8f67f4045ae8ab",
+    "TCS-R1-POS-013": "02e69912455fe5f6e5f9ddbcb49efc25021e7d9bd017ea1c32e19f9b2416146d",
+    "TCS-R1-POS-014": "35648e2d7db3044bed1961e172a5228c12885e767975dee72a26fdac895ffbdb",
+    "TCS-R1-NEG-001": "5dcde2137f56f172fd5ba8e83108e9cbd2f5fa59805613f00bbd83457869f545",
+    "TCS-R1-NEG-002": "474ece87f02a6f6221e104352ddffa1d89a6a28be22411ca52b67b4e97e4c3a2",
+    "TCS-R1-NEG-003": "b957106d59114c58544985137f22e8ef6fed44fef7d5380401904d2624e3f6f7",
+    "TCS-R1-NEG-004": "130ef4b13027c6ca0a53aad52a174efaf674f785f885cfc1d18ec719f2873318",
+    "TCS-R1-NEG-005": "264f8aa880cc64a4fd05e4bf54f65e0ddbed455830d2d9dc4fa4ede808716cb8",
+    "TCS-R1-NEG-006": "9ed178ba38c49167f145866f8a2994d753569ab10dce8ba885f62a875fe512e6",
+    "TCS-R1-NEG-007": "077fcf182885bd2998e3d086c5783e237b370bb10f64c17ea20d021771b732e2",
+    "TCS-R1-NEG-008": "e41d57a96744f8f40b85900fd9282392fe7eefa1248a9946ef18badb9031369a",
+    "TCS-R1-NEG-009": "398a9621caf006a6f21d74388e95865ed43034101acc50ad3a6dfe769d09f9a0",
+    "TCS-R1-NEG-010": "c41174f295f7ce210fb382996f3216dd54e7a678dce7467b2ebd5a066601e769",
+}
+REFINEMENT_SURFACE_CASE_SHA256 = {
+    "TRN-R1-POS-046": "a1847aaebbdd743d8aacc74eb99bc85fdcddf047a15cc39676e82190ae04ecca",
+    "TRN-R1-POS-047": "f21cd981e0410836d60a78db86491db7b7da8efdb721005f9814d0aa4979a227",
+    "TRN-R1-NEG-048": "011c969dd8b300be001e44b7c26adf6b77eb64d0c2108f533de984ad8dffe35d",
+    "TRN-R1-POS-049": "ae4f7f97cf9ec046e5d5dbcce1f7c170286a9165b7c0806f97de840e56b8ac23",
+    "TRN-R1-POS-050": "1aff5b88898dae43a3b5c3315361907b19da56cb36e530364db493a3b55cdf47",
+    "TRN-R1-NEG-051": "93c880354cc80e692a1142119c4b74a21c85011aedbda686c1b0d145f71e4f6c",
+    "TRN-R1-POS-052": "3275519eda59a109d3619cfb51ffdb5359c7659ade2a5422a33d952bc8214ed7",
+    "TRN-R1-NEG-053": "107433645051536eba564afa8c31818a9bed4923829cd949e828c948d81a60b7",
+    "TRN-R1-POS-054": "ca6b6410c56ce952dd6844dfe28af9df31f4a4ffecc8632dd8e479a05075c0c5",
+    "TRN-R1-POS-055": "1f7d04c1a280ac95f7f1c1a19a70799b43c4ecbdb1aa155b40d67547c218d1bb",
+    "TRN-R1-NEG-056": "4676503c257b8d25eb3cb937fad99e25ce3e2c92fc6237681dafe13c018ff567",
+    "TRN-R1-BOUND-057": "f04f8e08f7a8ce300526f0d6ab47d71644b578ad0d457f2c24e34532ed664672",
+    "TRN-R1-NEG-058": "f4167e587ce908b1ce5e05b7c085e5a8f6aca74561ef03fb392c58a0e282c7ea",
+}
 SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
     *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
     *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
@@ -229,6 +394,23 @@ def longest_exact_indent_prefix(lines: list[str]) -> str:
     return common
 
 
+def fixed_operator_schema_role_rows(schema_def: dict[str, Any]) -> dict[str, Any]:
+    rows: dict[str, Any] = {}
+    for clause in schema_def.get("allOf", []):
+        if not isinstance(clause, dict):
+            continue
+        operator_id = (
+            clause.get("if", {})
+            .get("properties", {})
+            .get("operator_id", {})
+            .get("const")
+        )
+        properties = clause.get("then", {}).get("properties")
+        if isinstance(operator_id, str) and isinstance(properties, dict):
+            rows[operator_id] = properties
+    return rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -280,7 +462,7 @@ def main() -> int:
                 and fixed_counts.get("predicate_fixtures") == 819
                 and fixed_counts.get("no_go") == 155
                 and fixed_counts.get("hard_keywords") == 29
-                and fixed_counts.get("contextual_words") == 101,
+                and fixed_counts.get("contextual_words") == 106,
                 "LANGUAGE_COHERENCE_CONTRACT",
                 str(fixed_counts),
             )
@@ -310,6 +492,8 @@ def main() -> int:
         "docs/tutorial/SUMMARY.md",
         "docs/tutorial/coverage-manifest.json",
         "spec/contracts/tutorial-r1.json",
+        "spec/contracts/trait-conformance-surface.json",
+        "tests/fixtures/current/trait-conformance-surface-r1.json",
         "schemas/language/tutorial-coverage.schema.json",
         "tools/generators/generate_tutorial.py",
         "tools/validators/run_tutorial_generator_tests.py",
@@ -1188,6 +1372,11 @@ def main() -> int:
     numeric_machine = numeric_contract.get("machine_acceptance", {})
     numeric_counts = numeric_fixture.get("expected_counts", {})
     numeric_cases = numeric_fixture.get("cases", [])
+    numeric_by_id = {
+        row.get("fixture_id"): row
+        for row in numeric_cases
+        if isinstance(row, dict)
+    }
     check(
         numeric_contract.get("revision") == revision
         and numeric_fixture.get("revision") == revision
@@ -1206,7 +1395,7 @@ def main() -> int:
         == 0
         and numeric_machine.get("fixed_conformance_operator_ids")
         == numeric_counts.get("fixed_conformance_operator_ids")
-        == ["BinaryAdd", "BinarySubtract", "BinaryMultiply"]
+        == FIXED_OPERATOR_IDS
         and numeric_machine.get("arbitrary_custom_operator_count") == 0
         and numeric_machine.get("power_conformance_witness_count") == 0
         and numeric_machine.get("Rational_power_initial_profile_count") == 0
@@ -1220,6 +1409,45 @@ def main() -> int:
         and numeric_counts.get("product_executed") == 0,
         "EXACT_NUMERIC_CONTRACT_AND_FIXTURE_CLOSURE",
         f"cases={len(numeric_cases)} counts={numeric_counts}",
+    )
+    numeric_negative_dividend_remainder = numeric_by_id.get(
+        "RCN-R1-POS-013", {}
+    )
+    numeric_negative_divisor_remainder = numeric_by_id.get(
+        "RCN-R1-POS-014", {}
+    )
+    numeric_zero_divisor_boundary = numeric_by_id.get(
+        "RCN-R1-BOUND-006", {}
+    )
+    check(
+        numeric_negative_dividend_remainder.get("subject")
+        == "(-<7/3>) % <2/3> == -<1/3>"
+        and numeric_negative_dividend_remainder.get("operator_id_or_null")
+        == "BinaryRemainder"
+        and "q=truncTowardZero((-7/3)/(2/3))=-3, r=-1/3"
+        in numeric_negative_dividend_remainder.get("token_or_owner", "")
+        and "identity=a-q*b,abs_r_lt_abs_b"
+        in numeric_negative_dividend_remainder.get("mir_residue_or_null", "")
+        and numeric_negative_divisor_remainder.get("subject")
+        == "<7/3> % (-<2/3>) == <1/3>"
+        and numeric_negative_divisor_remainder.get("operator_id_or_null")
+        == "BinaryRemainder"
+        and "q=truncTowardZero((7/3)/(-2/3))=-3, r=1/3"
+        in numeric_negative_divisor_remainder.get("token_or_owner", "")
+        and "identity=a-q*b,abs_r_lt_abs_b"
+        in numeric_negative_divisor_remainder.get("mir_residue_or_null", "")
+        and numeric_zero_divisor_boundary.get("operator_id_or_null")
+        == "BinaryRemainder"
+        and "ArithmeticDefect::divisionByZero before commit"
+        in numeric_zero_divisor_boundary.get("token_or_owner", "")
+        and "commit_count=0,original_residue_preserved=true"
+        in numeric_zero_divisor_boundary.get("mir_residue_or_null", ""),
+        "RATIONAL_REMAINDER_SIGN_IDENTITY_ZERO_DIVISOR_FIXTURE_BINDING",
+        (
+            f"negative_dividend={numeric_negative_dividend_remainder.get('subject')} "
+            f"negative_divisor={numeric_negative_divisor_remainder.get('subject')} "
+            f"zero={numeric_zero_divisor_boundary.get('subject')}"
+        ),
     )
     check(
         all(
@@ -1976,6 +2204,183 @@ def main() -> int:
         str(voi_transpose),
     )
     voi_machine = voi_contract.get("machine_acceptance", {})
+    voi_rules_by_id = {
+        row.get("rule_id"): row
+        for row in voi_contract.get("rules", [])
+        if isinstance(row, dict)
+    }
+    voi_fixed_profile = (
+        voi_rules_by_id.get("VOI-R005", {})
+        .get("contract", {})
+        .get("fixed_operator_stable_profile", {})
+    )
+    frontend_contract = parsed.get(
+        root / "spec/frontend/frontend-model.json", {}
+    ).get("fixed_operator_conformance_frontend_contract", {})
+    expected_value_operator_rows = [
+        {
+            "operator_id": operator_id,
+            "glyph": glyph,
+            "fixity": fixity,
+            "trait_id": trait_id,
+            "method_id": method_id,
+            "result": result,
+            "projection": value_projection,
+        }
+        for (
+            operator_id, glyph, fixity, trait_id, method_id, result,
+            value_projection, _frontend_projection,
+        ) in FIXED_OPERATOR_MAPPING
+    ]
+    expected_frontend_operator_rows = [
+        {
+            "operator_id": operator_id,
+            "glyph": glyph,
+            "fixity": fixity,
+            "trait_id": trait_id,
+            "method_id": method_id,
+            "output_projection": frontend_projection,
+            "responsibility_profile_id": (
+                FIXED_OPERATOR_COMPARISON_PROFILE_ID
+                if operator_id in FIXED_OPERATOR_COMPARISON_IDS
+                else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+            ),
+        }
+        for (
+            operator_id, glyph, fixity, trait_id, method_id, _result,
+            _value_projection, frontend_projection,
+        ) in FIXED_OPERATOR_MAPPING
+    ]
+    mir_schema = parsed.get(
+        root / "schemas/language/mir-responsibility.schema.json", {}
+    )
+    api_schema = parsed.get(
+        root / "schemas/language/module-api-digest.schema.json", {}
+    )
+    mir_fixed_schema = (
+        mir_schema.get("$defs", {})
+        .get("fixedOperatorConformanceDispatch", {})
+    )
+    api_fixed_schema = (
+        api_schema.get("$defs", {})
+        .get("fixedOperatorConformanceResidue", {})
+    )
+    mir_operator_ids = (
+        mir_fixed_schema
+        .get("properties", {})
+        .get("operator_id", {})
+        .get("enum")
+    )
+    api_operator_ids = (
+        api_fixed_schema
+        .get("properties", {})
+        .get("operator_id", {})
+        .get("enum")
+    )
+    check(
+        [row[0] for row in FIXED_OPERATOR_MAPPING] == FIXED_OPERATOR_IDS
+        and voi_fixed_profile.get("admitted_operator_ids")
+        == FIXED_OPERATOR_IDS
+        and voi_fixed_profile.get("trait_roots")
+        == FIXED_OPERATOR_TRAIT_ROOTS
+        and voi_fixed_profile.get("operator_trait_mapping")
+        == expected_value_operator_rows
+        and frontend_contract.get("trait_roots")
+        == FIXED_OPERATOR_TRAIT_ROOTS
+        and frontend_contract.get("admitted_operator_rows")
+        == expected_frontend_operator_rows
+        and mir_operator_ids == FIXED_OPERATOR_IDS
+        and api_operator_ids == FIXED_OPERATOR_IDS,
+        "FIXED_OPERATOR_VALUE_FRONTEND_MIR_API_EXACT_BINDING",
+        (
+            f"value_rows={len(voi_fixed_profile.get('operator_trait_mapping', []))} "
+            f"frontend_rows={len(frontend_contract.get('admitted_operator_rows', []))} "
+            f"mir={mir_operator_ids} api={api_operator_ids}"
+        ),
+    )
+    mir_fixed_contract = mir_schema.get(
+        "x-deeplus-fixed-operator-conformance-contract", {}
+    )
+    api_fixed_contract = api_schema.get(
+        "x-deeplus-fixed-operator-conformance-contract", {}
+    )
+    check(
+        frontend_contract.get("typed_hir_residue", {}).get("required_fields")
+        == FIXED_OPERATOR_HIR_REQUIRED_FIELDS
+        and mir_fixed_schema.get("required")
+        == FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS
+        and api_fixed_schema.get("required")
+        == FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS
+        and mir_fixed_contract.get("schema_stage") == "MIR"
+        and api_fixed_contract.get("schema_stage") == "MODULE_API"
+        and mir_fixed_contract.get("hir_to_schema_field_map")
+        == FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP
+        and api_fixed_contract.get("hir_to_schema_field_map")
+        == FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP
+        and mir_fixed_contract.get("schema_stage_constant_fields")
+        == FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS
+        and api_fixed_contract.get("schema_stage_constant_fields")
+        == FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS
+        and mir_fixed_contract.get("field_mapping")
+        == api_fixed_contract.get("field_mapping")
+        == "TOTAL_INJECTIVE_DETERMINISTIC"
+        and len(set(FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP.values()))
+        == len(FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP)
+        and set(FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP)
+        == set(FIXED_OPERATOR_HIR_REQUIRED_FIELDS)
+        and (
+            set(FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP.values())
+            | set(FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS)
+        )
+        == set(FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS),
+        "FIXED_OPERATOR_HIR_MIR_API_FIELD_MAP_EXACT_BINDING",
+        (
+            f"hir={frontend_contract.get('typed_hir_residue', {}).get('required_fields')} "
+            f"mir={mir_fixed_schema.get('required')} "
+            f"api={api_fixed_schema.get('required')}"
+        ),
+    )
+    expected_schema_role_rows = {}
+    for (
+        operator_id, _glyph, fixity, _trait_id, method_id, _result,
+        _value_projection, _frontend_projection,
+    ) in FIXED_OPERATOR_MAPPING:
+        is_comparison = operator_id in FIXED_OPERATOR_COMPARISON_IDS
+        properties = {
+            "operand_arity": {"const": 1 if fixity == "prefix" else 2},
+            "normalized_right_type_id": (
+                {"const": None}
+                if fixity == "prefix"
+                else {"type": "string", "minLength": 1}
+            ),
+            "method_id": {"const": method_id},
+            "responsibility_profile_id": {
+                "const": (
+                    FIXED_OPERATOR_COMPARISON_PROFILE_ID
+                    if is_comparison
+                    else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+                )
+            },
+        }
+        if is_comparison:
+            properties["output_type_id"] = {"const": "Bool"}
+        expected_schema_role_rows[operator_id] = properties
+    mir_schema_role_rows = fixed_operator_schema_role_rows(mir_fixed_schema)
+    api_schema_role_rows = fixed_operator_schema_role_rows(api_fixed_schema)
+    check(
+        list(mir_schema_role_rows) == FIXED_OPERATOR_IDS
+        and list(api_schema_role_rows) == FIXED_OPERATOR_IDS
+        and mir_schema_role_rows == expected_schema_role_rows
+        and api_schema_role_rows == expected_schema_role_rows
+        and mir_fixed_contract.get("operator_role_binding")
+        == api_fixed_contract.get("operator_role_binding")
+        == "EXACT_13_IF_THEN_ROWS",
+        "FIXED_OPERATOR_MIR_API_SCHEMA_ROLE_IF_THEN_BINDING",
+        (
+            f"expected={len(expected_schema_role_rows)} "
+            f"mir={len(mir_schema_role_rows)} api={len(api_schema_role_rows)}"
+        ),
+    )
     voi_new_diagnostics = [
         row.get("diagnostic_id")
         for row in voi_contract.get("new_rejection_diagnostic_matrix", [])
@@ -2014,7 +2419,32 @@ def main() -> int:
         and voi_machine.get("custom_operator_current_count") == 0
         and voi_machine.get("fixed_operator_conformance_overloading_current_count") == 1
         and voi_machine.get("fixed_operator_stable_profile_count") == 1
-        and voi_machine.get("fixed_operator_stable_operator_count") == 3
+        and voi_machine.get("fixed_operator_stable_operator_count")
+        == len(FIXED_OPERATOR_IDS) == 13
+        and voi_machine.get("fixed_operator_trait_root_count")
+        == len(FIXED_OPERATOR_TRAIT_ROOTS) == 9
+        and voi_machine.get("fixed_operator_derived_comparison_projection_count")
+        == 5
+        and voi_machine.get("fixed_operator_independent_compound_assignment_hook_count")
+        == 0
+        and voi_machine.get("fixed_operator_range_hook_count") == 0
+        and voi_by_id.get("VOI-R1-POS-022", {}).get("assertions", {}).get(
+            "admitted_operator_ids"
+        ) == FIXED_OPERATOR_IDS
+        and voi_by_id.get("VOI-R1-POS-022", {}).get("assertions", {}).get(
+            "trait_roots"
+        ) == FIXED_OPERATOR_TRAIT_ROOTS
+        and voi_fixed_profile.get("responsibility_profile")
+        == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+        and voi_by_id.get("VOI-R1-POS-022", {}).get("assertions", {}).get(
+            "responsibility_profile"
+        ) == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+        and voi_by_id.get("VOI-R1-BND-004", {}).get("assertions", {}).get(
+            "Ord_zero_equals_Eq"
+        ) is True
+        and voi_by_id.get("VOI-R1-BND-006", {}).get("assertions", {}).get(
+            "independent_compound_assignment_conformance_hook_count"
+        ) == 0
         and voi_machine.get(
             "trait_operator_lookup_max_per_nonintrinsic_admitted_expression"
         )
@@ -2030,6 +2460,42 @@ def main() -> int:
         and set(voi_new_diagnostics).issubset(set(diagnostic_by_id)),
         "VOI_CONTRACT_MACHINE_ACCEPTANCE",
         f"machine={voi_machine} diagnostics={voi_new_diagnostics}",
+    )
+    voi_remainder_boundary = voi_by_id.get("VOI-R1-BND-018", {})
+    voi_remainder_assertions = voi_remainder_boundary.get("assertions", {})
+    check(
+        voi_remainder_boundary.get("subject_profile")
+        == "RATIONAL_TRUNCATING_REMAINDER_SIGN_IDENTITY_AND_PRECOMMIT_ZERO_DIVISOR"
+        and voi_remainder_assertions.get("operator_id") == "BinaryRemainder"
+        and voi_remainder_assertions.get("method_id") == "Remainder.remainder"
+        and voi_remainder_assertions.get(
+            "negative_dividend_quotient_toward_zero"
+        )
+        == -3
+        and voi_remainder_assertions.get("negative_dividend_remainder")
+        == "-1/3"
+        and voi_remainder_assertions.get(
+            "negative_divisor_quotient_toward_zero"
+        )
+        == -3
+        and voi_remainder_assertions.get("negative_divisor_remainder")
+        == "1/3"
+        and voi_remainder_assertions.get(
+            "identity_a_equals_q_times_b_plus_r"
+        )
+        is True
+        and voi_remainder_assertions.get(
+            "absolute_remainder_less_than_absolute_divisor"
+        )
+        is True
+        and voi_remainder_assertions.get("zero_divisor_terminal")
+        == "ArithmeticDefect::divisionByZero"
+        and voi_remainder_assertions.get("target_place_evaluation_count") == 1
+        and voi_remainder_assertions.get("rhs_evaluation_count") == 1
+        and voi_remainder_assertions.get("commit_count_on_zero_divisor") == 0
+        and voi_remainder_assertions.get("original_value_preserved") is True,
+        "VOI_RATIONAL_REMAINDER_SIGN_IDENTITY_PRECOMMIT_BINDING",
+        str(voi_remainder_assertions),
     )
     voi_example_ids = {
         *(f"EX-R51VOI-{index:03d}" for index in range(1, 10)),
@@ -2062,10 +2528,10 @@ def main() -> int:
         and trn_contract.get("current_binding") is False
         and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
         and trn_contract.get("open_feature_p1", {}).get("total") == 22
-        and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 14)]
-        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 45
-        and trn_admit == trn_counts.get("admit") == 16
-        and trn_reject == trn_counts.get("reject") == 29
+        and trn_rule_ids == [f"TRN-R{index:03d}" for index in range(1, 16)]
+        and len(trn_rows) == len(trn_ids) == len(set(trn_ids)) == trn_counts.get("cases") == 58
+        and trn_admit == trn_counts.get("admit") == 24
+        and trn_reject == trn_counts.get("reject") == 34
         and all(
             row.get("rule_ids")
             and set(row["rule_ids"]).issubset(set(trn_rule_ids))
@@ -2080,6 +2546,12 @@ def main() -> int:
         and trn_counts.get("closed_union_expression_tests") == 5
         and trn_counts.get("open_runtime_type_tests") == 0
         and trn_counts.get("def_guard_narrowing_facts") == 3
+        and trn_counts.get("refinement_shorthand_cases") == 7
+        and trn_counts.get("chained_binder_pattern_cases") == 6
+        and trn_counts.get("mixed_strictness_cases") == 2
+        and trn_counts.get("generic_close_cases") == 1
+        and trn_counts.get("runtime_bound_rejections") == 2
+        and trn_counts.get("overlap_exhaustiveness_boundaries") == 1
         and trn_counts.get("p1_closed") == 0
         and trn_counts.get("p1_created") == 0,
         "TRN_CONTRACT_FIXTURE_CLOSURE",
@@ -2141,9 +2613,21 @@ def main() -> int:
         }
         and "overall_pass" not in edc_serialized
         and "sibling_status_propagation" not in edc_serialized
-        and edc_contract.get("trait_contracts", {}).get("Ord<T>", {}).get(
+        and edc_contract.get("trait_contracts", {}).get("Eq<Rhs>", {}).get(
             "canonical_signature"
-        ) == "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
+        ) == "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"
+        and edc_contract.get("trait_contracts", {}).get("Ord<Rhs>", {}).get(
+            "canonical_signature"
+        ) == "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
+        and edc_contract.get("machine_acceptance", {}).get(
+            "operator_glyph_activation_count"
+        ) == 6
+        and edc_contract.get("machine_acceptance", {}).get(
+            "semantic_ascending_range_activation_count"
+        ) == 1
+        and edc_contract.get("machine_acceptance", {}).get(
+            "range_operator_conformance_hook_count"
+        ) == 0
         and edc_contract.get("trait_contracts", {}).get("Display", {}).get(
             "canonical_signature"
         ) == "public trait Display { +def display.() -> String throws Never effects {}; }"
@@ -2172,6 +2656,52 @@ def main() -> int:
         and edc_counts.get("product_executed") == 0,
         "EDC_CONTRACT_FIXTURE_CLOSURE",
         f"rules={edc_rule_ids} rows={len(edc_rows)} counts={edc_counts}",
+    )
+    edc_by_id = {row.get("fixture_id"): row for row in edc_rows}
+    check(
+        edc_by_id.get("EDC-R1-POS-001", {}).get("source")
+        == "enum#increasing Stage { queued, running, done }"
+        and edc_by_id.get("EDC-R1-POS-001", {}).get("assertions")
+        == [
+            "queued<running<done",
+            "queued..done=semantic_ascending",
+            "one_whole_enum_eq_witness",
+            "one_whole_enum_ord_witness",
+        ]
+        and edc_by_id.get("EDC-R1-POS-002", {}).get("source")
+        == "enum#decreasing Severity { critical, warning, info }"
+        and edc_by_id.get("EDC-R1-POS-002", {}).get("assertions")
+        == [
+            "critical>warning>info",
+            "info..critical=semantic_ascending",
+            "declaration_direction_reversed_for_range",
+            "one_direction",
+        ]
+        and edc_by_id.get("EDC-R1-POS-003", {}).get("assertions")
+        == ["compare(x,x)==0", "no_tooling_advice"]
+        and edc_by_id.get("EDC-R1-POS-004", {}).get("assertions")
+        == ["sign_matrix_total", "transitive"]
+        and edc_by_id.get("EDC-R1-NEG-017", {}).get("assertions")
+        == ["no_payload_ord_synthesis"]
+        and edc_by_id.get("EDC-R1-NEG-018", {}).get("assertions")
+        == ["no_conditional_synthesis"]
+        and edc_by_id.get("EDC-R1-NEG-019", {}).get("assertions")
+        == [
+            "no_source_order_priority",
+            "no_specialization",
+            "no_partial_pair_override",
+        ]
+        and grammar.count(
+            'EnumOrderRole ::= "#" ("increasing" | "decreasing") ;'
+        ) == 1
+        and edc_contract.get("authority_fence", {}).get(
+            "semantic_ascending_range_activation"
+        ) is True
+        and edc_contract.get("authority_fence", {}).get(
+            "range_operator_conformance_hook"
+        ) is False,
+        "EDC_EQ_ORD_SEMANTIC_RANGE_ASSERTIONS_EXACT_BINDING",
+        "ordered Enum Eq/Ord/range fixtures and grammar are exact",
     )
     check(
         all(
@@ -2371,6 +2901,69 @@ def main() -> int:
         "TRN_ENUM_OR_PATTERN_AND_TRANSACTION_AXES",
         f"required={len(trn_required_axes & set(trn_case_by_id))}/13",
     )
+    trn_bounded_expected = {
+        "TRN-R1-POS-054": None,
+        "TRN-R1-POS-055": None,
+        "TRN-R1-NEG-056": "REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
+        "TRN-R1-BOUND-057": None,
+        "TRN-R1-NEG-058": "PATTERN_PIN_VALUE_NOT_STABLE",
+    }
+    trn_surface = trn_contract.get("refinement_surface", {})
+    trn_binder = trn_contract.get("chained_binder_pattern", {})
+    trn_frontend = parsed.get(root / "spec/frontend/frontend-model.json", {}).get(
+        "refinement_and_bounded_binder_frontend_contract", {}
+    )
+    check(
+        trn_bounded_expected.keys() <= trn_case_by_id.keys()
+        and all(
+            trn_case_by_id[fixture_id].get("diagnostic_or_null") == diagnostic
+            for fixture_id, diagnostic in trn_bounded_expected.items()
+        )
+        and trn_surface.get("implicit_this_rhs_parse_goal")
+        == "RefinementComparisonOperand"
+        and trn_surface.get("implicit_this_rhs_is_full_predicate") is False
+        and trn_surface.get("bare_relational_type_suffix_admitted") is False
+        and trn_binder.get("subject_evaluation_count") == 1
+        and trn_binder.get("mixed_direction_admitted") is False
+        and "source order" in trn_binder.get("bound_evaluation_order", "")
+        and trn_frontend.get("implicit_this", {}).get("full_predicate_rhs") is False
+        and trn_frontend.get("bounded_binder_pattern", {}).get(
+            "scrutinee_evaluation_count"
+        ) == 1
+        and trn_frontend.get("bounded_binder_pattern", {}).get(
+            "hidden_guard"
+        ) is False,
+        "TRN_REFINEMENT_BOUNDED_BINDER_EXACT_AXES",
+        f"fixtures={sorted(trn_bounded_expected.keys() & trn_case_by_id.keys())} surface={trn_surface.get('implicit_this_rhs_parse_goal')}",
+    )
+    refinement_grammar_productions = [
+        'RefinementSuffix ::= RefinementClause | IntervalRefinementClause ;',
+        'RefinementClause ::= "where" (PredicateExpr | ImplicitThisPredicate) ;',
+        'ImplicitThisPredicate ::= OrderedComparisonOperator RefinementComparisonOperand ;',
+        'RefinementComparisonOperand ::= Literal | Identifier | QualifiedStaticExpr ;',
+        'IntervalRefinementClause ::= "in" RefinementBound (".." | "..<") RefinementBound ;',
+        'MatchArm ::= MatchHead GuardClause? "=>" MatchArmBodySlot ;',
+        'MatchHead ::= BoundedBinderPattern | Pattern | "otherwise" ;',
+        (
+            "BoundedBinderPattern ::= PatternBound OrderedComparisonOperator Identifier\n"
+            "                         OrderedComparisonOperator PatternBound ;"
+        ),
+    ]
+    refinement_case_sha256 = {
+        fixture_id: canonical_sha(trn_case_by_id.get(fixture_id, {}))
+        for fixture_id in REFINEMENT_SURFACE_CASE_SHA256
+    }
+    check(
+        all(grammar.count(production) == 1 for production in refinement_grammar_productions)
+        and refinement_case_sha256 == REFINEMENT_SURFACE_CASE_SHA256,
+        "TRN_GRAMMAR_AND_SURFACE_FIXTURE_ASSERTIONS_EXACT_BINDING",
+        (
+            f"grammar={sum(grammar.count(row) == 1 for row in refinement_grammar_productions)}/"
+            f"{len(refinement_grammar_productions)} "
+            f"fixtures={sum(refinement_case_sha256.get(key) == value for key, value in REFINEMENT_SURFACE_CASE_SHA256.items())}/"
+            f"{len(REFINEMENT_SURFACE_CASE_SHA256)}"
+        ),
+    )
     pattern_kinds = parsed.get(root / "spec/patterns/pattern-kinds.json", {})
     pattern_lowering = parsed.get(root / "spec/patterns/pattern-lowering.json", {})
     union_kind = next(
@@ -2379,6 +2972,14 @@ def main() -> int:
     )
     union_lowering = next(
         (row for row in pattern_lowering.get("rows", []) if row.get("lowering_id") == "PL-UNION-ALTERNATIVE-BINDER"),
+        {},
+    )
+    bounded_kind = next(
+        (row for row in pattern_kinds.get("rows", []) if row.get("pattern_kind_id") == "PK-BOUNDED-BINDER"),
+        {},
+    )
+    bounded_lowering = next(
+        (row for row in pattern_lowering.get("rows", []) if row.get("lowering_id") == "PL-BOUNDED-BINDER"),
         {},
     )
     pattern_policies = parsed.get(root / "spec/patterns/pattern-context-policies.json", {})
@@ -2394,9 +2995,14 @@ def main() -> int:
         for row in pattern_policies.get("rows", [])
         if "PK-UNION-ALTERNATIVE-BINDER" in row.get("allowed_pattern_kind_ids", [])
     }
+    policy_bounded_contexts = {
+        row.get("context_id")
+        for row in pattern_policies.get("rows", [])
+        if "PK-BOUNDED-BINDER" in row.get("allowed_pattern_kind_ids", [])
+    }
     check(
-        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 39
-        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 39
+        pattern_kinds.get("counts", {}).get("rows") == len(pattern_kinds.get("rows", [])) == 40
+        and pattern_lowering.get("counts", {}).get("rows") == len(pattern_lowering.get("rows", [])) == 40
         and pattern_kinds.get("revision") == PATTERN_COMPONENT_REVISION
         and pattern_lowering.get("revision") == PATTERN_COMPONENT_REVISION
         and pattern_policies.get("revision") == PATTERN_COMPONENT_REVISION
@@ -2415,6 +3021,22 @@ def main() -> int:
         and union_lowering.get("mir_disposition") == "TEST_PROBE_COMMIT_TRACE",
         "TRN_UNION_PATTERN_LOWERING_BINDING",
         f"kind={union_kind.get('normalized_variant')} contexts={sorted(policy_union_contexts)} lowering={union_lowering.get('test_kind')}",
+    )
+    check(
+        bounded_kind.get("normalized_variant") == "BoundedBinderPattern"
+        and bounded_kind.get("binder_contract") == "INTRODUCES_ONE"
+        and bounded_kind.get("coverage_contribution") == "RANGE_INTERVAL_CELL"
+        and set(bounded_kind.get("allowed_context_ids", []))
+        == {"PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH"}
+        and "PK-BOUNDED-BINDER" in pattern_policies.get("current_pattern_kind_ids", [])
+        and policy_bounded_contexts
+        == {"PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH"}
+        and bounded_lowering.get("test_kind")
+        == "MONOTONE_ORDERED_INTERVAL_BIND_TEST"
+        and bounded_lowering.get("mir_disposition")
+        == "TEST_PROBE_COMMIT_TRACE",
+        "TRN_BOUNDED_BINDER_PATTERN_LOWERING_BINDING",
+        f"kind={bounded_kind.get('normalized_variant')} contexts={sorted(policy_bounded_contexts)} lowering={bounded_lowering.get('test_kind')}",
     )
     trn_predicate_ids = {
         "NarrowUnionByPattern", "NormalizeUnion", "MatchExhaustive",
@@ -3255,6 +3877,116 @@ def main() -> int:
     language = (root / "spec/language.md").read_text(encoding="utf-8")
     grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
     frontend = parsed.get(root / "spec/frontend/frontend-model.json", {})
+    trait_surface = parsed.get(
+        root / "spec/contracts/trait-conformance-surface.json", {}
+    )
+    trait_surface_fixtures = parsed.get(
+        root / "tests/fixtures/current/trait-conformance-surface-r1.json", {}
+    )
+    trait_surface_diagnostics = {
+        "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
+        "CLASS_COLON_INHERITANCE_REMOVED",
+        "TRAIT_REQUIRES_INHERITANCE_REMOVED",
+        "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+        "CONFORMANCE_AUTO_BODY_FORBIDDEN",
+        "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
+        "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
+    }
+    trait_open_p1 = [f"TCC-P1-{index:03d}" for index in range(2, 9)]
+    global_open_p1 = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *trait_open_p1,
+        "SFD-P1-009",
+    ]
+    trait_cases = trait_surface_fixtures.get("cases", [])
+    check(
+        frontend.get("revision") == TRAIT_OPERATOR_REFINEMENT_REVISION
+        and trait_surface.get("revision") == TRAIT_OPERATOR_REFINEMENT_REVISION
+        and trait_surface_fixtures.get("revision")
+        == TRAIT_OPERATOR_REFINEMENT_REVISION
+        and trait_surface.get("current_binding") is False
+        and trait_surface.get("semantic_p0") == 0
+        and trait_surface.get("open_feature_p1") == trait_open_p1
+        and trait_surface.get("global_open_feature_p1") == global_open_p1
+        and trait_surface.get("product_lanes") == "15/15_NOT_RUN"
+        and trait_surface.get("tcc_evolution_lanes")
+        == ["SOURCE", "RESOLUTION", "BEHAVIOR", "BINARY_ABI"]
+        and frontend.get("trait_conformance_surface_contract", {}).get(
+            "tcc_evolution_lanes"
+        )
+        == ["SOURCE", "RESOLUTION", "BEHAVIOR", "BINARY_ABI"]
+        and trait_surface.get("admitted_nominal_kinds")
+        == [
+            "ordinary_class",
+            "value_class",
+            "resource_class",
+            "data_class",
+            "enum",
+        ]
+        and set(trait_surface.get("diagnostics", [])) == trait_surface_diagnostics
+        and all(
+            diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
+            == "active"
+            for diagnostic_id in trait_surface_diagnostics
+        )
+        and trait_surface_fixtures.get("current_binding") is False
+        and trait_surface_fixtures.get("semantic_p0") == 0
+        and trait_surface_fixtures.get("global_open_feature_p1_count") == 22
+        and trait_surface_fixtures.get("trait_open_feature_p1_count") == 7
+        and trait_surface_fixtures.get("product_lanes") == "15/15_NOT_RUN"
+        and len(trait_cases) == len(
+            {row.get("fixture_id") for row in trait_cases if isinstance(row, dict)}
+        )
+        == 24
+        and trait_surface_fixtures.get("counts")
+        == {"positive": 14, "negative": 10, "total": 24, "executed": 0},
+        "TRAIT_CONFORMANCE_SUCCESSOR_SURFACE",
+        f"revision={frontend.get('revision')} p1={len(global_open_p1)} fixtures={len(trait_cases)}",
+    )
+    trait_case_by_id = {
+        row.get("fixture_id"): row
+        for row in trait_cases
+        if isinstance(row, dict)
+    }
+    trait_case_projection_sha256 = {
+        fixture_id: canonical_sha(
+            {
+                "source": row.get("source"),
+                "expected": row.get("expected"),
+                "diagnostic": row.get("diagnostic"),
+                "assertions": row.get("assertions"),
+            }
+        )
+        for fixture_id, row in trait_case_by_id.items()
+    }
+    trait_auto_receipt_case = trait_case_by_id.get("TCS-R1-POS-004", {})
+    trait_auto_enum_case = trait_case_by_id.get("TCS-R1-POS-010", {})
+    trait_auto_boundary_case = trait_case_by_id.get("TCS-R1-POS-009", {})
+    check(
+        list(trait_case_by_id) == list(TRAIT_SURFACE_CASE_PROJECTION_SHA256)
+        and trait_case_projection_sha256
+        == TRAIT_SURFACE_CASE_PROJECTION_SHA256
+        and trait_auto_receipt_case.get("expected") == "ACCEPT_STATIC"
+        and "public trait AutoReceiptIdentity\nsupports auto {"
+        in trait_auto_receipt_case.get("source", "")
+        and "closed_test_auto_policy"
+        in trait_auto_receipt_case.get("assertions", [])
+        and trait_auto_enum_case.get("expected") == "ACCEPT_STATIC"
+        and "public trait AutoEnumIdentity\nsupports auto {"
+        in trait_auto_enum_case.get("source", "")
+        and "closed_test_auto_policy"
+        in trait_auto_enum_case.get("assertions", [])
+        and trait_auto_boundary_case.get("expected")
+        == "ACCEPT_STATIC_IF_POLICY_REGISTERED"
+        and "closed_test_auto_policy"
+        not in trait_auto_boundary_case.get("assertions", []),
+        "TRAIT_CONFORMANCE_CASE_SOURCE_OUTCOME_POLICY_EXACT_BINDING",
+        (
+            f"cases={len(trait_case_projection_sha256)} "
+            f"exact={trait_case_projection_sha256 == TRAIT_SURFACE_CASE_PROJECTION_SHA256}"
+        ),
+    )
     check(
         scalar_occurrences(frontend, "FlowBindingArrow") == 1
         and scalar_occurrences(frontend, "FlowBinding") == 0,
@@ -3362,9 +4094,25 @@ def main() -> int:
     indexable = prelude_by_id.get("indexable", {})
     display_entry = prelude_by_id.get("display", {})
     ord_entry = prelude_by_id.get("ord_t", {})
+    eq_entry = prelude_by_id.get("eq_rhs", {})
+    unary_plus_entry = prelude_by_id.get("unary_plus", {})
+    unary_minus_entry = prelude_by_id.get("unary_minus", {})
     add_entry = prelude_by_id.get("add_rhs", {})
     subtract_entry = prelude_by_id.get("subtract_rhs", {})
     multiply_entry = prelude_by_id.get("multiply_rhs", {})
+    divide_entry = prelude_by_id.get("divide_rhs", {})
+    remainder_entry = prelude_by_id.get("remainder_rhs", {})
+    fixed_operator_prelude_entries = [
+        unary_plus_entry,
+        unary_minus_entry,
+        add_entry,
+        subtract_entry,
+        multiply_entry,
+        divide_entry,
+        remainder_entry,
+        eq_entry,
+        ord_entry,
+    ]
     check(
         arithmetic_defect.get("symbol") == "ArithmeticDefect"
         and arithmetic_defect.get("kind") == "language_intrinsic_defect"
@@ -3379,14 +4127,42 @@ def main() -> int:
         and "conformance does not activate []" in indexable.get("notes", "")
         and display_entry.get("signatures")
         == ["public trait Display { +def display.() -> String throws Never effects {}; }"]
+        and eq_entry.get("signatures")
+        == ["public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"]
         and ord_entry.get("signatures")
-        == ["public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"]
+        == ["public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"]
+        and unary_plus_entry.get("signatures")
+        == ["public trait UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"]
+        and unary_minus_entry.get("signatures")
+        == ["public trait UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"]
         and add_entry.get("signatures")
         == ["public trait Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
         and subtract_entry.get("signatures")
         == ["public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
         and multiply_entry.get("signatures")
         == ["public trait Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
+        and divide_entry.get("signatures")
+        == ["public trait Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"]
+        and remainder_entry.get("signatures")
+        == ["public trait Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"]
+        and all(
+            entry.get("kind") == "trait"
+            and entry.get("status") == "stable_design"
+            and "fixed_operator_conformance_overloading"
+            in entry.get("feature_refs", [])
+            and entry.get("product_support") == "NOT_RUN"
+            and len(entry.get("signatures", [])) == 1
+            and entry.get("signature_records")
+            == [
+                {
+                    "text": entry.get("signatures", [])[0],
+                    "dialect": "deeplus_source",
+                    "grammar_root": "TopLevelDecl",
+                    "schema": None,
+                }
+            ]
+            for entry in fixed_operator_prelude_entries
+        )
         and all(
             diagnostic_by_id.get(diagnostic_id, {}).get("diagnostic_status")
             == "active"

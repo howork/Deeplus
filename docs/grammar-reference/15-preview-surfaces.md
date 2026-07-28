@@ -245,7 +245,7 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
 | `numeric_capability_lattice_preview_design` | `Numeric`, `ExactNumeric`, `ApproximateNumeric`, `IntegralNumeric`, `RealScalar`, `BinaryFloating`, `ComplexScalar` | generic capability 요구만 표현하며 representation subtyping, implicit conversion, `Ord`/`Hash`/`Keyable`, 함수 또는 glyph를 자동 부여하지 않음 |
-| `rational_operator_completion_preview_design` | Rational division·정수 지수 power와 `remainderTrunc`/`modEuclid`/`divRemTrunc` | exact result/error algebra 후보이며 remainder glyph와 mixed-type conversion은 deferred; arbitrary custom operator는 거부되어 후보가 아님 |
+| `rational_operator_completion_preview_design` | Rational 정수 지수 power와 선택적 `modEuclid`/`divRemTrunc` API | Stable `/`와 `%`는 이 Preview 밖의 `Divide`/`Remainder` 계약이고, 후보는 integral power와 별도 rounding API에만 한정됨; arbitrary custom operator는 거부되어 후보가 아님 |
 | `integer_imaginary_literal_preview_design` | identifier boundary의 unsuffixed 10진 정수와 붙은 `i`; 기본 `Complex<Float64>` | `4u8i`, `0x4i`와 `4index` 분할을 거부하며 현행 `4.0i`를 자동 rewrite하지 않음 |
 | `std_math_special_preview_design` | `std::math` special 함수군의 별도 profile | 함수 목록·domain/branch·accuracy·error carrier가 미확정이며 core facade의 `STDLIB_PROFILE`과 분리 |
 | `std_math_calculus_preview_design` | `Result<Estimate<T>, error NumericAnalysisError<T>>`를 반환하는 수치 calculus 후보 | symbolic/automatic differentiation이 아니며 algorithm, tolerance, effect·ownership 및 재현성 계약 필요 |
@@ -302,11 +302,11 @@ actor crossing을 암시하지 않는다.
   },
   {
     "feature_id": "rational_operator_completion_preview_design",
-    "motivation": "Rational의 exact 성질을 보존하면서 division, 정수 지수 power와 이름 있는 remainder API의 빈틈을 닫으려는 제안이다.",
-    "surface_or_api": "Rational / Rational, Rational ^ ExactBuiltinInteger와 remainderTrunc, modEuclid, divRemTrunc가 후보이고 remainder glyph는 deferred이다.",
+    "motivation": "Stable Rational 나눗셈과 truncating remainder를 유지하면서 정수 지수 power와 다른 rounding 정책의 이름 있는 API를 분리하려는 제안이다.",
+    "surface_or_api": "Rational ^ ExactBuiltinInteger와 선택적 modEuclid, divRemTrunc가 후보이다. Rational / Rational과 Rational % Rational은 이미 Stable이며 이 Preview의 활성화 대상이 아니다.",
     "static_semantics_and_interactions": "음수 지수는 허용하되 implicit mixed-type conversion, arbitrary exponent type와 custom operator 등록은 만들지 않는다.",
-    "diagnostics_migration_tooling": "integer·floating 계산을 자동 Rational로 승격하거나 named remainder를 glyph로 rewrite하지 않는다.",
-    "open_alternatives": "현행 명시적 Rational library function이 대안이고 implicit conversion과 새 remainder glyph는 비활성이다.",
+    "diagnostics_migration_tooling": "integer·floating 계산을 자동 Rational로 승격하거나 서로 다른 rounding 정책을 `%`로 rewrite하지 않는다.",
+    "open_alternatives": "현행 Stable `/`·`%`와 명시적 Rational library function이 대안이고 implicit conversion과 새 glyph는 비활성이다.",
     "activation_prerequisites": "exact result/error algebra, zero·부호 경계, normalization, diagnostic oracle와 xVM/LLVM 실행 receipt가 필요하다."
   },
   {

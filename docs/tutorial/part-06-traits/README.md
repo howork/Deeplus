@@ -22,11 +22,13 @@ fixed-glyph conformance를 하나의 흐름으로 배운다.
 - subclassing, Trait conformance, extension, containment, dynamic view는
   서로 다른 관계다.
 - 현재 conformance surface는
-  `conformance T conforms Trait { ... }`다.
+  `type T conforms Trait { ... }`다.
 - 현재 route 철자는 소문자 `via`다. successor `VIA`/`AUTO`,
   specialization, child/case-local witness replacement는 활성화하지 않는다.
 - associated item은 `<T as Trait>::item`으로 명시한다.
-- fixed-glyph conformance의 Stable 집합은 정확히 `+`, `-`, `*`다.
+- fixed-glyph conformance의 Stable 집합은 정확히 13개 역할(unary
+  `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, equality와 ordering)과 9개
+  Prelude Trait root다.
 - 임의 custom operator는 Current와 Preview Design 모두에서 수용하지
   않으며 positive 예제가 없다.
 

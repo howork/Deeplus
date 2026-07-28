@@ -339,7 +339,7 @@ private def keepEvidence(
 ```deeplus
 module demo::normalize
 
-public type Positive = Int where this > 0
+public type Positive = Int where > 0
 public type TextOrNumber = Int | String
 
 public def positive(value: TextOrNumber) -> Option<Positive>
@@ -489,7 +489,7 @@ public trait Display {
         effects {}
 }
 
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -607,7 +607,8 @@ extension을 witness로 쓰려 하면 `EXTENSION_AUTO_WITNESS_FORBIDDEN` 또는
   노출하지 못하게 한다.
 - conformance coherence는 모듈 import/use 순서와 독립적이다.
 - glyph operator는 arbitrary Trait/extension으로 overload하지 않는다.
-  정확한 `Add`/`Subtract`/`Multiply` fixed-glyph conformance만 Stable이다.
+  정확한 13개 역할과 9개 Prelude Trait root의 fixed-glyph conformance만
+  Stable이다.
 - extension은 target type의 stored layout이나 private authority를
   바꾸지 못한다.
 
@@ -2058,8 +2059,8 @@ let forcedByResult: Complex = 2 ^ 3
   않는다.
 - Complex signed zero는 ordinary `==` 결과와 branch-sensitive
   transcendental semantics에서 역할이 다르다.
-- fixed conformance는 `+`, `-`, `*`만 소유하고 `^`는 language intrinsic로
-  남는다.
+- fixed conformance는 정확한 13개 unary·산술·equality·ordering 역할만
+  소유하고 `^`는 language intrinsic로 남는다.
 - power adaptation은 해당 plan 안에서만 유효하며 일반 call/operator
   conversion으로 퍼지지 않는다.
 - HIR-H1 verifier boundary는 `STABLE_DESIGN`이지만 제품 support를

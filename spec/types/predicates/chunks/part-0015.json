@@ -726,7 +726,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "EnumDeclarationOrderWitnessAdmitted",
     "source_name": "EnumDeclarationOrderWitnessAdmitted",
-    "summary": "Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Ord witness.",
+    "summary": "Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Eq/Ord pair plus semantic-ascending explicit range authority.",
     "input_descriptor": "EnumDerivedCapabilityDescriptorR1",
     "input_descriptor_schema": "schemas/language/enum-derived-capability-descriptor.schema.json",
     "preconditions": [
@@ -737,17 +737,19 @@
     "decision_procedure": [
       "require exactly one increasing or decreasing role or reject with ENUM_ORDER_ROLE_CONFLICT",
       "require one nonempty payload-free nongeneric nominal Enum",
-      "reject an explicit same-ground Ord conformance conflict",
+      "reject an explicit same-ground Eq or Ord conformance conflict",
       "derive one direction-aware ordered VariantId vector",
-      "admit at most one whole-Enum Ord witness and zero case witnesses"
+      "admit at most one whole-Enum Eq witness and one whole-Enum Ord witness with zero case witnesses",
+      "derive == and != from Eq, the four order glyphs from one Ord.compare result, and explicit range traversal from semantic ascending rank"
     ],
     "requires": [
       "source order is not witness priority",
-      "operator glyph activation is not implied",
+      "comparison glyph activation is exactly ==, !=, <, <=, >, >=",
+      "range syntax remains language-owned and creates no conformance hook or implicit whole-Enum iteration",
       "payload and generic profiles remain outside the minimum"
     ],
     "termination_metric": "one finite Enum case vector",
-    "success_result": "one Enum order witness admission record",
+    "success_result": "one Enum Eq/Ord and semantic-range admission record",
     "active_primary_diagnostic": "ENUM_ORDER_ROLE_CONFLICT",
     "secondary_diagnostics": [
       "ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER"

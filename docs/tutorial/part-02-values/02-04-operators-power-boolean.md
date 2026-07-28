@@ -6,8 +6,9 @@
 > **제품 증거:** `15/15 NOT_RUN`
 
 현행 operator token과 precedence는 닫혀 있다. Stable fixed-glyph
-conformance는 exact binary `+`, `-`, `*`에만 존재한다. 임의 custom
-operator는 Current와 Preview Design 모두에서 수용하지 않는다.
+conformance는 기존 glyph의 정확한 13개 역할, 즉 unary `+`/`-`, binary
+`+`/`-`/`*`/`/`/`%`, `==`/`!=`, `<`/`<=`/`>`/`>=`에만 존재한다.
+임의 custom operator는 Current와 Preview Design 모두에서 수용하지 않는다.
 
 ## 2. 학습 목표
 
@@ -86,9 +87,10 @@ sequential evaluation law를 기록한다. `-2^2`는 unary sign이 base literal�
 `ready and then expensive()`는 왼쪽이 true일 때만 오른쪽을 평가한다.
 흔한 오해는 `&&`와 `and`가 같은 Bool 연산자라는 생각이다. pointwise
 logical glyph는 known-width integer/shape domain을 가지며 Bool
-short-circuit를 대신하지 않는다. 또한 Stable conformance가 가능한
-fixed glyph는 `+`, `-`, `*`뿐이고 새 precedence나 custom glyph를 만들
-수 없다.
+short-circuit를 대신하지 않는다. Stable conformance는 닫힌 13개 역할에만
+가능하며 새 precedence나 custom glyph를 만들 수 없다. `!=`는 하나의
+`Eq` 결과에서, 네 ordering glyph는 하나의 `Ord.compare` 결과에서
+파생하므로 glyph마다 별도 witness를 만들지 않는다.
 
 operator를 선택할 때는 “수학에서 익숙한가”보다 domain contract가
 닫혀 있는가를 묻는다. 반복 조건처럼 오른쪽을 건너뛰어야 안전하면
@@ -110,10 +112,11 @@ Bool에 pointwise glyph를 사용하면 거부한다.
 let invalid = true && false
 ```
 
-`&&`는 scalar Bool carrier가 아니다. 또한 `/`, `%`, comparison,
-assignment, logical glyph에는 conformance를 붙일 수 없다. fixed-glyph
-conformance가 가능한 것은 `+`, `-`, `*`이며 left nominal owner package의
-유일한 `DIRECT_GLOBAL` row만 선택된다. `^`는 Trait이 아닌 language
+`&&`는 scalar Bool carrier가 아니다. `/`, `%`, equality와 ordering은
+각각 `Divide`, `Remainder`, `Eq`, `Ord`의 닫힌 역할로만 conformance를
+가질 수 있다. assignment와 logical glyph에는 독립 conformance를 붙일
+수 없고, 모든 admitted non-intrinsic 역할은 left nominal owner package의
+유일한 `DIRECT_GLOBAL` row만 선택한다. `^`는 Trait이 아닌 language
 intrinsic이다.
 
 ## 8. 다른 기능과의 연결
@@ -146,7 +149,8 @@ order를 MIR에 넘기고 runtime에서 다시 lookup하지 않는다.
 - power는 오른쪽 결합이며 numeric sign보다 강하게 묶인다.
 - `and`/`or`는 strict, `and then`/`otherwise`는 sequential이다.
 - double-glyph pointwise family는 Bool short-circuit가 아니다.
-- fixed-glyph conformance는 `+`, `-`, `*`만 허용한다.
+- fixed-glyph conformance는 정확한 13개 역할과 9개 Prelude Trait root만
+  허용한다.
 - arbitrary custom operator는 current/Preview Design 모두 아니다.
 
 ## 12. 정본 근거와 다음 장

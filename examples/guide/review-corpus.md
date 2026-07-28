@@ -1348,7 +1348,7 @@ public trait Display {
         effects {}
 }
 
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -3140,7 +3140,8 @@ public trait Eq {
         effects {}
 }
 
-public trait Ord requires Eq {
+public trait Ord
+derives Eq {
     +def compare+(other: Self) -> Int
         throws Never
         effects {}
@@ -3474,7 +3475,7 @@ public trait StableHash {
         effects {}
 }
 
-public conformance UserId conforms StableHash {
+public type UserId conforms StableHash {
     +def hash.() -> UInt64
         throws Never
         effects {}
@@ -4354,7 +4355,8 @@ public class Token {
 ```deeplus
 public class Token {
 }
-public final class Derived : Token {
+public final class Derived
+derives Token {
 }
 // CLASS_IS_FINAL_BY_DEFAULT
 ```
@@ -4372,7 +4374,8 @@ public final class Derived : Token {
 ```deeplus
 public open class Node {
 }
-public final class Leaf : Node {
+public final class Leaf
+derives Node {
 }
 ```
 ## EX-R49B-CLASS-004 — Abstract class is open and non-instantiable
@@ -4561,7 +4564,7 @@ let bad = render(User!(name: "Kim"))
 public extension User as printable {
     +def display() -> String = { return self.name }
 }
-public conformance User conforms Display {
+public type User conforms Display {
     delegate display to User::printable::display
 }
 ```
@@ -4699,9 +4702,11 @@ public def bad() -> Unit
 module expr
 public sealed class Expr {
 }
-public final class Literal : Expr {
+public final class Literal
+derives Expr {
 }
-public open class Binary : Expr {
+public open class Binary
+derives Expr {
 }
 ```
 ## EX-R49B-SEALED-002 — Sealed direct subclass outside module is rejected
@@ -4718,7 +4723,8 @@ public open class Binary : Expr {
 
 ```deeplus
 module plugin
-public final class ForeignExpr : expr::Expr {
+public final class ForeignExpr
+derives expr::Expr {
 }
 // SEALED_DIRECT_SUBCLASS_OUTSIDE_MODULE
 ```
@@ -4736,7 +4742,8 @@ public final class ForeignExpr : expr::Expr {
 
 ```deeplus
 module expr
-public class Child : Expr {
+public class Child
+derives Expr {
 }
 // SEALED_DIRECT_SUBCLASS_DISPOSITION_REQUIRED
 ```
@@ -5318,8 +5325,10 @@ print("import side effect")
 ```deeplus
 module expr
 public sealed class Expr { }
-public final class Literal : Expr { }
-public open class Composite : Expr { }
+public final class Literal
+derives Expr { }
+public open class Composite
+derives Expr { }
 ```
 ## EX-R49C-SEALED-002 — Removed hash-combined sealed spelling
 
@@ -6187,7 +6196,7 @@ def constrained<T>(it: Iterator) -> (some Iterator where Item == Int)
 
 ```deeplus
 public class Box {
-    +let value: Int where this >= 0 = 1
+    +let value: Int where >= 0 = 1
 }
 
 public trait Ready {
@@ -6443,7 +6452,7 @@ def decode(bytes: Bytes) -> Result<Image, error DecodeError>
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public type Port = Int where this >= 0 and this <= 65_535
+public type Port = Int in 0..65_535
 ```
 ## EX-R51a1-062 — exact normalized named call shape
 
@@ -7275,7 +7284,7 @@ let evidence = conformance(String conforms Order)::caseInsensitive
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-conformance String conforms Order as caseInsensitive {
+type String conforms Order as caseInsensitive {
     +def compare+(other: String) -> Int = return compareIgnoringCase(self, other)
 }
 ```
@@ -7954,7 +7963,7 @@ def#async fetch(url: String) -> Bytes
 
 ```deeplus
 def#guard validPort(port: Int) -> Bool = {
-    return port >= 0 and port <= 65_535
+    return 0 <= port <= 65_535
 }
 ```
 ## EX-R51a1-NEW-020 — cleanup declaration preserves failure policy
@@ -7995,7 +8004,7 @@ public trait Rank<T> {
         throws Never
         effects {}
 }
-public conformance Int conforms Rank<Int> {
+public type Int conforms Rank<Int> {
     +def before+(other: Int) -> Bool
         throws Never
         effects {}
@@ -11634,7 +11643,7 @@ public class Amount {
     +let value: Int
 }
 
-public conformance Amount conforms Add<Amount> via Helpers::addition {
+public type Amount conforms Add<Amount> via Helpers::addition {
     type Output = Amount
     +def add.(borrow rhs: Amount) -> Amount throws Never effects {} = {
         return self
@@ -11662,7 +11671,7 @@ public class Vec2 {
     +let y: Int
 }
 
-public conformance Vec2 conforms Add<Vec2> {
+public type Vec2 conforms Add<Vec2> {
     type Output = Vec2
 
     +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {
@@ -12608,4 +12617,156 @@ private def first(values [head, .._]: List<Int>) -> Int = {
 var value = 0
 value, value = nextPair()
 // PATTERN_ASSIGNMENT_TARGET_OVERLAP
+```
+
+## EX-R53-REF-P-001 — Concise one-sided and interval refinements
+
+- **source_feature_ids:** `inline_refinement_type_annotation`, `r0_guard_predicate_calculus`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Positive = Int where > 0
+public type Percentage = Int in 0..100
+public type ByteIndex = Int in 0..<256
+```
+
+## EX-R53-REF-NG-001 — A refinement suffix requires an explicit boundary
+
+- **source_feature_ids:** `inline_refinement_type_annotation`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Positive = Int > 0
+// REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED
+```
+
+## EX-R53-MATCH-P-001 — Monotone bounded binder refines the arm value
+
+- **source_feature_ids:** `pin_range_relational_pattern`, `ordered_comparison_chain_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let label = @match score {
+    0 <= value <= 100 => "normal:${value}"
+    otherwise => "abnormal"
+}
+```
+
+## EX-R53-MATCH-NG-001 — Bounded binder directions cannot be mixed
+
+- **source_feature_ids:** `pin_range_relational_pattern`, `ordered_comparison_chain_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `MATCH_CHAIN_BINDER_DIRECTION_MIXED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let label = @match score {
+    0 <= value >= 100 => "ambiguous:${value}"
+    otherwise => "outside"
+}
+// MATCH_CHAIN_BINDER_DIRECTION_MIXED
+```
+
+## EX-R53-OP-P-001 — Rational division uses the fixed Divide witness
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Rational conforms Divide<Rational> {
+    type Output = Rational
+
+    +def divide.(borrow rhs: Rational) -> Rational
+        throws Never
+        effects {}
+    = {
+        return Rational::operatorDivide(self, rhs)
+    }
+}
+
+let half: Rational = <1/1> / <2/1>
+```
+
+## EX-R53-OP-P-002 — One Ord witness supplies all relational glyphs
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`, `ordered_comparison_chain_msp`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Version conforms Ord<Version> {
+    +def equals.(borrow rhs: Version) -> Bool
+        throws Never
+        effects {}
+    = {
+        return Version::equalParts(self, rhs)
+    }
+
+    +def compare.(borrow rhs: Version) -> Int
+        throws Never
+        effects {}
+    = {
+        return Version::compareParts(self, rhs)
+    }
+}
+
+let supported = minimum <= current < nextBreaking
+```
+
+## EX-R53-ENUM-P-001 — Ordered Enum comparison and range share semantic order
+
+- **source_feature_ids:** `enum_declaration_order_ord_preview_design`, `ordered_comparison_chain_msp`
+- **checker_trace_ids:** `EnumDeclarationOrderWitnessAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public enum#increasing Priority {
+    low
+    normal
+    high
+}
+
+let isUrgent = Priority::normal < Priority::high
+let allPriorities = Priority::low..Priority::high
+let beforeHigh = Priority::low..<Priority::high
 ```

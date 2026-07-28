@@ -151,12 +151,24 @@ public enum#increasing Priority {
 }
 ```
 
-이 선언은 whole-Enum `Ord<Priority>` witness 하나를 만들고
+이 선언은 whole-Enum `Eq<Priority>`와 `Ord<Priority>` witness를 각각
+하나씩 만들고
 `low < normal < high`의 semantic order를 고정한다. `#decreasing`이면
-반대 방향이다. 같은 ground의 explicit `Ord`와 함께 둘 수 없고 payload
-ordering, iteration, match priority, raw value 또는 comparison glyph의
-새 dispatch route를 만들지 않는다. public order behavior가 있으므로
-case reorder는 API compatibility 변경으로 검토한다.
+반대 방향이다. 같은 ground의 explicit `Eq` 또는 `Ord`와 함께 둘 수 없고 payload
+ordering, match priority 또는 raw value를 만들지 않는다. fixed `Eq`와
+`Ord` evidence에서 `== != < <= > >=`를 파생하며, `..`/`..<`는 이
+semantic order의 오름차순 range를 만든다. 역방향 traversal은 named
+`downTo`를 사용한다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let urgent = Priority::normal < Priority::high
+let all = Priority::low..Priority::high
+let beforeHigh = Priority::low..<Priority::high
+```
+
+public order behavior가 있으므로 case reorder는 API compatibility
+변경으로 검토한다.
 
 ### 6.5 case-owned Display mapping
 

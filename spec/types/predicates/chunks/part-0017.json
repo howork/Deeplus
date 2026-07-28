@@ -111,7 +111,7 @@
     "requires": [
       "Rep is exactly Float32 or Float64",
       "imaginary literal marker is attached to one decimal floating token",
-      "operator pair is intrinsic or has one sealed Prelude +,-,* witness",
+      "the operator role is an intrinsic-reserved Complex domain or has one sealed direct-global Prelude unary +/-, binary +,-,*,/, or equality witness",
       "no hidden mixed-Rep or integer conversion"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -136,8 +136,8 @@
     "decision_procedure": [
       "classify an attached i candidate before splitting a numeric suffix",
       "require Float32 or Float64 and create a positive-zero real component",
-      "for +,-,* select the unique intrinsic-reserved pair or sealed direct-global Prelude witness",
-      "for / select the language-owned same-Rep intrinsic",
+      "for unary +/-, binary +,-,*,/ and equality select the unique intrinsic-reserved domain or sealed direct-global Prelude witness",
+      "for division commit no result and raise ArithmeticDefect when the exact divisor is zero",
       "reject remainder, total ordering, strong Eq/Keyable, mixed Rep, and implicit typed-integer adaptation"
     ],
     "termination_metric": "finite token and finite closed operator-domain matrix",

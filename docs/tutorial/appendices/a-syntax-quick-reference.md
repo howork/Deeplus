@@ -75,7 +75,9 @@ Class body의 같은 표면은 Preview Design nonactivatable이다.
 | 의도 | 표면 |
 |---|---|
 | alias | `type Name = String` |
-| refinement | `type Positive = Int where this > 0` |
+| 한쪽 refinement | `type Positive = Int where > 0` |
+| 구간 refinement | `type Percentage = Int in 0..100` |
+| 일반 refinement | `type Even = Int where this % 2 == 0` |
 | closed Union | `Int | String` |
 | Intersection/constraint | 정본 type/where 문맥 참조 |
 | checked cast | `value as? Positive` |
@@ -158,7 +160,7 @@ postfix `A^`와 infix `A ^ 2`를 구분한다. 전자는 Stable transpose,
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public conformance Vec2 conforms Add<Vec2> {
+public type Vec2 conforms Add<Vec2> {
     type Output = Vec2
 
     +def add.(borrow rhs: Vec2) -> Vec2

@@ -29,8 +29,8 @@ refinement와 pattern으로 잘못된 거래를 입력 경계에서 거부한다
 ```deeplus
 module tutorial::ledger::model
 
-public type Ratio = Rational where this >= <0/1> and this <= <1/1>
-public type PositiveAmount = Rational where this > <0/1>
+public type Ratio = Rational in <0/1> .. <1/1>
+public type PositiveAmount = Rational where > <0/1>
 
 public enum RawEntry {
     credit(Rational)
@@ -61,7 +61,7 @@ branch-local narrowing을 제공한다. stored Bool이나 arbitrary wrapper의
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 public def#guard isRatio(value: Rational) -> Bool = {
-    return value >= <0/1> and value <= <1/1>
+    return <0/1> <= value <= <1/1>
 }
 
 public def normalize(entry: RawEntry) -> Option<Entry>

@@ -40,7 +40,10 @@ refinement identity, 변환의 실패 channel을 분리한다.
 
 - initializer와 expected type을 함께 사용해 local type을 추론한다.
 - top-level type-producing declaration은 visibility를 명시한다.
-- `type Port = Int where this ...`는 base type 위의 predicate를 소유한다.
+- `type Port = Int in 0..65_535`는 base type 위의 닫힌 구간 predicate를
+  소유한다.
+- 한쪽 비교는 `Int where > 0`, 임의 predicate는
+  `Int where this ...`로 구분한다.
 - `value as? T`는 `Option<T>`를 돌려 상세 실패를 버린다.
 - `value as! T`는 성공 시 `T`, 실패 시 명시된 assertion Defect다.
 - `T::check(value)`는 `Result<T, error E>`로 상세 오류를 보존한다.
@@ -52,7 +55,8 @@ local inference와 public refinement 경계를 함께 본다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public type Port = Int where this >= 0 and this <= 65_535
+public type Port = Int in 0..65_535
+public type Positive = Int where > 0
 
 let inferred = 8_080
 let explicit: Int = inferred
@@ -60,7 +64,24 @@ let maybePort: Option<Port> = inferred as? Port
 ```
 
 `inferred`의 local type은 initializer에서 알 수 있지만 `Port` proof는
-별도다. `as?`는 성공 payload 또는 `Option::none`만 남긴다.
+별도다. `in 0..65_535`는
+`where 0 <= this <= 65_535`의 포함 구간 축약이고, `where > 0`은
+`where this > 0`의 한쪽 비교 축약이다. `as?`는 성공 payload 또는
+`Option::none`만 남긴다.
+
+끝을 제외하려면 `..<`를 쓴다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public type ByteIndex = Int in 0..<256
+public type Percentage = Int in 0..100
+public type NonPositive = Int where <= 0
+```
+
+축약형은 `this`가 정확히 한 번 등장하는 단순 경계만 소유한다.
+`this % 2 == 0`처럼 일반 계산을 포함하거나 둘 이상의 독립 조건을
+결합하면 기존의 명시적 `where this ...`를 사용한다. `Int > 0`은
+generic을 닫는 `>`와 타입 경계를 혼동시키므로 Deeplus 문법이 아니다.
 
 상세 진단이 필요하면 `check`를 사용한다.
 
@@ -88,7 +109,7 @@ edge를 만든다. 성공 뒤에만 refined payload와 binding을 commit한다.
 
 미니 사례로 literal `8080`은 Port 범위를 정적으로 증명할 수 있지만
 runtime `raw: Int`는 값이 같을 수도 있다는 추측만으로 Port가 되지 않는다.
-흔한 오해는 `type Port = Int where ...`가 주석이나 validation helper
+흔한 오해는 `type Port = Int in ...`가 주석이나 validation helper
 별칭이라는 생각이다. Port는 별도 semantic identity이고 conversion
 failure를 어느 channel에 둘지 caller가 명시해야 한다.
 
@@ -127,7 +148,7 @@ MIR lowering도 `as?`, `as!`, `check`의 Option/Defect/Result edge를 서로
 
 ## 10. 연습 문제
 
-1. **따라 하기:** `Percentage = Int where this >= 0 and this <= 100`을
+1. **따라 하기:** `Percentage = Int in 0..100`을
    선언하고 `as?` 변환을 작성한다.
 2. **빈칸 완성:** `let result: Result<Port, error RefinementError> =
    ___::check(raw)`의 owner를 채운다.

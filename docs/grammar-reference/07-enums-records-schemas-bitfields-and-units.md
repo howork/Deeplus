@@ -519,10 +519,15 @@ guard는 선언 전체에 적용된다.
 
 1. **declaration-order semantic ordering**:
    `enum#increasing` 또는 `enum#decreasing` 중 하나가 nominal,
-   nonempty, payload-free, nongeneric Enum에 whole-Enum `Ord<E>` witness
-   하나를 합성하는 후보이다. order vector는 raw/tag/ordinal/layout/ABI,
-   match priority, range 또는 iteration이 아니다. explicit same-ground
-   `Ord<E>`와 충돌하며 comparison glyph overload를 활성화하지 않는다.
+   nonempty, payload-free, nongeneric Enum에 whole-Enum `Eq<E>`와 `Ord<E>`
+   witness를 각각 하나씩 합성한다. order vector는
+   raw/tag/ordinal/layout/ABI, match priority 또는 implicit iteration이
+   아니다. `==`/`!=`는 Eq에서, `<`/`<=`/`>`/`>=`는 하나의
+   `Ord.compare`에서 파생된다. `..`와 `..<`는 semantic ascending
+   order로 각각 끝 포함/끝 제외 range를 만들고, 역방향은 `downTo`를
+   사용한다. 서로 다른 owner, unordered/payload/generic Enum endpoint는
+   거부된다. explicit same-ground Eq 또는 Ord와 충돌하며 별도의
+   per-glyph witness나 range conformance hook을 만들지 않는다.
 2. **case display mapping**: case의 `~>` restricted String template다.
    한 inhabitable case가 mapping을 가지면 모두 정확히 하나씩
    가져야 한다. named payload는 read-only borrow binder이고 각

@@ -579,7 +579,7 @@ def#async fetch(url: String) -> Bytes
 
 ```deeplus
 def#guard validPort(port: Int) -> Bool = {
-    return port >= 0 and port <= 65_535
+    return 0 <= port <= 65_535
 }
 ```
 

@@ -431,34 +431,109 @@ No leading `~` appears on declarations such as `def load.()`. Tilde belongs to s
 
 ## 14. Traits, associated requirements, and conformance
 
-Traits define behavioral contracts and associated requirements. `any Trait` is the explicit existential minimum core; existential packaging preserves required cleanup/drop responsibility. Associated projection uses `::`, and an optional suffix applies directly to the projection without redundant parentheses.
+Traits define behavioral contracts, associated requirements, defaults, and
+laws. `any Trait` is the explicit existential minimum core; existential
+packaging preserves required cleanup/drop responsibility. Trait inheritance is
+written as one or more `derives` clauses:
 
-Conformance declarations supply evidence. Evidence selection is deterministic and coherence-safe. Extensions cannot silently manufacture witness evidence. Dynamic Trait attach/detach, local Witness values, and first-class Witness values remain nonactivatable design families unless separately promoted.
+```deeplus
+public trait OrderedDisplay
+derives Display
+derives Ord<Self> {
+    +def summary.() -> String throws Never effects {}
+}
+```
 
-정적 capability lookup은 서로 섞이지 않는 네 domain으로 나뉜다.
+`requires` remains the callable-contract word and is not a Trait-inheritance
+spelling. A class has at most one direct nominal base, also introduced by
+`derives`; ordinary, value, resource, and data classes and Enums may carry any
+number of independent `conforms` clauses. Each header relation begins on its
+own physical line, so a clause-local `where` cannot consume the owner's generic
+constraint or the following relation. Subclassing and Trait evidence remain
+different identity domains.
 
-1. `Type::item`은 nominal type-side 또는 Enum case domain만 탐색한다.
-2. `Type::extension::item`은 정확히 이름 붙인 extension identity만 본다.
-3. `<T as Trait>::item`은 정적으로 선택된 하나의
-   `ConformanceId`/`TraitWitnessId`를 통해 Trait associated 값 또는
-   함수를 선택한다.
-4. service, Actor, 공유 상태는 명시적인 runtime owner 값으로 접근한다.
+```deeplus
+public trait AutoReceiptIdentity
+supports auto {
+    +def identity.() -> String throws Never effects {}
+}
 
-`T::item`이 보이는 Trait들을 암묵적으로 탐색하는 단축 규칙은 없다.
-Trait associated type 뒤의 정적 member는
-`<T as Trait>::Assoc::member`로 계속 표현한다. HIR과 module API는
-`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
-`ImplementationId`, substitution과 responsibility를 보존하며, 런타임
-검색·import 순서·provider fallback으로 다시 결정하지 않는다.
+public class Receipt
+derives Document
+conforms Display
+conforms AutoReceiptIdentity by auto {
+    conform Display {
+        def display.() -> String = {
+            return self.title
+        }
+    }
+}
+```
 
-초기 associated `let::` profile은 immutable, Shareable, no-drop,
-authority-free, acyclic이며 const-evaluable/static-materializable한 값만
-허용한다. nominal owner 안에 lexical하게 선언된 `def::`만 그 owner의
-private 생성 권한을 사용할 수 있다. 외부 `def Type::`, extension,
-conformance는 private 생성 권한을 새로 얻지 않는다. 이 분해는 companion
-singleton이나 metatype value를 만들지 않는다. 함수의 `static { ... }`은
-별개의 Stable activation owner이고, class의 `scope#static`은 계속
-Preview nonactivatable이다.
+An external conformance begins with `type`, and the `conforms` lookahead keeps
+it disjoint from a type alias whose next decisive token is `=`:
+
+```deeplus
+public type Money conforms Display as moneyDisplay {
+    def Display::display.() -> String = {
+        return self.format()
+    }
+}
+```
+
+The optional `as name` identity remains available. Lowercase `via Provider`
+selects an explicit provider route and may still have a body; it is not the
+future uppercase VIA route. A direct declaration may omit its body only when
+all requirements are already closed by compatible defaults. An empty explicit
+body has the same meaning and the formatter removes it.
+
+A Trait may opt into one registered synthesis family with `supports auto`, and
+a type requests that policy with `by auto`. The request is bodyless. The
+checker admits it only when the Trait owns one closed, deterministic,
+machine-checkable policy and all required input evidence is unique. Merely
+having same-named methods, importing an extension, or finding a provider does
+not create an automatic candidate.
+
+`conform Trait { ... }` groups the witnesses for one already-declared nominal
+header conformance. Inside that group requirement names are unqualified.
+Outside it, `Trait::member` identifies the implemented requirement explicitly.
+This qualification chooses a requirement; it does not perform runtime lookup
+or create a second conformance.
+
+Trait requirements and concrete witnesses use exactly the witness marker set
+`.`, `+`, `*.`, and `*+`. Associated types, associated values, and associated
+non-method functions do not acquire a method marker. A conformance may bind
+associated requirements, but it cannot create nominal storage, layout,
+constructors, general extension API, or private construction authority.
+
+Conformance evidence is admitted only at top level or through a nominal header.
+Function/block-local, structural, runtime attach/detach, first-class Witness,
+specialization, priority, and child-local replacement of inherited parent
+evidence are not current. Visibility remains `private`, `common`, or `public`;
+orphan, overlap, conditional-termination, export-closure, and whole-image
+coherence checks apply independently of source/import order.
+
+Static capability lookup is split into non-overlapping domains:
+
+1. `Type::item` searches only the nominal type-side or Enum-case domain.
+2. `Type::extension::item` searches only that exact named extension.
+3. `<T as Trait>::item` selects an associated value or function through one
+   already-selected `ConformanceId` and `TraitWitnessId`.
+4. A service, Actor, or shared-state capability begins from an explicit runtime
+   value owner.
+
+`T::item` never searches visible Traits implicitly. A member after an
+associated type is written `<T as Trait>::Assoc::member`. HIR and public API
+residue preserve `TraitId`, `RequirementId`, `ConformanceId`,
+`TraitWitnessId`, `ImplementationId`, substitution, responsibility, and
+authority rather than reconstructing them from spelling or discovery order.
+
+The initial associated `let::` profile admits only immutable, Shareable,
+no-drop, authority-free, acyclic, statically materializable values. Only a
+lexically owned nominal `def::` may exercise its owner's private construction
+authority. An external type-side function, extension, or conformance does not
+gain that authority. None of these forms creates a companion singleton or
+metatype value.
 
 ## 15. Extensions and member resolution
 
@@ -475,29 +550,49 @@ closed. Deeplus has no arbitrary custom-operator declaration family, including
 in Preview. Named Trait methods, functions, messages and APIs are the explicit
 general extension path.
 
-Fixed-glyph conformance overloading is Stable design for exactly the existing
-strict binary `+`, `-`, and `*` glyphs. It adds no glyph, fixity, binding power,
-associativity, or operator declaration syntax. The exact mapping is
-`BinaryAdd -> Add<Rhs>.add / Output`,
-`BinarySubtract -> Subtract<Rhs>.subtract / Output`, and
-`BinaryMultiply -> Multiply<Rhs>.multiply / Output`.
+Fixed-glyph conformance overloading is Stable design for exactly thirteen
+existing operator roles. It adds no glyph, fixity, binding power,
+associativity, or operator-declaration syntax.
+
+| role | glyph | Prelude evidence |
+|---|---|---|
+| unary positive/negative | `+`, `-` | `UnaryPlus.positive / Output`, `UnaryMinus.negate / Output` |
+| binary arithmetic | `+`, `-`, `*`, `/`, `%` | `Add`, `Subtract`, `Multiply`, `Divide`, `Remainder` with `Rhs` and `Output` |
+| equality | `==`, `!=` | one `Eq<Rhs>.equals` result; `!=` is its negation |
+| total ordering | `<`, `<=`, `>`, `>=` | one `Ord<Rhs>.compare` result projected against zero |
 
 Built-in and otherwise language-reserved normalized operand pairs remain
 `INTRINSIC_ONLY`; conformance lookup for those pairs is zero. For any admitted
 non-intrinsic pair, selection considers at most one left-nominal-owner
-`DIRECT_GLOBAL` conformance under the current
-`conformance T conforms Trait` surface. Expected-result selection, implicit
-conversion, extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization
+`DIRECT_GLOBAL` conformance under the current `type T conforms Trait` surface.
+Expected-result selection, implicit conversion,
+extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization
 evidence, import or source ordering, fallback, and runtime relookup are
 forbidden. The selected `OperatorId`, `ConformanceId`, `WitnessId`, `MethodId`,
 substitution, `OutputTypeId`, and responsibility profile become typed HIR/MIR
 and public API identity. The witness borrows both operands, is synchronous,
-non-consuming and non-mutating, and has `throws Never effects {}`.
+non-consuming and non-mutating, and has `throws Never effects {}`. A declared
+`ArithmeticDefect` is a nonrecoverable precommit terminal, not a hidden member
+of the throws set.
 
-`/`, `%`, strict logical, equality/ordering, assignment, range and
-short-circuit operators are outside this Stable admitted set. Arbitrary custom
-operators remain rejected. The design promotion creates or closes no feature
-P1: `TCC-P1-002..008` remain exactly seven OPEN implementation/conformance
+`+=`, `-=`, `*=`, `/=`, and `%=` derive from the corresponding binary
+operation only when its result is exactly assignable to the original place.
+The place and operands are evaluated once, and failure performs zero writes.
+There is no independent assignment witness. Strict/short-circuit logical,
+bitwise, power, matrix, and range operators remain intrinsic or closed and
+have no user conformance hook. Arbitrary custom operators remain rejected.
+
+`Eq` denotes strong equality. It is reflexive, symmetric, and transitive.
+Partial IEEE equality remains an intrinsic profile and does not manufacture
+`Eq`. `Ord<Rhs> derives Eq<Rhs>`; `compare == 0` must agree exactly with
+`equals`, and its sign is the sole source for all four order glyphs. A
+comparison chain selects each adjacent witness before evaluation, evaluates
+each operand at most once, retains the middle operand, and short-circuits.
+Only monotone `<`, `<=`, `>`, `>=` chains are admitted; equality and `is` do
+not join that chain family.
+
+The design promotion creates or closes no feature P1:
+`TCC-P1-002..008` remain exactly seven OPEN implementation/conformance
 evidence gates, and all product lanes remain `NOT_RUN`.
 
 `subject is Alternative` and adjacent `subject !is Alternative` are current
@@ -529,10 +624,11 @@ consume the subject. These flow facts never rewrite the declared type.
 
 Primitive scalar `+`, `-`, `*`, `/`, and integer `%` require one exact
 normalized operand domain after the bounded contextual adaptation of an
-unsuffixed integer. The Stable fixed-glyph conformance corridor adds only
-binary `+`, `-`, and `*`. Prelude owns sealed, direct-global conformances for
-same-domain Rational values, exact integer/Rational pairs in both directions,
-same-Rep Complex pairs, and same-Rep real/Complex pairs. For example,
+unsuffixed integer. The Stable fixed-glyph conformance corridor additionally
+admits the exact non-intrinsic rows enumerated in §16. Prelude owns sealed,
+direct-global conformances for same-domain Rational values, exact
+integer/Rational pairs in both directions, same-Rep Complex pairs, and
+same-Rep real/Complex pairs. For example,
 `3.0 + 4.0i` selects exactly
 `Add<Complex<Float64>> for Float64`; it is not a general Float-to-Complex
 conversion. The selected witness is unique before evaluation. Hidden
@@ -544,10 +640,16 @@ integer domains and satisfies
 `a == trunc(a / b) * b + (a % b)`; the remainder is zero or has the dividend
 sign and its magnitude is less than the divisor magnitude. A zero divisor and
 the signed `MIN / -1` or `MIN % -1` cases raise `ArithmeticDefect` before
-commit. Complex `/` is a closed language-owned intrinsic over one exact Rep
-profile. Rational division uses the checked named API `dividedBy`, so neither
-type widens the fixed conformance corridor. Floating and Complex remainder are
-not defined.
+commit.
+
+Rational supplies unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, `Eq`, and `Ord`.
+For Rational remainder, `q = trunc(a / b)` toward zero and `r = a - q * b`;
+the result is exact and has the same normalized Rational representation.
+Rational `/` and `%` raise `ArithmeticDefect::divisionByZero` before commit for
+a zero divisor. The named `dividedBy` API remains the recoverable path when a
+caller needs an explicit Result. Complex supplies its admitted arithmetic and
+existing intrinsic IEEE equality but no `Remainder` or `Ord`; floating and
+Complex remainder remain undefined.
 
 Spaced infix `^` is a closed language intrinsic, not a `Power`/`Pow` Trait
 hook. It evaluates the base once and exponent once, selects a result entirely
@@ -585,10 +687,11 @@ when both operands are statically zero, while named `powChecked` may return
 conventions are explicit named APIs and never alter infix dispatch.
 
 Float arithmetic and comparison otherwise use the IEEE value law from §4; a
-NaN comparison is unordered, and `+0.0 == -0.0` is true. Equality, ordering,
-membership, identity, cast, Boolean, Option-coalescing, and range tokens are
-admitted only by their current built-in laws and checker predicates; a
-similarly named Trait does not activate punctuation.
+NaN comparison is unordered, and `+0.0 == -0.0` is true. These
+intrinsic-reserved rows never use strong `Eq` or `Ord`. Membership, identity,
+cast, Boolean, Option-coalescing, and range tokens are admitted only by their
+current built-in laws and checker predicates; a similarly named Trait does not
+activate punctuation.
 
 The `&&`, `||`, `^^`, and prefix `~~` family is pointwise logical. On one exact
 known-width integer or identical finite bitfield/flags domain, logical
@@ -608,6 +711,17 @@ Strict Boolean `and` and `or` evaluate both operands left-to-right. Sequential `
 Linear product is left-folded over the exact operator family `**` and `*+`; the current abstract shape is `PowerExpr` followed by zero or more operator/right-power pairs. Numeric exponentiation uses spaced infix `^` and is right-associative where its numeric law applies. Attached `A^` is NumericArray transpose. Mixed attachment is rejected rather than guessed.
 
 `..` and `..<` are the only current range/slice delimiters. `...` has exactly the closed structural owners repeated positional parameter/type residue and `for ... Pattern in Expr` comprehension unfold; it is never a range delimiter or inferred upper bound. A bounded List literal uses exactly `[L..U: elements]`, preserves its declared inclusive logical domain, and requires the element count to equal `U - L + 1`.
+
+A payload-free, nongeneric `enum#increasing` or `enum#decreasing` is also an
+intrinsic range carrier. It receives one whole-Enum `Eq<Self>` and
+`Ord<Self>` witness. Semantic rank—not `VariantId`, declaration spelling,
+serialization tag, runtime discriminant, layout, or ABI identity—determines
+comparison and traversal. `a..b` advances only in semantic `Ord` order and
+includes `b`; `a..<b` excludes it. A reverse endpoint pair does not silently
+reverse direction; explicit `downTo` is the reverse traversal API. Unordered,
+payload-bearing, generic, or cross-owner Enum endpoints reject before range
+construction. This closed carrier rule does not create a general range
+operator-conformance hook.
 
 # Part IV — Expressions and control flow
 
@@ -829,6 +943,19 @@ be supplied explicitly unless the preceding argument constraints determine one
 exact normalized value. No unresolved variable is generalized, replaced by an
 anonymous Union, or guessed from source order.
 
+A refinement suffix keeps an explicit parse boundary. `T where > bound` is
+the shorthand for `T where this > bound`, but the implicit-`this` branch parses
+exactly one `RefinementComparisonOperand`—a literal, identifier, or qualified
+static value—not an arbitrary predicate expression. General predicates retain
+the explicit form `T where PredicateExpr`, including an explicit `this`.
+Consequently the `>` in `Box<Int>` always closes the generic argument list,
+and bare `T > bound` is never reinterpreted as a refinement. The interval
+spellings `T in lower..upper` and `T in lower..<upper` normalize respectively
+to inclusive and upper-exclusive monotone facts. Each nonliteral bound must
+resolve statically to one stable, pure value in the ordered base domain;
+ordinary runtime bounds are rejected. Bounds are read lower then upper for
+normalization and are neither duplicated nor reordered.
+
 ## 31. Union, intersection, Option, and Result
 
 Anonymous unions are closed alternatives. Contract intersections combine compatible obligations. Option represents presence/absence; Result represents success/failure. A Result use always spells its error-channel argument as `Result<T, error E>`; the generic declaration may name `E: ErrorSet` without repeating the use-site role marker. Compact optional suffix denotes one layer. `?:` is the Option-coalescing operator and does not silently consume Result/error effects.
@@ -999,6 +1126,17 @@ ownership modes, mutability, and regions on every branch; path/source order is
 not identity. `pattern as name` creates a borrow alias rather than a clone, and
 it cannot coexist with a moved or exclusive descendant. Cross-arm place joins
 preserve only capabilities valid on every incoming arm.
+
+A match head may use the bounded-binder Pattern
+`lower OrderedRelOp name OrderedRelOp upper`. The match subject is evaluated
+once before arm selection; within an attempted arm the two literal or pinned
+stable bounds are read in written source order at most once. Both operators
+must be monotone in the same direction, although strict and non-strict forms
+may be mixed. Success binds the subject once to `name` and adds the normalized
+interval fact to the arm-local `Phi`; failure commits no binder. This is
+structural interval coverage, not a hidden `if` guard. Open and closed endpoint
+cells therefore participate in ordinary overlap subtraction and
+exhaustiveness, while `otherwise =>` covers the remaining complement.
 
 The owner-level condition separator `and then` evaluates left to right,
 short-circuits, and exposes successful earlier binders to later terms. A plain
@@ -1178,7 +1316,7 @@ The exact minimum contracts and negative boundaries are in the tooling/profile c
 
 ## 45. Preview boundaries
 
-The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, effectful/module/class activation, static-once values, and Dyn-RCTS. Fixed operator conformance overloading is Stable only for its exact `+`/`-`/`*` profile. Arbitrary custom operators are rejected rather than Preview.
+The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, effectful/module/class activation, static-once values, and Dyn-RCTS. Fixed operator conformance overloading is Stable only for its exact 13 unary, arithmetic, equality, and ordering roles. Arbitrary custom operators are excluded by the language design rather than treated as Preview.
 
 # Part IX — Exact Grammar authority and conformance
 
@@ -1329,7 +1467,8 @@ public sealed class Request {
     +let id: Int
 }
 
-public final class ConfigureRequest : Request {
+public final class ConfigureRequest
+derives Request {
     +let options: Record
 }
 
@@ -1861,7 +2000,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `OPERATOR_CONFORMANCE_MISSING` [error]: No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair.
 - `OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION` [error]: Fixed-operator selection never inserts an implicit operand conversion; convert explicitly before applying the operator.
 - `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` [error]: The selected fixed-operator witness must borrow both operands, throw Never, have no effects, and be synchronous, non-consuming and non-mutating.
-- `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` [error]: Only existing binary `+`, `-`, and `*` are admitted for fixed-glyph conformance overloading.
+- `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` [error]: Fixed-glyph conformance admits only unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, and `==`/`!=`/`<`/`<=`/`>`/`>=`; power, range, bitwise, logical, membership, identity, and arbitrary glyph hooks are excluded.
 - `OPERATOR_PRECEDENCE_TABLE_REQUIRED` [error]: Operator parsing requires the current profile operator precedence table.
 - `OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE` [error]: Moving or consuming an ancestor place requires an explicit `move`/`once` capture, parameter, or owner-transfer carrier.
 - `OUTER_MUTATION_REQUIRES_INOUT_CAPTURE` [error]: Mutating an ancestor place requires an explicit admitted `inout` route; lexical dependency is read-only.
@@ -1974,6 +2113,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `REFINEMENT_ASSERTION_MAY_DEFECT` [warning]: `as!` may raise RefinementAssertionDefect if the predicate fails.
 - `REFINEMENT_DETAILED_CHECK_RETURNS_RESULT` [info]: Detailed validation uses `T::check(value)` or a named factory returning `Result<T, error E>`; `as?` returns `Option<T>`.
 - `RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN` [error]: The expected result type cannot create, distinguish or rank a fixed-operator conformance candidate.
+- `REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED` [error]: A relational refinement shorthand requires the explicit `where` delimiter; bare `T > bound` is not refinement syntax.
+- `REFINEMENT_INTERVAL_BOUNDS_REQUIRED` [error]: An interval refinement requires both a lower and an upper bound.
 - `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN` [error]: Implicit narrowing to a refinement type is forbidden.
 - `REFINEMENT_LITERAL_OUT_OF_RANGE` [error]: The literal value is outside the refinement range.
 - `REFINEMENT_PREDICATE_EFFECT_FORBIDDEN` [error]: Refinement predicates must have effects {}.
@@ -1981,7 +2122,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `REFINEMENT_PREDICATE_THROW_FORBIDDEN` [error]: Refinement predicates must throw Never.
 - `REFINEMENT_PROOF_REQUIRED` [error]: The value is not statically known to satisfy the refinement. Use `as?` or `as!`.
 - `REFINEMENT_R0_PREDICATE_NOT_ADMITTED` [error]: The refinement predicate is outside the closed pure and total R0 calculus.
-- `REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED` [error]: Range refinement bounds must be StaticInt literals in Phase A.
+- `REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED` [error]: A refinement bound must resolve statically to one pure stable value in the exact ordered base domain; an ordinary runtime expression is not admitted.
 - `REFINEMENT_RANGE_EMPTY` [error]: The refinement range is empty because lower bound is greater than upper bound.
 - `REFINEMENT_RESULT_REQUIRES_EXPLICIT_CHECK_BOUNDARY` [error]: Use an explicit check/factory boundary for Result-bearing refinement validation.
 - `REFINEMENT_THIS_CAPTURE_FORBIDDEN` [error]: `this` in a refinement predicate is not an ordinary capturable variable.
@@ -2117,6 +2258,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PATTERN_REST_POSITION_INVALID` [error]: A captured prefix rest must be first, a captured suffix rest must be last, and a middle rest must occur between fixed Patterns.
 - `MIDDLE_REST_REQUIRES_BOTH_SIDES` [error]: A `..name..` middle rest requires at least one fixed Pattern before and after it.
 - `MIDDLE_REST_REQUIRES_CLOSING_DOT_DOT` [error]: A rest followed by another fixed Pattern must use the attached middle spelling `..name..`.
+- `MATCH_CHAIN_BINDER_DIRECTION_MIXED` [error]: A bounded-binder Pattern requires both comparison operators to have the same monotone direction.
 - `SEQUENCE_PATTERN_CARRIER_NOT_ADMITTED` [error]: Bracket decomposition requires a closed built-in finite descriptor; Sequence conformance alone is insufficient.
 - `REST_VIEW_WOULD_OUTLIVE_SOURCE` [error]: A captured `ListRestView` cannot outlive or retain its source owner.
 - `TUPLE_PATTERN_ARITY_MISMATCH` [error]: An exact Tuple Pattern has a different arity from its subject.
@@ -2275,7 +2417,14 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CHAR_LITERAL_EMPTY` [error]: Char literal cannot be empty.
 - `CHAR_LITERAL_REQUIRES_ONE_SCALAR` [error]: A Char literal must decode to exactly one Unicode scalar value.
 - `CHAR_LITERAL_SURROGATE_FORBIDDEN` [error]: A Unicode surrogate is not a Unicode scalar value and cannot form Char.
-- `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` [error]: Conformance declarations use `conformance Type conforms Trait`, not `impl Trait for Type` or `T: Trait`.
+- `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` [error]: Conformance declarations use `type Target conforms Trait`; a type alias instead uses `type Name = Type`.
+- `CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED` [error]: The former `conformance Target conforms Trait` introducer is removed; write `type Target conforms Trait`.
+- `CLASS_COLON_INHERITANCE_REMOVED` [error]: Class inheritance uses `class Child derives Parent`; colon inheritance has no current production.
+- `TRAIT_REQUIRES_INHERITANCE_REMOVED` [error]: Trait inheritance uses repeated `derives`; `requires` remains callable-contract syntax.
+- `CONFORMANCE_AUTO_POLICY_NOT_REGISTERED` [error]: `by auto` requires one closed synthesis policy registered by a Trait that declares `supports auto`.
+- `CONFORMANCE_AUTO_BODY_FORBIDDEN` [error]: A `by auto` conformance is bodyless; use an explicit direct or lowercase `via` body when witnesses are written manually.
+- `CONFORMANCE_LOCAL_SCOPE_FORBIDDEN` [error]: Conformance evidence may be declared only at top level or through a nominal header, not inside a function or block.
+- `CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP` [error]: Inside `conform Trait { ... }`, write the unqualified requirement name; `Trait::member` is for an external or otherwise ungrouped conformance body.
 - `CONFORMS_REQUIRES_KEYWORD` [error]: Trait/capability conformance must use `conforms` in the stable profile.
 - `CONTEXT_KEYWORD_RESERVED_FOR_CONTEXT_ROLE` [error]: `context` is recognized only in the Stable explicit context parameter, argument, and function-type role positions; it never requests ambient lookup.
 - `DOC_BLOCK_COMMENT_UNTERMINATED` [error]: Documentation block comment opened by `//!!` was not closed by `!!//`.
@@ -2361,7 +2510,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `GRAMMAR_ALTERNATIVE_ACTIVATION_METADATA_REQUIRED` [error]: A grammar alternative that routes to preview, preview-design, recognized-unsupported, or tooling-only syntax must carry explicit activation metadata.
 - `GUARDED_LET_EXIT_MUST_BE_UNCONDITIONAL` [error]: A guarded-let failure branch requires one direct unconditional terminating exit.
 - `HASH_ROLE_PHYSICAL_LINE_BREAK_FORBIDDEN` [error]: A role marker may contain horizontal trivia but cannot cross a physical line break between `#` and its role word.
-- `INLINE_CONFORMANCE_HEADER_NOT_CURRENT_USE_CONFORMANCE_DECL` [error]: Inline class/enum header conformance is not current; conformance is an explicit nominal declaration.
 - `INDEX_SUFFIX_REQUIRES_AXIS` [error]: An index suffix requires a scalar index, a bounded slice range whose bounds may use `^` or `$`, or an admitted NumericArray `*` axis; empty `[]` never implies a full slice.
 - `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` [error]: Complex interpolation expression requires ${...}.
 - `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` [error]: Interpolation format spec is admitted only in braced form ${expr:format}.
@@ -2523,7 +2671,14 @@ Each link-relevant schema emits a deterministic summary with authority, normaliz
 <!-- POST_PR16_UNIT_BEGIN:TC-R014 -->
 ### TC-R014 — frontend closure
 
-One root-connected grammar route must construct one normalized semantic route. This candidate selects no spelling. Current `ConformanceDecl` and current `ConformanceViaClause` remain unchanged and isolated. A future surface needs exact EBNF, reachability, lossless CST ownership, AST/HIR mapping, profile gates, and diagnostics. Selection closes before MIR.
+One root-connected grammar route constructs each normalized semantic route.
+External evidence uses `type Target conforms Trait`; nominal headers use
+repeated `conforms`; class and Trait inheritance use `derives`; registered
+synthesis uses `supports auto` with bodyless `by auto`; and a nominal body may
+group witnesses with `conform Trait { ... }`. Lowercase `via`, `as name`,
+`<T as Trait>::Item`, and the `. + *. *+` witness markers retain their existing
+identities. Lossless CST ownership, normalized AST/HIR mapping, profile checks,
+and deterministic diagnostics are mandatory, and selection closes before MIR.
 <!-- POST_PR16_UNIT_END:TC-R014 -->
 
 <!-- POST_PR16_UNIT_BEGIN:TC-R015 -->
@@ -2786,15 +2941,19 @@ Static files or fixtures close no P1 and establish no product support.
    `enum#increasing` or `enum#decreasing`. The first form means declaration
    order is strictly increasing; the second means it is strictly decreasing.
    The minimum profile is nominal, nonempty, payload-free, and nongeneric. It
-   synthesizes exactly one whole-Enum `Ord<E>` witness. `SemanticOrderRank` and
-   the ordered `VariantId` vector are not source-visible ordinals and are
-   independent of raw values, tags, discriminants, serialization, layout, ABI,
-   match priority, ranges, iteration, or transitions. Comparison observes only
-   sign, borrows both operands, is pure, synchronous, `throws Never`, consumes
-   nothing, and returns zero exactly for the same `EnumId` and `VariantId`.
-   An explicit same-ground `Ord<E>` conformance conflicts; no priority,
-   specialization, provider lookup, fallback, or comparison-glyph activation is
-   inferred.
+   synthesizes exactly one whole-Enum `Eq<E>` witness and one `Ord<E>` witness,
+   with `Ord<E> derives Eq<E>`. `SemanticOrderRank` and the ordered `VariantId`
+   vector are not source-visible ordinals and are independent of raw values,
+   tags, discriminants, serialization, layout, ABI, match priority, implicit
+   iteration, or transitions. `==` and `!=` derive from `Eq`; `<`, `<=`, `>`,
+   and `>=` derive from the sign of one `Ord.compare` result whose zero is
+   exactly `Eq`. Explicit `a..b` and `a..<b` advance in semantic ascending
+   order, respectively including and excluding `b`; a reverse endpoint pair
+   rejects and uses the named `downTo` API instead. Unordered, payload-bearing,
+   generic, or cross-owner Enum endpoints reject. An explicit same-ground `Eq`
+   or `Ord` conformance conflicts; no priority, specialization, provider lookup,
+   fallback, per-glyph witness, implicit whole-Enum iteration, or general range
+   conformance hook is inferred.
 2. An enum case may own `~>` followed by a restricted String template.
    If one inhabitable case maps, every inhabitable case maps exactly once. Named
    payload fields are read-only borrowed binders inside that case's template;

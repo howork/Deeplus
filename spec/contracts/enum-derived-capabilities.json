@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.enum-derived-capabilities-contract/r1",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
   "design_verdict": "ACCEPTED_STABLE_DESIGN_WITH_GUARDS",
@@ -21,7 +21,10 @@
     "current_enum_changed": true,
     "grammar_activation": true,
     "implementation_authority": false,
-    "operator_glyph_activation": false,
+    "operator_glyph_activation": true,
+    "comparison_glyphs": ["==", "!=", "<", "<=", ">", ">="],
+    "semantic_ascending_range_activation": true,
+    "range_operator_conformance_hook": false,
     "feature_p1_closed": 0,
     "feature_p1_created": 0
   },
@@ -49,16 +52,29 @@
     "parser_cover_grammar": true
   },
   "trait_contracts": {
-    "Ord<T>": {
-      "canonical_signature": "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }",
-      "receiver_channels": ["borrow lhs", "borrow rhs"],
+    "Eq<Rhs>": {
+      "canonical_signature": "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }",
+      "receiver_channels": ["implicit_borrow_self", "explicit_borrow_rhs"],
+      "effects": [],
+      "errors": "Never",
+      "suspends": false,
+      "consumes": false,
+      "laws": ["reflexivity", "symmetry", "transitivity"],
+      "operator_glyphs": ["==", "!="],
+      "not_equal_projection": "logical negation of the same Eq witness result"
+    },
+    "Ord<Rhs>": {
+      "canonical_signature": "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
+      "receiver_channels": ["implicit_borrow_self", "explicit_borrow_rhs"],
       "effects": [],
       "errors": "Never",
       "suspends": false,
       "consumes": false,
       "observable_result_contract": "sign_is_the_only_meaningful_stable_property",
       "laws": ["totality", "trichotomy", "transitivity", "antisymmetry", "zero_is_ground_equality"],
-      "operator_glyph_hook": false
+      "operator_glyphs": ["<", "<=", ">", ">="],
+      "operator_projection": "one compare result and one WitnessId",
+      "zero_relation": "Eq<Rhs>.equals"
     },
     "Display": {
       "canonical_signature": "public trait Display { +def display.() -> String throws Never effects {}; }",
@@ -74,9 +90,9 @@
   "rules": [
     {"rule_id":"EDC-R001","title":"accepted facilities are stable design surfaces","contract":"All three facilities are canonical STABLE_DESIGN decisions in grammar and normative design. Their adoption closes no existing P1 and claims no parser, checker, MIR, runtime, tooling, publication, or product execution."},
     {"rule_id":"EDC-R002","title":"order role is owner-specific and singular","contract":"An Enum may select exactly one of enum#increasing or enum#decreasing; both words remain ordinary identifiers outside the exact Enum introducer role."},
-    {"rule_id":"EDC-R003","title":"semantic order is representation-independent","contract":"SemanticOrderRank and the ordered VariantId vector determine declaration order but are never VariantId numeric value, raw value, tag, discriminant, serialization, layout, ABI, match priority, range, iteration, or transition authority."},
-    {"rule_id":"EDC-R004","title":"minimum Ord synthesis profile is closed","contract":"Only a nominal nonempty payload-free nongeneric Enum is eligible; compare borrows, is pure, synchronous, throws Never, consumes nothing, observes sign only, and returns zero exactly for the same EnumId and VariantId."},
-    {"rule_id":"EDC-R005","title":"Ord synthesis has one evidence origin","contract":"The marker forms exactly one whole-Enum Ord witness and zero case witnesses; an explicit same-ground conformance conflicts and no priority, specialization, provider lookup, fallback, or operator glyph activation exists."},
+    {"rule_id":"EDC-R003","title":"semantic order is representation-independent and owns explicit ascending ranges","contract":"SemanticOrderRank and the ordered VariantId vector determine Eq/Ord comparison and explicit Enum range order but are never VariantId numeric value, raw value, tag, discriminant, serialization, layout, ABI, match priority, implicit whole-Enum iteration, or transition authority. A range is semantic-ascending: a..b requires a <= b; enum#decreasing therefore reverses declaration direction for ascending traversal."},
+    {"rule_id":"EDC-R004","title":"minimum Eq and Ord synthesis profile is closed","contract":"Only a nominal nonempty payload-free nongeneric Enum is eligible; equals/compare borrow, are pure, synchronous, throw Never, consume nothing, and compare returns zero exactly when Eq is true for the same EnumId and VariantId."},
+    {"rule_id":"EDC-R005","title":"Eq and Ord synthesis has one evidence origin","contract":"The marker forms exactly one whole-Enum Eq witness and one whole-Enum Ord witness and zero case witnesses; explicit same-ground Eq or Ord conflicts. == and != share Eq; <, <=, > and >= share Ord. No priority, specialization, provider lookup, fallback or per-glyph conformance exists."},
     {"rule_id":"EDC-R006","title":"order evolution has independent residue","contract":"Marker, direction, case order, and case-universe changes update ordered-vector and behavior digests while stable VariantIds remain stable; incompatible summaries reject at import or link validation."},
     {"rule_id":"EDC-R007","title":"display mapping is all-or-none and enum-owned","contract":"The ~> token belongs only to Enum case mapping, requires exactly one restricted String template for every inhabitable case once selected, permits duplicate display strings, and supplies no case-name fallback."},
     {"rule_id":"EDC-R008","title":"display template has a bounded borrowed scope","contract":"Only named payload binders and admitted read-only paths rooted in them are visible; each hole requires one preselected Display witness and cannot move, mutate, throw, suspend, spawn, escape, or perform hidden provider or locale lookup."},
@@ -89,7 +105,7 @@
     {"rule_id":"EDC-R015","title":"subset patterns use exact finite coverage","contract":"An admitted subset pattern uses its frozen allowed set for usefulness, exhaustiveness, guards, and Phi facts; it does not invoke general subtype search or alter the closed-Union alternative judgment."},
     {"rule_id":"EDC-R016","title":"aliases reuse owner representation and evidence","contract":"A subset creates no wrapper, allocation, storage, case, VariantId, raw mapping, layout, or Trait witness; every operation reuses the owner Enum's one nominal witness after the widening proof."},
     {"rule_id":"EDC-R017","title":"subset evolution is explicit and lane-local","contract":"Adding a case does not expand an explicit subset and may invalidate a prior full-universe-to-owner normalization until the frozen universe is revalidated; removing an included case or changing its identity breaks the alias residue; membership order is irrelevant and incompatible universe digests reject."},
-    {"rule_id":"EDC-R018","title":"deferred profiles imply nothing","contract":"Payload ordering, payload-bearing exact variants, generic conditional synthesis, reverse parsing, subset ranges or iteration, bundled Traits, AUTO/VIA, specialization, child-local witness replacement, and product support remain inactive or deferred."}
+    {"rule_id":"EDC-R018","title":"deferred profiles imply nothing","contract":"Payload ordering, payload-bearing exact variants, generic conditional synthesis, reverse parsing, subset ranges or iteration, implicit whole-Enum iteration, AUTO/VIA, specialization, child-local witness replacement, arbitrary range hooks, and product support remain inactive or deferred."}
   ],
   "compatibility_lanes": ["source", "resolution", "behavior", "serialization", "runtime_layout", "foreign_ABI", "tooling_reflection", "product"],
   "compatibility_lane_subrecords": {
@@ -103,12 +119,15 @@
     "accepted_surface_count": 3,
     "stable_design_facility_count": 3,
     "source_activation_count": 0,
+    "generated_eq_witness_max": 1,
     "generated_ord_witness_max": 1,
     "generated_display_witness_max": 1,
     "case_witness_count": 0,
     "alias_witness_count": 0,
     "runtime_provider_lookup_count": 0,
-    "operator_glyph_activation_count": 0,
+    "operator_glyph_activation_count": 6,
+    "semantic_ascending_range_activation_count": 1,
+    "range_operator_conformance_hook_count": 0,
     "implicit_owner_to_subset_narrowing_count": 0,
     "closed_feature_p1": 0,
     "new_feature_p1": 0,

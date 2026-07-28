@@ -20,7 +20,7 @@
 module tutorial::identity::pipeline
 
 public type RawIdentifier = Int | String
-public type PositiveId = Int where this > 0
+public type PositiveId = Int where > 0
 public type NonEmptyText = String where this.length > 0
 
 public enum ParsedId {

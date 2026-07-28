@@ -20,10 +20,13 @@ An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. 
 identity with positive denominator, relatively prime magnitudes, and canonical
 zero `0/1`. A `<p/q>` CST retains both unsigned source magnitudes, while the
 typed HIR value stores the normalized pair. The literal is never integer
-division and cannot be selected by a type-parser goal. Exact integer/Rational
-mixed `+`, `-`, and `*` use sealed Prelude fixed-glyph evidence; Decimal,
-Float, and Complex conversions are explicit named conversions. Rational has
-strong `Eq`, `Ord`, `Hash`, and `Keyable` laws.
+division and cannot be selected by a type-parser goal. Rational supplies
+sealed unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, `Eq`, and `Ord` evidence;
+exact integer/Rational mixed arithmetic is admitted only for the exact pairs
+listed by the Prelude contract. Decimal, Float, and Complex conversions are
+explicit named conversions. Division and remainder by zero raise
+`ArithmeticDefect` before any enclosing place commit. Rational also has
+strong `Hash` and `Keyable` laws.
 
 The initial `Complex<Rep>` profile admits exactly invariant
 `Complex<Float32>` and `Complex<Float64>`; bare `Complex` is the closed alias
@@ -31,8 +34,10 @@ of the latter. Its semantic identity contains exact real and imaginary
 component values but no public layout or ABI identity. An attached `4.0i`
 literal has real component positive zero and Float64 imaginary component;
 `4.0f32i` selects Float32. Integer `4i`, separated or radix forms do not enter
-this judgment. Float-profile Complex uses partial IEEE equality and supplies
-no implicit strong `Eq`, `Ord`, `Hash`, or `Keyable` evidence.
+this judgment. Float-profile Complex supplies sealed unary `+`/`-`, binary
+`+`/`-`/`*`/`/`, and partial IEEE equality evidence. It supplies no `%`,
+`Ord`, strong `Hash`, or `Keyable` evidence; an exact zero complex divisor
+raises `ArithmeticDefect` before commit.
 
 The numeric-system successor is `PREVIEW_DESIGN_NONACTIVATABLE`. It introduces
 only a thin capability taxonomy—`Numeric`, `ExactNumeric`,
@@ -52,10 +57,10 @@ and `4index` is one invalid numeric-suffix candidate rather than `4i` plus
 `ndex`. This paragraph is a design contract only: current source admission and
 product execution remain unchanged.
 
-Preview Rational completion adds checked exact `/`, integral `^`, and named
-`remainderTrunc`, `modEuclid`, and `divRemTrunc` operations.
-The `%` glyph remains deferred because its single language-wide quotient law is
-not selected. The `std::math` core facade is a current `STDLIB_PROFILE` covering
+Preview Rational completion adds only integral `^` and optional named
+alternative APIs such as `modEuclid` and `divRemTrunc`. Stable Rational `/`
+and `%` already use the fixed `Divide`/`Remainder` evidence and the truncation
+law above; they do not depend on this Preview feature. The `std::math` core facade is a current `STDLIB_PROFILE` covering
 constants, classification, basic arithmetic helpers, rounding, exact helpers,
 power and roots, exponential and logarithmic functions, trigonometric and
 hyperbolic functions, complex functions, and approximation helpers. Special
@@ -289,6 +294,41 @@ only through a separately admitted export or module interface.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
+The Stable declaration surface is normalized before evidence selection.
+`type Target conforms Trait` forms an external record, while `type Name = Type`
+forms an alias; the decisive `conforms`/`=` lookahead prevents either route from
+being reinterpreted as the other. A class admits at most one `derives Base`
+clause and then zero or more `conforms Trait` clauses. Ordinary, value,
+resource, and data classes and Enums admit those repeated conformance clauses.
+A Trait admits repeated `derives Parent` clauses. Every nominal relation starts
+at a physical line boundary, which closes any clause-local `where` before the
+next relation. Class subtyping, parent-Trait proof obligations, and ground
+conformance records retain separate identities.
+
+An external record may retain `as name`, lowercase `via Provider`, a local
+`where` condition, and an explicit body. Lowercase `via` may have a body and
+does not denote a separate semantic conformance for the same normalized ground
+key. A bodyless direct record is admitted only when compatible defaults close
+every requirement. `supports auto` registers a closed synthesis policy on the
+Trait; bodyless `by auto` invokes only that exact policy. An unregistered,
+ambiguous, structural, extension-derived, provider-discovered, or runtime
+policy produces zero candidates.
+
+A nominal `conform Trait { ... }` block groups witnesses for one header clause.
+Names inside the matching block are unqualified; an external body may use
+`Trait::member` to bind one exact requirement. The witness-marker domain stays
+exactly `.`, `+`, `*.`, and `*+`; `as name`, `<T as Trait>::Item`, associated
+bindings, and lowercase `via` retain their existing identities. Conformance is
+not admitted in a function/block scope, and it cannot create storage, layout,
+constructors, general extension members, or private construction authority.
+
+Inherited parent evidence retains its original owner and is interned when the
+normalized instantiation is equal. A child-local replacement, specialization,
+priority, import/source-order winner, fallback, and runtime witness lookup are
+forbidden. The frontend preserves `TraitId`, `ConformanceId`,
+`TraitWitnessId`, `RequirementId`, `ImplementationId`, substitution,
+responsibility, and authority through HIR, public API residue, and MIR.
+
 Static capability selection is domain-directed. `Type::item` checks only the
 nominal/type-side domain; `Type::extension::item` checks only that exact named
 extension; `<T as Trait>::item` checks one already-selected conformance/witness
@@ -304,21 +344,59 @@ is synthesized.
 
 The operator token and precedence table is closed. Arbitrary custom
 glyph/fixity/precedence declarations are rejected rather than Preview. Stable
-fixed-glyph conformance selection is a conformance goal only for exact binary
-`+`, `-`, and `*`, mapped respectively to `Add<Rhs>`, `Subtract<Rhs>`, and
-`Multiply<Rhs>` with one associated `Output`.
+fixed-glyph conformance selection owns exactly thirteen roles:
+
+- unary `+` and `-` through `UnaryPlus` and `UnaryMinus`;
+- binary `+`, `-`, `*`, `/`, and `%` through `Add<Rhs>`,
+  `Subtract<Rhs>`, `Multiply<Rhs>`, `Divide<Rhs>`, and `Remainder<Rhs>`,
+  each with one associated `Output`;
+- `==` and `!=` through one `Eq<Rhs>.equals` witness;
+- `<`, `<=`, `>`, and `>=` through one `Ord<Rhs>.compare` witness.
+
+`!=` is the Boolean negation of the selected equality result. Each order glyph
+projects the sign of the same comparison result; no per-glyph order witness
+exists. `Ord<Rhs> derives Eq<Rhs>`, and comparison zero must be exactly the
+strong-equality relation.
 
 Intrinsic-reserved normalized operand pairs use `INTRINSIC_ONLY` and perform no
-conformance lookup. Every other admitted pair must select exactly one
+conformance lookup. Every other admitted operand or pair must select exactly one
 left-nominal-owner `DIRECT_GLOBAL` conformance from
-`(OperatorId, LeftType, RightType)`. Expected result, implicit conversion,
+`(OperatorId, OperandType)` or `(OperatorId, LeftType, RightType)`. Expected result, implicit conversion,
 extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization evidence,
 source/import order, runtime relookup, and fallback neither create nor rank a
 candidate. The selected conformance, witness, method, substitution, output type,
 and responsibility profile are static identity. Its method borrows both
 operands, is synchronous, non-consuming and non-mutating, and has
-`throws Never effects {}`. Other glyph families remain intrinsic-only or
-excluded from conformance overloading. `TCC-P1-002..008` remain OPEN product and
+`throws Never effects {}`. An admitted numeric operation may terminate through
+the closed nonrecoverable `ArithmeticDefect` profile before commit; that
+terminal is not an ErrorSet member.
+
+Compound `+=`, `-=`, `*=`, `/=`, and `%=` derive from the corresponding binary
+row plus exact assignment admissibility. They own no separate Trait, witness,
+or overload-resolution pass. The target place is evaluated once, the original
+value is read once, and a terminal before final write preserves it.
+
+Rational supplies the full admitted arithmetic profile, strong Eq, and total
+Ord. Its remainder is `a - trunc(a / b) * b`, with quotient truncated toward
+zero. Zero-divisor division or remainder raises `ArithmeticDefect` before
+commit; the named checked division API remains available. Complex has its
+admitted arithmetic and intrinsic partial equality but neither Remainder nor
+Ord. Float/Complex partial equality cannot satisfy strong Eq by inference.
+
+An ordered Enum is eligible only when its nominal owner is nonempty,
+payload-free, nongeneric, and selects exactly one of `enum#increasing` or
+`enum#decreasing`. The owner receives one whole-Enum Eq/Ord witness pair;
+`SemanticOrderRank`, rather than `VariantId`, tag, discriminant, layout, or ABI,
+drives all six comparison glyphs. Explicit `..` and `..<` ranges advance in
+semantic ascending order and respectively include and exclude the upper
+endpoint. Reverse traversal uses `downTo`; reversed endpoints, different Enum
+owners, unordered Enums, payload Enums, and generic Enums reject before range
+construction. This language-owned range rule creates no operator-conformance
+hook or implicit whole-Enum iteration.
+
+Other glyph families remain intrinsic-only or excluded from conformance
+overloading. Power, strict/short-circuit logical, bitwise, range, and arbitrary
+custom glyphs have no user hook. `TCC-P1-002..008` remain OPEN product and
 independent-conformance evidence gates.
 
 The Stable `&&`, `||`, `^^`, and prefix `~~` family has a pointwise logical
@@ -505,6 +583,28 @@ typed patterns own alternative binding.
 For a closed Union scrutinee only, a typed child binder naming exactly one declared alternative elaborates to `UnionAlternativeBindPattern`. Its test is the existing Union injection identity; it is not a subtype test or a refinement check. Union formation itself requires every normalized alternative pair to be proven disjoint by the finite R0 relation procedure. Equivalent or implying members are subsumed; overlap or an unknown relation rejects rather than choosing a runtime winner.
 
 Refinement admission at construction, typed-pattern, argument, return, and explicit cast boundaries is three-valued: `PROVED` admits, `DISPROVED` emits the exact literal/range contradiction, and `UNKNOWN` emits `REFINEMENT_PROOF_REQUIRED`. A silent conversion outside those boundaries emits `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN`. `as?`, `as!`, and `T::check` retain their distinct Option, defect, and Result outcomes.
+
+`T where > bound` is syntax sugar only for `T where this > bound`. Its right
+side uses the bounded `RefinementComparisonOperand` parse goal—literal,
+identifier, or qualified static value—rather than `PredicateExpr`; compound
+logic therefore requires the explicit `this` form. `T in lower..upper` and
+`T in lower..<upper` normalize to inclusive and upper-exclusive interval
+facts. Bare `T > bound` is never a refinement, so a generic close such as
+`Box<Int>` remains unambiguous before a following `where`. Every nonliteral
+bound must resolve statically to one stable pure ordered value. Runtime bounds
+are rejected, and normalization reads lower then upper without duplication or
+reordering.
+
+In statement and value `match` only, a
+`lower OrderedRelOp name OrderedRelOp upper` head is a
+`BoundedBinderPattern`. The scrutinee was already evaluated once before the arm
+sequence; an attempted arm reads its literal or pinned stable bounds in written
+source order and requires a monotone operator pair. Mixed strictness is
+admitted, mixed direction is rejected before HIR. Success exposes one
+arm-local subject binder and one normalized interval fact; failure exposes
+neither. The interval is structural coverage, so exact open/closed endpoints,
+overlap subtraction, residual witnesses, and `otherwise` use the ordinary
+exhaustiveness algorithm rather than guarded-arm rules.
 
 `def#guard` is an exact Bool, pure, total, terminating, nonsuspending,
 nonconsuming, authority-free callable profile. An exact direct call contributes

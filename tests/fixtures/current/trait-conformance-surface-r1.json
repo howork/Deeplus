@@ -1,0 +1,164 @@
+{
+  "schema": "deeplus.trait-conformance-surface-fixtures/r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "authority": "DESIGN_TRAIT_CONFORMANCE_SUCCESSOR_SURFACE_R1",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "global_open_feature_p1_count": 22,
+  "trait_open_feature_p1_count": 7,
+  "product_lanes": "15/15_NOT_RUN",
+  "cases": [
+    {
+      "fixture_id": "TCS-R1-POS-001",
+      "source": "public type Money conforms Display {\n    def Display::display.() -> String = { return self.format() }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["external_conformance", "qualified_requirement", "single_ground_identity"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-002",
+      "source": "common type Money conforms Display as moneyDisplay via MoneyDisplayProvider {\n    def Display::display.() -> String = { return self.format() }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["name_alias_preserved", "lowercase_via_body_preserved"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-003",
+      "source": "public trait Display\nsupports auto {\n    +def display.() -> String throws Never effects {}\n}\npublic type Receipt conforms Display by auto",
+      "expected": "ACCEPT_STATIC_IF_POLICY_REGISTERED",
+      "assertions": ["physical_line_auto_support", "auto_bodyless", "closed_policy_required"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-004",
+      "source": "public trait AutoReceiptIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic class Receipt\nderives Document\nconforms Display\nconforms AutoReceiptIdentity by auto {\n    conform Display {\n        def display.() -> String = { return self.title }\n    }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["physical_line_relations", "one_class_base", "repeated_nominal_conformance", "nominal_conformance_group", "closed_test_auto_policy"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-005",
+      "source": "public trait OrderedDisplay\nderives Display\nderives Ord<Self> {\n    +def summary.() -> String throws Never effects {}\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["physical_line_relations", "repeated_trait_derives", "parent_evidence_origin_preserved"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-006",
+      "source": "using conformance(Money conforms Display)",
+      "expected": "ACCEPT_STATIC_IN_WITNESS_ARGUMENT",
+      "assertions": ["evidence_selector_preserved"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-007",
+      "source": "public value class Meters(value: Rational)\nconforms Display {\n    conform Display { def display.() -> String = { return \"${self.value} m\" } }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["value_class_admitted", "physical_line_conformance"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-008",
+      "source": "public resource class FileHandle\nconforms CleanupAware {\n    conform CleanupAware { +def close*+() -> Unit = {} }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["resource_class_admitted", "physical_line_conformance"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-009",
+      "source": "public data class Point(x: Int, y: Int)\nconforms Eq<Point> by auto",
+      "expected": "ACCEPT_STATIC_IF_POLICY_REGISTERED",
+      "assertions": ["data_class_admitted", "physical_line_conformance"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-010",
+      "source": "public trait AutoEnumIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic enum Priority\nconforms Display\nconforms AutoEnumIdentity by auto {\n    low\n    high\n    conform Display { +def display.() -> String = { return self.name } }\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["enum_admitted", "enum_conformance_group", "repeated_nominal_conformance", "closed_test_auto_policy"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-011",
+      "source": "public class Box<T>\nconforms Display where T conforms Display\nconforms Eq<Box<T>> where T conforms Eq<T> {\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["clause_local_where", "where_ends_at_physical_line", "repeated_nominal_conformance"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-012",
+      "source": "public trait StorageModel {\n    type Key\n    let ::empty: Key\n    def ::make() -> Key\n}\npublic type FileStore conforms StorageModel {\n    type Key = Token\n    let ::empty = Token::empty\n    def ::make() -> Token = { return Token::empty }\n}\nlet key: <FileStore as StorageModel>::Key = <FileStore as StorageModel>::empty",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["associated_type_binding", "associated_value_binding", "associated_function_binding", "associated_projection"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-013",
+      "source": "public trait MarkerSet {\n    +def borrowed.() -> Unit\n    +def static+() -> Unit\n    +def consuming*.() -> Unit\n    +def consumingStatic*+() -> Unit\n}\npublic type Token conforms MarkerSet {\n    def MarkerSet::borrowed.() -> Unit = {}\n    def MarkerSet::static+() -> Unit = {}\n    def MarkerSet::consuming*.() -> Unit = {}\n    def MarkerSet::consumingStatic*+() -> Unit = {}\n}",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["marker_dot", "marker_plus", "marker_star_dot", "marker_star_plus"]
+    },
+    {
+      "fixture_id": "TCS-R1-POS-014",
+      "source": "public type Receipt conforms DefaultDisplay",
+      "expected": "ACCEPT_STATIC_IF_DEFAULTS_COMPLETE",
+      "assertions": ["bodyless_direct_requires_complete_defaults"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-001",
+      "source": "public conformance Money conforms Display { }",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-002",
+      "source": "public class Child : Parent { }",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CLASS_COLON_INHERITANCE_REMOVED"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-003",
+      "source": "public trait Child requires Parent { }",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "TRAIT_REQUIRES_INHERITANCE_REMOVED"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-004",
+      "source": "public type Receipt conforms Display by auto { def Display::display.() -> String = { return self.title } }",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_AUTO_BODY_FORBIDDEN"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-005",
+      "source": "public def f.() -> Unit = { type Local conforms Display }",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-006",
+      "source": "public class Receipt\nconforms Display {\n    conform Display { def Display::display.() -> String = { return self.title } }\n}",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-007",
+      "source": "public type Receipt conforms UnknownAuto by auto",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED"
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-008",
+      "source": "public class Child\nderives BaseA\nderives BaseB { }",
+      "expected": "REJECT_STATIC",
+      "assertions": ["class_direct_base_maximum_one"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-009",
+      "source": "public class Receipt derives Document\nconforms Display { }",
+      "expected": "REJECT_STATIC",
+      "assertions": ["derives_requires_physical_line_boundary"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-010",
+      "source": "public trait Display supports auto { +def display.() -> String }",
+      "expected": "REJECT_STATIC",
+      "assertions": ["supports_auto_requires_physical_line_boundary"]
+    }
+  ],
+  "counts": {
+    "positive": 14,
+    "negative": 10,
+    "total": 24,
+    "executed": 0
+  }
+}

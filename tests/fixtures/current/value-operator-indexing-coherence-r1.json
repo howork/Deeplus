@@ -1,7 +1,7 @@
 {
   "schema": "deeplus.value-operator-indexing-coherence-fixtures/r1",
   "fixture_schema": "schemas/language/value-operator-indexing-coherence-fixtures.schema.json",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "contract": "spec/contracts/value-operator-indexing-coherence.json",
   "authority": "CURRENT_DESIGN_STATIC_CONTRACT",
   "evidence_level": "DESIGN_STATIC_NOT_RUN",
@@ -452,12 +452,25 @@
       "fixture_class": "positive",
       "rule_ids": ["VOI-R005"],
       "domain": "fixed_operator_conformance",
-      "source": "public conformance Vec2 conforms Add<Vec2> {\n    type Output = Vec2\n    +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {\n        return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)\n    }\n}\nlet total: Vec2 = left + right",
+      "source": "public type Vec2 conforms Add<Vec2> {\n    type Output = Vec2\n    +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {\n        return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)\n    }\n}\nlet total: Vec2 = left + right",
       "subject_profile": "STABLE_FIXED_OPERATOR_LEFT_OWNER_DIRECT_GLOBAL_ADD",
       "expected": "ADMIT",
       "diagnostic_or_null": null,
       "assertions": {
         "feature_status": "STABLE_DESIGN",
+        "admitted_operator_ids": ["UnaryPlus", "UnaryMinus", "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide", "BinaryRemainder", "BinaryEqual", "BinaryNotEqual", "BinaryLessThan", "BinaryLessThanOrEqual", "BinaryGreaterThan", "BinaryGreaterThanOrEqual"],
+        "trait_roots": ["UnaryPlus", "UnaryMinus", "Add", "Subtract", "Multiply", "Divide", "Remainder", "Eq", "Ord"],
+        "operator_trait_mapping": [
+          "UnaryPlus->UnaryPlus.positive",
+          "UnaryMinus->UnaryMinus.negate",
+          "BinaryAdd->Add.add",
+          "BinarySubtract->Subtract.subtract",
+          "BinaryMultiply->Multiply.multiply",
+          "BinaryDivide->Divide.divide",
+          "BinaryRemainder->Remainder.remainder",
+          "BinaryEqual/BinaryNotEqual->Eq.equals",
+          "BinaryLessThan/BinaryLessThanOrEqual/BinaryGreaterThan/BinaryGreaterThanOrEqual->Ord.compare"
+        ],
         "operator_id": "BinaryAdd",
         "trait_id": "Add<Vec2>",
         "method_id": "Add.add",
@@ -470,7 +483,9 @@
         "runtime_relookup_or_fallback_count": 0,
         "operand_evaluation_order": "LEFT_THEN_RIGHT",
         "operand_evaluation_count_each": 1,
-        "responsibility_profile": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+        "responsibility_profile": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+        "independent_not_equal_or_per_glyph_order_witness_count": 0,
+        "range_operator_conformance_hook_count": 0,
         "TCC_P1_002_through_008": "OPEN"
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
@@ -518,13 +533,13 @@
       "fixture_class": "negative",
       "rule_ids": ["VOI-R005"],
       "domain": "trait_guard",
-      "source": "public conformance Amount conforms Add<Amount> via Helper::addition {\n    type Output = Amount\n    +def add.(borrow rhs: Amount) -> Amount throws Never effects {} = { return self }\n}\nlet total = left + right",
+      "source": "public type Amount conforms Add<Amount> via Helper::addition {\n    type Output = Amount\n    +def add.(borrow rhs: Amount) -> Amount throws Never effects {} = { return self }\n}\nlet total = left + right",
       "subject_profile": "FIXED_OPERATOR_ALTERNATE_EVIDENCE_ROUTE",
       "expected": "REJECT",
       "diagnostic_or_null": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
       "assertions": {
         "feature_status": "STABLE_DESIGN",
-        "admitted_operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply"],
+        "admitted_operator_ids": ["UnaryPlus", "UnaryMinus", "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide", "BinaryRemainder", "BinaryEqual", "BinaryNotEqual", "BinaryLessThan", "BinaryLessThanOrEqual", "BinaryGreaterThan", "BinaryGreaterThanOrEqual"],
         "attempted_route": "via",
         "admitted_route": "DIRECT_GLOBAL",
         "selected_conformance_count": 0,
@@ -973,6 +988,8 @@
       "diagnostic_or_null": null,
       "assertions": {
         "terminal_outcome_if_overflow": "ArithmeticDefect::overflow",
+        "derived_base_operator_id": "BinaryAdd",
+        "independent_compound_assignment_conformance_hook_count": 0,
         "commit_count_if_overflow": 0,
         "original_counter_preserved": true,
         "product_execution": "NOT_RUN"
@@ -1006,14 +1023,17 @@
       "fixture_class": "boundary",
       "rule_ids": ["VOI-R003"],
       "domain": "operator",
-      "source": "let same = positive_zero == negative_zero",
-      "subject_profile": "FLOAT64_SIGNED_ZERO",
+      "source": "let same = leftRational == rightRational\nlet ordered = leftRational <= rightRational",
+      "subject_profile": "RATIONAL_EQ_ORD_DERIVED_PROJECTIONS",
       "expected": "ADMIT",
       "diagnostic_or_null": null,
       "assertions": {
-        "comparison_result": true,
-        "bit_pattern_identity_required": false,
-        "semantic_value_equality": true
+        "comparison_result_type": "Bool",
+        "BinaryEqual_witness": "Eq<Rational>.equals",
+        "BinaryLessThanOrEqual_witness": "Ord<Rational>.compare",
+        "Ord_zero_equals_Eq": true,
+        "independent_BinaryNotEqual_witness_count": 0,
+        "independent_per_glyph_order_witness_count": 0
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
@@ -1045,6 +1065,8 @@
       "assertions": {
         "target_place_evaluation_count": 1,
         "rhs_evaluation_count": 1,
+        "derived_base_operator_id": "BinaryDivide",
+        "independent_compound_assignment_conformance_hook_count": 0,
         "commit_count_on_ArithmeticDefect": 0,
         "original_value_preserved": true
       },
@@ -1253,21 +1275,27 @@
     {
       "fixture_id": "VOI-R1-BND-018",
       "fixture_class": "boundary",
-      "rule_ids": ["VOI-R005", "VOI-R012"],
+      "rule_ids": ["VOI-R002", "VOI-R005", "VOI-R007", "VOI-R012"],
       "domain": "operator",
-      "source": "let pointwise: UInt8 = makeLeftBits() && makeRightBits()\nlet sequential: Bool = ready() and then consumeIfReady()",
-      "subject_profile": "POINTWISE_STRICT_VS_SEQUENTIAL_CONTROL_BOUNDARY",
+      "source": "let negativeDividend = (-<7/3>) % <2/3>\nlet negativeDivisor = <7/3> % (-<2/3>)\nvar retained = <7/3>\nretained %= maybeZeroRational()",
+      "subject_profile": "RATIONAL_TRUNCATING_REMAINDER_SIGN_IDENTITY_AND_PRECOMMIT_ZERO_DIVISOR",
       "expected": "ADMIT",
       "diagnostic_or_null": null,
       "assertions": {
-        "pointwise_left_evaluation_count": 1,
-        "pointwise_right_evaluation_count": 1,
-        "pointwise_right_evaluation_is_conditional": false,
-        "pointwise_short_circuit_count": 0,
-        "pointwise_flow_narrowing_fact_count": 0,
-        "sequential_right_evaluation_is_conditional": true,
-        "sequential_control_owner": "and_then",
-        "operator_family_identity_merge_count": 0
+        "operator_id": "BinaryRemainder",
+        "method_id": "Remainder.remainder",
+        "negative_dividend_quotient_toward_zero": -3,
+        "negative_dividend_remainder": "-1/3",
+        "negative_divisor_quotient_toward_zero": -3,
+        "negative_divisor_remainder": "1/3",
+        "identity_a_equals_q_times_b_plus_r": true,
+        "absolute_remainder_less_than_absolute_divisor": true,
+        "zero_divisor_terminal": "ArithmeticDefect::divisionByZero",
+        "target_place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "commit_count_on_zero_divisor": 0,
+        "original_value_preserved": true,
+        "product_execution": "NOT_RUN"
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     }

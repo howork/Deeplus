@@ -90,18 +90,19 @@
       "PARSER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "INLINE_CONFORMANCE_HEADER_NOT_CURRENT_USE_CONFORMANCE_DECL",
+    "diagnostic_id": "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "r51e_frontend_grammar_current_canonical"
+      "conformance_declaration_surface",
+      "trait_witness_coherence_phase_a"
     ],
-    "fixit_hint": "write a separate `conformance T conforms Trait { ... }` declaration",
-    "fixit_kind": "suggestion",
-    "fixit_policy": "write a separate `conformance T conforms Trait { ... }` declaration",
-    "message": "Inline class/enum header conformance is not current; conformance is an explicit nominal declaration.",
-    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
-    "primary_source": "spec/language.md",
+    "fixit_hint": "use the unqualified requirement name inside `conform Trait { ... }`",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "remove only the redundant matching Trait qualifier and preserve the selected RequirementId",
+    "message": "A witness inside `conform Trait { ... }` already has an exact Trait owner and must use the unqualified requirement name.",
+    "notes": "Stable successor-conformance diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/contracts/trait-conformance-surface.json",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",

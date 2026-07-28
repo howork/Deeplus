@@ -379,7 +379,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The Stable R0 subset is closed, pure, deterministic, and total: normalized values/literals/StaticInt arithmetic/comparison/word Boolean operators only; no I/O, provider, mutation, suspension, reflection, allocation with observable identity, solver search, or thrown failure. Checks occur only at explicit construction/cast/argument/return/pattern boundaries.",
+    "notes": "The Stable R0 subset is closed, pure, deterministic, and total: normalized values/literals/StaticInt arithmetic/comparison/word Boolean operators only; no I/O, provider, mutation, suspension, reflection, allocation with observable identity, solver search, or thrown failure. Checks occur only at explicit construction/cast/argument/return/pattern boundaries. `where > bound` inserts one `this` and parses one bounded comparison operand; `in` accepts only statically resolved stable pure interval bounds. Bare `T > bound` is never refinement syntax.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -394,6 +394,8 @@
         "REFINEMENT_ASSERTION_MAY_DEFECT",
         "REFINEMENT_DETAILED_CHECK_RETURNS_RESULT",
         "REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
+        "REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED",
+        "REFINEMENT_INTERVAL_BOUNDS_REQUIRED",
         "REFINEMENT_LITERAL_OUT_OF_RANGE",
         "REFINEMENT_PREDICATE_EFFECT_FORBIDDEN",
         "REFINEMENT_PREDICATE_NOT_PHASE_A",
@@ -415,7 +417,13 @@
         "EX-R51a1-061",
         "EX-R51a1-NG-069"
       ],
-      "productions": [],
+      "productions": [
+        "RefinementSuffix",
+        "RefinementClause",
+        "ImplicitThisPredicate",
+        "RefinementComparisonOperand",
+        "IntervalRefinementClause"
+      ],
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
