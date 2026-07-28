@@ -220,21 +220,20 @@ formatter/LSP round-trip과 target-bound checker receipt가 모두 필요하다.
 `Ord`/`Hash`/`Keyable`, remainder, transcendental function 또는 glyph
 activation을 자동으로 제공하지 않는다.
 
-Rational completion 후보는 다음 세 경계를 묶는다.
+Rational completion Preview는 Stable 경계와 후보 경계를 분리한다.
 
-- `Rational / Rational -> Rational`; 0 divisor는 commit 전에
-  `RationalError::divisionByZero`다.
-- `Rational ^ ExactBuiltinInteger -> Rational`; 음수 지수를 허용하지만
-  0의 음수 거듭제곱은 commit 전에 실패한다.
-- `remainderTrunc`, `modEuclid`, `divRemTrunc`의 named API를 분리한다.
-  Rational remainder glyph는 여전히 deferred다.
+- `Rational / Rational -> Rational`과 `Rational % Rational -> Rational`은
+  이미 Stable fixed-glyph conformance다. 0 divisor는 commit 전에
+  nonrecoverable `ArithmeticDefect`를 일으킨다.
+- `Rational ^ ExactBuiltinInteger -> Rational`만 연산자 후보로 남는다.
+  음수 지수를 허용하지만 0의 음수 거듭제곱은 commit 전에 실패한다.
+- `%`와 다른 rounding 정책이 필요하면 `modEuclid`, `divRemTrunc`처럼
+  정책을 이름으로 드러내는 별도 API 후보를 사용한다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
 ```deeplus
-// Preview Design — current source로 활성화할 수 없다.
-let half: Rational = <1/1> / <2/1>
+// Preview Design — 아래 integral power 표면은 current source가 아니다.
 let reciprocalPower: Rational = <2/3> ^ -2
-let remainder = <7/3> ~ remainderTrunc <2/3>
 ```
 
 붙은 정수 허수 literal `4i`도 이 Preview 묶음이다. unsuffixed 10진
@@ -320,10 +319,10 @@ conformance matrix와 target-bound 실행 증거가 모두 있어야 한다.
 > - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
 
 **검토 목적**
-`Rational`의 exact 성질을 보존하면서 나눗셈, 정수 지수 거듭제곱과
-나머지 계열의 빈틈을 닫을 수 있는지 검토한다. 목표는 새 임의 glyph를
-허용하는 것이 아니라 이미 고정된 연산자와 이름 있는 API의 결과·실패
-경계를 명시하는 것이다. remainder glyph는 이 후보에서도 deferred다.
+`Rational`의 exact 성질을 보존하면서 정수 지수 거듭제곱과
+truncating `%` 이외 rounding 정책의 API를 추가할 수 있는지 검토한다.
+목표는 새 임의 glyph를 허용하는 것이 아니다. Stable `/`와 `%`의
+결과·실패 경계는 이미 고정되었으므로 이 Preview가 재정의하지 않는다.
 
 **제안 표면**
 다음은 후보 결과 형식을 설명하는 예시이며 Preview Design 밖의 current
@@ -331,32 +330,32 @@ source 권위를 만들지 않는다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
 ```deeplus
-// Preview Design: exact Rational 연산 후보
-let half: Rational = <1/1> / <2/1>
+// Preview Design: exact Rational integral-power 후보
 let reciprocalPower: Rational = <2/3> ^ -2
-let remainder: Rational = <7/3> ~ remainderTrunc <2/3>
 ```
 
 **정적 판정과 상호작용**
-division은 `Rational / Rational -> Rational`, integral power는
-`Rational ^ ExactBuiltinInteger -> Rational`의 닫힌 행이다. 음수 지수는
-admitted이지만 지수 type을 임의 `Numeric`으로 넓히지 않는다.
-`remainderTrunc`, `modEuclid`, `divRemTrunc`는 서로 다른 rounding
-정책을 이름으로 드러내며 implicit mixed-type conversion이나 custom
-operator 등록을 유도하지 않는다.
+Stable division과 remainder는 각각 `Rational / Rational -> Rational`,
+`Rational % Rational -> Rational`의 닫힌 행이다. Preview integral
+power는 `Rational ^ ExactBuiltinInteger -> Rational`만 후보로 삼고,
+지수 type을 임의 `Numeric`으로 넓히지 않는다. `modEuclid`와
+`divRemTrunc` 같은 별도 API 후보는 다른 rounding 정책을 이름으로
+드러내며 implicit mixed-type conversion이나 custom operator 등록을
+유도하지 않는다.
 
 **평가·소유권·오류**
-0 divisor는 결과를 commit하기 전에
-`RationalError::divisionByZero`로 실패한다. 0을 음수 지수로 올리는
-경우도 commit 전에 실패해야 한다. 실패 전 operand 평가 순서,
+Stable `/`와 `%`의 0 divisor는 결과를 commit하기 전에
+`ArithmeticDefect`를 일으킨다. 0을 음수 지수로 올리는 Preview 후보도
+commit 전에 실패해야 한다. 실패 전 operand 평가 순서,
 temporary ownership 및 cleanup은 ordinary call/고정 연산자의 현행
 규칙을 따르며 부분 결과를 관측 가능하게 남기지 않는다.
 
 **현행 대안과 이행**
-현행 사용자는 명시적인 Rational library function으로 같은 계산을
-작성한다. formatter나 IDE는 named remainder를 glyph로 바꾸지 않고,
-integer·floating 계산을 Rational로 자동 승격하지 않으며, 기존
-division의 오류 정책을 추측하여 rewrite하지 않는다.
+현행 사용자는 Stable `/`와 truncating `%` 또는 명시적인 Rational
+library function으로 계산을 작성한다. formatter나 IDE는 서로 다른
+rounding 정책을 `%`로 바꾸지 않고, integer·floating 계산을 Rational로
+자동 승격하지 않으며, 기존 division의 오류 정책을 추측하여 rewrite하지
+않는다.
 
 **활성화 선행 조건**
 exact result/error algebra, `ExactBuiltinInteger` 폐쇄 집합, zero와 부호
@@ -811,7 +810,7 @@ checker와 formatter/LSP receipt가 필요하다. 모든 제품 실행 상태는
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
 ```deeplus
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String = { return self.raw ~ toString }
 }
 // 현행 대안: 법칙은 별도 test/proof artifact로 검증한다.
@@ -895,7 +894,7 @@ artifact-bound receipt가 필요하다. 제품 상태는 모두 `NOT_RUN`이다.
 ```deeplus
 // 현행 명시적 대안: 주변 limit는 ordinary value로 명시한다.
 public def within(value: Int, limit: Int) -> Bool = {
-    return value >= 0 and value <= limit
+    return 0 <= value <= limit
 }
 if within(candidate, maximum) {
     consume(candidate)
@@ -1031,7 +1030,7 @@ dispatch, concurrency/rollback corpus와 xVM/LLVM target receipt가 필요하다
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
 ```deeplus
 // 현행 명시적 대안: 동작은 선언 시 static conformance로 고정한다.
-public conformance User conforms Display {
+public type User conforms Display {
     +def display+() -> String = { return self.name }
 }
 let text = user ~ display
@@ -1191,15 +1190,19 @@ nongeneric Enum, 음성은 두 modifier 동시 사용, 경계는 reorder가 publ
 order behavior를 바꾸는 경우다.
 
 **정적 판정과 상호작용**
-owner는 `SemanticOrderRank`와 whole-Enum `Ord` witness 하나를 만든다.
-payload ordering, comparison glyph routing, case-local witness와 raw ordinal
-추론은 없다. explicit same-ground `Ord`와 synthesized witness의 충돌은
-deterministic terminal error다.
+owner는 `SemanticOrderRank`와 whole-Enum Eq·Ord witness를 각각 하나씩
+만든다. `==`/`!=`는 Eq에서, 네 관계 glyph는 하나의 `Ord.compare`에서
+파생된다. explicit `..`/`..<`는 semantic ascending order를 각각
+끝 포함/끝 제외로 순회하고 역방향은 `downTo`를 사용한다. payload
+ordering, case-local/per-glyph witness, raw ordinal 추론과 range
+conformance hook은 없다. explicit same-ground Eq 또는 Ord와 synthesized
+witness의 충돌은 deterministic terminal error다.
 
 **평가·소유권·오류**
 비교는 payload나 foreign tag를 읽지 않고 selected declaration rank만
 비교한다. empty/generic/payload-bearing Enum은 거부하며 one-case Enum은
-자명한 순서만 갖는다. 역할 충돌과 부적격 owner는 각각
+자명한 순서만 갖는다. unordered 또는 서로 다른 Enum owner endpoint의
+range와 역순 endpoint의 `..`/`..<`도 거부한다. 역할 충돌과 부적격 owner는 각각
 `ENUM_ORDER_ROLE_CONFLICT`와 `ENUM_ORDER_ROLE_REQUIRES_ELIGIBLE_OWNER`가
 소유한다. runtime lowering과 제품 evidence는 `NOT_RUN`이다.
 
@@ -1859,7 +1862,7 @@ independent checker receipt가 필요하다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
 ```deeplus
 // 현행 명시적 대안: 닫힌 R0 predicate와 명시적 Result 검사.
-public type Port = Int where this >= 0 and this <= 65_535
+public type Port = Int in 0..65_535
 let checked: Result<Port, error RefinementError> = Port::check(raw)
 ```
 

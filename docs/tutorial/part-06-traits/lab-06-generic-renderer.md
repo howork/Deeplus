@@ -40,13 +40,13 @@ public data class Invoice(+let number: Int, +let total: Rational)
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String throws Never effects {} = {
         return "user:${self.raw}"
     }
 }
 
-public conformance Invoice conforms Display {
+public type Invoice conforms Display {
     +def display+() -> String throws Never effects {} = {
         return "invoice:${self.number} total=${self.total}"
     }
@@ -186,8 +186,8 @@ let invalid = renderOne(Accidental!())
 // STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN
 ```
 
-두 번째 실험으로 admitted set 밖 glyph을 conformance dispatch에
-사용할 수 없는 이유와 named API가 일반 확장 경로인 이유를 설명하라.
+두 번째 실험으로 임의 custom glyph을 conformance dispatch에 사용할 수
+없는 이유와 named API가 일반 확장 경로인 이유를 설명하라.
 
 ## 확장 과제
 
@@ -204,7 +204,8 @@ let invalid = renderOne(Accidental!())
 - [ ] extension과 conformance를 분리했다.
 - [ ] associated lookup은 명시적으로 qualification한다.
 - [ ] 임의 custom operator를 추가하지 않았다.
-- [ ] fixed-glyph admitted set을 `+`, `-`, `*`로 유지했다.
+- [ ] fixed-glyph admitted set을 unary `+ -`, binary `+ - * / %`,
+      `== != < <= > >=`로 유지했다.
 - [ ] TCC P1 7개를 포함한 OPEN P1 `22`, product lanes `15/15 NOT_RUN`을
       유지했다.
 

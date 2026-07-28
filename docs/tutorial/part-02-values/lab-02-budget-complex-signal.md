@@ -131,8 +131,9 @@ real/imaginary 성분과 representation parameter를 기록한다. 예상값을
 3. **스스로 설계하기:** Rational 두 개를 결합한 세금 계산과 Complex 두
    개를 결합한 신호 합성을 각각 함수로 만든다. operand/result exact
    domain을 주석 대신 설명 표에 적는다.
-4. **심화:** Rational division을 `/` conformance로 추가하면 안 되는
-   이유를 failure channel과 fixed-glyph 집합 관점에서 설명한다.
+4. **심화:** Rational division의 `/`가 0 제수에서
+   `ArithmeticDefect`를 내는 경계와, 상세 실패를 보존하는
+   `dividedBy` API를 비교한다.
 
 ## 누적 프로젝트 연결
 

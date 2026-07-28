@@ -20,10 +20,11 @@ conformance evidence와 lexical extension을 설명한다. 네 관계는 서로
 | 함수 body의 `static { ... }` activation | `STABLE` |
 | Class body의 `scope#static` activation | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 현재 소문자 `via` conformance route | `CURRENT` |
+| 등록된 폐쇄형 `supports auto` 정책과 bodyless `by auto` | `CURRENT` |
 | named extension set/pack과 lexical activation | `CURRENT` |
 | sealed Class constructor-pattern 또는 Class 내부 분해 pattern | 현행 아님 |
-| 미래 `VIA`/`AUTO`, specialization, 자식 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
-| fixed glyph Trait conformance overloading | `STABLE_DESIGN` (`+`, `-`, `*` 제한 프로필) |
+| 별도 대문자 successor route `VIA`/`AUTO`, specialization, 자식 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
+| fixed glyph Trait conformance overloading | `STABLE_DESIGN` (정확한 13개 unary·산술·equality·ordering 역할) |
 | 제품 parser/checker/MIR/runtime/formatter/LSP | `NOT_RUN` |
 
 문서의 정적 예제는 제품 실행이 아니다. Trait Conformance의
@@ -40,20 +41,30 @@ ClassDecl ::= OrdinaryClassDecl | DataClassDecl
 OrdinaryClassDecl ::= TopLevelVisibility? ClassFlavor?
                       ClassModifierSequence? "class" Identifier
                       TypeParameterList? ParameterList?
-                      InheritanceClause? WhereClause?
+                      WhereClause? ClassDerivesClause?
+                      NominalConformanceClause*
                       CleanupBudgetClause? ClassBody
 
 DataClassDecl ::= TopLevelVisibility? "data" "class" Identifier
                   TypeParameterList? ParameterList?
-                  InheritanceClause? WhereClause?
+                  WhereClause? NominalConformanceClause*
                   CleanupBudgetClause? ClassBody?
 
 ClassFlavor           ::= "value" | "resource"
 ClassModifierSequence ::= "final" | "open" | "abstract" | "sealed"
                         | "abstract" "sealed"
-InheritanceClause     ::= ":" TypeRef
+ClassDerivesClause    ::= LineBreakBoundary "derives" TypeRef
+NominalConformanceClause ::= LineBreakBoundary "conforms"
+                             QualifiedTypeReference
+                             NominalConformanceRoute? WhereClause?
+NominalConformanceRoute ::= ConformanceViaClause
+                          | ConformanceAutoClause
 ClassBody             ::= "{" MemberDecl* "}"
 ```
+
+Class의 직접 base는 물리 줄 경계에서 시작하는 `derives Base` 하나만
+허용한다. Trait 관계는 별도 줄의 `conforms Trait`를 반복한다. 각
+관계 줄의 `where`는 그 줄에만 결합한다. `:`는 상속 표면이 아니다.
 
 구체 Class는 modifier를 쓰지 않아도 의미상 final이다.
 
@@ -83,6 +94,7 @@ MemberDecl ::= FieldDecl
              | TypeSideFieldDecl
              | TypeSideMemberFunctionDecl
              | AccessorPropertyDecl
+             | ConformBlockDecl
              | ForwardDecl
 
 FieldDecl ::= MemberVisibility? ("let" | "var") Identifier
@@ -131,8 +143,12 @@ owner를 보존한다.
 
 ```ebnf
 TraitDecl ::= TopLevelVisibility? "trait" Identifier
-              TypeParameterList? SuperTraitClause? TraitBody?
-SuperTraitClause ::= "requires" TraitReferenceList
+              TypeParameterList? TraitDerivesClause*
+              TraitAutoSupportClause? TraitBody?
+TraitDerivesClause ::= LineBreakBoundary "derives"
+                       QualifiedTypeReference
+TraitAutoSupportClause ::= LineBreakBoundary "supports" "auto"
+TraitBody ::= "{" TraitItem* "}"
 
 TraitItem ::= TraitMethodDecl
             | AssociatedRequirementDecl
@@ -154,10 +170,15 @@ AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
                                       EffectsClause? StatementBoundary
 ```
 
+Trait parent는 물리 줄 경계에서 시작하는 `derives Parent` 절을 반복해
+명시한다. `requires`는 callable contract에만 남으며 Trait 상속을
+표현하지 않는다. 닫힌 자동 합성 정책을 소유한 Trait만 별도 줄의
+`supports auto`로 이를 선언한다.
+
 Trait method의 marker는 Class marker와 glyph를 공유하지만 AST와 identity
 domain은 `TraitWitnessKind`이다. associated type/value/non-method function은
-method witness marker를 얻지 않는다. supertrait는 `requires` 뒤에
-명시한다.
+method witness marker를 얻지 않는다. parent Trait는 반복되는 `derives`
+절로 명시한다.
 
 ### Associated selector와 companion capability 분해
 
@@ -327,13 +348,25 @@ law도 executable MIR로 낮아지지 않으며 xVM·LLVM·제품 실행 PASS를
 ### Conformance와 evidence
 
 ```ebnf
-ConformanceDecl ::= TopLevelVisibility? "conformance" TypeRef
-                    "conforms" QualifiedTypeReference
-                    NameAliasClause? ConformanceViaClause?
-                    WhereClause? ConformanceBody
+ConformanceDecl ::= ExplicitConformanceDecl
+                  | AutomaticConformanceDecl
+
+ExplicitConformanceDecl ::= TopLevelVisibility? "type" TypeRef
+                            "conforms" QualifiedTypeReference
+                            NameAliasClause? ConformanceViaClause?
+                            WhereClause?
+                            (ConformanceBody | StatementBoundary)
+
+AutomaticConformanceDecl ::= TopLevelVisibility? "type" TypeRef
+                             "conforms" QualifiedTypeReference
+                             NameAliasClause? ConformanceAutoClause
+                             WhereClause? StatementBoundary
 
 NameAliasClause    ::= "as" Identifier
 ConformanceViaClause ::= "via" QualifiedPath
+ConformanceAutoClause ::= "by" "auto"
+ConformanceBody ::= "{" ConformanceItem* "}"
+ConformBlockDecl ::= "conform" QualifiedTypeReference ConformanceBody
 
 ConformanceItem ::= ConformanceMethodDecl
                   | TypeSideMemberFunctionDecl
@@ -347,10 +380,11 @@ AssociatedRequirementBinding ::= "type" Identifier "=" TypeRef
                                   StatementBoundary
 ```
 
-`conformance T conforms Trait { ... }`는 checker-visible evidence를
-만든다. `as name`은 명시적 conformance 이름이고, 소문자 `via path`는
-현행 route 표면이다. 이 `via`는 향후 설계 문서의 대문자 provider
-`VIA`나 `AUTO` route와 동일하지 않다.
+`type T conforms Trait { ... }`는 checker-visible evidence를 만든다.
+`as name`은 명시적 conformance 이름이고 소문자 `via path`는 body를
+가질 수 있는 현행 route다. `by auto`는 `supports auto`로 등록된 닫힌
+정책만 호출하며 반드시 bodyless다. nominal body의
+`conform Trait { ... }`는 해당 Trait witness를 한곳에 묶는다.
 
 ### 공유 Trait/conformance 보고서와 현행 authority의 조정
 
@@ -360,12 +394,10 @@ identity, 전역 coherence, orphan/overlap 검사, source·import·link order
 `TC-R001..R016`과 `TCC-DG-001..008`의 비활성 Preview 계약으로 수용되어
 있다. 이 의미 핵심은 새 source spelling이나 제품 지원을 활성화하지 않는다.
 
-현행 source는 계속 `conformance T conforms Trait { ... }`, Trait parent의
-`requires`, 소문자 `via`를 사용한다. `type T conforms Trait`, nominal
-header의 반복 `conforms`, parent `derives`, `supports auto`와 `by auto`,
-`conform Trait { ... }`, local/first-class witness 및 specialization은
-현행 문법으로 채택하지 않는다. 이 후보들은 별도 authority 없이는
-formatter·LSP·migration 대상도 아니다.
+현행 source는 `type T conforms Trait { ... }`, nominal header의 반복
+`conforms`, parent `derives`, 등록된 `supports auto`와 bodyless `by auto`,
+`conform Trait { ... }`, 소문자 `via`를 사용한다. local/first-class
+witness와 specialization은 현행 문법으로 채택하지 않는다.
 
 `TCC-P1-002..008`은 정확히 7개 모두 `OPEN`이고 successor는
 `NONACTIVATABLE`이다. parser, checker, HIR/MIR, runtime, formatter/LSP를
@@ -484,14 +516,15 @@ specialization이나 child-local witness를 만들지 않는다.
 ### 연산자와 Trait의 경계
 
 현행 operator glyph table과 precedence는 닫혀 있다. primitive와 그 밖의
-언어 예약 operand pair는 계속 intrinsic 전용이다. 다만 기존 glyph
-`+`, `-`, `*`는 Stable fixed-glyph profile에서 left nominal owner가
-제공하는 유일한 `DIRECT_GLOBAL` conformance를 정적으로 선택할 수 있다.
-그 밖의 glyph와 임의 operator 철자는 named Trait method 또는 named API로
-표현한다.
+언어 예약 operand pair는 계속 intrinsic 전용이다. 다만 unary `+`/`-`,
+binary `+`/`-`/`*`/`/`/`%`, equality `==`/`!=`, ordering
+`<`/`<=`/`>`/`>=`의 정확한 13개 역할은 Stable fixed-glyph profile에서
+left nominal owner가 제공하는 유일한 `DIRECT_GLOBAL` conformance를
+정적으로 선택할 수 있다. 그 밖의 glyph와 임의 operator 철자는 named
+Trait method 또는 named API로 표현한다.
 
 fixed-glyph conformance overloading의 Stable 계약은 기존
-`conformance T conforms Trait` 표면과 exact `+`, `-`, `*` mapping만
+`type T conforms Trait` 표면과 폐쇄된 fixed-glyph mapping만
 사용한다. `TCC-P1-002..008`은 제품·실행 검증 항목으로 계속 OPEN이다.
 
 ## 평가·소유권·효과
@@ -529,9 +562,11 @@ fixed-glyph conformance overloading의 Stable 계약은 기존
 module expr
 public sealed class Expr {
 }
-public final class Literal : Expr {
+public final class Literal
+derives Expr {
 }
-public open class Binary : Expr {
+public open class Binary
+derives Expr {
 }
 ```
 
@@ -563,7 +598,7 @@ public trait Display {
         effects {}
 }
 
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -602,7 +637,7 @@ public trait DefaultToken {
         effects {}
 }
 
-public conformance Token conforms DefaultToken {
+public type Token conforms DefaultToken {
     let ::code = 0
 
     def ::make() -> Token
@@ -632,7 +667,7 @@ public trait StorageModel {
     type Key
 }
 
-public conformance FileStore conforms StorageModel {
+public type FileStore conforms StorageModel {
     type Key = Token
 }
 
@@ -688,7 +723,7 @@ public sealed class Node {
 | `companion` object/keyword 또는 hidden per-type singleton | 거부; `COMPANION_OBJECT_NOT_CURRENT` |
 | conformance/extension/top-level helper가 nominal owner-private constructor authority 획득 | 거부; `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN` |
 | mutable/cache/resource/ambient-authority associated `let::` | 거부; `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` |
-| admitted set 밖의 fixed glyph conformance overload | 거부; Stable 집합은 `+`, `-`, `*`뿐 |
+| admitted set 밖의 fixed glyph conformance overload | 거부; Stable 집합은 정확한 13개 역할뿐 |
 | successor `VIA`/`AUTO`, specialization, fallback 경로 | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 자식/case 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 동적 attach/detach, 일급/로컬 Witness | `PREVIEW_DESIGN_NONACTIVATABLE` |
@@ -724,7 +759,7 @@ public trait CachedToken {
     let ::cache: SharedCell<Int>
 }
 
-public conformance Token conforms CachedToken {
+public type Token conforms CachedToken {
     let ::cache = SharedCell!(0)
 }
 // ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED
@@ -851,7 +886,7 @@ exact source spelling을 임의 발명하지 않고 별도 Spec_ ratification을
 거쳐야 한다. 그 뒤 canonical algorithms, deterministic diagnostics,
 metadata/link verifier, independent Test_ 실행, tooling idempotence와
 Design_ 최종 판정이 모두 필요하다. fixed-glyph operator overload의
-Stable 설계는 현재 `conformance` 표면에만 결합되며 Trait successor를
+Stable 설계는 현재 `type T conforms Trait` 표면에만 결합되며 다른 Trait 확장을
 자동으로 활성화하지 않는다. 제품 구현과 실행 evidence는 계속
 `NOT_RUN`이다.
 

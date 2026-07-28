@@ -229,12 +229,15 @@ owned/inout Facet 패키지는 현재 source route가 없는 비활성 설계이
 ### refinement와 확인 경계
 
 ```ebnf
-TypeAnnotation  ::= ":" TypeRef RefinementClause?
-RefinementClause ::= "where" PredicateExpr
+TypeAnnotation  ::= ":" TypeRef RefinementSuffix?
+RefinementSuffix ::= RefinementClause | IntervalRefinementClause
+RefinementClause ::= "where" (PredicateExpr | ImplicitThisPredicate)
+ImplicitThisPredicate ::= OrderedComparisonOperator PredicateExpr
+IntervalRefinementClause ::= "in" RefinementBound (".." | "..<") RefinementBound
 
 TypeAliasDecl   ::= TopLevelVisibility? "type" Identifier
                     TypeParameterList? "=" TypeAliasRhs StatementBoundary
-TypeAliasRhs    ::= TypeRef RefinementClause? | StaticRangeType
+TypeAliasRhs    ::= TypeRef RefinementSuffix? | StaticRangeType
 StaticRangeType ::= StaticIntLiteral ".." StaticIntLiteral
 
 CastSuffix      ::= "as" "?" TypeRef | "as" "!" TypeRef
@@ -250,9 +253,34 @@ CastSuffix      ::= "as" "?" TypeRef | "as" "!" TypeRef
 | `T::check(value)` | `Result<T, error E>`; 상세 오류를 보존 |
 
 `type Port = 0..65_535`는 닫힌 정적 정수 범위 alias의 짧은 표면이다.
-일반 refinement는 `type Port = Int where this >= 0 and this <= 65_535`
-형태이다. refinement predicate는 유한 R0 whitelist, 정확한 `Bool`,
-전체성, 종료성, 무효과, 무권한, 비중단 조건을 만족해야 한다.
+base type identity를 명시하는 구간 refinement는
+`type Port = Int in 0..65_535`로 쓴다. 이 표면은 정확히
+`Int where 0 <= this <= 65_535`로 정규화된다. `..<`는 오른쪽 끝을
+제외한다.
+
+한쪽 비교에서 subject가 `this` 하나뿐이면
+`type Positive = Int where > 0`으로 줄일 수 있다. 이는
+`Int where this > 0`과 같은 predicate identity를 가진다. 산술이나
+여러 조건을 포함하는 일반 predicate는 계속
+`Int where this % 2 == 0`처럼 `this`를 명시한다.
+
+`Int > 0`은 refinement 표면이 아니다. generic argument list를 닫는
+`>`와 타입 suffix가 충돌하지 않도록 `where` 또는 `in` 경계를 반드시
+둔다. refinement predicate는 유한 R0 whitelist, 정확한 `Bool`, 전체성,
+종료성, 무효과, 무권한, 비중단 조건을 만족해야 한다.
+
+정규화 뒤 세 표면은 같은 proof engine을 사용한다.
+
+| source | 정규화 |
+|---|---|
+| `T where > rhs` | `T where this > rhs` |
+| `T in lo..hi` | `T where lo <= this <= hi` |
+| `T in lo..<hi` | `T where lo <= this < hi` |
+
+`where <`, `where <=`, `where >`, `where >=`만 implicit `this`를
+허용한다. equality, call, arithmetic 또는 Boolean 결합은 축약하지
+않는다. bound는 literal, 정적 이름 또는 qualified static value이고
+source expression을 평가하거나 provider를 탐색하지 않는다.
 
 ## 허용과 정적 의미
 
@@ -341,7 +369,7 @@ summary를 actual에 치환해 `Phi`에 fact를 추가한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/guard-refinement-summary.json -->
 ```deeplus
-public type PositiveInt = Int where this > 0
+public type PositiveInt = Int where > 0
 
 public def#guard isPositive(value: Int) -> Bool = {
     return value > 0
@@ -349,7 +377,7 @@ public def#guard isPositive(value: Int) -> Bool = {
 
 public def describe(value: Int) -> String = {
     if isPositive(value) {
-        // 이 edge의 flow fact: value satisfies Int where this > 0
+        // 이 edge의 flow fact: value satisfies Int where > 0
         // 선언 타입은 계속 Int다.
         return "positive: ${value}"
     }
@@ -466,7 +494,7 @@ let text = @match value {
 ### `EX-R51a1-061` — 닫힌 R0 refinement
 
 ```deeplus
-public type Port = Int where this >= 0 and this <= 65_535
+public type Port = Int in 0..65_535
 ```
 
 ### `EX-R48-023` — 정적 범위 alias와 `as?`

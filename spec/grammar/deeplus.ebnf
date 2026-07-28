@@ -229,8 +229,17 @@ ErrorSet ::= ErrorSetTerm ("|" ErrorSetTerm)* ;
 ErrorSetTerm ::= Identifier | QualifiedTypeReference ;
 EffectSetLiteral ::= "{" IdentifierList? "}" ;
 
-TypeAnnotation ::= ":" TypeRef RefinementClause? ;
-RefinementClause ::= "where" PredicateExpr ;
+TypeAnnotation ::= ":" TypeRef RefinementSuffix? ;
+RefinementSuffix ::= RefinementClause | IntervalRefinementClause ;
+RefinementClause ::= "where" (PredicateExpr | ImplicitThisPredicate) ;
+(* The implicit-this branch deliberately stops at one comparison operand.
+   A general Boolean/arithmetic predicate must use the explicit `this` form,
+   which prevents `where > ...` from swallowing a following expression. *)
+ImplicitThisPredicate ::= OrderedComparisonOperator RefinementComparisonOperand ;
+RefinementComparisonOperand ::= Literal | Identifier | QualifiedStaticExpr ;
+IntervalRefinementClause ::= "in" RefinementBound (".." | "..<") RefinementBound ;
+RefinementBound ::= Literal | Identifier | QualifiedStaticExpr ;
+OrderedComparisonOperator ::= "<" | "<=" | ">" | ">=" ;
 Initializer ::= "=" Expr ;
 NameAliasClause ::= "as" Identifier ;
 
@@ -415,13 +424,20 @@ StoredParameter ::= MemberVisibility? ("let" | "var") Identifier TypeAnnotation?
 
 ClassDecl ::= OrdinaryClassDecl | DataClassDecl ;
 OrdinaryClassDecl ::= TopLevelVisibility? ClassFlavor? ClassModifierSequence? "class" Identifier
-                      TypeParameterList? ParameterList? InheritanceClause? WhereClause?
+                      TypeParameterList? ParameterList? WhereClause? ClassDerivesClause?
+                      NominalConformanceClause*
                       CleanupBudgetClause? ClassBody ;
 DataClassDecl ::= TopLevelVisibility? "data" "class" Identifier TypeParameterList? ParameterList?
-                  InheritanceClause? WhereClause? CleanupBudgetClause? ClassBody? ;
+                  WhereClause? NominalConformanceClause* CleanupBudgetClause? ClassBody? ;
 ClassFlavor ::= "value" | "resource" ;
 ClassModifierSequence ::= "final" | "open" | "abstract" | "sealed" | "abstract" "sealed" ;
-InheritanceClause ::= ":" TypeRef ;
+(* Every nominal header relation starts at a physical line boundary. A local
+   where clause ends with that relation line, so it cannot consume the owner's
+   preceding generic WhereClause or the following header relation. *)
+ClassDerivesClause ::= LineBreakBoundary "derives" TypeRef ;
+NominalConformanceClause ::= LineBreakBoundary "conforms" QualifiedTypeReference
+                             NominalConformanceRoute? WhereClause? ;
+NominalConformanceRoute ::= ConformanceViaClause | ConformanceAutoClause ;
 ClassBody ::= "{" MemberDecl* "}" ;
 
 MemberDecl ::= FieldDecl
@@ -431,6 +447,7 @@ MemberDecl ::= FieldDecl
              | TypeSideFieldDecl
              | TypeSideMemberFunctionDecl
              | AccessorPropertyDecl
+             | ConformBlockDecl
              | ForwardDecl ;
 
 FieldDecl ::= MemberVisibility? ("let" | "var") Identifier
@@ -446,8 +463,10 @@ ForwardMemberSpec ::= Identifier | "{" Identifier ("," Identifier)* ","? "}" ;
 
 (* ---------- Traits and conformances ---------- *)
 
-TraitDecl ::= TopLevelVisibility? "trait" Identifier TypeParameterList? SuperTraitClause? TraitBody? ;
-SuperTraitClause ::= "requires" TraitReferenceList ;
+TraitDecl ::= TopLevelVisibility? "trait" Identifier TypeParameterList?
+              TraitDerivesClause* TraitAutoSupportClause? TraitBody? ;
+TraitDerivesClause ::= LineBreakBoundary "derives" QualifiedTypeReference ;
+TraitAutoSupportClause ::= LineBreakBoundary "supports" "auto" ;
 TraitBody ::= "{" TraitItem* "}" ;
 TraitItem ::= TraitMethodDecl | AssociatedRequirementDecl | LawDecl ;
 
@@ -461,11 +480,19 @@ AssociatedValueRequirementDecl ::= "let" "::" Identifier TypeAnnotation Statemen
 AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
                                       ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
 
-ConformanceDecl ::= TopLevelVisibility? "conformance" TypeRef "conforms" QualifiedTypeReference
-                    NameAliasClause? ConformanceViaClause? WhereClause? ConformanceBody ;
+ConformanceDecl ::= ExplicitConformanceDecl | AutomaticConformanceDecl ;
+ExplicitConformanceDecl ::= TopLevelVisibility? "type" TypeRef "conforms" QualifiedTypeReference
+                            NameAliasClause? ConformanceViaClause? WhereClause?
+                            (ConformanceBody | StatementBoundary) ;
+AutomaticConformanceDecl ::= TopLevelVisibility? "type" TypeRef "conforms" QualifiedTypeReference
+                             NameAliasClause? ConformanceAutoClause WhereClause? StatementBoundary ;
 ConformanceViaClause ::= "via" QualifiedPath ;
+ConformanceAutoClause ::= "by" "auto" ;
 ConformanceBody ::= "{" ConformanceItem* "}" ;
-ConformanceMethodDecl ::= MemberVisibility? DefIntroducer Identifier TraitWitnessMarker FunctionRest ;
+ConformanceMethodDecl ::= MemberVisibility? DefIntroducer ConformanceMethodName
+                          TraitWitnessMarker FunctionRest ;
+ConformanceMethodName ::= Identifier | QualifiedTypeReference "::" Identifier ;
+ConformBlockDecl ::= "conform" QualifiedTypeReference ConformanceBody ;
 ConformanceItem ::= ConformanceMethodDecl
                   | TypeSideMemberFunctionDecl
                   | AssociatedRequirementBinding
@@ -487,7 +514,8 @@ ExtensionPackBody ::= "{" UseExportDecl* "}" ;
 
 (* ---------- Enums ---------- *)
 
-EnumDecl ::= TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? EnumBody ;
+EnumDecl ::= TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList?
+             NominalConformanceClause* EnumBody ;
 EnumOrderRole ::= "#" ("increasing" | "decreasing") ;
 EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}" ;
 EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","? ;
@@ -501,6 +529,7 @@ EnumMemberDecl ::= MemberFunctionDecl
                  | TypeSideFieldDecl
                  | TypeSideMemberFunctionDecl
                  | AccessorPropertyDecl
+                 | ConformBlockDecl
                  | EnumVariantSubsetAliasDecl ;
 EnumCaseDisplayMapping ::= "~>" RestrictedEnumDisplayTemplate ;
 RestrictedEnumDisplayTemplate ::= PLAIN_STRING_LITERAL
@@ -522,7 +551,7 @@ LayoutSchemaFieldDecl ::= Identifier TypeAnnotation Initializer? SchemaConstrain
 SchemaConstraint ::= "where" Expr ;
 
 TypeAliasDecl ::= TopLevelVisibility? "type" Identifier TypeParameterList? "=" TypeAliasRhs StatementBoundary ;
-TypeAliasRhs ::= TypeRef RefinementClause? | StaticRangeType ;
+TypeAliasRhs ::= TypeRef RefinementSuffix? | StaticRangeType ;
 StaticRangeType ::= StaticIntLiteral ".." StaticIntLiteral ;
 
 TopLevelBindingDecl ::= TopLevelVisibility? ("let" | "var") Identifier TypeAnnotation? "=" Expr StatementBoundary ;
@@ -858,7 +887,14 @@ MatchSubjectSlot ::= MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY ;
 MatchBody ::= "{" LineBreakBoundary? MatchArmSequence "}" ;
 MatchArmSequence ::= MatchArm (MatchArmSeparator MatchArm)* MatchArmSeparator? ;
 MatchArm ::= MatchHead GuardClause? "=>" MatchArmBodySlot ;
-MatchHead ::= Pattern | "otherwise" ;
+MatchHead ::= BoundedBinderPattern | Pattern | "otherwise" ;
+(* A bounded binder compares the match subject once, binds it to Identifier
+   for the successful arm, and contributes the corresponding finite-R0 fact.
+   The checker admits only monotone operator pairs: both ascending (<, <=) or
+   both descending (>, >=). Mixed directions are rejected rather than
+   rewritten into an implicit conjunction. *)
+BoundedBinderPattern ::= PatternBound OrderedComparisonOperator Identifier
+                         OrderedComparisonOperator PatternBound ;
 MatchArmSeparator ::= MATCH_ARM_SEPARATOR_BY_CONTEXT ;
 MatchArmBodySlot ::= MATCH_ARM_BODY_BY_CONTEXT ;
 

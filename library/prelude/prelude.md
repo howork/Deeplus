@@ -43,15 +43,23 @@ existing `RCTS_RESPONSIBILITY_COMBINATION_INVALID` family.
 
 ## 4. Fixed operators and protocols
 
-The operator vocabulary and precedence table are closed. Primitive and otherwise
-language-reserved operand pairs dispatch as `INTRINSIC_ONLY`. Stable
-fixed-glyph conformance adds exactly the existing binary `+`, `-`, and `*`
-through `Add<Rhs>`, `Subtract<Rhs>`, and `Multiply<Rhs>` for non-intrinsic pairs.
-Selection admits only one left-owner `DIRECT_GLOBAL` conformance and never uses
-conversion, result context, order, alternate evidence, fallback, or runtime
-lookup. `Bitwise` and `Ord<T>` remain named contract vocabulary, not punctuation
-hooks. Arbitrary custom operator declarations are rejected. Product execution
-is `NOT_RUN`, and all `TCC-P1-002..008` remain OPEN evidence gates.
+The operator vocabulary and precedence table are closed. Language-reserved
+operand domains remain intrinsic and cannot be overridden. Stable fixed-glyph
+conformance admits exactly thirteen existing roles: prefix `+`/`-`; binary
+`+`, `-`, `*`, `/`, `%`; and `==`, `!=`, `<`, `<=`, `>`, `>=`. Their nine
+Trait roots are `UnaryPlus`, `UnaryMinus`, `Add<Rhs>`, `Subtract<Rhs>`,
+`Multiply<Rhs>`, `Divide<Rhs>`, `Remainder<Rhs>`, `Eq<Rhs>`, and `Ord<Rhs>`.
+`!=` negates the same `Eq.equals` result as `==`; all four order glyphs project
+one `Ord.compare` result, and compare zero equals the `Eq` relation. Selection
+admits one left-owner `DIRECT_GLOBAL` conformance and never uses conversion,
+result context, source/import order, alternate evidence, fallback, or runtime
+lookup. Witnesses borrow operands and are pure, synchronous, non-consuming,
+`throws Never`, and `effects {}`. Numeric overflow or zero division/remainder
+may terminate only through nonrecoverable `ArithmeticDefect` before commit.
+Compound assignment derives its base binary role and owns no separate hook.
+Range, power, bitwise, logical, membership and identity hooks remain closed,
+as do arbitrary custom operators. Product execution is `NOT_RUN`, and all
+`TCC-P1-002..008` remain OPEN evidence gates.
 
 ## 4A. Current numeric and indexing boundary
 
@@ -84,7 +92,7 @@ The compound spelling is canonical for a simple place; it preserves the
 single-read, single-RHS-evaluation, failure-atomic assignment law and does not
 introduce an increment operator.
 
-`ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers both integer division and remainder by zero. It is neither an `ErrorSet` member nor an enum-as-error. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
+`ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers integer and exact-number division or remainder by zero, including Rational fixed-glyph arithmetic. It is neither an `ErrorSet` member nor an enum-as-error and occurs before enclosing place commit. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
 
 NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. No Prelude operation silently rebases, copies, makes the view mutable, crosses isolation, or extends its owner lifetime. An independent value or rebased coordinate domain requires an explicit named operation.
 
@@ -116,18 +124,17 @@ ABI are opaque.
 normalized BigInt numerator and positive denominator. Construction enforces
 `gcd(abs(n), d) = 1` and canonical zero `0/1`. The compound source literal
 `<p/q>` and the checked `Rational!` constructor produce the same value
-contract. `Rational` supplies strong named equality, ordering, hashing, and
-keyability. The sealed Prelude provides direct-global `+`, `-`, and `*`
-evidence for Rational/Rational and exact integer/Rational pairs in both
-directions. Division is the named checked `dividedBy`; Decimal, Float and
-Complex conversions are explicit. `display()` may return `2/3`, while
-`sourceRepr()` returns the parseable `<2/3>`.
-
-The nonactivatable Preview completion keeps exact normalization and proposes
-checked exact `/`, integral `^`, plus named `remainderTrunc`, `modEuclid`, and
-`divRemTrunc`. `%` remains deferred; no quotient
-law is silently selected and no current operator row changes merely because
-this inventory exists.
+contract. `Rational` supplies strong `Eq<Rational>`, total `Ord<Rational>`,
+hashing, and keyability. The sealed Prelude supplies unary `+`/`-`, binary
+`+`, `-`, `*`, `/`, `%`, equality and ordering evidence. `/` returns the exact
+normalized quotient and zero terminates with
+`ArithmeticDefect::divisionByZero`. `%` truncates the exact quotient toward
+zero to integer `q` and returns `a - q * b`; the same zero terminal applies.
+Named `dividedBy`, `remainderTrunc`, `modEuclid`, and `divRemTrunc` remain the
+recoverable or explicitly alternate-law APIs. Decimal, Float and Complex
+conversions remain explicit. `display()` may return `2/3`, while
+`sourceRepr()` returns the parseable `<2/3>`. Rational `^` remains outside the
+fixed-glyph profile.
 
 `Complex<Rep>` is an immutable two-component core numeric value whose initial
 Rep set is exactly Float32 and Float64. Bare `Complex` is the closed alias
@@ -142,9 +149,9 @@ let w: Complex<Float32> = 1.0f32 - 2.0f32i
 
 The `i` marker belongs only to an attached floating literal. Complex supplies
 partial IEEE equality but no implicit strong Eq, total ordering, Hash, or
-Keyable. Prelude owns sealed same-Rep Complex and real/Complex `+`, `-`, `*`
-conformances. Complex `/` and scalar `^` are closed language intrinsics, not
-additional conformance glyphs. Named APIs cover conjugate, magnitude, phase,
+Keyable. Prelude owns sealed same-Rep Complex and real/Complex unary `+`/`-`
+and binary `+`, `-`, `*`, `/` conformances. Complex has neither `%` nor `Ord`;
+scalar `^` remains a closed language intrinsic. Named APIs cover conjugate, magnitude, phase,
 polar construction, robust checked division, principal exp/log/sqrt/cbrt,
 integer/real/Complex power, alternate branches, trigonometric and hyperbolic
 families, parsing, codecs, and explicit conversion.
@@ -230,7 +237,7 @@ public def Pattern::compile(
 
 An implementation records engine/version, flags, Unicode mode and budget in the cache and execution identity. No-match is an ordinary match result; it is not a compile failure. Tooling-only xVM agent, tail-call analysis and UML provider contracts add no Prelude callable.
 
-## 10. Human index of the 66 canonical Prelude entries
+## 10. Human index of the 71 canonical Prelude entries
 
 This generated review index mirrors the machine catalog without replacing it. `status` is design/profile maturity; every product-support cell remains `NOT_RUN`.
 
@@ -242,6 +249,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `Indexable` | checker_known_protocol | `stable_design` | built-in owner indexing descriptor; conformance does not activate brackets |
 | `ArithmeticDefect` | language_intrinsic_defect | `stable_design` | closed nonrecoverable checked-integer failure family: overflow or division/remainder by zero |
 | `Add<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryAdd` evidence with associated `Output` |
+| `Divide<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryDivide` evidence with associated `Output` and precommit ArithmeticDefect law |
+| `Eq<Rhs>` | trait | `stable_design` | one strong equality witness deriving both `==` and `!=` |
 | `IndexError` | enum | `stable_design` | closed recoverable out-of-domain and missing-key indexing failure family |
 | `MembershipProtocol` | checker_known_protocol | `stable_design` | Current Prelude design vocabulary; product support NOT_RUN. |
 | `List<T>` | collection | `stable_design` | ordered owned collection with one-based built-in indexing |
@@ -297,18 +306,30 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `BitfieldCodec` | trait | `stdlib` | explicit endian codec |
 | `BitfieldRaw<Backing>` | trait | `stdlib` | checked raw carrier contract |
 | `LogicalIndexDomain<Index>` | trait | `stable_design` | named logical-domain contract; built-in brackets remain closed-owner syntax |
-| `Ord<T>` | trait | `stable_design` | nominal named ordering evidence, never an operator-glyph hook |
+| `Ord<Rhs>` | trait | `stable_design` | total-order evidence deriving all four order glyphs from one compare result |
 | `Multiply<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryMultiply` evidence with associated `Output` |
+| `Remainder<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinaryRemainder` evidence with an explicit quotient law |
 | `Subtract<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinarySubtract` evidence with associated `Output` |
+| `UnaryMinus` | trait | `stable_design` | exact non-intrinsic prefix `-` evidence with associated `Output` |
+| `UnaryPlus` | trait | `stable_design` | exact non-intrinsic prefix `+` evidence with associated `Output` |
 | `Display` | trait/profile | `stable_design` | string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed |
 
-`Ord<T>.compare(lhs, rhs)` borrows both operands, is deterministic, pure,
-synchronous, non-consuming, authority-free, `throws Never`, and returns an `Int`
-whose sign alone is contractually meaningful and stable. It must be total for every admitted ground `T`;
+`Eq<Rhs>.equals(rhs)` uses the instance marker's implicit borrowed `Self`
+receiver and one explicit borrowed `rhs`. It is deterministic, pure,
+synchronous, non-consuming, authority-free, `throws Never`, and returns
+`Bool`. It is reflexive, symmetric, and transitive. `!=` always negates this
+exact result and never selects a second witness.
+
+`Ord<Rhs>.compare(rhs)` likewise uses the implicit borrowed `Self` receiver and
+one explicit borrowed `rhs`. It is deterministic, pure, synchronous,
+non-consuming, authority-free, `throws Never`, and returns an `Int` whose sign
+alone is contractually meaningful and stable. It must be total for every admitted ground `T`;
 zero is the ground type's equality relation, and transitivity, antisymmetry and
-trichotomy are required. This named evidence never activates `<`, `<=`, `>`, or
-`>=`; the design-only example `EX-R48H-002` illustrates witness-slot markers and
-does not replace this generic Prelude signature.
+trichotomy are required. `Ord<Rhs>` derives `Eq<Rhs>`, so zero must coincide
+with `Eq.equals`. One witness derives `<`, `<=`, `>`, and `>=`. An eligible
+payload-free nongeneric ordered Enum receives one whole-Enum Eq/Ord pair; an
+explicit Enum range is semantic-ascending under that order and never follows a
+raw/tag/layout/ABI identity.
 
 `Display.display()` borrows its receiver, is deterministic, synchronous,
 non-consuming, authority-free, `throws Never`, and performs no hidden locale,

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.rational-complex-numeric-coherence/r1",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "language_version": "0.1.2-internal",
   "status": "DESIGN_STATIC_ACCEPTED_NO_PRODUCT_EXECUTION",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -32,11 +32,21 @@
     "product_support_claim_authorized": false,
     "publication_or_promotion_claim_authorized": false,
     "arbitrary_custom_operator_activation": false,
-    "fixed_glyph_conformance_operator_count": 3,
+    "fixed_glyph_conformance_operator_count": 13,
     "fixed_glyph_conformance_operator_ids": [
+      "UnaryPlus",
+      "UnaryMinus",
       "BinaryAdd",
       "BinarySubtract",
-      "BinaryMultiply"
+      "BinaryMultiply",
+      "BinaryDivide",
+      "BinaryRemainder",
+      "BinaryEqual",
+      "BinaryNotEqual",
+      "BinaryLessThan",
+      "BinaryLessThanOrEqual",
+      "BinaryGreaterThan",
+      "BinaryGreaterThanOrEqual"
     ],
     "feature_p1_closed": 0,
     "feature_p1_created": 0
@@ -288,7 +298,7 @@
       "constructor_zero_error": "RationalError::zeroDenominator",
       "named_division": "Rational.dividedBy(rhs)",
       "named_division_zero_error": "RationalError::divisionByZero",
-      "glyph_division_admitted": false,
+      "glyph_division_admitted": true,
       "named_negation": "Rational.negated()",
       "named_equality": "Rational.equals(rhs)",
       "named_order": "Rational.compare(rhs)",
@@ -469,11 +479,35 @@
     "glyph_vocabulary": "CLOSED",
     "precedence_table": "CLOSED",
     "admitted_operator_ids": [
+      "UnaryPlus",
+      "UnaryMinus",
       "BinaryAdd",
       "BinarySubtract",
-      "BinaryMultiply"
+      "BinaryMultiply",
+      "BinaryDivide",
+      "BinaryRemainder",
+      "BinaryEqual",
+      "BinaryNotEqual",
+      "BinaryLessThan",
+      "BinaryLessThanOrEqual",
+      "BinaryGreaterThan",
+      "BinaryGreaterThanOrEqual"
     ],
     "mapping": [
+      {
+        "operator_id": "UnaryPlus",
+        "glyph": "+",
+        "trait_id": "UnaryPlus",
+        "method_id": "UnaryPlus.positive",
+        "output_projection": "UnaryPlus::Output"
+      },
+      {
+        "operator_id": "UnaryMinus",
+        "glyph": "-",
+        "trait_id": "UnaryMinus",
+        "method_id": "UnaryMinus.negate",
+        "output_projection": "UnaryMinus::Output"
+      },
       {
         "operator_id": "BinaryAdd",
         "glyph": "+",
@@ -494,6 +528,62 @@
         "trait_id": "Multiply<Rhs>",
         "method_id": "Multiply.multiply",
         "output_projection": "Multiply<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinaryDivide",
+        "glyph": "/",
+        "trait_id": "Divide<Rhs>",
+        "method_id": "Divide.divide",
+        "output_projection": "Divide<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinaryRemainder",
+        "glyph": "%",
+        "trait_id": "Remainder<Rhs>",
+        "method_id": "Remainder.remainder",
+        "output_projection": "Remainder<Rhs>::Output"
+      },
+      {
+        "operator_id": "BinaryEqual",
+        "glyph": "==",
+        "trait_id": "Eq<Rhs>",
+        "method_id": "Eq.equals",
+        "output_projection": "Bool.identity"
+      },
+      {
+        "operator_id": "BinaryNotEqual",
+        "glyph": "!=",
+        "trait_id": "Eq<Rhs>",
+        "method_id": "Eq.equals",
+        "output_projection": "Bool.not"
+      },
+      {
+        "operator_id": "BinaryLessThan",
+        "glyph": "<",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_lt_zero"
+      },
+      {
+        "operator_id": "BinaryLessThanOrEqual",
+        "glyph": "<=",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_le_zero"
+      },
+      {
+        "operator_id": "BinaryGreaterThan",
+        "glyph": ">",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_gt_zero"
+      },
+      {
+        "operator_id": "BinaryGreaterThanOrEqual",
+        "glyph": ">=",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_ge_zero"
       }
     ],
     "selection": {
@@ -510,70 +600,85 @@
       "VIA_AUTO_local_case_specialization_candidate_count": 0,
       "fallback_count": 0,
       "runtime_lookup_count": 0,
-      "responsibility_profile": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      "responsibility_profile": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+      "derived_comparison_law": "!= shares Eq.equals; all order glyphs share Ord.compare; Ord zero equals Eq",
+      "range_hook_count": 0,
+      "compound_assignment_hook_count": 0
     },
     "sealed_standard_row_families": [
+      {
+        "left": "Rational",
+        "right": null,
+        "operator_ids": ["UnaryPlus", "UnaryMinus"],
+        "output": "Rational"
+      },
       {
         "left": "Rational",
         "right": "Rational",
         "operator_ids": [
           "BinaryAdd",
           "BinarySubtract",
-          "BinaryMultiply"
+          "BinaryMultiply",
+          "BinaryDivide",
+          "BinaryRemainder",
+          "BinaryEqual",
+          "BinaryNotEqual",
+          "BinaryLessThan",
+          "BinaryLessThanOrEqual",
+          "BinaryGreaterThan",
+          "BinaryGreaterThanOrEqual"
         ],
-        "output": "Rational"
+        "output": "Rational for arithmetic; Bool for Eq/Ord projections"
       },
       {
         "left": "Rational",
         "right": "ExactBuiltinInteger",
-        "operator_ids": [
-          "BinaryAdd",
-          "BinarySubtract",
-          "BinaryMultiply"
-        ],
+        "operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide", "BinaryRemainder"],
         "output": "Rational"
       },
       {
         "left": "ExactBuiltinInteger",
         "right": "Rational",
-        "operator_ids": [
-          "BinaryAdd",
-          "BinarySubtract",
-          "BinaryMultiply"
-        ],
+        "operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide", "BinaryRemainder"],
         "output": "Rational"
       },
       {
         "left": "Complex<Rep>",
+        "right": null,
+        "operator_ids": ["UnaryPlus", "UnaryMinus"],
+        "output": "Complex<Rep>"
+      },
+      {
+        "left": "Complex<Rep>",
         "right": "Complex<same Rep>",
-        "operator_ids": [
-          "BinaryAdd",
-          "BinarySubtract",
-          "BinaryMultiply"
-        ],
+        "operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide"],
         "output": "Complex<Rep>"
       },
       {
         "left": "Complex<Rep>",
         "right": "same exact Rep",
-        "operator_ids": [
-          "BinaryAdd",
-          "BinarySubtract",
-          "BinaryMultiply"
-        ],
+        "operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide"],
         "output": "Complex<Rep>"
       },
       {
         "left": "same exact Rep",
         "right": "Complex<Rep>",
-        "operator_ids": [
-          "BinaryAdd",
-          "BinarySubtract",
-          "BinaryMultiply"
-        ],
+        "operator_ids": ["BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide"],
         "output": "Complex<Rep>"
       }
     ],
+    "Rational_semantics": {
+      "division": "exact normalized Rational; zero divisor terminates ArithmeticDefect::divisionByZero before commit",
+      "remainder": "q = truncTowardZero(a / b); r = a - q * b; zero divisor terminates ArithmeticDefect::divisionByZero before commit",
+      "equality": "strong Eq<Rational>",
+      "ordering": "total Ord<Rational> whose zero equals Eq"
+    },
+    "Complex_semantics": {
+      "arithmetic": ["UnaryPlus", "UnaryMinus", "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide"],
+      "remainder": false,
+      "strong_Eq": false,
+      "Ord": false
+    },
     "arbitrary_custom_operator_count": 0,
     "arbitrary_custom_glyph_count": 0,
     "user_override_of_sealed_standard_row_count": 0,
@@ -691,21 +796,22 @@
     ],
     "division": {
       "primitive_integer_and_float": "EXISTING_LANGUAGE_INTRINSIC",
-      "Rational": "NAMED_CHECKED_API_ONLY",
-      "Complex": "NAMED_API_ONLY_WITH_CHECKED_VARIANT",
-      "fixed_operator_conformance_member": false
+      "Rational": "SEALED_DIVIDE_CONFORMANCE_OUTPUT_RATIONAL_WITH_ARITHMETICDEFECT_ZERO_TERMINAL;_NAMED_RECOVERABLE_API_RETAINED",
+      "Complex": "SEALED_SAME_REP_DIVIDE_CONFORMANCE_WITH_NAMED_CHECKED_VARIANT",
+      "fixed_operator_conformance_member": true
     },
     "unary_plus_minus": {
-      "conformance_member": false,
+      "conformance_member": true,
       "numeric_rbp": 159,
       "Rational_literal_negative": "LANGUAGE_INTRINSIC_LITERAL_PREFIX_NEGATION",
       "Complex_literal_negative": "LANGUAGE_INTRINSIC_LITERAL_PREFIX_NEGATION"
     },
     "equality_and_order": {
-      "glyph_conformance_member": false,
+      "glyph_conformance_member": true,
       "Rational": {
-        "named_partial_or_strong_equality": "STRONG_EQ",
-        "named_total_order": true,
+        "strong_equality": "Eq<Rational>",
+        "total_order": "Ord<Rational> derives Eq<Rational>",
+        "comparison_glyphs": ["==", "!=", "<", "<=", ">", ">="],
         "named_hash": true,
         "named_keyable": true
       },
@@ -717,7 +823,7 @@
         "keyable": false
       }
     },
-    "Rational_remainder": false,
+    "Rational_remainder": "TRUNCATING_EXACT_RATIONAL_REMAINDER",
     "Complex_remainder": false,
     "Complex_ordering_glyph": false,
     "Complex_bitwise": false
@@ -979,11 +1085,21 @@
     "exact_open_feature_p1_count": 22,
     "feature_p1_closed_by_contract": 0,
     "feature_p1_created_by_contract": 0,
-    "fixed_conformance_operator_count": 3,
+    "fixed_conformance_operator_count": 13,
     "fixed_conformance_operator_ids": [
+      "UnaryPlus",
+      "UnaryMinus",
       "BinaryAdd",
       "BinarySubtract",
-      "BinaryMultiply"
+      "BinaryMultiply",
+      "BinaryDivide",
+      "BinaryRemainder",
+      "BinaryEqual",
+      "BinaryNotEqual",
+      "BinaryLessThan",
+      "BinaryLessThanOrEqual",
+      "BinaryGreaterThan",
+      "BinaryGreaterThanOrEqual"
     ],
     "arbitrary_custom_operator_count": 0,
     "power_conformance_witness_count": 0,

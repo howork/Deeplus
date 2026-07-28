@@ -37,7 +37,7 @@ index expression 자체는 parse되지만 1-based bounds semantics에서
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-type Positive = Int where this > 0
+type Positive = Int where > 0
 
 def assume(value: Int) -> Positive = {
     return value

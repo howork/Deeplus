@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
   "date": "2026-07-28",
   "authority_bundle": {
@@ -68,6 +68,7 @@
       "actor",
       "any",
       "async",
+      "auto",
       "await",
       "backing",
       "bitfield",
@@ -75,6 +76,7 @@
       "borrowed",
       "break",
       "budget",
+      "by",
       "c",
       "cancellable",
       "capability",
@@ -83,6 +85,7 @@
       "cleanup",
       "clone",
       "common",
+      "conform",
       "conformance",
       "conforms",
       "consume",
@@ -92,6 +95,7 @@
       "data",
       "deep",
       "delegate",
+      "derives",
       "effects",
       "ensures",
       "entry",
@@ -150,6 +154,7 @@
       "spawn",
       "static",
       "super",
+      "supports",
       "task",
       "then",
       "throws",
@@ -271,13 +276,13 @@
     ],
     "hash_role_trivia": "allowed by parser; formatter canonicalizes to attached #word",
     "semantic_rejections": [
-      "fixed-operator conformance outside exact binary +,-,* or outside its left-owner DIRECT_GLOBAL profile",
+      "fixed-operator conformance outside the exact 13 unary, arithmetic, equality and ordering roles or outside their left-owner DIRECT_GLOBAL profile",
       "open or provider-driven runtime type tests",
       "accessor property header member visibility"
     ],
     "value_absence": "::none in an expected Option context or Option<T>::none explicitly; Option::none is only a contextual enum-pattern under an already known Option scrutinee, not a value constructor",
     "operator_token_vocabulary": "CLOSED",
-    "operator_glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_BINARY_PLUS_MINUS_MULTIPLY",
+    "operator_glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_13_UNARY_ARITHMETIC_EQUALITY_ORDER_ROLES",
     "range_delimiters": [
       "..",
       "..<"
@@ -2038,9 +2043,44 @@
       "fix": "named Trait method or function"
     },
     {
+      "id": "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
+      "stage": "PARSER",
+      "fix": "type Target conforms Trait { ... }"
+    },
+    {
+      "id": "CLASS_COLON_INHERITANCE_REMOVED",
+      "stage": "PARSER",
+      "fix": "class Child derives Parent"
+    },
+    {
+      "id": "TRAIT_REQUIRES_INHERITANCE_REMOVED",
+      "stage": "PARSER",
+      "fix": "trait Child derives Parent"
+    },
+    {
+      "id": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "stage": "CHECKER",
+      "fix": "declare an explicit witness body or use a Trait with one closed registered auto policy"
+    },
+    {
+      "id": "CONFORMANCE_AUTO_BODY_FORBIDDEN",
+      "stage": "PARSER",
+      "fix": "remove the body after by auto or replace by auto with an explicit body"
+    },
+    {
+      "id": "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
+      "stage": "PARSER",
+      "fix": "move the conformance to a top-level or nominal header"
+    },
+    {
+      "id": "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
+      "stage": "CHECKER",
+      "fix": "use the unqualified requirement name inside conform Trait { ... }"
+    },
+    {
       "id": "OPERATOR_CONFORMANCE_MISSING",
       "stage": "CHECKER",
-      "fix": "left-owner DIRECT_GLOBAL Add/Subtract/Multiply conformance or named API"
+      "fix": "one admitted left-owner DIRECT_GLOBAL UnaryPlus/UnaryMinus/Add/Subtract/Multiply/Divide/Remainder/Eq/Ord conformance or a named API"
     },
     {
       "id": "OPERATOR_CONFORMANCE_AMBIGUOUS",
@@ -2065,7 +2105,7 @@
     {
       "id": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
       "stage": "CHECKER",
-      "fix": "use borrowed throws Never effects {} synchronous implementation"
+      "fix": "use a borrowed throws Never effects {} synchronous implementation; arithmetic may terminate only through the declared nonrecoverable ArithmeticDefect precommit law"
     },
     {
       "id": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
@@ -2080,7 +2120,7 @@
     {
       "id": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
       "stage": "CHECKER",
-      "fix": "use a named Trait method or API"
+      "fix": "use one of the exact 13 admitted roles or a named Trait method/API; assignment, range, power, bitwise, logical, membership, type identity, and arbitrary custom glyph hooks remain closed"
     },
     {
       "stage": "PARSER",
@@ -2142,7 +2182,7 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 516,
+    "STABLE": 531,
     "PREVIEW": 13
   },
   "numeric_lexical_policy": {
@@ -2346,6 +2386,127 @@
       "implicit_companion_count": 0
     }
   },
+  "trait_conformance_surface_contract": {
+    "status": "STABLE_DESIGN",
+    "source_activation": "GRAMMAR_AND_STATIC_DESIGN_ONLY",
+    "product_support": "NOT_RUN",
+    "root_productions": [
+      "ConformanceDecl",
+      "NominalConformanceClause",
+      "TraitDerivesClause",
+      "TraitAutoSupportClause",
+      "ConformBlockDecl"
+    ],
+    "parser_commitments": {
+      "type_alias": "type Identifier TypeParameterList? = commits to TypeAliasDecl",
+      "external_conformance": "type TypeRef conforms commits to ConformanceDecl",
+      "class_inheritance": "one optional derives TypeRef; colon inheritance has no current production",
+      "class_conformance": "zero-or-more repeated conforms QualifiedTypeReference clauses",
+      "trait_inheritance": "zero-or-more repeated derives QualifiedTypeReference clauses; requires remains callable-contract syntax only",
+      "nominal_relation_boundary": "each derives, conforms, or supports auto clause starts at LineBreakBoundary; a clause-local where ends with that relation line",
+      "conformance_evidence_selector": "using conformance(Type conforms Trait) remains unchanged"
+    },
+    "lossless_cst_nodes": [
+      "ExplicitConformanceDeclCst",
+      "AutomaticConformanceDeclCst",
+      "NominalConformanceClauseCst",
+      "TraitDerivesClauseCst",
+      "TraitAutoSupportClauseCst",
+      "ConformBlockDeclCst",
+      "QualifiedConformanceMethodNameCst"
+    ],
+    "normalized_ast_nodes": {
+      "external": "ConformanceDeclAst",
+      "nominal_clause": "NominalConformanceClauseAst",
+      "group": "ConformBlockAst",
+      "qualified_witness": "ConformanceMethodDeclAst.requirement_owner_trait_id"
+    },
+    "external_forms": {
+      "direct": "type Target conforms Trait [as name] [where ...] { ... }",
+      "bodyless_direct": "type Target conforms Trait [as name] [where ...]",
+      "provider": "type Target conforms Trait [as name] via Provider [where ...] { ... }",
+      "automatic": "type Target conforms Trait [as name] by auto [where ...]"
+    },
+    "nominal_forms": {
+      "direct": "conforms Trait",
+      "provider": "conforms Trait via Provider",
+      "automatic": "conforms Trait by auto",
+      "group": "conform Trait { ... }"
+    },
+    "route_laws": {
+      "lowercase_via_preserved": true,
+      "via_body_allowed": true,
+      "by_auto_body_allowed": false,
+      "direct_bodyless_requires_complete_defaults": true,
+      "empty_direct_body_formatter_elides_to_bodyless": true,
+      "provider_or_auto_changes_ground_conformance_identity": false
+    },
+    "inheritance_laws": {
+      "class_direct_base_maximum": 1,
+      "trait_parent_clause_is_repeated_derives": true,
+      "class_subtyping_creates_trait_conformance": false,
+      "parent_evidence_preserves_origin_identity": true,
+      "child_local_parent_witness_replacement": false,
+      "specialization_or_priority": false
+    },
+    "automatic_synthesis": {
+      "trait_opt_in_surface": "supports auto",
+      "use_surface": "by auto",
+      "closed_registered_policy_required": true,
+      "unregistered_policy_candidate_count": 0,
+      "extension_shape_creates_policy": false,
+      "runtime_search_count": 0
+    },
+    "witness_surface": {
+      "markers": [
+        ".",
+        "+",
+        "*.",
+        "*+"
+      ],
+      "qualified_external_member": "Trait::member",
+      "qualification_inside_matching_conform_block": "redundant_and_rejected",
+      "associated_projection": "<T as Trait>::Item",
+      "associated_projection_preserved": true,
+      "name_alias_surface": "as name"
+    },
+    "scope_and_visibility": {
+      "top_level_visibility_domains": [
+        "private",
+        "common",
+        "public"
+      ],
+      "function_or_block_local_conformance": false,
+      "structural_or_runtime_conformance": false,
+      "source_or_import_order_ranks_candidates": false,
+      "orphan_and_overlap_checks_required": true
+    },
+    "preserved_identity_fields": [
+      "TraitId",
+      "ConformanceId",
+      "TraitWitnessId",
+      "RequirementId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId",
+      "AuthorityId"
+    ],
+    "tcc_evolution_lanes": [
+      "SOURCE",
+      "RESOLUTION",
+      "BEHAVIOR",
+      "BINARY_ABI"
+    ],
+    "diagnostics": [
+      "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
+      "CLASS_COLON_INHERITANCE_REMOVED",
+      "TRAIT_REQUIRES_INHERITANCE_REMOVED",
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "CONFORMANCE_AUTO_BODY_FORBIDDEN",
+      "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
+      "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP"
+    ]
+  },
   "source_roots": {
     "LibrarySourceFile": {
       "role": "library",
@@ -2413,6 +2574,7 @@
       "PinPattern",
       "RangePattern",
       "RelationalPattern",
+      "BoundedBinderPattern",
       "TuplePattern",
       "RecordPattern",
       "ListPattern",
@@ -2432,6 +2594,7 @@
       "PatternPin",
       "PatternRange",
       "PatternRelational",
+      "PatternBoundedBinder",
       "PatternTupleExact",
       "PatternRecordExactOrOpen",
       "PatternListExactOrPositionalRest",
@@ -2508,6 +2671,43 @@
     "parallel_assignment_current": "distinct mutable direct LocalPlaceIds; RHS staged once; one failure-atomic logical group commit; Unit",
     "bare_tuple_surface_current": "return type/value, binding, and direct-local assignment owner sugar only; no general comma Expr"
   },
+  "refinement_and_bounded_binder_frontend_contract": {
+    "refinement_suffix_owner": "TypeAnnotation and TypeAliasRhs only",
+    "implicit_this": {
+      "surface": "where OrderedComparisonOperator RefinementComparisonOperand",
+      "rhs_parse_goal": "RefinementComparisonOperand",
+      "rhs_members": ["Literal", "Identifier", "QualifiedStaticExpr"],
+      "full_predicate_rhs": false,
+      "desugaring": "insert exactly one distinguished `this` as the left operand",
+      "bare_relational_type_suffix": false,
+      "generic_close_commitment": "`>` closes GenericArguments before a following `where`; no refinement reinterpretation"
+    },
+    "interval_refinement": {
+      "surfaces": ["in lower..upper", "in lower..<upper"],
+      "bounds": "literal or one statically resolved stable pure value",
+      "runtime_bound": "reject with REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
+      "normalization_order": ["lower", "upper"],
+      "duplicate_bound_evaluation": false
+    },
+    "bounded_binder_pattern": {
+      "owners": ["MatchStatement.MatchHead", "MatchExpr.MatchHead"],
+      "cst": "BoundedBinderPatternCst",
+      "ast": "BoundedBinderPattern",
+      "hir": "TypedBoundedBinderPattern",
+      "scrutinee_evaluation_count": 1,
+      "scrutinee_evaluation_point": "before MatchArmSequence",
+      "arm_bound_read_order": ["written-left-bound", "written-right-bound"],
+      "bound_read_count_max_each": 1,
+      "bound_domain": "Literal or PinPattern resolving to one stable pure statically selected ordered value",
+      "mixed_strictness": true,
+      "mixed_direction": false,
+      "binder_commit_count_on_success": 1,
+      "binder_commit_count_on_failure": 0,
+      "coverage": "structural ordered interval with exact open/closed endpoint cells",
+      "hidden_guard": false,
+      "fallback_surface": "otherwise =>"
+    }
+  },
   "call_frontend_contract": {
     "surface_owners": {
       "ordinary": "CallSuffix",
@@ -2579,12 +2779,31 @@
     "new_syntax_count": 0,
     "admitted_operator_rows": [
       {
+        "operator_id": "UnaryPlus",
+        "glyph": "+",
+        "fixity": "prefix",
+        "trait_id": "UnaryPlus",
+        "method_id": "UnaryPlus.positive",
+        "output_projection": "UnaryPlus::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+      },
+      {
+        "operator_id": "UnaryMinus",
+        "glyph": "-",
+        "fixity": "prefix",
+        "trait_id": "UnaryMinus",
+        "method_id": "UnaryMinus.negate",
+        "output_projection": "UnaryMinus::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+      },
+      {
         "operator_id": "BinaryAdd",
         "glyph": "+",
         "fixity": "binary_infix",
         "trait_id": "Add<Rhs>",
         "method_id": "Add.add",
-        "output_projection": "Add<Rhs>::Output"
+        "output_projection": "Add<Rhs>::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
       },
       {
         "operator_id": "BinarySubtract",
@@ -2592,7 +2811,8 @@
         "fixity": "binary_infix",
         "trait_id": "Subtract<Rhs>",
         "method_id": "Subtract.subtract",
-        "output_projection": "Subtract<Rhs>::Output"
+        "output_projection": "Subtract<Rhs>::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
       },
       {
         "operator_id": "BinaryMultiply",
@@ -2600,11 +2820,99 @@
         "fixity": "binary_infix",
         "trait_id": "Multiply<Rhs>",
         "method_id": "Multiply.multiply",
-        "output_projection": "Multiply<Rhs>::Output"
+        "output_projection": "Multiply<Rhs>::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+      },
+      {
+        "operator_id": "BinaryDivide",
+        "glyph": "/",
+        "fixity": "binary_infix",
+        "trait_id": "Divide<Rhs>",
+        "method_id": "Divide.divide",
+        "output_projection": "Divide<Rhs>::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+      },
+      {
+        "operator_id": "BinaryRemainder",
+        "glyph": "%",
+        "fixity": "binary_infix",
+        "trait_id": "Remainder<Rhs>",
+        "method_id": "Remainder.remainder",
+        "output_projection": "Remainder<Rhs>::Output",
+        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+      },
+      {
+        "operator_id": "BinaryEqual",
+        "glyph": "==",
+        "fixity": "binary_infix",
+        "trait_id": "Eq<Rhs>",
+        "method_id": "Eq.equals",
+        "output_projection": "Bool.identity",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      },
+      {
+        "operator_id": "BinaryNotEqual",
+        "glyph": "!=",
+        "fixity": "binary_infix",
+        "trait_id": "Eq<Rhs>",
+        "method_id": "Eq.equals",
+        "output_projection": "Bool.not",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      },
+      {
+        "operator_id": "BinaryLessThan",
+        "glyph": "<",
+        "fixity": "binary_infix",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_lt_zero",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      },
+      {
+        "operator_id": "BinaryLessThanOrEqual",
+        "glyph": "<=",
+        "fixity": "binary_infix",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_le_zero",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      },
+      {
+        "operator_id": "BinaryGreaterThan",
+        "glyph": ">",
+        "fixity": "binary_infix",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_gt_zero",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+      },
+      {
+        "operator_id": "BinaryGreaterThanOrEqual",
+        "glyph": ">=",
+        "fixity": "binary_infix",
+        "trait_id": "Ord<Rhs>",
+        "method_id": "Ord.compare",
+        "output_projection": "compare_sign_ge_zero",
+        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
       }
     ],
+    "trait_roots": [
+      "UnaryPlus",
+      "UnaryMinus",
+      "Add",
+      "Subtract",
+      "Multiply",
+      "Divide",
+      "Remainder",
+      "Eq",
+      "Ord"
+    ],
     "selection": {
-      "key": [
+      "unary_key": [
+        "OperatorId",
+        "normalized_operand_type"
+      ],
+      "binary_key": [
         "OperatorId",
         "normalized_left_type",
         "normalized_right_type"
@@ -2623,8 +2931,9 @@
       "node": "FixedOperatorConformanceCall",
       "required_fields": [
         "operator_id",
+        "operand_arity",
         "normalized_left_type_id",
-        "normalized_right_type_id",
+        "normalized_right_type_id_or_null",
         "conformance_id",
         "witness_id",
         "method_id",
@@ -2632,27 +2941,36 @@
         "output_type_id",
         "responsibility_profile_id"
       ],
-      "operand_evaluation_order": "left_then_right_once_each",
+      "operand_evaluation_order": "unary operand once; binary left then right once each; chained comparison retains each middle operand once and the chain alone owns later-operand short circuit",
       "selected_identity_erased_before_mir": false
     },
     "responsibility_profile": {
       "left": "borrow",
-      "right": "borrow",
+      "right": "borrow_or_absent_for_unary",
       "throws": "Never",
       "effects": [],
       "suspension": "forbidden",
       "consume": false,
       "mutation": false,
-      "authority": []
+      "authority": [],
+      "arithmetic_terminal": "ArithmeticDefect before enclosing place commit when the selected numeric law detects overflow or a zero divisor",
+      "comparison_terminal": "none"
+    },
+    "derived_projection_laws": {
+      "BinaryNotEqual": "negate the BinaryEqual Eq.equals result; no independent witness",
+      "ordering": "all four order glyphs project one Ord.compare result and share one WitnessId",
+      "Ord_zero": "must coincide with Eq.equals",
+      "compound_assignment": "language-owned place transaction derives +,-,*,/,% from the corresponding binary role; no independent operator conformance",
+      "range": "language-owned construction; never a conformance hook"
     },
     "excluded_operator_families": [
-      "division",
-      "remainder",
       "strict logical",
-      "equality",
-      "ordering",
       "assignment",
       "range",
+      "power",
+      "bitwise",
+      "membership",
+      "type identity",
       "short-circuit"
     ],
     "product_support": "NOT_RUN"
@@ -3133,6 +3451,9 @@
       "status": "STABLE_DESIGN",
       "represented_in": "spec/contracts/enum-derived-capabilities.json",
       "grammar_owner": "EnumOrderRole",
+      "generated_trait_roots": ["Eq<Rhs>", "Ord<Rhs>"],
+      "comparison_glyphs": ["==", "!=", "<", "<=", ">", ">="],
+      "range_semantics": "explicit .. and ..< use semantic ascending order; range has no conformance hook",
       "product_support": "NOT_RUN"
     },
     "enum_case_display_mapping": {

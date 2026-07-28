@@ -1672,7 +1672,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "NumericLiteralAdmitted owns normalization. Scalar +,-,*,/ require one exact Int/Float domain; % is integer-only and /,% truncate quotient toward zero. Intrinsic-reserved pairs remain intrinsic. Exact binary +,-,* may use the separately bounded Stable Add/Subtract/Multiply conformance profile for a non-intrinsic pair. Integer ^ needs one exact domain plus static nonnegative proof. Measure/shape/pointwise use owner laws. ArithmeticDefect precedes commit; there is no hidden conversion, result-directed selection, fallback, or runtime relookup.",
+    "notes": "NumericLiteralAdmitted owns normalization. Scalar +,-,*,/ require one exact Int/Float domain; % is integer-only and /,% truncate quotient toward zero. Intrinsic-reserved domains remain intrinsic. Exact unary +/-, binary +,-,*,/,% and equality/total-order comparisons may use the separately bounded Stable nine-Trait fixed-conformance profile for a non-intrinsic domain. Rational supplies exact field arithmetic plus truncating rational remainder, strong Eq and total Ord; Complex supplies arithmetic including / but no remainder or Ord. Integer ^ needs one exact domain plus static nonnegative proof. Measure/shape/pointwise use owner laws. ArithmeticDefect precedes commit; compound assignment derives the selected base operation and there is no hidden conversion, result-directed selection, fallback, range hook, or runtime relookup.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

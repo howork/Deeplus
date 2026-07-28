@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-refinement-narrowing-coherence-contract/r1",
-  "revision": "r51f3-current-pattern-sequence-multivalue-r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -8,12 +8,44 @@
   "semantic_p0": 0,
   "product_lanes": "15/15_NOT_RUN",
   "authority_fence": {
-    "new_surface_syntax": false,
+    "new_surface_syntax": true,
     "open_runtime_type_test": false,
     "def_guard_narrowing_summary": true,
     "implementation_authority": false,
     "feature_p1_closed": 0,
     "feature_p1_created": 0
+  },
+  "refinement_surface": {
+    "explicit_form": "T where PredicateExpr",
+    "implicit_this_form": "T where OrderedRelOp rhs",
+    "implicit_this_desugaring": "T where this OrderedRelOp rhs",
+    "implicit_this_rhs_parse_goal": "RefinementComparisonOperand",
+    "implicit_this_rhs_domain": ["Literal", "Identifier", "QualifiedStaticExpr"],
+    "implicit_this_rhs_is_full_predicate": false,
+    "interval_forms": ["T in lower..upper", "T in lower..<upper"],
+    "interval_desugaring": [
+      "T where lower <= this <= upper",
+      "T where lower <= this < upper"
+    ],
+    "bare_relational_type_suffix_admitted": false,
+    "generic_close_token_ambiguity": "T > rhs is never parsed as a refinement type",
+    "bound_admission": "each nonliteral bound must resolve statically to one pure stable value in the ordered base domain; an ordinary runtime expression is rejected",
+    "bound_source_order": "read lower then upper for normalization; no source expression is duplicated or reordered",
+    "formatter": "retain the explicit where delimiter; use `in` only for a single canonical interval over this"
+  },
+  "chained_binder_pattern": {
+    "surface": "lower OrderedRelOp Identifier OrderedRelOp upper",
+    "subject_evaluation_count": 1,
+    "match_subject_evaluation": "evaluate once before the ordered arm sequence",
+    "bound_evaluation_order": "within an attempted arm, read lower then upper in written source order; each at most once",
+    "bound_admission": "Literal or a PinPattern resolving to one stable, pure, statically selected ordered value; runtime calls and unstable locals reject before HIR",
+    "middle_identifier_role": "new arm-local binder for the match subject",
+    "admitted_directions": ["lower < binder < upper", "lower <= binder <= upper", "upper > binder > lower", "upper >= binder >= lower", "monotone mixed strictness"],
+    "mixed_direction_admitted": false,
+    "true_edge_fact": "the normalized chained comparison over the bound subject",
+    "guarded_arm": false,
+    "exhaustiveness": "structural relational coverage with exact open/closed endpoint cells; overlap preserves only the new residual portion and no hidden if guard is created",
+    "fallback_surface": "otherwise =>"
   },
   "open_feature_p1": {
     "class": ["CE-C-P1-001", "CE-C-P1-002", "CE-C-P1-003", "CE-C-P1-004", "CE-C-P1-005", "CE-C-P1-006"],
@@ -147,6 +179,16 @@
       "rule_id": "TRN-R013",
       "title": "probe and commit are transactional",
       "contract": "Structural failure, an unreachable pattern, or a false guard produces zero committed bindings, moves, exclusive borrows and authorities; successful admission commits the precomputed plan atomically once."
+    },
+    {
+      "rule_id": "TRN-R014",
+      "title": "refinement shorthand preserves one explicit type boundary",
+      "contract": "`T where > rhs` inserts only the distinguished refinement subject `this`; `T in lower..upper` and `T in lower..<upper` normalize to one inclusive or upper-exclusive monotone interval. The bare spelling `T > rhs` is never a refinement because `>` retains its generic-close role. Shorthand normalization changes no proof obligation, evaluation, type identity, or runtime representation."
+    },
+    {
+      "rule_id": "TRN-R015",
+      "title": "a monotone chained binder Pattern binds and refines once",
+      "contract": "In a match Pattern owner, `lower <= name <= upper` and the corresponding monotone strict or descending spellings bind the subject exactly once to name, evaluate each bound at most once, and add the normalized chain fact to the arm-local Phi. Mixed directions reject before HIR, and the Pattern is not an implicit guarded arm."
     }
   ],
   "diagnostic_order": [
@@ -183,7 +225,12 @@
     "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT",
     "TYPE_TEST_SUBJECT_MUST_BE_CLOSED_UNION",
     "UNION_TYPE_TEST_ALTERNATIVE_NOT_EXACT",
-    "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A"
+    "COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A",
+    "REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED",
+    "REFINEMENT_INTERVAL_BOUNDS_REQUIRED",
+    "MATCH_CHAIN_BINDER_DIRECTION_MIXED",
+    "REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
+    "PATTERN_PIN_VALUE_NOT_STABLE"
   ],
   "predicate_input_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
   "predicate_inputs": [
@@ -195,7 +242,7 @@
     {"fixture_id":"TRN-DESC-MATCH-NEG","predicate_id":"MatchExhaustive","expected":"rejected","diagnostic_or_null":"MATCH_NONEXHAUSTIVE_AFTER_GUARDS","descriptor":{"subject":"Option<Int>","declared_type":"Option<Int>","current_alternatives":["some","none"],"pattern_coverage":["some"],"arm_order":["some if guard"],"arms":[{"arm_id":"some if guard","kind":"PATTERN","coverage_cells":["some"],"guard_origin":"INLINE_R0","binder_contract":["value:Int"],"entry_place_state":["subject:available"],"exit_place_state":["subject:available"]}],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
     {"fixture_id":"TRN-DESC-GUARD-POS","predicate_id":"GuardPredicateAdmitted","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"x > 0","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
     {"fixture_id":"TRN-DESC-GUARD-NEG","predicate_id":"GuardPredicateAdmitted","expected":"rejected","diagnostic_or_null":"GUARD_CONDITION_SUSPEND_NOT_ALLOWED","descriptor":{"subject":"await ready()","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":true,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
-    {"fixture_id":"TRN-DESC-R0-POS","predicate_id":"R0GuardSafe","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"this >= 1 and this <= 65535","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
+    {"fixture_id":"TRN-DESC-R0-POS","predicate_id":"R0GuardSafe","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"1 <= this <= 65535","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"PROVED","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Bool","commit_count":0}},
     {"fixture_id":"TRN-DESC-R0-NEG","predicate_id":"R0GuardSafe","expected":"rejected","diagnostic_or_null":"R0_GUARD_NOT_GUARD_SAFE","descriptor":{"subject":"1 / this > 0","declared_type":"Bool","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"INLINE_R0","guard_result_type":"Bool","boundary_kind":"NONE","proof_state":"UNKNOWN","type_relation":"NOT_APPLICABLE","responsibilities":{"errors":true,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},
     {"fixture_id":"TRN-DESC-REFINE-POS","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"443","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"ARGUMENT","proof_state":"PROVED","type_relation":"IMPLIES","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Port","commit_count":1}},
     {"fixture_id":"TRN-DESC-REFINE-NEG","predicate_id":"RefinementCheckBoundaryAdmitted","expected":"rejected","diagnostic_or_null":"REFINEMENT_PROOF_REQUIRED","descriptor":{"subject":"stored Bool from validPort(x)","declared_type":"Port","current_alternatives":[],"pattern_coverage":[],"arm_order":[],"guard_origin":"DEF_GUARD_STORED_BOOL","guard_result_type":"Bool","boundary_kind":"RETURN","proof_state":"UNKNOWN","type_relation":"UNKNOWN","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}}

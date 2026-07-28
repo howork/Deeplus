@@ -562,6 +562,7 @@
       "additionalProperties": false,
       "required": [
         "operator_id",
+        "operand_arity",
         "normalized_left_type_id",
         "normalized_right_type_id",
         "conformance_id",
@@ -576,22 +577,256 @@
       ],
       "properties": {
         "operator_id": {
-          "enum": ["BinaryAdd", "BinarySubtract", "BinaryMultiply"]
+          "enum": [
+            "UnaryPlus",
+            "UnaryMinus",
+            "BinaryAdd",
+            "BinarySubtract",
+            "BinaryMultiply",
+            "BinaryDivide",
+            "BinaryRemainder",
+            "BinaryEqual",
+            "BinaryNotEqual",
+            "BinaryLessThan",
+            "BinaryLessThanOrEqual",
+            "BinaryGreaterThan",
+            "BinaryGreaterThanOrEqual"
+          ]
         },
+        "operand_arity": {"enum": [1, 2]},
         "normalized_left_type_id": {"type": "string", "minLength": 1},
-        "normalized_right_type_id": {"type": "string", "minLength": 1},
+        "normalized_right_type_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
         "conformance_id": {"type": "string", "minLength": 1},
         "witness_id": {"type": "string", "minLength": 1},
         "method_id": {"type": "string", "minLength": 1},
         "substitution_id": {"type": "string", "minLength": 1},
         "output_type_id": {"type": "string", "minLength": 1},
         "responsibility_profile_id": {
-          "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+          "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
         },
         "dispatch_route": {"const": "DIRECT_GLOBAL"},
         "runtime_relookup_count": {"const": 0},
         "fallback_count": {"const": 0}
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "UnaryPlus"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 1},
+              "normalized_right_type_id": {"const": null},
+              "method_id": {"const": "UnaryPlus.positive"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "UnaryMinus"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 1},
+              "normalized_right_type_id": {"const": null},
+              "method_id": {"const": "UnaryMinus.negate"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryAdd"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Add.add"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinarySubtract"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Subtract.subtract"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryMultiply"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Multiply.multiply"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryDivide"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Divide.divide"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryRemainder"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Remainder.remainder"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryEqual"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Eq.equals"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryNotEqual"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Eq.equals"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryLessThan"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Ord.compare"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryLessThanOrEqual"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Ord.compare"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryGreaterThan"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Ord.compare"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"operator_id": {"const": "BinaryGreaterThanOrEqual"}},
+            "required": ["operator_id"]
+          },
+          "then": {
+            "properties": {
+              "operand_arity": {"const": 2},
+              "normalized_right_type_id": {"type": "string", "minLength": 1},
+              "method_id": {"const": "Ord.compare"},
+              "output_type_id": {"const": "Bool"},
+              "responsibility_profile_id": {
+                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+              }
+            }
+          }
+        }
+      ]
     },
     "responsibilityChannel": {
       "type": "object",
@@ -1028,9 +1263,31 @@
   },
   "x-deeplus-fixed-operator-conformance-contract": {
     "absence": "an absent or null fixed_operator_conformance field means the conformance is not a fixed-glyph dispatch provider",
-    "presence_owner": "only kind=conformance under the Stable exact binary +,-,* profile",
-    "selection_identity": "OperatorId plus normalized left/right type identities selects one left-owner DIRECT_GLOBAL ConformanceId/WitnessId/MethodId/substitution and then derives OutputTypeId",
+    "presence_owner": "only kind=conformance under the Stable exact 13-role unary/arithmetic/equality/total-order profile",
+    "selection_identity": "OperatorId plus normalized operand identities selects one left-owner DIRECT_GLOBAL ConformanceId/WitnessId/MethodId/substitution and then derives associated arithmetic OutputTypeId or fixed Bool comparison output",
     "intrinsic_reservation": "an intrinsic-reserved operand pair has no user fixed_operator_conformance residue and cannot be overridden",
+    "derived_projection": "BinaryNotEqual shares Eq.equals with BinaryEqual; all four order glyphs share Ord.compare; compound assignment and range have no independent hook",
+    "arithmetic_terminal": "ArithmeticDefect is a nonrecoverable precommit terminal and is not a throws member",
+    "schema_stage": "MODULE_API",
+    "hir_to_schema_field_map": {
+      "operator_id": "operator_id",
+      "operand_arity": "operand_arity",
+      "normalized_left_type_id": "normalized_left_type_id",
+      "normalized_right_type_id_or_null": "normalized_right_type_id",
+      "conformance_id": "conformance_id",
+      "witness_id": "witness_id",
+      "method_id": "method_id",
+      "substitution": "substitution_id",
+      "output_type_id": "output_type_id",
+      "responsibility_profile_id": "responsibility_profile_id"
+    },
+    "schema_stage_constant_fields": {
+      "dispatch_route": "DIRECT_GLOBAL",
+      "runtime_relookup_count": 0,
+      "fallback_count": 0
+    },
+    "field_mapping": "TOTAL_INJECTIVE_DETERMINISTIC",
+    "operator_role_binding": "EXACT_13_IF_THEN_ROWS",
     "runtime_lookup_or_fallback_count": 0,
     "product_support": "NOT_RUN"
   },

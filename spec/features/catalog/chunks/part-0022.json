@@ -454,13 +454,15 @@
     "depends_on": [
       "pattern_decomposition"
     ],
-    "notes": "^stableValue pins one stable readable value. Bounded range and relational Patterns are closed to Int, UInt, Char, ordered Enum, and other exact ordered domains with compiler-known strong equality/order evidence. Float remains Preview Gated.",
+    "notes": "^stableValue pins one stable readable value. Bounded range and relational Patterns are closed to Int, UInt, Char, ordered Enum, and other exact ordered domains with compiler-known strong equality/order evidence. A match-only bounded-binder Pattern evaluates the scrutinee once, reads literal or pinned stable bounds in source order, admits monotone mixed strictness, and contributes structural interval coverage. Float remains Preview Gated.",
     "primary_source": "spec/language.md",
     "normative_trace_refs": {
       "diagnostics": [
         "PATTERN_PIN_REQUIRES_STABLE_VALUE",
+        "PATTERN_PIN_VALUE_NOT_STABLE",
         "PATTERN_PIN_STRONG_EQ_UNAVAILABLE",
-        "PATTERN_RANGE_DOMAIN_UNSUPPORTED"
+        "PATTERN_RANGE_DOMAIN_UNSUPPORTED",
+        "MATCH_CHAIN_BINDER_DIRECTION_MIXED"
       ],
       "predicates": [
         "PinRangeRelationalPatternAdmitted"
@@ -469,7 +471,8 @@
       "productions": [
         "PinPattern",
         "RangePattern",
-        "RelationalPattern"
+        "RelationalPattern",
+        "BoundedBinderPattern"
       ],
       "semantic_reference_productions": []
     },

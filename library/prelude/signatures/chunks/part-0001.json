@@ -65,8 +65,8 @@
     "signatures": [
       "public trait Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"
     ],
-    "responsibility": "Stable BinaryAdd evidence for an admitted non-intrinsic operand pair; the implicit left receiver and rhs are borrowed, evaluation is strict and left-to-right, and Output is derived only after one left-owner DIRECT_GLOBAL conformance is selected",
-    "notes": "Intrinsic-reserved pairs never consult this Trait. Expected result, conversion, source/import order, via/VIA/AUTO, local/case, extension/provider, specialization, fallback, and runtime relookup are forbidden; product support NOT_RUN.",
+    "responsibility": "Stable BinaryAdd evidence for an admitted non-intrinsic operand pair; the implicit left receiver and rhs are borrowed, evaluation is strict and left-to-right, Output is derived only after one left-owner DIRECT_GLOBAL conformance is selected, and any declared numeric overflow terminates as ArithmeticDefect before enclosing place commit",
+    "notes": "Intrinsic-reserved domains never consult this Trait. Expected result, conversion, source/import order, via/VIA/AUTO, local/case, extension/provider, specialization, fallback, and runtime relookup are forbidden; ArithmeticDefect is nonrecoverable and does not enter throws; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -79,7 +79,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "c9197b9a9ab799146df7dce4eff2725d1db311debfb8842836e215adeb93eace"
+    "normalized_contract_sha256": "4079d1b4faa9a6e28a0a578cbf9c08d274f4786129ddf7b6496fed75a74987d2"
   },
   {
     "entry_id": "arithmetic_defect",
@@ -92,8 +92,8 @@
     "signatures": [
       "prelude intrinsic ArithmeticDefect { overflow; divisionByZero; }"
     ],
-    "responsibility": "closed nonrecoverable checked-integer arithmetic failure identity; not an ErrorSet member or enum-as-error",
-    "notes": "overflow covers dynamic checked overflow; divisionByZero covers integer division or remainder by zero; all outcomes occur before enclosing assignment commit; product support NOT_RUN",
+    "responsibility": "closed nonrecoverable checked numeric arithmetic failure identity for intrinsic and admitted fixed-glyph operations; not an ErrorSet member or enum-as-error",
+    "notes": "overflow covers dynamic checked integer and other explicitly checked numeric overflow; divisionByZero covers integer or exact-number division and remainder by zero, including Rational fixed-glyph arithmetic; all outcomes occur before enclosing assignment commit and do not enter a throws set; product support NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -106,7 +106,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "f4ed7a126659b43ef4c6b99c69b8da3aff419e90b433acbc8ddfa3e8ff396af5"
+    "normalized_contract_sha256": "5f946f703f80ad72e6aa693ce7d30b6e502904dc046b652149a2ff1405decc10"
   },
   {
     "entry_id": "bitfield_codec",
@@ -1135,8 +1135,8 @@
     "signatures": [
       "public trait Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"
     ],
-    "responsibility": "Stable BinaryMultiply evidence for an admitted non-intrinsic operand pair under the exact borrowed, pure, total, synchronous fixed-glyph responsibility profile",
-    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved pair or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; product support NOT_RUN.",
+    "responsibility": "Stable BinaryMultiply evidence for an admitted non-intrinsic operand pair under the borrowed, pure, synchronous, non-consuming fixed-glyph profile with only a declared precommit ArithmeticDefect terminal",
+    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved domain or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; ArithmeticDefect is nonrecoverable and not a throws member; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -1149,7 +1149,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "05eb990962c2b0e98845ad45a46a99ffea80ada5c0b7ed55232c6401f12d837f"
+    "normalized_contract_sha256": "fe61fee38923e2955ff21c58ef60d55793ea1cd0d74c1eb33a6a85d583cdbc67"
   },
   {
     "entry_id": "numeric_array",
@@ -1237,30 +1237,31 @@
   },
   {
     "entry_id": "ord_t",
-    "symbol": "Ord<T>",
+    "symbol": "Ord<Rhs>",
     "kind": "trait",
     "status": "stable_design",
     "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }"
+      "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
     ],
-    "responsibility": "nominal total-order evidence for T; compare borrows both operands, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign contractually meaningful and stable; never an operator-glyph hook",
-    "notes": "Zero is the ground equality relation and trichotomy, transitivity, and antisymmetry are required. Current comparison glyphs dispatch intrinsically; Float NaN supplies no implicit Ord evidence. Enum declaration-order derivation is Stable/current under the closed declaration-order contract.",
+    "responsibility": "nominal total-order evidence for Self and Rhs; compare borrows its implicit Self receiver and explicit rhs, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign meaningful; one selected witness derives <, <=, > and >=",
+    "notes": "Ord<Rhs> derives Eq<Rhs>; compare zero must equal the Eq relation and trichotomy, transitivity, and antisymmetry are required. The four order glyphs share one WitnessId and no per-glyph conformance exists. Intrinsic-reserved domains take priority; Float NaN and Complex supply no implicit Ord evidence. Eligible ordered Enum derivation supplies one whole-Enum Eq/Ord pair and semantic ascending range authority.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Ord<T> { +def compare.(borrow lhs: T, borrow rhs: T) -> Int throws Never effects {}; }",
+        "text": "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "5007bcde9d2e36f82c59f599dfad3bbeb5edd5120f880dd2b8dd65cc37f6527f"
+    "normalized_contract_sha256": "964e546424d3e41b62ee8c08d0f0adfceedef5f99efff4ffb84cdc1d79d7395a"
   },
   {
     "entry_id": "owned_downcast_op",
@@ -1358,7 +1359,7 @@
     ],
     "signatures": [
       "prelude intrinsic borrowed type ListRestView<T>",
-      "prelude intrinsic conformance ListRestView<T> conforms Sequence<T>"
+      "prelude intrinsic type ListRestView<T> conforms Sequence<T>"
     ],
     "responsibility": "owner-bounded positional List-rest view with exact ordinal span, source-coordinate provenance, and explicit intrinsic traversal evidence",
     "notes": "Only the closed built-in List-pattern decomposition descriptor creates this borrowed identity. It records SourceOwnerId, BorrowRegionId, RankSpan(start_rank,count), and rank-to-source-coordinate projection; count = 0 is a valid empty residual at a preserved insertion boundary and is not an empty source Range. The explicit intrinsic Sequence<T> witness supplies traversal only and activates neither brackets nor generic Sequence pattern opening. No user conformance, hidden copy, allocation, rebase, mutation, isolation crossing, or owner-lifetime extension is admitted. A pure Pattern guard may observe a nonowning probe view; the final binder is published only by the whole-pattern commit.",
@@ -1374,13 +1375,13 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       },
       {
-        "text": "prelude intrinsic conformance ListRestView<T> conforms Sequence<T>",
+        "text": "prelude intrinsic type ListRestView<T> conforms Sequence<T>",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "80b310a9e96cf677bca7ee1afc525d30198236db3800ea95e94669157d458c49"
+    "normalized_contract_sha256": "bcafd3bdf932735f31cbd59c222c1dc87956becff043c7f42447761d020bf806"
   },
   {
     "entry_id": "replace_t",
@@ -1463,34 +1464,5 @@
       }
     ],
     "normalized_contract_sha256": "27984b8bf90f4b7dfc92f37cffd817848de53d8808ee6a231019900f386a3905"
-  },
-  {
-    "entry_id": "set_t",
-    "symbol": "Set<T>",
-    "kind": "collection",
-    "status": "stable_design",
-    "feature_refs": [
-      "set_prefixed_literal",
-      "set_comprehension",
-      "membership_in_operator_candidate"
-    ],
-    "signatures": [
-      "prelude intrinsic Set<T>"
-    ],
-    "responsibility": "immutable unique-element collection with explicit element equality and keyability; duplicate literal entries reject, membership is intrinsic over the exact element domain, and iteration order is not semantic",
-    "notes": "Current #set literal and Set comprehension identity; product support NOT_RUN",
-    "product_support": "NOT_RUN",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
-    "primary_source": "library/prelude/prelude.md",
-    "signature_records": [
-      {
-        "text": "prelude intrinsic Set<T>",
-        "dialect": "prelude_intrinsic",
-        "grammar_root": null,
-        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
-      }
-    ],
-    "normalized_contract_sha256": "d4a00149ea61f2ea1ea1ddfa4175d640ab4d6692b05732526cf50e89c3178fef"
   }
 ]

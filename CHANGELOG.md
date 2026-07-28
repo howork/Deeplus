@@ -1,5 +1,23 @@
 # Changelog
 
+## r51f3-current-trait-operator-refinement-r1 — 2026-07-28
+
+- Adopt the guarded Trait Conformance successor surface: `type ... conforms`,
+  repeated nominal `conforms`, `derives`, registered `by auto`, grouped
+  `conform` witnesses, and qualified `Trait::member`.
+- Expand Stable fixed-glyph conformance to the exact thirteen unary,
+  arithmetic, equality, and ordering roles while keeping arbitrary custom
+  operators and range hooks closed.
+- Complete Rational arithmetic including division and truncation remainder;
+  keep Complex unordered and without remainder.
+- Enable ordered payload-free nongeneric Enum comparison and semantic-order
+  ranges.
+- Add explicit-boundary refinement shorthand and monotone chained binder
+  Patterns, then update the Korean Grammar Reference, tutorial, and example
+  corpus.
+- Preserve semantic P0 = 0, the exact 22 OPEN feature P1 set, and product
+  lanes 15/15 NOT_RUN.
+
 ## r51f3-current-publication-m1.3 — 2026-07-15
 
 - 병합된 M1.2 source revision과 불변 Library snapshot을 `deeplus.current-pointer/v1`로 결속했다.

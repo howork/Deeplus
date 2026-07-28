@@ -59,14 +59,18 @@
     "typed_value_adaptation": false
   },
   "preview_rational_completion": {
-    "division": "Rational / Rational -> Rational; zero divisor raises RationalError::divisionByZero before commit",
+    "stable_boundary": {
+      "division": "Rational / Rational -> Rational is Stable fixed-glyph Divide evidence; a zero divisor raises nonrecoverable ArithmeticDefect before commit",
+      "remainder": "Rational % Rational is Stable fixed-glyph Remainder evidence with q = truncTowardZero(a / b), r = a - q * b; a zero divisor raises nonrecoverable ArithmeticDefect before commit"
+    },
     "integral_power": "Rational ^ ExactBuiltinInteger -> Rational; negative exponent admitted; zero base with negative exponent fails before commit",
-    "named_remainder": [
-      "remainderTrunc",
+    "named_alternative_apis": [
       "modEuclid",
       "divRemTrunc"
     ],
-    "remainder_glyph": "DEFERRED"
+    "division_glyph": "STABLE_FIXED_CONFORMANCE_OUTSIDE_PREVIEW",
+    "remainder_glyph": "STABLE_FIXED_CONFORMANCE_OUTSIDE_PREVIEW",
+    "preview_scope": "integral power and the optional named alternative APIs only"
   },
   "std_math": {
     "core_status": "STDLIB_PROFILE",
@@ -95,7 +99,6 @@
     "Decimal",
     "BigFloat",
     "direct Float or Complex Keyable",
-    "Rational remainder glyph",
     "implicit mixed-width or mixed-signedness conversion"
   ],
   "rejected": [
@@ -105,7 +108,7 @@
     "stable_alias_count": 1,
     "stable_default_unsigned_domain_count": 1,
     "preview_capability_count": 7,
-    "rational_remainder_glyph_count": 0,
+    "rational_remainder_glyph_count": 1,
     "implicit_conversion_count": 0,
     "arbitrary_custom_glyph_count": 0,
     "product_execution_receipt_count": 0,

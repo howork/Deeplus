@@ -108,9 +108,10 @@ suspend시키지 않는다.
 - 현행 token vocabulary와 precedence는 닫혀 있다.
 - primitive와 언어 예약 operand pair의 glyph dispatch는
   `INTRINSIC_ONLY`다.
-- Stable fixed-glyph conformance가 허용하는 기존 glyph는 정확히
-  `+`, `-`, `*`다. 이 집합은 새 glyph, fixity, binding power 또는
-  associativity를 만들지 않는다.
+- Stable fixed-glyph conformance가 허용하는 기존 역할은 정확히 13개다:
+  unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, equality `==`/`!=`,
+  ordering `<`/`<=`/`>`/`>=`. 이 집합은 새 glyph, fixity, binding
+  power 또는 associativity를 만들지 않는다.
 - 그 밖의 Trait, extension, witness, provider 또는 runtime lookup은
   glyph를 만들거나 재정의하지 못한다.
 - 사용자 확장은 named Trait method 또는 named API를 쓴다.
@@ -118,13 +119,19 @@ suspend시키지 않는다.
 
 ### Stable fixed-glyph conformance
 
-`BinaryAdd`, `BinarySubtract`, `BinaryMultiply`는 각각 Prelude의
-`Add<Rhs>.add`, `Subtract<Rhs>.subtract`, `Multiply<Rhs>.multiply`와
-associated `Output`에 결합된다. 먼저 normalized operand pair가 intrinsic
-예약 domain인지 검사한다. 예약 pair이면 intrinsic만 선택하며 사용자
-conformance lookup은 0회다. 예약 domain 밖에서는 left operand의 nominal
-type을 정의한 package에 있는 유일한 `DIRECT_GLOBAL` conformance 하나만
-선택한다.
+13개 역할은 Prelude의 9개 Trait root에 결합된다.
+
+| 역할 | Trait root와 파생 규칙 |
+|---|---|
+| unary `+`, `-` | `UnaryPlus.positive`, `UnaryMinus.negate`와 associated `Output` |
+| binary `+`, `-`, `*`, `/`, `%` | `Add`, `Subtract`, `Multiply`, `Divide`, `Remainder`의 `Rhs`, method, associated `Output` |
+| `==`, `!=` | 하나의 `Eq<Rhs>.equals`; `!=`는 그 Bool 결과의 negation |
+| `<`, `<=`, `>`, `>=` | 하나의 `Ord<Rhs>.compare`; 결과 부호를 0과 비교해 네 glyph를 파생 |
+
+먼저 normalized operand 또는 pair가 intrinsic 예약 domain인지 검사한다.
+예약 domain이면 intrinsic만 선택하며 사용자 conformance lookup은 0회다.
+예약 domain 밖에서는 left operand의 nominal type을 정의한 package에
+있는 유일한 `DIRECT_GLOBAL` conformance 하나만 선택한다.
 
 선택은 `(OperatorId, normalized LeftType, normalized RightType)`만으로
 결정한다. expected result type, implicit conversion, import/source order,
@@ -133,7 +140,8 @@ type을 정의한 package에 있는 유일한 `DIRECT_GLOBAL` conformance 하나
 terminal diagnostic이며 intrinsic 또는 named API로 fallback하지 않는다.
 선택된 `ConformanceId`, `WitnessId`, `MethodId`, substitution,
 `OutputTypeId`와 responsibility profile은 typed HIR, MIR와 public API
-metadata에 고정되고 runtime relookup과 fallback count는 0이다.
+metadata에 고정되고 runtime relookup과 fallback count는 0이다. `!=`와
+네 ordering glyph, compound assignment는 별도 witness를 만들지 않는다.
 
 두 operand는 왼쪽부터 정확히 한 번 평가한다. witness는 두 operand를
 borrow하고 `throws Never`, `effects {}`, synchronous, non-consuming,
@@ -147,7 +155,7 @@ public class Vec2 {
     +let y: Int
 }
 
-public conformance Vec2 conforms Add<Vec2> {
+public type Vec2 conforms Add<Vec2> {
     type Output = Vec2
 
     +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {
@@ -160,8 +168,8 @@ let combined = left + right
 
 위 예의 안쪽 `Int + Int` 두 연산은 intrinsic 예약 pair이고, 바깥쪽
 `Vec2 + Vec2`만 `Vec2` owner의 `Add<Vec2>` conformance를 선택한다.
-`/`, `%`, strict logical, equality/ordering, assignment, range와
-short-circuit operator는 이 Stable 집합에 포함되지 않는다.
+strict/short-circuit logical, bitwise, power, assignment, range는 이
+Stable conformance 집합에 포함되지 않는다.
 `TCC-P1-002..008`은 제품 구현·독립 conformance evidence가 아직
 `NOT_RUN`이므로 계속 OPEN이지만, 이는 이 bounded 언어 설계를 다시
 Preview로 내리지 않는다.
@@ -199,18 +207,17 @@ unordered이므로 암시적 `Ord`나 `Keyable` evidence를 공급하지 않는�
 
 정확 수와 복소수의 기능 identity는 `rational_exact_numeric_value`,
 `complex_core_numeric_value`다. 두 타입은 임의의 연산자 확장 통로를
-열지 않는다. Stable fixed-glyph conformance 집합은 여전히 정확히
-`+`, `-`, `*`뿐이며, Prelude가 다음 표의 표준 row를 sealed
-`DIRECT_GLOBAL` identity로 제공한다.
+열지 않는다. Prelude는 다음 표의 표준 row를 sealed `DIRECT_GLOBAL`
+identity로 제공한다.
 
 | left | right | 허용 glyph | 결과 |
 |---|---|---|---|
-| `Rational` | `Rational` | `+`, `-`, `*` | `Rational` |
-| `Rational` | exact built-in integer | `+`, `-`, `*` | `Rational` |
-| exact built-in integer | `Rational` | `+`, `-`, `*` | `Rational` |
-| `Complex<Rep>` | `Complex<Rep>` | `+`, `-`, `*` | `Complex<Rep>` |
-| `Complex<Rep>` | 같은 exact `Rep` | `+`, `-`, `*` | `Complex<Rep>` |
-| 같은 exact `Rep` | `Complex<Rep>` | `+`, `-`, `*` | `Complex<Rep>` |
+| `Rational` | `Rational` | `+`, `-`, `*`, `/`, `%`, `==`, `!=`, `<`, `<=`, `>`, `>=` | 산술은 `Rational`, 비교는 `Bool` |
+| `Rational` | exact built-in integer | `+`, `-`, `*`, `/`, `%` | `Rational` |
+| exact built-in integer | `Rational` | `+`, `-`, `*`, `/`, `%` | `Rational` |
+| `Complex<Rep>` | `Complex<Rep>` | `+`, `-`, `*`, `/` | `Complex<Rep>` |
+| `Complex<Rep>` | 같은 exact `Rep` | `+`, `-`, `*`, `/` | `Complex<Rep>` |
+| 같은 exact `Rep` | `Complex<Rep>` | `+`, `-`, `*`, `/` | `Complex<Rep>` |
 
 `Rep`는 한 연산 안에서 정확히 같아야 한다. `Float32`와 `Float64`,
 `Complex<Float32>`와 `Complex<Float64>`를 섞는 hidden widening은 없다.
@@ -226,24 +233,30 @@ let a: Rational = <2/3>
 let b: Rational = <5/7>
 let exactSum: Rational = a + b
 let exactScale: Rational = 3 * a
+let exactQuotient: Rational = a / b
+let exactRemainder: Rational = a % b
+let ascending: Bool = a < b
 
 let z: Complex = 3.0 + 4.0i
 let shifted: Complex = z - 1.0
 let rotated: Complex = Complex::i * z
+let divided: Complex = z / (1.0 - 1.0i)
 ```
 
-`Rational / Rational`은 glyph conformance가 아니다. 0 분모와 실패를
-명시하는 `a.dividedBy(b)` 같은 checked named API를 사용한다.
-`Complex / Complex`는 같은 exact `Rep`에 한정된 language-owned intrinsic
-route이고, `%`, ordering, bitwise route는 없다. IEEE NaN을 포함할 수 있는
-`Complex<Float32|Float64>`는 암시적 strong `Eq`, `Ord`, `Hash`,
-`Keyable` evidence도 얻지 않는다.
+Rational `/`와 `%`는 각각 `Divide<Rational>`과
+`Remainder<Rational>` conformance다. `%`는
+`q = truncTowardZero(a / b)`, `r = a - q * b`를 사용하며 0 제수는
+commit 전 `ArithmeticDefect`다. 상세 recoverable division이 필요하면
+`a.dividedBy(b)` 같은 named API를 쓴다. Complex `/`는 같은 exact
+`Rep`에 한정된 `Divide` row이고 `%`와 `Ord`는 없다. IEEE NaN을 포함할
+수 있는 `Complex<Float32|Float64>`의 equality는 partial profile이므로
+암시적 strong `Eq`, `Hash`, `Keyable` evidence를 제조하지 않는다.
 
 ### `^`의 문법과 정적 선택
 
 `scalar_real_complex_power`가 소유하는 spaced infix `^`는
 `BinaryPower` language intrinsic이다. `Pow`/`Power` Trait method도 아니고,
-Stable fixed-glyph conformance 집합의 네 번째 member도 아니다. 따라서
+Stable fixed-glyph conformance 집합의 열네 번째 역할도 아니다. 따라서
 conformance, witness, extension, provider, import/source order, runtime
 registry 또는 fallback이 `^`의 후보를 만들지 않는다.
 
@@ -768,8 +781,8 @@ snippet은 주변 선언을 전제로 한 정적 예이며 제품 checker 실행
 | shape가 다른 NumericArray에 `&&`/`||` 적용 | 거부; implicit broadcast 없음 |
 | `List<Bool> && List<Bool>` | 거부; generic collection은 pointwise carrier가 아님 |
 | standalone `!value` Bool negation | 거부; `not value` 사용 |
-| left owner 밖에서 `+`, `-`, `*` conformance 선언 | 거부; `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` |
-| `/`, `%`, 비교·논리 glyph에 conformance 연결 | 거부; `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` |
+| left owner 밖에서 fixed-glyph conformance 선언 | 거부; `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` |
+| power·range·bitwise·논리 glyph에 conformance 연결 | 거부; `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` |
 | mixed-width/signedness bitwise | 명시적 checked conversion 없이는 거부 |
 | float `%` | 현행 glyph route 없음; named API 사용 |
 | `Rational ^ exponent` 또는 matrix 밖 mixed numeric power | `POWER_OPERAND_DOMAIN_NOT_ADMITTED` |
@@ -803,7 +816,7 @@ Preview 후보도 아니다.
 - numeric literal adaptation은 homogeneous operator admission 전에
   일어나며 일반 implicit numeric conversion이 아니다.
 - `^`의 닫힌 operand adaptation은 해당 `HirPowerPlan` 안에서만 의미가
-  있으며 `+`, `-`, `*`, `/` 또는 일반 call conversion으로 퍼지지 않는다.
+  있으며 다른 산술·비교 역할이나 일반 call conversion으로 퍼지지 않는다.
 - real power는 runtime 값에 따라 Complex로 자동 승격하지 않고, Complex
   principal branch는 imaginary signed zero를 보존한다.
 - `^`는 Pratt 위치에 따라 infix power, postfix transpose, unit static

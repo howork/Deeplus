@@ -53,7 +53,9 @@ narrowing 전달이 달라진다. 미니 사례를 풀 때는 값 표, 선택된
 ## 학습할 때 지킬 경계
 
 - 임의 custom operator는 current나 Preview 설계가 아니다.
-- Stable fixed-glyph conformance는 exact binary `+`, `-`, `*`뿐이다.
+- Stable fixed-glyph conformance는 unary `+`/`-`, binary
+  `+`/`-`/`*`/`/`/`%`, equality `==`/`!=`, ordering
+  `<`/`<=`/`>`/`>=`의 정확한 13개 역할뿐이다.
 - numeric 혼합 domain을 hidden widening으로 보정하지 않는다.
 - 예상 결과는 정적 의미 설명이며 실행 receipt가 아니다.
 

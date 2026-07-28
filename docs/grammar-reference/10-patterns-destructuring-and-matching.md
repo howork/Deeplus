@@ -207,6 +207,48 @@ range와 relational Pattern의 Stable domain은 `Int`, `UInt`, `Char`,
 signed zero와 partial-order 문제 때문에 Preview다. Pattern 검사는
 사용자 정의 operator lookup을 수행하지 않는다.
 
+### bounded binder Pattern
+
+match arm에서 범위 검사와 subject binding을 함께 표현하려면 monotone
+chained binder를 쓴다.
+
+```ebnf
+MatchHead ::= BoundedBinderPattern | Pattern | "otherwise"
+BoundedBinderPattern ::= PatternBound OrderedComparisonOperator Identifier
+                         OrderedComparisonOperator PatternBound
+```
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+```deeplus
+let description = @match score {
+    0 <= value <= 100 => "normal:${value}"
+    otherwise => "abnormal"
+}
+```
+
+checker는 match subject를 정확히 한 번 읽고 두 경계를 비교한 뒤, 둘 다
+참인 arm에서만 subject를 `value`에 bind한다. arm body의 `value`에는
+`0 <= value <= 100`이라는 branch-local refinement fact가 붙지만 새로운
+nominal type, serialization tag 또는 runtime discriminant를 만들지는
+않는다.
+
+두 연산자는 모두 `<`/`<=` 방향이거나 모두 `>`/`>=` 방향이어야 한다.
+따라서 `0 <= value >= 100`은
+`MATCH_CHAIN_BINDER_DIRECTION_MIXED`로 거부한다. 서로 독립된 조건이
+필요하면 기존 guard를 명시한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+```deeplus
+let description = @match score {
+    value if value >= 0 and value <= limit => "bounded:${value}"
+    otherwise => "outside"
+}
+```
+
+`otherwise`는 항상 `=>`를 사용한다. `otherwise =`라는 별도 fallback
+문법은 없다. bounded binder는 match arm head만의 표면이며 일반 type,
+declaration 또는 standalone expression으로 확장되지 않는다.
+
 ### 바인딩과 제어 문맥
 
 ```ebnf

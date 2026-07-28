@@ -105,6 +105,7 @@
 | `actor` |
 | `any` |
 | `async` |
+| `auto` |
 | `await` |
 | `backing` |
 | `bitfield` |
@@ -112,6 +113,7 @@
 | `borrowed` |
 | `break` |
 | `budget` |
+| `by` |
 | `c` |
 | `cancellable` |
 | `capability` |
@@ -120,6 +122,7 @@
 | `cleanup` |
 | `clone` |
 | `common` |
+| `conform` |
 | `conformance` |
 | `conforms` |
 | `consume` |
@@ -129,6 +132,7 @@
 | `data` |
 | `deep` |
 | `delegate` |
+| `derives` |
 | `effects` |
 | `ensures` |
 | `entry` |
@@ -187,6 +191,7 @@
 | `spawn` |
 | `static` |
 | `super` |
+| `supports` |
 | `task` |
 | `then` |
 | `throws` |

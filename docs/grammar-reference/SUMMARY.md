@@ -87,7 +87,7 @@
 | [`option_let_question_binding_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-option_let_question_binding_preview_design) | `PREVIEW_DESIGN` | Option optional payload binding Preview design |
 | [`pattern_advanced_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-pattern_advanced_surface_preview_design) | `PREVIEW_DESIGN` | Advanced Pattern surface Preview Design |
 | [`prototype_delta`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-prototype_delta) | `PREVIEW_DESIGN` | Prototype delta |
-| [`rational_operator_completion_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-rational_operator_completion_preview_design) | `PREVIEW_DESIGN` | Rational operator completion Preview design |
+| [`rational_operator_completion_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-rational_operator_completion_preview_design) | `PREVIEW_DESIGN` | Rational integral-power and alternative-API Preview design |
 | [`sealed_multimethod_family`](21-preview-design-types-objects-and-traits.md#preview-feature-sealed_multimethod_family) | `PREVIEW_DESIGN` | Sealed multimethod family |
 | [`session_protocol_lite_provider`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-session_protocol_lite_provider) | `PREVIEW_DESIGN` | Session protocol lite provider |
 | [`solver_backed_general_refinement`](21-preview-design-types-objects-and-traits.md#preview-feature-solver_backed_general_refinement) | `PREVIEW_DESIGN` | Solver backed general refinement |

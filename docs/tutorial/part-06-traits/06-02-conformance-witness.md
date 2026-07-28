@@ -32,7 +32,7 @@ witness를 선택한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-conformance Target conforms Trait { ... }
+type Target conforms Trait { ... }
 ```
 
 선택은 normalized target, instantiated Trait와 coherence authority에
@@ -97,7 +97,7 @@ public trait Display {
         effects {}
 }
 
-public conformance UserId conforms Display {
+public type UserId conforms Display {
     +def display+() -> String
         throws Never
         effects {}

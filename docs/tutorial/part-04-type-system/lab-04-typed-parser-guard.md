@@ -23,7 +23,7 @@ parse 실패와 range 실패를 강제로 한 error로 뭉개지 않고 nested R
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-private type Port = Int where this >= 0 and this <= 65_535
+private type Port = Int in 0..65_535
 private type CheckedPort = Result<Port, error RefinementError>
 
 private def#pure parseThenCheck(
@@ -106,13 +106,13 @@ private def#pure explainPort(
 ## 성공 실험 — guard summary와 stable actual
 
 이 guard body는 finite R0이고 `GuardSummaryV1`로 검증할 수 있다.
-direct truth-test의 true edge는 `raw >= 0 and raw <= 65_535` fact를
+direct truth-test의 true edge는 `0 <= raw <= 65_535` fact를
 제공하므로 `Port` construction을 정적으로 증명한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def#guard validPort(raw: Int) -> Bool = {
-    return raw >= 0 and raw <= 65_535
+    return 0 <= raw <= 65_535
 }
 
 let raw: Int = 8_080

@@ -134,22 +134,24 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "closed operator family and exact +,-,* fixed-conformance subset",
+      "closed operator family and exact 13-role fixed-conformance subset rooted in nine Prelude Traits",
       "intrinsic reservation or one left-owner DIRECT_GLOBAL witness",
       "one place/RHS/commit slot"
     ],
     "normalization": "consume NumericLiteralAdmitted results; preserve domain, owner, and place",
     "decision_procedure": [
       "for intrinsic-reserved normalized operand pairs select intrinsic and perform zero conformance lookup",
-      "for non-intrinsic +,-,* keys select exactly one left-owner DIRECT_GLOBAL Add/Subtract/Multiply conformance and derive Output only after selection",
+      "for non-intrinsic unary +/-, binary +,-,*,/,% and ==,!=,<,<=,>,>= keys select exactly one left-owner DIRECT_GLOBAL UnaryPlus/UnaryMinus/Add/Subtract/Multiply/Divide/Remainder/Eq/Ord conformance",
+      "derive arithmetic Output only after selection; fix comparison output to Bool; derive != from Eq.equals and all four order glyphs from one Ord.compare result whose zero equals Eq",
       "reject missing, ambiguous, foreign-left, reserved-overlap, excluded-glyph, alternate-evidence, responsibility, implicit-conversion, and expected-result-directed cases with the exact OPERATOR_* diagnostic",
       "delegate literals to NumericLiteralAdmitted first and propagate its diagnostic",
       "scalar +,-,*,/ require one exact Int/Float domain; integer results are checked and / truncates toward zero",
       "% integer-only: a=q*b+r, q toward zero, r zero/dividend-signed, |r|<|b|; float % is named",
-      "zero divisor or signed MIN/-1 /,% raises ArithmeticDefect precommit",
+      "zero divisor or signed MIN/-1 /,% raises the nonrecoverable ArithmeticDefect precommit while the selected Trait signature remains throws Never effects {}",
       "^ requires one exact integer domain plus static nonnegative proof; negative/unknown proof emits NUMERIC_OPERATOR_CORE_REQUIRED; same-domain result is checked; Measure ^ StaticInt delegates measure_static_power_law; float pow named; NumericArray infix Preview",
       "**/*+ delegate shape laws; bitwise needs exact known-width integer or finite bitfield/#flags domain",
-      "compound place/RHS run once; one success commit returns Unit"
+      "compound place/RHS run once; +=,-=,*=,/=,%= derive the corresponding binary role, require an exact place-assignable result and expose no independent conformance hook; one success commit returns Unit",
+      "range remains a language-owned constructor with zero conformance hooks"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",

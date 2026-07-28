@@ -94,7 +94,7 @@
       "public def Rational!(numerator: BigInt, denominator: BigInt) -> Rational throws RationalError",
       "public def Rational.dividedBy.(borrow rhs: Rational) -> Rational throws RationalError"
     ],
-    "responsibility": "canonical exact rational value with eager normalization, strong Eq/Ord/Hash/Keyable, sealed +,-,* evidence and explicit checked division/conversion APIs",
+    "responsibility": "canonical exact rational value with eager normalization, sealed +,-,*,/,% and unary +/- evidence, strong Eq/Ord/Hash/Keyable, ArithmeticDefect on a zero divisor, and explicit checked conversion APIs",
     "notes": "Display 2/3 and sourceRepr <2/3> are distinct; no public layout or ABI is promised.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
@@ -120,7 +120,7 @@
         "schema": "deeplus.public-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "f3c52ca0fb5a3873aa399dfb3823f29971b09dfe1ecf1912de424998ec40b5b5"
+    "normalized_contract_sha256": "c66aa41729bc4f688eab99777675120786921460fa26ea90b10cf1c3684ab4db"
   },
   {
     "entry_id": "complex_rep",
@@ -142,7 +142,7 @@
       "public def Complex<Rep>.powReal.(exponent: Rep) -> Complex<Rep>",
       "public def Complex<Rep>.powComplex.(borrow exponent: Complex<Rep>) -> Complex<Rep>"
     ],
-    "responsibility": "immutable two-component IEEE value with partial equality, sealed same-Rep +,-,* evidence, intrinsic division, principal named transcendental operations and no strong Eq/Ord/Hash/Keyable",
+    "responsibility": "immutable two-component IEEE value with partial equality, sealed same-Rep unary +/- and binary +,-,*,/ evidence, principal named transcendental operations, no remainder or Ord, and no strong Eq/Hash/Keyable",
     "notes": "Current attached 4.0i and 4.0f32i create exact component values; integer 4i is Preview-design/nonactivatable. Complex::i is type-side and no companion singleton or public foreign ABI is implied.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
@@ -204,7 +204,7 @@
         "schema": "deeplus.public-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "e95b4db65bc8e11f9f5322f14038898683856b7b73fd08a4a6bb55d35c0d9d8a"
+    "normalized_contract_sha256": "bd446dfd955b7b03941d58cd7268443e4d580058d57fb08e3575fe880976b4f9"
   },
   {
     "entry_id": "power_error",

@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
-PREVIOUS_REVISION = "r51f3-current-callable-responsibility-static-lexical-r1"
+REVISION = "r51f3-current-trait-operator-refinement-r1"
+PREVIOUS_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
@@ -368,7 +368,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         "predicate_fixtures": 819,
         "no_go": 155,
         "hard_keywords": 29,
-        "contextual_words": 101,
+        "contextual_words": 106,
     }
     if (
         set(counts) != {*fixed_counts, "diagnostics", "prelude_entries"}

@@ -9,8 +9,9 @@
 quantity다.
 
 Rational literal, floating imaginary literal, Rational/Complex의 닫힌 산술,
-Measure와 exact-ratio unit catalog는 현행 설계다. fixed-glyph conformance는
-여전히 `+`, `-`, `*`뿐이다.
+Measure와 exact-ratio unit catalog는 현행 설계다. fixed-glyph
+conformance는 정확한 13개 unary·산술·equality·ordering 역할에만
+한정된다.
 
 ## 2. 학습 목표
 
@@ -40,8 +41,9 @@ Measure는 값·표현·차원을 분리해 조기 오류를 만든다.
 - `m/s`, `m*s`, `m^2`: unit dimension algebra
 
 Rational/Complex 표준 arithmetic row는 sealed `DIRECT_GLOBAL` identity다.
-Rational division은 실패 가능한 named `dividedBy`; Complex division은
-같은 exact Rep의 language intrinsic이다. `^`는 Trait가 아니라 closed
+Rational과 Complex division은 `/`를 지원하고, 0 제수나 invalid domain은
+commit 전 `ArithmeticDefect`로 닫는다. Rational의 named `dividedBy`는
+상세 recoverable 실패가 필요한 별도 API다. `^`는 Trait가 아니라 closed
 language intrinsic matrix다.
 
 ## 6. 단계별 예제
@@ -95,10 +97,16 @@ let sum: Rational = a + b
 let scaled: Rational = 3 * a
 
 let divisor: Rational = <4/9>
-let quotient = a.dividedBy(divisor)
+let quotient: Rational = a / divisor
+let remainder: Rational = a % divisor
+let checkedQuotient = a.dividedBy(divisor)
 ```
 
-`dividedBy`는 zero denominator/failure를 이름 있는 API에 드러낸다.
+`/`는 fixed `Divide<Rational>`, `%`는 fixed `Remainder<Rational>` row를
+사용하며 zero divisor에서 `ArithmeticDefect`를 낸다. `%`는
+`q = truncTowardZero(a / divisor)`, `remainder = a - q * divisor`를
+만족한다. `dividedBy`는 같은 조건의 상세 실패를 이름 있는 recoverable
+API로 보존한다.
 
 ### 6.2 Complex literal과 power
 
@@ -153,7 +161,9 @@ core exact-ratio conversion으로 숨기지 않는다.
 
 ## 8. 다른 기능과의 연결
 
-- Rational/Complex `+ - *`는 Stable fixed-glyph bounded profile이다.
+- Rational은 `+ - * / %`, Eq, Ord를, Complex는 `+ - * /`와 partial
+  equality를 Stable bounded profile로 제공한다. Complex에는 `%`와
+  `Ord`가 없다.
 - NumericArray는 exact element/shape law를 요구하고 hidden
   Float32/Float64 widening을 하지 않는다.
 - Measure power는 `StaticInt` exponent와 normalized dimension을 보존한다.

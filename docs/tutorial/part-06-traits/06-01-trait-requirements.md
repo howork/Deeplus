@@ -4,7 +4,7 @@
 
 ## 1. 상태와 읽는 법
 
-Trait method, associated requirement, supertrait `requires`, 선언적 `law`는
+Trait method, associated requirement, supertrait `derives`, 선언적 `law`는
 현행 설계다. Class dispatch marker와 Trait witness marker는 glyph를
 공유하지만 서로 다른 AST/identity domain이다.
 
@@ -147,7 +147,7 @@ runtime branch, proof executor 또는 conformance method를 합성하지 않는�
 허용:
 
 - 명시적 method marker
-- `requires ParentTrait` supertrait
+- physical line에서 반복하는 `derives ParentTrait` supertrait
 - associated type/value/function requirement
 - restricted pure logic의 `law`
 

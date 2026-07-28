@@ -34,8 +34,9 @@ decision.
 
 Operator syntax and precedence remain closed. An intrinsic-reserved normalized
 operand pair lowers to its closed intrinsic MIR operation and performs no
-conformance lookup. A non-intrinsic exact binary `+`, `-`, or `*` may instead
-lower to `FixedOperatorConformanceCall`. That node preserves
+conformance lookup. A non-intrinsic exact unary `+`/`-`, binary
+`+`/`-`/`*`/`/`/`%`, equality, or ordering role may instead lower to
+`FixedOperatorConformanceCall`. That node preserves
 `OperatorId`, normalized left/right type IDs, `ConformanceId`, `WitnessId`,
 `MethodId`, normalized substitution, `OutputTypeId`, and
 `ResponsibilityProfileId` selected statically by the checker.
@@ -375,7 +376,7 @@ cross-thread atomicity.
 
 ## 12. Removed-surface MIR boundary
 
-Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Arbitrary custom operator declarations and fixed-glyph conformance attempts outside exact binary `+`, `-`, `*` create no MIR operation; admitted fixed-glyph calls use the sealed node defined in §2. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
+Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Arbitrary custom operator declarations and fixed-glyph conformance attempts outside the exact 13 unary, arithmetic, equality, and ordering roles create no MIR operation; admitted fixed-glyph calls use the sealed node defined in §2. `!=` and the four ordering glyphs preserve the selected `Eq`/`Ord` evidence identity, compound assignment creates no independent witness, and range never becomes an operator hook. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
 
 Built-in indexing evaluates the owner and each index once, left-to-right, then validates the declared logical domain before projecting storage. `List`, `String`, and `Bytes` use `1..length` with offset `index - 1`; an explicitly bounded List retains `L..U`. Every `ReadonlyView` carries its source owner's declared logical domain, coordinate-to-storage mapping, and provenance, so no view construction independently rebases it. A missing Map key emits `IndexError::keyNotFound`; any type-correct dynamic built-in positional or NumericArray coordinate outside its logical domain emits `IndexError::outOfLogicalDomain`. Both are precommit failures. Map uses the exact key type; tuple ordinals and Record labels are resolved before MIR and never become dynamic bracket lookup. Conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not add a lowering route.
 

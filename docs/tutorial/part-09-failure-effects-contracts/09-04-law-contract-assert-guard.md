@@ -74,7 +74,7 @@ MIR event를 만들지는 않는다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#guard validPort(port: Int) -> Bool = {
-    return port >= 1 and port <= 65_535
+    return 1 <= port <= 65_535
 }
 
 if validPort(candidate) {

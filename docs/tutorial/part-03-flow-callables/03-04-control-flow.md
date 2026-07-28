@@ -45,6 +45,8 @@ control은 성공하기 전까지 binding이나 move를 commit하지 않는다.
 - `if let`/`while let`/`for let`은 refutable pattern만 받는다.
 - `and then` condition chain의 뒤 단계는 앞 단계가 만든 probe binder를
   읽을 수 있다.
+- bounded binder arm은 match subject를 한 번 비교하고 성공 arm에
+  이름과 구간 refinement fact를 함께 연다.
 - `let!`/`var!`은 mismatch를 명시적 `PatternMatchDefect`로 assert한다.
 - control-transfer 뒤 `if` 또는 `!if`는 해당 transfer만 guard한다.
 - guard condition은 정확히 `Bool`이어야 한다.
@@ -70,6 +72,24 @@ let stateText: String = @match state {
 
 두 expression은 모든 정상 경로가 `String`을 만든다. `@if`의 `else`,
 `@match`의 exhaustive arm 또는 `otherwise`가 totality를 닫는다.
+
+값의 범위를 검사하면서 그 값을 arm-local 이름으로 받으려면 bounded
+binder Pattern을 쓴다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let grade: String = @match score {
+    90 <= value <= 100 => "excellent:${value}"
+    0 <= value < 90 => "continue:${value}"
+    otherwise => "invalid"
+}
+```
+
+`score`는 한 번만 읽힌다. 성공한 arm의 `value`에는 해당 구간의
+refinement fact가 붙는다. `0 <= value >= 100`처럼 방향이 바뀌는 chain은
+오타로 간주해 정적으로 거부하며, 독립 조건은
+`value if condition` guard로 쓴다. fallback 철자는 언제나
+`otherwise =>`다.
 
 pattern-binding control은 성공한 경우에만 이름을 연다.
 

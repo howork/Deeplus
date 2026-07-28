@@ -27,7 +27,7 @@ public let reference: Complex = 3.0 + 4.0i
 public let phaseUnit: Complex = Complex::i
 
 public type Signal = Sequence<Complex<Float64>>
-public type Energy = Float64 where this >= 0.0
+public type Energy = Float64 where >= 0.0
 ```
 
 `3.0 + 4.0i`에서 `4.0i`는 하나의 허수 literal token이며, 덧셈은 닫힌

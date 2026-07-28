@@ -59,18 +59,18 @@ PROFILE_MARKER_RE = re.compile(
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
-    "grammar_productions": 620,
+    "grammar_productions": 635,
     "features": 719,
-    "diagnostics": 1414,
+    "diagnostics": 1423,
     "predicates": 268,
-    "prelude_entries": 66,
-    "examples": 726,
+    "prelude_entries": 71,
+    "examples": 733,
     "hard_keywords": 29,
-    "contextual_words": 101,
+    "contextual_words": 106,
 }
 EXPECTED_PROFILES = {
     "LEXICAL": 91,
-    "STABLE": 516,
+    "STABLE": 531,
     "PREVIEW": 13,
 }
 EXPECTED_FENCES = {

@@ -8,20 +8,22 @@
   "properties": {
     "schema": {"const": "deeplus.type-refinement-narrowing-coherence-fixtures/r1"},
     "fixture_schema": {"const": "schemas/language/type-refinement-narrowing-coherence-fixtures.schema.json"},
-    "revision": {"const": "r51f3-current-pattern-sequence-multivalue-r1"},
+    "revision": {"const": "r51f3-current-trait-operator-refinement-r1"},
     "contract": {"const": "spec/contracts/type-refinement-narrowing-coherence.json"},
     "semantic_p0": {"const": 0},
     "current_binding": {"const": false},
     "open_feature_p1": {"type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true, "items": {"type": "string"}},
     "product_lanes": {"type": "object", "minProperties": 15, "maxProperties": 15, "additionalProperties": {"const": "NOT_RUN"}},
-    "cases": {"type": "array", "minItems": 45, "maxItems": 45, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
+    "cases": {"type": "array", "minItems": 58, "maxItems": 58, "uniqueItems": true, "items": {"$ref": "#/$defs/case"}},
     "expected_counts": {
       "type": "object", "additionalProperties": false,
-      "required": ["cases", "admit", "reject", "runtime_union_pattern_tests", "closed_union_expression_tests", "open_runtime_type_tests", "def_guard_narrowing_facts", "p1_closed", "p1_created"],
+      "required": ["cases", "admit", "reject", "runtime_union_pattern_tests", "closed_union_expression_tests", "open_runtime_type_tests", "def_guard_narrowing_facts", "refinement_shorthand_cases", "chained_binder_pattern_cases", "mixed_strictness_cases", "generic_close_cases", "runtime_bound_rejections", "overlap_exhaustiveness_boundaries", "p1_closed", "p1_created"],
       "properties": {
-        "cases": {"const": 45}, "admit": {"const": 16}, "reject": {"const": 29},
+        "cases": {"const": 58}, "admit": {"const": 24}, "reject": {"const": 34},
         "runtime_union_pattern_tests": {"const": 2}, "closed_union_expression_tests": {"const": 5}, "open_runtime_type_tests": {"const": 0},
-        "def_guard_narrowing_facts": {"const": 3}, "p1_closed": {"const": 0}, "p1_created": {"const": 0}
+        "def_guard_narrowing_facts": {"const": 3}, "refinement_shorthand_cases": {"const": 7}, "chained_binder_pattern_cases": {"const": 6},
+        "mixed_strictness_cases": {"const": 2}, "generic_close_cases": {"const": 1}, "runtime_bound_rejections": {"const": 2}, "overlap_exhaustiveness_boundaries": {"const": 1},
+        "p1_closed": {"const": 0}, "p1_created": {"const": 0}
       }
     }
   },

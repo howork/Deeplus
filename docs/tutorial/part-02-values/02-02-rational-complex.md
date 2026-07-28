@@ -13,8 +13,8 @@ profile이다. parser/checker/HIR/backend 실제 실행은 `NOT_RUN`이며,
 
 - Rational `<p/q>`의 lexical 조건과 canonical normalization을 이해한다.
 - 붙은 `i` 허수 리터럴의 exact Float domain을 구분한다.
-- Rational/Complex에서 허용되는 `+`, `-`, `*` 경계를 안다.
-- power와 division이 별도 owner라는 사실을 설명한다.
+- Rational/Complex의 unary·산술·equality·ordering 경계를 안다.
+- power가 fixed-glyph conformance와 별도 owner라는 사실을 설명한다.
 
 ## 3. 선수 지식
 
@@ -67,6 +67,11 @@ let rotated: Complex = Complex::i * signal
 
 let rate: Rational = <3/100>
 let scaled: Rational = 5 * rate
+let quotient: Rational = <7/3> / <2/3>
+let remainder: Rational = <7/3> % <2/3>
+let ordered: Bool = <1/3> < <1/2>
+
+let divided: Complex = signal / (1.0 - 1.0i)
 ```
 
 `3.0 + 4.0i`는 일반적인 “real을 Complex로 바꾸는” conversion search가
@@ -106,11 +111,14 @@ let invalid: Rational = <2/0>
 ```
 
 - `<2 / 3>`, `<-2/3>`, `<0x2/3>`도 malformed다.
-- `Rational / Rational`은 glyph conformance가 아니며 실패를 드러내는
-  named checked API가 소유한다.
+- `Rational / Rational`은 sealed `Divide<Rational>` row이고 0 제수는
+  commit 전 `ArithmeticDefect`다. 상세 recoverable 실패가 필요하면
+  named `dividedBy` API를 사용한다.
 - `Rational ^ Int`는 초기 power matrix에 없고
   `POWER_OPERAND_DOMAIN_NOT_ADMITTED`다.
-- Complex division은 같은 exact `Rep`에 한정된 language intrinsic이다.
+- Rational `%`는 `q = truncTowardZero(a / b)`, `r = a - q * b`를
+  만족하고 0 제수는 commit 전 `ArithmeticDefect`다.
+- Complex division은 같은 exact `Rep`에 한정된 sealed `Divide` row다.
 - Complex에는 암시적 `Ord`, `Hash`, `Keyable` evidence가 없다.
 
 ## 8. 다른 기능과의 연결
@@ -125,7 +133,8 @@ principal power는 branch cut에서 imaginary `+0.0`/`-0.0`을 지우면 안
 - exact ratio가 목적이면 Float로 근사하지 않고 Rational을 쓴다.
 - 복소수 source는 `3.0 + 4.0i`처럼 Cartesian 의도를 드러낸다.
 - Float32/Float64 Complex를 한 식에서 숨게 섞지 않는다.
-- 실패 가능한 Rational division은 named checked API로 드러낸다.
+- 간결한 산술에는 `/`, 상세 recoverable 실패가 필요하면 named checked
+  API를 사용한다.
 - unsupported power를 결과 annotation으로 강제하지 않는다.
 
 ## 10. 연습 문제
@@ -143,8 +152,11 @@ principal power는 branch cut에서 imaginary `+0.0`/`-0.0`을 지우면 안
 - Rational component는 붙은 부호 없는 10진 magnitude다.
 - 음수 부호는 literal 바깥 prefix가 소유한다.
 - `4.0i`와 `4.0f32i`만 각각의 admitted imaginary profile을 만든다.
-- Stable fixed-glyph conformance는 `+`, `-`, `*`뿐이다.
-- Rational division과 Rational power를 glyph fallback으로 만들지 않는다.
+- Rational은 unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, strong
+  `Eq`와 total `Ord`를 지원한다.
+- Complex는 unary `+`/`-`, binary `+`/`-`/`*`/`/`와 기존 partial
+  equality를 지원하지만 `%`와 `Ord`는 지원하지 않는다.
+- Rational power는 fixed-glyph fallback으로 만들지 않는다.
 
 ## 12. 정본 근거와 다음 장
 

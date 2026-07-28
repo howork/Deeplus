@@ -182,7 +182,7 @@ specialization과 source/import order는 후보를 만들지 못한다. `^`, `[]
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: library/prelude/prelude.md -->
 ```deeplus
-public conformance Vec2 conforms Add<Vec2> {
+public type Vec2 conforms Add<Vec2> {
     type Output = Vec2
     +def add.(borrow rhs: Vec2) -> Vec2 throws Never effects {} = {
         return Vec2!(x: self.x + rhs.x, y: self.y + rhs.y)
@@ -271,7 +271,7 @@ public trait RadixProfile {
     let ::base: Int
 }
 
-public conformance HexNumber conforms RadixProfile {
+public type HexNumber conforms RadixProfile {
     let ::base = 16
 }
 

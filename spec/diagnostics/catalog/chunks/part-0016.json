@@ -166,6 +166,88 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "REFINEMENT_IMPLICIT_THIS_RELATION_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "refinement_type_phase_a"
+    ],
+    "fixit_hint": "Insert `where` before the relation.",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "Rewrite `T > value` to `T where > value` only in a committed type-annotation or type-alias refinement goal.",
+    "message": "A concise refinement relation requires the explicit `where` boundary.",
+    "notes": "The bare `>` token retains its generic-close role. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "REFINEMENT_INTERVAL_BOUNDS_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "refinement_type_phase_a"
+    ],
+    "fixit_hint": "Provide both interval bounds.",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "No bound value is invented.",
+    "message": "A refinement interval requires a lower bound, `..` or `..<`, and an upper bound.",
+    "notes": "Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MATCH_CHAIN_BINDER_DIRECTION_MIXED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "ordered_comparison_chain_msp",
+      "pin_range_relational_pattern"
+    ],
+    "fixit_hint": "Use one monotone comparison direction or an explicit Pattern guard.",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "No comparison direction is selected automatically.",
+    "message": "A chained binder Pattern must use one monotone comparison direction.",
+    "notes": "The match subject is not bound and no HIR Pattern is admitted after this error. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/type-refinement-narrowing-coherence.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "RECORD_FIELD_EQUALS_REMOVED_USE_COLON",
     "diagnostic_maturity": "seed",
     "diagnostic_status": "seed",
@@ -1600,33 +1682,6 @@
     "fixit_policy": "offer only a deterministic responsibility-preserving rewrite",
     "message": "A scoped activation group contains the same normalized spec more than once.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "related_feature_refs": [],
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "error",
-    "stage": "checker",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source"
-  },
-  {
-    "authority": "LANGUAGE / CHECKER",
-    "authority_set": [
-      "LANGUAGE",
-      "CHECKER"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "SCOPED_CALLABLE_ESCAPE_FORBIDDEN",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
-    "feature_refs": [
-      "scoped_callable_lifetime_profile"
-    ],
-    "fixit_hint": "invoke it within the receiving invocation region",
-    "fixit_kind": "suggestion",
-    "fixit_policy": "invoke it within the receiving invocation region",
-    "message": "A #scoped callable cannot be stored, returned, captured by an escaping continuation, or transferred to task/actor state.",
-    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
