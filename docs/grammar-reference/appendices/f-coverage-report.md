@@ -33,7 +33,7 @@
 |---|---|---|
 | `human_language` | `spec/language.md` | `6aab0b617278d1f22556a1cd3951aae4f64ca238a61f581f29e922c116a0109c` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `226c5bff9d35aa8e6d4b678f7d3545980b1047e6d1e7f6b5f7941039ce4dac85` |
-| `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `0b7f25305e0843a161642f9dbc37d387bfb96cb8c56e8d6e70a2351cb2bb8e53` |
+| `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `d9da69ecaf1f2be6e2497bf93c00cc39f4f47b1ebe5252fc5a65d4751a39831d` |
 | `frontend_admission` | `spec/frontend/frontend-model.json` | `d10c86e03bef92e2edfc6e04dff5cf94fb2ce0d971253114f74f2d6f85bbdc74` |
 | `type_system` | `spec/types/type-system.md` | `f9a2b130c3d5bfa8989a5a0029a3edcfb76c16b05718b61aaa96db63c3954916` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `206958e0b341937b4dd13be581b5cc6e4b5605e99da1937e1579ae9df9e62bbe` |
