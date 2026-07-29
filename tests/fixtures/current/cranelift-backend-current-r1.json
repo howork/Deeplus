@@ -1,0 +1,130 @@
+{
+  "schema": "deeplus.cranelift-backend-current-fixtures/r1",
+  "fixture_schema": "schemas/language/cranelift-backend-current-fixtures.schema.json",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "contract": "spec/contracts/cranelift-backend-current.json",
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "product_lanes": "15/15_NOT_RUN",
+  "cases": [
+    {
+      "fixture_id": "CLB-R1-POS-001",
+      "class": "positive",
+      "rule_ids": ["CLB-R001", "CLB-R002"],
+      "scenario": "verified MIR projects independently to xVM while xVM remains the initial development oracle",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["semantic_authority=Deeplus MIR", "initial_execution=xVM"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-POS-002",
+      "class": "positive",
+      "rule_ids": ["CLB-R003", "CLB-R004"],
+      "scenario": "one verified MIR body lowers once to backend-private CLIF for both native module kinds",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["common_lowering_count=1", "module_kind_count=2", "clif_semantic_identity_count=0"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-POS-003",
+      "class": "positive",
+      "rule_ids": ["CLB-R005"],
+      "scenario": "a native receipt binds target triple ISA settings toolchain module ABI and optimization identities",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["required_receipt_input_count=12", "host_default_authority=false"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-POS-004",
+      "class": "positive",
+      "rule_ids": ["CLB-R006", "CLB-R007"],
+      "scenario": "checked arithmetic retains explicit success and ArithmeticDefect edges before CLIF selection",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["native_exception_authority=false", "trap_mapping_receipt_bound=true"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-POS-005",
+      "class": "positive",
+      "rule_ids": ["CLB-R008", "CLB-R010"],
+      "scenario": "object and JIT finalization record different artifact identities while debug metadata remains nonsemantic",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["object_output_identity_count=5", "jit_output_identity_count=5", "debug_semantic_authority=false"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-POS-006",
+      "class": "positive",
+      "rule_ids": ["CLB-R009", "CLB-R011", "CLB-R012"],
+      "scenario": "a managed-reference path with required capability remains design-only and changes no language P1",
+      "expected": "ADMIT_STATIC",
+      "assertions": ["product_executed=0", "open_feature_p1=22", "semantic_p0=0"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-007",
+      "class": "negative",
+      "rule_ids": ["CLB-R001", "CLB-R004"],
+      "scenario": "a mutant makes CLIF or a native machine address the semantic identity of a Deeplus value",
+      "expected": "REJECT_STATIC",
+      "assertions": ["clif_is_semantic_authority=false", "native_address_identity_count=0"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-008",
+      "class": "negative",
+      "rule_ids": ["CLB-R003", "CLB-R008"],
+      "scenario": "a mutant gives Object AOT and JIT different MIR operation-selection rules",
+      "expected": "REJECT_STATIC",
+      "assertions": ["common_lowering_count=1", "backend_semantic_reselection_count=0"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-009",
+      "class": "negative",
+      "rule_ids": ["CLB-R005"],
+      "scenario": "a mutant omits target features and silently inherits the build host defaults",
+      "expected": "REJECT_STATIC",
+      "assertions": ["host_default_authority=false", "missing_receipt_input=terminal"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-010",
+      "class": "negative",
+      "rule_ids": ["CLB-R006", "CLB-R007"],
+      "scenario": "a mutant turns recoverable Error into host unwind and arbitrary trap selection",
+      "expected": "REJECT_STATIC",
+      "assertions": ["host_unwind_semantic_authority=false", "arbitrary_trap_authority=false"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-011",
+      "class": "negative",
+      "rule_ids": ["CLB-R008", "CLB-R009"],
+      "scenario": "a JIT mutant resolves an unlisted import and substitutes raw pointers for missing root-map capability",
+      "expected": "REJECT_STATIC",
+      "assertions": ["unlisted_import=terminal_link_failure", "raw_pointer_fallback=false"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "CLB-R1-NEG-012",
+      "class": "negative",
+      "rule_ids": ["CLB-R010", "CLB-R011", "CLB-R012"],
+      "scenario": "a static schema pass is mislabeled as native execution and closes a feature P1",
+      "expected": "REJECT_STATIC",
+      "assertions": ["product_executed=0", "p1_closed=0", "product_lanes=15/15_NOT_RUN"],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "expected_counts": {
+    "cases": 12,
+    "positive": 6,
+    "negative": 6,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "p1_closed": 0,
+    "p1_created": 0,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

@@ -59,18 +59,18 @@ PROFILE_MARKER_RE = re.compile(
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
-    "grammar_productions": 637,
+    "grammar_productions": 638,
     "features": 719,
     "diagnostics": 1424,
     "predicates": 268,
-    "prelude_entries": 71,
+    "prelude_entries": 72,
     "examples": 733,
     "hard_keywords": 29,
-    "contextual_words": 106,
+    "contextual_words": 105,
 }
 EXPECTED_PROFILES = {
     "LEXICAL": 91,
-    "STABLE": 533,
+    "STABLE": 534,
     "PREVIEW": 13,
 }
 EXPECTED_FENCES = {
@@ -171,8 +171,8 @@ EXPECTED_PRODUCT_LANE_IDS = [
     "deeplus_mir_lowering",
     "xvm_bytecode_emitter",
     "xvm_interpreter",
-    "llvm_aot_backend",
-    "llvm_orc_jit_backend",
+    "cranelift_object_aot_backend",
+    "cranelift_jit_backend",
     "formatter_lsp",
     "stdlib_provider_runner",
     "official_tooling",

@@ -19,7 +19,7 @@ R1의 관리 원칙은 유지한다. R1.1은 다음 세 가지 혼동과 공백�
 
 - 사용자에게 보이는 결과와 보고서는 한국어
 - 현재 pre-implementation 상태 유지
-- Rust → typed HIR → Deeplus MIR → xVM → LLVM AOT/ORC JIT 아키텍처 고정
+- Rust → typed HIR → Deeplus MIR → xVM → Cranelift ObjectModule AOT/Cranelift JITModule 아키텍처 고정
 - receipt 없는 제품 lane은 NOT_RUN
 - package-level modular authority와 source/generated/evidence 분리
 - Work 5역할, 보조 Chat 역할, 역할별 메모리 경계

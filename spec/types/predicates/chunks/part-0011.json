@@ -583,7 +583,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ReadonlyViewAdmitted",
     "source_name": "ReadonlyViewAdmitted",
-    "summary": "require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/task/actor/isolation transfer without shareability proof",
+    "summary": "require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "normalized_type",
@@ -604,7 +604,7 @@
     "requires": [
       "require nonowning nonmutating access with exact provenance",
       "bound the view by owner lifetime and move/drop",
-      "reject suspension/task/actor/isolation transfer without shareability proof"
+      "reject suspension/concur-run/actor/isolation transfer without shareability proof"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -623,13 +623,13 @@
     "preconditions": [
       "require nonowning nonmutating access with exact provenance",
       "bound the view by owner lifetime and move/drop",
-      "reject suspension/task/actor/isolation transfer without shareability proof"
+      "reject suspension/concur-run/actor/isolation transfer without shareability proof"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right in listed order",
-      "apply ReadonlyViewAdmitted local rule: require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/task/actor/isolation transfer without shareability proof",
+      "apply ReadonlyViewAdmitted local rule: require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof",
       "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",

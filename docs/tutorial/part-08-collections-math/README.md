@@ -29,7 +29,7 @@ generator lifetime, NumericArray shape, exact numeric과 unit dimension까지
 - NumericArray infix elementwise power와 async comprehension은 현행 Stable
   표면이 아니다.
 
-정적 예제의 계산 결과는 설계상 설명일 뿐 xVM/LLVM 실행 receipt가 아니다.
+정적 예제의 계산 결과는 설계상 설명일 뿐 xVM/Cranelift 실행 receipt가 아니다.
 
 ## 이 부를 읽는 관점
 

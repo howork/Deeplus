@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/cranelift-backend-current-fixtures-r1.json",
+  "title": "Deeplus current Cranelift backend design fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "semantic_p0",
+    "open_feature_p1_count",
+    "product_lanes",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.cranelift-backend-current-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/cranelift-backend-current-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-current-trait-operator-refinement-r1"
+    },
+    "contract": {
+      "const": "spec/contracts/cranelift-backend-current.json"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "open_feature_p1_count": {
+      "const": 22
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fixture_id",
+          "class",
+          "rule_ids",
+          "scenario",
+          "expected",
+          "assertions",
+          "execution_state"
+        ],
+        "properties": {
+          "fixture_id": {
+            "pattern": "^CLB-R1-(POS|NEG)-[0-9]{3}$"
+          },
+          "class": {
+            "enum": [
+              "positive",
+              "negative"
+            ]
+          },
+          "rule_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "pattern": "^CLB-R[0-9]{3}$"
+            }
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 10
+          },
+          "expected": {
+            "enum": [
+              "ADMIT_STATIC",
+              "REJECT_STATIC"
+            ]
+          },
+          "assertions": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "execution_state": {
+            "const": "DESIGN_STATIC_NOT_RUN"
+          }
+        }
+      }
+    },
+    "expected_counts": {
+      "const": {
+        "cases": 12,
+        "positive": 6,
+        "negative": 6,
+        "semantic_p0": 0,
+        "open_feature_p1": 22,
+        "p1_closed": 0,
+        "p1_created": 0,
+        "product_lanes": 15,
+        "product_executed": 0
+      }
+    }
+  }
+}

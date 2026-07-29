@@ -56,4 +56,4 @@ Deeplus의 데이터 모델링 표면은 비슷해 보이는 문법을 의도적
 4. HIR-H1/MIR에 남겨야 할 owner, variant, label, commit 정보는 무엇인가?
 
 이 부의 예시는 정본 설계에 따른 설명용 코드다. 실제 parser/checker,
-MIR, xVM 또는 LLVM 실행을 증명하지 않는다.
+MIR, xVM 또는 Cranelift 실행을 증명하지 않는다.

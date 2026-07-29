@@ -38,8 +38,8 @@ Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
 
 15개 제품 lane은 `rust_frontend_lexer`, `rust_frontend_parser`,
 `rust_hir_lowering`, `rust_integrated_checker`, `deeplus_mir_lowering`,
-`xvm_bytecode_emitter`, `xvm_interpreter`, `llvm_aot_backend`,
-`llvm_orc_jit_backend`, `formatter_lsp`, `stdlib_provider_runner`,
+`xvm_bytecode_emitter`, `xvm_interpreter`, `cranelift_object_aot_backend`,
+`cranelift_jit_backend`, `formatter_lsp`, `stdlib_provider_runner`,
 `official_tooling`, `independent_conformance`, `cross_backend_conformance`,
 `actual_user_team_study`이며 모두 `NOT_RUN`이다.
 
@@ -91,8 +91,8 @@ Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
     "deeplus_mir_lowering": "NOT_RUN",
     "xvm_bytecode_emitter": "NOT_RUN",
     "xvm_interpreter": "NOT_RUN",
-    "llvm_aot_backend": "NOT_RUN",
-    "llvm_orc_jit_backend": "NOT_RUN",
+    "cranelift_object_aot_backend": "NOT_RUN",
+    "cranelift_jit_backend": "NOT_RUN",
     "formatter_lsp": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "official_tooling": "NOT_RUN",
@@ -187,7 +187,7 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 | `directed_coroutine_group` | exact source route 미선정 | direction, structured scope, cancellation, cleanup 및 gated fixture가 없음 |
 | `session_protocol_lite_provider` | core syntax가 아닌 provider 후보 | protocol identity, duality, message order, cancellation 및 actor mailbox 결합을 별도 정의해야 함 |
 | `state_machine_source_syntax` | exact source syntax 미선정 | 현행 `uml_state_machine_provider`는 ordinary source를 생성하는 도구일 뿐 새 syntax가 아님 |
-| `weak_atomic_ordering` | ordering spelling/API 미선정 | closed memory model, happens-before, compiler reorder 한계, litmus 및 xVM/LLVM receipt 필요 |
+| `weak_atomic_ordering` | ordering spelling/API 미선정 | closed memory model, happens-before, compiler reorder 한계, litmus 및 xVM/Cranelift receipt 필요 |
 
 ### Registry 전체 분류 — FFI, Dyn 및 Facet
 
@@ -307,7 +307,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "음수 지수는 허용하되 implicit mixed-type conversion, arbitrary exponent type와 custom operator 등록은 만들지 않는다.",
     "diagnostics_migration_tooling": "integer·floating 계산을 자동 Rational로 승격하거나 서로 다른 rounding 정책을 `%`로 rewrite하지 않는다.",
     "open_alternatives": "현행 Stable `/`·`%`와 명시적 Rational library function이 대안이고 implicit conversion과 새 glyph는 비활성이다.",
-    "activation_prerequisites": "exact result/error algebra, zero·부호 경계, normalization, diagnostic oracle와 xVM/LLVM 실행 receipt가 필요하다."
+    "activation_prerequisites": "exact result/error algebra, zero·부호 경계, normalization, diagnostic oracle와 xVM/Cranelift 실행 receipt가 필요하다."
   },
   {
     "feature_id": "std_math_calculus_preview_design",
@@ -329,20 +329,20 @@ actor crossing을 암시하지 않는다.
   },
   {
     "feature_id": "async_callable_literal_profile",
-    "motivation": "중단 가능한 호출 가능 값을 이름 있는 선언 없이 안전하게 전달하려는 제안이다.",
-    "surface_or_api": "후보는 #async{ => ... } 계열이며 exact EBNF와 반환 형식은 아직 미선정이다.",
-    "static_semantics_and_interactions": "capture ownership, await 책임, Error/Defect/Cancellation, isolation과 structured task owner를 함께 검사해야 하며 ordinary lambda는 동기식으로 유지한다.",
-    "diagnostics_migration_tooling": "현행은 비활성 feature 진단만 허용하고 자동 이행은 없으며 formatter/LSP가 profile과 capture 책임을 보존해야 한다.",
-    "open_alternatives": "이름 있는 def#async가 현행 대안이고 implicit async lambda 및 ambient await 승격은 거부 대안이다.",
-    "activation_prerequisites": "exact root와 EBNF, callable ABI, HIR/MIR lowering, cancellation corpus 및 xVM/LLVM target receipt가 필요하다."
+    "motivation": "concur 밖으로 저장·반환·전달할 수 있는 일반 일급 비동기 호출 가능 값을 안전하게 표현하려는 제안이다.",
+    "surface_or_api": "nearest concur 안에서 비탈출·inward-use로 제한된 #async lambda는 Stable이다. 이 카드는 그 경계를 벗어나는 일반 escaping/first-class #async callable만 다룬다.",
+    "static_semantics_and_interactions": "일반화하려면 capture ownership, residence와 escape, await 책임, Error/Defect/Cancellation, isolation을 함께 닫아야 한다. ordinary lambda는 동기식으로 유지한다.",
+    "diagnostics_migration_tooling": "bounded Stable subset을 일반 일급 값으로 자동 승격하지 않으며 formatter/LSP는 concur owner와 capture 책임을 보존해야 한다.",
+    "open_alternatives": "이름 있는 def#async와 concur-local bounded #async lambda가 현행 대안이다. implicit async lambda와 ambient await 승격은 거부한다.",
+    "activation_prerequisites": "escaping callable ABI, owner-transfer 계약, HIR/MIR lowering, cancellation corpus 및 xVM/Cranelift target receipt가 필요하다."
   },
   {
     "feature_id": "async_comprehension",
     "motivation": "비동기 원천의 변환과 수집을 하나의 구조화된 표현으로 기술하려는 제안이다.",
     "surface_or_api": "exact source surface와 결과 collection 또는 stream API는 미선정이다.",
     "static_semantics_and_interactions": "finite-source 조건, 순서, backpressure, transform error-set union, cancellation과 부분 결과 cleanup을 닫아야 한다.",
-    "diagnostics_migration_tooling": "for await를 자동 rewrite하지 않으며 parser diagnostic, formatter round-trip과 cancellation span 진단을 새로 정해야 한다.",
-    "open_alternatives": "현행 for await statement와 stdlib AsyncCollector 조합이 대안이고 이를 comprehension으로 암묵 승격하는 방식은 거부한다.",
+    "diagnostics_migration_tooling": "for#await를 자동 rewrite하지 않으며 parser diagnostic, formatter round-trip과 cancellation span 진단을 새로 정해야 한다.",
+    "open_alternatives": "현행 for#await statement와 stdlib AsyncCollector 조합이 대안이고 이를 comprehension으로 암묵 승격하는 방식은 거부한다.",
     "activation_prerequisites": "exact grammar, collector identity, ownership/effect 규칙, lowering 및 positive/negative/boundary 실행 증거가 필요하다."
   },
   {
@@ -360,7 +360,7 @@ actor crossing을 암시하지 않는다.
     "surface_or_api": "group과 direction을 나타내는 exact source route 및 API는 미선정이다.",
     "static_semantics_and_interactions": "direction compatibility, structured scope, cancellation propagation, cleanup과 send/request interaction을 고정해야 한다.",
     "diagnostics_migration_tooling": "detached coroutine을 자동 포섭하지 않으며 direction mismatch와 escape span을 위한 진단 및 debugger 표기가 필요하다.",
-    "open_alternatives": "현행 task group과 actor protocol이 대안이고 lexical owner 없는 coroutine 집합은 거부한다.",
+    "open_alternatives": "현행 concur owner와 actor protocol이 대안이고 lexical owner 없는 coroutine 집합은 거부한다.",
     "activation_prerequisites": "exact grammar, owner typestate, cancellation/cleanup equations, MIR identity와 cross-backend corpus가 필요하다."
   },
   {
@@ -388,7 +388,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "data race, happens-before, failure ordering, compiler reorder 한계와 actor mailbox 순서를 분리해야 한다.",
     "diagnostics_migration_tooling": "현행 SharedCell/SharedMutex를 자동 약화하지 않으며 invalid ordering 진단과 tooling memory-order 표시가 필요하다.",
     "open_alternatives": "현행 sequentially consistent 최소 profile이 대안이고 target별 임의 의미는 거부한다.",
-    "activation_prerequisites": "닫힌 memory model, xVM/LLVM parity, litmus suite와 target-bound reproducibility receipt가 필요하다."
+    "activation_prerequisites": "닫힌 memory model, xVM/Cranelift parity, litmus suite와 target-bound reproducibility receipt가 필요하다."
   },
   {
     "feature_id": "c_aggregate",
@@ -433,7 +433,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "type erasure, owner/drop plan, cast failure, authority non-forging과 Trait evidence coherence를 닫아야 한다.",
     "diagnostics_migration_tooling": "ordinary value를 자동 box하지 않으며 failed cast의 typed 진단과 erased-type tooling 표시가 필요하다.",
     "open_alternatives": "closed Union과 explicit nominal wrapper가 현행 대안이고 ambient dynamic fallback은 거부한다.",
-    "activation_prerequisites": "runtime representation, checker/MIR lowering, SFD-P1-009 실행 권위와 xVM/LLVM receipt가 필요하다."
+    "activation_prerequisites": "runtime representation, checker/MIR lowering, SFD-P1-009 실행 권위와 xVM/Cranelift receipt가 필요하다."
   },
   {
     "feature_id": "dynamic_trait_attach_detach_stateless_preview_design",
@@ -731,7 +731,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "각 후보는 binder parity, finiteness, shape, equality/order, view selection, ownership, effect/error, cleanup, isolation과 rollback을 독립적으로 닫아야 하며 Stable ListRestView나 Tuple product를 일반화했다고 추정하지 않는다.",
     "diagnostics_migration_tooling": "Preview 표면을 current로 자동 rewrite하지 않고 gate별 deterministic diagnostic, formatter round-trip, hover의 Stable 대안, migration inventory와 부정 corpus를 제공해야 한다.",
     "open_alternatives": "Stable match/guarded binding, named pure adapter, 명시적 loop/search API, direct-local group assignment가 현행 대안이며 dynamic/effectful extractor와 ambient shared mutation은 source route 없이 deferred다.",
-    "activation_prerequisites": "후보별 exact EBNF와 owner policy, terminating checker algorithm, MIR event/cleanup contract, formatter/LSP, positive·negative·boundary·mutation corpus, target-bound xVM/LLVM receipt와 별도 Design activation authority가 필요하다."
+    "activation_prerequisites": "후보별 exact EBNF와 owner policy, terminating checker algorithm, MIR event/cleanup contract, formatter/LSP, positive·negative·boundary·mutation corpus, target-bound xVM/Cranelift receipt와 별도 Design activation authority가 필요하다."
   }
 ]
 ```
@@ -766,7 +766,7 @@ actor crossing을 암시하지 않는다.
 | Static-first Dyn/Facet | 닫힌 정적 대안을 먼저 사용하고 open-world boundary에서만 명시적 dynamic carrier를 허용 | explicit owned Dyn pack, immutable `FacetRegistry<Trait>` borrow projection 등의 설계 identity; exact source route 미선정 | compiler retry/fallback/order winner 0, provenance·drop·owner·cast failure를 명시, borrow Facet current 유지 | `SFD-P1-001..008` 정적 폐쇄를 되돌리지 않음; 실행은 별도 `SFD-P1-009`; formatter/runtime route와 product claim 없음 |
 | Stable Enum-derived capability | order/display/subset을 raw/tag/layout이나 case-local witness 없이 owner 수준에서 표현 | `enum#increasing`/`enum#decreasing`, case `~>` template, `+type` exact subset | whole-Enum witness 하나, restricted pure template, finite same-owner subset 및 checked narrowing | `STABLE_DESIGN`; explicit same-ground witness conflict는 terminal이고 제품 실행은 `NOT_RUN` |
 | Literal-shaped collection | 값 literal과 닮은 읽기 쉬운 type spelling 및 immutable-first 책임 모델 | `[T]`, `#mut[T]`, `#set{T}`, `#map{K:V}`, `${label:T,...}`와 freeze/snapshot/view successor | type-goal에서 canonical identity로만 normalize; one-based index, bracket matrix, Union, ABI/serialization 불변 | parser-goal 분리, formatter round-trip, Prelude migration, borrow/MIR/actor evidence 및 target receipt 필요 |
-| Dynamic/unsafe quarantine | 불가피한 dynamic/unsafe 작업의 authority와 escape를 한 lexical owner에 가두기 | `@scope#dynamic` / `@scope#unsafe`와 typed immutable export 후보 | outer mutation·suspension·모든 authority/resource escape 금지, xVM/LLVM에서 하나의 MIR 의미 | nonactivatable; provenance, authority accounting, escape proof 및 differential execution이 열려 있음 |
+| Dynamic/unsafe quarantine | 불가피한 dynamic/unsafe 작업의 authority와 escape를 한 lexical owner에 가두기 | `@scope#dynamic` / `@scope#unsafe`와 typed immutable export 후보 | outer mutation·suspension·모든 authority/resource escape 금지, xVM/Cranelift에서 하나의 MIR 의미 | nonactivatable; provenance, authority accounting, escape proof 및 differential execution이 열려 있음 |
 
 Frontend model은 Enum-derived 3개를 `stable_design_surfaces_current`에
 결합하고, quarantine, literal-shaped 3개, immutable-first 및
@@ -785,7 +785,7 @@ freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목
 - typed identity, semantic identity, serialization tag, discriminant,
   layout, foreign ABI, artifact digest 및 Git identity는 명시적 typed
   mapping 없이는 서로 같지 않다.
-- 문서의 예제나 정적 schema는 parser/checker/xVM/LLVM 실행 evidence가
+- 문서의 예제나 정적 schema는 parser/checker/xVM/Cranelift 실행 evidence가
   아니다.
 
 ### 정확한 OPEN P1 ledger
@@ -935,7 +935,7 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
 3. terminating type/ownership/effect/coherence algorithm
 4. deterministic diagnostics 및 migration policy
 5. formatter/LSP와 public API/metadata residue
-6. MIR identity와 xVM/LLVM observable equivalence
+6. MIR identity와 xVM/Cranelift observable equivalence
 7. positive/negative/boundary/mutation corpus
 8. target-bound product receipt와 별도 activation authority
 

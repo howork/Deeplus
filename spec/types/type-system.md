@@ -470,12 +470,29 @@ function type or module API digest. A region-bound callable converts only to a
 compatible `#scoped` use. Present empty `[]` asserts no ancestor-frame
 dependency; a bare `[name]` remains an explicit-capture compatibility form.
 Lexical access never creates a snapshot or capture-plan acquisition. Writes,
-moves, consume, suspension, async/generator/task/actor/FFI isolation,
+moves, consume, suspension, async/generator/run/actor/FFI isolation,
 `def#guard`, place death, and escape require another explicit admitted route.
 
-`SharedCell<T>` admits only normalized Plain payload and exposes sequentially consistent `withValue` scoped observation plus `replace` owner exchange. The borrow cannot escape or suspend, and `replace` commits one new owner while returning the old owner; Plain supplies neither raw layout nor lock-free representation. `SharedMutex<T>` admits the no-lifecycle-payload minimum profile and grants one receiver-bound, non-reentrant, non-suspending scoped inout place to `withLock`. Unlock is an infallible exactly-once cleanup on every terminal path and establishes the mutex handoff edge to the next successful lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering, actor transferability, or hidden cleanup.
+`SharedCell<T>` admits only normalized Plain payload. Construction remains the
+ordinary qualified call `SharedCell::new(move value)`; receiver operations use
+message-call syntax: `cell ~ withValue { borrow value => body }` and
+`cell ~ replace move next`. `withValue` has a `#scoped` callback callable
+profile, while `borrow` alone is the callback binder mode. Its region is owned
+by that invocation, so the borrow cannot escape or suspend. `replace` commits
+one new owner while returning the old owner; Plain supplies neither raw layout
+nor lock-free representation. `SharedMutex<T>` admits the
+no-lifecycle-payload minimum profile. `SharedMutex::new(move value)` is likewise
+an ordinary qualified call, while `mutex ~ withLock { inout state => body }` is
+a receiver message call. `#scoped` belongs to the callback type/profile and
+`inout` is the binder mode; the invocation owns the non-reentrant,
+non-suspending region. Unlock is an infallible exactly-once cleanup on every
+terminal path and establishes the mutex handoff edge to the next successful
+lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering,
+actor transferability, or hidden cleanup.
 
-Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Task<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting the `Task<T>`. Only a successfully admitted actor-request Task value carries a non-forgeable `TaskResponsibility` descriptor in typed HIR, module API digest, and MIR; an ordinary async Task has no actor transport descriptor. The actor-request descriptor records the normalized result type, handler ErrorSet, cancellation axis, isolation owner, correlation identity, and terminal transport failure. Module API identity stores the static `correlation_id = per_value_non_forgeable` policy marker, while each committed request keeps its concrete correlation identity only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second Task type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted request task and does not retroactively change the successful admission Result.
+Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Reply<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting that `Reply<T>`. Each successfully admitted request carries a non-forgeable `ReplyResponsibility` descriptor in typed HIR, module API digest, and MIR. Its exact fields are normalized result type, handler ErrorSet, cancellation axis, isolation owner, `ReplyId`, request correlation identity, and terminal transport failure. Module API identity stores static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers, while each committed request keeps its concrete identities only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second `Reply` type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted reply and does not retroactively change the successful admission Result.
+
+Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur { ... }` is its only lexical owner; each successfully admitted `spawn` creates one owner-bound `ConcurRunId` and child `ExecutionId`. `Run<T>` and `Reply<T>` are both one-shot awaitable values, but neither converts to, substitutes for, or joins with the other. A `Run<T>` cannot escape, be exported, or enter unowned storage without a separately admitted owner-transfer contract. A bounded `#async` lambda is admitted only inside its nearest `concur`, only with no capture or an explicitly proven reusable copy-only capture plan, and only for nonescaping inward use. General escaping async callable literals remain nonactivatable.
 
 `AsyncSequence<T, E: ErrorSet>` binds its source failure set instead of leaving a free terminal type. Its `next` operation throws `E`, while cancellation remains a distinct control outcome. For `AsyncCollector::list<T, U, ES, ET>`, the source is `AsyncSequence<T, ES>`, the named asynchronous transform throws `ET`, and the result throws exactly `normalize(ES | ET)`. Neither source nor transform errors may be erased or converted to cancellation.
 
@@ -635,7 +652,7 @@ guarded arm never subtracts from exhaustiveness coverage.
 
 The checker hands MIR a normalized descriptor containing the selected static identities, call channels, labels, type arguments, ownership transitions, cleanup regions, effects/errors, failure edges, suspension/isolation, construction plan, and source provenance. MIR lowering must not repeat open-ended name, witness, extension, or provider lookup.
 
-The canonical architecture is Rust frontend/checker, Deeplus MIR, Rust xVM bytecode/interpreter, LLVM AOT, and later LLVM ORC JIT. This file defines the design handoff only. Until artifact-bound target receipts exist, production parser, integrated checker, MIR lowering, xVM, LLVM, formatter/LSP, and independent conformance remain `NOT_RUN` regardless of static schema or verifier success.
+The canonical architecture is Rust frontend/checker, Deeplus MIR, Rust xVM bytecode/interpreter, Cranelift ObjectModule AOT, and later Cranelift JITModule. This file defines the design handoff only. Until artifact-bound target receipts exist, production parser, integrated checker, MIR lowering, xVM, Cranelift, formatter/LSP, and independent conformance remain `NOT_RUN` regardless of static schema or verifier success.
 
 
 ## 19. Rightward local-binding normalization judgment
@@ -661,7 +678,7 @@ Field punning elaborates `label` to `label: label` before construction-row check
 
 `if let`, `while let`, and `for let` use one transactional pattern-commit judgment: evaluate once, acquire, compile a nonconsuming TestPlan, test, expose probe binders, evaluate zero or one guard, commit atomically, expose final binders, execute, and exit/join. Failed `for let` matching or a false guard skips the current element; it is not an error or loop failure.
 
-The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, task, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
+The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, run, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 
 
 ## 23. Closed typing boundaries

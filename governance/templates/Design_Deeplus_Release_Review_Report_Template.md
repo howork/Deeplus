@@ -24,8 +24,8 @@ highest_evidence_level:
 | Integrated checker | | |
 | MIR lowering/verifier | | |
 | xVM | | |
-| LLVM AOT | | |
-| LLVM ORC JIT | | |
+| Cranelift ObjectModule AOT | | |
+| Cranelift JITModule | | |
 | Formatter/LSP | | |
 | Independent conformance | | |
 | User study | | |

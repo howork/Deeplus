@@ -132,7 +132,7 @@ Preview 파일과 설명은 삭제하지 않는다. 다만 별도 activation과
 ## 6. 권위와 증거 경계
 
 이 수용은 문법·언어·타입·MIR·문서·정적 fixture의 현재 설계 권위를
-갱신한다. Rust frontend, checker, MIR lowering, xVM, LLVM,
+갱신한다. Rust frontend, checker, MIR lowering, xVM, Cranelift,
 formatter/LSP, conformance와 product lane 실행을 증명하지 않는다.
 기존 semantic P0는 0이고 OPEN P1 22건 및 M13 action을 닫거나
 재번호화하지 않는다.

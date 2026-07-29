@@ -1,4 +1,4 @@
-# 11-05 — HIR-H1, MIR, xVM/LLVM와 tooling evidence
+# 11-05 — HIR-H1, MIR, xVM/Cranelift와 tooling evidence
 
 ## 1. 상태와 읽는 법
 
@@ -35,7 +35,7 @@ conformance, ownership, effect/error, cleanup, source provenance가
 3. HIR-H1(고수준 중간 표현 H1): resolved identity와 typed
    responsibility를 닫고 verifier(검증기) 통과.
 4. MIR(중간 표현): 관찰 가능한 평가/commit/failure/cleanup event.
-5. xVM/LLVM backend(후단): 같은 Deeplus MIR observation을 보존.
+5. xVM/Cranelift backend(후단): 같은 Deeplus MIR observation을 보존.
 
 capability receipt가 없는 HIR unit은 canonical source design일 수 있어도
 executable unit으로 넘어가지 않는다. MIR은 provider/witness/member lookup을
@@ -88,9 +88,26 @@ let decoded = Packet::decode(text)
 // Trait associated static은 explicit qualification이 필요하다.
 ```
 
-xVM initial, LLVM AOT, LLVM ORC JIT은 current backend authority에 함께
-남는다. MIR-X1 draft 문서가 xVM-only architecture를 제안했다는 사실은
-current backend set을 바꾸지 않는다.
+xVM initial, Cranelift `ObjectModule` AOT, Cranelift `JITModule`은 current
+backend authority에 함께 남는다. MIR-X1 draft 문서가 xVM-only
+architecture를 제안했다는 사실은 current backend set을 바꾸지 않는다.
+
+두 Cranelift 경로는 별도 언어 의미를 갖지 않는다. 검증된 같은 MIR을
+한 번 CLIF로 낮춘 다음 `ObjectModule`은 relocatable object를, `JITModule`은
+process memory의 code/data를 finalize한다. object path는 object bytes,
+linker와 최종 artifact를 기록하고, JIT path는 import allowlist, resolved
+import map, executable-memory policy와 image lifetime을 기록한다.
+
+target triple, ISA settings, Cranelift version, module kind, calling convention,
+runtime ABI와 optimization 설정이 하나라도 빠지면 target receipt가 아니다.
+Error나 Cancellation을 host exception으로 바꾸거나 cleanup을 unwinder에
+맡기는 것도 허용되지 않는다. 이들은 MIR의 명시적 edge와 ordered action
+그대로 남아야 한다.
+
+또한 CLIF value, block, stack slot, signature, register와 machine address는
+Deeplus semantic identity가 아니다. managed reference가 live인 site에서
+필요한 root-map/stack-map capability가 없다면 backend는 raw pointer로
+우회하지 않고 lowering을 중단한다.
 
 ## 8. 다른 기능과의 연결
 
@@ -113,7 +130,7 @@ HIR-H1에 고정한다. verifier가 open lookup과 책임 누락이 0임을 확�
 동시성 lowering에서는 happens-before(선행-후행 보장) edge도 같은
 방식으로 남긴다. child cleanup이 await resume보다 앞선다는 edge는 MIR
 observation이지만, 독립 child 사이의 전체 순서는 만들지 않는다.
-xVM과 LLVM parity 검증은 stdout 문자열만이 아니라 owner transition,
+xVM과 Cranelift parity 검증은 stdout 문자열만이 아니라 owner transition,
 primary/suppressed failure, cleanup과 이 edge를 비교해야 한다.
 
 ### 흔한 오해와 미니 사례
@@ -121,7 +138,7 @@ primary/suppressed failure, cleanup과 이 edge를 비교해야 한다.
 HIR JSON이 parse되고 digest가 맞으면 executable이라는 생각은 틀리다.
 artifact integrity는 bytes와 provenance를 확인할 뿐 verifier receipt,
 backend build, target execution을 대신하지 않는다. MIR-X1 draft가
-xVM-only를 제안했다는 사실도 current xVM+LLVM backend authority를
+xVM-only를 제안했다는 사실도 current xVM+Cranelift backend authority를
 자동 supersede하지 않는다.
 
 미니 사례로 `<6/8>`은 HIR에서 normalized Rational identity를 갖고,
@@ -160,7 +177,7 @@ execution PASS로 표현하지 않는다.
 1. **따라 하기:** 한 call의 source→AST→HIR-H1→MIR identity를 표로 적어라.
 2. **빈칸 완성:** open lookup이 끝나야 하는 단계와 observable event가
    시작되는 단계를 채워라.
-3. **스스로 설계하기:** xVM/LLVM parity test가 stdout 외에 비교해야 할
+3. **스스로 설계하기:** xVM/Cranelift parity test가 stdout 외에 비교해야 할
    ownership/failure/cleanup event를 설계하라.
 
 ## 11. 빠른 복습
@@ -174,6 +191,7 @@ execution PASS로 표현하지 않는다.
 
 - [evaluation/HIR/MIR/backend](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 - [HIR-H1 contract](../../../spec/contracts/hir-h1-current-mir-bridge.json)
+- [Cranelift backend contract](../../../spec/contracts/cranelift-backend-current.json)
 - [MIR semantics](../../../spec/mir/semantics.md)
 - [DP-RFC-0001](../../../rfcs/DP-RFC-0001-xvm-only-mir.md)
 - [DP-RFC-0002](../../../rfcs/DP-RFC-0002-current-hir-h1.md)

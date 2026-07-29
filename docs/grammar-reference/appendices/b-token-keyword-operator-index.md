@@ -122,6 +122,7 @@
 | `cleanup` |
 | `clone` |
 | `common` |
+| `concur` |
 | `conform` |
 | `conformance` |
 | `conforms` |
@@ -148,7 +149,6 @@
 | `forward` |
 | `generate` |
 | `get` |
-| `group` |
 | `guard` |
 | `inout` |
 | `is` |
@@ -192,7 +192,6 @@
 | `static` |
 | `super` |
 | `supports` |
-| `task` |
 | `then` |
 | `throws` |
 | `to` |

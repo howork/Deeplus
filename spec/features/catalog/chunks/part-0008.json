@@ -764,7 +764,7 @@
       "effectrow_core",
       "error_set_algebra_msp",
       "resource_cleanup",
-      "structured_task_scope",
+      "structured_concur_region",
       "actor_declaration_grammar_closed"
     ],
     "display_name": "Library static binding initializer minimum sound profile",
@@ -773,7 +773,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "A library top-level binding is admitted only when it is an immutable `let`, its dependency graph is acyclic, it commits exactly once, its normalized error/effect/authority rows are empty, it never suspends, acquires or escapes no resource, creates no task or actor, and remains locally isolated.",
+    "notes": "A library top-level binding is admitted only when it is an immutable `let`, its dependency graph is acyclic, it commits exactly once, its normalized error/effect/authority rows are empty, it never suspends, acquires or escapes no resource, spawns no Run and creates no actor, and remains locally isolated.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

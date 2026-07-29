@@ -36,7 +36,7 @@
       "isolation transfer visible",
       "bounded mailboxes use bounded_reject_v1 and unbounded mailboxes use logical_unbounded_v1",
       "one-way admission returns Result<Unit, error ActorMessageError>",
-      "request admission returns Result<Task<T>, error ActorMessageError> before await"
+      "request admission returns Result<Reply<T>, error ActorMessageError> before await"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -62,13 +62,13 @@
       "send/request not ordinary method call",
       "isolation transfer visible",
       "mailbox admission profile identity and Result channel are explicit",
-      "precommit rejection retains sender ownership and creates no request Task"
+      "precommit rejection retains sender ownership and creates no Reply"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the declared descriptor shape as design documentation only",
       "validate the selected actor/protocol handler identity and Transferable or Shareable boundary evidence",
-      "validate bounded_reject_v1 admission, precommit ownership, one-way Result, and request Result<Task<T>> channel shapes",
+      "validate bounded_reject_v1 admission, precommit ownership, one-way Result, and request Result<Reply<T>> channel shapes",
       "record ActorProtocolGateAdmitted requires and candidate diagnostic vocabulary without executing a product checker decision",
       "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
       "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
@@ -698,7 +698,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "AsyncActorCoreAdmitted",
     "source_name": "AsyncActorCoreAdmitted",
-    "summary": "Tracks async/task/actor design stability while product support remains NOT_RUN.",
+    "summary": "Tracks async/concur/Run/Reply/actor design stability while product support remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -711,7 +711,7 @@
     ],
     "feature_refs": [
       "actor_protocol_family",
-      "async_task_control"
+      "async_concur_control"
     ],
     "diagnostic_refs": [
       "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN"
@@ -858,7 +858,7 @@
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "AsyncSurfaceGateAdmitted",
-    "source_name": "async/await/for-await",
+    "source_name": "async/await/for#await",
     "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
@@ -871,7 +871,7 @@
     ],
     "feature_refs": [
       "async_iteration",
-      "async_task_control",
+      "async_concur_control",
       "await_expression_surface"
     ],
     "diagnostic_refs": [

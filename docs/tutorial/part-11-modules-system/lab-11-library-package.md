@@ -165,7 +165,7 @@ codec tag를 바꾼 경우, Module file을 다른 directory로 옮긴 경우다.
 보는 양극단을 피한다.
 
 정적 산출물 검사가 끝나면 아직 실행하지 않은 항목을 명시한다. 실제
-Package manager resolution, host console, FFI target, xVM/LLVM backend,
+Package manager resolution, host console, FFI target, xVM/Cranelift backend,
 formatter/LSP 제품 동작은 이 실습 범위 밖이다. 따라서 결과 문구는
 “설계·결합 검사 완료”이지 “library 제품 지원 PASS”가 아니다.
 

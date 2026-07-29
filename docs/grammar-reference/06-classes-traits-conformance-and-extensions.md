@@ -340,7 +340,7 @@ trait InvalidAudit {
 ```
 
 거부된 item은 assertion residue나 MIR event를 만들지 않는다. 허용된
-law도 executable MIR로 낮아지지 않으며 xVM·LLVM·제품 실행 PASS를
+law도 executable MIR로 낮아지지 않으며 xVM·Cranelift·제품 실행 PASS를
 주장하지 않는다. 향후 conformance proof block은 별도 Preview authority가
 필요하고, 현재 Stable law declaration을 proof 실행 표면으로 재해석할 수
 없다.

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.actor-concurrency-coherence-fixtures/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-concur-role-coherence-r1",
   "contract": "spec/contracts/actor-concurrency-coherence.json",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "product_support": "NOT_RUN",
@@ -13,13 +13,14 @@
     "mir_status": "NOT_RUN",
     "runtime_status": "NOT_RUN",
     "module_api_digest_status": "DESIGN_STATIC_SCHEMA_BOUND",
-    "task_responsibility_source_spelling": "Task<T>",
-    "task_origin_values": [
-      "ordinary_async",
-      "actor_request_admitted"
+    "run_responsibility_source_spelling": "Run<T>",
+    "reply_responsibility_source_spelling": "Reply<T>",
+    "responsibility_kind_values": [
+      "concur_run",
+      "actor_request_reply"
     ],
-    "task_responsibility_descriptor_field_count": 6,
-    "task_responsibility_admission_only_error_count": 0,
+    "reply_responsibility_descriptor_field_count": 7,
+    "reply_responsibility_admission_only_error_count": 0,
     "null_existing_diagnostic": "the rejection rule is fixed but no new final diagnostic registry identity is created by this fixture",
     "static_acceptance_is_product_pass": false
   },
@@ -54,9 +55,9 @@
         "ACC-R008",
         "ACC-R011"
       ],
-      "source": "def#async readStatus(worker: Worker) -> Int throws ActorMessageError = {\n    let Result::ok(task) = worker :~ status\n    else Result::err(error) => throw error\n    return await task\n}",
+      "source": "def#async readStatus(worker: Worker) -> Int throws ActorMessageError = {\n    let Result::ok(reply) = worker :~ status\n    else Result::err(error) => throw error\n    return await reply\n}",
       "expected_outcome": "accept_design_static",
-      "assertion": "a request immediately returns Result<Task<Int>, error ActorMessageError>; source extracts Task<Int> before explicit await"
+      "assertion": "a request immediately returns Result<Reply<Int>, error ActorMessageError>; source extracts Reply<Int> before explicit await"
     },
     {
       "fixture_id": "ACC-P-004-STRUCTURED-SPAWN",
@@ -65,9 +66,9 @@
         "ACC-R010",
         "ACC-R011"
       ],
-      "source": "task scope {\n    let child = spawn async { => await load() }\n    await child\n}",
+      "source": "concur {\n    let child = spawn { => await load() }\n    await child\n}",
       "expected_outcome": "accept_design_static",
-      "assertion": "standalone spawn uses the narrow TaskBody inside the existing structured scope"
+      "assertion": "standalone spawn uses the narrow SpawnBody and yields one owner-bound Run<T> inside concur"
     },
     {
       "fixture_id": "ACC-P-005-MESSAGE-SPAWN-OWNER",
@@ -77,7 +78,7 @@
       ],
       "source": "let child = worker ~ spawn { => worker ~ run(job) }",
       "expected_outcome": "accept_design_static",
-      "assertion": "message spawn is recognized from CallExpr mode Message produced by ordinary ~ TildeCallLed and does not create TaskSpawnSuffix"
+      "assertion": "message spawn is recognized from CallExpr mode Message produced by ordinary ~ TildeCallLed and does not create SpawnExpr"
     },
     {
       "fixture_id": "ACC-P-006-ASYNC-ITERATION-SURFACE",
@@ -85,9 +86,9 @@
         "ACC-R001",
         "ACC-R011"
       ],
-      "source": "def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {\n    for await item in stream {\n        process(item)\n    }\n}",
+      "source": "def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {\n    for#await item in stream {\n        process(item)\n    }\n}",
       "expected_outcome": "accept_design_static",
-      "assertion": "the fixture pins only the existing for-await surface and claims no Prelude or runtime support"
+      "assertion": "the fixture pins only the exact attached-role for#await surface and claims no Prelude or runtime support"
     },
     {
       "fixture_id": "ACC-P-007-PER-CHANNEL-FIFO",
@@ -150,10 +151,11 @@
         "ACC-R016"
       ],
       "descriptor": {
-        "immediate_result_type": "Result<Task<Int>, error ActorMessageError>",
+        "immediate_result_type": "Result<Reply<Int>, error ActorMessageError>",
         "immediate_result_case": "ok",
-        "task_extracted_before_await": true,
+        "reply_extracted_before_await": true,
         "request_enqueue_commit": true,
+        "reply_id": "reply-request-1",
         "correlation_id": "request-1",
         "terminal_events": [
           {
@@ -268,37 +270,39 @@
       ],
       "descriptor": {
         "mailbox_profile_id": "bounded_reject_v1",
-        "immediate_result_type": "Result<Task<Status>, error ActorMessageError>",
+        "immediate_result_type": "Result<Reply<Status>, error ActorMessageError>",
         "result_case": "ok",
-        "task_extracted_before_await": true,
+        "reply_extracted_before_await": true,
+        "reply_id": "reply-015",
         "correlation_id_created_after_commit": true
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "request admission and later task terminal outcome remain separate phases"
+      "assertion": "request admission and the later correlated Reply terminal outcome remain separate phases"
     },
     {
-      "fixture_id": "ACC-P-016-CLOSED-BEFORE-REPLY-TASK-FAILURE",
+      "fixture_id": "ACC-P-016-CLOSED-BEFORE-REPLY-FAILURE",
       "rule_ids": [
         "ACC-R008",
         "ACC-R016"
       ],
       "descriptor": {
-        "admission_result": "Result::ok(task)",
+        "admission_result": "Result::ok(reply)",
         "enqueue_commit": true,
         "receiver_closed_before_reply": true,
-        "task_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
+        "reply_id": "reply-016",
+        "reply_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
         "admission_result_rewritten": false
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "post-admission receiver closure terminates the correlated Task without rewriting its earlier admission result"
+      "assertion": "post-admission receiver closure terminates the correlated Reply without rewriting its earlier admission result"
     },
     {
-      "fixture_id": "ACC-P-017-TASK-RESPONSIBILITY-AWAIT-ERROR-SET",
+      "fixture_id": "ACC-P-017-REPLY-RESPONSIBILITY-AWAIT-ERROR-SET",
       "rule_ids": [
         "ACC-R008"
       ],
       "descriptor": {
-        "task_origin": "actor_request_admitted",
+        "responsibility_kind": "actor_request_reply",
         "result_type": "Status",
         "normalized_handler_error_set": [
           "LookupError",
@@ -306,6 +310,7 @@
         ],
         "cancellation_axis": "propagate_distinct_control_outcome",
         "isolation_owner": "Worker::status",
+        "reply_id": "reply-017",
         "correlation_id": "corr-017",
         "terminal_transport_failure": [
           "receiverClosedBeforeReply"
@@ -317,17 +322,21 @@
         ]
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "Task<T> retains the exact handler ErrorSet and the sole post-admission transport failure while Cancellation remains a separate axis"
+      "assertion": "Reply<T> retains the exact handler ErrorSet and the sole post-admission transport failure while Cancellation remains a separate axis"
     },
     {
-      "fixture_id": "ACC-P-018-TASK-STORAGE-PRESERVES-CORRELATION",
+      "fixture_id": "ACC-P-018-REPLY-STORAGE-PRESERVES-CORRELATION",
       "rule_ids": [
         "ACC-R008"
       ],
       "descriptor": {
-        "storage_type": "List<Task<Status>>",
-        "task_origin": "actor_request_admitted",
+        "storage_type": "List<Reply<Status>>",
+        "responsibility_kind": "actor_request_reply",
         "normalized_static_fields_equal": true,
+        "stored_reply_ids": [
+          "reply-018-a",
+          "reply-018-b"
+        ],
         "stored_correlation_ids": [
           "corr-018-a",
           "corr-018-b"
@@ -339,7 +348,7 @@
         "descriptor_erased": false
       },
       "expected_outcome": "accept_design_static",
-      "assertion": "storage compatibility compares normalized static descriptor fields but preserves every task value's non-forgeable correlation identity"
+      "assertion": "storage compatibility compares normalized static descriptor fields but preserves every Reply value's non-forgeable reply and correlation identities"
     },
     {
       "fixture_id": "ACC-P-019-QUALIFIED-PROTOCOL-TUPLE-PAYLOAD",
@@ -422,7 +431,7 @@
       ],
       "descriptor": {
         "actor_state_owner": "actor-1",
-        "mutation_requester": "task-2",
+        "mutation_requester": "run-2",
         "message_boundary_used": false
       },
       "expected_outcome": "reject_design_static",
@@ -577,7 +586,7 @@
         "ACC-R011"
       ],
       "descriptor": {
-        "operand_type": "Task<Int>",
+        "operand_type": "Run<Int>",
         "explicit_await_present": false,
         "use_context_requires": "Int",
         "implicit_suspension_inserted": true
@@ -658,29 +667,29 @@
       ],
       "source": "def#async invalid(worker: Worker) -> Int = {\n    return await worker :~ status\n}",
       "descriptor": {
-        "message_expression_type": "Result<Task<Int>, error ActorMessageError>",
-        "task_extracted_before_await": false
+        "message_expression_type": "Result<Reply<Int>, error ActorMessageError>",
+        "reply_extracted_before_await": false
       },
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": null,
-      "violated_condition": "await is applied to the request admission Result instead of an extracted Task<Int>"
+      "violated_condition": "await is applied to the request admission Result instead of an extracted Reply<Int>"
     },
     {
-      "fixture_id": "ACC-N-018-TASK-RESPONSIBILITY-ERASED",
+      "fixture_id": "ACC-N-018-REPLY-RESPONSIBILITY-ERASED",
       "rule_ids": [
         "ACC-R008"
       ],
       "descriptor": {
-        "source_type_spelling": "Task<Status>",
-        "task_responsibility_before": "present",
-        "task_responsibility_after_join": null
+        "source_type_spelling": "Reply<Status>",
+        "reply_responsibility_before": "present",
+        "reply_responsibility_after_join": null
       },
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
-      "violated_condition": "a join retains only the nominal Task<T> spelling and erases handler errors, cancellation, isolation, correlation, and terminal transport responsibility"
+      "violated_condition": "a join retains only the nominal Reply<T> spelling and erases handler errors, cancellation, isolation, correlation, and terminal transport responsibility"
     },
     {
-      "fixture_id": "ACC-N-019-ADMISSION-ERROR-IN-TASK-DESCRIPTOR",
+      "fixture_id": "ACC-N-019-ADMISSION-ERROR-IN-REPLY-DESCRIPTOR",
       "rule_ids": [
         "ACC-R004",
         "ACC-R008"
@@ -695,10 +704,10 @@
       },
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
-      "violated_condition": "mailboxFull is a precommit admission Result error and cannot enter an admitted task descriptor"
+      "violated_condition": "mailboxFull is a precommit admission Result error and cannot enter an admitted Reply descriptor"
     },
     {
-      "fixture_id": "ACC-N-020-IMPLICIT-TASK-ERROR-SET-UNION",
+      "fixture_id": "ACC-N-020-IMPLICIT-REPLY-ERROR-SET-UNION",
       "rule_ids": [
         "ACC-R008"
       ],
@@ -725,13 +734,14 @@
         "ACC-R008"
       ],
       "descriptor": {
-        "source_type_spelling": "Task<Status>",
-        "task_origin": "ordinary_async",
-        "actor_request_task_responsibility": {
+        "source_type_spelling": "Run<Status>",
+        "responsibility_kind": "concur_run",
+        "actor_request_reply_responsibility": {
           "result_type": "Status",
           "normalized_handler_error_set": [],
           "cancellation_axis": "propagate_distinct_control_outcome",
-          "isolation_owner": "task-scope-1",
+          "isolation_owner": "concur-1",
+          "reply_id": "forged-reply",
           "correlation_id": "forged-correlation",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -740,7 +750,7 @@
       },
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
-      "violated_condition": "an ordinary async task is incorrectly assigned actor-request correlation and transport-failure responsibility"
+      "violated_condition": "a concur-owned Run is incorrectly assigned actor-request reply identity, correlation, and transport-failure responsibility"
     },
     {
       "fixture_id": "ACC-N-022-DUPLICATE-MESSAGE-ARGUMENT-LABEL",
@@ -854,7 +864,7 @@
       ],
       "descriptor": {
         "request_committed": true,
-        "admission_result": "Result::ok(task)",
+        "admission_result": "Result::ok(reply)",
         "reply_emitted": false,
         "actor_stopped": true,
         "required_terminal_outcome": "ActorMessageError::receiverClosedBeforeReply",
@@ -884,20 +894,21 @@
       "boundary": "cleanup never replaces an already selected body failure"
     },
     {
-      "fixture_id": "ACC-B-007-TASK-GROUP-PRODUCT-GATE",
+      "fixture_id": "ACC-B-007-RUN-GROUP-NONACTIVATABLE",
       "rule_ids": [
         "ACC-R001",
         "ACC-R010",
         "ACC-R018"
       ],
       "descriptor": {
-        "surface": "TaskGroupStmt",
-        "grammar_identity": "current",
+        "surface": "RunGroup<T>",
+        "grammar_identity": "preview_design_nonactivatable",
         "join_or_collect_profile_bound": false,
         "product_support": "NOT_RUN"
       },
-      "expected_outcome": "bounded_design_assertion",
-      "boundary": "grammar identity does not invent a product join/collect default"
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RUN_GROUP_NOT_ACTIVATABLE",
+      "boundary": "RunGroup<T> is not a second structured owner and does not invent a join/collect default"
     },
     {
       "fixture_id": "ACC-B-008-ON-BINDING-NOT-INFERRED",
@@ -978,13 +989,13 @@
           "channel_sequence": null
         },
         "after_commit_before_reply": {
-          "admission_result": "Result::ok(task)",
-          "task_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
+          "admission_result": "Result::ok(reply)",
+          "reply_terminal_failure": "ActorMessageError::receiverClosedBeforeReply",
           "message_retracted": false
         }
       },
       "expected_outcome": "bounded_design_assertion",
-      "boundary": "the enqueue commit is the unique phase boundary between admission failure and correlated task failure"
+      "boundary": "the enqueue commit is the unique phase boundary between admission failure and correlated Reply failure"
     },
     {
       "fixture_id": "ACC-B-013-PAYLOAD-AGGREGATE-EVALUATION-ORDER",
@@ -1020,7 +1031,7 @@
         "ACC-R008",
         "ACC-R018"
       ],
-      "task_origin": "actor_request_admitted",
+      "responsibility_kind": "actor_request_reply",
       "exported_descriptor": {
         "result_type": "Status",
         "normalized_handler_error_set": [
@@ -1028,6 +1039,7 @@
         ],
         "cancellation_axis": "propagate_distinct_control_outcome",
         "isolation_owner": "worker.api::Worker::status",
+        "reply_id": "per_value_non_forgeable",
         "correlation_id": "per_value_non_forgeable",
         "terminal_transport_failure": [
           "receiverClosedBeforeReply"
@@ -1040,6 +1052,7 @@
         ],
         "cancellation_axis": "propagate_distinct_control_outcome",
         "isolation_owner": "worker.api::Worker::status",
+        "reply_id": "per_value_non_forgeable",
         "correlation_id": "per_value_non_forgeable",
         "terminal_transport_failure": [
           "receiverClosedBeforeReply"
@@ -1054,7 +1067,7 @@
         "ACC-R008",
         "ACC-R018"
       ],
-      "task_origin": "actor_request_admitted",
+      "responsibility_kind": "actor_request_reply",
       "exported_handler_error_set": [
         "LookupError"
       ],
@@ -1073,6 +1086,7 @@
         "proof_identity": "errorsub::Lookup_to_Service"
       },
       "other_static_fields_exact": true,
+      "reply_id_preserved_per_value": true,
       "correlation_id_preserved_per_value": true,
       "expected_outcome": "accept_design_static",
       "assertion": "only an explicit admitted ErrorSet-subsumption proof may widen the handler error component across a module boundary"
@@ -1083,43 +1097,46 @@
         "ACC-R008",
         "ACC-R018"
       ],
-      "task_origin": "actor_request_admitted",
-      "exported_signature": "public def statusTask() -> Task<Status>",
-      "exported_task_responsibility": null,
-      "source_value_has_task_responsibility": true,
+      "responsibility_kind": "actor_request_reply",
+      "exported_signature": "public def statusReply() -> Reply<Status>",
+      "exported_reply_responsibility": null,
+      "source_value_has_reply_responsibility": true,
       "expected_outcome": "reject_design_static",
       "expected_existing_diagnostic": "RCTS_API_DIGEST_INCOMPLETE",
-      "violated_condition": "a public API digest exports only Task<T> and drops observable task responsibility residue"
+      "violated_condition": "a public API digest exports only Reply<T> and drops observable reply responsibility residue"
     },
     {
-      "fixture_id": "ACC-XM-004-ORDINARY-ASYNC-TASK-EXPORT",
+      "fixture_id": "ACC-XM-004-CONCUR-RUN-EXPORT-FORBIDDEN",
       "rule_ids": [
         "ACC-R009",
         "ACC-R018"
       ],
+      "responsibility_kind": "concur_run",
       "exported_result_channel": {
-        "type_identity": "Task<Status>",
-        "task_origin": "ordinary_async"
+        "type_identity": "Run<Status>",
+        "responsibility_kind": "concur_run"
       },
       "imported_result_channel": {
-        "type_identity": "Task<Status>",
-        "task_origin": "ordinary_async"
+        "type_identity": "Run<Status>",
+        "responsibility_kind": "concur_run"
       },
-      "expected_outcome": "accept_design_static",
-      "assertion": "an ordinary async Task<T> preserves its origin across the module boundary without acquiring actor correlation or transport-failure responsibility"
+      "expected_outcome": "reject_design_static",
+      "expected_existing_diagnostic": "RCTS_API_DIGEST_INCOMPLETE",
+      "assertion": "an owner-bound Run<T> cannot be exported across its owning concur region or a module API boundary"
     }
   ],
-  "mir_task_responsibility_binding_cases": [
+  "mir_reply_responsibility_binding_cases": [
     {
       "fixture_id": "ACC-MIR-TR-001-SINGLE-REQUEST-BIJECTION",
       "actor_isolation": [
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-001",
           "correlation_id": "corr-mir-001"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [
@@ -1127,6 +1144,7 @@
           ],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::find",
+          "reply_id": "reply-mir-001",
           "correlation_id": "corr-mir-001",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1143,15 +1161,17 @@
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-002-a",
           "correlation_id": "corr-mir-002-a"
         },
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-002-b",
           "correlation_id": "corr-mir-002-b"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [
@@ -1160,6 +1180,7 @@
           ],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::find",
+          "reply_id": "reply-mir-002-b",
           "correlation_id": "corr-mir-002-b",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1170,6 +1191,7 @@
           "normalized_handler_error_set": [],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::status",
+          "reply_id": "reply-mir-002-a",
           "correlation_id": "corr-mir-002-a",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1183,7 +1205,7 @@
     {
       "fixture_id": "ACC-MIR-TR-003-ORDINARY-ASYNC-ZERO-ACTOR-DESCRIPTORS",
       "actor_isolation": [],
-      "actor_request_task_responsibilities": [],
+      "actor_request_reply_responsibilities": [],
       "expected_outcome": "admit_design_static",
       "expected_failed_guard": null,
       "assertion": "a record with no admitted actor request has zero actor-request descriptors"
@@ -1194,20 +1216,23 @@
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-004-a",
           "correlation_id": "corr-mir-004-a"
         },
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-004-b",
           "correlation_id": "corr-mir-004-b"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::status",
+          "reply_id": "reply-mir-004-a",
           "correlation_id": "corr-mir-004-a",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1225,15 +1250,17 @@
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-005",
           "correlation_id": "corr-mir-005"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::status",
+          "reply_id": "reply-mir-005",
           "correlation_id": "corr-mir-005",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1246,6 +1273,7 @@
           ],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::status",
+          "reply_id": "reply-mir-005",
           "correlation_id": "corr-mir-005",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1263,10 +1291,11 @@
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-006",
           "correlation_id": "corr-mir-006"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [
@@ -1276,6 +1305,7 @@
           ],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::find",
+          "reply_id": "reply-mir-006",
           "correlation_id": "corr-mir-006",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1293,10 +1323,11 @@
         {
           "kind": "actor_lifecycle",
           "phase": "enqueue_committed",
+          "reply_id": "reply-mir-007",
           "correlation_id": "corr-mir-007"
         }
       ],
-      "actor_request_task_responsibilities": [
+      "actor_request_reply_responsibilities": [
         {
           "result_type": "Status",
           "normalized_handler_error_set": [
@@ -1304,6 +1335,7 @@
           ],
           "cancellation_axis": "propagate_distinct_control_outcome",
           "isolation_owner": "Directory::find",
+          "reply_id": "reply-mir-007",
           "correlation_id": "corr-mir-007",
           "terminal_transport_failure": [
             "receiverClosedBeforeReply"
@@ -1313,7 +1345,7 @@
       "expected_outcome": "reject_design_static",
       "expected_failed_guard": "normalization",
       "expected_existing_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
-      "violated_condition": "a precommit admission-only error appears in the admitted task descriptor"
+      "violated_condition": "a precommit admission-only error appears in the admitted Reply descriptor"
     }
   ],
   "expected_counts": {
@@ -1322,9 +1354,9 @@
     "boundary": 13,
     "cross_module": 4,
     "total": 60,
-    "mir_task_responsibility_binding": 7,
-    "mir_task_responsibility_binding_admit": 3,
-    "mir_task_responsibility_binding_reject": 4,
+    "mir_reply_responsibility_binding": 7,
+    "mir_reply_responsibility_binding_admit": 3,
+    "mir_reply_responsibility_binding_reject": 4,
     "product_executed": 0
   }
 }

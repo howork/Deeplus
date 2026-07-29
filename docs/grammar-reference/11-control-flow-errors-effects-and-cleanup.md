@@ -12,7 +12,7 @@ effect/error row, `defer`, lifecycle cleanup, cancellation 경계를 설명하�
 현행 예제는 `examples/guide/review-corpus.md`의
 `expected_outcome: accept`, `source_activation: none` 항목을 그대로
 사용한다. 설계 정적 증거만 존재하며 제품 parser/checker/HIR/MIR/xVM/
-LLVM/formatter/LSP 실행은 `NOT_RUN`이다.
+Cranelift/formatter/LSP 실행은 `NOT_RUN`이다.
 
 > 이 장의 조각 예제에 선언 없이 나타나는 `print`는 canonical Prelude
 > API가 아니라 [문서 fixture의 host adapter](../guide/example-host-adapters.md)다.
@@ -263,7 +263,7 @@ cleanup을 건너뛸 수 없다. suspension은 live ownership, borrow, isolation
 cleanup obligation을 그대로 보존한다.
 
 Cancellation은 cooperative boundary에서만 관측하며 Error로 바꾸거나
-버리지 않는다. structured task scope는 owned child가 join 또는 cancel되고
+버리지 않는다. `concur`는 owned child가 terminal이 되고
 required cleanup이 끝난 뒤에만 종료한다.
 
 ## 현행 예제
@@ -369,9 +369,9 @@ try {
 
 ```deeplus
 public def#async supervise() -> Unit = {
-    task scope {
+    concur {
         defer cleanup()
-        let child = spawn async { => await work() }
+        let child = spawn { => await work() }
         await child
     }
 }
@@ -416,8 +416,8 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 Preview Design이다. 현행 AST/HIR/MIR source surface가 아니다.
 
 검토 중인 최소 의미는 typed immutable export 하나, outer mutation 금지,
-suspension 금지, pointer/authority/borrow/resource/closure/task/actor escape
-금지, xVM과 LLVM에서 하나의 Deeplus MIR 의미 보존이다.
+suspension 금지, pointer/authority/borrow/resource/closure/run/actor escape
+금지, xVM과 Cranelift에서 하나의 Deeplus MIR 의미 보존이다.
 
 도입 전에는 다음 guard가 모두 닫혀야 한다.
 
@@ -425,7 +425,7 @@ suspension 금지, pointer/authority/borrow/resource/closure/task/actor escape
 2. export type 및 ownership closure;
 3. escape/alias/cleanup 증명;
 4. 효과·오류·Cancellation 격리 법칙;
-5. xVM/LLVM backend equivalence와 target-bound 실행 증거;
+5. xVM/Cranelift backend equivalence와 target-bound 실행 증거;
 6. formatter/LSP 및 negative admission 검증.
 
 비활성 설명용 예시는 다음과 같으며 현재 source로 사용하면
@@ -454,7 +454,7 @@ implementation authority, product PASS가 아니다.
 - resource owner와 borrow 책임은
   [소유권, 대여, 책임](12-ownership-borrowing-and-responsibility.md)을
   따른다.
-- actor send/request와 task cancellation은 enqueue commit 전후의 owner를
+- actor send/request와 run cancellation은 enqueue commit 전후의 owner를
   구분하며 later cancellation이 committed message를 되돌리지 않는다.
 - ErrorSet, EffectRow, Cancellation, suspension, cleanup은 callable
   compatibility와 public API digest에서 독립적으로 보존된다.
@@ -465,7 +465,7 @@ implementation authority, product PASS가 아니다.
   [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
 - callable flow와 cleanup:
   [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
-- actor/task 취소:
+- actor/run 취소:
   [`spec/contracts/actor-concurrency-coherence.json`](../../spec/contracts/actor-concurrency-coherence.json)
 - type/effect/error 책임:
   [`spec/types/type-system.md`](../../spec/types/type-system.md)

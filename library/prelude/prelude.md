@@ -2,7 +2,7 @@
 
 Prelude supplies canonical language-facing identities without turning them into hard keywords. Product implementation is `NOT_RUN`. The machine-readable signature authority is `library/prelude/signatures`; this guide explains its domains and does not duplicate all 65 rows.
 
-Revision: `r51f3-current-numeric-guard-call-enum-coherence-r1`
+Revision: `r51f3-current-concur-role-coherence-r1`
 
 ## 1. Core domains
 
@@ -16,30 +16,43 @@ Public signatures preserve `T...` repeated positional residue and `Record***` na
 
 Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fallback. Result and errors are separate from Option absence. Every Result use site writes the error-channel role as `Result<T, error E>`; the generic declaration itself may bind `E: ErrorSet` without repeating that use-site role. Resource-facing Prelude contracts preserve move and exactly-once cleanup responsibility.
 
-`ActorMessageError` is the closed current actor admission/reply failure family: `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. One-way message expressions return `Result<Unit, error ActorMessageError>`. Request expressions immediately return `Result<Task<T>, error ActorMessageError>`; callers extract the task before `await`. Cancellation remains a distinct control outcome and is not an enum case.
+`ActorMessageError` is the closed current actor admission/reply failure family:
+`mailboxFull`, `receiverClosedBeforeAdmission`, and
+`receiverClosedBeforeReply`. One-way message expressions return
+`Result<Unit, error ActorMessageError>`. Request expressions immediately return
+`Result<Reply<T>, error ActorMessageError>`; callers extract the reply handle
+before one-shot `await`. Cancellation remains a distinct control outcome and is
+not an enum case.
 
-The stable source spelling `Task<T>` names a general structured asynchronous task;
-an ordinary async task does not thereby acquire actor transport failure. Only a
-task value produced after successful actor-request admission has origin
-`actor_request_admitted`, and that value is not identified by the nominal spelling
-alone. Typed HIR, module API digest, and MIR retain one non-forgeable
-`TaskResponsibility` descriptor for that admitted actor-request instance with the exact fields
-`result_type`, `normalized_handler_error_set`, `cancellation_axis`,
-`isolation_owner`, `correlation_id`, and `terminal_transport_failure`. The last
-field is exactly `{receiverClosedBeforeReply}`. Awaiting the task exposes
+The Stable source spelling `Run<T>` names the affine one-shot observation handle
+for exactly one successfully spawned execution. Only `spawn` creates a run, and
+the nearest lexical `concur` owns it. Its responsibility preserves result type,
+normalized ErrorSet, Cancellation, owner `ConcurId`, isolation, cleanup, and
+terminal policy. A bare async invocation is not a run, `Run<T>` cannot escape its
+owner, and awaiting it consumes its observation right. A run never carries actor
+request correlation or transport responsibility.
+
+The Stable source spelling `Reply<T>` names the affine one-shot correlated reply
+handle created by one successfully admitted actor request. Typed HIR, module API
+digest, and MIR retain one non-forgeable `ReplyResponsibility` descriptor with
+the exact fields `result_type`, `normalized_handler_error_set`,
+`cancellation_axis`, `isolation_owner`, `correlation_id`, and
+`terminal_transport_failure`. The last field is exactly
+`{receiverClosedBeforeReply}`. Awaiting the reply exposes
 `normalize(normalized_handler_error_set |
 ActorMessageError::receiverClosedBeforeReply)`. `mailboxFull` and
 `receiverClosedBeforeAdmission` belong only to the precommit admission `Result`
-and must never appear in the task descriptor. Compatibility, join, storage, and
+and must never appear in the reply descriptor. Compatibility, join, storage, and
 API export preserve the descriptor residue: the normalized static fields must
 match exactly unless an explicit admitted ErrorSet-subsumption proof widens the
 handler ErrorSet, and each value keeps its own non-forgeable `correlation_id`.
 The module API digest stores the static marker
 `correlation_id = per_value_non_forgeable`, never a concrete runtime request ID;
 typed HIR and MIR carry the distinct value-level identity created after commit.
-Erasing the residue to bare `Task<T>` is rejected with the existing
-`RCTS_RESPONSIBILITY_AXIS_DROPPED` family; an unproved combination uses the
-existing `RCTS_RESPONSIBILITY_COMBINATION_INVALID` family.
+`Reply<T>` never converts to `Run<T>` and never shares its responsibility
+descriptor. Erasing either handle's responsibility residue is rejected with the
+existing `RCTS_RESPONSIBILITY_AXIS_DROPPED` family; an unproved combination uses
+the existing `RCTS_RESPONSIBILITY_COMBINATION_INVALID` family.
 
 ## 4. Fixed operators and protocols
 
@@ -269,7 +282,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded coordinate-preserving view |
 | `ListRestView<T>` | core_type | `stable_design` | owner-bounded positional List-rest view with an explicit intrinsic Sequence witness and exact rank-to-coordinate provenance |
 | `String` | core_type | `stable_design` | immutable Unicode scalar sequence with one-based Char indexing |
-| `Task<T>` | core_type | `stable_design` | general structured asynchronous task handle; only an `actor_request_admitted` instance carries typed-HIR/API/MIR `TaskResponsibility` residue for request result, handler ErrorSet, Cancellation, isolation, correlation, and the sole post-admission transport failure |
+| `Run<T>` | core_type | `stable_design` | affine one-shot observation handle for one spawned execution owned by one lexical `concur`; preserves result, ErrorSet, Cancellation, isolation, cleanup, and terminal responsibility and carries no actor transport descriptor |
+| `Reply<T>` | core_type | `stable_design` | affine one-shot correlated actor-request reply handle with typed-HIR/API/MIR `ReplyResponsibility`; preserves the exact handler ErrorSet, Cancellation, isolation owner, per-value correlation, and sole post-admission transport failure and never converts to `Run<T>` |
 | `AsyncCollector` | stdlib_profile | `stable_design` | finite policy-visible async collection with no partial commit |
 | `AsyncSequence<T, E>` | protocol | `stable_design` | asynchronous element source with a bound error set and visible cancellation, isolation and cleanup responsibilities |
 | `ExitCode` | entry_result | `stable_design` | Launcher-facing result; ordinary calls do not map it to process termination. |

@@ -64,7 +64,7 @@ result expression을 평가한다. 뒤 clause는 앞 binding을 볼 수 있지�
 성공값처럼 공개하지 않는 failure contract가 필요하다.
 
 generator에서는 capture mode, yield type, effect/error, cleanup을 별도
-항목으로 적는다. borrow capture가 generator보다 짧게 살거나 task 경계를
+항목으로 적는다. borrow capture가 generator보다 짧게 살거나 run 경계를
 넘으면 거부하며, 중간에 소비가 끝나도 cleanup 책임이 사라지지 않는다.
 흔한 오해는 generator를 List처럼 여러 번 순회하거나 `length`, bracket
 index를 당연히 제공한다고 생각하는 것이다. 필요한 경우에는 명시적으로
@@ -155,7 +155,7 @@ let g = [borrow owner] @for item in owner {
 ```
 
 async comprehension은 source spelling과 iteration/cancellation/ownership
-계약이 활성화되지 않았다. ordinary `for await` statement와 stdlib
+계약이 활성화되지 않았다. ordinary `for#await` statement와 stdlib
 collector를 comprehension으로 암시 승격하지 않는다.
 
 ## 8. 다른 기능과의 연결

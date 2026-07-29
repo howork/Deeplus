@@ -34,7 +34,7 @@ scope가 중단을 요청한 별도 제어 결과다. 세 상황을 같은 catch
 | 값 실패 | `Result<T, error E>` | 반환값 | pattern/match |
 | recoverable Error | `throws E` | callable 경계 | `try`/`catch` 또는 전파 |
 | Defect | `ArithmeticDefect` | intrinsic 불변식 | catch 대상 아님 |
-| Cancellation | task/scope 제어 | 구조화된 동시성 owner | cleanup 후 별도 종료 |
+| Cancellation | run/concur 제어 | 구조화된 동시성 owner | cleanup 후 별도 종료 |
 
 `ArithmeticDefect`는 checked integer overflow, 정수 0 나눗셈 같은
 intrinsic family다. `IndexError`는 recoverable family다. 이름이 “오류”
@@ -109,7 +109,7 @@ try {
 
 - pattern matching은 Result 값을 분해하지만 throws channel을 자동
   소비하지 않는다.
-- actor request는 admission Error와 reply task의 Error를 commit 전후로
+- actor request는 admission Error와 `Reply` terminal Error를 commit 전후로
   나눈다.
 - `defer`와 resource cleanup은 네 terminal 축에서 실행되어야 한다.
 - public API digest는 ErrorSet, Cancellation, suspension을 별도 field로
@@ -121,7 +121,7 @@ try {
 분해하는가?”를 묻는다. 그렇다면 `Result` 값 후보다. 그 다음 “현재
 callable이 회복하지 못해 호출 경계를 벗어나는가?”를 물어 `throws`
 residual을 정한다. 연산 자체의 불변식이 무너졌다면 Defect이고, 바깥
-task scope가 중단을 요청했다면 Cancellation이다. 마지막으로 commit
+`concur`가 중단을 요청했다면 Cancellation이다. 마지막으로 commit
 이전인지 이후인지 확인해야 owner와 재시도 가능성을 판정할 수 있다.
 
 미니 사례로 설정 파일 읽기는 `IOError`를 `throws`에, 읽은 text의

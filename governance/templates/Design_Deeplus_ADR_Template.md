@@ -41,7 +41,7 @@ State the selected option and its boundaries.
 
 ## Compatibility
 
-State impacts on Rust crates, MIR schema, xVM bytecode, LLVM, build, CI, Library,
+State impacts on Rust crates, MIR schema, xVM bytecode, Cranelift, build, CI, Library,
 and release manifests.
 
 ## Status history

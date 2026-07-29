@@ -49,7 +49,7 @@
       "effect_row": null,
       "suspension": "may_suspend",
       "cancellation": null,
-      "isolation": "task",
+      "isolation": "concur_run",
       "authority": null,
       "construction_domain": null,
       "call_shape": {
@@ -155,7 +155,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/task/actor/isolation transfer without shareability proof",
+    "rule_seed": "require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
@@ -1610,7 +1610,7 @@
       "effect_row": null,
       "suspension": "may_suspend",
       "cancellation": null,
-      "isolation": "task",
+      "isolation": "concur_run",
       "authority": null,
       "construction_domain": null,
       "call_shape": {
@@ -1672,7 +1672,7 @@
       "orientation": null,
       "element_types": null
     },
-    "violated_condition": "the scoped callable escapes through a task/suspension boundary",
+    "violated_condition": "the scoped callable escapes through a concur-run/suspension boundary",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {

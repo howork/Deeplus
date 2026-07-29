@@ -125,8 +125,8 @@
       "deeplus_mir_lowering",
       "xvm_bytecode_emitter",
       "xvm_interpreter",
-      "llvm_aot_backend",
-      "llvm_orc_jit_backend",
+      "cranelift_object_aot_backend",
+      "cranelift_jit_backend",
       "formatter_lsp",
       "stdlib_provider_runner",
       "official_tooling",
@@ -211,7 +211,7 @@
     {
       "id": "13",
       "path": "docs/grammar-reference/13-async-tasks-actors-and-concurrency.md",
-      "title": "비동기, 태스크, 액터 및 동시성"
+      "title": "비동기 실행, concur, 액터 및 동시성"
     },
     {
       "id": "14",
@@ -342,10 +342,10 @@
   "grammar": {
     "path": "spec/grammar/deeplus.ebnf",
     "frontend_model_path": "spec/frontend/frontend-model.json",
-    "expected_total": 637,
+    "expected_total": 638,
     "expected_profile_counts": {
       "LEXICAL": 91,
-      "STABLE": 533,
+      "STABLE": 534,
       "PREVIEW": 13
     }
   },
@@ -376,7 +376,7 @@
       "chunks_root": "library/prelude/signatures/chunks",
       "count_field": "entry_count",
       "id_field": "entry_id",
-      "expected_count": 71
+      "expected_count": 72
     },
     "examples": {
       "metadata_path": "examples/manifests/by-outcome/catalog-metadata.json",
@@ -391,7 +391,7 @@
     "hard_field": "hard_keywords",
     "contextual_field": "contextual_words",
     "expected_hard_count": 29,
-    "expected_contextual_count": 106
+    "expected_contextual_count": 105
   },
   "generated_outputs": [
     "docs/grammar-reference/SUMMARY.md",
@@ -404,13 +404,13 @@
     "docs/grammar-reference/coverage-manifest.json"
   ],
   "coverage_targets": {
-    "grammar_productions": 637,
+    "grammar_productions": 638,
     "features": 719,
     "diagnostics": 1424,
     "predicates": 268,
-    "prelude_entries": 71,
+    "prelude_entries": 72,
     "examples": 733,
     "hard_keywords": 29,
-    "contextual_words": 106
+    "contextual_words": 105
   }
 }

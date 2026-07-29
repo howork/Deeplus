@@ -38,7 +38,7 @@ EXCLUDED_TREE_PARTS = {
 EXPECTED = {
     "features": 719, "diagnostics": 1424, "predicates": 268,
     "predicate_fixtures": 819, "no_go": 155,
-    "hard_keywords": 29, "contextual_words": 106,
+    "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
     "named_rest_parameter_record_msp",
@@ -463,7 +463,7 @@ def main() -> int:
                 and fixed_counts.get("predicate_fixtures") == 819
                 and fixed_counts.get("no_go") == 155
                 and fixed_counts.get("hard_keywords") == 29
-                and fixed_counts.get("contextual_words") == 106,
+                and fixed_counts.get("contextual_words") == 105,
                 "LANGUAGE_COHERENCE_CONTRACT",
                 str(fixed_counts),
             )
@@ -1576,6 +1576,149 @@ def main() -> int:
         f"machine={hir_machine} counts={hir_counts}",
     )
 
+    cranelift_contract = parsed.get(
+        root / "spec/contracts/cranelift-backend-current.json", {}
+    )
+    cranelift_fixture = parsed.get(
+        root / "tests/fixtures/current/cranelift-backend-current-r1.json", {}
+    )
+    cranelift_cases = [
+        row
+        for row in cranelift_fixture.get("cases", [])
+        if isinstance(row, dict)
+    ]
+    cranelift_rule_ids = [
+        row.get("rule_id")
+        for row in cranelift_contract.get("rules", [])
+        if isinstance(row, dict)
+    ]
+    expected_cranelift_rule_ids = [
+        f"CLB-R{index:03d}" for index in range(1, 13)
+    ]
+    expected_cranelift_paths = [
+        "xvm_interpreter",
+        "cranelift_object_aot_backend",
+        "cranelift_jit_backend",
+    ]
+    cranelift_counts = cranelift_fixture.get("expected_counts", {})
+    check(
+        cranelift_contract.get("revision") == revision
+        and cranelift_fixture.get("revision") == revision
+        and cranelift_contract.get("status")
+        == "CURRENT_BACKEND_ARCHITECTURE"
+        and cranelift_contract.get("semantic_authority") == "Deeplus MIR"
+        and cranelift_contract.get("semantic_p0") == 0
+        and cranelift_contract.get("open_feature_p1_count") == 22
+        and cranelift_contract.get("closed_feature_p1_by_backend_change") == 0
+        and cranelift_contract.get("new_feature_p1_by_backend_change") == 0
+        and cranelift_contract.get("product_lanes") == "15/15_NOT_RUN"
+        and [
+            row.get("id")
+            for row in cranelift_contract.get("execution_paths", [])
+        ]
+        == expected_cranelift_paths
+        and all(
+            row.get("status") == "NOT_RUN"
+            for row in cranelift_contract.get("execution_paths", [])
+        )
+        and cranelift_rule_ids == expected_cranelift_rule_ids
+        and {
+            rule_id
+            for row in cranelift_cases
+            for rule_id in row.get("rule_ids", [])
+        }
+        == set(expected_cranelift_rule_ids)
+        and len(cranelift_cases)
+        == len(
+            {
+                row.get("fixture_id")
+                for row in cranelift_cases
+            }
+        )
+        == cranelift_counts.get("cases")
+        == 12
+        and sum(row.get("class") == "positive" for row in cranelift_cases)
+        == cranelift_counts.get("positive")
+        == 6
+        and sum(row.get("class") == "negative" for row in cranelift_cases)
+        == cranelift_counts.get("negative")
+        == 6
+        and all(
+            row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in cranelift_cases
+        )
+        and cranelift_counts.get("semantic_p0") == 0
+        and cranelift_counts.get("open_feature_p1") == 22
+        and cranelift_counts.get("p1_closed") == 0
+        and cranelift_counts.get("p1_created") == 0
+        and cranelift_counts.get("product_lanes") == 15
+        and cranelift_counts.get("product_executed") == 0,
+        "CRANELIFT_BACKEND_AUTHORITY_AND_FIXTURE_CLOSURE",
+        (
+            f"paths={expected_cranelift_paths} rules={len(cranelift_rule_ids)} "
+            f"cases={len(cranelift_cases)} counts={cranelift_counts}"
+        ),
+    )
+    cranelift_toolchain = cranelift_contract.get("toolchain_guard", {})
+    cranelift_hir = cranelift_contract.get("hir_boundary", {})
+    cranelift_projection = cranelift_contract.get("mir_projection", {})
+    cranelift_outcomes = cranelift_contract.get("outcome_guard", {})
+    cranelift_aot = cranelift_contract.get("aot_contract", {})
+    cranelift_jit = cranelift_contract.get("jit_contract", {})
+    cranelift_managed = cranelift_contract.get("managed_reference_guard", {})
+    cranelift_debug = cranelift_contract.get("debug_guard", {})
+    check(
+        cranelift_toolchain.get("rust_toolchain") == "1.85.0"
+        and cranelift_toolchain.get("selected_cranelift_family") == "0.121.2"
+        and cranelift_toolchain.get("cargo_dependency_connected") is False
+        and cranelift_toolchain.get("dependency_or_product_receipt_count") == 0
+        and cranelift_hir.get("backend_neutral") is True
+        and cranelift_hir.get("backend_specific_field_count") == 0
+        and cranelift_hir.get("clif_identity_count") == 0
+        and cranelift_hir.get("native_layout_identity_count") == 0
+        and cranelift_hir.get("calling_convention_identity_count") == 0
+        and cranelift_projection.get("input") == "Verified<DeeplusMir>"
+        and cranelift_projection.get("module_kinds")
+        == ["ObjectAot", "InMemoryJit"]
+        and cranelift_projection.get("clif_is_semantic_authority") is False
+        and cranelift_projection.get("object_and_jit_share_lowering") is True
+        and cranelift_projection.get("module_local_id_selects_semantics")
+        is False
+        and cranelift_projection.get("symbol_or_link_order_selects_semantics")
+        is False
+        and len(cranelift_contract.get("required_receipt_inputs", [])) == 12
+        and cranelift_outcomes.get("native_exception_semantic_authority")
+        is False
+        and cranelift_outcomes.get("host_unwind_semantic_authority") is False
+        and cranelift_outcomes.get(
+            "arbitrary_backend_trap_semantic_authority"
+        )
+        is False
+        and cranelift_outcomes.get(
+            "trap_requires_preselected_defect_or_verified_unreachable"
+        )
+        is True
+        and cranelift_aot.get("module") == "ObjectModule"
+        and len(cranelift_aot.get("required_output_identity", [])) == 5
+        and cranelift_jit.get("module") == "JITModule"
+        and len(cranelift_jit.get("required_output_identity", [])) == 5
+        and cranelift_jit.get(
+            "missing_duplicate_or_signature_mismatched_import"
+        )
+        == "TERMINAL_LINK_FAILURE"
+        and cranelift_managed.get("mir_safepoint_identity_preserved") is True
+        and cranelift_managed.get("root_map_requirement_preserved") is True
+        and cranelift_managed.get("raw_pointer_fallback") is False
+        and cranelift_debug.get("separate_debug_digest") is True
+        and cranelift_debug.get("debug_info_is_semantic_authority") is False
+        and (root / "crates/deeplus-codegen-cranelift/Cargo.toml").is_file(),
+        "CRANELIFT_HIR_MIR_PROJECTION_BOUNDARY",
+        (
+            f"toolchain={cranelift_toolchain} hir={cranelift_hir} "
+            f"module={cranelift_projection.get('module_kinds')}"
+        ),
+    )
+
     tfc_rel = "tests/fixtures/current/type-flow-callable-coherence-r1.json"
     tfc = parsed.get(root / tfc_rel, {})
     tfc_top_keys = {
@@ -2200,7 +2343,7 @@ def main() -> int:
     expected_product_lanes = {row: "NOT_RUN" for row in (
         "rust_frontend_lexer", "rust_frontend_parser", "rust_hir_lowering",
         "rust_integrated_checker", "deeplus_mir_lowering", "xvm_bytecode_emitter",
-        "xvm_interpreter", "llvm_aot_backend", "llvm_orc_jit_backend",
+        "xvm_interpreter", "cranelift_object_aot_backend", "cranelift_jit_backend",
         "formatter_lsp", "stdlib_provider_runner", "official_tooling",
         "independent_conformance", "cross_backend_conformance",
         "actual_user_team_study",
@@ -3270,16 +3413,17 @@ def main() -> int:
     mir_responsibility_schema = parsed.get(
         root / "schemas/language/mir-responsibility.schema.json", {}
     )
-    task_origins = ["ordinary_async", "actor_request_admitted"]
-    task_descriptor_fields = [
+    responsibility_kinds = ["actor_request_reply", "concur_run"]
+    reply_descriptor_fields = [
         "result_type",
         "normalized_handler_error_set",
         "cancellation_axis",
         "isolation_owner",
+        "reply_id",
         "correlation_id",
         "terminal_transport_failure",
     ]
-    task_descriptor_field_set = set(task_descriptor_fields)
+    reply_descriptor_field_set = set(reply_descriptor_fields)
     admission_only_errors = {
         "mailboxFull",
         "receiverClosedBeforeAdmission",
@@ -3288,22 +3432,31 @@ def main() -> int:
     }
     terminal_transport_failure = ["receiverClosedBeforeReply"]
 
-    def task_descriptor_is_normalized(descriptor: Any) -> bool:
+    def reply_descriptor_is_normalized(
+        descriptor: Any, *, module_api_marker: bool = False
+    ) -> bool:
         if not isinstance(descriptor, dict):
             return False
         handler_errors = descriptor.get("normalized_handler_error_set")
-        return (
-            set(descriptor) == task_descriptor_field_set
-            and all(
-                isinstance(descriptor.get(field), str)
-                and bool(descriptor.get(field))
-                for field in (
-                    "result_type",
-                    "cancellation_axis",
-                    "isolation_owner",
-                    "correlation_id",
-                )
+        identity_fields_ok = all(
+            isinstance(descriptor.get(field), str) and bool(descriptor.get(field))
+            for field in (
+                "result_type",
+                "cancellation_axis",
+                "isolation_owner",
+                "reply_id",
+                "correlation_id",
             )
+        )
+        if module_api_marker:
+            identity_fields_ok = (
+                identity_fields_ok
+                and descriptor.get("reply_id") == "per_value_non_forgeable"
+                and descriptor.get("correlation_id") == "per_value_non_forgeable"
+            )
+        return (
+            set(descriptor) == reply_descriptor_field_set
+            and identity_fields_ok
             and isinstance(handler_errors, list)
             and all(isinstance(error, str) and bool(error) for error in handler_errors)
             and handler_errors == sorted(set(handler_errors))
@@ -3315,64 +3468,73 @@ def main() -> int:
     module_channel_schema = (
         module_api_schema.get("$defs", {}).get("responsibilityChannel", {})
     )
-    module_task_descriptor_schema = (
-        module_api_schema.get("$defs", {}).get("taskResponsibilityDescriptor", {})
+    module_reply_descriptor_schema = (
+        module_api_schema.get("$defs", {}).get("replyResponsibilityDescriptor", {})
     )
-    module_actor_origin_rule = next(
+    module_reply_type_rule = next(
         (
             row
             for row in module_channel_schema.get("allOf", [])
             if isinstance(row, dict)
-            and row.get("if", {})
+            and "Reply<"
+            in row.get("if", {})
             .get("properties", {})
-            .get("task_origin", {})
-            .get("const")
-            == "actor_request_admitted"
+            .get("type_identity", {})
+            .get("pattern", "")
         ),
         {},
     )
-    module_ordinary_origin_rule = next(
+    module_run_type_rule = next(
         (
             row
             for row in module_channel_schema.get("allOf", [])
             if isinstance(row, dict)
-            and row.get("if", {})
+            and "Run<"
+            in row.get("if", {})
             .get("properties", {})
-            .get("task_origin", {})
-            .get("const")
-            == "ordinary_async"
+            .get("type_identity", {})
+            .get("pattern", "")
         ),
         {},
     )
     module_handler_schema = (
-        module_task_descriptor_schema.get("properties", {})
+        module_reply_descriptor_schema.get("properties", {})
         .get("normalized_handler_error_set", {})
     )
     module_terminal_schema = (
-        module_task_descriptor_schema.get("properties", {})
+        module_reply_descriptor_schema.get("properties", {})
         .get("terminal_transport_failure", {})
+    )
+    module_run_reply_contract = module_api_schema.get(
+        "x-deeplus-run-reply-responsibility-contract", {}
     )
     actor_rule_by_id = {
         row.get("rule_id"): row
         for row in actor_contract.get("rules", [])
         if isinstance(row, dict)
     }
-    actor_task_contract = (
+    actor_reply_contract = (
         actor_rule_by_id.get("ACC-R008", {})
         .get("contract", {})
-        .get("task_responsibility_descriptor", {})
+        .get("reply_responsibility_descriptor", {})
     )
-    actor_storage_contract = actor_task_contract.get("storage_and_api_export", {})
+    actor_storage_contract = actor_reply_contract.get("storage_and_api_export", {})
     check(
-        module_channel_schema.get("properties", {})
-        .get("task_origin", {})
-        .get("enum")
-        == task_origins
-        and module_task_descriptor_schema.get("additionalProperties") is False
-        and module_task_descriptor_schema.get("required") == task_descriptor_fields
-        and set(module_task_descriptor_schema.get("properties", {}))
-        == task_descriptor_field_set
-        and module_task_descriptor_schema.get("properties", {})
+        "task_origin" not in module_channel_schema.get("properties", {})
+        and "task_responsibility" not in module_channel_schema.get("properties", {})
+        and module_channel_schema.get("properties", {})
+        .get("reply_responsibility", {})
+        .get("$ref")
+        == "#/$defs/replyResponsibilityDescriptor"
+        and module_reply_descriptor_schema.get("additionalProperties") is False
+        and module_reply_descriptor_schema.get("required") == reply_descriptor_fields
+        and set(module_reply_descriptor_schema.get("properties", {}))
+        == reply_descriptor_field_set
+        and module_reply_descriptor_schema.get("properties", {})
+        .get("reply_id", {})
+        .get("const")
+        == "per_value_non_forgeable"
+        and module_reply_descriptor_schema.get("properties", {})
         .get("correlation_id", {})
         .get("const")
         == "per_value_non_forgeable"
@@ -3389,123 +3551,148 @@ def main() -> int:
         == module_terminal_schema.get("maxItems")
         == 1
         and module_terminal_schema.get("uniqueItems") is True
-        and module_actor_origin_rule.get("then", {}).get("required")
-        == ["task_responsibility"]
-        and module_ordinary_origin_rule.get("then", {})
+        and module_reply_type_rule.get("then", {}).get("required")
+        == ["reply_responsibility"]
+        and module_reply_type_rule.get("else", {})
         .get("not", {})
         .get("required")
-        == ["task_responsibility"]
-        and actor_fixtures.get("fixture_policy", {}).get("task_origin_values")
-        == task_origins
-        and actor_task_contract.get("fields") == task_descriptor_fields
-        and actor_task_contract.get("task_origin") == "actor_request_admitted"
-        and actor_task_contract.get("ordinary_async_task_actor_transport_descriptor")
+        == ["reply_responsibility"]
+        and module_run_type_rule.get("then") is False
+        and module_run_reply_contract.get("run_module_api_export")
+        == "FORBIDDEN_OWNER_BOUND_VALUE"
+        and module_run_reply_contract.get("reply_responsibility_required") is True
+        and actor_reply_contract.get("fields") == reply_descriptor_fields
+        and actor_reply_contract.get("source_type_spelling") == "Reply<T>"
+        and actor_reply_contract.get("spawned_Run_actor_transport_descriptor")
         == "FORBIDDEN"
-        and set(actor_task_contract.get("admission_only_errors_forbidden", []))
+        and set(actor_reply_contract.get("admission_only_errors_forbidden", []))
         == {"mailboxFull", "receiverClosedBeforeAdmission"}
-        and actor_task_contract.get("field_contract", {}).get(
+        and actor_reply_contract.get("field_contract", {}).get(
             "terminal_transport_failure"
         )
         == terminal_transport_failure
         and actor_storage_contract.get("module_api_correlation_id_field")
         == "per_value_non_forgeable"
+        and actor_storage_contract.get("module_api_reply_id_field")
+        == "per_value_non_forgeable"
         and actor_storage_contract.get("module_api_contains_runtime_correlation_value")
         is False,
-        "MODULE_API_TASK_RESPONSIBILITY_STATIC_MARKER",
-        "task_origin=ordinary_async|actor_request_admitted correlation_id=per_value_non_forgeable",
+        "MODULE_API_RUN_REPLY_RESPONSIBILITY_SEPARATION",
+        "Reply<T>=descriptor-bound Run<T>=owner-bound-nonexportable",
     )
 
     actor_cross_module = actor_fixtures.get("cross_module", [])
-    actor_cross_by_id = {
-        row.get("fixture_id"): row
+    reply_cross_rows = [
+        row
         for row in actor_cross_module
         if isinstance(row, dict)
-    }
-    actor_xm_1 = actor_cross_by_id.get(
-        "ACC-XM-001-EXACT-DESCRIPTOR-EXPORT-IMPORT", {}
-    )
-    actor_xm_2 = actor_cross_by_id.get(
-        "ACC-XM-002-EXPLICIT-ERROR-SET-SUBSUMPTION", {}
-    )
-    actor_xm_3 = actor_cross_by_id.get(
-        "ACC-XM-003-API-EXPORT-DROPS-DESCRIPTOR", {}
-    )
-    actor_xm_4 = actor_cross_by_id.get(
-        "ACC-XM-004-ORDINARY-ASYNC-TASK-EXPORT", {}
-    )
-    actor_negative_by_id = {
-        row.get("fixture_id"): row
-        for row in actor_fixtures.get("negative", [])
+        and row.get("responsibility_kind") == "actor_request_reply"
+    ]
+    run_cross_rows = [
+        row
+        for row in actor_cross_module
         if isinstance(row, dict)
-    }
-    actor_n_21 = actor_negative_by_id.get(
-        "ACC-N-021-ORDINARY-ASYNC-HAS-ACTOR-TRANSPORT-DESCRIPTOR", {}
-    )
-    xm_2_proof = actor_xm_2.get("explicit_admitted_error_set_subsumption", {})
-    xm_4_export = actor_xm_4.get("exported_result_channel", {})
-    xm_4_import = actor_xm_4.get("imported_result_channel", {})
-    check(
-        set(actor_cross_by_id)
-        == {
-            "ACC-XM-001-EXACT-DESCRIPTOR-EXPORT-IMPORT",
-            "ACC-XM-002-EXPLICIT-ERROR-SET-SUBSUMPTION",
-            "ACC-XM-003-API-EXPORT-DROPS-DESCRIPTOR",
-            "ACC-XM-004-ORDINARY-ASYNC-TASK-EXPORT",
-        }
-        and len(actor_cross_module) == len(actor_cross_by_id) == 4
-        and actor_xm_1.get("task_origin") == "actor_request_admitted"
-        and actor_xm_1.get("expected_outcome") == "accept_design_static"
-        and actor_xm_1.get("exported_descriptor")
-        == actor_xm_1.get("imported_descriptor")
-        and task_descriptor_is_normalized(actor_xm_1.get("exported_descriptor"))
-        and actor_xm_1.get("exported_descriptor", {}).get("correlation_id")
-        == "per_value_non_forgeable"
-        and actor_xm_2.get("task_origin") == "actor_request_admitted"
-        and actor_xm_2.get("expected_outcome") == "accept_design_static"
-        and set(xm_2_proof.get("source", [])) < set(xm_2_proof.get("target", []))
-        and isinstance(xm_2_proof.get("proof_identity"), str)
-        and bool(xm_2_proof.get("proof_identity"))
-        and actor_xm_2.get("other_static_fields_exact") is True
-        and actor_xm_2.get("correlation_id_preserved_per_value") is True
-        and actor_xm_3.get("task_origin") == "actor_request_admitted"
-        and actor_xm_3.get("source_value_has_task_responsibility") is True
-        and actor_xm_3.get("exported_task_responsibility") is None
-        and actor_xm_3.get("expected_outcome") == "reject_design_static"
-        and actor_xm_3.get("expected_existing_diagnostic")
-        == "RCTS_API_DIGEST_INCOMPLETE"
-        and xm_4_export == xm_4_import
-        and set(xm_4_export) == {"type_identity", "task_origin"}
-        and xm_4_export.get("task_origin") == "ordinary_async"
-        and actor_xm_4.get("expected_outcome") == "accept_design_static"
-        and actor_n_21.get("descriptor", {}).get("task_origin")
-        == "ordinary_async"
-        and isinstance(
-            actor_n_21.get("descriptor", {}).get(
-                "actor_request_task_responsibility"
-            ),
-            dict,
+        and row.get("responsibility_kind") == "concur_run"
+    ]
+    exact_reply_rows = [
+        row
+        for row in reply_cross_rows
+        if isinstance(row.get("exported_descriptor"), dict)
+        and row.get("exported_descriptor") == row.get("imported_descriptor")
+    ]
+    subsumption_reply_rows = [
+        row
+        for row in reply_cross_rows
+        if isinstance(row.get("explicit_admitted_error_set_subsumption"), dict)
+    ]
+    dropped_reply_rows = [
+        row
+        for row in reply_cross_rows
+        if row.get("expected_outcome") == "reject_design_static"
+        and row.get("source_value_has_reply_responsibility") is True
+        and row.get("exported_reply_responsibility") is None
+    ]
+    run_export_rows = [
+        row
+        for row in run_cross_rows
+        if row.get("expected_outcome") == "reject_design_static"
+        and any(
+            "Run<" in str(channel.get("type_identity", ""))
+            for channel in (
+                row.get("exported_result_channel", {}),
+                row.get("imported_result_channel", {}),
+            )
+            if isinstance(channel, dict)
         )
-        and actor_n_21.get("expected_outcome") == "reject_design_static"
-        and actor_n_21.get("expected_existing_diagnostic")
-        == "RCTS_RESPONSIBILITY_COMBINATION_INVALID",
-        "ACTOR_TASK_RESPONSIBILITY_CROSS_MODULE_BINDING",
-        "ACC-XM=4 accept=3 reject=1 ordinary-async-negative=ACC-N-021",
+    ]
+    subsumption_proof = (
+        subsumption_reply_rows[0].get("explicit_admitted_error_set_subsumption", {})
+        if len(subsumption_reply_rows) == 1
+        else {}
+    )
+    check(
+        len(actor_cross_module) == 4
+        and len(reply_cross_rows) == 3
+        and len(run_cross_rows) == 1
+        and len(exact_reply_rows) == 1
+        and reply_descriptor_is_normalized(
+            exact_reply_rows[0].get("exported_descriptor"), module_api_marker=True
+        )
+        and exact_reply_rows[0].get("expected_outcome") == "accept_design_static"
+        and len(subsumption_reply_rows) == 1
+        and set(subsumption_proof.get("source", []))
+        < set(subsumption_proof.get("target", []))
+        and isinstance(subsumption_proof.get("proof_identity"), str)
+        and bool(subsumption_proof.get("proof_identity"))
+        and subsumption_reply_rows[0].get("other_static_fields_exact") is True
+        and subsumption_reply_rows[0].get("reply_id_preserved_per_value") is True
+        and subsumption_reply_rows[0].get("correlation_id_preserved_per_value") is True
+        and len(dropped_reply_rows) == 1
+        and dropped_reply_rows[0].get("expected_existing_diagnostic")
+        == "RCTS_API_DIGEST_INCOMPLETE"
+        and len(run_export_rows) == 1
+        and run_export_rows[0].get("expected_existing_diagnostic")
+        in {"RCTS_API_DIGEST_INCOMPLETE", "RCTS_RESPONSIBILITY_COMBINATION_INVALID"},
+        "ACTOR_REPLY_RESPONSIBILITY_CROSS_MODULE_BINDING",
+        "reply exact/subsumption/drop=3; owner-bound Run export reject=1",
     )
 
-    mir_task_descriptor_schema = (
-        mir_responsibility_schema.get("$defs", {})
-        .get("actorRequestTaskResponsibilityDescriptor", {})
+    actor_negative_rows = [
+        row for row in actor_fixtures.get("negative", []) if isinstance(row, dict)
+    ]
+    invalid_run_reply_combinations = [
+        row
+        for row in actor_negative_rows
+        if row.get("expected_outcome") == "reject_design_static"
+        and row.get("expected_existing_diagnostic")
+        == "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
+        and isinstance(row.get("descriptor"), dict)
+        and row.get("descriptor", {}).get("responsibility_kind") == "concur_run"
+        and isinstance(
+            row.get("descriptor", {}).get("actor_request_reply_responsibility"),
+            dict,
+        )
+    ]
+    check(
+        len(invalid_run_reply_combinations) == 1,
+        "RUN_FORBIDS_ACTOR_REPLY_RESPONSIBILITY",
+        f"negative_cases={len(invalid_run_reply_combinations)}",
     )
-    mir_task_array_schema = (
+
+    mir_reply_descriptor_schema = (
+        mir_responsibility_schema.get("$defs", {})
+        .get("actorRequestReplyResponsibilityDescriptor", {})
+    )
+    mir_reply_array_schema = (
         mir_responsibility_schema.get("properties", {})
-        .get("actor_request_task_responsibilities", {})
+        .get("actor_request_reply_responsibilities", {})
     )
     mir_binding_rule = next(
         (
             row
             for row in mir_responsibility_schema.get("allOf", [])
             if isinstance(row, dict)
-            and "actor_request_task_responsibilities"
+            and "actor_request_reply_responsibilities"
             in row.get("then", {}).get("required", [])
         ),
         {},
@@ -3513,33 +3700,31 @@ def main() -> int:
     mir_binding_then = (
         mir_binding_rule.get("then", {})
         .get("properties", {})
-        .get("actor_request_task_responsibilities", {})
+        .get("actor_request_reply_responsibilities", {})
     )
     mir_binding_else = (
         mir_binding_rule.get("else", {})
         .get("properties", {})
-        .get("actor_request_task_responsibilities", {})
+        .get("actor_request_reply_responsibilities", {})
     )
     mir_handler_item_schema = (
-        mir_task_descriptor_schema.get("properties", {})
+        mir_reply_descriptor_schema.get("properties", {})
         .get("normalized_handler_error_set", {})
         .get("items", {})
     )
     mir_terminal_schema = (
-        mir_task_descriptor_schema.get("properties", {})
+        mir_reply_descriptor_schema.get("properties", {})
         .get("terminal_transport_failure", {})
     )
     check(
-        mir_task_array_schema.get("uniqueItems") is True
-        and mir_task_descriptor_schema.get("additionalProperties") is False
-        and mir_task_descriptor_schema.get("required") == task_descriptor_fields
-        and set(mir_task_descriptor_schema.get("properties", {}))
-        == task_descriptor_field_set
-        and set(
-            mir_handler_item_schema.get("not", {}).get("enum", [])
-        )
+        mir_reply_array_schema.get("uniqueItems") is True
+        and mir_reply_descriptor_schema.get("additionalProperties") is False
+        and mir_reply_descriptor_schema.get("required") == reply_descriptor_fields
+        and set(mir_reply_descriptor_schema.get("properties", {}))
+        == reply_descriptor_field_set
+        and set(mir_handler_item_schema.get("not", {}).get("enum", []))
         == admission_only_errors
-        and mir_task_descriptor_schema.get("properties", {})
+        and mir_reply_descriptor_schema.get("properties", {})
         .get("normalized_handler_error_set", {})
         .get("uniqueItems")
         is True
@@ -3554,13 +3739,13 @@ def main() -> int:
         and mir_binding_else.get("maxItems") == 0
         and "one-to-one set"
         in mir_responsibility_schema.get("x-deeplus-semantic-contract", {}).get(
-            "actor_request_task_responsibility", ""
+            "actor_request_reply_responsibility", ""
         ),
-        "MIR_ACTOR_REQUEST_TASK_RESPONSIBILITY_SCHEMA",
-        "descriptor-fields=6 admitted-request conditional=present",
+        "MIR_ACTOR_REQUEST_REPLY_RESPONSIBILITY_SCHEMA",
+        "descriptor-fields=7 admitted-request conditional=present",
     )
 
-    def actor_request_binding_state(row: Any) -> tuple[bool, bool]:
+    def actor_request_reply_binding_state(row: Any) -> tuple[bool, bool]:
         if not isinstance(row, dict):
             return False, False
         admitted_request_events = [
@@ -3570,132 +3755,92 @@ def main() -> int:
             and event.get("kind") == "actor_lifecycle"
             and event.get("phase") == "enqueue_committed"
         ]
-        request_ids = [
+        request_correlation_ids = [
             event.get("correlation_id") for event in admitted_request_events
         ]
-        descriptors = row.get("actor_request_task_responsibilities", [])
+        request_reply_ids = [event.get("reply_id") for event in admitted_request_events]
+        descriptors = row.get("actor_request_reply_responsibilities", [])
         if not isinstance(descriptors, list):
             return False, False
-        descriptor_ids = [
+        descriptor_correlation_ids = [
             descriptor.get("correlation_id")
             if isinstance(descriptor, dict)
             else None
             for descriptor in descriptors
         ]
+        descriptor_reply_ids = [
+            descriptor.get("reply_id") if isinstance(descriptor, dict) else None
+            for descriptor in descriptors
+        ]
         bijection = (
-            len(admitted_request_events) == len(request_ids)
+            len(admitted_request_events) == len(request_correlation_ids)
+            == len(request_reply_ids)
+            == len(descriptor_correlation_ids)
+            == len(descriptor_reply_ids)
             and all(
-                isinstance(correlation_id, str) and bool(correlation_id)
-                for correlation_id in request_ids
+                isinstance(identity, str) and bool(identity)
+                for identity in [
+                    *request_correlation_ids,
+                    *request_reply_ids,
+                    *descriptor_correlation_ids,
+                    *descriptor_reply_ids,
+                ]
             )
-            and len(request_ids) == len(set(request_ids))
-            and len(descriptor_ids) == len(set(descriptor_ids))
-            and len(request_ids) == len(descriptor_ids)
-            and set(request_ids) == set(descriptor_ids)
-            and all(
-                isinstance(correlation_id, str) and bool(correlation_id)
-                for correlation_id in descriptor_ids
-            )
+            and len(request_correlation_ids) == len(set(request_correlation_ids))
+            and len(request_reply_ids) == len(set(request_reply_ids))
+            and len(descriptor_correlation_ids)
+            == len(set(descriptor_correlation_ids))
+            and len(descriptor_reply_ids) == len(set(descriptor_reply_ids))
+            and set(request_correlation_ids) == set(descriptor_correlation_ids)
+            and set(request_reply_ids) == set(descriptor_reply_ids)
         )
         normalization = all(
-            task_descriptor_is_normalized(descriptor)
-            for descriptor in descriptors
+            reply_descriptor_is_normalized(descriptor) for descriptor in descriptors
         )
         return bijection, normalization
 
     mir_binding_cases = actor_fixtures.get(
-        "mir_task_responsibility_binding_cases", []
+        "mir_reply_responsibility_binding_cases", []
     )
-    mir_binding_by_id = {
-        row.get("fixture_id"): row
+    mir_binding_states = [
+        (row, actor_request_reply_binding_state(row))
         for row in mir_binding_cases
         if isinstance(row, dict)
-    }
-    expected_mir_guards = {
-        "ACC-MIR-TR-001-SINGLE-REQUEST-BIJECTION": None,
-        "ACC-MIR-TR-002-TWO-REQUEST-BIJECTION": None,
-        "ACC-MIR-TR-003-ORDINARY-ASYNC-ZERO-ACTOR-DESCRIPTORS": None,
-        "ACC-MIR-TR-004-MISSING-SECOND-DESCRIPTOR": "bijection",
-        "ACC-MIR-TR-005-DUPLICATE-DESCRIPTOR-CORRELATION": "bijection",
-        "ACC-MIR-TR-006-UNNORMALIZED-HANDLER-ERROR-SET": "normalization",
-        "ACC-MIR-TR-007-ADMISSION-ERROR-IN-HANDLER-SET": "normalization",
-    }
-    mir_binding_states = {
-        fixture_id: actor_request_binding_state(row)
-        for fixture_id, row in mir_binding_by_id.items()
-    }
+    ]
     mir_binding_descriptors = [
         descriptor
         for row in mir_binding_cases
         if isinstance(row, dict)
-        for descriptor in row.get("actor_request_task_responsibilities", [])
+        for descriptor in row.get("actor_request_reply_responsibilities", [])
     ]
-    mir_descriptor_shape_and_terminal = all(
-        isinstance(descriptor, dict)
-        and set(descriptor) == task_descriptor_field_set
-        and all(
-            isinstance(descriptor.get(field), str) and bool(descriptor.get(field))
-            for field in (
-                "result_type",
-                "cancellation_axis",
-                "isolation_owner",
-                "correlation_id",
-            )
-        )
-        and isinstance(descriptor.get("normalized_handler_error_set"), list)
-        and all(
-            isinstance(error, str) and bool(error)
-            for error in descriptor.get("normalized_handler_error_set", [])
-        )
-        and descriptor.get("terminal_transport_failure")
-        == terminal_transport_failure
-        for descriptor in mir_binding_descriptors
-    )
-    mir_6_errors = (
-        mir_binding_by_id.get(
-            "ACC-MIR-TR-006-UNNORMALIZED-HANDLER-ERROR-SET", {}
-        )
-        .get("actor_request_task_responsibilities", [{}])[0]
-        .get("normalized_handler_error_set", [])
-    )
-    mir_7_errors = (
-        mir_binding_by_id.get(
-            "ACC-MIR-TR-007-ADMISSION-ERROR-IN-HANDLER-SET", {}
-        )
-        .get("actor_request_task_responsibilities", [{}])[0]
-        .get("normalized_handler_error_set", [])
-    )
-    mir_normalization_failure_causes = (
-        isinstance(mir_6_errors, list)
-        and mir_6_errors != sorted(set(mir_6_errors))
-        and not admission_only_errors.intersection(mir_6_errors)
-        and isinstance(mir_7_errors, list)
-        and mir_7_errors == sorted(set(mir_7_errors))
-        and bool(admission_only_errors.intersection(mir_7_errors))
-    )
-    expected_mir_outcomes = {
-        fixture_id: (
+    guard_distribution = {
+        guard: sum(row.get("expected_failed_guard") == guard for row, _ in mir_binding_states)
+        for guard in (None, "bijection", "normalization")
+    }
+    mir_expected_guard_semantics = all(
+        state[0] is (row.get("expected_failed_guard") != "bijection")
+        and state[1] is (row.get("expected_failed_guard") != "normalization")
+        and row.get("expected_outcome")
+        == (
             "admit_design_static"
-            if failed_guard is None
+            if row.get("expected_failed_guard") is None
             else "reject_design_static"
         )
-        for fixture_id, failed_guard in expected_mir_guards.items()
-    }
-    mir_bijection_semantics = all(
-        state[0] is (expected_mir_guards[fixture_id] != "bijection")
-        for fixture_id, state in mir_binding_states.items()
-        if fixture_id in expected_mir_guards
+        for row, state in mir_binding_states
     )
-    mir_normalization_semantics = all(
-        state[1] is (expected_mir_guards[fixture_id] != "normalization")
-        for fixture_id, state in mir_binding_states.items()
-        if fixture_id in expected_mir_guards
-    )
-    mir_expected_guard_semantics = all(
-        row.get("expected_failed_guard") == expected_mir_guards[fixture_id]
-        and row.get("expected_outcome") == expected_mir_outcomes[fixture_id]
-        for fixture_id, row in mir_binding_by_id.items()
-        if fixture_id in expected_mir_guards
+    normalization_reject_error_sets = [
+        descriptor.get("normalized_handler_error_set", [])
+        for row, _ in mir_binding_states
+        if row.get("expected_failed_guard") == "normalization"
+        for descriptor in row.get("actor_request_reply_responsibilities", [])
+        if isinstance(descriptor, dict)
+    ]
+    normalization_failure_causes = (
+        any(errors != sorted(set(errors)) for errors in normalization_reject_error_sets)
+        and any(
+            bool(admission_only_errors.intersection(errors))
+            for errors in normalization_reject_error_sets
+        )
     )
     mir_binding_counts = actor_fixtures.get("expected_counts", {})
     mir_admit_count = sum(
@@ -3709,39 +3854,116 @@ def main() -> int:
         if isinstance(row, dict)
     )
     check(
-        set(mir_binding_by_id) == set(expected_mir_guards)
-        and len(mir_binding_cases) == len(mir_binding_by_id) == 7
-        and mir_binding_counts.get("mir_task_responsibility_binding") == 7
-        and mir_binding_counts.get("mir_task_responsibility_binding_admit")
+        len(mir_binding_cases) == 7
+        and guard_distribution == {None: 3, "bijection": 2, "normalization": 2}
+        and mir_binding_counts.get("mir_reply_responsibility_binding") == 7
+        and mir_binding_counts.get("mir_reply_responsibility_binding_admit")
         == mir_admit_count
         == 3
-        and mir_binding_counts.get("mir_task_responsibility_binding_reject")
+        and mir_binding_counts.get("mir_reply_responsibility_binding_reject")
         == mir_reject_count
         == 4
-        and mir_expected_guard_semantics
-        and mir_descriptor_shape_and_terminal,
-        "MIR_ACTOR_REQUEST_TASK_RESPONSIBILITY_FIXTURE_MATRIX",
+        and all(
+            reply_descriptor_is_normalized(descriptor)
+            or any(
+                descriptor is candidate
+                for row, _ in mir_binding_states
+                if row.get("expected_failed_guard") == "normalization"
+                for candidate in row.get("actor_request_reply_responsibilities", [])
+            )
+            for descriptor in mir_binding_descriptors
+        ),
+        "MIR_ACTOR_REQUEST_REPLY_RESPONSIBILITY_FIXTURE_MATRIX",
         f"cases={len(mir_binding_cases)} admit={mir_admit_count} reject={mir_reject_count}",
     )
     check(
-        mir_bijection_semantics,
-        "MIR_ACTOR_REQUEST_TASK_RESPONSIBILITY_BIJECTION",
-        str(
-            {
-                fixture_id: state[0]
-                for fixture_id, state in sorted(mir_binding_states.items())
-            }
-        ),
+        mir_expected_guard_semantics,
+        "MIR_ACTOR_REQUEST_REPLY_RESPONSIBILITY_GUARDS",
+        str(guard_distribution),
     )
     check(
-        mir_normalization_semantics and mir_normalization_failure_causes,
-        "MIR_ACTOR_REQUEST_TASK_RESPONSIBILITY_NORMALIZATION",
-        str(
-            {
-                fixture_id: state[1]
-                for fixture_id, state in sorted(mir_binding_states.items())
-            }
-        ),
+        normalization_failure_causes,
+        "MIR_ACTOR_REQUEST_REPLY_RESPONSIBILITY_NORMALIZATION",
+        f"normalization_reject_sets={len(normalization_reject_error_sets)}",
+    )
+
+    imported_mir_fixtures = parsed.get(
+        root / "tests/fixtures/imported/mir-responsibility-fixtures.json", {}
+    )
+    imported_mir_groups = [
+        *imported_mir_fixtures.get("positive_fixtures", []),
+        *imported_mir_fixtures.get("negative_fixtures", []),
+    ]
+    concur_stack_contract = imported_mir_fixtures.get(
+        "stack_kind_contracts", {}
+    ).get("concur_runs")
+    concur_schema_refs = [
+        row.get("$ref")
+        for row in mir_responsibility_schema.get("properties", {})
+        .get("concur_runs", {})
+        .get("items", {})
+        .get("oneOf", [])
+        if isinstance(row, dict)
+    ]
+    concur_run_rows = [
+        event
+        for fixture in imported_mir_groups
+        if isinstance(fixture, dict)
+        for event in fixture.get("record", {}).get("concur_runs", [])
+        if isinstance(event, dict)
+    ]
+    identities_by_run: dict[str, set[str]] = {}
+    for event in concur_run_rows:
+        identities_by_run.setdefault(str(event.get("concur_run_id")), set()).add(
+            str(event.get("execution_id"))
+        )
+    imported_mir_text = json.dumps(imported_mir_fixtures, ensure_ascii=False)
+    schema_mir_text = json.dumps(mir_responsibility_schema, ensure_ascii=False)
+    check(
+        "concur_runs" in mir_responsibility_schema.get("required", [])
+        and "task_scope" not in mir_responsibility_schema.get("properties", {})
+        and concur_stack_contract
+        == ["concur_run_spawn", "concur_run_join", "concur_run_lifecycle"]
+        and concur_schema_refs
+        == [
+            "#/$defs/concurRunSpawnEvent",
+            "#/$defs/concurRunJoinEvent",
+            "#/$defs/concurRunLifecycleEvent",
+        ]
+        and imported_mir_fixtures.get("positive_fixture_count") == 3
+        and imported_mir_fixtures.get("negative_fixture_count") == 9
+        and len(concur_run_rows) > 0
+        and all(
+            event.get("kind")
+            in {"concur_run_spawn", "concur_run_join", "concur_run_lifecycle"}
+            and str(event.get("concur_run_id", "")).startswith("concur-run-")
+            and str(event.get("execution_id", "")).startswith("execution-")
+            and str(event.get("concur_id", "")).startswith("concur-")
+            and "task_id" not in event
+            and "scope_id" not in event
+            for event in concur_run_rows
+        )
+        and all(len(execution_ids) == 1 for execution_ids in identities_by_run.values())
+        and "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001"
+        in {
+            row.get("fixture_id")
+            for row in imported_mir_fixtures.get("positive_fixtures", [])
+            if isinstance(row, dict)
+        }
+        and "MIR-NEG-CONCUR-RUN-COMPLETION-PRIMARY-001"
+        in {
+            row.get("fixture_id")
+            for row in imported_mir_fixtures.get("negative_fixtures", [])
+            if isinstance(row, dict)
+        }
+        and "task_scope" not in imported_mir_text
+        and "task_spawn" not in imported_mir_text
+        and "task_join" not in imported_mir_text
+        and "task_lifecycle" not in imported_mir_text
+        and "task_scope" not in schema_mir_text
+        and "actor_request_task" not in schema_mir_text,
+        "MIR_CONCUR_RUN_IDENTITY_AND_LEGACY_ERASURE",
+        f"runs={len(concur_run_rows)} identities={len(identities_by_run)} fixtures=3+9",
     )
 
     authority_path = root / "current/authority-map.yaml"
@@ -4398,7 +4620,7 @@ def main() -> int:
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,
-        "evidence_honesty": "Static closure does not establish lexer, parser, checker, MIR, xVM, LLVM, tooling, conformance, or user-study product support.",
+        "evidence_honesty": "Static closure does not establish lexer, parser, checker, MIR, xVM, Cranelift, tooling, conformance, or user-study product support.",
     }
     if args.write_receipt:
         write_json(root / "migration/migration-receipt.json", receipt)

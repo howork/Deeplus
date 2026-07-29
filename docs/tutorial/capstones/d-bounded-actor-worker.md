@@ -2,7 +2,7 @@
 
 > 상태: `CURRENT_DESIGN_PRODUCT_NOT_RUN`
 >
-> actor, mailbox, structured task의 현행 설계를 설명한다. runtime,
+> actor, mailbox, `concur` structured execution의 현행 설계를 설명한다. runtime,
 > scheduler, cancellation, cross-backend 실행 증거는 `NOT_RUN`이다.
 
 ## 1. 만들 것
@@ -14,7 +14,7 @@ send하고 결과가 필요한 경우 request/reply를 사용한다. 프로젝�
 - 누가 mutable state를 소유하는가?
 - 메시지는 어느 시점에 enqueue commit되는가?
 - commit 전후 failure에서 moved payload의 owner는 누구인가?
-- request task가 cancel되면 receiver와 reply 책임은 어떻게 되는가?
+- request `Reply`의 observer가 cancel되면 receiver와 reply 책임은 어떻게 되는가?
 - actor 내부 `await`가 재진입을 암시하는가?
 
 ## 2. protocol 먼저 설계하기
@@ -38,7 +38,7 @@ public protocol WorkerProtocol {
 ```
 
 send는 enqueue 후 reply를 요구하지 않는 메시지이고, request는 typed
-reply task와 correlation을 갖는다. ordinary method 호출과 actor
+`Reply<T>`와 correlation을 갖는다. ordinary method 호출과 actor
 message resolution은 서로 fallback하지 않는다.
 
 이 선언은 requirement 집합을 보여 준다. 아래 `Worker`의 handler 철자가
@@ -89,29 +89,27 @@ public def submitOne(worker: Worker, move job: Job)
 public def#async countProcessed(worker: Worker) -> Int
     throws ActorMessageError
 = {
-    task scope {
-        let Result::ok(replyTask) = worker :~ processedCount
-        else Result::err(error) => throw error
-        return await replyTask
-    }
+    let Result::ok(reply) = worker :~ processedCount
+    else Result::err(error) => throw error
+    return await reply
 }
 ```
 
 이 코드는 교육용 surface projection이다. exact message selector와
-Task failure descriptor는 정본 actor contract를 함께 확인한다.
+Reply failure descriptor는 정본 actor contract를 함께 확인한다.
 enqueue commit 전 실패라면 sender가 moved owner를 보존해야 하고,
 commit 뒤에는 receiver mailbox가 payload 책임을 가진다.
 
 ## 5. cancellation과 structured scope
 
-request를 시작한 task가 취소될 수 있다고 해서 이미 commit된 actor
+request reply의 observer가 취소될 수 있다고 해서 이미 commit된 actor
 message가 자동으로 “실행되지 않은 것”이 되지는 않는다. cancellation,
 receiver closure, reply abandonment는 서로 다른 사건이다. 호출자는
-structured scope에서 child task의 수명과 관찰 책임을 명시해야 한다.
+`concur`에서 child run의 수명과 관찰 책임을 명시해야 한다.
 
 정확한 책임 순서는 세 단계다. 먼저 request admission이 성공해
-`replyTask`와 correlation identity를 만든다. 다음으로 caller
-cancellation은 그 task의 관찰 책임을 끝낼 수 있지만 이미 commit된
+`reply`와 correlation identity를 만든다. 다음으로 caller
+Cancellation은 그 reply의 관찰 책임을 끝낼 수 있지만 이미 commit된
 receiver 작업을 자동 취소하지 않는다. 마지막으로 receiver 쪽 취소가
 필요하면 별도 protocol message와 명시적 상태 전이를 설계한다. 이름 있는
 async 함수는 `def#async`로 쓰며 Preview async callable literal을
@@ -123,7 +121,7 @@ Deeplus 현행 actor 모델에서 handler의 `await`가 곧바로 state authorit
 다른 mutating turn에 넘기는 재진입 허가가 되지는 않는다. 따라서
 재진입을 전제로 state snapshot을 복구하는 예제를 만들지 않는다.
 반대로 긴 suspension은 진행성 문제를 만들 수 있으므로, 외부 작업을
-작은 actor turn과 별도 task로 분해할지 설계 검토가 필요하다.
+작은 actor turn과 별도 `concur` child로 분해할지 설계 검토가 필요하다.
 
 ## 7. 거부와 경계 사례
 
@@ -169,7 +167,7 @@ Test_/Implementation acceptance 설계다.
 1~3 사이에 실패하면 sender가 owner를 잃어서는 안 된다. 4 이후에는
 sender가 같은 moved owner를 다시 사용할 수 없다. 5의 handler failure가
 3의 `mailboxFull`과 같은 error라고 가정하지 않는다. request라면 여기에
-correlation identity, reply task, receiver-closed-before-reply terminal
+correlation identity, `Reply<T>`, receiver-closed-before-reply terminal
 축이 추가된다.
 
 ### 8.2 ordering을 정확히 말하기
@@ -184,7 +182,7 @@ order를 전체 시스템의 전역 순서라고 부르거나 scheduler 구현�
 ### 8.3 진행성과 격리의 균형
 
 긴 계산이나 외부 I/O를 actor turn 안에서 계속 기다리면 격리는
-지켜져도 다른 message가 오래 대기할 수 있다. 작업을 child task로
+지켜져도 다른 message가 오래 대기할 수 있다. 작업을 `concur` child로
 분리할 때는 state snapshot의 owner, 결과를 돌려보내는 message,
 cancellation과 cleanup을 함께 설계한다. 단순히 `await` 앞뒤에서 actor
 state를 자유롭게 읽는 재진입 모델을 가정하지 않는다.
@@ -197,7 +195,7 @@ state를 자유롭게 읽는 재진입 모델을 가정하지 않는다.
    처리 순서를 같은 개념으로 합치지 마라.
 3. **직접 설계:** full mailbox의 즉시 거부를 error signature와 owner
    timeline에 드러내고 blocking·retry를 추가하지 마라.
-4. **경계 과제:** request task cancellation과 receiver-side 작업 취소를
+4. **경계 과제:** reply observer Cancellation과 receiver-side 작업 취소를
    별도 protocol message 없이 동일시하면 안 되는 이유를 설명하라.
 5. **테스트 과제:** runtime nondeterminism을 허용하면서도 owner leak과
    duplicate reply를 탐지할 observation schema를 설계하라.
@@ -217,4 +215,4 @@ state를 자유롭게 읽는 재진입 모델을 가정하지 않는다.
 - [동시성 Part](../part-10-concurrency/README.md)
 - [ownership Part](../part-07-ownership/README.md)
 - `spec/contracts/actor-concurrency-coherence.json`
-- [문법 참조: async, task, actor](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
+- [문법 참조: async, concur/Run, actor](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)

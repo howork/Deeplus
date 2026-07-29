@@ -576,8 +576,8 @@
       ],
       "source": "let body = #async { => await fetch() }",
       "expected_outcome": "reject",
-      "expected_rejection_reason": "async callable literal is not current",
-      "expected_existing_diagnostic": "ASYNC_CALLABLE_LITERAL_NOT_CURRENT"
+      "expected_rejection_reason": "bounded async callable literal requires a nearest lexical concur owner",
+      "expected_existing_diagnostic": "CONCUR_LOCAL_ASYNC_LAMBDA_REQUIRES_OWNER"
     },
     {
       "fixture_id": "TFC-N-024-AUTOMATIC-UNION-FLOW-JOIN",

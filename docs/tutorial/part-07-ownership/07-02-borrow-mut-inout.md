@@ -145,7 +145,7 @@ use(view)
 // live borrow와 owner 교체가 충돌
 ```
 
-borrow가 task, Actor, return, storage 또는 escaping closure를 건너려면
+borrow가 run, Actor, return, storage 또는 escaping closure를 건너려면
 별도 admitted lifetime proof가 필요하다. suspension이 책임을 지워 주지
 않는다.
 

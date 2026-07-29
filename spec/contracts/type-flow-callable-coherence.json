@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.type-flow-callable-coherence-contract/r1",
-  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "revision": "r51f3-current-concur-role-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -438,7 +438,7 @@
           "#guard",
           "async",
           "generator",
-          "task",
+          "concur execution",
           "actor or isolation crossing",
           "unknown escape proof"
         ],
@@ -549,11 +549,39 @@
     {
       "rule_id": "TFC-R018",
       "domain": "async_callables",
-      "title": "async declarations are current but async callable literals are Preview",
+      "title": "async declarations, direct spawn, and bounded concur-local async literals have distinct execution ownership",
       "contract": {
         "named_def_async": "current in owner domains admitted by TFC-R012",
-        "await": "explicit suspension point",
-        "async_callable_literal": "PREVIEW_DESIGN_NONACTIVATABLE",
+        "async_invocation": "a statically selected def#async or admitted concur-local #async invocation; it starts no background execution by itself",
+        "await_async_invocation": "executes and awaits the invocation in the current ExecutionId",
+        "spawn_async_invocation": "inside the nearest ConcurExpr, creates exactly one owner-bound Run<T> without a hidden forwarding closure, forwarding await, or nested run",
+        "spawn_operand_admission": "one inline SpawnBody or one statically selected async invocation; synchronous expressions and existing Run/Reply handles reject",
+        "bounded_async_callable_literal": {
+          "surface": "#async { ... }",
+          "status": "CURRENT_STABLE_DESIGN",
+          "owner": "nearest lexical ConcurExpr",
+          "residence": "RegionBound(ConcurId)",
+          "escape": false,
+          "capture": "empty environment or explicit reusable copy-only CapturePlan",
+          "implicit_outer_dependency": false,
+          "forbidden_capture_modes": [
+            "borrow",
+            "inout",
+            "move",
+            "clone",
+            "deep",
+            "scoped access",
+            "actor-isolated reference"
+          ],
+          "admitted_consumers": [
+            "local await",
+            "local spawn",
+            "inward nested concur await or spawn with the same proven owner chain"
+          ]
+        },
+        "general_escaping_async_callable_literal": "PREVIEW_DESIGN_NONACTIVATABLE",
+        "Run_handle": "affine one-shot spawned-execution observation owned by one ConcurId; no actor transport descriptor",
+        "Reply_handle": "affine one-shot correlated actor-request observation with ReplyResponsibility; no Run conversion",
         "ordinary_lambda_invocation": "synchronous",
         "implicit_async_conversion": false,
         "suspension_responsibility": "part of callable compatibility and escape checking"
@@ -639,8 +667,10 @@
         "argument_to_formal_projection": "the ordinary static channel matcher consumes the preserved ordered CallArgument list without synthesizing a payload aggregate",
         "context_or_witness_synthesis": false,
         "trailing_closure_contract": "TFC-R011",
-        "actor_message_result": "one-way Result<Unit, error ActorMessageError>; request Result<Task<T>, error ActorMessageError>",
-        "actor_request_await": "extract Task<T> from Result before an explicit await",
+        "actor_message_result": "one-way Result<Unit, error ActorMessageError>; request Result<Reply<T>, error ActorMessageError>",
+        "actor_request_await": "extract Reply<T> from Result before one-shot explicit await",
+        "actor_request_responsibility": "ReplyResponsibility preserves result type, exact handler ErrorSet, Cancellation, isolation owner, per-value reply identity, per-value correlation identity, and ActorMessageError::receiverClosedBeforeReply",
+        "actor_request_Run_conversion": false,
         "actor_ordinary_fallback": false,
         "implicit_actor_suspension_or_retry": false,
         "product_support": "NOT_RUN"
@@ -773,7 +803,12 @@
     ],
     "numeric_array_flatten_count": 0,
     "try_expression_statement_count": 0,
-    "async_callable_literal_current_count": 0,
+    "bounded_concur_local_async_callable_literal_current_count": 1,
+    "general_escaping_async_callable_literal_current_count": 0,
+    "direct_async_invocation_spawn_current_count": 1,
+    "run_type_identity_count": 1,
+    "reply_type_identity_count": 1,
+    "run_reply_implicit_conversion_count": 0,
     "parameter_mode_row_count": 5,
     "ordinary_mut_caller_writeback_count": 0,
     "ordinary_mut_precommit_owner_retention": true,

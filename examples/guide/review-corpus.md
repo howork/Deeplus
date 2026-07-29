@@ -1743,7 +1743,7 @@ public def withLock<T>(lock: Lock, body: #scoped (Guard) -> T) -> T
 ```
 ## EX-R48E-017 — Async/await minimal core is language-design stable
 
-- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `async_task_control`
+- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `async_concur_control`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -1760,9 +1760,9 @@ public def#async loadUser(id: UserId) -> User
     return await (service ~ fetchUser id)
 }
 ```
-## EX-R48E-018 — Structured task scope makes cancellation owner visible
+## EX-R48E-018 — Structured concur region makes cancellation owner visible
 
-- **source_feature_ids:** `structured_task_scope`, `deterministic_primary_suppressed_order`
+- **source_feature_ids:** `async_concur_control`, `structured_concur_region`, `spawn_body_and_direct_async_invocation`, `deterministic_primary_suppressed_order`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -1772,9 +1772,9 @@ public def#async loadUser(id: UserId) -> User
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-task scope {
-    let profile = spawn async { => await loadProfile(id) }
-    let settings = spawn async { => await loadSettings(id) }
+concur {
+    let profile = spawn { => await loadProfile(id) }
+    let settings = spawn loadSettings(id)
     await profile
     await settings
 }
@@ -2387,9 +2387,9 @@ public def render<T>(x: T) -> String
 let text = render(Logger!())
 // STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN
 ```
-## EX-R48E1-030 — Async task actor minimum core stable design
+## EX-R48E1-030 — Async actor Reply minimum core stable design
 
-- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `structured_task_scope`, `actor_declaration_grammar_closed`
+- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `actor_declaration_grammar_closed`, `actor_request_reply`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -2409,11 +2409,10 @@ public actor Worker {
 }
 public def#async run(job: Job) -> Result
     throws ActorMessageError
-    effects task
 = {
-    let Result::ok(task) = Worker!() :~ compute job
+    let Result::ok(reply) = Worker!() :~ compute job
     else Result::err(error) => throw error
-    return await task
+    return await reply
 }
 ```
 ## EX-R48E1-031 — Dynamic unit conversion provider under stdlib profile
@@ -2853,7 +2852,7 @@ let row = "|${name:<12}| ${score:>3}"
 ```
 ## EX-R48F-027 — Async function and await are current design
 
-- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `async_task_control`
+- **source_feature_ids:** `async_function_declaration_surface`, `await_expression_surface`, `async_concur_control`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -5829,9 +5828,9 @@ def outer(x: Int) -> Int = {
     return inner(1)
 }
 ```
-## EX-R51a1-025 — task body owns a final await expression
+## EX-R51a1-025 — concur owns bounded async callable and spawned Run
 
-- **source_feature_ids:** `task_body_minimum_grammar_slice`, `structured_task_scope`
+- **source_feature_ids:** `spawn_body_and_direct_async_invocation`, `structured_concur_region`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -5841,10 +5840,9 @@ def outer(x: Int) -> Int = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-task scope {
-    let profile = spawn async { =>
-        await loadProfile(id)
-    }
+concur {
+    let loader = [copy id] #async { => await loadProfile(id) }
+    let profile = spawn loader()
     await profile
 }
 ```
@@ -6531,7 +6529,7 @@ let text = format(3.14, context FormatPattern!("{:.2f}"))
 
 ```deeplus
 def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {
-    for await value in stream {
+    for#await value in stream {
         print(value)
     }
 }
@@ -6906,7 +6904,7 @@ def apply(f: (Int) -> Int) -> Int = { return f(1) }
 ```deeplus
 let f = #sync{ => 1 }
 ```
-## EX-R51a1-AUD-NG-023 — async callable literal remains nonactivatable
+## EX-R51a1-AUD-NG-023 — concur-local async callable requires an owner
 
 - **source_feature_ids:** `async_callable_literal_profile`
 - **checker_trace_ids:** `none`
@@ -6915,7 +6913,7 @@ let f = #sync{ => 1 }
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `ASYNC_CALLABLE_LITERAL_NOT_CURRENT`
+- **primary_diagnostic:** `CONCUR_LOCAL_ASYNC_LAMBDA_REQUIRES_OWNER`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -7716,7 +7714,6 @@ configure(**settings)
 ```deeplus
 def#entry#async launch() -> Unit
     throws Never
-    effects task
 = {
     await warmup()
 }
@@ -9047,9 +9044,9 @@ def leakContainer<T>(using order: witness Ord<T>) -> Unit = {
 let first: Int = second
 let second: Int = first
 ```
-## EX-R51a1-NG-059 — rejected: library top-level let initializer that creates a task
+## EX-R51a1-NG-059 — rejected: library top-level initializer creates an ownerless Run
 
-- **source_feature_ids:** `library_static_binding_initializer_msp`, `structured_task_scope`
+- **source_feature_ids:** `library_static_binding_initializer_msp`, `structured_concur_region`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -9060,7 +9057,7 @@ let second: Int = first
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let background = spawn async { => 1 }
+let background = spawn { => 1 }
 ```
 ## EX-R51a1-NG-061 — rejected: two selected entry declarations in one executable root
 
@@ -9966,7 +9963,7 @@ match { ::completed => done() }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-for await item in stream { consume(item) }
+for#await item in stream { consume(item) }
 match { ::completed => done() }
 // ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED
 ```
@@ -10313,7 +10310,7 @@ law BadLaw {
 ```
 ## EX-R51c-016 — Message spawn is owned by ordinary message syntax
 
-- **source_feature_ids:** `async_task_control`
+- **source_feature_ids:** `async_concur_control`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -10323,7 +10320,7 @@ law BadLaw {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let task = worker ~ spawn { => worker ~ run job }
+let delivery = worker ~ spawn { => worker ~ run job }
 ```
 ## EX-R51c-017 — Shallow and deep same-type derivation
 
@@ -11327,7 +11324,7 @@ let token: Token = Token::case
 
 ## EX-R51f3-COH-008 — Bounded actor channel keeps send order and explicit request reply
 
-- **source_feature_ids:** `actor_declaration_grammar_closed`, `actor_mailbox_capacity`, `actor_protocol_family`, `actor_request_reply`, `async_task_control`, `structured_task_scope`
+- **source_feature_ids:** `actor_declaration_grammar_closed`, `actor_mailbox_capacity`, `actor_protocol_family`, `actor_request_reply`, `async_concur_control`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11348,15 +11345,13 @@ public actor #mailbox(capacity: 8) Counter {
 public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
 = {
-    task scope {
-        let Result::ok(_) = counter :~ add value: 1
-        else Result::err(error) => throw error
-        let Result::ok(_) = counter :~ add value: 2
-        else Result::err(error) => throw error
-        let Result::ok(replyTask) = counter :~ current
-        else Result::err(error) => throw error
-        return await replyTask
-    }
+    let Result::ok(_) = counter :~ add value: 1
+    else Result::err(error) => throw error
+    let Result::ok(_) = counter :~ add value: 2
+    else Result::err(error) => throw error
+    let Result::ok(reply) = counter :~ current
+    else Result::err(error) => throw error
+    return await reply
 }
 ```
 
@@ -11378,7 +11373,7 @@ private actor #mailbox(capacity: 0) Counter { }
 
 ## EX-R51f3-COH-010 — Cancellation is not recoverable through catch
 
-- **source_feature_ids:** `async_task_control`, `error_defect_cancellation_split`, `structured_task_scope`
+- **source_feature_ids:** `async_concur_control`, `error_defect_cancellation_split`, `structured_concur_region`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
@@ -11389,18 +11384,21 @@ private actor #mailbox(capacity: 0) Counter { }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def#async waitFor(task: Task<Int>) -> Int = {
-    try {
-        return await task
-    } catch cancel: Cancellation {
-        return 0
+public def#async waitFor() -> Int = {
+    return concur {
+        let run = spawn { => 1 }
+        try {
+            await run
+        } catch cancel: Cancellation {
+            0
+        }
     }
 }
 ```
 
-## EX-R51f3-COH-011 — Structured task cleanup remains owned at cancellation boundary
+## EX-R51f3-COH-011 — Structured concur cleanup remains owned at cancellation boundary
 
-- **source_feature_ids:** `async_task_control`, `structured_task_scope`, `single_action_defer_msp`, `deterministic_primary_suppressed_order`
+- **source_feature_ids:** `async_concur_control`, `structured_concur_region`, `single_action_defer_msp`, `deterministic_primary_suppressed_order`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -11411,9 +11409,9 @@ public def#async waitFor(task: Task<Int>) -> Int = {
 
 ```deeplus
 public def#async supervise() -> Unit = {
-    task scope {
+    concur {
         defer cleanup()
-        let child = spawn async { => await work() }
+        let child = spawn { => await work() }
         await child
     }
 }
@@ -11454,8 +11452,8 @@ public def dispatch(worker: Worker, move job: Job)
 
 ```deeplus
 let cell = SharedCell::new(move state)
-let label = cell.withValue() { borrow value => describe(value) }
-let previous = cell.replace(move nextState)
+let label = cell ~ withValue { borrow value => describe(value) }
+let previous = cell ~ replace move nextState
 ```
 
 ## EX-R51COH-SHARED-002 — SharedMutex receiver-bound non-suspending scoped mutation
@@ -11471,7 +11469,7 @@ let previous = cell.replace(move nextState)
 
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock() { inout value => value = update(value) }
+mutex ~ withLock { inout value => value = update(value) }
 ```
 
 ## EX-R51VOI-001 — Unsuffixed and suffixed numeric values keep exact domains

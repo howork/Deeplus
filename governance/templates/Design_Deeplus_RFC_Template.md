@@ -95,7 +95,7 @@ Include at least:
 
 ## 13. Implementation plan
 
-Define the smallest Rust frontend → HIR → MIR → xVM vertical slice. LLVM support
+Define the smallest Rust frontend → HIR → MIR → xVM vertical slice. Cranelift support
 may follow only with an explicit lane status.
 
 ## 14. Evidence and test plan

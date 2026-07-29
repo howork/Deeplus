@@ -5,11 +5,11 @@
 > 상태: `MIXED_STATUS`
 
 이 장의 동시성·FFI·runtime feature 15개는 전부
-`PREVIEW_DESIGN_NONACTIVATABLE`이다. 한편 current actor/task 및 HIR-H1
+`PREVIEW_DESIGN_NONACTIVATABLE`이다. 한편 current actor/concur 및 HIR-H1
 verifier boundary는 현행 설계이고, DP-RFC-0001의 xVM-only MIR-X1과
 DP-RFC-0002의 concrete HIR-H1 schema/implementation proposal은
 `DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE`이다. 현행 backend authority는
-xVM initial + LLVM AOT + LLVM ORC JIT이며 RFC draft가 이를 대체하지 않는다.
+xVM initial + Cranelift ObjectModule AOT + Cranelift JITModule이며 RFC draft가 이를 대체하지 않는다.
 
 ## 2. 학습 목표
 
@@ -21,7 +21,7 @@ xVM initial + LLVM AOT + LLVM ORC JIT이며 RFC draft가 이를 대체하지 않
 
 ## 3. 선수 지식
 
-Part 10의 task scope, actor protocol/mailbox/isolation, cancellation/cleanup과
+Part 10의 `concur`, actor protocol/mailbox/isolation, cancellation/cleanup과
 Part 11의 HIR/MIR/backend 경계를 알고 있어야 한다.
 
 ## 4. 문제에서 출발하기
@@ -30,7 +30,7 @@ Part 11의 HIR/MIR/backend 경계를 알고 있어야 한다.
 suspension ABI, cancellation과 cleanup이 닫히지 않으면 짧은 syntax가
 숨은 lifetime을 만든다. weak atomic ordering도 spelling만 정하면 target별
 reordering과 happens-before가 달라질 수 있다. xVM-only MIR 제안 역시
-문서가 상세하다는 이유만으로 LLVM preservation authority를 지울 수
+문서가 상세하다는 이유만으로 Cranelift preservation authority를 지울 수
 없다.
 
 ## 5. 핵심 모델
@@ -70,7 +70,7 @@ IR 층은 별도 표로 읽는다.
 | HIR-H1 verifier boundary | resolved identity와 typed responsibility를 lowering 전에 닫음 | current Stable design |
 | `deeplus.hir/h1` concrete schema·crate reorganization | DP-RFC-0002의 제안 | noncanonical/nonactivatable |
 | MIR-X1 xVM-only model | DP-RFC-0001의 제안 | noncanonical/nonactivatable |
-| backend authority | xVM initial + LLVM AOT + LLVM ORC JIT | current; product `NOT_RUN` |
+| backend authority | xVM initial + Cranelift ObjectModule AOT + Cranelift JITModule | current; product `NOT_RUN` |
 
 ## 6. 단계별 예제
 
@@ -117,13 +117,13 @@ cancellation과 partial result publication을 named collector 계약에서
 검토하게 한다. `async_comprehension`은 이 정보를 숨긴 sugar로 아직
 활성화되지 않았다.
 
-### 3단계: lexical owner가 있는 task scope를 유지한다
+### 3단계: lexical owner가 있는 `concur`를 유지한다
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-task scope {
-    let producer = spawn async { => await produce() }
-    let consumer = spawn async { => await consume() }
+concur {
+    let producer = spawn produce()
+    let consumer = spawn consume()
     await producer
     await consumer
 }
@@ -131,7 +131,7 @@ task scope {
 
 `directed_coroutine_group`은 endpoint direction, escape, child order,
 cancellation graph와 cleanup을 더 강하게 표현하려는 proposal이다.
-현재 task scope를 몰래 directed group으로 낮추거나 detached child를
+현재 `concur`를 몰래 directed group으로 낮추거나 detached child를
 허용하지 않는다.
 
 ### 4단계: shared mutation은 current scoped synchronization을 쓴다
@@ -139,7 +139,7 @@ cancellation graph와 cleanup을 더 강하게 표현하려는 proposal이다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock() { inout protected =>
+mutex ~ withLock { inout protected =>
     protected.count += 1
 }
 ```
@@ -180,7 +180,7 @@ compiler/runtime 실행을 이 튜토리얼이 승인할 수는 없다.
 
 ## 8. 다른 기능과의 연결
 
-async proposal은 callable capture, effect/error union, ownership, task
+async proposal은 callable capture, effect/error union, ownership, concur/run
 isolation과 이어진다. automatic observation은 hidden read와 actor isolation,
 subscription cleanup을 닫아야 한다. C callback/variadic/aggregate는 FFI
 representability, provenance, unwind와 foreign lifetime을 확장한다.
@@ -204,12 +204,12 @@ effect와 drop owner를 기록한다. IR 제안은 current HIR-H1 boundary에서
 Preview Gated FFI가 모든 C interop proposal을 함께 연다는 생각이다.
 미니 사례에서 named `def#async`는 async literal의 current 대안이지
 그 proposal의 activation evidence가 아니다. MIR-X1 event model의 유용한
-질문을 재사용해도 xVM-only 전환이나 LLVM 제거를 승인한 것은 아니다.
+질문을 재사용해도 xVM-only 전환이나 Cranelift 제거를 승인한 것은 아니다.
 
 ## 9. Deeplus다운 작성 관례
 
 - async sugar보다 capture, cancellation, cleanup owner를 먼저 드러낸다.
-- task child는 lexical scope가 join/cancel 책임을 소유하게 한다.
+- child run은 lexical `concur`가 join/cancel 책임을 소유하게 한다.
 - actor mailbox와 shared memory synchronization을 섞지 않는다.
 - FFI 확장 기능을 minimum sound profile에서 자동 파생하지 않는다.
 - weak ordering을 성능 최적화라는 이유만으로 기본값으로 만들지 않는다.
@@ -235,7 +235,7 @@ Preview Gated FFI가 모든 C interop proposal을 함께 연다는 생각이다.
 - current explicit concurrency form은 owner와 policy를 source에 드러낸다.
 - HIR-H1 verifier boundary와 DP-RFC-0002 concrete proposal은 같은
   상태가 아니다.
-- MIR-X1은 xVM-only noncanonical draft이며 현행 LLVM authority를
+- MIR-X1은 xVM-only noncanonical draft이며 현행 Cranelift authority를
   대체하지 않는다.
 - product lane은 여전히 `15/15 NOT_RUN`이다.
 

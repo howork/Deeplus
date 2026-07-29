@@ -394,17 +394,17 @@
       "execution_status": "DESIGN_STATIC_NOT_RUN"
     },
     {
-      "law_id": "OP-TASK-013",
-      "obligation": "A task scope joins or cancels all owned children before exit.",
+      "law_id": "OP-CONCUR-013",
+      "obligation": "A concur region joins or cancels every owned run and completes required cleanup before exit.",
       "normalized_semantic_form": {
-        "law_id": "OP-TASK-013",
+        "law_id": "OP-CONCUR-013",
         "modality": "MUST",
-        "normalized_obligation": "A task scope joins or cancels all owned children before exit.",
+        "normalized_obligation": "A concur region joins or cancels every owned run and completes required cleanup before exit.",
         "product_execution": "NOT_RUN"
       },
-      "fingerprint_sha256": "7c82eebe213b894b7ab10f91a851009db91dd2b85e26da0ab76082775fb07722",
+      "fingerprint_sha256": "0a58b7acb1fa02acf758e9ee637daca4af45c55a2fe82142099e2bda7bfb813c",
       "ratification_decision_id": "R51a1-DD-013",
-      "positive_fixture_id": "CF-OP-TASK-013-POS",
+      "positive_fixture_id": "CF-OP-CONCUR-013-POS",
       "reversal_mutation_id": "constitutional_reversal_12",
       "execution_status": "DESIGN_STATIC_NOT_RUN"
     },
@@ -440,7 +440,7 @@
     }
   ],
   "fixture_registry": "tests/fixtures/imported/constitutional-law-fixtures.json",
-  "constitutional_digest_sha256": "106384b40b8605e5f71a0f301dfd64b484b85f7ab3fc9b0e431907b26839b5eb",
+  "constitutional_digest_sha256": "dcf6ace315512b3de459df455296aeb8e38777673723203d733db83763ebd196",
   "digest_canonicalization": "SHA-256 over canonical UTF-8 JSON of laws sorted in catalog order with object keys sorted and no insignificant whitespace",
   "mutation_policy": "each normalized law has a reversal plus a coordinated same-wrong attack; changing a ratified law requires a new decision id and detached trust anchor",
   "product_runtime": "NOT_RUN",

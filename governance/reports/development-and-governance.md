@@ -5,7 +5,7 @@
 Deeplus는 이제 아이디어 수집 중심 단계에서 언어 정본과 구현이 함께 전진해야 하는 단계로 넘어왔다. R51f3 패키지는 언어 설계의 정적 폐쇄성은 높지만, 검사한 제품 lane은 Rust lexer부터 독립 conformance까지 모두 NOT_RUN이다. 따라서 새 체계의 최우선 목표는 더 많은 문법을 추가하는 것이 아니라 다음 세 가지를 동시에 달성하는 것이다.
 
 1. 언어 규칙의 단일 책임과 변경 경로를 명확히 한다.
-2. Rust compiler, Deeplus MIR, xVM, LLVM 구현 증거를 릴리즈마다 누적한다.
+2. Rust compiler, Deeplus MIR, xVM, Cranelift 구현 증거를 릴리즈마다 누적한다.
 3. ChatGPT 역할 담당자가 전체 과거를 매번 다시 읽지 않아도 같은 품질로 협업하게 한다.
 
 채택하는 운영 모델은 다음과 같다.
@@ -16,7 +16,7 @@ Deeplus는 이제 아이디어 수집 중심 단계에서 언어 정본과 구�
 - 정본 소스, 생성 산출물, 실행 증거, 배포 파일을 분리한다.
 - 5개 Work 역할이 모든 릴리즈를 독립된 관점으로 검토한다.
 - 제품 지원은 해당 target baseline에서 실행한 receipt가 있을 때만 주장한다.
-- 초기 자가호스팅은 추진하지 않는다. Rust 구현과 xVM/LLVM 검증이 먼저다.
+- 초기 자가호스팅은 추진하지 않는다. Rust 구현과 xVM/Cranelift 검증이 먼저다.
 
 ## 1. 현황과 증거 경계
 
@@ -35,15 +35,15 @@ Deeplus는 이제 아이디어 수집 중심 단계에서 언어 정본과 구�
 | diagnostic registry | 약 1.3MB |
 | 전체 패키지 | 약 9.5MB |
 
-패키지는 self-contained 정적 설계 패키지다. 그러나 Rust lexer/parser/checker, MIR lowering, xVM, LLVM AOT/ORC, formatter/LSP, stdlib runner, 독립 conformance 및 사용자 연구는 모두 NOT_RUN이다. 이 보고서가 말하는 “현행”은 언어 설계와 패키지 상태를 뜻하며 제품 구현 완료를 뜻하지 않는다.
+패키지는 self-contained 정적 설계 패키지다. 그러나 Rust lexer/parser/checker, MIR lowering, xVM, Cranelift ObjectModule AOT/JITModule, formatter/LSP, stdlib runner, 독립 conformance 및 사용자 연구는 모두 NOT_RUN이다. 이 보고서가 말하는 “현행”은 언어 설계와 패키지 상태를 뜻하며 제품 구현 완료를 뜻하지 않는다.
 
 ### 1.2 보존할 구조적 결정
 
 - frontend, lossless CST/AST, typed HIR, MIR, xVM은 Rust로 구현한다.
 - Deeplus MIR가 고유 의미론의 정본이다.
 - xVM bytecode interpreter를 초기 개발, 검증, REPL의 실행 기준으로 사용한다.
-- LLVM AOT를 첫 native backend로 사용한다.
-- LLVM ORC JIT는 AOT와 MIR 동등성 검증 후 도입한다.
+- Cranelift ObjectModule AOT를 첫 native backend로 사용한다.
+- Cranelift JITModule는 AOT와 MIR 동등성 검증 후 도입한다.
 - 사람용 명세, 정확한 EBNF, frontend model, type system, MIR semantics, diagnostics, Prelude, examples를 별도 정본으로 관리한다.
 - package 전체가 self-contained이며, 하나의 거대 spec 파일을 요구하지 않는다.
 
@@ -129,7 +129,7 @@ Rust RFC는 중대한 변경과 일반 수정의 절차를 분리하며, RFC 수
 - parser library 또는 hand-written parser 선택
 - data structure, cache, incremental compilation 전략
 - xVM instruction encoding
-- LLVM integration 방식
+- Cranelift integration 방식
 - CI runner와 artifact store 선택
 
 ADR은 language semantics를 바꿀 권한이 없다. 언어 의미에 영향을 주면 RFC로 승격한다.
@@ -191,9 +191,9 @@ Accepted는 “구현해 볼 가치가 있음”을 뜻하며 Stable이나 제�
 | deeplus-lowering | HIR to MIR |
 | deeplus-xbc | xVM bytecode model와 verifier |
 | deeplus-xvm | interpreter, debugger, REPL runtime |
-| deeplus-codegen-llvm | 공통 LLVM lowering |
+| deeplus-codegen-cranelift | 공통 Cranelift lowering |
 | deeplus-aot | AOT driver |
-| deeplus-jit | ORC JIT driver, 후속 단계 |
+| deeplus-jit | Cranelift JITModule driver, 후속 단계 |
 | deeplus-diagnostics | stable diagnostic catalog와 renderer |
 | deeplus-fmt | formatter |
 | deeplus-lsp | language server |
@@ -213,11 +213,11 @@ crate boundary는 책임 경계이지 팀 경계가 아니다. 과도한 미세 
 7. HIR to MIR lowering
 8. xVM bytecode와 interpreter
 9. xVM 기반 conformance와 REPL
-10. LLVM AOT, xVM differential execution
+10. Cranelift ObjectModule AOT, xVM differential execution
 11. formatter/LSP와 package tooling
-12. LLVM ORC JIT와 AOT/xVM differential execution
+12. Cranelift JITModule와 AOT/xVM differential execution
 
-MIR verifier가 준비되기 전에 LLVM backend를 의미론 정본처럼 사용하지 않는다. xVM, AOT, JIT는 같은 MIR 관찰 계약을 구현한다.
+MIR verifier가 준비되기 전에 Cranelift backend를 의미론 정본처럼 사용하지 않는다. xVM, AOT, JIT는 같은 MIR 관찰 계약을 구현한다.
 
 ### 4.3 자가호스팅 정책
 
@@ -225,7 +225,7 @@ MIR verifier가 준비되기 전에 LLVM backend를 의미론 정본처럼 사�
 
 - Deeplus는 아직 공개 전이며 surface와 type system이 계속 변한다.
 - compiler를 Deeplus로 다시 쓰면 Rust 구현과 자가호스팅 구현을 동시에 유지해야 한다.
-- portability는 Rust와 LLVM target 지원으로 먼저 확보할 수 있다.
+- portability는 Rust와 Cranelift target 지원으로 먼저 확보할 수 있다.
 
 자가호스팅은 1.0의 조건이 아니다. 0.3 이후 compiler plugin 또는 표준 라이브러리 일부를 Deeplus로 작성해 비용과 효익을 측정한 뒤 별도 RFC로 결정한다.
 
@@ -383,7 +383,7 @@ review-request 텍스트와 보조 역할 assignment 텍스트를 하나의 요�
 - grammar Stable root reachability
 - diagnostic-to-negative-test coverage
 - spec example executable coverage
-- xVM과 LLVM differential pass rate
+- xVM과 Cranelift differential pass rate
 - release build reproducibility
 - open P0/P1 age
 - RFC median lead time
@@ -446,7 +446,7 @@ review-request 텍스트와 보조 역할 assignment 텍스트를 하나의 요�
 | ChatGPT memory가 과다해짐 | bounded capsule, delta packet, release 후 rotation |
 | Library가 정본처럼 사용됨 | current pointer는 Git revision을 가리키고 Library는 snapshot만 보관 |
 | 사용자 결정이 검증 없이 고착 | strong presumption + evidence-based reconsideration RFC |
-| LLVM이 MIR보다 사실상 정본이 됨 | xVM/AOT/JIT differential와 MIR verifier gate |
+| Cranelift가 MIR보다 사실상 정본이 됨 | xVM/Object AOT/JIT differential와 MIR verifier gate |
 | 자가호스팅이 조기 목표가 됨 | 0.3 이후 별도 RFC 전까지 scope 제외 |
 
 ## 11. 승인 제안

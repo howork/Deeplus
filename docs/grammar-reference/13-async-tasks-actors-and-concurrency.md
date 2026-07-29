@@ -1,19 +1,20 @@
-# 비동기, 태스크, 액터와 동시성
+# 비동기 실행, `concur`, 액터와 동시성
 
 <!-- deeplus-reference: narrative; authority: documentation-projection -->
 <!-- deeplus-grammar-reference-status: CURRENT_CANONICAL_DOCUMENTATION_PROJECTION -->
 
 ## 상태
 
-이 장은 현행 Deeplus의 비동기 함수, 명시적 중단점, 구조화된 태스크,
+이 장은 현행 Deeplus의 비동기 함수, 명시적 중단점, 구조화된 실행,
 비동기 순회, 액터 격리, 메시지 admission, mailbox backpressure,
 취소·실패·정리 순서와 공유 상태 경계를 함께 설명한다.
 
 현행 설계 계약은 다음을 허용한다.
 
 - 이름 있는 `def#async` 선언과 명시적 `await`;
-- `task scope`, `task group`, `spawn`으로 표현하는 구조화된 태스크;
-- `for await` 비동기 순회;
+- `concur`, `spawn`, `Run<T>`로 표현하는 구조화된 실행;
+- `for#await` 비동기 순회;
+- 하나의 `concur` 안에서만 쓰는 제한형 `#async` lambda;
 - `actor`, 선택적 `#mailbox(capacity: N)`, `on`, `request`;
 - actor protocol의 `send`와 `request` 요구 사항;
 - `receiver ~ selector ...` message call과
@@ -22,7 +23,7 @@
 이 장의 현행 예제는
 `examples/guide/review-corpus.md`에서 `expected_outcome: accept`,
 `source_activation: none`인 항목을 그대로 인용한다. 제품 parser,
-checker, MIR, xVM, LLVM, formatter, LSP를 이 문서 작성 과정에서 실행하지
+checker, MIR, xVM, Cranelift, formatter, LSP를 이 문서 작성 과정에서 실행하지
 않았으며 제품 lane은 정확히 `15/15 NOT_RUN`이다. 정적 계약의 존재는
 구현 완료, 제품 지원 또는 실행 적합성을 뜻하지 않는다.
 
@@ -35,9 +36,9 @@ checker, MIR, xVM, LLVM, formatter, LSP를 이 문서 작성 과정에서 실행
 
 ```ebnf
 DefIntroducer ::= "def" HashTag* ;
-AsyncForLoop ::= "for" "await"
-                 ("let" Pattern | Pattern)
-                 "in" Expr GuardClause? Block ;
+AsyncForLoop ::= "for" ForAwaitRole
+                 ("let" Pattern | Pattern) "in" Expr GuardClause? Block ;
+ForAwaitRole ::= "#" "await" ;
 ```
 
 `def#async`는 `def`에 현행 callable profile `#async`를 붙인 이름 있는
@@ -45,28 +46,28 @@ AsyncForLoop ::= "for" "await"
 연산자다. 최상위 `await`는 현행 Stable script root에서 허용되지 않으며
 필요하면 `def#entry#async` 같은 허용된 비동기 owner 안으로 옮긴다.
 
-`for await`는 하나의 `AsyncForLoop` 문법 owner다. `for`와 `await` 사이를
-다른 구문이 나누지 않으며, 현재의 동기 `for`와 별도 의미 규칙을 갖는다.
+`for#await`는 하나의 `AsyncForLoop` 문법 owner다. `#await`는 `for`에
+exact-attached된 built-in semantic role이며 generic hash-tag admission을
+거치지 않는다. `for`, `#`, `await` 사이의 trivia는 거부한다.
 
-### 구조화된 태스크
+### 구조화된 실행
 
 ```ebnf
-TaskGroupStmt ::= "task" "group" Identifier? Block ;
-
-SpawnExpr ::= "spawn" TaskBody ;
-TaskBody ::= "{" "=>" TaskBodySequence "}"
-           | "async" "{" "=>" TaskBodySequence "}" ;
-TaskBodySequence ::= LineBreakBoundary? BlockSequence ;
-
-StructuredTaskScope ::= "task" "scope" Block ;
+ConcurExpr ::= "concur" Block ;
+SpawnExpr ::= "spawn" (SpawnBody | SpawnOperandSlot) ;
+SpawnBody ::= "{" "=>" SpawnBodySequence "}" ;
+SpawnBodySequence ::= LineBreakBoundary? BlockSequence ;
+SpawnOperandSlot ::= SPAWN_OPERAND_BY_PREFIX_PARSER ;
 ```
 
-`spawn { => ... }`와 `spawn async { => ... }`는 제한된 task body
-표면이다. 이것은 일반 closure 문법을 비동기 callable로 바꾸지 않는다.
-모든 현행 child task는 lexical task scope나 허용된 task group에
-소속된다.
+`concur { ... }`는 구조화된 동시성의 유일한 lexical owner다.
+`spawn`의 inline form은 `spawn { => ... }`이고, expression form은
+checker가 정적으로 async invocation으로 선택한 operand만 받는다.
+`spawn async`처럼 같은 비동기성을 반복 표기하지 않는다. 성공한 spawn은
+owner-bound `Run<T>`를 만들며 별도 owner-transfer authority 없이
+`concur` 밖으로 escape할 수 없다.
 
-`receiver ~ spawn`은 별도의 task-spawn suffix가 아니다. 일반
+`receiver ~ spawn`은 별도의 structured-spawn suffix가 아니다. 일반
 `TildeCallLed`가 `spawn` selector를 파싱하고 HIR이 예약된 의미를
 결정한다. 같은 표면을 소유하는 두 번째 suffix 문법은 허용되지 않는다.
 
@@ -170,7 +171,7 @@ ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
 ### 비동기 호출 가능 값과 `await`
 
 이름 있는 비동기 선언은 현행이다. 호출 결과를 기다리는 지점은 항상
-소스의 `await`로 드러난다. `await`는 task나 메시지를 만들지 않고,
+소스의 `await`로 드러난다. `await`는 run, reply나 메시지를 만들지 않고,
 피연산자가 독립적으로 awaitable이어야 한다. 일반 lambda 호출은
 동기식이며 암시적 async 변환은 없다.
 
@@ -183,15 +184,39 @@ ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
 
 ### 구조화된 동시성
 
-task scope나 허용된 task group은 모든 child task의 owner다. scope는
-각 child가 join되거나 취소되고 필수 cleanup이 끝날 때까지 종료할 수
-없다. 현행 Deeplus에는 detached child 권한이 없으며, 별도 owner-transfer
-계약 없이 task handle이 scope 밖으로 escape하면 거부된다.
+`concur`는 모든 child run의 lifetime, cancellation, terminal barrier,
+cleanup과 결정적 failure aggregation을 소유한다. body가 정상적으로
+끝나도 각 child가 success, Error 또는 Cancellation 중 하나로 terminal이
+되고 필수 cleanup이 끝날 때까지 owner를 닫지 않는다. 현행 Deeplus에는
+detached child 권한이 없으며 `Run<T>`의 return, export, unowned storage나
+다른 `concur`로의 전달은 거부된다.
 
-관찰되지 않은 child failure도 scope의 terminal outcome에서 사라지지
-않는다. task group의 세부 collect/join 정책과 반복 `await` 규칙은
-target-bound checker/runtime 증거가 필요한 미완료 제품 gate다. 문법이
-존재한다는 사실만으로 임의 기본 정책을 부여하지 않는다.
+`Run<T>`는 local spawn 결과이고 actor request의 `Reply<T>`와 다른
+nominal responsibility다. 둘은 모두 one-shot awaitable이지만 암시
+변환하거나 join할 수 없다. `RunGroup<T>`는 하나의 `ConcurId` 안에서
+동종 run을 관찰할 future collection 후보일 뿐이며
+`PREVIEW_DESIGN_NONACTIVATABLE`이다. 두 번째 lexical owner나 현행 source
+surface가 아니다.
+
+### `concur` 안의 제한형 async lambda
+
+일반 escaping async callable literal은 활성화하지 않는다. 다만 가장
+가까운 `concur`가 owner이고 값이 그 안에서만 inward-use되는 경우
+`#async { ... }`를 사용할 수 있다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+concur {
+    let load = #async { id: UserId => await loadProfile(id) }
+    let run: Run<Profile> = spawn load(id)
+    render(await run)
+}
+```
+
+capture가 없거나 명시적으로 reusable·copy-only임이 증명되어야 한다.
+return, export, storage, sibling/outward transfer, actor/shared carrier,
+unknown higher-order API, erased callable conversion은 거부한다. 이
+제한형이 일반 first-class async lambda를 활성화하지 않는다.
 
 ### 현행 `AsyncCollector` 표준 라이브러리 프로필
 
@@ -279,24 +304,24 @@ one-way message expression의 정확한 형식은
 commit 뒤에만 생기며 reply channel은 없다.
 
 reply type이 `T`인 request expression의 즉시 형식은
-`Result<Task<T>, error ActorMessageError>`이다. source는 먼저 admission
-`Result`에서 `Task<T>`를 꺼낸 뒤 그 task에 `await`를 적용해야 한다.
+`Result<Reply<T>, error ActorMessageError>`이다. source는 먼저 admission
+`Result`에서 `Reply<T>`를 꺼낸 뒤 그 reply에 `await`를 적용해야 한다.
 request enqueue commit 뒤에 correlation identity가 한 번 만들어지며,
 reply, 선언된 failure, Cancellation 중 정확히 하나로 끝난다. request를
 ordinary method return처럼 취급하거나 암시적으로 기다리지 않는다.
 
-visible type spelling의 `Task<T>`가 handler의 declared ErrorSet을 지우지는
-않는다. typed HIR, module API digest와 MIR은 non-forgeable
-`TaskResponsibility`를 함께 보존한다. 이 descriptor는 result type,
+nominal `Reply<T>`가 handler의 declared ErrorSet을 지우지는 않는다.
+typed HIR, module API digest와 MIR은 non-forgeable
+`ReplyResponsibility`를 함께 보존한다. 이 descriptor는 result type,
 normalized handler ErrorSet, Cancellation axis, isolation owner,
-`correlation_id`와 terminal transport failure를 가진다. terminal
+`ReplyId`, `correlation_id`와 terminal transport failure를 가진다. terminal
 transport failure 집합은 정확히
 `{receiverClosedBeforeReply}` 하나다. `mailboxFull`과
 `receiverClosedBeforeAdmission`은 enqueue commit 전 admission `Result`의
 오류이므로 이 descriptor에 들어가면 안 된다. 따라서
-`throws E`인 request handler의 task를 await하면 정확히
+`throws E`인 request handler의 reply를 await하면 정확히
 `E | ActorMessageError::receiverClosedBeforeReply`가 노출된다. 이를
-`Task<T,E>`라는 새 source type으로 임의 재작성하거나 Error를
+`Reply<T,E>`라는 새 source type으로 임의 재작성하거나 Error를
 Cancellation으로 접지 않는다.
 
 이 residue는 타입을 출력할 때만 붙이는 설명용 주석이 아니다.
@@ -308,27 +333,27 @@ owner와 terminal transport failure의 정확한 normalized equality를
 값에 그대로 따라간다. 오직 checker가 명시적으로 받아들인 ErrorSet
 subsumption proof가 있을 때만 handler ErrorSet을 더 넓은 집합으로 올릴 수
 있으며, 이 경우에도 나머지 field와 각 correlation identity는 지워지지
-않는다. bare `Task<T>`만 남기는 join/export는
+않는다. bare result type만 남기는 join/export는
 `RCTS_RESPONSIBILITY_AXIS_DROPPED`, 증명 없이 error set을 합치는 조합은
 `RCTS_RESPONSIBILITY_COMBINATION_INVALID` 계열로 거부한다.
 
 module API digest는 아직 존재하지 않는 runtime request ID를 미리 만들지
 않는다. 대신 actor-request result channel의 descriptor shape와
+`reply_id = per_value_non_forgeable`,
 `correlation_id = per_value_non_forgeable` 정책 marker를 canonical bytes에
 기록한다. 실제 enqueue commit이 일어나면 typed HIR/MIR의 value-level
 residue가 그 request만의 concrete correlation identity를 보존한다.
 
-이 규칙은 모든 `Task<T>`에 actor transport 의미를 붙이지 않는다.
-ordinary `def#async` 호출이나 structured `spawn`이 만든 task의
-`task_origin`은 `ordinary_async`이며 actor correlation이나
-`receiverClosedBeforeReply` descriptor를 가지면 오히려 거부된다. enqueue
-commit을 성공한 request가 만든 task만 `actor_request_admitted` origin을
-가지며 위 여섯 field descriptor가 필수다. 두 origin은 source type
-spelling을 바꾸지 않고 typed HIR/API/MIR residue로 구분한다.
+이 규칙은 local `Run<T>`에 actor transport 의미를 붙이지 않는다.
+structured `spawn`이 만든 `Run<T>`는 `ConcurRunId`와 lexical owner
+responsibility를 가지며 actor correlation이나
+`receiverClosedBeforeReply` descriptor를 가지면 거부된다. enqueue
+commit에 성공한 request가 만든 `Reply<T>`만 `ReplyId`와 위 일곱 field
+descriptor를 가진다. 두 nominal handle은 source type부터 분리된다.
 
 예를 들어 handler가 `throws LookupError`라면 admission 식 자체의 오류는
 여전히 `mailboxFull | receiverClosedBeforeAdmission`이고, 성공 branch에서
-꺼낸 task를 `await`할 때의 오류만
+꺼낸 reply를 `await`할 때의 오류만
 `LookupError | receiverClosedBeforeReply`다. 두 시점의 오류를 하나의
 큰 `ActorMessageError` 집합으로 미리 합치면 commit 전·후 책임 경계와 owner
 보존 여부를 구별할 수 없으므로 현행 계약에 맞지 않는다.
@@ -347,20 +372,18 @@ actor Directory {
 
 def#async inspect(directory: Directory, id: Int) -> Status
     throws ActorMessageError throws LookupError = {
-    let Result::ok(task) = directory :~ find id: id
+    let Result::ok(reply) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
 
-    return await task
+    return await reply
 }
 ```
 
-`directory :~ find id: id`가 실패하는 순간에는 task 자체가 아직 없으므로
+`directory :~ find id: id`가 실패하는 순간에는 reply 자체가 아직 없으므로
 `mailboxFull` 또는 `receiverClosedBeforeAdmission`만 admission error로
-다룬다. `Result::ok(task)` 뒤에는 correlation이 존재하고, `await task`는
+다룬다. `Result::ok(reply)` 뒤에는 correlation이 존재하고, `await reply`는
 handler의 `LookupError` 또는 유일한 terminal transport failure인
-`receiverClosedBeforeReply`로 끝날 수 있다. source에는 여전히
-`Task<Status>`만 보이지만 두 단계의 책임은 HIR/API/MIR descriptor가
-구별한다.
+`receiverClosedBeforeReply`로 끝날 수 있다.
 
 handler spelling만으로 actor protocol conformance가 생기지 않는다.
 요구 사항과 handler identity의 결합은 checker가 별도 conformance
@@ -376,7 +399,7 @@ handler spelling만으로 actor protocol conformance가 생기지 않는다.
 
 언어가 보장하는 최소 happens-before edge는 다음과 같다.
 
-- 한 task 안의 program order;
+- 한 execution 안의 program order;
 - parent의 spawn 이전 동작에서 child start로의 순서;
 - child terminal과 cleanup에서 해당 `await` resume으로의 순서;
 - 성공한 enqueue에서 일치하는 dequeue로의 순서;
@@ -413,7 +436,7 @@ Cancellation이 commit 전에 관찰되면 message와
 actor handler가 `await`해도 state region을 다른 mutating turn에
 넘기지 않는다. 이 규칙은 actor state가 중단 사이에 예상치 못하게
 바뀌는 재진입 오류를 막는다. 반대로 긴 `await`는 actor 진행성을
-제한할 수 있으므로, 프로그램은 독립 작업을 child task로 구조화하고
+제한할 수 있으므로, 프로그램은 독립 작업을 `concur` child로 구조화하고
 self-request dependency cycle을 만들지 않아야 한다.
 
 ### 취소, 실패와 정리
@@ -423,7 +446,7 @@ Cancellation은 Error와 Defect와 구분되는 제어 결과다. 최소 순서�
 boundary에서만 관찰한다. `catch`가 Cancellation을 Error처럼 회복하거나
 cleanup을 우회할 수 없다.
 
-task scope의 실패 집계는 scheduler 완료 순서와 무관하다.
+`concur`의 실패 집계는 scheduler 완료 순서와 무관하다.
 
 1. body failure가 있으면 cleanup failure보다 먼저 primary로 보존한다.
 2. child failure만 경쟁하면 lexical `spawn_index`가 가장 작은 것이
@@ -436,7 +459,8 @@ suspension 어느 경로에서도 정확히 한 번 실행되어야 한다.
 
 ### MIR 관찰 식별자
 
-정확한 하위 표현은 구현될 때 task scope, task, actor, sender, channel,
+정확한 하위 표현은 구현될 때 `ConcurId`, `ConcurRunId`, `ExecutionId`,
+`ReplyId`, actor, sender, channel,
 mailbox profile, message, channel sequence, request correlation identity를
 보존해야 한다. spawn/join, Cancellation lifecycle, enqueue/dequeue,
 admission 성공·거부, request lifecycle, primary/suppressed failure가
@@ -460,12 +484,12 @@ def#async fetch(url: String) -> Bytes
 ```
 
 호출자는 `url`을 한 번 평가하고 이름 있는 `def#async` 호출로
-`Bytes` 성공 channel, `NetworkError` 오류 집합과 `io` effect를 가진 task
+`Bytes` 성공 channel, `NetworkError` 오류 집합과 `io` effect를 가진 async
 책임을 얻는다. body의 `client ~ get url` message/call 전체를 괄호로
 묶어 `await`하는
 지점만 명시적 suspension point이며 성공하면 그 `Bytes`를 반환한다.
 failure나 Cancellation은 숨은 `Option`으로 바뀌지 않고 cleanup region을
-통과해 선언된 channel로 전파된다. 실제 task 생성·suspend·resume과 backend
+통과해 선언된 channel로 전파된다. 실제 run 생성·suspend·resume과 backend
 실행은 `NOT_RUN`이다.
 
 ### 비동기 순회
@@ -475,40 +499,39 @@ failure나 Cancellation은 숨은 `Option`으로 바뀌지 않고 cleanup region
 
 ```deeplus
 def#async consume(stream: AsyncSequence<Int, Never>) -> Unit = {
-    for await value in stream {
+    for#await value in stream {
         print(value)
     }
 }
 ```
 
-`stream`은 item `Int`, source error `Never`인 `AsyncSequence`다. `for await`는
+`stream`은 item `Int`, source error `Never`인 `AsyncSequence`다. `for#await`는
 다음 item 요청, suspension, resume, binder commit, body를 source order로
 반복하며 한 번에 한 item만 `value`에 결합한다. `print`의 `io` 책임은
 주변 callable contract가 별도로 보존해야 하고, loop 종료나 Cancellation은
 pending item과 body cleanup을 마친 뒤 terminal이 된다. sequence를
 `List<Int>`로 미리 수집하거나 재생 가능하다고 가정하지 않는다. 제품
-iterator/task 실행은 `NOT_RUN`이다.
+iterator/run 실행은 `NOT_RUN`이다.
 
-### 구조화된 자식 태스크
+### 구조화된 child run
 
 현행 예제 `EX-R51a1-025`,
 원본 `examples/guide/review-corpus.md`:
 
 ```deeplus
-task scope {
-    let profile = spawn async { =>
-        await loadProfile(id)
-    }
+concur {
+    let loader = [copy id] #async { => await loadProfile(id) }
+    let profile = spawn loader()
     await profile
 }
 ```
 
-`task scope`가 child owner다. `spawn async`는 `loadProfile(id)`를 수행할
-하나의 child task handle `profile`을 만들고, `await profile`은 그 handle의
-완료를 명시적으로 기다린다. scope 정상·오류·Cancellation 종료 모두에서
+`concur`가 child owner다. `spawn`은 `loader()`를 수행할
+하나의 child `Run<Profile>`을 만들고, `await profile`은 그 handle의
+완료를 명시적으로 기다린다. owner의 정상·오류·Cancellation 종료 모두에서
 admitted child가 terminal이 될 때까지 join/cleanup barrier를 통과하므로
 detached child나 숨은 background work가 남지 않는다. child failure는
-정해진 scope failure ordering을 따르며 실제 scheduler 실행은
+정해진 `concur` failure ordering을 따르며 실제 scheduler 실행은
 `NOT_RUN`이다.
 
 ### 용량 제한 액터, 전송과 요청
@@ -528,23 +551,21 @@ public actor #mailbox(capacity: 8) Counter {
 public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
 = {
-    task scope {
-        let Result::ok(_) = counter :~ add value: 1
-        else Result::err(error) => throw error
-        let Result::ok(_) = counter :~ add value: 2
-        else Result::err(error) => throw error
-        let Result::ok(replyTask) = counter :~ current
-        else Result::err(error) => throw error
-        return await replyTask
-    }
+    let Result::ok(_) = counter :~ add value: 1
+    else Result::err(error) => throw error
+    let Result::ok(_) = counter :~ add value: 2
+    else Result::err(error) => throw error
+    let Result::ok(reply) = counter :~ current
+    else Result::err(error) => throw error
+    return await reply
 }
 ```
 
 두 `add` 전송과 한 `current` 요청은 source order로 준비된다. 각 `:~`는
 receiver와 argument를 한 번 평가하고 mailbox capacity/admission을 통과한
 enqueue commit에서만 message와 이동 owner를 actor에 넘긴다. 전송의
-`Result::ok`는 성공 enqueue를, 요청의 `Result::ok(replyTask)`는 reply를
-기다릴 task handle을 뜻한다. 같은 sender/receiver/protocol key에서는
+`Result::ok`는 성공 enqueue를, 요청의 `Result::ok(reply)`는
+`Reply<Int>`를 뜻한다. 같은 sender/receiver/protocol key에서는
 두 add 뒤 current가 FIFO로 관측되어야 하며, rejection은
 `ActorMessageError`로 끝나고 다음 tier로 fallback하지 않는다. parser,
 checker, mailbox와 scheduler 실행은 모두 `NOT_RUN`이다.
@@ -556,18 +577,18 @@ checker, mailbox와 scheduler 실행은 모두 `NOT_RUN`이다.
 
 ```deeplus
 public def#async supervise() -> Unit = {
-    task scope {
+    concur {
         defer cleanup()
-        let child = spawn async { => await work() }
+        let child = spawn { => await work() }
         await child
     }
 }
 ```
 
-scope 진입 시 `defer cleanup()`을 현재 cleanup region에 등록한 뒤 child를
+`concur` 진입 시 `defer cleanup()`을 현재 cleanup region에 등록한 뒤 child를
 spawn하고 명시적으로 await한다. child 성공·실패 또는 parent Cancellation
 어느 경우에도 child terminal/join 뒤 `cleanup()`이 정확히 한 번 실행되어
-scope barrier를 닫는다. primary failure와 cleanup failure가 함께 나면
+owner barrier를 닫는다. primary failure와 cleanup failure가 함께 나면
 정해진 primary/suppressed 순서를 보존하고 Cancellation을 ordinary Error로
 접지 않는다. 실제 cancellation race와 cleanup trace 실행은 `NOT_RUN`이다.
 
@@ -635,8 +656,8 @@ let f = #async{ => await load() }
 1. 호출 결과와 return 형식, `await` 책임;
 2. capture의 move/borrow/inout 및 escape 수명;
 3. Error, Defect, Cancellation, effect와 isolation 호환성;
-4. task owner와 구조화 scope 결합;
-5. AST/HIR/MIR lowering identity와 xVM/LLVM ABI;
+4. `concur` owner와 구조화 region 결합;
+5. AST/HIR/MIR lowering identity와 xVM/Cranelift ABI;
 6. parser/checker/formatter/LSP 진단과 target-bound 실행 증거.
 
 현행 대안은 이름 있는 `def#async` 선언이다.
@@ -644,7 +665,7 @@ let f = #async{ => await load() }
 ### `PREVIEW_NONACTIVATABLE`: 비동기 컴프리헨션
 
 async comprehension은 feature catalog에 `PREVIEW_DESIGN`으로 남아 있지만
-현행 exact EBNF와 source gate가 없다. `for await` statement와 stdlib
+현행 exact EBNF와 source gate가 없다. `for#await` statement와 stdlib
 `AsyncCollector`가 이 후보를 암시적으로 활성화하지 않는다. 후보가
 활성화되려면 comprehension의 exact surface, finite-source 조건, 순서와
 backpressure, transform의 error-set union, Cancellation, 부분 결과의
@@ -671,7 +692,7 @@ target receipt가 필요하다.
 Preview-design이다. actor의 enqueue/dequeue 순서와 stdlib
 `SharedCell`/`SharedMutex`의 현행 보장을 약화하지 않는다. source
 spelling, ordering lattice, data-race 법칙, compiler reorder 한계,
-xVM/LLVM parity와 litmus 실행 증거가 닫히기 전에는 사용할 수 없다.
+xVM/Cranelift parity와 litmus 실행 증거가 닫히기 전에는 사용할 수 없다.
 
 위 Preview 설명은 activation, feature P1 폐쇄, 구현 권한 또는 제품
 PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지 않는다.
@@ -706,13 +727,13 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 ## 정본 근거
 
 - `spec/grammar/deeplus.ebnf`
-  - `DefIntroducer`, `AsyncForLoop`, `TaskGroupStmt`, `SpawnExpr`,
-    `StructuredTaskScope`, `ActorDecl`, `ActorProtocolDecl`,
+  - `DefIntroducer`, `AsyncForLoop`, `ForAwaitRole`, `SpawnExpr`,
+    `ConcurExpr`, `ActorDecl`, `ActorProtocolDecl`,
     `TildeCallLed`, `TildeArgumentSequence`, `AtScopeExpr`.
 - `spec/language.md`
-  - 비동기 함수·task·suspension, actor와 message, Preview·비현행 경계.
+  - 비동기 함수·run·suspension, actor와 message, Preview·비현행 경계.
 - `spec/contracts/actor-concurrency-coherence.json`
-  - `ACC-R001..R018`, mailbox profile, actor admission, structured task,
+  - `ACC-R001..R018`, mailbox profile, actor admission, structured run,
     Cancellation, ordering, MIR와 제품 증거 경계.
 - `spec/contracts/unified-call-actor-transport.json`
   - 통합 `CallExpr`, `~`/`:~`, argument channel과 actor result contract.
@@ -721,7 +742,7 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 - `spec/contracts/shared-state-coherence.json`
   - `Shareable`, `SharedCell`, `SharedMutex`의 현행 stdlib 경계.
 - `spec/mir/semantics.md`
-  - task/actor identity, enqueue commit, channel sequence, failure와 cleanup
+  - run/reply/actor identity, enqueue commit, channel sequence, failure와 cleanup
     event 순서.
 - `spec/features/gates.json`
   - `async_callable_literal_profile`, `async_comprehension`,

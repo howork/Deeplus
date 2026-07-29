@@ -95,7 +95,7 @@ Complex metadata와 계산 결과를 Record로 조립하되, serialization tag�
 실패하면 element read와 numeric loop는 시작하지 않는다. 계산 도중
 checked element failure가 가능한 확장에서는 partial output을 버리고
 입력 owner를 보존한다. cleanup은 source owner를 가진 scope가 담당하며,
-task/actor로 넘기는 확장에서는 enqueue commit 전후의 owner를 별도
+run/actor로 넘기는 확장에서는 enqueue commit 전후의 owner를 별도
 설계해야 한다.
 
 ## Review rubric

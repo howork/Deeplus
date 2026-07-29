@@ -21,7 +21,7 @@ typed HIR, MIR 및 실행 관측 규칙을 통과하는 전체 판정 경로를 
 
 예제 코드는 현행 문법을 설명하기 위한 `CURRENT_EXPLANATORY` 자료다.
 각 코드 블록은 바로 앞의 marker가 가리키는 정본 source에 근거한다.
-실제 Rust frontend, checker, MIR, xVM, LLVM, formatter 및 LSP 실행은
+실제 Rust frontend, checker, MIR, xVM, Cranelift, formatter 및 LSP 실행은
 이 장에서 수행하지 않았으므로 제품 지원은 `NOT_RUN`이다.
 
 이 장의 일부 조각에 나오는 `print`와 `readLine`은 현재 Prelude
@@ -312,7 +312,7 @@ private def keepEvidence(
 - active extension은 `Display<User>` witness가 아니다.
 - context value가 effect authority를 기술하더라도 effect row는 별도로
   선언한다.
-- witness는 borrowed evidence이므로 task/actor/storage boundary를
+- witness는 borrowed evidence이므로 run/actor/storage boundary를
   마음대로 넘지 않는다.
 - overload source order는 tie-breaker가 아니다.
 
@@ -1201,13 +1201,13 @@ borrow를 escaping closure에 저장하면
 - effect/error가 발생해도 owner balance는 모든 edge에서 맞아야 한다.
 - pattern move는 pattern 성공 commit에서만 일어난다.
 - actor message의 move는 enqueue commit에서 일어난다.
-- task capture의 move는 child environment publish와 결합된다.
+- run capture의 move는 child environment publish와 결합된다.
 
-## 10. 사례 9 — async 함수와 구조화된 task
+## 10. 사례 9 — async 함수와 구조화된 `concur`
 
 ### 10.1 요구사항과 전제
 
-profile과 설정을 동시에 불러오되 lexical `task scope`가 끝나기 전에
+profile과 설정을 동시에 불러오되 lexical `concur`가 끝나기 전에
 두 child를 모두 기다린다.
 실패와 취소에서 child cleanup이 끝나기 전 scope가 escape하지 않는다.
 
@@ -1215,7 +1215,7 @@ profile과 설정을 동시에 불러오되 lexical `task scope`가 끝나기 �
 
 - 이름 있는 async callable에는 `def#async`를 쓴다.
 - suspension point는 source의 `await`로 보인다.
-- child는 `spawn async { => ... }` task body를 쓴다.
+- child는 선택된 async invocation을 `spawn`한다.
 - detached child를 만들지 않는다.
 - primary/suppressed failure 순서는 scheduler 완료 순서가 아니다.
 
@@ -1227,18 +1227,14 @@ module demo::dashboard
 
 public def#async loadDashboard(id: UserId) -> Dashboard
     throws NetworkError
-    effects io
+    effects { io }
 = {
-    task scope {
-        let profileTask = spawn async { =>
-            await loadProfile(id)
-        }
-        let settingsTask = spawn async { =>
-            await loadSettings(id)
-        }
+    concur {
+        let profileRun: Run<Profile> = spawn loadProfile(id)
+        let settingsRun: Run<Settings> = spawn loadSettings(id)
 
-        let profile = await profileTask
-        let settings = await settingsTask
+        let profile = await profileRun
+        let settings = await settingsRun
         return Dashboard!(profile: profile, settings: settings)
     }
 }
@@ -1252,46 +1248,46 @@ public def#async loadDashboard(id: UserId) -> Dashboard
 2. **signature**
    suspension/effect/error residue를 callable identity에 남긴다.
 
-3. **task scope**
-   `StructuredTaskScope`를 lexical child owner로 만든다.
+3. **concur owner**
+   `ConcurExpr`에서 하나의 `ConcurId`를 lexical child owner로 만든다.
 
-4. **spawn body**
-   각 `SpawnExpr`가 제한된 `TaskBody`를 사용하고,
-   capture가 `Transferable`/lifetime 규칙을 만족하는지 검사한다.
+4. **spawn operand**
+   각 `SpawnExpr`의 operand가 정적으로 async invocation으로 선택되고
+   callee/argument가 parent에서 한 번 평가되는지 검사한다.
 
 5. **await operands**
    `loadProfile(id)`, `loadSettings(id)`,
-   `profileTask`, `settingsTask`가 각각 awaitable인지 검사한다.
+   `profileRun`, `settingsRun`이 각각 awaitable인지 검사한다.
 
 6. **borrow/isolation**
    suspension을 가로지르는 live borrow나 exclusive inout가 안전한지
    확인한다.
 
 7. **join completeness**
-   모든 child handle이 scope 안에서 terminal로 관찰되는지 검사한다.
+   모든 `Run`이 owner 안에서 terminal로 관찰되는지 검사한다.
 
 8. **failure algebra**
    body, child, cleanup failure와 Cancellation의 서로 다른 축을
    보존한다.
 
 9. **MIR identity**
-   `scope_id`, lexical `spawn_index`, child/task identity,
+   `ConcurId`, lexical `spawn_index`, `ConcurRunId`, `ExecutionId`,
    await-resume edge와 cleanup region을 만든다.
 
 ### 10.4 평가 추적
 
 1. `id`를 parent frame에서 얻는다.
-2. task scope를 연다.
+2. `concur`를 열고 `ConcurId`를 만든다.
 3. 첫 child environment를 준비하고 `spawn_index = 0`으로 publish한다.
 4. 둘째 child를 `spawn_index = 1`로 publish한다.
 5. scheduler가 어느 child를 먼저 실행할지는 보장하지 않는다.
-6. parent가 `await profileTask`에서 중단한다.
+6. parent가 `await profileRun`에서 중단한다.
 7. profile child terminal과 cleanup 뒤 parent가 resume한다.
-8. parent가 `await settingsTask`에서 필요하면 다시 중단한다.
+8. parent가 `await settingsRun`에서 필요하면 다시 중단한다.
 9. settings child terminal과 cleanup 뒤 resume한다.
 10. Dashboard constructor argument를 왼쪽부터 평가한다.
 11. Dashboard owner를 commit한다.
-12. 모든 child가 terminal이고 cleanup이 끝났음을 확인하고 scope를 닫는다.
+12. 모든 child가 terminal이고 cleanup이 끝났음을 확인하고 `concur`를 닫는다.
 13. Dashboard를 반환한다.
 
 두 child가 모두 실패하면 lexical spawn index가 작은 failure가 primary다.
@@ -1300,27 +1296,27 @@ scheduler가 둘째 child failure를 먼저 관찰했다고 primary가 바뀌지
 
 ### 10.5 실패 변형과 진단
 
-child handle을 scope 밖으로 반환해 detached authority를 만들 수 없다.
+`Run`을 owner 밖으로 반환해 detached authority를 만들 수 없다.
 
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
-public def#async detached(id: UserId) -> Task<Profile> = {
-    task scope {
-        let child = spawn async { => await loadProfile(id) }
+public def#async detached(id: UserId) -> Run<Profile> = {
+    concur {
+        let child = spawn loadProfile(id)
         return child
     }
 }
-// child가 lexical task scope 밖으로 escape
+// Run이 lexical concur 밖으로 escape
 ```
 
-live non-shareable borrow가 suspension을 가로지르면 borrow/task boundary
+live non-shareable borrow가 suspension을 가로지르면 borrow/run boundary
 진단이 발생한다.
 async owner 밖의 `await`는 `AWAIT_REQUIRES_ASYNC_TASK_CONTROL`이다.
 
 ### 10.6 상호작용
 
 - async는 effect/error/ownership을 지우지 않는다.
-- `await`는 task를 생성하지 않고 이미 awaitable인 operand를 기다린다.
+- `await`는 run을 생성하지 않고 이미 awaitable인 operand를 기다린다.
 - spawn capture의 move commit과 child publish는 원자적이어야 한다.
 - Cancellation은 Error가 아니며 `catch NetworkError`로 소비되지 않는다.
 - defer/resource cleanup은 child와 parent terminal edge 모두에서
@@ -1331,12 +1327,12 @@ async owner 밖의 `await`는 `AWAIT_REQUIRES_ASYNC_TASK_CONTROL`이다.
 ### 11.1 요구사항과 전제
 
 bounded mailbox를 가진 Counter actor에 두 add 메시지를 보내고,
-현재 값을 request한 뒤 reply task를 명시적으로 기다린다.
+현재 값을 request한 뒤 `Reply`를 명시적으로 기다린다.
 
 요구사항은 다음과 같다.
 
 - one-way send 결과는 `Result<Unit, error ActorMessageError>`다.
-- request 결과는 즉시 `Result<Task<Int>, error ActorMessageError>`다.
+- request 결과는 즉시 `Result<Reply<Int>, error ActorMessageError>`다.
 - request expression을 곧바로 `await`하지 않는다.
 - mailbox full은 enqueue precommit failure다.
 - actor state는 한 turn에서만 변경한다.
@@ -1366,20 +1362,17 @@ public actor #mailbox(capacity: 8) Counter {
 
 public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
-    effects task
 = {
-    task scope {
-        let Result::ok(_) = counter :~ add value: 1
-        else Result::err(error) => throw error
+    let Result::ok(_) = counter :~ add value: 1
+    else Result::err(error) => throw error
 
-        let Result::ok(_) = counter :~ add value: 2
-        else Result::err(error) => throw error
+    let Result::ok(_) = counter :~ add value: 2
+    else Result::err(error) => throw error
 
-        let Result::ok(replyTask) = counter :~ current
-        else Result::err(error) => throw error
+    let Result::ok(reply) = counter :~ current
+    else Result::err(error) => throw error
 
-        return await replyTask
-    }
+    return await reply
 }
 ```
 
@@ -1412,7 +1405,7 @@ public def#async observe(counter: Counter) -> Int
    bind한다.
 
 8. **reply await**
-   마지막 성공 edge의 `replyTask: Task<Int>`만 `await`한다.
+   마지막 성공 edge의 `reply: Reply<Int>`만 `await`한다.
 
 9. **MIR**
    sender, receiver, mailbox profile, message,
@@ -1433,9 +1426,9 @@ request:
 1. receiver를 평가한다.
 2. mailbox admission을 검사한다.
 3. enqueue commit에서 correlation identity를 만든다.
-4. 즉시 `Result::ok(Task<Int>)`를 반환한다.
-5. guarded binding이 `replyTask`를 commit한다.
-6. `await replyTask`가 actor reply, handler Error 또는 Cancellation을
+4. 즉시 `Result::ok(Reply<Int>)`를 반환한다.
+5. guarded binding이 `reply`를 commit한다.
+6. `await reply`가 actor reply, handler Error 또는 Cancellation을
    기다린다.
 
 actor turn:
@@ -1453,7 +1446,7 @@ request admission Result를 풀지 않고 바로 await하면 type이 맞지 않�
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
 let value = await (counter :~ current)
-// operand는 Task<Int>가 아니라 Result<Task<Int>, error ActorMessageError>
+// operand는 Reply<Int>가 아니라 Result<Reply<Int>, error ActorMessageError>
 ```
 
 mailbox가 가득 차면 message와 channel sequence가 생기지 않는다.
@@ -1489,6 +1482,10 @@ counter는 receiver-bound mutex scope에서만 변경한다.
 - `replace`는 새 owner를 한 번 commit하고 이전 owner를 반환한다.
 - mutex access는 non-reentrant, nonsuspending `inout` scope다.
 - unlock은 모든 terminal edge에서 정확히 한 번 일어난다.
+- 생성은 ordinary qualified call이고 receiver operation은 `~` message
+  call이다.
+- `#scoped`는 callback callable profile, `borrow`/`inout`은 source binder
+  mode이며 invocation이 region을 소유한다.
 
 ### 12.2 전체 코드
 
@@ -1504,16 +1501,16 @@ private def refresh(
     throws Never
     effects state effects log
 = {
-    let label = cell.withValue() { borrow current =>
+    let label = cell ~ withValue { borrow current =>
         describe(current)
     }
 
-    mutex.withLock() { inout count =>
+    mutex ~ withLock { inout count =>
         count += 1
     }
 
     log(label)
-    return cell.replace(move next)
+    return cell ~ replace move next
 }
 ```
 
@@ -1525,12 +1522,14 @@ private def refresh(
 
 2. **call resolution**
    `withValue`, `withLock`, `replace`를 library profile의 named API로
-   해석한다.
+   해석하고 receiver의 `~` message call로 resolve한다. `SharedCell::new`와
+   `SharedMutex::new`만 type-side ordinary qualified call이다.
 
 3. **closure parameter mode**
    첫 closure의 `borrow current`,
-   둘째 closure의 `inout count`를 해당 scoped callback signature와
-   맞춘다.
+   둘째 closure의 `inout count`를 해당 callback signature와 맞춘다.
+   `#scoped`는 binder spelling이 아니라 선택된 callback callable profile에
+   속한다.
 
 4. **escape/suspension**
    두 scoped reference가 return, storage, spawn, actor message,
@@ -1582,13 +1581,13 @@ SharedCell replace:
 
 ### 12.5 실패 변형과 진단
 
-scoped borrow를 task로 넘길 수 없다.
+scoped borrow를 child run으로 넘길 수 없다.
 
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/shared-state-coherence.json -->
 ```deeplus
-cell.withValue() { borrow current =>
-    task scope {
-        let child = spawn async { => inspect(current) }
+cell ~ withValue { borrow current =>
+    concur {
+        let child = spawn { => inspect(current) }
         await child
     }
 }
@@ -1598,6 +1597,10 @@ cell.withValue() { borrow current =>
 mutex callback 안 `await`는 non-suspending contract를 위반한다.
 resource/drop payload를 Plain이라고 가정해 SharedCell에 숨기는 것도
 거부된다.
+
+`cell.withValue()`나 `mutex.withLock()` 점 호출도 receiver operation
+surface가 아니므로 거부한다. `{ #scoped borrow current => ... }`처럼
+`#scoped`를 binder에 붙이는 형식도 거부한다.
 
 ### 12.6 상호작용
 
@@ -1625,7 +1628,7 @@ raw foreign declaration 자체는 현행 stable source root의 통합 사례로
 - `unsafe`를 EffectRow atom으로 쓰지 않는다.
 - pointer provenance, lifetime, nullability를 계속 검사한다.
 - foreign/library profile과 core syntax를 구별한다.
-- xVM/LLVM lowering이 같은 evaluation/ownership/cleanup을 보존한다.
+- xVM/Cranelift lowering이 같은 evaluation/ownership/cleanup을 보존한다.
 
 ### 13.2 전체 코드
 
@@ -1684,7 +1687,7 @@ target binding은 library/target manifest가 결정한다.
    identity에 묶였는지 확인한다.
 
 9. **backend parity**
-   xVM과 LLVM이 argument evaluation, call commit, failure, cleanup,
+   xVM과 Cranelift가 argument evaluation, call commit, failure, cleanup,
    return 값을 동일하게 보존해야 한다.
 
 ### 13.4 평가 추적
@@ -1733,7 +1736,7 @@ target receipt 없는 foreign binding은 executable support를 주장할 수
 - pointer spelling만으로 ABI width/alignment가 정해지지 않는다.
 - foreign call도 argument를 source order로 정확히 한 번 평가한다.
 - pre-call marshalling 실패가 move owner를 몰래 소비해서는 안 된다.
-- callback/pointer/handle은 명시 lifetime 없이 task/actor 경계를 넘지
+- callback/pointer/handle은 명시 lifetime 없이 run/actor 경계를 넘지
   않는다.
 - official tooling certificate가 runtime witness나 권위 값이 되지 않는다.
 
@@ -1808,7 +1811,7 @@ environment의 transfer, isolation, suspension, effect, error, cleanup을
 6. MIR prepare가 receiver → argument expression → closure capture 순으로 한 번씩
    평가한다.
 7. actor enqueue commit이 성공할 때만 moved argument와 closure owner를 이전한다.
-8. xVM/LLVM은 같은 event order와 failure/cleanup 결과를 재현해야 한다.
+8. xVM/Cranelift은 같은 event order와 failure/cleanup 결과를 재현해야 한다.
 
 거부 예:
 
@@ -1842,7 +1845,7 @@ worker ~ process job
 네 기능의 source/검증 법칙은 current 문서 projection이지만, DP-RFC-0002의
 구체 구현과 MIR-X1 lowering/activation은 별도의
 `DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE`이다. 어느 층도 실제
-lexer/parser/checker/HIR/MIR/xVM/LLVM 실행 receipt가 아니므로 제품 lane은
+lexer/parser/checker/HIR/MIR/xVM/Cranelift 실행 receipt가 아니므로 제품 lane은
 `15/15 NOT_RUN`이다.
 
 ### 15.2 전체 코드
@@ -2005,8 +2008,9 @@ runtime fallback, expected-result 선택은 없다.
 `Verified<ProposedMirX1>` lowering 및 MIR-X1 activation은
 `DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE`이다. 이 draft가 stable
 verifier invariant를 소비한다고 해서 같은 authority 상태가 되지는
-않는다. current backend authority는 xVM initial execution, LLVM AOT,
-LLVM ORC JIT로 유지되며 Cranelift나 xVM-only 전환을 승인하지 않는다.
+않는다. current backend authority는 xVM initial execution,
+Cranelift ObjectModule AOT, Cranelift JITModule로 유지되며 xVM-only
+전환이나 superseded native backend 복귀를 승인하지 않는다.
 
 <!-- deeplus-status-fence: CURRENT -->
 
@@ -2135,7 +2139,7 @@ checker 오류를 syntax highlighting 실패로 축소하면 안 된다.
 6. cleanup owner는 terminal edge마다 정확히 하나인가?
 
 List/NumericArray construction, schema materialization, `inout` assignment,
-task spawn, actor enqueue, SharedCell replace와 foreign marshalling은 모두
+run spawn, actor enqueue, SharedCell replace와 foreign marshalling은 모두
 이 질문에 답해야 한다.
 
 ## 18. 통합 예제를 확장할 때의 규칙
@@ -2171,7 +2175,7 @@ task spawn, actor enqueue, SharedCell replace와 foreign marshalling은 모두
 8. 첫 논리 index와 slice coordinate는 무엇인가?
 9. effect capability와 effect row는 왜 둘 다 필요한가?
 10. move/inout/borrow가 failure에서 어떻게 균형을 맞추는가?
-11. task child와 actor payload owner는 언제 이전되는가?
+11. child run과 actor payload owner는 언제 이전되는가?
 12. shared-state operation의 release/observation 끝은 어디인가?
 13. unsafe boundary가 숨기지 못하는 책임은 무엇인가?
 14. MIR이 보존해야 할 관측 순서는 무엇인가?
@@ -2183,7 +2187,7 @@ task spawn, actor enqueue, SharedCell replace와 foreign marshalling은 모두
 18. power operation이 expected result나 runtime 값이 아니라 정적 operand
     domain으로 언제 고정되는가?
 19. canonical HIR과 executable HIR을 capability receipt가 왜 분리하는가?
-20. MIR-X1의 noncanonical 상태와 current xVM/LLVM backend authority를
+20. MIR-X1의 noncanonical 상태와 current xVM/Cranelift backend authority를
     구분할 수 있는가?
 
 답은 기능별 한 문장으로 끝나지 않는다.

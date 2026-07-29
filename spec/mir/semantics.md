@@ -1,10 +1,10 @@
 # Deeplus Operational Semantics 0.1.2 — R51f3 Current Canonical
 
-Deeplus MIR is the canonical semantic authority. Rust frontend structures, xVM bytecode, LLVM IR, AOT code, and ORC JIT code are projections that must preserve MIR-observable behavior. Product execution is `NOT_RUN`.
+Deeplus MIR is the canonical semantic authority. Rust frontend structures, xVM bytecode, Cranelift IR (CLIF), AOT code, and Cranelift JITModule code are projections that must preserve MIR-observable behavior. Product execution is `NOT_RUN`.
 
 ## 1. Machine state and observation
 
-A step state contains the current MIR frame, ordered operand stack, places and ownership states, cleanup-region stack, effect/error continuation, task/actor state, provider bindings, and source provenance. Observable events are ordered result/failure, I/O or authority events, message enqueue/dequeue, suspension/resume, cancellation, cleanup and provider observation. Backend-private allocation and instruction selection are not observations.
+A step state contains the current MIR frame, ordered operand stack, places and ownership states, cleanup-region stack, effect/error continuation, execution/concur/actor state, provider bindings, and source provenance. Observable events are ordered result/failure, I/O or authority events, message enqueue/dequeue, run spawn/join, suspension/resume, cancellation, cleanup and provider observation. Backend-private allocation and instruction selection are not observations.
 
 ## 2. Evaluation and calls
 
@@ -149,7 +149,7 @@ surface. Partial publication is forbidden.
 Activation normal completion is `Unit`. Its checked body is safe,
 synchronous, nonsuspending, noncancelling, `throws Never`, `effects {}`, and
 authority-free. It observes no receiver, parameter, evaluated default,
-`Context`, caller task/actor/thread identity, time, random, environment,
+`Context`, caller execution/actor/thread identity, time, random, environment,
 ambient provider, or mutable global state. It creates no persistent mutable
 publication, Resource escape, or `needsDrop` residue; performs no outward
 control transfer, local-function declaration, lazy force, dynamic/indirect/
@@ -164,7 +164,7 @@ there is no scheduler-dependent “original for the winner, wrapper for
 waiters” split, implicit retry, or reset. Same-owner reentry records
 `FUNCTION_STATIC_ACTIVATION_REENTRANCY` as the canonical cause and transitions
 the owner to the same terminal `Failed` state; deadlock and undefined behavior
-are forbidden. Product lexer/parser/checker, MIR lowering, xVM, LLVM,
+are forbidden. Product lexer/parser/checker, MIR lowering, xVM, Cranelift,
 formatter/LSP, and executable concurrency evidence remain `NOT_RUN`.
 
 Closure environments are built by one ordered capture plan. `borrow` and
@@ -203,7 +203,7 @@ An ordinary local binding evaluates its initializer exactly once while the targe
 
 ## 4. Values, literals, strings, and bytes
 
-Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both LLVM backends observe the same String value.
+Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both Cranelift backends observe the same String value.
 
 Interpolated strings lower to an ordered segment plan. Direct segments are
 constants; each hole retains one source evaluation and one preselected
@@ -236,7 +236,7 @@ foreign ABI follows from the semantic pair.
 
 ## 5. Failure and cleanup
 
-Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one task-scope terminal barrier, the failed child with the lowest lexical `spawn_index` becomes primary and the remaining child failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
+Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one `concur` terminal barrier, the failed run with the lowest lexical `spawn_index` becomes primary and the remaining run failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
 
 ## 6. Option coalescing and lazy evaluation
 
@@ -261,22 +261,44 @@ blocks, retries, suspends, or drops. All failures before commit retain every
 sender owner and allocate neither envelope nor sequence. Admission commits
 exactly one envelope, one ownership transition, and one sequence. A one-way
 commit returns `Result::ok(Unit)`; a request commit creates one CorrelationId and
-ReplyId and returns `Result::ok(Task<T>)` plus its non-forgeable
-`TaskResponsibility` descriptor. The descriptor preserves normalized result
-type, handler ErrorSet, cancellation axis, isolation owner, CorrelationId, and
-terminal transport failure. `:~` itself never suspends or retries; source
-extracts an admitted request task and then awaits it explicitly. If `on` and
+ReplyId and returns `Result::ok(Reply<T>)` plus its non-forgeable
+`ReplyResponsibility` descriptor. The descriptor preserves normalized result
+type, handler ErrorSet, cancellation axis, isolation owner, ReplyId,
+CorrelationId, and terminal transport failure. `:~` itself never suspends or retries; source
+extracts an admitted reply handle and then awaits it explicitly once. If `on` and
 `request` share one selector and canonical call shape, the declaration or link
 is rejected before MIR. Actor transport is forbidden in `defer`. Await restores
 exactly the normalized handler ErrorSet plus
 `ActorMessageError::receiverClosedBeforeReply`; it does not infer them from the
-nominal `Task<T>` spelling. Exactly one correlated reply/failure/cancellation
+nominal `Reply<T>` spelling. A reply handle never converts to `Run<T>` and no
+spawned run carries an actor transport descriptor. Exactly one correlated
+reply/failure/cancellation
 terminal event is admitted. Distributed and exactly-once delivery events have
 no current MIR identity.
 
-The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound task lifecycle under the existing cancellation law.
+The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound reply lifecycle under the existing cancellation law.
 
-Task scopes record ScopeId, ParentTaskId, ordered ChildTaskIds, cancellation state, and cleanup barrier. A scope exit joins every admitted child; no detached task event is current. Spawn, suspend, resume, cancellation request/observe/acknowledge, child failure, join and scope terminal events retain FailureId and lexical child order so xVM and LLVM can reproduce the same primary/suppressed outcome.
+`concur` regions record `ConcurId`, their owner `ExecutionId`, ordered
+`ConcurRunId` children, cancellation state, and cleanup barrier. A region exit
+joins every admitted run; no detached-run event is current. `spawn` first
+evaluates its operand once and admits either an inline run body or one statically
+selected async invocation. It then creates one `ConcurRunId` and returns one
+owner-bound `Run<T>` without synthesizing a forwarding closure, forwarding
+`await`, or nested run. `await` of a bare async invocation executes in the
+current `ExecutionId`; `await Run<T>` or `await Reply<T>` consumes the
+corresponding one-shot observation handle. Run spawn, async suspend/resume,
+cancellation request/observe/acknowledge, run failure, terminal join, and
+concur-exit events retain `FailureId` and lexical `spawn_index` so xVM and Cranelift
+can reproduce the same primary/suppressed outcome.
+
+A concur-local `#async` lambda retains its owning `ConcurId` and exact
+environment plan in typed HIR and MIR. The initial Stable profile is
+nonescaping and admits only an empty environment or an explicit reusable
+copy-only capture plan; borrow, inout, move, clone, deep, scoped-access,
+actor-isolated-reference, outward storage/export, and sibling transfer are
+rejected before MIR. Its invocation may be consumed only by a local `await`,
+local `spawn`, or an inward nested concur whose owner chain proves the same
+residence. General escaping async-lambda events have no current MIR identity.
 
 ## 8. Objects, evidence and construction
 
@@ -308,11 +330,44 @@ places and outcomes; it performs no lookup or semantic choice.
 This bridge is backend-neutral. It does not activate the noncanonical MIR-X1
 xVM-only proposal and does not change the current backend set.
 
-## 10. xVM and LLVM preservation
+## 10. xVM and Cranelift preservation
 
-The Rust xVM bytecode interpreter is the first development, validation and REPL execution path. LLVM AOT is the first native path; LLVM ORC JIT follows. Differential conformance compares ordered observable event traces, final value or failure, place/cleanup balance and provider replay identity. A design-static PASS in this package is not such a receipt.
+The Rust xVM bytecode interpreter is the first development, validation and REPL
+execution path. Cranelift `ObjectModule` AOT is the first native path and
+Cranelift `JITModule` is the in-memory native path. Both consume the same
+verified-MIR-to-CLIF lowering and differ only in finalization, linking and code
+lifetime. Differential conformance compares ordered observable event traces,
+final value or failure, place/cleanup balance, provider replay identity,
+cancellation/suspension and actor/concur ordering. A design-static PASS in this
+package is not such a receipt.
 
+CLIF is backend-private. Its values, blocks, stack slots, signatures, function
+references, relocations, registers and native addresses never become HIR or MIR
+semantic identity. Module-local function/data IDs and symbol spellings are
+linked to Deeplus static identities only through a digest-bound sidecar; link,
+load or lookup order cannot select a declaration, witness, provider or call.
 
+Every native projection receipt binds the MIR semantic digest, target triple,
+ISA and settings, Cranelift family and lockfile identity, module kind, pointer
+width, endianness, object/code/relocation model, calling convention, runtime ABI
+digest, optimization settings and runtime-helper/safepoint capability. Object
+mode additionally binds object bytes, object format, linker identity and final
+artifact. JIT mode binds the import allowlist, resolved import map, executable
+memory policy, finalized image and retirement lifetime. Host defaults cannot
+supply any omitted input.
+
+Error, Defect, Cancellation, suspension and cleanup remain explicit MIR
+outcomes and edges. They cannot be replaced by native exceptions, personality
+routines, host unwind or an arbitrary backend trap. A Cranelift trap is
+admitted only when it implements an already selected terminal Defect or a
+verifier-proven unreachable site, and the trap-to-`DefectId` map is receipt
+bound. Checked arithmetic preserves its explicit success/`ArithmeticDefect`
+boundary. Missing stack-map or stable-handle capability for a live managed
+reference blocks native lowering rather than inventing a layout.
+
+Source locations and `DebugOrigin` project through a separate nonsemantic debug
+digest. Debug info, unwind tables and profiler metadata do not change program
+meaning and remain unsupported until a target-bound receipt exists.
 ## 11. Elaboration and evaluation preservation
 
 Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation.
@@ -416,7 +471,7 @@ This section classifies the frozen required 20-feature audit set without changin
 
 The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are `LAW_PRESENT` under §4; they do not replace or enlarge the required 20-feature set.
 
-Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set: `string_interpolation_format_spec_core`. Braced-expression and shorthand-hole evaluation remain `LAW_PRESENT`, but a colon format text supplies no runtime formatting authority until its grammar, mapping, width/padding/truncation rules and invalid-format outcome are separately ratified. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either LLVM backend implements ternary branching, interpolation planning, or transpose-view lowering.
+Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set: `string_interpolation_format_spec_core`. Braced-expression and shorthand-hole evaluation remain `LAW_PRESENT`, but a colon format text supplies no runtime formatting authority until its grammar, mapping, width/padding/truncation rules and invalid-format outcome are separately ratified. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either Cranelift backend implements ternary branching, interpolation planning, or transpose-view lowering.
 
 ## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
 

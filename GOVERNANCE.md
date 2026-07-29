@@ -17,7 +17,7 @@ Deeplus는 Development Management System R1.1을 따른다. 언어 규칙은 승
 ## 변경 문서
 
 - RFC: source/semantic/type/MIR/public contract 또는 lifecycle 변경
-- ADR: Rust crate, parser, cache, xVM encoding, LLVM/CI 구현 선택
+- ADR: Rust crate, parser, cache, xVM encoding, Cranelift/CI 구현 선택
 - Change Request: 의미 불변 문구·링크·test·generated 재생성
 
 P0 soundness, security 또는 authority 충돌은 투표로 무시할 수 없다. 결론이 닫히지 않으면 current rule을 유지하고 GAP으로 기록한다.

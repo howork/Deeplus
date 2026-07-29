@@ -10,8 +10,8 @@
     "signatures": [
       "prelude intrinsic SharedCell<T: Plain> { new(move T) -> SharedCell<T>; withValue(#scoped (borrow T) -> R throws E effects ε) -> R throws E effects ε; replace(move T) -> T }"
     ],
-    "responsibility": "sequentially consistent scoped observation and owner replacement for Plain payloads; observation cannot escape or suspend, replacement commits once and returns the old owner, and Plain implies no raw layout, lock-free, blocking-progress, or fairness property",
-    "notes": "Current minimum stdlib profile; product support NOT_RUN",
+    "responsibility": "sequentially consistent scoped observation and owner replacement for Plain payloads; withValue's #scoped marker belongs to the callback callable profile while borrow is the callback binder mode, the invocation owns the callback region, observation cannot escape or suspend, replacement commits once and returns the old owner, and Plain implies no raw layout, lock-free, blocking-progress, or fairness property",
+    "notes": "Current minimum stdlib profile; construction is the ordinary qualified call SharedCell::new(move value), receiver operations use tilde message calls, and product support is NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -24,7 +24,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "b63817a7696c2da333d7bdf5032b2349ef84c24c4787af3d181e9994f9c47356"
+    "normalized_contract_sha256": "2437ef04df19752bc650871bb054b4d599646eac02c5d5a4d68d49bc34958681"
   },
   {
     "entry_id": "sharedmutex_t",
@@ -37,8 +37,8 @@
     "signatures": [
       "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε effects state }"
     ],
-    "responsibility": "receiver-bound non-reentrant scoped exclusive mutation; the closure cannot suspend or escape, unlock executes exactly once on every outcome and happens-before the next successful lock; no lifecycle payload, poisoning, fairness, or lock-order inference",
-    "notes": "Current minimum stdlib profile; product support NOT_RUN",
+    "responsibility": "receiver-bound non-reentrant scoped exclusive mutation; withLock's #scoped marker belongs to the callback callable profile while inout is the callback binder mode, the invocation owns the callback region, the closure cannot suspend or escape, unlock executes exactly once on every outcome and happens-before the next successful lock; no lifecycle payload, poisoning, fairness, or lock-order inference",
+    "notes": "Current minimum stdlib profile; construction is the ordinary qualified call SharedMutex::new(move value), receiver operations use tilde message calls, and product support is NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -51,7 +51,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "9dba2fa8d869327b2015db2e5e3a09829678a63595c48e7790e661986d517ea9"
+    "normalized_contract_sha256": "8a2c837d62448c2a3aba8994fe2b8ffbd54e7854f30213b0e612fbb815104f01"
   },
   {
     "entry_id": "string",

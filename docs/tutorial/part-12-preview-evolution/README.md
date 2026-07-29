@@ -17,7 +17,7 @@ Preview 상태만 설명한다. 어떤 상태에서도 제품 실행
 - 제안을 검토할 때 syntax만이 아니라 type, ownership, effect, HIR/MIR,
   diagnostic과 migration을 왜 함께 닫아야 하는가?
 - HIR-H1 verifier boundary와 비정규 DP-RFC의 구현 제안을 어떻게 구분하는가?
-- MIR-X1 xVM-only draft가 현행 xVM + LLVM backend authority를 왜 바꾸지
+- MIR-X1 xVM-only draft가 현행 xVM + Cranelift backend authority를 왜 바꾸지
   않는가?
 
 ## 학습 순서

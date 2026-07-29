@@ -477,7 +477,7 @@ normalized index
     ↓ generate
 docs / compact catalog / changed fixtures
     ↓ build and execute
-compiler / xVM / LLVM / conformance
+compiler / xVM / Cranelift / conformance
     ↓ collect
 receipts / logs / provenance
     ↓ package
@@ -501,7 +501,7 @@ generator와 generated output이 어긋나면 CI가 실패한다.
 - release identity와 channel
 - language/spec/MIR/xVM/stdlib identity
 - source commit과 tree hash
-- Rust toolchain과 LLVM version
+- Rust toolchain과 Cranelift version
 - authority files와 digest
 - generated artifacts와 generator
 - product lanes: status, evidence level, receipt

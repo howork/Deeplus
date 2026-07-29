@@ -139,7 +139,7 @@ locking이나 runtime string lookup은 없다.
 **활성화 선행 조건**
 exact parser/diagnostic과 CST, namespace lookup, owner/slot recipe digest,
 concurrent publication, failure/reentry, module API residue, formatter/LSP,
-xVM·LLVM 간 재현 가능한 실행 receipt와 별도 Design authority가 필요하다.
+xVM·Cranelift 간 재현 가능한 실행 receipt와 별도 Design authority가 필요하다.
 현재 parser-cover, HIR/MIR operation, runtime route와 제품 지원 수는 모두
 0이며 15개 product lane은 `NOT_RUN`이다.
 
@@ -360,7 +360,7 @@ rounding 정책을 `%`로 바꾸지 않고, integer·floating 계산을 Rational
 **활성화 선행 조건**
 exact result/error algebra, `ExactBuiltinInteger` 폐쇄 집합, zero와 부호
 경계, canonical normalization 및 cross-module metadata를 확정해야 한다.
-positive/negative/boundary corpus, diagnostics, xVM/LLVM parity와
+positive/negative/boundary corpus, diagnostics, xVM/Cranelift parity와
 결정적 실행 receipt가 확보되기 전에는 source gate를 만들 수 없다.
 
 <!-- deeplus-preview-feature-example: integer_imaginary_literal_preview_design; registry-status: PREVIEW_DESIGN -->
@@ -477,7 +477,7 @@ platform별 조용한 fallback은 허용하지 않는다. 입력·출력 ownersh
 **활성화 선행 조건**
 함수 폐쇄 목록, 각 domain/codomain과 branch 정책, accuracy metric,
 determinism, diagnostic carrier와 versioning을 확정해야 한다. 참조값
-corpus, 다중 정밀도 비교, xVM/LLVM/backend parity 및 supply-chain
+corpus, 다중 정밀도 비교, xVM/Cranelift/backend parity 및 supply-chain
 evidence가 갖춰진 뒤 별도 Design_ 활성화 판정이 필요하다.
 
 <!-- deeplus-preview-feature-example: std_math_calculus_preview_design; registry-status: PREVIEW_DESIGN -->
@@ -936,7 +936,7 @@ compiler retry/fallback/order winner 수는 0이어야 한다.
 pack은 owner를 정확히 한 번 이동하거나 실패 시 원 owner를 반환·정리한다.
 cast failure는 typed 결과이고 다른 mechanism 재시도가 아니다. 현행
 `dyn` source probe는 `DYN_RCTS_SOURCE_NOT_CURRENT`로 거부된다. runtime
-representation과 xVM/LLVM 실행은 `NOT_RUN`이다.
+representation과 xVM/Cranelift 실행은 `NOT_RUN`이다.
 
 **현행 대안과 이행**
 closed Union, explicit nominal wrapper와 borrow Facet이 대안이다. migration
@@ -1014,7 +1014,7 @@ static conformance와 다른 층으로 표시해야 한다.
 
 **활성화 선행 조건**
 closed registry protocol, stateless proof, epoch/owner model, deterministic
-dispatch, concurrency/rollback corpus와 xVM/LLVM target receipt가 필요하다.
+dispatch, concurrency/rollback corpus와 xVM/Cranelift target receipt가 필요하다.
 모든 제품 lane은 `NOT_RUN`이다.
 
 **설계 검토 시나리오**
@@ -1453,7 +1453,7 @@ plan을 report한다. LSP는 erased type보다 owner/provenance를 우선 표시
 
 **활성화 선행 조건**
 existential ABI, move/drop/cast MIR, transactional failure law, TCC closure,
-SFD-P1-009와 xVM/LLVM receipt가 필요하다. 모든 제품 지원은 `NOT_RUN`이다.
+SFD-P1-009와 xVM/Cranelift receipt가 필요하다. 모든 제품 지원은 `NOT_RUN`이다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/types/type-system.md -->
 ```deeplus

@@ -74,7 +74,7 @@ closure는 ancestor place를 capture environment에 넣지 않고 호출 시점�
 않는다. local `def`의 direct call only, closure의 immediate invocation,
 direct call만 있는 bounded local binding, 선택된 정확한 `#scoped` formal
 같이 닫힌 proof가 있을 때만 허용하며, opaque flow나 return/storage,
-generator/async/task/spawn/Actor/isolation crossing에서는 거부한다.
+generator/async/concur/spawn/Actor/isolation crossing에서는 거부한다.
 
 capture list의 세 상태는 서로 다르다.
 
@@ -153,22 +153,30 @@ payload의 `Transferable` evidence를 자동 합성하지 않는다.
 
 ### current shared-state 최소 프로필
 
-`SharedCell<T>`는 normalized Plain payload만 받는다. `withValue`는
-sequentially consistent한 `#scoped borrow T` 관찰을 하나 제공하며 그
-borrow는 escape/suspend할 수 없다. `replace`는 새 owner를 한 번 commit하고
-이전 owner를 반환한다.
+`SharedCell<T>`는 normalized Plain payload만 받는다.
+`SharedCell::new(move value)`는 ordinary qualified call이다. receiver
+operation은 `cell ~ withValue { borrow value => body }`와
+`cell ~ replace move next`처럼 `~` message call로 쓴다. `withValue`가
+요구하는 `#scoped`는 callback callable profile이고 `borrow`가 source
+binder mode다. invocation이 region을 소유하므로 borrow는
+escape/suspend할 수 없다. `replace`는 새 owner를 한 번 commit하고 이전
+owner를 반환한다.
 
 `SharedMutex<T>` 최소 프로필은 lifecycle/effectful-cleanup payload를
-받지 않는다. `withLock`은 receiver-bound, non-reentrant, nonsuspending
-`#scoped inout T`를 하나 제공한다. unlock은 return, Error, Defect,
-Cancellation의 모든 경로에서 infallible exactly-once cleanup이다.
+받지 않는다. 생성은 ordinary qualified call
+`SharedMutex::new(move value)`이고 receiver access는
+`mutex ~ withLock { inout state => body }`다. `#scoped`는 callback
+callable profile, `inout`은 source binder mode이며 invocation이 region을
+소유한다. 이 access는 receiver-bound, non-reentrant, nonsuspending이다.
+unlock은 return, Error, Defect, Cancellation의 모든 경로에서 infallible
+exactly-once cleanup이다.
 
 MIR 관찰은 API 이름만 남기지 않는다. `SharedCell`의 관찰은 같은
 `sync_id`, 고유한 `operation_id`, `owner_id`, `cleanup_region_id`를 가진
 `observe_begin`/`observe_end` 쌍이고, `replace` 성공은 그 사이의 단 하나
 `replace_commit`이다. `SharedMutex`는 같은 식별자 묶음의
 `lock_acquire`/`lock_release`를 남기며 release는 모든 terminal edge에서
-정확히 한 번이다. xVM과 LLVM은 이 ordered trace와 owner/cleanup balance를
+정확히 한 번이다. xVM과 Cranelift은 이 ordered trace와 owner/cleanup balance를
 같게 보존해야 하지만, 현재는 대상 실행 확인서가 없어 `NOT_RUN`이다.
 
 이 두 API는 표준 라이브러리 프로필이며 core source syntax가 아니다.
@@ -180,7 +188,7 @@ owner를 바꾸는 operation은 성공 commit 지점이 하나다. commit 전 �
 이전한다.
 
 borrow와 view는 owner-bounded다. owner보다 오래 살거나 owner의 move/drop,
-task/actor isolation crossing을 지나서는 안 된다. suspension은 live
+run/actor isolation crossing을 지나서는 안 된다. suspension은 live
 borrow, isolation, cleanup obligation을 지우지 않는다.
 
 callable value의 return/storage, generator, async suspension, actor message,
@@ -250,15 +258,15 @@ core 언어 실행 증거로 해석하지 않는다.
 
 ```deeplus
 let cell = SharedCell::new(move state)
-let label = cell.withValue() { borrow value => describe(value) }
-let previous = cell.replace(move nextState)
+let label = cell ~ withValue { borrow value => describe(value) }
+let previous = cell ~ replace move nextState
 ```
 
 `EX-R51COH-SHARED-002`:
 
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock() { inout value => value = update(value) }
+mutex ~ withLock { inout value => value = update(value) }
 ```
 
 두 예제 모두 제품 실행은 `NOT_RUN`이다.
@@ -272,12 +280,14 @@ mutex.withLock() { inout value => value = update(value) }
 | move 뒤 affine source 재사용 | 거부 |
 | 겹치는 `inout` access | 거부 |
 | borrow/view의 region escape | 거부 |
-| borrowed Facet의 suspension/task/actor crossing | 거부 |
+| borrowed Facet의 suspension/run/actor crossing | 거부 |
 | owner를 암시적으로 `Shared<T>`로 승격 | 거부 |
 | `Shareable`만으로 alias 생성 | 거부 |
 | Plain에 resource/drop 책임 숨김 | 거부 |
 | `SharedMutex`에 lifecycle payload 숨김 | 거부 |
 | shared wrapper가 `Transferable` 자동 생성 | 거부 |
+| `cell.withValue()`·`mutex.withLock()` 점 호출 | 거부; receiver operation은 `~` |
+| callback binder에 `#scoped` 반복 | 거부; `#scoped`는 callable profile |
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
 
@@ -302,7 +312,7 @@ let ownedView = facet[move value as Printable]
 3. move 성공·실패의 owner 반환 법칙;
 4. escape, suspension, actor isolation 규칙;
 5. existential safety와 conformance evidence coherence;
-6. API/ABI, MIR, xVM/LLVM lowering identity의 일치;
+6. API/ABI, MIR, xVM/Cranelift lowering identity의 일치;
 7. formatter/LSP와 target-bound positive/negative 실행 증거.
 
 문서화는 owned/inout Facet activation, `TCC-P1-002..008` closure, 구현
@@ -315,7 +325,7 @@ source gate조차 없는 설계 제안이다. 현행 SharedCell/SharedMutex의
 sequentially consistent 최소 프로필을 약화하지 않는다.
 
 도입 전에는 operation별 ordering vocabulary, data-race 및 happens-before
-법칙, failure ordering, compiler reorder 한계, xVM/LLVM parity, litmus
+법칙, failure ordering, compiler reorder 한계, xVM/Cranelift parity, litmus
 test와 target-bound 실행 evidence가 필요하다. 비활성 상태에서는 어떤
 atomic source spelling도 발명하거나 예제로 제시하지 않는다.
 
@@ -341,7 +351,7 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
 - ReadonlyView와 collection coordinate는
   [컬렉션, 인덱싱, 슬라이싱](09-collections-indexing-and-slicing.md)을
   참고한다.
-- actor message와 structured task는 owner transfer, cancellation,
+- actor message와 structured `concur` run은 owner transfer, cancellation,
   cleanup을 독립 축으로 보존한다.
 - type equality는 ownership, effect, error, cancellation, suspension,
   isolation, cleanup residue를 지우지 않는다.

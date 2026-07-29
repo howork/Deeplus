@@ -8,7 +8,7 @@
 ## 1. 이 장이 다루는 경계
 
 언어 문법만으로는
-`Option`, `Result`, `Task`, `AsyncSequence`,
+`Option`, `Result`, `Run`, `Reply`, `AsyncSequence`,
 `SharedCell`, `Pattern` 같은
 language-facing identity의 전체 계약을 설명할 수 없다.
 
@@ -69,7 +69,7 @@ canonical language-facing identity를 공급한다.
 - `List<T>`, `Set<T>`, `Map<K,V>`
 - `MutableList<T>`, `ReadonlyView<T>`
 - `Box<T>`, `OwnedDowncast<Target,Source>`
-- `Task<T>`, `Actor`, `ActorMessageError`
+- `Run<T>`, `Reply<T>`, `Actor`, `ActorMessageError`
 - `AsyncSequence<T,E>`, `AsyncCollector`, `CollectPolicy`
 - `ArithmeticDefect`, `IndexError`
 - checker-known protocol과 function signature descriptor
@@ -89,8 +89,8 @@ scanner hard keyword를 자동 추가하지 않는다.
 문법이 별도 keyword로 소유하는 이름과
 Prelude scope에서 해석되는 identifier를 구분해야 한다.
 
-예를 들어 `Task`가 canonical type이라고 해서
-`Task` token 전용 scanner mode가 생기지 않는다.
+예를 들어 `Run`이 canonical type이라고 해서
+`Run` token 전용 scanner mode가 생기지 않는다.
 `Pattern` library가 있다고 해서
 regex literal token이 생기지 않는다.
 
@@ -492,9 +492,9 @@ Prelude catalog는 개념적으로 다음 책임을 기록한다.
 이 record는 `prelude_intrinsic` dialect다.
 ordinary source에 async callable literal을 추가하지 않는다.
 
-### 6.3 for await
+### 6.3 `for#await`
 
-`for await`는
+`for#await`는
 AsyncSequence 순회를 위한 current statement owner다.
 source의 `E`는 enclosing callable의 error context에서
 처리 또는 전파되어야 한다.
@@ -511,7 +511,7 @@ private def#async consume(
 ) -> Unit
     throws IOError
 = {
-    for await value in source {
+    for#await value in source {
         record(value)
     }
 }
@@ -918,7 +918,7 @@ ordinary return/cleanup observation을 지워서는 안 된다.
 
 ### 10.6 backend parity
 
-xVM, LLVM AOT, LLVM ORC는
+xVM, Cranelift ObjectModule AOT, Cranelift JITModule는
 optimization 적용 여부가 달라도
 program observation이 같아야 한다.
 
@@ -1052,7 +1052,7 @@ derive-via는 다음을 금지한다.
 - witness injection
 - authority injection
 - MIR injection
-- LLVM IR injection
+- Cranelift IR (CLIF) injection
 - recheck bypass
 
 provider가 “이미 타입을 안다”는 이유로
@@ -1600,8 +1600,8 @@ runtime backend PASS를 의미하지 않는다.
 5. Deeplus MIR lowering
 6. xVM bytecode emitter
 7. xVM interpreter
-8. LLVM AOT backend
-9. LLVM ORC JIT backend
+8. Cranelift ObjectModule AOT backend
+9. Cranelift JITModule backend
 10. formatter/LSP
 11. stdlib/provider runner
 12. official proof/derive/UML tooling
@@ -1877,7 +1877,7 @@ closed intrinsic glyph dispatch를
 ### 28.3 AsyncCollector와 async syntax
 
 AsyncCollector는 stdlib profile이다.
-`for await`와 named `def#async`를 사용할 수 있지만
+`for#await`와 named `def#async`를 사용할 수 있지만
 일반 async callable literal이나
 async comprehension syntax를 활성화하지 않는다.
 
@@ -1975,7 +1975,7 @@ source acceptance, AST/HIR/MIR operation과 product execution 수는 0이며,
 - derive-via runner
 - R2 proof provider
 - generic design-seed predicate
-- actor request arbitrary declared failure의 Task descriptor
+- actor request arbitrary declared failure의 `ReplyResponsibility` descriptor
 - typestate provider가 기대할 executable typestate semantics
 
 이 항목에 대해
@@ -2061,7 +2061,7 @@ receipt는 null이다.
 4. output digest가 있는가.
 5. side receipt가 program result를 바꾸지 않는가.
 6. generated source가 recheck되는가.
-7. witness/authority/MIR/LLVM injection이 없는가.
+7. witness/authority/MIR/Cranelift injection이 없는가.
 8. target receipt 없이 product PASS를 주장하지 않는가.
 
 ### 32.5 diagnostic

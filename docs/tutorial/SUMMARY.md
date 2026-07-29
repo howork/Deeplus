@@ -96,7 +96,7 @@
 ## Part 10 — 비동기와 actor 동시성
 
 - [Part 안내](part-10-concurrency/README.md)
-- [10-01. async, await, task](part-10-concurrency/10-01-async-await-tasks.md)
+- [10-01. async, await, Run](part-10-concurrency/10-01-async-await-tasks.md)
 - [10-02. structured scope와 cancellation](part-10-concurrency/10-02-structured-scope-cancellation.md)
 - [10-03. actor, protocol, message](part-10-concurrency/10-03-actor-protocol-messages.md)
 - [10-04. mailbox, request/reply, isolation](part-10-concurrency/10-04-mailbox-request-reply-isolation.md)

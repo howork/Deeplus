@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.shared-state-coherence-contract/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
+  "revision": "r51f3-current-concur-role-coherence-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -31,7 +31,8 @@
       "rule_id": "SSC-R002",
       "domain": "shared_cell_construction",
       "contract": {
-        "operation": "SharedCell.new",
+        "operation": "SharedCell::new",
+        "call_surface": "ordinary qualified call",
         "input_mode": "move",
         "stored_owner_count_after_success": 1,
         "hidden_clone_count": 0,
@@ -43,8 +44,12 @@
       "domain": "shared_cell_observation",
       "contract": {
         "operation": "withValue",
-        "call_surface": "CallExpr in Ordinary mode, introduced by CallSuffix and using the shared TrailingClosureGroup",
-        "access": "one #scoped borrow T",
+        "call_surface": "MessageExpr in Tilde mode with the shared trailing-closure form",
+        "canonical_source": "cell ~ withValue { borrow value => body }",
+        "callback_profile": "#scoped",
+        "binder_mode": "borrow",
+        "binder_source_spelling": "borrow",
+        "region_owner": "invocation",
         "suspension": "forbidden",
         "borrow_escape": "forbidden",
         "ordering": "sequentially_consistent",
@@ -56,6 +61,8 @@
       "domain": "shared_cell_replace",
       "contract": {
         "operation": "replace",
+        "call_surface": "MessageExpr in Tilde mode",
+        "canonical_source": "cell ~ replace move next",
         "new_value_mode": "move",
         "commit_count": 1,
         "result": "old owner",
@@ -79,6 +86,7 @@
       "domain": "shared_mutex_admission",
       "contract": {
         "payload": "no lifecycle or effectful cleanup owner",
+        "construction_surface": "ordinary qualified call SharedMutex::new(move value)",
         "primary_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
         "poisoning": false,
         "recursive": false
@@ -89,8 +97,12 @@
       "domain": "shared_mutex_access",
       "contract": {
         "operation": "receiver-bound withLock",
-        "call_surface": "CallExpr in Ordinary mode, introduced by CallSuffix and using the shared TrailingClosureGroup",
-        "access": "one #scoped inout T",
+        "call_surface": "MessageExpr in Tilde mode with the shared trailing-closure form",
+        "canonical_source": "mutex ~ withLock { inout state => body }",
+        "callback_profile": "#scoped",
+        "binder_mode": "inout",
+        "binder_source_spelling": "inout",
+        "region_owner": "invocation",
         "suspension": "forbidden",
         "place_escape": "forbidden",
         "reentrant_acquire": "reject"
@@ -162,6 +174,11 @@
     "lock_free_claim_count": 0,
     "poisoning_claim_count": 0,
     "fairness_claim_count": 0,
+    "receiver_operation_tilde_surface_count": 3,
+    "receiver_operation_dot_surface_count": 0,
+    "scoped_callback_profile_count": 2,
+    "scoped_binder_spelling_count": 0,
+    "invocation_owned_region_count": 2,
     "product_execution_receipt_count": 0
   }
 }

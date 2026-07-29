@@ -1125,7 +1125,7 @@ call-time lexical dependency가 될 수 있다.
    formal이 `#scoped`다.
 
 unknown/opaque flow는 거부한다. return, yield, aggregate/field storage,
-ordinary callable formal, async/generator/task/spawn/Actor/isolation crossing도
+ordinary callable formal, async/generator/concur/spawn/Actor/isolation crossing도
 closed proof가 아니다. guard-owned dependency는 이 revision에서 제외한다.
 
 capture-list presence는 의미 정보다. list가 없으면 qualified lexical
@@ -1281,7 +1281,7 @@ commit 성공 뒤에는 callee 또는 새 owner가
 ordinary borrow는 owner를 넘기지 않는다.
 inout은 한 dynamic call extent의 exclusive access이며
 겹치는 borrow/inout을 허용하지 않는다.
-live borrow나 inout이 suspension, task escape,
+live borrow나 inout이 suspension, run escape,
 actor transfer, return, storage를 건너려면
 별도의 admitted proof가 있어야 한다.
 
@@ -1628,8 +1628,8 @@ nonactivatable Preview다.
 - ownership/effect checker
 - HIR/MIR lowering
 - xVM runtime
-- LLVM AOT backend
-- LLVM ORC backend
+- Cranelift ObjectModule AOT backend
+- Cranelift JITModule backend
 - formatter
 - LSP
 - public API compatibility runner

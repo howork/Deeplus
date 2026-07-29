@@ -19,7 +19,7 @@
 | compiler CST/AST/HIR/MIR | 내부 구현 자료 | 소스에서 인용·변형하는 값이 아님 |
 | provider/공식 도구가 만든 소스 | `OFFICIAL_TOOLING` 또는 별도 provider 프로필 | 생성된 소스도 일반 소스와 같은 scanner-to-MIR 검사를 다시 받음 |
 
-언어 설계 상태와 별개로 Rust scanner/parser, checker, MIR, xVM, LLVM,
+언어 설계 상태와 별개로 Rust scanner/parser, checker, MIR, xVM, Cranelift,
 formatter/LSP를 포함한 제품 15개 lane은 모두 `NOT_RUN`이다. 이 장은
 정확히 22개인 OPEN feature P1을 폐쇄하지 않으며 `M13-A002..005`도 별도
 OPEN action으로 유지한다.
@@ -186,7 +186,7 @@ gate는 FFI가 Stable이거나 제품에서 안전하게 실행된다는 증명�
 - callback의 저장 가능 기간, 호출 thread/isolation 및 reentrancy
 - foreign unwind, Deeplus Error/Defect/Cancellation과의 변환 경계
 - C aggregate, variadic 및 stored callback별 독립 프로필
-- Deeplus MIR에서 xVM/LLVM으로 가는 backend-equivalence 증거
+- Deeplus MIR에서 xVM/Cranelift로 가는 backend-equivalence 증거
 
 `Plain`은 layout-safe나 C-compatible을 뜻하지 않는다.
 `FFI_SIGNATURE_UNREPRESENTABLE`과 `PLAIN_IS_NOT_LAYOUT_SAFE`는 이
@@ -195,7 +195,7 @@ gate는 FFI가 Stable이거나 제품에서 안전하게 실행된다는 증명�
 따라서 이 참조서의 gated `c_abs` 같은 예제는 gate·parser·정적 검토
 형식을 보여 주는 자료이지 target-bound 실행 가능 선언이 아니다.
 실행 수용을 주장하려면 target/ABI manifest, representability 결과,
-symbol binding, provenance·ownership plan, unwind/cleanup law와 xVM/LLVM
+symbol binding, provenance·ownership plan, unwind/cleanup law와 xVM/Cranelift
 동등성 확인서가 같은 artifact identity에 결합되어야 한다. 현재 모든
 관련 product lane은 `NOT_RUN`이다.
 
@@ -228,7 +228,7 @@ Deeplus의 현행 경계는 “정적 정보 사용”과 “프로그램이 com
 | library/tooling | `STDLIB_PROFILE`, `OFFICIAL_TOOLING` | core syntax 밖의 API 또는 도구 계약 |
 | 제품 evidence | `NOT_RUN` 또는 target-bound receipt | 실제 구현·실행 주장 |
 
-한 축의 승격은 다른 축을 자동으로 승격하지 않는다. LLVM backend가
+한 축의 승격은 다른 축을 자동으로 승격하지 않는다. Cranelift backend가
 존재한다는 사실만으로 FFI가 sound해지지 않고, 공식 도구가 있다는
 사실만으로 core syntax가 생기지 않는다.
 
@@ -242,13 +242,13 @@ Deeplus의 현행 경계는 “정적 정보 사용”과 “프로그램이 com
   admission이나 실패한 pre-call marshalling이 source owner를 몰래
   소비해서는 안 된다.
 - callback, pointer 및 foreign handle은 명시된 lifetime과 drop authority
-  없이 closure, task 또는 actor 경계를 넘을 수 없다.
+  없이 closure, run 또는 actor 경계를 넘을 수 없다.
 - foreign unwind를 Deeplus recoverable Error로 임의 변환하거나,
   Cancellation을 foreign error code로 접어서는 안 된다.
 - compiler/provider/tooling 결과는 MIR에 도달하기 전에 검증된 정적
   identity로 닫혀야 하며 runtime 이름 검색으로 되돌아가서는 안 된다.
 
-현재 이 모든 항목은 정적 설계 계약이다. 실제 ABI, provenance, xVM/LLVM
+현재 이 모든 항목은 정적 설계 계약이다. 실제 ABI, provenance, xVM/Cranelift
 동등성 및 target 실행은 `NOT_RUN`이다.
 
 ## 현행 예제
@@ -344,7 +344,7 @@ quarantine의 비활성 예시는 다음과 같다.
 
 이 형태는 `QUARANTINE_SCOPE_NOT_ACTIVATABLE`의 대상이다. 제안된 최소
 계약조차 typed immutable export만 허용하고 outer mutation, suspension,
-pointer/authority/borrow/resource/closure/task/actor escape를 금지한다.
+pointer/authority/borrow/resource/closure/run/actor escape를 금지한다.
 
 <!-- deeplus-status-fence: CURRENT -->
 

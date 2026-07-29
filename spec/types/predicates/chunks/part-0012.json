@@ -163,7 +163,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ScopedCallableAdmitted",
     "source_name": "ScopedCallableAdmitted",
-    "summary": "assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, task, actor, and isolation escape",
+    "summary": "assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, concur-run, actor, and isolation escape",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "borrow_region",
@@ -183,7 +183,7 @@
     "requires": [
       "assign the receiver invocation region",
       "require callable and borrowed captures not to outlive it",
-      "reject storage, return, continuation, task, actor, and isolation escape"
+      "reject storage, return, continuation, concur-run, actor, and isolation escape"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -200,7 +200,7 @@
     "preconditions": [
       "assign the receiver invocation region",
       "require callable and borrowed captures not to outlive it",
-      "reject storage, return, continuation, task, actor, and isolation escape"
+      "reject storage, return, continuation, concur-run, actor, and isolation escape"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [

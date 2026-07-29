@@ -440,14 +440,86 @@
   "backend_authority": {
     "current": [
       "xVM initial execution",
-      "LLVM AOT",
-      "LLVM ORC JIT"
+      "Cranelift ObjectModule AOT",
+      "Cranelift JITModule"
     ],
-    "cranelift_current": false,
+    "cranelift_current": true,
+    "superseded_native_backend_current": false,
     "xvm_only_current": false,
+    "authority_source": "decisions/language/Design_Deeplus_Cranelift_Backend_Adoption_R1.md",
+    "bridge_observes_external_backend_authority": true,
     "backend_switch_count": 0,
     "backend_specific_hir_field_count": 0,
     "product_execution_receipt_count": 0
+  },
+  "native_projection_contract": {
+    "input": "Verified<DeeplusMir>",
+    "common_lowering": "deterministic verified MIR to backend-private CLIF",
+    "module_kinds": [
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "required_receipt_inputs": [
+      "mir_semantic_digest",
+      "target_triple",
+      "target_isa_and_settings",
+      "cranelift_family_and_lockfile_digest",
+      "module_kind",
+      "pointer_width_and_endianness",
+      "object_format_and_code_relocation_model",
+      "calling_convention",
+      "runtime_abi_digest",
+      "optimization_settings_digest",
+      "runtime_helper_and_safepoint_capability_digest",
+      "object_linker_or_jit_import_map_identity"
+    ],
+    "backend_private_identity_kinds": [
+      "ClifValue",
+      "ClifBlock",
+      "ClifStackSlot",
+      "ClifFuncRef",
+      "ClifSignature",
+      "register",
+      "relocation",
+      "object_section",
+      "machine_address"
+    ],
+    "backend_private_identity_count_in_canonical_hir": 0,
+    "backend_private_identity_count_in_semantic_mir": 0,
+    "object_aot": {
+      "finalization": "ObjectModule emits a relocatable object; an explicit platform linker creates the final artifact",
+      "required_outputs": [
+        "object_bytes_digest",
+        "object_format",
+        "linker_identity",
+        "linker_arguments_digest",
+        "final_artifact_digest"
+      ]
+    },
+    "in_memory_jit": {
+      "finalization": "JITModule finalizes code and data in controlled executable memory",
+      "required_outputs": [
+        "import_allowlist_digest",
+        "resolved_import_map_digest",
+        "executable_memory_policy",
+        "finalized_image_identity",
+        "lifetime_and_retirement_receipt"
+      ]
+    },
+    "outcome_lowering": {
+      "error": "explicit MIR edge",
+      "defect": "explicit MIR edge; a backend trap requires an exact preselected Defect mapping",
+      "cancellation": "explicit MIR edge and lifecycle",
+      "suspension": "explicit MIR state transition",
+      "cleanup": "explicit MIR region and ordered action",
+      "native_exception_or_personality_is_semantic_authority": false,
+      "host_unwind_is_semantic_authority": false
+    },
+    "managed_reference_guard": "missing required stack-map or stable-handle capability blocks native lowering",
+    "debug_projection": "SourceLoc and DebugOrigin use a separate nonsemantic debug digest",
+    "symbol_spelling_selects_semantic_identity": false,
+    "link_or_load_order_selects_semantics": false,
+    "host_default_selects_target_profile": false
   },
   "rules": [
     {
@@ -542,8 +614,8 @@
     },
     {
       "rule_id": "H1MB-R019",
-      "title": "current backend authority is preserved",
-      "contract": "The current backend path remains xVM initial execution, LLVM AOT, and LLVM ORC JIT; neither xVM-only nor Cranelift becomes current."
+      "title": "the bridge observes current backend authority without reselecting it",
+      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. This HIR bridge adds no backend-specific HIR field and cannot select xVM-only, restore a superseded native path, or claim product execution."
     },
     {
       "rule_id": "H1MB-R020",

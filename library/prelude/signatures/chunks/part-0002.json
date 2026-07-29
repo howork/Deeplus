@@ -189,27 +189,72 @@
     "normalized_contract_sha256": "0a99b68f89d6dc46509b122e7638201f2dabfb63131a8d4b91b49d85d75add98"
   },
   {
-    "entry_id": "task_t",
-    "symbol": "Task<T>",
+    "entry_id": "run_t",
+    "symbol": "Run<T>",
     "kind": "core_type",
     "status": "stable_design",
     "feature_refs": [
-      "r51a1_fully_merged_current_canonical_single_source_truth"
+      "async_concur_control",
+      "structured_concur_region"
     ],
     "signatures": [
-      "prelude intrinsic Task<T>"
+      "prelude intrinsic Run<T>"
     ],
-    "responsibility": "general structured asynchronous task handle; only a value with task_origin=actor_request_admitted preserves the actor-request TaskResponsibility descriptor across typed HIR, compatibility, join, storage, module API export, and MIR without changing the source spelling Task<T>",
-    "notes": "R51b core identity closure. An ordinary_async Task<T> has no actor transport descriptor. For actor_request_admitted only, await error set is normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply); mailboxFull and receiverClosedBeforeAdmission remain admission-Result-only.",
-    "task_responsibility_contract": {
-      "source_type_spelling": "Task<T>",
-      "applies_only_to_task_origin": "actor_request_admitted",
-      "ordinary_async_actor_transport_descriptor": "forbidden",
+    "responsibility": "affine one-shot observation handle for exactly one successfully spawned execution owned by one ConcurId; it preserves result, normalized ErrorSet, Cancellation, isolation, cleanup and terminal responsibility and cannot escape its owner",
+    "notes": "Only spawn creates Run<T>. A bare async invocation is not a Run, await consumes its observation right once, and Run<T> never carries actor request correlation or transport responsibility.",
+    "run_responsibility_contract": {
+      "source_type_spelling": "Run<T>",
+      "created_by": "successful spawn admission only",
+      "required_fields": [
+        "result_type",
+        "normalized_error_set",
+        "cancellation_axis",
+        "owner_concur_id",
+        "isolation_profile",
+        "cleanup_profile",
+        "terminal_policy"
+      ],
+      "owner_escape": false,
+      "repeated_await": false,
+      "actor_transport_descriptor": "forbidden",
+      "erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
+    },
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic Run<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "2bcb8526e4386015811f146df834d7f39f5165f752935c3eddebb04576494aa5"
+  },
+  {
+    "entry_id": "reply_t",
+    "symbol": "Reply<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "actor_request_reply"
+    ],
+    "signatures": [
+      "prelude intrinsic Reply<T>"
+    ],
+    "responsibility": "affine one-shot correlated actor request reply handle preserving result, handler ErrorSet, Cancellation, isolation owner, ReplyId, correlation and terminal transport failure",
+    "notes": "A successful actor request admission returns Reply<T>. await exposes normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply); mailboxFull and receiverClosedBeforeAdmission remain admission-Result-only.",
+    "reply_responsibility_contract": {
+      "source_type_spelling": "Reply<T>",
       "required_fields": [
         "result_type",
         "normalized_handler_error_set",
         "cancellation_axis",
         "isolation_owner",
+        "reply_id",
         "correlation_id",
         "terminal_transport_failure"
       ],
@@ -221,8 +266,14 @@
         "mailboxFull",
         "receiverClosedBeforeAdmission"
       ],
+      "repeated_await": false,
+      "Run_conversion": false,
       "descriptor_erasure": false,
-      "compatibility_join_storage_api_export": "exact normalized static-field equality, or explicit admitted error-set subsumption for normalized_handler_error_set only; preserve each per-value correlation_id",
+      "module_api_identity_markers": {
+        "reply_id": "per_value_non_forgeable",
+        "correlation_id": "per_value_non_forgeable"
+      },
+      "compatibility_join_storage_api_export": "exact normalized static-field equality, or explicit admitted error-set subsumption for normalized_handler_error_set only; preserve each per-value ReplyId and correlation_id",
       "erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
       "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
     },
@@ -232,13 +283,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "prelude intrinsic Task<T>",
+        "text": "prelude intrinsic Reply<T>",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "ae67e5b3e66a1b95674ebd8b4e6bd27a60810afcd9b230522ca99e084ebe2a02"
+    "normalized_contract_sha256": "92bf993557a607d00f5a6359d000b5d39fb35b4e42b299824db676bba3ee6f29"
   },
   {
     "entry_id": "unitcatalog",

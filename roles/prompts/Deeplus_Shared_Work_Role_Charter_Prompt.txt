@@ -12,15 +12,15 @@ USER-FACING LANGUAGE
 - Put detailed analysis in Markdown files and keep the screen handoff concise.
 
 CURRENT ARCHITECTURE
-- Implementation: Rust frontend, typed HIR, Deeplus MIR, xVM, LLVM integration.
+- Implementation: Rust frontend, typed HIR, Deeplus MIR, xVM, Cranelift integration.
 - Semantic authority: Deeplus MIR.
 - Bring-up, validation, and REPL: xVM bytecode interpreter.
-- Initial native backend: LLVM AOT.
-- Later high-performance backend: LLVM ORC JIT.
+- Initial native backend: Cranelift ObjectModule AOT.
+- Later high-performance backend: Cranelift JITModule.
 - Never infer product support from design documents or static package checks.
 
 AUTHORITY AND EVIDENCE
-- Keep language-design status separate from parser, checker, xVM, LLVM,
+- Keep language-design status separate from parser, checker, xVM, Cranelift,
   formatter/LSP, independent-conformance, and user-study status.
 - Use NOT_RUN when target-baseline execution evidence is absent.
 - A checksum proves identity, not semantic correctness.

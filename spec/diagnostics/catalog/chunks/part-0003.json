@@ -148,9 +148,9 @@
     "feature_refs": [
       "effect_control_axis_split"
     ],
-    "fixit_hint": "remove Cancellation from throws and model cancellation through async/task control",
+    "fixit_hint": "remove Cancellation from throws and model cancellation through async/concur control",
     "fixit_kind": "suggestion",
-    "fixit_policy": "remove Cancellation from throws and model cancellation through async/task control",
+    "fixit_policy": "remove Cancellation from throws and model cancellation through async/concur control",
     "message": "Cancellation is a control axis, not a member of ErrorSet. Do not put it in throws.",
     "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -1122,25 +1122,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "CLOSURE_CAPTURE_NOT_TRANSFERABLE_TO_TASK",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_id": "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "closure_capture_diagnostics"
+      "spawn_body_and_direct_async_invocation"
     ],
-    "fixit_hint": "manual_review",
+    "fixit_hint": "use an empty capture list or explicit reusable copy captures",
     "fixit_kind": "manual_review",
-    "fixit_policy": "manual_review",
-    "message": "Closure capture not transferable to task",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "fixit_policy": "do not infer outer access or admit move, clone, deep, borrow, or inout capture",
+    "message": "This capture mode is not admitted by the bounded concur-local #async callable profile.",
+    "notes": "Current source diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",

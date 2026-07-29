@@ -855,7 +855,7 @@
       "borrow is shared, bounded by borrow_region, and does not escape",
       "inout is exclusive for one dynamic call extent and overlaps no live borrow or inout region",
       "move transfers ownership exactly once and every later use of the source is rejected",
-      "a live borrow/inout does not cross suspension, task escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary",
+      "a live borrow/inout does not cross suspension, concur-run escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary",
       "cleanup responsibility remains attached to the current owner on every admitted path",
       "replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current"
     ],
@@ -878,7 +878,7 @@
       "borrow is shared, bounded by borrow_region, and does not escape",
       "inout is exclusive for one dynamic call extent and overlaps no live borrow or inout region",
       "move transfers ownership exactly once and every later use of the source is rejected",
-      "a live borrow/inout does not cross suspension, task escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary",
+      "a live borrow/inout does not cross suspension, concur-run escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary",
       "cleanup responsibility remains attached to the current owner on every admitted path",
       "replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current"
     ],
@@ -886,7 +886,7 @@
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right in listed order",
-      "apply OwnershipModeAdmitted local rule: ordinary mut evaluates/acquires the argument once, commits one callee-owned mutable local, creates no caller alias/writeback edge, and retains the caller owner on precommit failure; borrow is shared, bounded by borrow_region, and does not escape; inout is exclusive for one dynamic call extent, overlaps no live borrow/inout region, and writes the same caller place; move transfers ownership exactly once and every later use of the source is rejected; a live borrow/inout does not cross suspension, task escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary; cleanup responsibility remains attached to the current owner on every admitted path; replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current",
+      "apply OwnershipModeAdmitted local rule: ordinary mut evaluates/acquires the argument once, commits one callee-owned mutable local, creates no caller alias/writeback edge, and retains the caller owner on precommit failure; borrow is shared, bounded by borrow_region, and does not escape; inout is exclusive for one dynamic call extent, overlaps no live borrow/inout region, and writes the same caller place; move transfers ownership exactly once and every later use of the source is rejected; a live borrow/inout does not cross suspension, concur-run escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary; cleanup responsibility remains attached to the current owner on every admitted path; replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current",
       "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",

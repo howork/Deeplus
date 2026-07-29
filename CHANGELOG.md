@@ -1,5 +1,18 @@
 # Changelog
 
+## r51f3-current-cranelift-backend-r1 — 2026-07-29
+
+- xVM을 초기 개발·검증·REPL 경로로 유지하면서 LLVM native backend
+  authority를 Cranelift ObjectModule AOT와 Cranelift in-memory JIT로 교체했다.
+- Deeplus MIR의 의미 정본 지위와 backend-neutral HIR-H1 경계를 유지하고,
+  CLIF·native layout·register·relocation은 검증된 MIR 이후의 비정본
+  projection으로 한정했다.
+- native projection receipt에 target, ISA settings, module kind, runtime ABI,
+  optimization, object/linker 또는 JIT import identity를 결합하도록 했다.
+- product lane은 두 native lane의 identity만 교체해 정확히 15개를
+  유지했으며, 모든 lane은 `NOT_RUN`이다.
+- 기존 OPEN feature P1 22건은 추가·폐쇄·재번호화하지 않았다.
+
 ## r51f3-current-trait-operator-refinement-r1 — 2026-07-28
 
 - Adopt the guarded Trait Conformance successor surface: `type ... conforms`,

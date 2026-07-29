@@ -31,11 +31,11 @@ prove compiler or runtime support.
 - Deeplus MIR is the canonical semantic authority.
 - Use the xVM bytecode interpreter for initial development, validation, and the
   REPL.
-- Use LLVM AOT as the initial native backend.
-- Add LLVM ORC JIT later, after proving MIR-observable equivalence with xVM and
-  LLVM AOT.
+- Use Cranelift ObjectModule AOT as the initial native backend.
+- Add Cranelift JITModule later, after proving MIR-observable equivalence with xVM and
+  Cranelift ObjectModule AOT.
 - If a target-baseline receipt is absent, report the relevant parser, integrated
-  checker, MIR, xVM, LLVM, formatter/LSP, independent-conformance, or user-study
+  checker, MIR, xVM, Cranelift, formatter/LSP, independent-conformance, or user-study
   lane as NOT_RUN.
 
 Never infer product support from a Stable design label, a static verifier PASS,

@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 39,
+  "law_count": 41,
   "laws": [
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
@@ -78,12 +78,12 @@
     },
     {
       "id": "USR-ARCHITECTURE",
-      "law": "The frontend, HIR, MIR and xVM are implemented in Rust; Deeplus MIR is semantic authority; xVM interprets bytecode; LLVM provides AOT and later ORC JIT.",
+      "law": "The implementation language for the frontend, HIR, MIR, xVM and native backend is Rust. Deeplus MIR is the semantic authority. xVM remains the initial development, validation and REPL path. The native backend is Cranelift: one shared verified-MIR-to-CLIF lowering feeds ObjectModule AOT and JITModule in-memory execution. CLIF, object layout, native calling convention, relocation, symbol spelling and machine addresses are backend-private projections. Error, Defect, Cancellation, cleanup, suspension and observable ordering remain explicit MIR responsibilities. Product lanes remain NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT",
       "ratification_status": "CURRENT_USER_DIRECTION",
-      "source_evidence": "current conversation decision",
-      "effective_revision": "R51f3"
+      "source_evidence": "current conversation decision; decisions/language/Design_Deeplus_Cranelift_Backend_Adoption_R1.md",
+      "effective_revision": "r51f3-current-cranelift-backend-r1"
     },
     {
       "id": "DSGN-RIGHTWARD-BINDING",
@@ -233,12 +233,30 @@
     },
     {
       "id": "DSGN-CURRENT-ACTOR-CONCURRENCY",
-      "law": "Actors own isolated state and a mailbox with one mutating turn at a time. An omitted MailboxClause selects logical_unbounded_v1; #mailbox(capacity: N) selects bounded_reject_v1 and immediately returns ActorMessageError::mailboxFull when full. One-way message expressions have exact type Result<Unit, error ActorMessageError>; requests have exact immediate type Result<Task<T>, error ActorMessageError> and the Task is extracted before await. Only a successfully admitted actor-request Task<T> carries the non-forgeable typed-HIR/module-API/MIR TaskResponsibility descriptor, so its normalized result type, handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and receiverClosedBeforeReply terminal failure remain preserved without introducing a second visible Task type parameter; an ordinary async Task<T> carries no actor transport descriptor. Rejection before enqueue commit retains moved owners and allocates no channel_sequence; commit transfers each owner exactly once and allocates a strictly increasing sequence in the exact sender/receiver/mailbox-profile FIFO key. Cancellation remains distinct before and after commit, request/reply remains correlated and single-terminal, tasks remain structurally scoped, and product execution remains NOT_RUN.",
+      "law": "Actors own isolated state and a mailbox with one mutating turn at a time. An omitted MailboxClause selects logical_unbounded_v1; #mailbox(capacity: N) selects bounded_reject_v1 and immediately returns ActorMessageError::mailboxFull when full. One-way message expressions have exact type Result<Unit, error ActorMessageError>; requests have exact immediate type Result<Reply<T>, error ActorMessageError> and the Reply is extracted before one-shot await. A successfully admitted Reply<T> carries the non-forgeable typed-HIR/module-API/MIR ReplyResponsibility descriptor with normalized result type, handler ErrorSet, cancellation axis, isolation owner, ReplyId, request correlation identity, and receiverClosedBeforeReply terminal failure. Module API records the ReplyId and correlation identity as per-value non-forgeable policy markers rather than concrete runtime identities. Spawn-created structured execution is instead Run<T>, is owned by the nearest ConcurId, and never carries actor correlation or transport responsibility. Rejection before enqueue commit retains moved owners and allocates no channel_sequence; commit transfers each owner exactly once and allocates a strictly increasing sequence in the exact sender/receiver/mailbox-profile FIFO key. Cancellation remains distinct before and after commit, request/reply remains correlated and single-terminal, Run and Reply are never implicitly interchangeable, and product execution remains NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
-      "source_evidence": "Issue #28 cross-role audit, spec/contracts/actor-concurrency-coherence.json, and user canonicalization direction",
-      "effective_revision": "r51f3-current-operator-function-static-coherence-r1"
+      "source_evidence": "Issue #28 cross-role audit; five Supp concurrency/role/shared-state reviews; decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
+      "effective_revision": "r51f3-current-concur-role-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-OWNER-ATTACHED-ROLE-COHERENCE",
+      "law": "A source #role is owned by the immediately preceding construct and is admitted only by that owner's exact closed role and sequence table. Unknown, duplicate, cross-owner, open-provider and undefined role combinations produce no admitted HIR. Existing def, callable, let#lazy, Enum order, mailbox and bitfield tag contracts retain their owner-specific meaning; this law does not introduce class#sealed, if#likely, var#atomic, arbitrary provider roles or general role arguments. Async iteration uses the exact built-in for#await owner role, while ordinary await remains a distinct prefix expression. Semantically relevant roles survive in typed HIR/MIR or an explicit lowering receipt; an erasable hint may be dropped only when the owner contract classifies it as nonsemantic. Product execution remains NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Supp_Deeplus_Owner_Attached_Static_Role_System_Design_Review_R1.zip; decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
+      "effective_revision": "r51f3-current-concur-role-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-CONCUR-RUN-SHARED-STATE-COHERENCE",
+      "law": "concur is the sole Stable lexical structured-concurrency owner and automatically parallelizes nothing; only spawn creates one ConcurRunId and Run<T>. await asyncInvocation executes under the current ExecutionId, while spawn asyncInvocation creates one owner-bound run after complete precommit evaluation. The initial concur-local #async lambda is nonescaping, admits only empty or proven reusable explicit copy capture, and is consumed only by local/nested-inward await or spawn; general escaping async literals remain Preview Design. task scope, task group and the mixed Task<T> handle are removed without compatibility aliases. RunGroup<T> is Preview Design nonactivatable and, if later activated, is an owner-bound homogeneous observation carrier rather than a second lifetime owner. SharedCell and SharedMutex constructors remain ordinary type-side calls, while withValue, replace and withLock use receiver-bound ~ Message calls. Their callback type keeps the Stable #scoped profile; source binders are borrow/inout and receive invocation-owned, nonescaping, nonsuspending access. Semantic P0 remains 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "DESIGNER_ACCEPTED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "Five Supp concurrency/role/shared-state reviews; decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
+      "effective_revision": "r51f3-current-concur-role-coherence-r1"
     },
     {
       "id": "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE",
@@ -305,7 +323,7 @@
     },
     {
       "id": "DSGN-CURRENT-EXACT-NUMERIC-COMPANION-HIR-H1-COHERENCE",
-      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep, bare Complex normalizes to Complex<Float64>, and attached floating 3.0 + 4.0i is canonical. Float is a closed alias of Float64. UInt is the distinct default unsigned semantic domain 0..2^64-1, not an alias of UInt64 and not eligible for the negative literal adapter. Rational supplies the Stable +,-,*,/,%,Eq,Ord profile; a zero divisor raises ArithmeticDefect before commit, while named dividedBy remains the recoverable checked API. Complex supplies its closed arithmetic and existing equality profile but never Ord. Scalar real/Complex ^ remains a closed static intrinsic. The type-directed std::math elementary facade is a bounded STDLIB_PROFILE. Integer-magnitude 4i and std::math special/calculus families remain PREVIEW_DESIGN. Static capability lookup and the verified HIR-H1 boundary remain as previously adopted; MIR-X1 implementation, backend switch and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
+      "law": "Rational is an always-available exact stdlib-backed value over a normalized BigInt pair and <p/q> is its expression-prefix transactional literal. Complex admits exactly Float32/Float64 Rep, bare Complex normalizes to Complex<Float64>, and attached floating 3.0 + 4.0i is canonical. Float is a closed alias of Float64. UInt is the distinct default unsigned semantic domain 0..2^64-1, not an alias of UInt64 and not eligible for the negative literal adapter. Rational supplies the Stable +,-,*,/,%,Eq,Ord profile; a zero divisor raises ArithmeticDefect before commit, while named dividedBy remains the recoverable checked API. Complex supplies its closed arithmetic and existing equality profile but never Ord. Scalar real/Complex ^ remains a closed static intrinsic. The type-directed std::math elementary facade is a bounded STDLIB_PROFILE. Integer-magnitude 4i and std::math special/calculus families remain PREVIEW_DESIGN. Static capability lookup and the verified HIR-H1 boundary remain as previously adopted. The separately authorized Cranelift backend replacement changes no numeric meaning; MIR-X1 implementation and every product lane remain nonactivatable or NOT_RUN. Semantic P0 remains 0 and the exact existing feature P1 set remains 22 OPEN.",
       "status": "CURRENT",
       "authority_origin": "DESIGNER_ACCEPTED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",

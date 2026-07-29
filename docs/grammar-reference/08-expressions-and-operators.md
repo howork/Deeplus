@@ -11,7 +11,7 @@ precedence, glyph dispatch는 닫혀 있다.
 
 예제는 corpus의 `expected_outcome: accept`,
 `source_activation: none`인 항목이다. 제품 parser/checker/HIR/MIR/xVM/
-LLVM/formatter/LSP 실행은 `NOT_RUN`이다.
+Cranelift/formatter/LSP 실행은 `NOT_RUN`이다.
 
 > 이 장의 조각 예제에 선언 없이 나타나는 `assert`는 canonical source
 > API가 아니라 [문서 fixture의 test oracle](../guide/example-host-adapters.md)이다.
@@ -381,7 +381,7 @@ runtime dispatch/fallback은 존재하지 않는다.
 
 이 `STABLE_DESIGN` 판정은 source activation이나 제품 실행 증거가 아니다.
 제품 상태는 `15/15 NOT_RUN`이며, 문서에 plan 이름이 존재한다는 이유로
-parser, checker, HIR lowerer, MIR lowerer, xVM 또는 LLVM support를 주장할
+parser, checker, HIR lowerer, MIR lowerer, xVM 또는 Cranelift support를 주장할
 수 없다.
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -524,7 +524,7 @@ overflow, divide-by-zero, `IndexError` 등 commit 전 실패는 원래 값을
 보존한다.
 
 prefix `move`는 owner를 이전하고 `borrow`/`&`는 허용된 borrow/view 책임만
-만든다. `await`는 suspension과 structured-task 효과를 보존한다.
+만든다. `await`는 suspension과 structured-concurrency 효과를 보존한다.
 
 ### `String::render`와 interpolation의 경계
 
