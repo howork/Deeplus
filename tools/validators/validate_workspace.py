@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Static closure validator for the Deeplus current or candidate workspace."""
 
+# Keep canonical validator bytes LF-normalized so bound-root hashes agree in CI.
 from __future__ import annotations
 
 import argparse
