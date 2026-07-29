@@ -6,25 +6,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "AWAIT_REQUIRES_ASYNC_TASK_CONTROL",
-    "diagnostic_maturity": "retired",
-    "diagnostic_status": "retired",
+    "diagnostic_id": "AWAIT_REQUIRES_ASYNC_CONTEXT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
       "async_function_declaration_surface"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "",
-    "message": "This diagnostic is not emitted by current Deeplus.",
-    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "fixit_hint": "move await into def#async or a bounded concur-local #async literal",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not introduce implicit suspension",
+    "message": "await requires an admitted asynchronous execution context.",
+    "notes": "Current source diagnostic contract; product emission receipt remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "note",
-    "stage": "design_static",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "historical"
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",

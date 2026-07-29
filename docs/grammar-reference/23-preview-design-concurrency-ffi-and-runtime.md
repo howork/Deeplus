@@ -37,8 +37,9 @@ isolation과 callable ABI를 한 identity에 담을 수 있어야 한다.
 
 **정적 판정과 상호작용**
 call-shape, capture descriptor, error/effect/cancellation, isolation,
-return ownership과 task owner를 닫아야 한다. named `def#async`, restricted
-`spawn async` body와 ordinary closure는 각각 별도 current owner이며,
+return ownership과 execution owner를 닫아야 한다. named `def#async`,
+`concur`-local restricted `#async` lambda와 ordinary closure는 각각 별도
+current owner이며,
 marker가 서로를 암시적으로 변환하지 않는다.
 
 **평가·소유권·오류**
@@ -49,14 +50,14 @@ failure/Cancellation ordering을 보존해야 한다. 현행은
 `NOT_RUN`이다.
 
 **현행 대안과 이행**
-이름 있는 `def#async` declaration과 lexical `spawn async` task body가
+이름 있는 `def#async` declaration과 lexical `spawn` body가
 대안이다. migration은 named function을 literal로 inline하거나 ordinary
 closure에 async marker를 자동 추가하지 않는다. LSP는 capture, suspension,
 error와 cancellation channel을 별도로 표시해야 한다.
 
 **활성화 선행 조건**
 exact root/grammar와 diagnostic, callable ABI와 capture/ownership calculus,
-HIR/MIR lowering, cancellation/cleanup corpus, formatter/LSP와 xVM/LLVM
+HIR/MIR lowering, cancellation/cleanup corpus, formatter/LSP와 xVM/Cranelift
 target receipt가 필요하다. 정적 예시는 제품 evidence가 아니다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/type-flow-callable-coherence.json -->
@@ -92,7 +93,7 @@ unbounded source를 List로 수집, 경계는 첫 failure와 pending cancellatio
 **정적 판정과 상호작용**
 current collector는 sequential/source-order/fail-fast/cancel-pending/
 buffer-one 정책과 정확한 `ES | ET` error set을 요구한다. comprehension이
-`for await`, generator, ordinary List comprehension이나 async callable
+`for#await`, generator, ordinary List comprehension이나 async callable
 literal을 자동 활성화하지 않아야 한다.
 
 **평가·소유권·오류**
@@ -102,7 +103,7 @@ List를 publish하지 않고 Cancellation을 Error로 접지 않는다. 전용 s
 diagnostic는 미결이며 product collector/runtime은 `NOT_RUN`이다.
 
 **현행 대안과 이행**
-`for await` statement와 `AsyncCollector::list`가 대안이다. migration은
+`for#await` statement와 `AsyncCollector::list`가 대안이다. migration은
 loop를 comprehension으로 자동 축약하거나 policy를 추측하지 않고
 finiteness/error/cancellation 책임을 report한다. IDE는 source와 transform
 failure를 분리한다.
@@ -425,14 +426,21 @@ implicit channel, cancellation leak이나 cleanup 생략을 허용하지 않아�
 
 **제안 표면**
 group/direction source route와 protocol API는 미선정이다. 아래는 current
-`task scope`와 child handle을 명시하는 대안이다. 양성 검토는 lexical
+`concur`와 child `Run<T>`을 명시하는 대안이다. 양성 검토는 lexical
 owner와 compatible direction, 음성은 detached/escaping child, 경계는
 한 child failure가 반대 방향의 blocked child를 취소하는 경우다.
+
+동종 `Run<T>`을 하나의 `ConcurId` 안에서 관찰하는 `RunGroup<T>`도 별도
+Preview Design 후보지만 directed coroutine group과 같은 개념은 아니다.
+그 후보는 collection value일 뿐 lexical lifetime owner가 아니며,
+race, quorum, completion-order, concurrency limit와 backpressure
+기본값을 아직 갖지 않는다. 따라서 이 장의 두 후보는 서로를
+활성화하지 않는다.
 
 **정적 판정과 상호작용**
 direction compatibility, endpoint identity, structured scope, effect/error/
 cancellation, send/request와 ownership transfer를 닫아야 한다. ordinary
-task group, actor mailbox와 session protocol을 암시적으로 directed
+`concur`, actor mailbox와 session protocol을 암시적으로 directed
 coroutine으로 바꾸지 않는다.
 
 **평가·소유권·오류**
@@ -443,8 +451,8 @@ order와 무관해야 하며 endpoint owner를 유실하지 않는다. 현행은
 없고 제품은 `NOT_RUN`이다.
 
 **현행 대안과 이행**
-`task scope`, current task group, explicit channel과 actor protocol이
-대안이다. migration은 tasks를 자동 directed group으로 묶지 않고 owner,
+`concur`, explicit channel과 actor protocol이
+대안이다. migration은 runs를 자동 directed group으로 묶지 않고 owner,
 escape와 cancellation graph를 report한다. debugger는 child/endpoint
 관계를 표시해야 한다.
 
@@ -466,9 +474,9 @@ MIR identity, race/deadlock mutation corpus와 cross-backend receipt가
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
 // 현행 명시적 대안: 모든 child의 lexical owner와 join이 보인다.
-task scope {
-    let producer = spawn async { => await produce() }
-    let consumer = spawn async { => await consume() }
+concur {
+    let producer = spawn produce()
+    let consumer = spawn consume()
     await producer
     await consumer
 }
@@ -560,7 +568,7 @@ let text = @match payload {
 불가피한 legacy, dynamic 또는 unsafe 작업의 authority와 escape를 하나의
 lexical owner에 가두려는 수용된 최소 설계다. safety laundering 없이
 typed immutable 결과만 내보내고 outer mutation, suspension과 resource/
-pointer/borrow/closure/task/actor escape를 금지한다.
+pointer/borrow/closure/run/actor escape를 금지한다.
 
 **제안 표면**
 `@scope#dynamic` 또는 `@scope#unsafe`와 typed export는 nonactivatable
@@ -588,7 +596,7 @@ lossless하게 보존한다.
 
 **활성화 선행 조건**
 provenance/authority calculus, exact escape/suspension proof, MIR owner와
-cleanup, deterministic diagnostics, xVM/LLVM differential corpus,
+cleanup, deterministic diagnostics, xVM/Cranelift differential corpus,
 security review와 별도 Design_ activation이 필요하다. 제품은 `NOT_RUN`이다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/quarantine-scope.json -->
@@ -933,7 +941,7 @@ receipt가 필요하다.
 // 현행 명시적 대안: application owner가 initialization과 shared cell을 소유한다.
 let initial = Cache!()
 let cacheCell = SharedCell::new(move initial)
-let summary = cacheCell.withValue() { borrow cache => summarize(cache) }
+let summary = cacheCell ~ withValue { borrow cache => summarize(cache) }
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
@@ -981,7 +989,7 @@ current sequentially consistent `SharedCell`, receiver-bound
 IDE는 selected ordering과 synchronization edge를 표시한다.
 
 **활성화 선행 조건**
-ratified memory model와 ordering lattice, xVM/LLVM semantic parity, target
+ratified memory model와 ordering lattice, xVM/Cranelift semantic parity, target
 codegen constraints, litmus/race suite, reproducible artifact-bound receipts와
 별도 activation authority가 필요하다.
 
@@ -999,7 +1007,7 @@ codegen constraints, litmus/race suite, reproducible artifact-bound receipts와
 ```deeplus
 // 현행 명시적 대안: scoped SharedMutex가 current ordering을 소유한다.
 let mutex = SharedMutex::new(move state)
-mutex.withLock() { inout protected =>
+mutex ~ withLock { inout protected =>
     protected.count += 1
 }
 ```

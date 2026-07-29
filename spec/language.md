@@ -21,7 +21,7 @@ The current authority order is:
 
 Where an example or generated registry contradicts this document, the contradictory artifact is defective and must be regenerated. Non-current reports and diagnostic identities never override current rules.
 
-Language-design maturity is separate from product support. `STABLE_DESIGN` means the rule is part of current language design; it does not mean that a Rust parser, checker, xVM, or LLVM backend has executed it. `PREVIEW` requires an explicit source gate. `PREVIEW_DESIGN` is nonactivatable. `STDLIB_PROFILE` and `OFFICIAL_TOOLING` do not create core syntax.
+Language-design maturity is separate from product support. `STABLE_DESIGN` means the rule is part of current language design; it does not mean that a Rust parser, checker, xVM, or Cranelift backend has executed it. `PREVIEW` requires an explicit source gate. `PREVIEW_DESIGN` is nonactivatable. `STDLIB_PROFILE` and `OFFICIAL_TOOLING` do not create core syntax.
 
 # Part I — Source text, lexical ownership, and files
 
@@ -216,7 +216,7 @@ loadConfig() -> $config: Config   // let config: Config = loadConfig()
 openCounter() -> $$counter        // var counter = openCounter()
 ```
 
-The CST preserves the arrow, `$`/`$$`, annotation, spans, and trivia. Before semantic checking, `$` normalizes to ordinary `let` and `$$` to ordinary `var`. The initializer is evaluated exactly once under the pre-binding environment; the fresh name is committed only after successful initialization. Type inference, coercion, ownership, borrow regions, effects, failure, cleanup, shadowing, and scope are exactly those of ordinary local binding. Only one fresh identifier target is admitted, only as a statement; chaining, pattern/place/member/index targets and guard attachment are rejected. No flow-binding AST/HIR/MIR/xVM/LLVM node exists. A `yield ... -> $x` still owns its suspension/resume event, then performs the same ordinary response binding after resume.
+The CST preserves the arrow, `$`/`$$`, annotation, spans, and trivia. Before semantic checking, `$` normalizes to ordinary `let` and `$$` to ordinary `var`. The initializer is evaluated exactly once under the pre-binding environment; the fresh name is committed only after successful initialization. Type inference, coercion, ownership, borrow regions, effects, failure, cleanup, shadowing, and scope are exactly those of ordinary local binding. Only one fresh identifier target is admitted, only as a statement; chaining, pattern/place/member/index targets and guard attachment are rejected. No flow-binding AST/HIR/MIR/xVM/Cranelift node exists. A `yield ... -> $x` still owns its suspension/resume event, then performs the same ordinary response binding after resume.
 
 Properties use the exact `get` and `set(name)` accessor productions. An
 optional member-visibility sigil attaches to each accessor, so `+get`, `-get`,
@@ -1058,7 +1058,7 @@ but it does not ban module, Prelude, or other separately authorized names.
 The current bare `[name]` capture item remains an explicit-capture compatibility
 surface and is never reinterpreted as lexical access.
 
-`def#guard`, async/generator/task/actor owners, suspension, isolation crossing,
+`def#guard`, async/generator/concur/actor owners, suspension, isolation crossing,
 mutation, move/consume, snapshot, lifetime extension, and unknown escape proof
 are excluded from the initial lexical profile. A `#pure` lexical callable may
 observe only an immutable pure-readable ancestor place. Between two calls an
@@ -1211,27 +1211,27 @@ Enum pattern admission resolves the `VariantId` in the scrutinee's Enum owner an
 
 RCTS-V5 is the closed design descriptor family for checker/reference handoff. It records source kind, normalized type, call shape, ownership, effects, errors, cancellation, labels, shape/rank/orientation, evidence, and MIR responsibility as required by each predicate. Static validator PASS is design-static evidence only.
 
-Dyn-RCTS remains `PREVIEW_DESIGN` and nonactivatable. RCTS means a Runtime Checked Type-and-Shape descriptor. The minimum design is an owned checked carrier for an explicitly open-world boundary: packing is explicit; descriptor matching uses exact nominal identity, profile version, and provenance; a successful cast transfers the payload owner exactly once; a mismatch returns typed mismatch information together with the original carrier and restored ownership; every terminal path drops exactly once. Structural guessing, conversion retry, unchecked reinterpretation, runtime Trait witness synthesis, and hidden fallback are forbidden. A closed Union remains the preferred representation when the complete alternative set is statically known. Borrowed carriers, actor/task transfer, FFI/plugin ABI, zero-copy sharing, reflection, dynamic Trait attachment, source spelling, and MIR opcode selection remain deferred.
+Dyn-RCTS remains `PREVIEW_DESIGN` and nonactivatable. RCTS means a Runtime Checked Type-and-Shape descriptor. The minimum design is an owned checked carrier for an explicitly open-world boundary: packing is explicit; descriptor matching uses exact nominal identity, profile version, and provenance; a successful cast transfers the payload owner exactly once; a mismatch returns typed mismatch information together with the original carrier and restored ownership; every terminal path drops exactly once. Structural guessing, conversion retry, unchecked reinterpretation, runtime Trait witness synthesis, and hidden fallback are forbidden. A closed Union remains the preferred representation when the complete alternative set is statically known. Borrowed carriers, actor/concur transfer, FFI/plugin ABI, zero-copy sharing, reflection, dynamic Trait attachment, source spelling, and MIR opcode selection remain deferred.
 
 # Part VII — Async, actors, metaprogramming, and external boundaries
 
-## 37. Async functions, tasks, and suspension
+## 37. Async functions, concur regions, runs, and suspension
 
-Current async declarations use the admitted `def#async` owner. Await is explicit. Task spawning through `~ spawn` has one syntax owner: the stable message-mode `TildeCallLed` shape, with HIR deciding the reserved operation plan. A second task-spawn suffix owner is forbidden.
+Current async declarations use the admitted `def#async` owner, and `await` is always explicit. `concur { ... }` is the sole lexical structured-concurrency owner. Inside that owner, `spawn { => ... }` admits an inline run body and `spawn asyncInvocation(...)` admits one statically selected async invocation directly. The latter lowers without synthesizing a forwarding closure, forwarding `await`, or nested handle. A bare async invocation starts no background execution: `await invocation` executes it in the current execution, while `spawn invocation` creates one child run. `spawn` rejects synchronous expressions, existing handles, and redundant `spawn async { ... }` spelling. The ordinary message selector `receiver ~ spawn ...` remains a message call and is not reinterpreted as structured `SpawnExpr`.
 
-Every current task belongs to a lexical structured scope. A scope records parent task, child-set, cancellation state, failure order, and cleanup obligations; it cannot return until admitted children reach a terminal state and required cleanup completes. Deeplus has no detached-task authority. Cancellation is an explicit control axis and terminal task outcome, never an Error value. Delivery is monotonic and idempotent, cleanup cannot be bypassed, and a later secondary failure is retained in deterministic suppressed order rather than replacing the primary outcome.
+Every successful structured spawn belongs to its nearest lexical `concur` owner and returns `Run<T>`. A `Run<T>` is an affine, one-shot observation handle for that child execution; it preserves result, normalized ErrorSet, Cancellation, isolation, cleanup, and terminal responsibility, cannot escape its owning `concur`, and carries no actor-request correlation or transport responsibility. The owner records its child runs, deterministic lexical `spawn_index` order, cancellation state, failure order, and cleanup obligations; it cannot finish until every admitted child is terminal and required cleanup completes. Deeplus has no detached-run authority. Cancellation is an explicit control axis and terminal run outcome, never an Error value. Delivery is monotonic and idempotent, cleanup cannot be bypassed, and later secondary failures are retained in deterministic suppressed order rather than replacing the primary outcome. `RunGroup<T>` is only a nonactivatable Preview aggregation design and never a second lexical owner.
 
-Suspension points preserve borrow/ownership rules, cleanup obligations, actor isolation, cancellation responsibility, and failure ordering. A borrow or probe binding may cross suspension only when its region and isolation proof explicitly permit it. Async callable literals and async comprehensions remain Preview-design.
+The bounded Stable `#async { ... }` lambda profile is admitted only inside a `concur` owner. It is bound to that owner, is nonescaping, and may be consumed only by a local `await`, a local `spawn`, or an inward nested `concur` use with the same proven ownership chain. Its initial capture profile is empty or an explicit reusable `copy` plan; implicit outer dependency, `borrow`, `inout`, `move`, `clone`, `deep`, actor-isolated reference, scoped access, storage, return, export, and outward or sibling transfer are rejected. General escaping first-class async lambdas remain Preview Design and nonactivatable. Suspension points preserve borrow/ownership rules, cleanup obligations, actor isolation, cancellation responsibility, and failure ordering. A borrow or probe binding may cross suspension only when its region and isolation proof explicitly permit it. Async comprehensions remain Preview Design; admitted asynchronous iteration uses the attached `for#await` role.
 
 ## 38. Actors and messages
 
 An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. `:~` is the Stable actor-transport call mode; it statically selects an `on` or `request` operation and never falls back to an ordinary message or method. It evaluates the actor receiver and every ordinary call argument left-to-right exactly once, binds the selected formals, proves transfer and isolation, stages one compiler-internal envelope, and commits ownership plus one channel sequence only after all preconditions succeed. A precommit failure publishes no envelope or sequence and retains every sender owner. `:~` itself neither suspends nor retries. Trailing closures are separate call channels: the shared surface does not make a closure transferable. Any closure crossing actor isolation must independently satisfy capture, transfer, suspension, effect, error, and cleanup admission. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
 
-`ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way `:~` expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies explicit `await`. If an `on` and a `request` have the same selector and canonical call shape, the declaration, protocol composition, or link is rejected rather than using the expected result type to choose. Only a successfully admitted actor-request `Task<T>` is accompanied in typed HIR, module API digest, and MIR by a non-forgeable `TaskResponsibility` descriptor containing the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and terminal transport failure; an ordinary async `Task<T>` carries no actor transport descriptor. The module API digest records the static `correlation_id = per_value_non_forgeable` policy marker rather than a concrete runtime identity; each committed request obtains its distinct value-level correlation identity in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Task` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family. An actor `:~` call is not admitted in `defer`, because its immediate admission result cannot be silently discarded.
+`ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way `:~` expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Reply<T>, error ActorMessageError>`; source extracts the admitted reply handle and only then applies one-shot explicit `await`. If an `on` and a `request` have the same selector and canonical call shape, the declaration, protocol composition, or link is rejected rather than using the expected result type to choose. Every successfully admitted actor request carries in typed HIR, module API digest, and MIR a non-forgeable `ReplyResponsibility` descriptor containing exactly the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, reply identity, request correlation identity, and terminal transport failure. `Reply<T>` is the only source handle for that responsibility; it neither converts to `Run<T>` nor shares a spawned run's responsibility descriptor. The module API digest records static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers rather than concrete runtime identities; each committed request obtains its distinct value-level reply and correlation identities in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Reply` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that reply handle terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family. An actor `:~` call is not admitted in `defer`, because its immediate admission result cannot be silently discarded.
 
 The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. Its `next` channel throws the bound source failure set `E`; cancellation is a separate control outcome. `AsyncCollector::list<T, U, ES, ET>` accepts a finite `AsyncSequence<T, ES>` and a named asynchronous transform that throws `ET`. Its declaration repeats `throws ES throws ET`, which normalizes to the exact ErrorSet union `ES | ET`; it cannot erase either failure channel or fold cancellation into that union.
 
-The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured task ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
+The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured concur ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
 
 Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T>` supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
 
@@ -1246,13 +1246,13 @@ surface for these compiler trees.
 The proposed `@scope#dynamic` / `@scope#unsafe` quarantine family is retained as
 nonactivatable Preview Design. Its minimum sound profile requires typed
 immutable export, forbids outer mutation, suspension and every
-pointer/authority/borrow/resource/closure/task/actor escape, and preserves one
-Deeplus MIR meaning across xVM and LLVM. Source activation waits for provenance,
+pointer/authority/borrow/resource/closure/concur/actor escape, and preserves one
+Deeplus MIR meaning across xVM and Cranelift. Source activation waits for provenance,
 authority, escape and backend-equivalence proof.
 
-FFI/unsafe/native interop remains Preview. Foreign ABI, layout, provenance, callbacks, variadics, unwind behavior, ownership transfer, and cleanup must be explicit before promotion. No current Stable design implies that the LLVM backend alone makes an FFI sound.
+FFI/unsafe/native interop remains Preview. Foreign ABI, layout, provenance, callbacks, variadics, unwind behavior, ownership transfer, and cleanup must be explicit before promotion. No current Stable design implies that the Cranelift backend alone makes an FFI sound.
 
-# Part VIII — MIR, xVM, LLVM, Prelude, and profiles
+# Part VIII — MIR, xVM, Cranelift, Prelude, and profiles
 
 ## 41. Canonical implementation architecture
 
@@ -1267,11 +1267,12 @@ Deeplus source
   -> ExecutableHirH1 (capability receipt)
   -> Deeplus MIR (canonical Deeplus semantic authority)
   -> Rust xVM bytecode + xVM interpreter for initial development, validation, and REPL
-  -> LLVM AOT for the initial native backend
-  -> LLVM ORC JIT for later high-performance execution
+  -> one verified MIR-to-CLIF projection
+       -> Cranelift ObjectModule AOT for native objects
+       -> Cranelift JITModule for in-memory native execution
 ```
 
-Rust source, xVM bytecode, and LLVM IR are not semantic authorities. Every backend must preserve MIR-observable evaluation order, failure, cleanup, suspension, message, provider, ownership, and result behavior.
+Rust source, xVM bytecode, and Cranelift IR (CLIF) are not semantic authorities. Every backend must preserve MIR-observable evaluation order, failure, cleanup, suspension, message, provider, ownership, and result behavior.
 
 HIR-H1은 소스에 가까운 마지막 닫힌 의미 표현이다. 느슨한 AST에 phase
 flag를 붙이는 대신 분석 중간 상태와 MIR 입력 권위를 서로 다른 타입으로
@@ -1284,8 +1285,25 @@ capability receipt를 추가할 뿐 의미를 다시 결정하지 않는다.
 
 현재 정본은 이 HIR-H1 경계와 검증 법칙을 채택하지만, xVM-only MIR-X1
 RFC 자체는 noncanonical proposal로 남는다. 현재 backend authority는
-xVM initial, LLVM AOT, LLVM ORC JIT이며 Cranelift나 xVM-only 전환을
-추론하지 않는다.
+xVM initial, Cranelift ObjectModule AOT, Cranelift JITModule이다. 이
+정본에서 xVM-only 전환이나 superseded native backend 복귀를 추론하지
+않는다.
+
+Cranelift의 value, block, stack slot, signature, function/data reference,
+register, relocation, object section과 machine address는 HIR/MIR identity가
+아니다. Object AOT와 JIT는 하나의 MIR→CLIF lowering을 공유하며
+finalization, linking 및 code lifetime에서만 갈라진다. exact target
+triple, ISA/settings, Cranelift family, module kind, pointer/endianness,
+calling convention, runtime ABI, optimization, object/linker 또는 JIT import
+map은 target receipt에 고정한다. host default와 symbol order가 이 선택을
+대신할 수 없다.
+
+Deeplus Error, Defect, Cancellation, suspension과 cleanup은 명시적 MIR
+outcome/edge로 유지한다. native exception, personality, host unwind 또는
+임의 backend trap이 이를 새로 선택하지 못한다. managed reference가
+필요한 경로에서 stack-map 또는 stable-handle capability가 없으면 native
+lowering은 fail-closed한다. debug projection은 별도 debug digest를 쓰며
+언어 의미나 제품 지원을 만들지 않는다.
 
 ## 42. MIR handoff
 
@@ -1441,7 +1459,7 @@ Deeplus MIR is the canonical semantic handoff. Each accepted source construct mu
 
 The named-rest declaration and `Record***` function-type residue lower to a named-rest call-shape channel. The `**record` unfold expression lowers to label-row expansion in source evaluation order. It does not lower to iteration over map entries, and it cannot invent or reorder labels. `***` has no unfold MIR node; parameter/type `**` has no current MIR node.
 
-The xVM bytecode interpreter is the first executable oracle for development, validation, and REPL behavior, but it remains an implementation of MIR. LLVM AOT is the first native backend and LLVM ORC JIT is the later high-performance path. Backend optimization may erase representation details only after proving preservation of MIR-visible behavior. A passing design validator is not evidence that any of these products parsed, checked, lowered, or ran the feature.
+The xVM bytecode interpreter is the first executable oracle for development, validation, and REPL behavior, but it remains an implementation of MIR. Cranelift ObjectModule AOT is the first native backend and Cranelift JITModule is the later high-performance path. Backend optimization may erase representation details only after proving preservation of MIR-visible behavior. A passing design validator is not evidence that any of these products parsed, checked, lowered, or ran the feature.
 
 ## 52. Formatter, LSP, documentation, and API obligations
 
@@ -1461,7 +1479,7 @@ For the named-rest split, the minimum deterministic set contains accepted
 parameter `***`, accepted type residue `Record***`, accepted unfold `**record`,
 and a spaced infix `**` expression so the owner domains remain distinct.
 
-A design-static fixture states an expected outcome and checks registry/schema consistency. A parser receipt requires actual Rust parser execution over identified source bytes. A checker receipt additionally identifies diagnostics and normalized responsibility. A MIR receipt records canonical MIR or a stable digest. An xVM or LLVM receipt records runtime target, toolchain, exit/result behavior, and the MIR identity it executed. The publication must not synthesize a higher evidence lane from lower-lane success.
+A design-static fixture states an expected outcome and checks registry/schema consistency. A parser receipt requires actual Rust parser execution over identified source bytes. A checker receipt additionally identifies diagnostics and normalized responsibility. A MIR receipt records canonical MIR or a stable digest. An xVM or Cranelift receipt records runtime target, toolchain, exit/result behavior, and the MIR identity it executed. The publication must not synthesize a higher evidence lane from lower-lane success.
 
 Mutation tests must flip one authority at a time: Grammar token, Frontend owner, feature diagnostic reference, predicate rule, no-go row, example outcome, or documentation invariant. The verifier passes only when the intended rule detects each mutation. Hash manifests bind every current artifact; they are integrity evidence, not semantic execution evidence.
 
@@ -1473,7 +1491,7 @@ All Deeplus roles are bound by the following current-source directive:
 - Grammar and frontend owners preserve the exact `***` named-rest and `**`
   named-unfold owner split.
 - Type-system and checker owners preserve `Record***` in callable compatibility, RCTS descriptors, public API digests, and diagnostics.
-- Implementer and MIR owners create no AST, HIR, MIR, xVM, or LLVM current node from parameter/type `**`.
+- Implementer and MIR owners create no AST, HIR, MIR, xVM, or Cranelift current node from parameter/type `**`.
 - Formatter/LSP owners print and suggest `***` for named rest and `**` only for unfold; no configuration may reverse them.
 - Prelude, standard-library, example, and documentation owners publish only the current spelling.
 - Tester and critic roles include both directions of negative evidence and search the entire release for contradictory current claims.
@@ -1605,7 +1623,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED` [error]: Associated requirement projection cannot be resolved under the current witness/conformance environment.
 - `ASSOCIATED_REQUIREMENT_UNRESOLVED` [error]: Associated type/value requirement cannot be resolved in this witness or constraint environment.
 - `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` [error]: the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + repeated result clauses `throws ES throws ET` normalized to `ES | ET` + sequential/source/failFast/cancelPending/buffer1.
-- `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` [error]: Async/Task/Actor core is language-design stable but product support is NOT_RUN.
+- `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` [error]: Async/Concur/Run/Reply/Actor core is language-design stable but product support is NOT_RUN.
 - `AT_CONTROL_EXPR_REQUIRES_AT_PREFIX` [error]: Value-producing control expression requires @if/@match/@try/@scope spelling.
 - `AT_MATCH_ARM_RETURN_IS_NOT_RESULT` [error]: `return` exits the enclosing named function and is not an @match arm result.
 - `AT_MATCH_BLOCK_ARM_REQUIRES_RET` [error]: A block arm in value-producing @match must produce its local result with `ret` on every normal path.
@@ -1675,7 +1693,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `COMPARISON_CHAIN_OPERAND_HAS_EFFECTS` [error]: Comparison chain operands should not hide effects inside mathematical-looking predicates.
 - `COMPARISON_CHAIN_OPERATOR_MUST_BE_PURE` [error]: Comparison chain operators must be pure and no-throw.
 - `COMPARISON_CHAIN_OPERATOR_NOT_IN_PHASE_A` [error]: Comparison chains allow only <, <=, >, >= in the current profile.
-- `COMPREHENSION_FOR_AWAIT_REQUIRES_ASYNC_ITERATION` [error]: `for await` requires the async iteration design profile and does not imply general async task support.
+- `COMPREHENSION_FOR_ROLE_AWAIT_REQUIRES_ASYNC_ITERATION` [error]: `for#await` requires the async iteration design profile and does not imply detached or ownerless run support.
 - `CONDITION_HAS_EFFECTFUL_OPERAND` [error]: A condition operand has effects; use explicit sequencing or a pure guard.
 - `CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE` [error]: A root conformance evidence selector must resolve to exactly one visible coherent nominal conformance.
 - `CONFORMANCE_EXTENSION_DELEGATION_MUST_BE_EXPLICIT` [error]: Delegation from a conformance requirement to an extension selector must be explicit and fully identified.
@@ -1726,7 +1744,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `DELEGATING_CONSTRUCTOR_CANNOT_INITIALIZE_STORED_FIELD` [error]: A same-type delegating constructor body is post-init; it cannot initialize stored fields.
 - `DERIVATION_ENTRY_SEPARATOR_REQUIRED` [error]: Same-line derivation delta entries require comma; multi-line entries may use LayoutEntrySep when unambiguous.
 - `DETERMINISTIC_PRIMARY_SUPPRESSED_ORDER_VIOLATION` [error]: Failure selection or cleanup suppression order differs from the required source-order/reverse-cleanup algorithm.
-- `DETERMINISTIC_SUPPRESSED_ORDER_REQUIRED` [error]: Primary/suppressed failure ordering must be deterministic for cleanup, resource, and task aggregation profiles.
+- `DETERMINISTIC_SUPPRESSED_ORDER_REQUIRED` [error]: Primary/suppressed failure ordering must be deterministic for cleanup, resource, and concur-run aggregation profiles.
 - `DIAGNOSTIC_VALUE_NOT_ADMISSIBLE` [error]: Diagnostic payload values must be Plain snapshots without owner, resource, authority, borrow, or cleanup responsibility.
 - `DIAGNOSTIC_VALUE_REJECTS_AUTHORITY` [error]: Error/Defect payload cannot carry lifecycle/resource/raw/meta authority.
 - `DIAGNOSTIC_VALUE_REJECTS_RESOURCE` [error]: Error/Defect diagnostic payload cannot carry Resource owner.
@@ -1790,7 +1808,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `EXTENSION_SET_RECEIVER_MODE_UNSUPPORTED_IN_MSP` [error]: Named extension set MSP supports borrow receiver only.
 - `EXTENSION_SHADOWED_BY_MEMBER_COMPAT` [error]: the current profile compatibility profile selected the member slot while an active extension is shadowed; strict profile will require explicit selection.
 - `EXTENSION_USE_REEXPORT_STABLE_BUT_PRODUCT_NOT_RUN` [warning]: `use export` is stable design in the current profile; product parser/checker support remains NOT_RUN.
-- `FACET_BORROW_CROSSES_SUSPENSION` [error]: A Phase-A borrowed Facet cannot cross suspension, task, or actor boundaries.
+- `FACET_BORROW_CROSSES_SUSPENSION` [error]: A Phase-A borrowed Facet cannot cross suspension, concur execution, or actor boundaries.
 - `FACET_BORROW_ESCAPE_FORBIDDEN` [error]: A borrowed Facet cannot outlive its payload borrow region or cross an isolation boundary.
 - `FACET_CONCRETE_TYPE_SPELLING_FORBIDDEN` [error]: Facet<T as Trait> leaks the payload type; use Facet<borrow any Trait>.
 - `FACET_DROP_PLAN_NOT_PRESERVED` [error]: Owned Facet packaging must preserve the concrete payload drop plan exactly.
@@ -1914,13 +1932,13 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `LEGACY_SHORT_CIRCUIT_AND_OPERATOR_REMOVED` [error]: `&&` is not logical AND in Deeplus; use `and then` for short-circuit or `and` for strict Boolean AND.
 - `LEGACY_SHORT_CIRCUIT_OR_OPERATOR_REMOVED` [error]: `||` is not logical OR in Deeplus; use `otherwise` for short-circuit or `or` for strict Boolean OR.
 - `LET_PROPERTY_CANNOT_HAVE_SETTER` [error]: let property cannot have setter.
-- `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` [error]: A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/task/actor free, acyclic, and committed once.
+- `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` [error]: A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/concur/actor free, acyclic, and committed once.
 - `LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT` [error]: A library target cannot contain script computation; split declarations into a library or select an executable script target.
 - `LINEAR_ALGEBRA_STAR_PRODUCT_SPLIT` [error]: `*` is elementwise NumericArray multiplication, not rank-dependent matrix/vector product. Use `*+`, `**`, or a named API.
 - `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE` [error]: A List context may adapt an unsuffixed integer token or its direct prefix-minus mathematical candidate only when that candidate lies in the exact element domain.
 - `LIST_LITERAL_ELEMENT_JOIN_FAILED` [error]: Without an explicit expected element type, an ordinary List literal requires one normalized element type; automatic heterogeneous Union inference is not performed.
 - `LOCAL_IMPORT_RUNTIME_LOADING_FORBIDDEN` [error]: A block-local import is compile-time name visibility, never runtime module loading.
-- `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` [error]: A lexical dependency cannot cross a task, actor, FFI, or other isolation boundary.
+- `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` [error]: A lexical dependency cannot cross a concur execution, actor, FFI, or other isolation boundary.
 - `LEXICAL_DEPENDENCY_CROSSES_SUSPENSION` [error]: A lexical dependency cannot remain live across `await`, `yield`, or another suspension point.
 - `LEXICAL_DEPENDENCY_PLACE_NOT_LIVE` [error]: The ancestor place required by a lexical callable is not live and readable at this invocation.
 - `LOCAL_USE_RUNTIME_AUTHORITY_FORBIDDEN` [error]: A local use directive cannot acquire runtime authority or create evidence.
@@ -2101,7 +2119,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `QUALIFIED_EXTENSION_SELECTOR_UNKNOWN` [error]: The qualified extension selector does not resolve to a visible extension function or set member.
 - `QUARANTINE_EXPORT_REQUIRES_TYPED_IMMUTABLE_BINDING` [error]: A quarantine result may leave only through an explicitly typed immutable export.
 - `QUARANTINE_OUTER_MUTATION_FORBIDDEN` [error]: A quarantine scope may not mutate an outer place.
-- `QUARANTINE_RESOURCE_ESCAPE_FORBIDDEN` [error]: Pointers, authorities, borrows, resources, closures, tasks and actors may not escape a quarantine scope.
+- `QUARANTINE_RESOURCE_ESCAPE_FORBIDDEN` [error]: Pointers, authorities, borrows, resources, closures, concur-run handles, and actors may not escape a quarantine scope.
 - `QUARANTINE_SUSPENSION_FORBIDDEN` [error]: A quarantine scope may not suspend, await, yield or spawn.
 - `R0_GUARD_NOT_GUARD_SAFE` [error]: Declarative clause guards must be R0-safe: deterministic, sync, throws Never, effects {}, and built from the admitted R0 predicate subset.
 - `R0_GUARD_USES_WORD_BOOLEAN_OPERATORS` [error]: R0 guard predicates use the Boolean words `not`, `and`, and `or`; symbolic `!`, `&&`, and `||` are different or non-current operator families.
@@ -2176,7 +2194,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SCHEMA_ENTRY_SEPARATOR_REQUIRED` [error]: Same-line schema construction entries require comma; multi-line entries may use LayoutEntrySep when unambiguous.
 - `SCHEMA_PROJECTION_ROW_REQUIRED` [error]: Named unfolding requires a visible ProjectionRow for the schema value in this scope.
 - `SCOPED_ACTIVATION_SPEC_DUPLICATE` [error]: A scoped activation group contains the same normalized spec more than once.
-- `SCOPED_CALLABLE_ESCAPE_FORBIDDEN` [error]: A #scoped callable cannot be stored, returned, captured by an escaping continuation, or transferred to task/actor state.
+- `SCOPED_CALLABLE_ESCAPE_FORBIDDEN` [error]: A #scoped callable cannot be stored, returned, captured by an escaping continuation, or transferred to concur/actor state.
 - `SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN` [error]: #scoped callback borrow evidence cannot escape the receiving invocation region.
 - `SCOPED_EXTENSION_ACTIVATION_AMBIGUOUS` [error]: The active extension sets contain equally applicable selectors; nesting depth is not a priority.
 - `SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY` [error]: Scoped extension activation is lexical; use order is not a priority or tie-breaker.
@@ -2494,8 +2512,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 ## parser
 
 - `ANNOTATION_TARGET_REQUIRED` [error]: An annotation must be structurally attached to an annotatable declaration.
-- `ASYNC_CALLABLE_LITERAL_NOT_CURRENT` [error]: #async callable literals are PREVIEW_DESIGN/nonactivatable.
-- `ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED` [error]: A `for await` loop does not own a subjectless outcome match in the current profile.
+- `ASYNC_CALLABLE_LITERAL_REQUIRES_CONCUR_OWNER` [error]: A Stable bounded #async callable literal requires a nearest lexical concur owner; general escaping async callable literals remain Preview Design and nonactivatable.
+- `ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED` [error]: A `for#await` loop does not own a subjectless outcome match in the current profile.
 - `AT_EXACT_INTRODUCER_LINE_BREAK_FORBIDDEN` [error]: An exact @ introducer cannot cross a physical line break.
 - `BARE_CALL_ARGUMENT_MUST_BE_ATOMIC_OR_PARENTHESIZED` [error]: The bare argument before a trailing closure must be atomic or parenthesized.
 - `BARE_PARENLESS_ORDINARY_CALL_NOT_CURRENT` [error]: The surface `bare parenless ordinary call` is recognized but is not current Deeplus.
@@ -3470,7 +3488,7 @@ lane remains `NOT_RUN`.
                  },
                  {
                      "id":  "UC-11",
-                     "intent":  "transfer an open-world value across task or actor boundary",
+                     "intent":  "transfer an open-world value across concur or actor boundary",
                      "selected_source_mechanism":  "owned carrier plus Transferable or Shareable proof",
                      "dynamic_necessity":  "REQUIRED_FOR_OPEN_WORLD_PAYLOAD",
                      "explicit_authority":  "boundary proof and owner",

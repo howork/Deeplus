@@ -27,8 +27,8 @@ formatter, LSP 또는 product support authority를 만들지 않는다.
 - 현행 mixed-payload Enum과 marker reachability
 - explicit Trait conformance와 fixed-glyph operator
 - 함수 `static { ... }` activation
-- named `def#async`, structured task, actor
-- HIR-H1 verifier boundary와 current xVM/LLVM backend authority
+- named `def#async`, structured `concur`/`Run`, actor
+- HIR-H1 verifier boundary와 current xVM/Cranelift backend authority
 
 이 목록은 registry 전체를 대체하지 않는다. 정확한 708 feature row는
 feature catalog와 문법 참조 부록을 사용한다.

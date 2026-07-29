@@ -1250,25 +1250,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "STRUCTURED_TASK_SCOPE_REQUIRES_FEATURE_GATE",
-    "diagnostic_maturity": "retired",
-    "diagnostic_status": "retired",
+    "diagnostic_id": "SPAWN_REQUIRES_CONCUR_OWNER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "structured_task_scope"
+      "structured_concur_region"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "",
-    "message": "This diagnostic is not emitted by current Deeplus.",
-    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "fixit_hint": "move spawn into the nearest enclosing concur block",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "create no detached or implicitly owned run",
+    "message": "spawn requires one immediately enclosing concur owner.",
+    "notes": "Current source diagnostic contract; product emission receipt remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "note",
-    "stage": "design_static",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "historical"
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
@@ -1441,51 +1441,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "TASK_BODY_MINIMUM_GRAMMAR_SLICE_REQUIRES_FEATURE_GATE",
-    "diagnostic_maturity": "retired",
-    "diagnostic_status": "retired",
+    "diagnostic_id": "SPAWN_OPERAND_MUST_BE_ASYNC",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "task_body_minimum_grammar_slice"
+      "spawn_body_and_direct_async_invocation"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "",
-    "message": "This diagnostic is not emitted by current Deeplus.",
-    "notes": "Non-current diagnostic identity retained for reference integrity.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "related_feature_refs": [],
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "note",
-    "stage": "design_static",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "historical"
-  },
-  {
-    "authority": "LANGUAGE",
-    "authority_set": [
-      "LANGUAGE"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "TASK_GROUP_CHILDREN_MUST_BE_JOINED_OR_COLLECTED",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
-    "feature_refs": [
-      "source_truth_projection_unification"
-    ],
-    "fixit_hint": "insert await group ~ collect or document an implicit join law",
+    "fixit_hint": "pass an admitted asynchronous invocation or use the inline spawn body",
     "fixit_kind": "suggestion",
-    "fixit_policy": "insert await group ~ collect or document an implicit join law",
-    "message": "A task group with spawned children must expose join/collect/implicit-join policy explicitly in this profile.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "fixit_policy": "do not synthesize asynchronous execution for a synchronous operand",
+    "message": "The expression form of spawn requires a checker-selected asynchronous invocation.",
+    "notes": "Current source diagnostic contract; product emission receipt remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE",
@@ -1493,25 +1467,51 @@
       "LANGUAGE"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "TASK_GROUP_REQUIRES_PREVIEW",
-    "diagnostic_maturity": "retired",
-    "diagnostic_status": "retired",
+    "diagnostic_id": "RUN_GROUP_NOT_ACTIVATABLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "structured_task_scope"
+      "structured_concur_region"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "",
-    "message": "This diagnostic is not emitted by current Deeplus.",
-    "notes": "Non-current diagnostic identity retained for reference integrity.",
+    "fixit_hint": "use concur with individually named Run<T> values",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not activate RunGroup<T> without separate Design authority",
+    "message": "RunGroup<T> is Preview Design and nonactivatable; concur remains the sole lexical structured owner.",
+    "notes": "Current source guard; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "note",
-    "stage": "design_static",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "historical"
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE",
+    "authority_set": [
+      "LANGUAGE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUN_ALREADY_CONSUMED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "structured_concur_region"
+    ],
+    "fixit_hint": "await each Run value at most once",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "preserve the owning concur region and remove the repeated await",
+    "message": "A Run<T> is a one-shot concur child responsibility and has already been consumed.",
+    "notes": "Current source diagnostic contract; product emission receipt remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
@@ -1520,25 +1520,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "TASK_SPAWN_BODY_REQUIRES_TASK_BODY_PROFILE",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_id": "REDUNDANT_ASYNC_AFTER_SPAWN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "task_body_minimum_grammar_slice"
+      "spawn_body_and_direct_async_invocation"
     ],
-    "fixit_hint": "use TaskBody grammar or explicitly gate closure CaptureDescriptor",
-    "fixit_kind": "manual_review",
-    "fixit_policy": "use TaskBody grammar or explicitly gate closure CaptureDescriptor",
-    "message": "Task spawn in the R49 preview slice uses TaskBody, not the general nonactivatable closure literal production.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "fixit_hint": "write `spawn { => ... }` or `spawn asynchronousInvocation(...)`",
+    "fixit_kind": "machine_applicable",
+    "fixit_policy": "remove only the redundant async token",
+    "message": "spawn already establishes concur-owned asynchronous execution; `spawn async` is not an admitted spelling.",
+    "notes": "Current source diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",

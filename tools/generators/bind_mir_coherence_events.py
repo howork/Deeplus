@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bind current Pattern, task, Actor, and synchronization MIR evidence."""
+"""Bind current Pattern, Concur Run, Actor, and synchronization MIR evidence."""
 
 from __future__ import annotations
 
@@ -126,7 +126,7 @@ PATTERN_PROFILES = {
 PATTERN_PROFILE_BY_FIXTURE = {
     "MIR-POS-ALL-KINDS-001": "MATCH_BODY_COMPLETED",
     "MIR-POS-ACTOR-REJECTED-ADMISSION-001": "PATTERN_MISMATCH_PRECOMMIT",
-    "MIR-POS-TASK-SPAWN-ORDER-001": "DESTRUCTURING_BODY_COMPLETED",
+    "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001": "DESTRUCTURING_BODY_COMPLETED",
     "MIR-NEG-STACK-KIND-001": "GUARD_FALSE_PRECOMMIT",
     "MIR-NEG-LAW-IDENTITY-001": "GUARDED_LET_ELSE_TRANSFER",
     "MIR-NEG-SOURCE-ORDER-001": "FOR_LET_CANDIDATE_FILTERED",
@@ -135,7 +135,7 @@ PATTERN_PROFILE_BY_FIXTURE = {
     "MIR-NEG-SYNC-RELEASE-001": "DESTRUCTURING_BODY_COMPLETED",
     "MIR-NEG-SYNC-SUSPEND-001": "GUARD_FALSE_PRECOMMIT",
     "MIR-NEG-ACTOR-TURN-OVERLAP-001": "GUARDED_LET_ELSE_TRANSFER",
-    "MIR-NEG-TASK-COMPLETION-PRIMARY-001": "FOR_LET_CANDIDATE_FILTERED",
+    "MIR-NEG-CONCUR-RUN-COMPLETION-PRIMARY-001": "FOR_LET_CANDIDATE_FILTERED",
 }
 
 EVENT_STACKS = (
@@ -147,7 +147,7 @@ EVENT_STACKS = (
     "primary_failure",
     "suppressed_failures",
     "cancellation_state",
-    "task_scope",
+    "concur_runs",
     "actor_isolation",
     "pattern_trace",
     "synchronization_events",
@@ -158,15 +158,21 @@ EVENT_STACKS = (
 
 GENERATED_POSITIVE_IDS = {
     "MIR-POS-ACTOR-REJECTED-ADMISSION-001",
-    "MIR-POS-TASK-SPAWN-ORDER-001",
+    "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001",
 }
 
 GENERATED_NEGATIVE_IDS = {
     "MIR-NEG-ACTOR-TURN-OVERLAP-001",
-    "MIR-NEG-TASK-COMPLETION-PRIMARY-001",
+    "MIR-NEG-CONCUR-RUN-COMPLETION-PRIMARY-001",
     "MIR-NEG-SYNC-RELEASE-001",
     "MIR-NEG-SYNC-SUSPEND-001",
 }
+
+
+def execution_identity(run_id: str) -> str:
+    if run_id.startswith("concur-run-"):
+        return "execution-" + run_id.removeprefix("concur-run-")
+    return f"execution-{run_id}"
 
 
 def pattern_event(
@@ -299,18 +305,20 @@ def bind_record(record: dict[str, object]) -> bool:
     law_id = str(record["law_id"])
     record["pattern_trace"] = []
 
-    for event in record["task_scope"]:
-        if event["kind"] == "task_spawn":
+    for event in record["concur_runs"]:
+        if event["kind"] == "concur_run_spawn":
             event.update(
-                scope_id="scope-0",
-                parent_task_id=None,
+                execution_id=execution_identity(str(event["concur_run_id"])),
+                concur_id="concur-0",
+                parent_execution_id=None,
                 cancellation_id="cancellation-0",
                 cleanup_barrier_id="cleanup-barrier-0",
             )
-        elif event["kind"] == "task_join":
+        elif event["kind"] == "concur_run_join":
             event.update(
-                scope_id="scope-0",
-                parent_task_id=None,
+                execution_id=execution_identity(str(event["concur_run_id"])),
+                concur_id="concur-0",
+                parent_execution_id=None,
                 spawn_index=0,
                 cancellation_id="cancellation-0",
                 cleanup_barrier_id="cleanup-barrier-0",
@@ -318,22 +326,23 @@ def bind_record(record: dict[str, object]) -> bool:
                 failure_role="none",
                 suppression_index=None,
             )
-    record["task_scope"] = [event for event in record["task_scope"] if event["kind"] != "task_lifecycle"]
-    record["task_scope"].append(
+    record["concur_runs"] = [event for event in record["concur_runs"] if event["kind"] != "concur_run_lifecycle"]
+    record["concur_runs"].append(
         {
-            "kind": "task_lifecycle",
+            "kind": "concur_run_lifecycle",
             "event_id": "ev-29",
             "sequence": 29,
             "law_id": law_id,
             "source_span": source_span(29),
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": None,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": None,
             "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
+            "aggregation_concur_id": "concur-0",
             "cancellation_id": "cancellation-0",
             "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
+            "phase": "concur_terminal",
             "outcome": "success",
             "failure_id": None,
             "child_failure_id": None,
@@ -449,7 +458,7 @@ def bind_record(record: dict[str, object]) -> bool:
                 "operation_id": f"{operation}-0",
                 "profile": profile,
                 "operation": operation,
-                "owner_id": "task-0",
+                "owner_id": "execution-0",
                 "value_id": "value-0",
                 "outcome": outcome,
                 "ordering": ordering,
@@ -516,28 +525,28 @@ def bind_actor_rejection_positive(document: dict[str, object]) -> None:
     document["positive_fixtures"].append(fixture)
 
 
-def task_spawn_event(sequence: int, law_id: str, task_id: str, spawn_index: int) -> dict[str, object]:
+def concur_run_spawn_event(sequence: int, law_id: str, concur_run_id: str, spawn_index: int) -> dict[str, object]:
     return {
-        "kind": "task_spawn",
+        "kind": "concur_run_spawn",
         "event_id": f"ev-{sequence:02d}",
         "sequence": sequence,
         "law_id": law_id,
         "source_span": source_span(sequence),
-        "task_id": task_id,
-        "owner_id": "task-scope-0",
-        "scope_id": "scope-order-0",
-        "parent_task_id": "task-parent-0",
+        "concur_run_id": concur_run_id,
+        "execution_id": execution_identity(concur_run_id),
+        "concur_id": "concur-order-0",
+        "parent_execution_id": "execution-parent-0",
         "cancellation_id": "cancellation-order-0",
         "cleanup_barrier_id": "cleanup-barrier-order-0",
         "spawn_index": spawn_index,
     }
 
 
-def task_lifecycle_failure_event(
+def concur_run_lifecycle_failure_event(
     *,
     sequence: int,
     law_id: str,
-    task_id: str,
+    concur_run_id: str,
     spawn_index: int,
     failure_id: str,
     primary_failure_id: str,
@@ -545,19 +554,20 @@ def task_lifecycle_failure_event(
     suppression_index: int | None,
 ) -> dict[str, object]:
     return {
-        "kind": "task_lifecycle",
+        "kind": "concur_run_lifecycle",
         "event_id": f"ev-{sequence:02d}",
         "sequence": sequence,
         "law_id": law_id,
         "source_span": source_span(sequence),
-        "task_id": task_id,
-        "scope_id": "scope-order-0",
-        "parent_task_id": "task-parent-0",
+        "concur_run_id": concur_run_id,
+        "execution_id": execution_identity(concur_run_id),
+        "concur_id": "concur-order-0",
+        "parent_execution_id": "execution-parent-0",
         "spawn_index": spawn_index,
-        "aggregation_scope_id": "scope-order-0",
+        "aggregation_concur_id": "concur-order-0",
         "cancellation_id": "cancellation-order-0",
         "cleanup_barrier_id": "cleanup-barrier-order-0",
-        "phase": "scope_terminal",
+        "phase": "concur_terminal",
         "outcome": "error",
         "failure_id": failure_id,
         "child_failure_id": failure_id,
@@ -567,11 +577,11 @@ def task_lifecycle_failure_event(
     }
 
 
-def task_join_failure_event(
+def concur_run_join_failure_event(
     *,
     sequence: int,
     law_id: str,
-    task_id: str,
+    concur_run_id: str,
     spawn_index: int,
     join_index: int,
     failure_id: str,
@@ -579,14 +589,15 @@ def task_join_failure_event(
     suppression_index: int | None,
 ) -> dict[str, object]:
     return {
-        "kind": "task_join",
+        "kind": "concur_run_join",
         "event_id": f"ev-{sequence:02d}",
         "sequence": sequence,
         "law_id": law_id,
         "source_span": source_span(sequence),
-        "task_id": task_id,
-        "scope_id": "scope-order-0",
-        "parent_task_id": "task-parent-0",
+        "concur_run_id": concur_run_id,
+        "execution_id": execution_identity(concur_run_id),
+        "concur_id": "concur-order-0",
+        "parent_execution_id": "execution-parent-0",
         "spawn_index": spawn_index,
         "cancellation_id": "cancellation-order-0",
         "cleanup_barrier_id": "cleanup-barrier-order-0",
@@ -598,50 +609,50 @@ def task_join_failure_event(
     }
 
 
-def bind_task_order_positive(document: dict[str, object]) -> None:
+def bind_concur_run_order_positive(document: dict[str, object]) -> None:
     fixture = copy.deepcopy(document["positive_fixtures"][0])
-    fixture["fixture_id"] = "MIR-POS-TASK-SPAWN-ORDER-001"
+    fixture["fixture_id"] = "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001"
     record = fixture["record"]
     law_id = str(record["law_id"])
     # Child 1 completes first, but child 0 remains primary because lexical
     # spawn_index, not scheduler completion order, controls aggregation.
-    record["task_scope"] = [
-        task_spawn_event(10, law_id, "task-child-0", 0),
-        task_spawn_event(11, law_id, "task-child-1", 1),
-        task_lifecycle_failure_event(
+    record["concur_runs"] = [
+        concur_run_spawn_event(10, law_id, "concur-run-child-0", 0),
+        concur_run_spawn_event(11, law_id, "concur-run-child-1", 1),
+        concur_run_lifecycle_failure_event(
             sequence=29,
             law_id=law_id,
-            task_id="task-child-1",
+            concur_run_id="concur-run-child-1",
             spawn_index=1,
             failure_id="child-failure-1",
             primary_failure_id="child-failure-0",
             failure_role="child_suppressed",
             suppression_index=0,
         ),
-        task_lifecycle_failure_event(
+        concur_run_lifecycle_failure_event(
             sequence=43,
             law_id=law_id,
-            task_id="task-child-0",
+            concur_run_id="concur-run-child-0",
             spawn_index=0,
             failure_id="child-failure-0",
             primary_failure_id="child-failure-0",
             failure_role="child_primary",
             suppression_index=None,
         ),
-        task_join_failure_event(
+        concur_run_join_failure_event(
             sequence=44,
             law_id=law_id,
-            task_id="task-child-1",
+            concur_run_id="concur-run-child-1",
             spawn_index=1,
             join_index=0,
             failure_id="child-failure-1",
             failure_role="child_suppressed",
             suppression_index=0,
         ),
-        task_join_failure_event(
+        concur_run_join_failure_event(
             sequence=45,
             law_id=law_id,
-            task_id="task-child-0",
+            concur_run_id="concur-run-child-0",
             spawn_index=0,
             join_index=1,
             failure_id="child-failure-0",
@@ -654,7 +665,7 @@ def bind_task_order_positive(document: dict[str, object]) -> None:
     document["positive_fixtures"].append(fixture)
 
 
-def bind_actor_and_task_negatives(document: dict[str, object]) -> None:
+def bind_actor_and_concur_run_negatives(document: dict[str, object]) -> None:
     actor_positive = document["positive_fixtures"][0]
     overlap = copy.deepcopy(actor_positive)
     overlap["fixture_id"] = "MIR-NEG-ACTOR-TURN-OVERLAP-001"
@@ -697,22 +708,22 @@ def bind_actor_and_task_negatives(document: dict[str, object]) -> None:
     overlap["record"]["actor_isolation"].sort(key=lambda event: int(event["sequence"]))
     normalize_source_order(overlap["record"])
 
-    task_positive = next(
+    concur_run_positive = next(
         fixture
         for fixture in document["positive_fixtures"]
-        if fixture["fixture_id"] == "MIR-POS-TASK-SPAWN-ORDER-001"
+        if fixture["fixture_id"] == "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001"
     )
-    wrong_primary = copy.deepcopy(task_positive)
-    wrong_primary["fixture_id"] = "MIR-NEG-TASK-COMPLETION-PRIMARY-001"
+    wrong_primary = copy.deepcopy(concur_run_positive)
+    wrong_primary["fixture_id"] = "MIR-NEG-CONCUR-RUN-COMPLETION-PRIMARY-001"
     wrong_primary.pop("expected", None)
-    wrong_primary["expected_errors"] = ["MIR_TASK_PRIMARY_NOT_MIN_SPAWN_INDEX"]
-    for event in wrong_primary["record"]["task_scope"]:
-        if event["kind"] == "task_lifecycle":
+    wrong_primary["expected_errors"] = ["MIR_CONCUR_RUN_PRIMARY_NOT_MIN_SPAWN_INDEX"]
+    for event in wrong_primary["record"]["concur_runs"]:
+        if event["kind"] == "concur_run_lifecycle":
             event["primary_failure_id"] = "child-failure-1"
-        if event.get("task_id") == "task-child-1" and event["kind"] in {"task_lifecycle", "task_join"}:
+        if event.get("concur_run_id") == "concur-run-child-1" and event["kind"] in {"concur_run_lifecycle", "concur_run_join"}:
             event["failure_role"] = "child_primary"
             event["suppression_index"] = None
-        if event.get("task_id") == "task-child-0" and event["kind"] in {"task_lifecycle", "task_join"}:
+        if event.get("concur_run_id") == "concur-run-child-0" and event["kind"] in {"concur_run_lifecycle", "concur_run_join"}:
             event["failure_role"] = "child_suppressed"
             event["suppression_index"] = 0
     normalize_source_order(wrong_primary["record"])
@@ -861,21 +872,21 @@ def validate_document(document: dict[str, object]) -> None:
         "turn_finish",
     ]:
         raise ValueError("positive Actor lifecycle sequence is not exact")
-    task_fixture = next(
+    concur_run_fixture = next(
         fixture
         for fixture in document["positive_fixtures"]
-        if fixture["fixture_id"] == "MIR-POS-TASK-SPAWN-ORDER-001"
+        if fixture["fixture_id"] == "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001"
     )
     completions = [
         event
-        for event in task_fixture["record"]["task_scope"]
-        if event["kind"] == "task_lifecycle" and event["phase"] == "scope_terminal"
+        for event in concur_run_fixture["record"]["concur_runs"]
+        if event["kind"] == "concur_run_lifecycle" and event["phase"] == "concur_terminal"
     ]
     if not (
-        [event["task_id"] for event in completions] == ["task-child-1", "task-child-0"]
+        [event["concur_run_id"] for event in completions] == ["concur-run-child-1", "concur-run-child-0"]
         and all(event["primary_failure_id"] == "child-failure-0" for event in completions)
     ):
-        raise ValueError("task completion-order evidence does not preserve spawn-index primary")
+        raise ValueError("concur-run completion-order evidence does not preserve spawn-index primary")
 
 
 def main() -> int:
@@ -894,17 +905,21 @@ def main() -> int:
         if fixture["fixture_id"] not in GENERATED_NEGATIVE_IDS
     ]
     document["event_kind_count"] = 23
-    stacks = document["stack_kind_contracts"]
-    stacks["task_scope"] = ["task_spawn", "task_join", "task_lifecycle"]
+    stacks = dict(document["stack_kind_contracts"])
+    document["stack_kind_contracts"] = stacks
+    stacks["concur_runs"] = ["concur_run_spawn", "concur_run_join", "concur_run_lifecycle"]
     stacks["actor_isolation"] = ["actor_enqueue", "actor_dequeue", "actor_lifecycle"]
     stacks["pattern_trace"] = ["pattern_phase"]
     stacks["synchronization_events"] = ["synchronization"]
+    document["stack_kind_contracts"] = {
+        key: stacks[key] for key in EVENT_STACKS if key in stacks
+    }
     records = [*document["positive_fixtures"], *document["negative_fixtures"]]
     changed = sum(bind_record(fixture["record"]) for fixture in records)
     bind_actor_rejection_positive(document)
-    bind_task_order_positive(document)
+    bind_concur_run_order_positive(document)
     bind_synchronization_negatives(document)
-    bind_actor_and_task_negatives(document)
+    bind_actor_and_concur_run_negatives(document)
     bind_pattern_evidence(document)
     document["positive_fixture_count"] = len(document["positive_fixtures"])
     document["negative_fixture_count"] = len(document["negative_fixtures"])

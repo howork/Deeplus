@@ -16,7 +16,7 @@ mailbox와 request responsibility의 current static contract를 설명한다.
 
 ## 3. 선수 지식
 
-Actor/message, Result pattern, Task/await, move와 Shareable을 알아야 한다.
+Actor/message, Result pattern, Reply/await, move와 Shareable을 알아야 한다.
 
 ## 4. 문제에서 출발하기
 
@@ -30,10 +30,13 @@ retry safety를 판단할 수 없다.
 - clause 없음: `logical_unbounded_v1`; 언어 capacity rejection 없음.
 - `#mailbox(capacity: N)`: `bounded_reject_v1`; N은 positive StaticInt.
 - one-way result: `Result<Unit,error ActorMessageError>`.
-- request immediate result: `Result<Task<T>,error ActorMessageError>`.
+- request immediate result: `Result<Reply<T>,error ActorMessageError>`.
 - admission errors: `mailboxFull`, `receiverClosedBeforeAdmission`.
-- admitted request task terminal transport error:
+- admitted reply terminal transport error:
   `receiverClosedBeforeReply`.
+- each successful request creates one non-forgeable `ReplyId` and one request
+  correlation identity; module API records only their
+  `per_value_non_forgeable` policy markers.
 
 Cancellation은 이 family에 들어가지 않는다.
 
@@ -48,21 +51,21 @@ public actor #mailbox(capacity: 8) Directory {
 }
 ```
 
-admission Result를 먼저 푼 뒤 task를 await한다.
+admission Result를 먼저 푼 뒤 reply를 await한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async inspect(directory: Directory, id: Int) -> Status
     throws ActorMessageError throws LookupError
 = {
-    let Result::ok(task) = directory :~ find id: id
+    let Result::ok(reply) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
-    return await task
+    return await reply
 }
 ```
 
-`directory :~ find id: id`의 실패 시점에는 task/correlation이 없다.
-`Result::ok(task)` 뒤에야 reply 책임이 존재한다.
+`directory :~ find id: id`의 실패 시점에는 reply/correlation이 없다.
+`Result::ok(reply)` 뒤에야 reply 책임이 존재한다.
 
 ## 7. 허용·거부·경계 사례
 
@@ -82,7 +85,7 @@ def dispatch(worker: Worker, move job: Job)
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
 let status = await (directory :~ find id: id)
-// request expression은 먼저 Result<Task<Status>, ...> admission을 반환한다.
+// request expression은 먼저 Result<Reply<Status>, ...> admission을 반환한다.
 ```
 
 borrow와 `inout` payload도 actor 경계를 건너지 못한다. owned
@@ -90,8 +93,8 @@ borrow와 `inout` payload도 actor 경계를 건너지 못한다. owned
 
 ## 8. 다른 기능과의 연결
 
-- request task는 ordinary async task와 source spelling `Task<T>`를 공유할
-  수 있지만 typed responsibility origin이 다르다.
+- request의 `Reply<T>`와 structured execution의 `Run<T>`는 nominal
+  identity부터 분리되며 서로 암시 변환되지 않는다.
 - module API digest는 correlation policy를 기록하되 runtime ID를 미리
   만들지 않는다.
 - Cancellation이 committed message를 철회하지 않는다.
@@ -103,20 +106,20 @@ borrow와 `inout` payload도 actor 경계를 건너지 못한다. owned
 검사한다. bounded mailbox라면 capacity admission을 확인하며 이때까지는
 sender가 moved owner를 유지한다. admission 성공 순간 enqueue commit과
 mailbox sequence가 생기고 owner가 이동한다. request라면 같은 commit에서
-reply correlation과 `Task<T>` 책임이 생기며, 이후 handler Error와
-`receiverClosedBeforeReply`는 task terminal에서 관찰한다.
+reply correlation과 `Reply<T>` 책임이 생기며, 이후 handler Error와
+`receiverClosedBeforeReply`는 reply terminal에서 관찰한다.
 
 | 단계 | one-way 관찰 | request 관찰 |
 |---|---|---|
-| precommit 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, task/correlation 없음 |
-| enqueue commit | `Result::ok(Unit)`과 owner 이동 | `Result::ok(Task<T>)`와 correlation 생성 |
+| precommit 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, reply/correlation 없음 |
+| enqueue commit | `Result::ok(Unit)`과 owner 이동 | `Result::ok(Reply<T>)`와 correlation 생성 |
 | postcommit terminal | 별도 reply 없음 | value, handler Error, reply transport failure 또는 Cancellation |
 
 ### 흔한 오해와 미니 사례
 
 mailbox가 가득 찬 뒤에도 move가 이미 끝났다고 생각하면 retry용 payload를
-복제하게 된다. precommit 거부에서는 원래 owner가 남는다. 반대로 request
-task가 생긴 뒤 receiver가 닫혔다고 메시지 자체를 되돌려 retry하면 이미
+복제하게 된다. precommit 거부에서는 원래 owner가 남는다. 반대로
+reply가 생긴 뒤 receiver가 닫혔다고 메시지 자체를 되돌려 retry하면 이미
 수행된 side effect를 중복할 수 있다.
 
 미니 사례로 조회 query는 application이 idempotent하다고 보장하면
@@ -127,13 +130,13 @@ API가 자동 결정하지 않고 application contract가 소유한다.
 owner trace도 결과 type과 함께 적는다. precommit `mailboxFull`에서는
 payload owner가 sender에 남고 sequence/correlation count가 0이다.
 commit 뒤에는 mailbox가 payload owner이고 request correlation count가
-1이다. handler가 값을 만들면 reply task가 정상 terminal이 되고,
-handler domain Error 또는 receiver-close transport Error도 같은 task
-responsibility에서 구분된다. 이 숫자와 owner가 맞아야 retry 판단이
+1이다. handler가 값을 만들면 `Reply`가 정상 terminal이 되고,
+handler domain Error 또는 receiver-close transport Error도 같은
+`ReplyResponsibility`에서 구분된다. 이 숫자와 owner가 맞아야 retry 판단이
 가능하다.
 
 “request가 실패했다”라는 한 문장만으로는 부족하다. immediate Result가
-실패했는지, admitted task가 handler Error로 끝났는지, reply 전에
+실패했는지, admitted reply가 handler Error로 끝났는지, reply 전에
 receiver가 닫혔는지, await owner가 Cancellation을 관찰했는지를 정확히
 쓴다. 네 경우는 cleanup과 side-effect 관찰 범위가 다르다.
 
@@ -147,14 +150,14 @@ capacity clause 유무, admission error set, commit event count를 함께
 
 request의 reply value와 transport responsibility도 분리한다. handler가
 도메인 `LookupError`를 내는 경우와 reply 전달 전에 receiver가 닫히는
-경우는 호출자가 선택할 재시도 정책이 다르다. 같은 `Task<T>` spelling을
-쓴다는 이유로 origin descriptor를 지우지 않는다.
+경우는 호출자가 선택할 재시도 정책이 다르다. `Reply<T>`의 correlation과
+terminal transport residue를 bare value로 지우지 않는다.
 
 ## 9. Deeplus다운 작성 관례
 
 retry를 설계하기 전에 commit 여부부터 구분한다. precommit failure는
 sender owner를 보존하지만 postcommit failure는 message를 되돌리지
-않는다. task의 visible result type만 보고 책임 descriptor를 지우지 않는다.
+않는다. reply의 visible result type만 보고 책임 descriptor를 지우지 않는다.
 
 ## 10. 연습 문제
 

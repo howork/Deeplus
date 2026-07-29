@@ -811,7 +811,6 @@ Stmt ::= ForLoop
        | WhileLoop
        | RepeatLoop
        | AsyncForLoop
-       | TaskGroupStmt
        | MatchStatement
        | IfStmt
        | LocalBindingStmt
@@ -889,7 +888,11 @@ PatternControlCondition ::= Expr | "let" Pattern "=" Expr ;
 ForLoop ::= "for" ("let" Pattern | Pattern) "in" Expr GuardClause? Block MatchStatement? ;
 WhileLoop ::= "while" PatternConditionChain Block MatchStatement? ;
 RepeatLoop ::= "repeat" Block "while" Expr MatchStatement? ;
-AsyncForLoop ::= "for" "await" ("let" Pattern | Pattern) "in" Expr GuardClause? Block ;
+(* `for#await` is one exact attached loop role. It does not route through
+   generic HashTag admission, and trivia between `for`, `#`, and `await` is
+   rejected by the owner policy. *)
+AsyncForLoop ::= "for" ForAwaitRole ("let" Pattern | Pattern) "in" Expr GuardClause? Block ;
+ForAwaitRole ::= "#" "await" ;
 
 MatchStatement ::= "match" MatchCore ;
 MatchCore ::= MatchSubjectSlot MatchBody ;
@@ -970,7 +973,6 @@ AssignmentValueSurface ::= Expr | BareTupleValueSurface ;
 ScopedUseStmt ::= "use" ScopedPathList "in" Block ;
 ScopedImportStmt ::= "import" ScopedPathList "in" Block ;
 ScopedPathList ::= QualifiedPath ("," QualifiedPath)* ;
-TaskGroupStmt ::= "task" "group" Identifier? Block ;
 
 (* ==================================================================
    EXPRESSIONS AND PRATT ENTRY POINTS
@@ -1022,7 +1024,7 @@ PrimaryExpr ::= Literal
               | ClosureExpr
               | GeneratorExpr
               | SpawnExpr
-              | StructuredTaskScope
+              | ConcurExpr
               | UnsafeBlockExpr
               | FacetExpr ;
 
@@ -1127,6 +1129,10 @@ MatchExpr ::= "@" "match" MatchCore ;
 (* ---------- Closures and captures ---------- *)
 
 ClosureExpr ::= CaptureList? HashTag* "{" ClosureContent "}" ;
+(* ClosureExpr keeps its general tag shape. The current `#async` literal
+   profile is admitted only by the enclosing ConcurExpr owner, with an empty
+   capture or an explicitly proven reusable copy-capture plan, and only for
+   nonescaping inward use. *)
 ClosureContent ::= ExplicitLambdaContent | LambdaBody? ;
 ExplicitLambdaContent ::= LambdaParameterList? "=>" LambdaBody ;
 LambdaParameterList ::= LambdaParameter ("," LambdaParameter)* ","? ;
@@ -1151,7 +1157,7 @@ CaptureMode ::= "borrow" | "inout" | "move" | "clone" | "deep" | "copy" | "once"
    distinctions survive CST/AST/HIR; they do not add another source
    production. *)
 
-(* ---------- Quotes, generators, tasks and Facet ---------- *)
+(* ---------- Quotes, generators, structured concurrency and Facet ---------- *)
 
 
 GeneratorExpr ::= CaptureList? GeneratorCore ;
@@ -1159,11 +1165,15 @@ GeneratorCore ::= "@" "for" Pattern "in" Expr Block
                 | "@" "while" Expr Block
                 | "@" "repeat" Block "while" Expr ;
 
-SpawnExpr ::= "spawn" TaskBody ;
-TaskBody ::= "{" "=>" TaskBodySequence "}"
-           | "async" "{" "=>" TaskBodySequence "}" ;
-TaskBodySequence ::= LineBreakBoundary? BlockSequence ;
-StructuredTaskScope ::= "task" "scope" Block ;
+(* `spawn` is owned by the ConcurExpr region. Its inline form has an explicit
+   lambda arrow. Otherwise the Pratt prefix owner supplies one expression
+   operand; the checker admits that operand only when static selection proves
+   an async invocation. *)
+SpawnExpr ::= "spawn" (SpawnBody | SpawnOperandSlot) ;
+SpawnBody ::= "{" "=>" SpawnBodySequence "}" ;
+SpawnBodySequence ::= LineBreakBoundary? BlockSequence ;
+SpawnOperandSlot ::= SPAWN_OPERAND_BY_PREFIX_PARSER ;
+ConcurExpr ::= "concur" Block ;
 UnsafeBlockExpr ::= "unsafe" Block ;
 
 (* Stable R51f admits borrow Facet packing only. *)

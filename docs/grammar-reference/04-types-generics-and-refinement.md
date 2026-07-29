@@ -464,7 +464,7 @@ Union target에 대한 runtime type test는 거부한다. 선택된 값을
   failure edge를 보존한다.
 - 이미 증명된 refinement 구성은 predicate를 중복 실행하지 않는다.
 - borrow Facet은 payload borrow region 밖으로 escape하거나 suspension,
-  task, actor/isolation 경계를 넘을 수 없다.
+  run, actor/isolation 경계를 넘을 수 없다.
 - function type compatibility는 값/context/witness/rest 채널, ownership,
   effects, errors, cancellation, suspension, isolation과 capture를 지우지
   않는다.

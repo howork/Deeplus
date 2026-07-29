@@ -1524,7 +1524,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "borrow is shared, bounded by borrow_region, and does not escape; inout is exclusive for one dynamic call extent and overlaps no live borrow or inout region; move transfers ownership exactly once and every later use of the source is rejected; a live borrow/inout does not cross suspension, task escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary; cleanup responsibility remains attached to the current owner on every admitted path; replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current",
+    "rule_seed": "borrow is shared, bounded by borrow_region, and does not escape; inout is exclusive for one dynamic call extent and overlaps no live borrow or inout region; move transfers ownership exactly once and every later use of the source is rejected; a live borrow/inout does not cross suspension, concur-run escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary; cleanup responsibility remains attached to the current owner on every admitted path; replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

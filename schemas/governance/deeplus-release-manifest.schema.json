@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus.example/schemas/release-manifest-v1.json",
-  "title": "Deeplus Release Manifest",
+  "$id": "https://deeplus.example/schemas/release-manifest-v2.json",
+  "title": "Deeplus Release Manifest — Cranelift Backend",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,7 +16,7 @@
     "artifacts"
   ],
   "properties": {
-    "schema": {"const": "deeplus.release-manifest/v1"},
+    "schema": {"const": "deeplus.release-manifest/v2"},
     "release": {
       "type": "object",
       "required": ["version", "channel", "published_at"],
@@ -29,12 +29,17 @@
     },
     "source": {
       "type": "object",
-      "required": ["revision", "tree_sha256"],
+      "required": [
+        "revision",
+        "tree_sha256",
+        "rust_toolchain",
+        "cranelift_version"
+      ],
       "properties": {
         "revision": {"type": "string"},
         "tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "rust_toolchain": {"type": "string"},
-        "llvm_version": {"type": ["string", "null"]}
+        "cranelift_version": {"type": ["string", "null"]}
       },
       "additionalProperties": false
     },
@@ -134,4 +139,3 @@
     "sbom": {"type": ["string", "null"]}
   }
 }
-

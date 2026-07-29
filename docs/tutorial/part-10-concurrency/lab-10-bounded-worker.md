@@ -10,7 +10,7 @@ responsibility trace를 만든다.
 
 - protocol과 actor handler를 분리한다.
 - enqueue admission을 명시적으로 처리한다.
-- request Result를 풀고 reply task를 await한다.
+- request Result를 풀고 `Reply<T>`를 await한다.
 - moved job의 owner를 commit 전후로 추적한다.
 
 ## 준비
@@ -29,7 +29,7 @@ Part 10의 앞 장과 Part 09의 Result/throws/Cancellation을 복습한다.
 admission 검사 중에도 caller, enqueue commit 뒤 mailbox, handler
 dequeue 뒤 actor turn이 owner다. 어느 시점에도 caller와 actor가 동시에
 유일 owner라고 기록해서는 안 된다. status request에는 payload owner
-대신 admission Result, correlation, reply task의 세 identity를 적는다.
+대신 admission Result, correlation, `Reply<T>`의 세 identity를 적는다.
 
 ## 단계별 구현
 
@@ -76,9 +76,9 @@ mailbox message가 owner를 얻는다.
 def#async query(worker: Worker) -> WorkerStatus
     throws ActorMessageError
 = {
-    let Result::ok(replyTask) = worker :~ status
+    let Result::ok(reply) = worker :~ status
     else Result::err(admissionError) => throw admissionError
-    return await replyTask
+    return await reply
 }
 ```
 

@@ -52,7 +52,7 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 - 제품 레인: `15/15 NOT_RUN`
 - current binding: `false`
 
-Rust crate는 lexer, parser, checker, MIR, xVM 또는 LLVM 제품 지원을
+Rust crate는 lexer, parser, checker, MIR, xVM 또는 Cranelift 제품 지원을
 입증하는 구현물이 아니라 현재 책임 경계를 고정한 골격이다. 독립적인
 target-bound 실행 확인서가 없는 제품 주장은 허용하지 않는다.
 

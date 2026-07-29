@@ -16,7 +16,7 @@ acceptance가 아니라 고정된 설계 의미를 설명한다.
 - nonescaping lexical dependency와 environment capture를 구분한다.
 - live call-time read와 explicit snapshot의 차이를 설명한다.
 - borrow/inout/move/clone capture의 lifetime 차이를 설명한다.
-- return, storage, task, Actor, generator가 escape boundary임을 찾는다.
+- return, storage, run, Actor, generator가 escape boundary임을 찾는다.
 - `#scoped`, `#once`와 capture mode를 구분한다.
 
 ## 3. 선수 지식
@@ -51,7 +51,7 @@ dependency 때문에 region-bound일 수 있다. `[]`는 “아무 dependency도
 없다”가 아니라 “ancestor-frame dependency가 없다”는 assertion이다.
 
 escape boundary에는 closure return/storage, generator, async suspension,
-task/Actor crossing, Facet packaging과 resource owner 이동이 있다.
+run/Actor crossing, Facet packaging과 resource owner 이동이 있다.
 
 ## 6. 단계별 예제
 
@@ -63,7 +63,7 @@ closure나 local function은 code와 함께 explicit capture environment를
 nonescaping인 동기 callable의 read-only·nonconsuming outer use는 environment
 field가 아니라 call-time lexical dependency일 수 있다.
 
-판정은 closure가 호출 지점 안에서만 쓰이는지 저장·반환·task·actor로
+판정은 closure가 호출 지점 안에서만 쓰이는지 저장·반환·run·actor로
 escape하는지 분류하는 데서 시작한다. capture place의 owner와 region,
 call right ordinary/`#mut`/`#once`, suspension과 isolation crossing을
 검사한다. local `def` direct call only, closure immediate invocation,
@@ -94,7 +94,7 @@ lexical read는 이 transaction에 참여하지 않는다. callable 생성 때 �
 비용 차이만으로 보면 안 된다. 관찰하는 값과 escape 가능성이 다르다.
 
 escape 검사는 단순히 “반환하는가”만 보지 않는다. heap storage, callback
-등록, generator suspension, task spawn, actor mailbox, Facet packaging도
+등록, generator suspension, run spawn, actor mailbox, Facet packaging도
 호출 시점을 현재 region 밖으로 옮길 수 있다. 각 경계에서 capture별
 최소 lifetime, transferability, isolation, effect/error budget을 다시
 대조한다. `#scoped`는 해당 lifetime을 제한하고 `#once`는 call right를
@@ -192,7 +192,7 @@ let g = [borrow owner] @for item in owner {
 ```
 
 inout capture는 겹치거나 iteration/suspension을 건널 수 없다. borrowed
-Facet도 별도 lifetime proof 없이 task/Actor isolation을 넘지 않는다.
+Facet도 별도 lifetime proof 없이 run/Actor isolation을 넘지 않는다.
 
 present-empty capture list도 중요한 경계다.
 
@@ -228,7 +228,7 @@ proof route가 될 수 있다.
 ## 8. 다른 기능과의 연결
 
 - generator는 eager collection이 아니라 resumable owner다.
-- nonescaping lexical access는 async, generator, task/spawn, Actor,
+- nonescaping lexical access는 async, generator, concur/spawn, Actor,
   isolation crossing과 guard owner에 적용되지 않는다.
 - Actor trailing closure가 isolation을 건너면 Transferable capture,
   suspension/effect/error/cleanup을 독립 검사한다.
@@ -264,7 +264,7 @@ proof route가 될 수 있다.
 - capture list 없음, `[]`, nonempty list는 서로 다른 의미다.
 - `[name]` bare capture item은 현행 의미를 유지한다.
 - lexical read는 live value, `[copy name]`은 creation-time snapshot을 본다.
-- return/storage/task/Actor/generator는 escape boundary다.
+- return/storage/run/Actor/generator는 escape boundary다.
 - `#once`와 capture `once`는 별도 축이다.
 - borrow는 proof 없이 owner보다 오래 살 수 없다.
 

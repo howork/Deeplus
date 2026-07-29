@@ -172,7 +172,7 @@ runtime은 소스가 약속하지 않은 실패 통로를 발명하지 않는다
 
 ### 2.6 동시성의 기본 단위는 격리된 책임이다
 
-Deeplus는 actor, task, structured concurrency와 cancellation을 별개의
+Deeplus는 actor, `concur`/`Run` structured concurrency와 cancellation을 별개의
 부가 기능으로 보지 않는다. 이들은 ownership과 effect를 시간 및
 동시성 축으로 확장한다.
 
@@ -240,7 +240,7 @@ library 간 조합 가능성을 우선한 선택이다.
 ### 2.10 Source에서 backend까지 결정은 한 번만 내린다
 
 Frontend가 수용한 프로그램은 AST/HIR에서 정적 결정을 닫고, MIR은 그
-결정을 관측 가능한 실행 계약으로 옮긴다. xVM, LLVM AOT 및 LLVM ORC
+결정을 관측 가능한 실행 계약으로 옮긴다. xVM, Cranelift ObjectModule AOT 및 Cranelift JITModule
 JIT 같은 backend가 언어 의미를 제각기 재해석해서는 안 된다.
 
 이 원칙은 아직 모든 제품 구현이 존재한다는 주장이 아니다. 오히려
@@ -326,9 +326,9 @@ Deeplus는 domain modeling만을 위한 언어도, 저수준 제어만을 위한
 - Class, Enum, Record, Schema와 pattern matching
 - generic, Trait, associated type 및 fixed operator conformance
 - 명시적 ownership, borrow, move, cleanup과 unsafe 격리
-- async/task/actor와 structured cancellation
+- async/concur/Run/actor와 structured cancellation
 - Module·Package·독립 컴파일 identity
-- HIR-H1, MIR, xVM 및 LLVM backend 경계
+- HIR-H1, MIR, xVM 및 Cranelift backend 경계
 
 ## 4. Deeplus가 지원하는 것
 
@@ -351,7 +351,7 @@ Deeplus는 domain modeling만을 위한 언어도, 저수준 제어만을 위한
 | 책임 | ownership, borrow, move, consume, cleanup, transaction |
 | 실패 | `Option`, `Result`, error/effect, contract/law, defect의 분리 |
 | 컬렉션 | 1-based indexing, slicing, comprehension, generator, NumericArray |
-| 동시성 | async/await, structured task, cancellation, actor와 mailbox 격리 |
+| 동시성 | async/await, `concur`/`Run` 구조화 동시성, cancellation, actor와 mailbox 격리 |
 | 시스템 경계 | provider/Prelude, FFI, unsafe 격리, serialization identity 분리 |
 | 컴파일 계약 | CST/AST, HIR-H1, MIR 및 다중 backend가 지켜야 할 의미 경계 |
 | 언어 진화 | Current, Preview, Preview Design과 제품 증거 상태의 분리 |
@@ -417,7 +417,7 @@ Preview Design 세 장에서 확인한다. “좋은 아이디어”와 “현�
 - 완전한 source-to-parser 제품
 - 통합 type checker와 HIR lowering
 - 실행 가능한 Deeplus MIR 및 xVM
-- LLVM AOT 또는 ORC JIT 적합성
+- Cranelift ObjectModule AOT 또는 Cranelift JITModule 적합성
 - formatter와 LSP의 제품 수준 동작
 - stdlib/provider runner의 완전한 실행
 - backend 간 conformance

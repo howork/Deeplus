@@ -16,7 +16,7 @@
   AST/HIR/MIR node를 만들지 않는다.
 - 정확한 production 수는 LEXICAL 91, STABLE 516, PREVIEW 13으로 총
   620개이며 generator가 frontend model과의 일치를 검사한다.
-- Deeplus MIR가 의미 정본이고 xVM과 LLVM은 그 projection이다.
+- Deeplus MIR가 의미 정본이고 xVM과 Cranelift은 그 projection이다.
 - target-bound receipt가 없으면 모든 product lane은 `NOT_RUN`이다.
 
 R51f closure에서 scanner는 regex-literal token이나 REGEX mode를 내보내지

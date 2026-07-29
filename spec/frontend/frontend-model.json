@@ -17,8 +17,12 @@
     "cst": "lossless immutable green tree",
     "mir": "Deeplus MIR",
     "early_execution": "xVM bytecode interpreter",
-    "native_backend": "LLVM AOT",
-    "later_jit": "LLVM ORC JIT"
+    "native_backend": "Cranelift ObjectModule AOT",
+    "native_jit": "Cranelift JITModule",
+    "shared_native_lowering": "Verified Deeplus MIR to backend-private CLIF",
+    "cranelift_implementation_baseline": "0.121.2 family for Rust 1.85.0; dependency not yet connected",
+    "backend_specific_hir_fields": 0,
+    "product_support": "NOT_RUN"
   },
   "evidence": {
     "rust_lexer": "NOT_RUN",
@@ -27,8 +31,8 @@
     "formatter_lsp": "NOT_RUN",
     "incremental_parser": "NOT_RUN",
     "xvm": "NOT_RUN",
-    "llvm_aot": "NOT_RUN",
-    "llvm_orc_jit": "NOT_RUN"
+    "cranelift_object_aot": "NOT_RUN",
+    "cranelift_jit": "NOT_RUN"
   },
   "keyword_model": {
     "hard_reserved": [
@@ -85,6 +89,7 @@
       "cleanup",
       "clone",
       "common",
+      "concur",
       "conform",
       "conformance",
       "conforms",
@@ -111,7 +116,6 @@
       "forward",
       "generate",
       "get",
-      "group",
       "guard",
       "inout",
       "is",
@@ -155,7 +159,6 @@
       "static",
       "super",
       "supports",
-      "task",
       "then",
       "throws",
       "to",
@@ -173,6 +176,7 @@
     "sigil_role_subset": [
       "C",
       "async",
+      "await",
       "cleanup",
       "consume",
       "entry",
@@ -1989,8 +1993,8 @@
     "grammar": "structure only",
     "cst": "all tokens/trivia, missing/unexpected tokens, source form, supply-policy IDs",
     "ast": "normalized syntax meaning and stage-specific semantic enums",
-    "hir": "generated declarations; property/forwarding/comprehension/loop normalization; actor/protocol ownership; structured task scope; and reserved `~ spawn` message recognition",
-    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, cancellation, failure, actor/task state, evidence, xVM/LLVM lowering",
+    "hir": "generated declarations; property/forwarding/comprehension/loop normalization; actor/protocol ownership; structured concur ownership; and reserved `~ spawn` message recognition",
+    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, cancellation, failure, actor/concur execution state, evidence, xVM/Cranelift lowering",
     "checker": "owner admission, type/effect/ownership/coherence/exhaustiveness/layout checks",
     "formatter": "canonical spacing and comments; # role compacting is convention",
     "rightward_local_binding": {
@@ -2182,7 +2186,7 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 533,
+    "STABLE": 534,
     "PREVIEW": 13
   },
   "numeric_lexical_policy": {
@@ -2766,8 +2770,8 @@
     },
     "hir_lowering": {
       "all_modes": "preserve CallMode, selected callable or dispatch identity, ordered normalized channels, closure labels, source evaluation order, ownership and cleanup",
-      "actor_result_shapes": "one-way Result<Unit,error ActorMessageError>; request Result<Task<T>,error ActorMessageError>",
-      "actor_request_await": "extract Task<T> from Result before explicit await",
+      "actor_result_shapes": "one-way Result<Unit,error ActorMessageError>; request Result<Reply<T>,error ActorMessageError>",
+      "actor_request_await": "extract Reply<T> from Result before explicit await",
       "surface_sugar_erased_before_mir": true,
       "dispatch_identity_erased": false
     },
@@ -3057,7 +3061,7 @@
         "parameter",
         "evaluated default",
         "Context",
-        "task identity",
+        "execution identity",
         "actor identity",
         "thread identity"
       ],
@@ -3249,7 +3253,7 @@
       "escape",
       "suspension",
       "async or generator",
-      "task or actor isolation",
+      "concur execution or actor isolation",
       "FFI crossing",
       "def#guard",
       "unknown residence proof"
@@ -3291,10 +3295,10 @@
       "ActorProtocolDecl",
       "ActorOnDecl",
       "ActorRequestDecl",
-      "AsyncForLoop",
-      "TaskGroupStmt",
+      "AsyncForLoop(for#await)",
+      "ConcurExpr",
       "SpawnExpr",
-      "StructuredTaskScope",
+      "ClosureExpr(#async within ConcurExpr)",
       "AtScopeExpr",
       "PrefixExpr(await)",
       "TildeCallLed(:~)"
@@ -3305,9 +3309,9 @@
       "ActorHandlerCst",
       "ActorRequestCst",
       "AsyncForLoopCst",
-      "TaskGroupCst",
+      "ConcurExprCst",
       "SpawnExprCst",
-      "StructuredTaskScopeCst",
+      "AsyncClosureExprCst",
       "AtScopeExprCst",
       "AwaitExprCst",
       "TildeCallExprCst"
@@ -3318,10 +3322,10 @@
       "ActorHandlerDeclaration",
       "ActorRequestDeclaration",
       "AsyncFor",
-      "TaskGroup",
-      "SpawnTask",
-      "StructuredTaskScope",
-      "ValueTaskScope",
+      "ConcurExpr",
+      "SpawnExecution",
+      "AsyncClosureExpr",
+      "ValueScope",
       "Await",
       "CallExpr(mode=ActorMessage)"
     ],
@@ -3335,15 +3339,57 @@
       "ActorMessageErrorTypeId",
       "CorrelationId",
       "ReplyId",
-      "TaskId",
-      "TaskResponsibilityId",
-      "TaskScopeId",
+      "ConcurId",
+      "ConcurRunId",
+      "ExecutionId",
       "CancellationId",
       "FailureId"
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
     "message_send_owner": ":~ TildeCallLed normalizes to CallExpr mode ActorMessage with the shared ordered CallArgument and trailing-closure contracts; actor dispatch never falls back to ordinary call resolution",
+    "ordinary_message_spawn_owner": "receiver ~ spawn remains the ordinary Message selector owner; structured-concurrency redesign does not reinterpret it as SpawnExpr",
+    "async_for_contract": {
+      "surface": "for#await",
+      "role_production": "ForAwaitRole ::= \"#\" \"await\"",
+      "attached": true,
+      "generic_hash_role_admission": false
+    },
+    "concur_contract": {
+      "surface": "concur { ... }",
+      "sole_structured_owner": true,
+      "source_identity": "ConcurExpr",
+      "hir_owner_identity": "ConcurId",
+      "child_result_identity": "ConcurRunId",
+      "execution_identity": "ExecutionId",
+      "implicit_detach_count": 0
+    },
+    "spawn_contract": {
+      "inline_surface": "spawn { => ... }",
+      "expression_surface": "spawn AsyncInvocation",
+      "expression_operand_parser": "Pratt prefix owner",
+      "expression_operand_checker_admission": "statically selected async invocation only",
+      "redundant_async_marker_after_spawn": false,
+      "owner": "nearest enclosing ConcurExpr",
+      "result_type": "Run<T>",
+      "result_identity": "ConcurRunId",
+      "execution_identity": "ExecutionId"
+    },
+    "async_closure_literal_contract": {
+      "surface": "#async { ... }",
+      "grammar_owner": "ClosureExpr retains HashTag*",
+      "admitted_tag_sequence": [
+        "async"
+      ],
+      "enclosing_owner": "ConcurExpr only",
+      "capture_admission": [
+        "absent or explicit [] only when the resolved capture and lexical-dependency sets are empty",
+        "explicit nonempty capture plan whose every item is proven reusable and copy-only"
+      ],
+      "escape": "NONESCAPING_INWARD_ONLY",
+      "general_escaping_async_literal": "FORBIDDEN",
+      "product_execution": "NOT_RUN"
+    },
     "mailbox_profile_binding": {
       "clause_absent": "logical_unbounded_v1",
       "positive_static_capacity_clause": "bounded_reject_v1",
@@ -3351,19 +3397,32 @@
     },
     "message_hir_result_shapes": {
       "one_way": "Result<Unit, error ActorMessageError>",
-      "request": "Result<Task<T>, error ActorMessageError>",
-      "request_await_order": "extract Task<T> from Result, then apply explicit await",
+      "request": "Result<Reply<T>, error ActorMessageError>",
+      "request_await_order": "extract Reply<T> from Result, then apply explicit await",
       "error_cases": [
         "mailboxFull",
         "receiverClosedBeforeAdmission",
         "receiverClosedBeforeReply"
       ]
     },
-    "task_responsibility_descriptor": {
-      "source_type_spelling": "Task<T>",
-      "task_origin": "actor_request_admitted",
-      "ordinary_async_task_actor_transport_descriptor": "FORBIDDEN",
-      "typed_hir_identity": "TaskResponsibilityId",
+    "result_type_split": {
+      "structured_concurrency": {
+        "source_type_spelling": "Run<T>",
+        "owner": "ConcurExpr",
+        "typed_hir_identity": "ConcurRunId",
+        "execution_identity": "ExecutionId"
+      },
+      "actor_request": {
+        "source_type_spelling": "Reply<T>",
+        "owner": "admitted ActorRequestDecl",
+        "typed_hir_identity": "ReplyId"
+      },
+      "shared_origin_discriminator_count": 0,
+      "cross_family_implicit_conversion_count": 0
+    },
+    "reply_responsibility_descriptor": {
+      "source_type_spelling": "Reply<T>",
+      "typed_hir_identity": "ReplyId",
       "required_fields": [
         "result_type",
         "normalized_handler_error_set",
@@ -3383,7 +3442,7 @@
       "admission_result_only_errors_in_descriptor": false,
       "compatibility_join_storage_and_api_export": {
         "descriptor_residue_preserved": true,
-        "erasure_to_nominal_Task_T": false,
+        "erasure_to_nominal_result_carrier": false,
         "exact_normalized_static_field_equality": true,
         "explicit_admitted_error_set_subsumption_only": true,
         "per_value_correlation_id_preserved": true,
@@ -3409,7 +3468,7 @@
       "after_commit": "message remains actor-owned and admission Result is not rewritten"
     },
     "await_owner": "the existing prefix await operator only",
-    "detached_task_node_count": 0,
+    "detached_execution_node_count": 0,
     "implicit_distributed_delivery_node_count": 0,
     "product_execution": "NOT_RUN"
   },

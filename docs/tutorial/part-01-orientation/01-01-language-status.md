@@ -67,7 +67,7 @@ let answer: Int = double(21)
 ```
 
 `def#pure`는 recoverable error가 없고 관찰 가능한 effect가 없는 callable
-profile이다. `answer`의 설계상 값은 `42`지만, 이 문서는 xVM이나 LLVM에서
+profile이다. `answer`의 설계상 값은 `42`지만, 이 문서는 xVM이나 Cranelift에서
 그 결과를 실행했다는 영수증이 아니다.
 
 다음은 Preview Design 문서가 current source admission을 만들지 않는

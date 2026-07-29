@@ -8,7 +8,7 @@
 |---|---|---|---|
 | Design_ | Design and Release Steward | Work | 거버넌스, 통합, release, 추가 감사자 지정 |
 | Spec_ | Language and Type System Architect | Work | 언어, grammar, type, MIR semantic contract |
-| Impl_ | Compiler and Runtime Lead | Work | Rust frontend, MIR lowering, xVM, LLVM |
+| Impl_ | Compiler and Runtime Lead | Work | Rust frontend, MIR lowering, xVM, Cranelift |
 | Test_ | Conformance and Quality Lead | Work | evidence, diagnostics, test, security and release gates |
 | Devel_ | Developer Experience and Ecosystem Lead | Work | examples, docs, formatter/LSP, stdlib, package UX |
 
@@ -150,7 +150,7 @@ Deeplus의 책임 지향 정체성을 보존하면서 surface, grammar, frontend
 
 ### Mission
 
-Rust frontend부터 Deeplus MIR, xVM interpreter, LLVM AOT 및 이후 ORC JIT까지 deterministic한 제품을 구현하고 target-baseline receipt를 만든다.
+Rust frontend부터 Deeplus MIR, xVM interpreter, Cranelift ObjectModule AOT 및 이후 Cranelift JITModule까지 deterministic한 제품을 구현하고 target-baseline receipt를 만든다.
 
 ### 소유
 
@@ -160,7 +160,7 @@ Rust frontend부터 Deeplus MIR, xVM interpreter, LLVM AOT 및 이후 ORC JIT까
 - HIR to MIR lowering
 - MIR verifier implementation
 - xVM bytecode/interpreter/REPL
-- LLVM AOT와 ORC JIT
+- Cranelift ObjectModule AOT와 Cranelift JITModule
 - build, platform, performance implementation
 
 ### 중점 질문
@@ -168,7 +168,7 @@ Rust frontend부터 Deeplus MIR, xVM interpreter, LLVM AOT 및 이후 ORC JIT까
 - spec이 숨은 context 없이 구현 가능한가?
 - recovery와 canonical parse가 분리되는가?
 - lowering이 evaluation, drop, cleanup, failure, authority를 보존하는가?
-- xVM과 LLVM 결과가 MIR 관찰 계약에서 동일한가?
+- xVM과 Cranelift 결과가 MIR 관찰 계약에서 동일한가?
 - receipt가 target commit, toolchain, command, result를 고정하는가?
 
 ### 매 release 의무
@@ -276,7 +276,7 @@ Deeplus가 실제 사용자가 배우고, 읽고, 디버깅하고, 도구로 다
 | grammar/frontend | C | A | R | C | C |
 | type/MIR contract | C | A | R | C | I |
 | Rust implementation | I | C | A/R | C | I |
-| xVM/LLVM | I | C | A/R | R for evidence | I |
+| xVM/Cranelift | I | C | A/R | R for evidence | I |
 | conformance | I | C | R | A/R | C |
 | diagnostics | I | C | R | A | R for wording |
 | examples/docs | I | C | C | C | A/R |
@@ -353,7 +353,7 @@ release owner는 RC manifest에 추가 역할과 이유를 반드시 쓴다.
 | 새 syntax 또는 기존 syntax 제거 | Idea_, 필요 시 Sophia_ |
 | ownership, authority, unsafe, reflection | Security_, Sophia_ |
 | task, actor, cancellation, async memory behavior | Concur_, Security_ |
-| ABI, FFI, native layout, LLVM calling convention | Interop_, Security_ |
+| ABI, FFI, native layout, Cranelift calling convention | Interop_, Security_ |
 | optimizer, JIT, GC/allocator, representation | Perf_, Security_ |
 | package manifest, registry, signature, lockfile | Package_, Security_ |
 | 대규모 spec 재구성, terminology 변경 | Docs_ |

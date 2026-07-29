@@ -52,6 +52,6 @@ projection이 어느 `TraitWitnessId`와 `RequirementId`를 사용하는지
 구현되지 않았다”로 표현하면 안전한 수정 방향을 제시하기 어렵다.
 
 이 부의 예제는 design-static evidence다. 실제 witness table,
-cross-module linker metadata, formatter·LSP navigation, xVM 또는 LLVM
+cross-module linker metadata, formatter·LSP navigation, xVM 또는 Cranelift
 dispatch 실행을 뜻하지 않는다. 작은 trace는 향후 receipt가 보존해야
 할 identity와 순서를 드러내기 위한 것이다.

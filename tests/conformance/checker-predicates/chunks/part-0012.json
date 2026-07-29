@@ -708,7 +708,7 @@
         "binding_kind": "var",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -787,7 +787,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 1
       },
       "lookup_domain": null,
@@ -869,7 +869,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -949,7 +949,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 2,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1029,7 +1029,7 @@
         "binding_kind": "let",
         "dependency_cycle": true,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1111,7 +1111,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1193,7 +1193,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1273,7 +1273,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1353,7 +1353,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1433,7 +1433,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1513,7 +1513,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1593,7 +1593,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1673,7 +1673,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1728,7 +1728,7 @@
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
-    "fixture_id": "PF-LibraryStaticBindingInitializerAdmitted-NEG-TASK",
+    "fixture_id": "PF-LibraryStaticBindingInitializerAdmitted-NEG-CONCUR-RUN",
     "predicate_id": "LibraryStaticBindingInitializerAdmitted",
     "expected": "rejected",
     "expected_primary_diagnostic": "LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED",
@@ -1753,7 +1753,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 1,
+        "initializer_run_count": 1,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1782,7 +1782,7 @@
       "orientation": null,
       "element_types": null
     },
-    "violated_condition": "the initializer creates a task",
+    "violated_condition": "the initializer spawns an ownerless Run",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
@@ -1791,7 +1791,7 @@
       "variant": "responsibility_core",
       "semantic_type": {
         "kind": "nominal",
-        "type_id": "PF-LibraryStaticBindingInitializerAdmitted-NEG-TASK"
+        "type_id": "PF-LibraryStaticBindingInitializerAdmitted-NEG-CONCUR-RUN"
       },
       "responsibility": {
         "ownership": "reusable",
@@ -1831,7 +1831,7 @@
         "binding_kind": "let",
         "dependency_cycle": false,
         "commit_count": 1,
-        "initializer_task_count": 0,
+        "initializer_run_count": 0,
         "initializer_actor_count": 0
       },
       "lookup_domain": null,
@@ -1860,7 +1860,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "source_kind is Binding and source_role is library; call_shape.binding_kind is let, dependency_cycle is false, and commit_count is exactly one; error_set and effect_row are both empty normalized sets, suspension is none, and authority is empty; cleanup.acquires_resource and cleanup.escapes_resource are both false; call_shape.initializer_task_count and call_shape.initializer_actor_count are both zero; isolation is exactly local; no actor/global isolation boundary is crossed during initialization; the conjunction is evaluated left-to-right in the written order and the first failed conjunct emits LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED",
+    "rule_seed": "source_kind is Binding and source_role is library; call_shape.binding_kind is let, dependency_cycle is false, and commit_count is exactly one; error_set and effect_row are both empty normalized sets, suspension is none, and authority is empty; cleanup.acquires_resource and cleanup.escapes_resource are both false; call_shape.initializer_run_count and call_shape.initializer_actor_count are both zero; isolation is exactly local; no actor/global isolation boundary is crossed during initialization; the conjunction is evaluated left-to-right in the written order and the first failed conjunct emits LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

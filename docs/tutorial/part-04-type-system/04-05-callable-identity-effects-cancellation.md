@@ -25,7 +25,7 @@ cancellation, call channel을 보존하는 이유를 설명한다.
 ownership channel은 callable이 값을 빌리는지, 변경 권한을 받는지,
 소유권을 넘겨받는지를 parameter identity에 남긴다는 최소 직관만
 사용한다. place state, lifetime, cleanup의 정확한 증명은 Part 7에서
-심화한다. Cancellation은 task/scope가 소유하는 별도 control outcome이며
+심화한다. Cancellation은 run/concur가 소유하는 별도 control outcome이며
 상세 구조화 동시성은 Part 10에서 배운다. 이 장에서는 둘을 ErrorSet이나
 EffectRow에 숨기지 않는 callable identity 원칙만 먼저 세운다.
 
@@ -128,10 +128,11 @@ Cancellation을 Error처럼 회수하거나 Result로 자동 변환하는 것도
 
 ## 8. 다른 기능과의 연결
 
-async/actor/task는 suspension, isolation, cancellation owner와 cleanup을
-추가로 보존한다. actor request가 돌려주는 Task responsibility는 일반
-async Task에 자동 부여되지 않는다. closure capture와 selected Trait
-witness도 public callable identity 및 lowering evidence에 결합된다.
+async/actor/concur는 suspension, isolation, cancellation owner와 cleanup을
+추가로 보존한다. actor request가 돌려주는 `Reply<T>`의 transport
+responsibility는 structured spawn이 돌려주는 `Run<T>`에 자동 부여되지
+않는다. closure capture와 selected Trait witness도 public callable identity
+및 lowering evidence에 결합된다.
 
 ## 9. Deeplus다운 작성 관례
 

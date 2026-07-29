@@ -42,10 +42,11 @@
 | `ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED` | `checker` | `error` | `active` | Associated requirement projection cannot be resolved under the current witness/conformance environment. |
 | `ASSOCIATED_REQUIREMENT_UNRESOLVED` | `checker` | `error` | `active` | Associated type/value requirement cannot be resolved in this witness or constraint environment. |
 | `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | The initial associated static value profile requires immutable, Shareable, no-drop, authority-free, acyclic, statically materializable data. |
-| `ASYNC_CALLABLE_LITERAL_NOT_CURRENT` | `parser` | `error` | `active` | #async callable literals are PREVIEW_DESIGN/nonactivatable. |
+| `ASYNC_CALLABLE_LITERAL_NOT_CURRENT` | `parser` | `error` | `active` | General escaping or first-class #async callable literals are Preview Design and nonactivatable. |
 | `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` | `checker` | `error` | `active` | the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + repeated result clauses \`throws ES throws ET\` normalized exactly to \`ES \| ET\` + sequential/source/failFast/cancelPending/buffer1. |
-| `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` | `checker` | `error` | `active` | Async/Task/Actor core is language-design stable but product support is NOT_RUN. |
-| `ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED` | `parser` | `error` | `active` | A \`for await\` loop does not own a subjectless outcome match in the current profile. |
+| `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` | `checker` | `error` | `active` | Async/Concur/Run/Reply/Actor core is language-design stable but product support is NOT_RUN. |
+| `ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED` | `parser` | `error` | `active` | A \`for#await\` loop does not own a subjectless outcome match in the current profile. |
+| `ASYNC_INVOCATION_REQUIRES_AWAIT_OR_SPAWN` | `checker` | `error` | `active` | An asynchronous invocation must be consumed by explicit await or by spawn in a concur region. |
 | `AT_CONTROL_EXPR_REQUIRES_AT_PREFIX` | `checker` | `error` | `active` | Value-producing control expression requires @if/@match/@try/@scope spelling. |
 | `AT_EXACT_INTRODUCER_LINE_BREAK_FORBIDDEN` | `parser` | `error` | `active` | An exact @ introducer cannot cross a physical line break. |
 | `AT_MATCH_ARM_RETURN_IS_NOT_RESULT` | `checker` | `error` | `active` | \`return\` exits the enclosing named function and is not an @match arm result. |
@@ -53,6 +54,7 @@
 | `AT_MATCH_SINGLE_EXPR_ARM_DOES_NOT_USE_RET` | `checker` | `error` | `active` | A direct \`@match\` arm expression does not use \`ret\`; write \`pattern => expr\` or use a block arm with \`ret expr\`. |
 | `AUTHORITY_TOKEN_NOT_IN_SCOPE` | `lexer` | `error` | `active` | Required authority token is not in scope; EffectRow does not grant permission by itself. |
 | `AWAIT_REQUIRED_FOR_ASYNC_CALL` | `checker` | `error` | `active` | Async function or async message result must be awaited in an async context. |
+| `AWAIT_REQUIRES_ASYNC_CONTEXT` | `checker` | `error` | `active` | await requires an admitted asynchronous execution context. |
 | `BARE_CALLABLE_TYPE_FORBIDDEN` | `checker` | `note` | `seed` | Bare Callable is not current source vocabulary. Use an exact function type or a named trait/preview façade. |
 | `BARE_CALL_ARGUMENT_MUST_BE_ATOMIC_OR_PARENTHESIZED` | `parser` | `error` | `active` | The bare argument before a trailing closure must be atomic or parenthesized. |
 | `BARE_CARET_IS_POWER_NOT_BITWISE_XOR` | `checker` | `error` | `active` | Bare infix \`^\` is the right-associative power operator, not bitwise XOR; current bitwise XOR is \`^^\`. |
@@ -154,7 +156,6 @@
 | `CLOSURE_CAPTURE_DESCRIPTOR_STABLE_BUT_PRODUCT_NOT_RUN` | `checker` | `info` | `active` | Closure capture descriptors are Stable design in the current profile, but production parser/checker support remains NOT_RUN. |
 | `CLOSURE_CAPTURE_ESCAPES_REGION` | `checker` | `error` | `seed` | Closure capture would outlive the borrowed owner region. |
 | `CLOSURE_CAPTURE_LIST_REQUIRED_FOR_ESCAPING` | `checker` | `error` | `seed` | Closure capture list required for escaping |
-| `CLOSURE_CAPTURE_NOT_TRANSFERABLE_TO_TASK` | `checker` | `error` | `seed` | Closure capture not transferable to task |
 | `CLOSURE_CAPTURE_SHORTHAND_REQUIRES_REUSABLE_VALUE` | `checker` | `error` | `seed` | Closure capture shorthand requires reusable value |
 | `CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT` | `checker` | `error` | `active` | An inout closure capture requires the #scoped#mut profile and cannot escape or overlap another mutable access. |
 | `CLOSURE_INOUT_CAPTURE_SUSPENDS` | `checker` | `error` | `seed` | Closure inout capture suspends |
@@ -187,7 +188,9 @@
 | `COMPLEX_REMAINDER_NOT_DEFINED` | `checker` | `error` | `active` | Complex remainder is not defined; use an explicitly named domain operation. |
 | `COMPLEX_REP_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | The initial Complex profile admits only Float32 and Float64 component representations. |
 | `COMPLEX_TYPED_INTEGER_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | A typed integer operand does not implicitly become a Complex component; convert it explicitly. |
-| `COMPREHENSION_FOR_AWAIT_REQUIRES_ASYNC_ITERATION` | `checker` | `error` | `active` | \`for await\` requires the async iteration design profile and does not imply general async task support. |
+| `COMPREHENSION_FOR_ROLE_AWAIT_REQUIRES_ASYNC_ITERATION` | `checker` | `error` | `active` | \`for#await\` requires the async iteration profile and does not imply an unstructured execution capability. |
+| `CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED` | `checker` | `error` | `active` | This capture mode is not admitted by the bounded concur-local #async callable profile. |
+| `CONCUR_LOCAL_ASYNC_LAMBDA_REQUIRES_OWNER` | `checker` | `error` | `active` | A bounded concur-local #async callable literal requires one immediately enclosing concur owner. |
 | `CONDITION_HAS_EFFECTFUL_OPERAND` | `checker` | `error` | `active` | A condition operand has effects; use explicit sequencing or a pure guard. |
 | `CONFORMANCE_AUTO_BODY_FORBIDDEN` | `parser` | `error` | `active` | A \`by auto\` conformance is bodyless. |
 | `CONFORMANCE_AUTO_POLICY_NOT_REGISTERED` | `checker` | `error` | `active` | \`by auto\` requires one closed synthesis policy registered by a Trait that declares \`supports auto\`. |
@@ -259,7 +262,7 @@
 | `DERIVATION_ENTRY_SEPARATOR_REQUIRED` | `checker` | `error` | `active` | Same-line derivation delta entries require comma; multi-line entries may use LayoutEntrySep when unambiguous. |
 | `DESIGN_GALLERY_METADATA_REQUIRED` | `checker` | `warning` | `seed` | Design Gallery entry is missing machine-readable metadata. |
 | `DETERMINISTIC_PRIMARY_SUPPRESSED_ORDER_VIOLATION` | `checker` | `error` | `active` | Failure selection or cleanup suppression order differs from the required source-order/reverse-cleanup algorithm. |
-| `DETERMINISTIC_SUPPRESSED_ORDER_REQUIRED` | `checker` | `error` | `active` | Primary/suppressed failure ordering must be deterministic for cleanup, resource, and task aggregation profiles. |
+| `DETERMINISTIC_SUPPRESSED_ORDER_REQUIRED` | `checker` | `error` | `active` | Primary/suppressed failure ordering must be deterministic for cleanup, resource, and spawned-Run aggregation profiles. |
 | `DIAGNOSTIC_ALIAS_PROJECTION_DRIFT` | `design_static` | `error` | `seed` | Diagnostic alias projection differs across artifacts. |
 | `DIAGNOSTIC_ID_CANONICAL_UPPER_SNAKE_CASE` | `checker` | `error` | `seed` | Diagnostic IDs must use canonical UPPER_SNAKE_CASE. |
 | `DIAGNOSTIC_VALUE_NOT_ADMISSIBLE` | `checker` | `error` | `active` | Diagnostic payload values must be Plain snapshots without owner, resource, authority, borrow, or cleanup responsibility. |
@@ -368,7 +371,7 @@
 | `EXTENSION_SET_STORED_MEMBER_FORBIDDEN` | `parser` | `error` | `active` | An extension set may declare behavior but cannot own a stored field, initializer, layout, or cleanup responsibility. |
 | `EXTENSION_SHADOWED_BY_MEMBER_COMPAT` | `checker` | `error` | `active` | the current profile compatibility profile selected the member slot while an active extension is shadowed; strict profile will require explicit selection. |
 | `EXTENSION_USE_REEXPORT_STABLE_BUT_PRODUCT_NOT_RUN` | `checker` | `warning` | `active` | \`use export\` is stable design in the current profile; product parser/checker support remains NOT_RUN. |
-| `FACET_BORROW_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A Phase-A borrowed Facet cannot cross suspension, task, or actor boundaries. |
+| `FACET_BORROW_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A Phase-A borrowed Facet cannot cross suspension, concur-run, or actor boundaries. |
 | `FACET_BORROW_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | A borrowed Facet cannot outlive its payload borrow region or cross an isolation boundary. |
 | `FACET_CONCRETE_TYPE_SPELLING_FORBIDDEN` | `checker` | `error` | `active` | Facet<T as Trait> leaks the payload type; use Facet<borrow any Trait>. |
 | `FACET_DROP_PLAN_NOT_PRESERVED` | `checker` | `error` | `active` | Owned Facet packaging must preserve the concrete payload drop plan exactly. |
@@ -544,10 +547,10 @@
 | `LEGACY_SHORT_CIRCUIT_AND_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`&&\` is not logical AND in Deeplus; use \`and then\` for short-circuit or \`and\` for strict Boolean AND. |
 | `LEGACY_SHORT_CIRCUIT_OR_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`\|\|\` is not logical OR in Deeplus; use \`otherwise\` for short-circuit or \`or\` for strict Boolean OR. |
 | `LET_PROPERTY_CANNOT_HAVE_SETTER` | `checker` | `error` | `active` | let property cannot have setter. |
-| `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` | `checker` | `error` | `active` | A lexical dependency cannot cross a task, actor, FFI, or other isolation boundary. |
+| `LEXICAL_DEPENDENCY_CROSSES_ISOLATION` | `checker` | `error` | `active` | A lexical dependency cannot cross a concur-run, actor, FFI, or other isolation boundary. |
 | `LEXICAL_DEPENDENCY_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A lexical dependency cannot remain live across await, yield, or another suspension point. |
 | `LEXICAL_DEPENDENCY_PLACE_NOT_LIVE` | `checker` | `error` | `active` | The ancestor place required by a lexical callable is not live and readable at this invocation. |
-| `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` | `checker` | `error` | `active` | A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/task/actor free, acyclic, and committed once. |
+| `LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED` | `checker` | `error` | `active` | A library top-level binding must be immutable, pure, synchronous, nonthrowing, effect/authority/resource/concur-run/actor free, acyclic, and committed once. |
 | `LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT` | `checker` | `error` | `active` | A library target cannot contain script computation; split declarations into a library or select an executable script target. |
 | `LINALG_BACKEND_TRANSFER_REQUIRES_NAMED_API` | `checker` | `error` | `seed` | Linear algebra operators cannot hide backend transfer. |
 | `LINALG_COMPLEX_DOT_CONJUGATES_LEFT` | `checker` | `info` | `seed` | Complex NumericArray *+ conjugates the left operand under the current law; dotu is explicitly unconjugated, A^ is transpose, and A ~ adjoint is conjugate transpose. |
@@ -911,6 +914,7 @@
 | `RECORD_UNFOLD_LABEL_SET_NOT_STATICALLY_DISJOINT` | `checker` | `error` | `active` | A record spread in named arguments must be statically disjoint from explicit labels and other spreads. |
 | `RECORD_UNFOLD_MISSING_REQUIRED_LABEL_EVIDENCE` | `checker` | `error` | `active` | A record spread cannot satisfy required named parameters unless its label set is statically known. |
 | `REDUNDANT_ASSOCIATED_PROJECTION_PARENS_BEFORE_OPTIONAL` | `checker` | `lint` | `active` | Parentheses are redundant before an optional suffix on an associated projection; write \`<T as Trait>::Assoc?\`. |
+| `REDUNDANT_ASYNC_AFTER_SPAWN` | `checker` | `error` | `active` | spawn already establishes concur-owned asynchronous execution; \`spawn async\` is not an admitted spelling. |
 | `REDUNDANT_FINAL_VALUELESS_RETURN` | `checker` | `lint` | `active` | The final valueless return is redundant; normal Unit completion is canonical. |
 | `REFINED_ELEMENT_TYPE_REQUIRES_WHERE_THIS` | `checker` | `error` | `seed` | Refined element type requires where this |
 | `REFINEMENT_ASSERTION_MAY_DEFECT` | `checker` | `warning` | `active` | \`as!\` may raise RefinementAssertionDefect if the predicate fails. |
@@ -932,6 +936,7 @@
 | `REFUTABLE_PATTERN_REQUIRES_ELSE` | `checker` | `error` | `seed` | Refutable pattern binding requires an explicit else block that owns the failure path. |
 | `REJECTED_REVIEW_FIXTURE_EXPECTED_FAILURE` | `checker` | `error` | `seed` | This review-seed reject example is expected to fail under the current Deeplus source rules; a more specific diagnostic should replace this seed before product conformance certification. |
 | `REPEATED_POSITIONAL_PARAMETER_NOT_LAST_BEFORE_NAMED_REST` | `checker` | `error` | `active` | A repeated positional parameter must appear after ordinary positional parameters and before the optional named rest parameter. |
+| `REPLY_ALREADY_CONSUMED` | `checker` | `error` | `active` | A Reply<T> is a one-shot actor-request responsibility and has already been consumed. |
 | `RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT` | `checker` | `error` | `active` | Stable Resource inheritance requires a same-module sealed root and explicit cleanup budget. |
 | `RESPONSIBILITY_KIND_NOT_CLOSED` | `checker` | `error` | `active` | The descriptor does not inhabit exactly one admitted responsibility kind or mixes independent kind axes. |
 | `REST_ARGUMENTS_REQUIRE_COMMON_ELEMENT_TYPE` | `checker` | `error` | `active` | Repeated positional arguments must have a common element type unless an explicit union feature is admitted. |
@@ -946,6 +951,9 @@
 | `RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN` | `checker` | `error` | `active` | The expected result type cannot create, distinguish, or rank a fixed-operator conformance candidate. |
 | `RET_OUTSIDE_LAMBDA` | `checker` | `error` | `active` | \`ret\` is a local-result terminator only in a lambda block, a value match arm or declarative value-clause arm, or an \`@if\`/\`@try\`/\`@scope\` local-value block; it is not a named-function return. |
 | `RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN` | `design_static` | `error` | `active` | Rightward local binding must normalize to an ordinary local binding before semantic AST/HIR and MIR. |
+| `RUN_ALREADY_CONSUMED` | `checker` | `error` | `active` | A Run<T> is a one-shot concur child responsibility and has already been consumed. |
+| `RUN_GROUP_NOT_ACTIVATABLE` | `checker` | `error` | `active` | RunGroup<T> is Preview Design and nonactivatable; concur remains the sole lexical structured owner. |
+| `RUN_REPLY_TYPE_MISMATCH` | `checker` | `error` | `active` | Run<T> and Reply<T> are distinct one-shot responsibilities and cannot be converted or substituted for one another. |
 | `SANITY_RECALCULATION_MISMATCH` | `design_static` | `error` | `active` | Sanity artifact count/line/byte fields must match the package produced on disk. |
 | `SCHEMA_CONSTRUCTION_CANNOT_BYPASS_CONSTRUCTOR` | `checker` | `error` | `active` | \`Type${...}\` is typed schema construction and cannot bypass constructor-domain initialization or invariants. |
 | `SCHEMA_CONSTRUCTION_CANNOT_INVOKE_CONSTRUCTOR` | `checker` | `error` | `active` | Type${...} is schema construction and does not invoke constructor-domain def! bodies. Use Type!(...) or Type!name(...) for construction. |
@@ -957,7 +965,7 @@
 | `SCHEMA_PROJECTION_ROW_REQUIRED` | `checker` | `error` | `active` | Named unfolding requires a visible ProjectionRow for the schema value in this scope. |
 | `SCOPED_ACTIVATION_REQUIRES_IN_BLOCK` | `parser` | `error` | `active` | A scoped import/use group must be followed by \`in\` and a block. |
 | `SCOPED_ACTIVATION_SPEC_DUPLICATE` | `checker` | `error` | `active` | A scoped activation group contains the same normalized spec more than once. |
-| `SCOPED_CALLABLE_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | A #scoped callable cannot be stored, returned, captured by an escaping continuation, or transferred to task/actor state. |
+| `SCOPED_CALLABLE_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | A #scoped callable cannot be stored, returned, captured by an escaping continuation, or transferred to concur-run/actor state. |
 | `SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | #scoped callback borrow evidence cannot escape the receiving invocation region. |
 | `SCOPED_EXTENSION_ACTIVATION_AMBIGUOUS` | `checker` | `error` | `active` | The active extension sets contain equally applicable selectors; nesting depth is not a priority. |
 | `SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY` | `checker` | `error` | `active` | Scoped extension activation is lexical; use order is not a priority or tie-breaker. |
@@ -1015,6 +1023,8 @@
 | `SOURCE_ROLE_ENTRY_COUNT_MISMATCH` | `parser` | `error` | `active` | The parser's explicit entry-declaration count must equal the source front end's selected entry-target count for the same normalized source root. |
 | `SOURCE_TRAILING_TOKENS` | `parser` | `error` | `active` | The selected source root did not consume all input. |
 | `SOURCE_TRUTH_PROJECTION_CONFLICT` | `design_static` | `error` | `active` | Spec text, Markdown projection, and machine registry disagree about which artifact is the canonical source for registry rows. |
+| `SPAWN_OPERAND_MUST_BE_ASYNC` | `checker` | `error` | `active` | The expression form of spawn requires a checker-selected asynchronous invocation. |
+| `SPAWN_REQUIRES_CONCUR_OWNER` | `checker` | `error` | `active` | spawn requires one immediately enclosing concur owner. |
 | `SPECIALIZATION_NOT_CURRENT` | `checker` | `error` | `active` | Conformance specialization remains Preview-design and is not current Stable source. |
 | `SPEC_PROJECTION_COUNT_DRIFT` | `design_static` | `error` | `active` | Spec projection counts must match machine registry counts. |
 | `STABLE_EBNF_NONACTIVATABLE_HELPER_LEAK` | `design_static` | `error` | `active` | STABLE_EBNF_NONACTIVATABLE_HELPER_LEAK: the current corpus, lifecycle, grammar, and machine authorities must agree. |
@@ -1062,8 +1072,6 @@
 | `SUPPORT_MARKDOWN_PROJECTION_OUT_OF_SYNC` | `design_static` | `error` | `seed` | Generated Markdown support projection does not match canonical support matrix feature ID set. |
 | `SUPPORT_MATRIX_FEATURE_PARITY_DRIFT` | `design_static` | `error` | `active` | Production support matrix and feature registry have different feature ID sets or lane values. |
 | `SYNC_CALLABLE_LITERAL_MARKER_NOT_CURRENT` | `parser` | `error` | `active` | #sync is redundant and not a current callable literal profile. |
-| `TASK_GROUP_CHILDREN_MUST_BE_JOINED_OR_COLLECTED` | `checker` | `error` | `seed` | A task group with spawned children must expose join/collect/implicit-join policy explicitly in this profile. |
-| `TASK_SPAWN_BODY_REQUIRES_TASK_BODY_PROFILE` | `checker` | `error` | `seed` | Task spawn in the R49 preview slice uses TaskBody, not the general nonactivatable closure literal production. |
 | `TERNARY_BRANCH_TYPE_MISMATCH` | `checker` | `error` | `active` | Ternary branch types do not have a permitted join. |
 | `TERNARY_CONDITION_NOT_BOOL` | `checker` | `error` | `active` | Ternary condition must have Bool type. |
 | `TERNARY_MISSING_COLON` | `checker` | `error` | `active` | Ternary expression requires a colon separating true and false arms. |
@@ -1214,7 +1222,7 @@
 | `VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER` | `checker` | `error` | `active` | the current profile Phase B generic variance is allowed only on trait/interface/view/function-like parameters. |
 | `VAR_COLON_COLON_NOT_CURRENT` | `checker` | `error` | `active` | var:: type-side mutable storage is not admitted in the clean current source profile; use explicit ordinary ownership, isolation, and effect responsibility. |
 | `VIEW_CROSSES_ACTOR_BOUNDARY` | `checker` | `error` | `seed` | Region-bound view cannot cross an actor isolation boundary without an owned Transferable value or shared handle law. |
-| `VIEW_CROSSES_TASK_BOUNDARY` | `checker` | `error` | `seed` | Region-bound view cannot cross a task boundary without an owned Transferable value or shared handle law. |
+| `VIEW_CROSSES_CONCUR_RUN_BOUNDARY` | `checker` | `error` | `active` | A region-bound view cannot cross a concur-run boundary without an owned Transferable value or shared handle law. |
 | `WEAK_ATOMIC_ORDERING_REQUIRES_FEATURE_GATE` | `parser` | `error` | `active` | Feature \`weak_atomic_ordering\` is PREVIEW_DESIGN/nonactivatable and has no current source gate. |
 | `WHERE_CLAUSE_PRIVATE_TYPE_LEAK` | `checker` | `error` | `seed` | Where-clause constraint leaks a private type through a public API. |
 | `WHERE_COLON_RELATION_AMBIGUOUS` | `parser` | `error` | `active` | \`where T : U\` is ambiguous in the current profile. Use \`where T conforms Trait\` for conformance or an explicit future subtype-bound relation. |
@@ -1248,9 +1256,9 @@
 | `AssociatedProjectionUsesDoubleColon` | AssociatedProjectionUsesDoubleColon | Associated projection is \`<T as Trait>::Assoc\`. | `DESIGN_STATIC_NOT_RUN` |
 | `AssociatedRequirementAdmitted` | AssociatedRequirementAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `AssociatedRequirementWitnessAdmitted` | AssociatedRequirementWitnessAdmitted | R51a1 closed design algorithm for AssociatedRequirementWitnessAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `AsyncActorCoreAdmitted` | AsyncActorCoreAdmitted | Tracks async/task/actor design stability while product support remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `AsyncActorCoreAdmitted` | AsyncActorCoreAdmitted | Tracks async/concur/Run/Reply/actor design stability while product support remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `AsyncCollectorPolicyAdmitted` | AsyncCollectorPolicyAdmitted | Admits the Stage-1 policy-visible collector profile with explicit source and transform ErrorSets and exact union propagation, without activating async callable literals. | `DESIGN_STATIC_NOT_RUN` |
-| `AsyncSurfaceGateAdmitted` | async/await/for-await | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `AsyncSurfaceGateAdmitted` | async/await/for#await | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `AtMatchArmResultAdmitted` | @match arm result | R51a1 closed design algorithm for AtMatchArmResultAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AuthorityRelationAdmitted` | AuthorityRelationAdmitted | Decide explicit authority requires/grants/delegates/borrows/consumes/isolation relations without conflation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BasicIndexOperatorAdmitted` | BasicIndexOperatorAdmitted | intrinsic [] is read-only; conformance never activates it | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1366,7 +1374,7 @@
 | `LayoutEntrySepAdmitted` | LayoutEntrySepAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `LazyForceAdmitted` | LazyForceAdmitted | Admit pure synchronous call-by-need forcing with deterministic cycle rejection and exactly one published commit. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `LazyLetAdmitted` | LazyLetAdmitted | Admits a local nonescaping memoizing call-by-need immutable binding under the closed pure initializer profile. | `DESIGN_STATIC_NOT_RUN` |
-| `LibraryStaticBindingInitializerAdmitted` | LibraryStaticBindingInitializerAdmitted | source_kind is Binding and source_role is library; call_shape.binding_kind is let, dependency_cycle is false, and commit_count is exactly one; error_set and effect_row are both empty normalized sets, suspension is none, and authority is empty; cleanup.acquires_resource and cleanup.escapes_resource are both false; call_shape.initializer_task_count and call_shape.initializer_actor_count are both zero; isolation is exactly local; no actor/global isolation boundary is crossed during initialization; the conjunction is evaluated left-to-right in the written order and the first failed conjunct emits LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED | `DESIGN_STATIC_NOT_RUN` |
+| `LibraryStaticBindingInitializerAdmitted` | LibraryStaticBindingInitializerAdmitted | source_kind is Binding and source_role is library; call_shape.binding_kind is let, dependency_cycle is false, and commit_count is exactly one; error_set and effect_row are both empty normalized sets, suspension is none, and authority is empty; cleanup.acquires_resource and cleanup.escapes_resource are both false; call_shape.initializer_run_count and call_shape.initializer_actor_count are both zero; isolation is exactly local; no actor/global isolation boundary is crossed during initialization; the conjunction is evaluated left-to-right in the written order and the first failed conjunct emits LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED | `DESIGN_STATIC_NOT_RUN` |
 | `LinearAlgebraOperatorAdmitted` | LinearAlgebraOperatorAdmitted | LinearProductExpr folds \`**\` and \`*+\` strictly left-to-right in source order and validates each intermediate result before the next step; for \`**\`, both operands are rank-2; a rank failure emits MATRIX_PRODUCT_REQUIRES_RANK2_MATRICES and an inner-dimension mismatch emits MATRIX_PRODUCT_DIMENSION_MISMATCH; for \`*+\`, both operands are rank-1 vectors of equal static or checker-proven length; any rank/length failure emits DOT_PRODUCT_REQUIRES_RANK1_VECTORS; mixed operator chains are not rejected for associativity alone; the first fold step whose current lhs/rhs ranks or shapes violate its operator emits that operator's exact diagnostic | `DESIGN_STATIC_NOT_RUN` |
 | `LinearProductLeftFoldAdmitted` | LinearProductLeftFoldAdmitted | R51c current design predicate for LinearProductLeftFoldAdmitted; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ListLiteralElementJoinAdmitted` | ListLiteralElementJoinAdmitted | Checks ordinary List elements against one inferred homogeneous type or an explicit expected type, including an explicit closed union; it never synthesizes a Union. | `DESIGN_STATIC_NOT_RUN` |
@@ -1432,7 +1440,7 @@
 | `QuarantineScopeDesignAdmitted` | QuarantineScopeDesignAdmitted | R51e design-static admission rule for dynamic_unsafe_quarantine_scope_msp; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `R0GuardSafe` | R0GuardSafe | Admit only a finite total, exact-Bool, responsibility-free R0 expression. | `DESIGN_STATIC_NOT_RUN` |
 | `RationalLiteralAdmitted` | Rational compound literal | Admit one expression-prefix transactional <p/q> literal and normalize it to an exact BigInt pair. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ReadonlyViewAdmitted` | ReadonlyViewAdmitted | require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/task/actor/isolation transfer without shareability proof | `DESIGN_STATIC_NOT_RUN` |
+| `ReadonlyViewAdmitted` | ReadonlyViewAdmitted | require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof | `DESIGN_STATIC_NOT_RUN` |
 | `ReceiverOwnerResultAdmitted` | ReceiverOwnerResultAdmitted | Admit exactly one explicit Self-compatible owner result from a consuming receiver. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RecordNamedArgumentSpreadAdmitted` | Record named argument spread | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `RefinementCheckBoundaryAdmitted` | RefinementCheckBoundaryAdmitted | Apply three-valued proof at explicit refinement boundaries. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1446,7 +1454,7 @@
 | `RightwardLocalBindingNormalizesToOrdinaryBinding` | RightwardLocalBindingNormalizesToOrdinaryBinding | Classify \`$\`/\`$$\`, preserve CST, and normalize to ordinary immutable/mutable local binding before semantic checking. | `DESIGN_STATIC_NOT_RUN` |
 | `SatisfiesConformance` | SatisfiesConformance | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedActivationGroupAdmitted` | ScopedActivationGroupAdmitted | R51f3 owner-specific static design seed for scoped_import_use_grouping; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ScopedCallableAdmitted` | ScopedCallableAdmitted | assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, task, actor, and isolation escape | `DESIGN_STATIC_NOT_RUN` |
+| `ScopedCallableAdmitted` | ScopedCallableAdmitted | assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, concur-run, actor, and isolation escape | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedImportBlockAdmitted` | ScopedImportBlockAdmitted | Admits a current statement-only import environment frame with compile-time body scope. | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedUseBlockAdmitted` | ScopedUseBlockAdmitted | Admits a statement-only scoped use frame and rejects priority by nesting depth. | `DESIGN_STATIC_NOT_RUN` |
 | `SealedDirectSubclassAdmitted` | Sealed direct subclass | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |

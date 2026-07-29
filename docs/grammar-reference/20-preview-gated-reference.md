@@ -8,7 +8,7 @@
 이 장은 현행 feature registry에서 `status_enum = PREVIEW`이고
 `source_activation = explicit_feature_gate`인 기능만 설명한다. 여기에
 등재된 예시는 정적 설계 예시이며 제품 실행 증거가 아니다. lexer, parser,
-checker, MIR, xVM, LLVM, formatter/LSP를 포함한 15개 제품 lane은 모두
+checker, MIR, xVM, Cranelift, formatter/LSP를 포함한 15개 제품 lane은 모두
 `NOT_RUN`이다. gate는 해당 source root와 구문 또는 의미 route를 선택할
 뿐이며, ABI·타입·소유권·효과·오류·provenance 검사를 면제하지 않는다.
 gate ID는 왼쪽에서 오른쪽으로 검사되고, 의존성은 암시적으로 켜지지
@@ -32,7 +32,7 @@ C ABI를 호출한다는 한 줄의 선언이 곧 메모리 안전성을 뜻하�
 profile로 묶는다. 이 profile은 ABI 이름, 표현 가능한 parameter/result,
 `unsafe` 경계, raw pointer provenance, 소유권 이전, unwind와 cleanup을
 각각 독립된 책임으로 남긴다. `Plain`이라는 일반 Deeplus 성질만으로 C
-layout-safe를 추론하지 않으며, LLVM backend가 있다는 사실도 FFI
+layout-safe를 추론하지 않으며, Cranelift backend가 있다는 사실도 FFI
 soundness의 증거가 아니다.
 
 **제안 표면**
@@ -48,7 +48,7 @@ gate admission, FFI signature representability, ABI/provenance, unsafe
 authority 검사는 서로 다른 단계다. `throws`와 `effects`는 외부 함수의
 관측 가능한 Deeplus 계약을 보존해야 하며 `unsafe`를 EffectRow 원자로
 넣지 않는다. C aggregate, variadic, stored callback은 이 최소 profile에
-포함되지 않고 별도 비활성 설계다. 동일 선언이 xVM과 LLVM에서 서로 다른
+포함되지 않고 별도 비활성 설계다. 동일 선언이 xVM과 Cranelift에서 서로 다른
 Deeplus 의미를 갖거나 pointer provenance를 backend 관습에 맡기는
 구성은 허용 후보가 아니다.
 
@@ -74,7 +74,7 @@ diagnostic에 분리해 보여야 한다.
 **활성화 선행 조건**
 정확한 ABI별 representability 표, raw pointer provenance와 lifetime
 법칙, ownership/unwind/cleanup mapping, 결정적 diagnostic과 admission,
-formatter/LSP round-trip, MIR foreign-call identity, xVM/LLVM 동등성
+formatter/LSP round-trip, MIR foreign-call identity, xVM/Cranelift 동등성
 corpus, 다중 target의 artifact-bound receipt와 별도 Design_ 판정이
 필요하다. 문서·schema·정적 fixture는 이 조건을 대체하지 않고 어떤 P1도
 닫지 않는다.
@@ -267,7 +267,7 @@ shape와 element result를 함께 보여야 한다.
 정확한 operand/result shape 법칙, exponent domain, overflow/error와
 cleanup, Pratt owner 및 spacing 보존, gate-aware formatter/LSP,
 양성·음성·attachment 경계·shape mutation corpus, MIR elementwise event와
-xVM/LLVM 동등 실행 receipt가 필요하다. 독립 conformance와 실제 사용자
+xVM/Cranelift 동등 실행 receipt가 필요하다. 독립 conformance와 실제 사용자
 연구를 포함한 제품 lane은 모두 `NOT_RUN`이고, 정적 예시만으로 지원을
 주장할 수 없다.
 

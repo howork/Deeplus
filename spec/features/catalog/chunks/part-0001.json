@@ -291,13 +291,13 @@
     "depends_on": [
       "actor_protocol_family"
     ],
-    "display_name": "Actor request/reply protocol",
+    "display_name": "Actor request/reply protocol with dedicated Reply responsibility",
     "feature_id": "actor_request_reply",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "An actor :~ request immediately returns Result<Task<T>, error ActorMessageError>; source extracts Task<T> before explicit await, and receiver closure before reply terminates that admitted task through its declared failure axis. :~ itself never suspends or retries.",
+    "notes": "An actor :~ request immediately returns Result<Reply<T>, error ActorMessageError>; source extracts the one-shot Reply<T> before explicit await, and receiver closure before reply terminates that correlated reply through its declared failure axis. Reply<T> is not a structured-concurrency Run<T>, and :~ itself never suspends or retries.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -983,7 +983,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Preview design",
-    "notes": "#async callable literals remain nonactivatable until call, return, cancellation, lowering, and ABI responsibilities are closed; ordinary lambdas remain synchronously invoked.",
+    "notes": "General escaping or first-class #async callable literals remain Preview Design and nonactivatable. The separately bounded concur-local subset is Stable only through spawn_body_and_direct_async_invocation: it cannot escape its owner and admits only an empty capture list or explicit reusable copy captures.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1055,7 +1055,7 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
-      "async_task_control"
+      "async_concur_control"
     ],
     "display_name": "Async `def#async` declaration surface",
     "feature_id": "async_function_declaration_surface",
@@ -1077,7 +1077,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "AWAIT_REQUIRED_FOR_ASYNC_CALL",
-        "COMPREHENSION_FOR_AWAIT_REQUIRES_ASYNC_ITERATION"
+        "COMPREHENSION_FOR_ROLE_AWAIT_REQUIRES_ASYNC_ITERATION"
       ],
       "predicates": [],
       "examples": [
@@ -1111,7 +1111,7 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
-      "async_task_control",
+      "async_concur_control",
       "await_expression_surface"
     ],
     "display_name": "Async iteration",
@@ -1120,7 +1120,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`for await` is current Stable async-iteration syntax inside an admitted async context. The iterator protocol and cancellation/cleanup responsibilities are checked independently. Product lanes remain NOT_RUN.",
+    "notes": "`for#await` is the current Stable attached-role async-iteration syntax inside an admitted async context. The iterator protocol and cancellation/cleanup responsibilities are checked independently. Product lanes remain NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1141,7 +1141,8 @@
         "EX-R51b-GRAM-NG-011"
       ],
       "productions": [
-        "AsyncForLoop"
+        "AsyncForLoop",
+        "ForAwaitRole"
       ],
       "semantic_reference_productions": []
     },
@@ -1202,13 +1203,13 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Async/await task control axis",
-    "feature_id": "async_task_control",
+    "display_name": "Async/await concur control axis",
+    "feature_id": "async_concur_control",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "This current contract is defined by the named authority, activation and dependency fields.",
+    "notes": "Async suspension is explicit; concur owns the lexical structured-concurrency region, each spawn yields an owner-bound one-shot Run<T>, and actor requests independently yield Reply<T> after successful admission.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1233,7 +1234,8 @@
         "EX-R51c-016"
       ],
       "productions": [
-        "TaskGroupStmt"
+        "ConcurExpr",
+        "SpawnExpr"
       ],
       "semantic_reference_productions": []
     },
@@ -1534,7 +1536,7 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
-      "async_task_control"
+      "async_concur_control"
     ],
     "display_name": "Await expression surface",
     "feature_id": "await_expression_surface",

@@ -75,7 +75,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, task, actor, and isolation escape",
+    "rule_seed": "assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, concur-run, actor, and isolation escape",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
@@ -1007,7 +1007,7 @@
       "effect_row": null,
       "suspension": null,
       "cancellation": null,
-      "isolation": "task",
+      "isolation": "concur_run",
       "authority": null,
       "construction_domain": null,
       "call_shape": {
@@ -1039,7 +1039,7 @@
       "orientation": null,
       "element_types": null
     },
-    "violated_condition": "an owner is implicitly promoted into shared cross-task identity",
+    "violated_condition": "an owner is implicitly promoted into shared cross-run identity",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {

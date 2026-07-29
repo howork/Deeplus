@@ -16,7 +16,7 @@ Deeplus MIR에 있다.
 
 Rust scanner/parser와 typed HIR은
 소스 의미를 MIR로 넘기기 위한 frontend projection이다.
-xVM bytecode, LLVM AOT, LLVM ORC JIT는
+xVM bytecode, Cranelift ObjectModule AOT, Cranelift JITModule는
 MIR을 실행하는 backend projection이다.
 어느 projection도
 평가 횟수, 실패 전후 commit, owner, cleanup,
@@ -34,14 +34,14 @@ provider observation을 바꿀 수 없다.
 - ternary, 보간, Map unfold와 transpose의 정적으로 폐쇄된 MIR 법칙
 - actor와 shared-state의 관찰 identity
 - semantic value와 layout/ABI/backend identity의 분리
-- xVM/LLVM differential conformance
+- xVM/Cranelift differential conformance
 - 설계 정적 계약과 제품 실행 receipt의 차이
 
 이 장은 MIR opcode 목록이나 storage layout을 발명하지 않는다.
 이번 정본 보완으로 필수 20개 MIR 감사 집합에서
 `DEFERRED_PRODUCT_HANDOFF`는 format-spec 1개만 남았지만,
 이는 정적 source-observable 법칙이 닫혔다는 뜻일 뿐이다.
-xVM·LLVM 실행, backend opcode, 표현, 성능 및 제품 지원은
+xVM·Cranelift 실행, backend opcode, 표현, 성능 및 제품 지원은
 계속 `NOT_RUN`이다.
 
 ## 2. source에서 실행까지
@@ -255,7 +255,7 @@ MIR state는 적어도 다음 개념을 보존한다.
 - place와 ownership state
 - cleanup-region stack
 - effect/error continuation
-- task와 actor state
+- run/reply와 actor state
 - provider binding과 replay identity
 - source provenance
 
@@ -269,12 +269,14 @@ region requirement로 내린다. 별도의 source-observable
 그러나 backend가 관찰 가능한 차이를 만들지 않도록
 동등한 정보를 보존해야 한다.
 
-### 2.5 xVM과 LLVM
+### 2.5 xVM과 Cranelift
 
 xVM bytecode interpreter는
 첫 개발·검증·REPL execution path다.
-LLVM AOT는 첫 native path이고
-LLVM ORC JIT가 뒤따른다.
+Cranelift `ObjectModule` AOT는 첫 native object path이고
+Cranelift `JITModule`은 in-memory native path다. 두 경로는 하나의
+verified-MIR-to-CLIF lowering을 공유하며 finalization, linking과 code
+lifetime에서만 갈라진다.
 
 세 backend는 같은 source를 받았다는 사실만으로
 동등하다고 주장할 수 없다.
@@ -284,11 +286,20 @@ place/cleanup balance,
 provider replay identity를 비교한
 target-bound differential receipt가 필요하다.
 
-current backend authority는 정확히 `xVM initial execution`, `LLVM AOT`,
-`LLVM ORC JIT`다. Cranelift는 current backend가 아니며, xVM-only
-architecture로 전환되지도 않았다. `ProposedMirX1`은
+current backend authority는 정확히 `xVM initial execution`,
+`Cranelift ObjectModule AOT`, `Cranelift JITModule`이다. xVM-only
+architecture나 superseded native backend로 전환되지 않았다.
+`ProposedMirX1`은
 noncanonical/nonactivatable 설계 대상이므로 current Deeplus MIR을
 대체하지 않는다.
+
+CLIF value/block/stack slot/signature, register, relocation과 machine
+address는 backend-private이며 HIR/MIR identity가 아니다. native
+receipt는 MIR digest, target triple, ISA/settings, Cranelift family,
+module kind, calling convention, runtime ABI, optimization과
+object/linker 또는 JIT import map을 고정한다. Error, Defect,
+Cancellation, suspension과 cleanup은 명시적 MIR edge로 유지되며 native
+exception, host unwind 또는 임의 trap으로 대체할 수 없다.
 
 ## 3. 무엇이 관찰 가능한가
 
@@ -457,7 +468,7 @@ owner move/drop과 충돌한다.
 
 live shared borrow가 있는 동안
 충돌하는 mutation 또는 exclusive access는 거부된다.
-borrow가 task, actor, return, storage,
+borrow가 run/reply, actor, return, storage,
 escaping closure를 건너려면
 별도 admitted lifetime proof가 필요하다.
 
@@ -615,7 +626,7 @@ conversion은 허용하지 않는다.
 
 `Int`는 signed 64-bit mathematical domain이다.
 이 말은 반드시 C `long long` layout이나
-특정 LLVM integer ABI를 공개한다는 뜻이 아니다.
+특정 Cranelift integer ABI를 공개한다는 뜻이 아니다.
 
 `Int8`부터 `Int128`,
 `UInt8`부터 `UInt128`,
@@ -718,7 +729,7 @@ let principal: Complex = Complex!(real: -1.0, imag: +0.0) ^ 0.5
 let one: Int = 0 ^ 0
 ```
 
-이 예는 source-observable 설계 trace다. 실제 HIR/MIR/xVM/LLVM 실행
+이 예는 source-observable 설계 trace다. 실제 HIR/MIR/xVM/Cranelift 실행
 receipt는 없으며 제품 상태는 `NOT_RUN`이다.
 
 ## 9. pattern transaction
@@ -868,7 +879,7 @@ private let label = ready ? "ready" : "waiting"
 
 이 예제는 Stable syntax와 strict Bool static boundary를 보여 준다.
 lazy-arm과 responsibility join은 정적으로 닫혔지만,
-이 source가 xVM/LLVM에서 실행되었다는 target-bound receipt는 아직 없다.
+이 source가 xVM/Cranelift에서 실행되었다는 target-bound receipt는 아직 없다.
 
 ### 11.4 구현 금지 추론
 
@@ -1097,7 +1108,7 @@ body failure는 primary로 남고,
 cleanup failure는 실제 LIFO execution order로
 suppressed list에 붙는다.
 
-task scope에서 child failure만 경쟁하면
+`concur`에서 child failure만 경쟁하면
 가장 작은 lexical `spawn_index`가 primary다.
 나머지는 index 오름차순으로 suppressed된다.
 scheduler completion order는 evidence가 아니다.
@@ -1119,9 +1130,9 @@ Cancellation은 ErrorSet member로 변환되지 않는다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/mir/semantics.md -->
 ```deeplus
 private def#async supervise() -> Unit = {
-    task scope {
+    concur {
         defer releaseResources()
-        let child = spawn async { => await work() }
+        let child = spawn work()
         await child
     }
 }
@@ -1208,8 +1219,8 @@ private def sendTwo(counter: Counter) -> Unit = {
 ### 15.5 request
 
 reply type `T`의 request는 즉시
-`Result<Task<T>, error ActorMessageError>`를 만든다.
-source는 admission Result에서 Task를 꺼낸 뒤
+`Result<Reply<T>, error ActorMessageError>`를 만든다.
+source는 admission Result에서 Reply를 꺼낸 뒤
 명시적으로 `await`한다.
 
 commit은 `CorrelationId`와 `ReplyId`를 하나 만든다.
@@ -1217,32 +1228,32 @@ correlation은 reply, declared failure,
 Cancellation 중 정확히 하나의 terminal outcome을 가진다.
 
 receiver가 admission 뒤 reply 전에 닫히면
-admitted task의 declared failure axis에서
+admitted reply의 declared failure axis에서
 `receiverClosedBeforeReply`가 발생한다.
 
-source spelling은 계속 `Task<T>`이다. 일반 async 호출이나 structured
-spawn이 만든 `ordinary_async` task에는 actor transport descriptor가
-없다. 성공적으로 admission된 actor request가 만든
-`actor_request_admitted` task에 한해서 typed HIR, module API digest와
-MIR은 정확히 여섯 field의 `TaskResponsibility` residue를 보존한다.
+structured spawn은 owner-bound `Run<T>`를 만들고 actor transport
+descriptor를 갖지 않는다. 성공적으로 admission된 actor request만
+`Reply<T>`를 만들며 typed HIR, module API digest와 MIR은 정확히 일곱
+field의 `ReplyResponsibility` residue를 보존한다.
 
 1. `result_type`
 2. `normalized_handler_error_set`
 3. `cancellation_axis`
 4. `isolation_owner`
-5. `correlation_id`
-6. `terminal_transport_failure = {receiverClosedBeforeReply}`
+5. `reply_id`
+6. `correlation_id`
+7. `terminal_transport_failure = {receiverClosedBeforeReply}`
 
 따라서 handler ErrorSet이 `E`이면 await의 ErrorSet은 정확히
 `normalize(E | ActorMessageError::receiverClosedBeforeReply)`다.
 `mailboxFull`과 `receiverClosedBeforeAdmission`은 admission `Result`에만
 있고 descriptor에는 없다. compatibility, control-flow join, storage와
-API export가 bare `Task<T>`만 남기고 residue를 지우는 것은 금지된다.
+API export가 bare result type만 남기고 residue를 지우는 것은 금지된다.
 기본 비교는 normalized static field equality이며, handler ErrorSet만
 명시적으로 admitted된 subsumption proof로 넓힐 수 있다. 서로 다른
 request의 `correlation_id`는 storage와 join 뒤에도 각 값에 남는다.
-module API digest의 `correlation_id` field는 runtime ID가 아니라
-`per_value_non_forgeable` 정책 marker다. concrete identity는 성공한
+module API digest의 `reply_id`와 `correlation_id` field는 runtime ID가
+아니라 `per_value_non_forgeable` 정책 marker다. concrete identity는 성공한
 enqueue commit 이후 value-level typed HIR/MIR descriptor에만 생긴다.
 
 이 법칙은 design-static contract로 닫혀 있지만 parser/checker/backend
@@ -1259,7 +1270,7 @@ sequence도 없다.
 commit 뒤 Cancellation은
 message를 철회하거나 renumber하지 않고,
 moved source owner를 sender에 돌려주지 않는다.
-request라면 correlation-bound task lifecycle에만 영향을 준다.
+request라면 correlation-bound reply lifecycle에만 영향을 준다.
 
 ## 16. shared-state observation
 
@@ -1272,11 +1283,14 @@ raw layout, byte-copy, lock-free representation을 뜻하지 않는다.
 construction은 input owner를 move로 받고
 성공 뒤 stored owner가 정확히 하나다.
 hidden clone과 hidden cleanup은 없다.
+source는 ordinary qualified call
+`SharedCell::new(move value)`다.
 
 ### 16.2 withValue
 
-`withValue`는
-하나의 `#scoped borrow T` observation을 제공한다.
+`withValue`는 receiver의 `~` message operation이다.
+callback callable profile은 `#scoped`, source binder mode는 `borrow`이며
+invocation이 region을 소유한다.
 borrow는 escape하거나 suspend할 수 없다.
 ordering은 sequentially consistent다.
 관찰을 위해 value를 복제하지 않는다.
@@ -1284,7 +1298,7 @@ ordering은 sequentially consistent다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/shared-state-coherence.json -->
 ```deeplus
 private def observe(cell: SharedCell<Int>) -> Int = {
-    return cell.withValue() { borrow value => value }
+    return cell ~ withValue { borrow value => value }
 }
 ```
 
@@ -1298,6 +1312,7 @@ borrow 자체의 escape는 별도다.
 `replace`는 새 owner를 move로 받고
 commit 하나로 stored owner를 교체하며
 old owner를 result로 돌려준다.
+source는 `cell ~ replace move next`다.
 
 성공 뒤 stored owner count는 하나다.
 sequentially consistent ordering을 갖는다.
@@ -1308,10 +1323,12 @@ precommit failure는 old stored owner를 보존한다.
 current minimum은 lifecycle 또는
 effectful cleanup payload를 받지 않는다.
 poisoning과 recursive lock은 current가 아니다.
+생성은 ordinary qualified call `SharedMutex::new(move value)`다.
 
-`withLock`은 receiver-bound,
-non-reentrant, nonsuspending
-`#scoped inout T` place 하나를 제공한다.
+`withLock`은 receiver의 `~` message operation이다. callback callable
+profile은 `#scoped`, source binder mode는 `inout`이며 invocation이 region을
+소유한다. 그 region은 receiver-bound, non-reentrant, nonsuspending이고
+`inout T` place 하나를 제공한다.
 place는 escape할 수 없다.
 
 unlock은 return, Error, Defect,
@@ -1440,7 +1457,7 @@ private let transposed = matrix^
 
 syntax와 static operand boundary는 Stable design이며
 `transposed`는 위 법칙의 read-only coordinate view다.
-실제 xVM/LLVM view representation과 실행 지원은 `NOT_RUN`이다.
+실제 xVM/Cranelift view representation과 실행 지원은 `NOT_RUN`이다.
 
 ## 19. semantic identity와 representation identity
 
@@ -1543,7 +1560,7 @@ runtime execution receipt는 별도다.
 
 ### 21.1 비교 대상
 
-xVM, LLVM AOT, LLVM ORC의 differential run은
+xVM, Cranelift ObjectModule AOT, Cranelift JITModule의 differential run은
 다음을 비교해야 한다.
 
 1. ordered observable event trace
@@ -1551,7 +1568,7 @@ xVM, LLVM AOT, LLVM ORC의 differential run은
 3. place owner balance
 4. cleanup registration/execution balance
 5. primary/suppressed failure order
-6. task/actor identity와 ordering
+6. concur/run/reply/actor identity와 ordering
 7. provider identity와 replay token
 8. source provenance가 필요한 diagnostic trace
 
@@ -1671,7 +1688,7 @@ Cancellation이 되돌리지 않는다.
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/shared-state-coherence.json -->
 ```deeplus
 private def invalid(cell: SharedCell<Document>) -> borrowed Document = {
-    return cell.withValue() { borrow value => value }
+    return cell ~ withValue { borrow value => value }
 }
 // scoped observation borrow는 call 밖으로 escape할 수 없다.
 ```
@@ -1683,7 +1700,7 @@ private def invalid(cell: SharedCell<Document>) -> borrowed Document = {
 private def#async invalidLock(mutex: SharedMutex<State>) -> Unit
     effects state
 = {
-    mutex.withLock() { inout state =>
+    mutex ~ withLock { inout state =>
         await refresh(state)
     }
 }
@@ -1760,7 +1777,7 @@ source-observable 법칙을 다음처럼 고정한다.
 | interpolation | braced/shorthand의 preselected Display, ordered holes, atomic publication | colon format-spec 문법·전달·폭·padding·invalid-format 결과와 제품 지원 |
 | NumericArray postfix transpose | owner-bounded read-only coordinate view | 실제 layout·backend 지원 |
 | Map unfold | later key wins, exact cleanup, failure-atomic plan | hash representation·성능 |
-| actor request declared failure | `TaskResponsibility`에 ErrorSet·correlation·terminal failure 보존 | actor runtime 실행 PASS |
+| actor request declared failure | `ReplyResponsibility`에 ErrorSet·correlation·terminal failure 보존 | actor runtime 실행 PASS |
 | `mut` | callee-owned local, no write-back alias, exact cleanup | compiler/backend 구현 PASS |
 | Rational | transactional `<p/q>`, BigInt 기약분수, `RationalConst` residue | parser/checker/HIR/MIR/runtime 실행 PASS |
 | Complex | 붙은 float-`i`, exact Rep, signed-zero-aware component residue | layout·ABI·stdlib/runtime 실행 PASS |
@@ -1785,8 +1802,8 @@ opcode·layout·ABI·최적화는 그 관찰을 바꾸지 않는 범위에서만
 - HIR identity가 실제로 안정적인지
 - MIR lowering이 event를 방출하는지
 - xVM이 event order를 지키는지
-- LLVM AOT가 xVM과 같은지
-- LLVM ORC가 xVM/AOT와 같은지
+- Cranelift ObjectModule AOT가 xVM과 같은지
+- Cranelift JITModule가 xVM/AOT와 같은지
 - cancellation race fixture가 통과하는지
 - actor schedule permutation이 통과하는지
 - shared-state synchronization trace가 존재하는지
@@ -1804,8 +1821,8 @@ opcode·layout·ABI·최적화는 그 관찰을 바꾸지 않는 범위에서만
 | 5 | Deeplus MIR lowering | `NOT_RUN` |
 | 6 | xVM bytecode emitter | `NOT_RUN` |
 | 7 | xVM interpreter | `NOT_RUN` |
-| 8 | LLVM AOT backend | `NOT_RUN` |
-| 9 | LLVM ORC JIT backend | `NOT_RUN` |
+| 8 | Cranelift ObjectModule AOT backend | `NOT_RUN` |
+| 9 | Cranelift JITModule backend | `NOT_RUN` |
 | 10 | formatter/LSP | `NOT_RUN` |
 | 11 | stdlib/provider runner | `NOT_RUN` |
 | 12 | official tooling | `NOT_RUN` |
@@ -1851,7 +1868,7 @@ normative design을 설명하는 conceptual trace다.
 25. Plain에서 raw layout을 추론하지 않는가.
 26. semantic type과 ABI/layout을 분리하는가.
 27. ternary·기본 interpolation·transpose의 닫힌 관찰 법칙을 보존하고 format-spec 의미를 발명하지 않는가.
-28. xVM/AOT/ORC trace를 같은 기준으로 비교하는가.
+28. xVM/Object AOT/JIT trace를 같은 기준으로 비교하는가.
 29. tooling side receipt가 program event를 바꾸지 않는가.
 30. product claim이 target-bound receipt를 갖는가.
 31. canonical HIR에 invalid, unresolved, candidate 또는 placeholder가
@@ -1901,4 +1918,4 @@ normative design을 설명하는 conceptual trace다.
 이 장은 위 정본의 projection이다.
 MIR 정적 법칙이 닫혔다는 사실과 target-bound 구현·제품 증거는
 서로 다른 층이다. 이 장의 예제나 설명만으로
-xVM·LLVM·formatter·runtime 지원을 주장할 수 없다.
+xVM·Cranelift·formatter·runtime 지원을 주장할 수 없다.

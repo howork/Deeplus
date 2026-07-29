@@ -204,7 +204,7 @@ inspect(model)
 inspect(model)
 ```
 
-## G-R51f3-017 — Async task and actor minimum core
+## G-R51f3-017 — Async actor Reply minimum core
 
 - outcome: `accept`
 - source: `EX-R48E1-030`
@@ -220,12 +220,11 @@ public actor Worker {
     }
 }
 public def#async run(job: Job) -> Result
-    throws Never
-    effects task
+    throws ActorMessageError
 = {
-    return await task {
-        Worker!() :~ compute job
-    }
+    let Result::ok(reply) = Worker!() :~ compute job
+    else Result::err(error) => throw error
+    return await reply
 }
 ```
 

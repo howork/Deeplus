@@ -174,7 +174,7 @@ throwing cleanup이 body failure를 덮는 것, Cancellation을 catchable Error�
 - Map/schema/constructor는 partial result를 publish하지 않고 temporary를
   역순 cleanup한다.
 - Actor enqueue precommit failure는 sender owner를 보존한다.
-- task cancellation은 cleanup barrier를 지나 terminal state로 간다.
+- run cancellation은 cleanup barrier를 지나 terminal state로 간다.
 
 ## 9. Deeplus다운 작성 관례
 

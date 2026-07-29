@@ -88,7 +88,7 @@ review와 activation authority가 닫히기 전에는 gate로도 켤 수 없다.
 
 - unsafe authority는 effects `{io}`나 `{network}`를 대체하지 않는다.
 - FFI ABI는 serialization format 및 Deeplus semantic identity와 다르다.
-- foreign callback/task/actor crossing에는 별도 lifetime/isolation proof가
+- foreign callback/run/actor crossing에는 별도 lifetime/isolation proof가
   필요하다.
 - HIR/MIR은 rejected quarantine probe의 residue를 만들지 않는다.
 
@@ -140,7 +140,7 @@ ordering을 보존한다. raw code를 Enum declaration order나 Defect
 identity로 추측해서는 안 된다.
 
 callback 미니 사례에서는 foreign side가 callback을 저장하는지, 호출
-thread와 lifetime이 무엇인지, Deeplus task/actor isolation을 건너는지를
+thread와 lifetime이 무엇인지, Deeplus run/actor isolation을 건너는지를
 먼저 묻는다. 호출 중에만 유효한 nonescaping callback과 장기 저장되는
 callback은 같은 function pointer shape라도 ownership contract가 다르다.
 별도 proof가 없으면 후자를 safe wrapper로 수용하지 않는다.

@@ -2,7 +2,7 @@
 """Generate deterministic example and surface projections from the review corpus.
 
 This is repository tooling only. It parses static authority text and never runs
-the Deeplus parser, checker, MIR, xVM, LLVM, formatter, or LSP product lanes.
+the Deeplus parser, checker, MIR, xVM, Cranelift, formatter, or LSP product lanes.
 """
 
 from __future__ import annotations

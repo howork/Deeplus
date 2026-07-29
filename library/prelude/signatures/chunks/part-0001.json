@@ -39,7 +39,7 @@
       "public enum ActorMessageError { mailboxFull; receiverClosedBeforeAdmission; receiverClosedBeforeReply; }"
     ],
     "responsibility": "closed recoverable actor admission and post-admission receiver-closure failure family; Cancellation remains a distinct control axis",
-    "notes": "One-way actor :~ transport returns Result<Unit, error ActorMessageError>; request :~ transport returns immediate Result<Task<T>, error ActorMessageError>; :~ never implicitly suspends or retries; product support NOT_RUN",
+    "notes": "One-way actor :~ transport returns Result<Unit, error ActorMessageError>; request :~ transport returns immediate Result<Reply<T>, error ActorMessageError>; Reply<T> is a one-shot correlated actor-request responsibility distinct from concur-owned Run<T>; :~ never implicitly suspends or retries; product support NOT_RUN",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
@@ -52,7 +52,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "e7f57541209636edbedfa0f65109ee79e68bcfa5b4e430750283fe9709290ec6"
+    "normalized_contract_sha256": "5f3901016b0d6c815ffac1737d7bf9885adc836bf36e21b04f7edefa5620d351"
   },
   {
     "entry_id": "add_rhs",

@@ -685,25 +685,25 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "VIEW_CROSSES_TASK_BOUNDARY",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_id": "VIEW_CROSSES_CONCUR_RUN_BOUNDARY",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "task_body_minimum_grammar_slice"
+      "spawn_body_and_direct_async_invocation"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
     "fixit_policy": "none",
-    "message": "Region-bound view cannot cross a task boundary without an owned Transferable value or shared handle law.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "message": "A region-bound view cannot cross a concur-run boundary without an owned Transferable value or shared handle law.",
+    "notes": "Current source diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",

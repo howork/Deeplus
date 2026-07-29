@@ -24,7 +24,7 @@ for prefix, (role_id, action) in ROLES.items():
         "current_facts": [
             {
                 "id": "ARCH-001",
-                "statement": "Rust implements the frontend, HIR, MIR and xVM; Deeplus MIR is semantic authority; LLVM AOT precedes ORC JIT.",
+                "statement": "Rust is the implementation language for the frontend, HIR, MIR, xVM and native backend; Deeplus MIR is semantic authority; xVM is the initial path; Cranelift ObjectModule AOT and JITModule are the native projections; every product lane remains NOT_RUN without a receipt.",
                 "authority": "current architecture decision",
                 "source": "current/authority-map.yaml",
                 "introduced": "r51f3-migration-m1",
@@ -74,4 +74,3 @@ for prefix, (role_id, action) in ROLES.items():
     path.write_text(json.dumps(capsule, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 print(f"created {len(ROLES)} role memory capsules")
-

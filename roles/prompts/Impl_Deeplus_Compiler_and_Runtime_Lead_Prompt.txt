@@ -4,7 +4,7 @@ PREFIX: Impl_
 
 MISSION
 Implement Deeplus in Rust from source text through typed HIR and canonical MIR,
-then provide xVM, LLVM AOT, and later LLVM ORC JIT with target-baseline evidence.
+then provide xVM, Cranelift ObjectModule AOT, and later Cranelift JITModule with target-baseline evidence.
 
 READ FIRST
 - Deeplus_Project_Instructions_R1_1.txt
@@ -18,7 +18,7 @@ YOU OWN
 - Lexer, parser, CST/AST/HIR, checker integration, and HIR-to-MIR lowering.
 - MIR verifier implementation.
 - xVM bytecode, verifier, interpreter, debugger, and REPL.
-- LLVM AOT and later ORC JIT integration.
+- Cranelift ObjectModule AOT and later Cranelift JITModule integration.
 - Build, platform, unsafe, performance, and execution receipts.
 
 YOU DO NOT OWN
@@ -37,7 +37,7 @@ REQUIRED METHOD
 EVERY RELEASE
 1. Report every lane as NOT_RUN, BLOCKED, FAILED, PASSED_FOCUSED,
    PASSED_INTEGRATED, or PASSED_INDEPENDENT with a receipt.
-2. Check the exact target commit, Rust toolchain, LLVM version, command, platform,
+2. Check the exact target commit, Rust toolchain, Cranelift version, command, platform,
    and artifact digest.
 3. Explain parser recovery versus canonical parsing.
 4. Explain HIR-to-MIR lowering for changed features.

@@ -1,83 +1,68 @@
-# 10-01 — 이름 있는 `def#async`, `await`와 task
+# 10-01 — `def#async`, `await`, `Run`과 비동기 순회
 
 ## 1. 상태와 읽는 법
 
 > 상태: `CURRENT_DESIGN_PRODUCT_NOT_RUN`
 
-이름 있는 async 선언은 current design이다. 실제 scheduler, suspend,
-resume 및 backend 실행은 확인되지 않았다.
+이름 있는 async 선언, 명시적 suspension, `Run<T>`와 `Reply<T>`의 책임
+분리는 현행 Stable 설계다. 실제 scheduler, suspend/resume와 backend
+실행 증거는 아직 `NOT_RUN`이다.
 
 ## 2. 학습 목표
 
-- `def#async`와 일반 lambda를 구분한다.
-- source에 드러난 `await` 지점을 찾는다.
-- task handle의 result/error/cancellation 책임을 읽는다.
-- `for await`와 ordinary `for`를 구분한다.
+- `def#async`와 일반 callable을 구분한다.
+- async invocation을 현재 실행에서 기다릴 때와 `concur` child로 시작할
+  때를 구분한다.
+- `Run<T>`와 actor의 `Reply<T>`를 혼동하지 않는다.
+- `for#await`와 ordinary `for`를 구분한다.
+- Error, Cancellation, cleanup 책임이 suspension을 지나도 남는 이유를
+  설명한다.
 
-## 3. 선수 지식
+## 3. 핵심 모델
 
-함수 profile, ErrorSet, effects, ownership과 cleanup을 알고 있어야 한다.
+`def#async`는 이름 있는 비동기 callable profile이다. 선택된 async
+invocation은 다음 둘 중 하나의 명시적 소비 문맥에 있어야 한다.
 
-## 4. 문제에서 출발하기
+1. `await invocation`: 현재 `ExecutionId`에서 호출을 시작하고 그 결과를
+   기다린다.
+2. `spawn invocation`: 가장 가까운 `concur`가 소유하는 child execution을
+   만들고 `Run<T>`를 돌려준다.
 
-비동기 함수가 호출 순간에 값 전체를 돌려주지 않는다면, 언제 중단하고
-어떤 실패를 보존하는지 보여야 한다. Deeplus는 이름 있는 `def#async`와
-명시적 `await`를 사용한다. 일반 closure를 암시적으로 async로 바꾸지
-않는다.
+bare async invocation은 조용히 background work를 시작하지 않는다.
+`await`도 새로운 child를 만들지 않는다. 둘은 실행 책임이 다르므로
+서로의 생략형이 아니다.
 
-## 5. 핵심 모델
+```deeplus
+let profile = await loadProfile(id) // 현재 execution에서 기다린다.
 
-`def#async`는 허용된 named callable profile이다. `await`는 expression
-prefix owner이며 피연산자가 이미 awaitable이어야 한다. 중단 지점에서도
-live owner, borrow region, effect/error row, Cancellation, cleanup obligation이
-사라지지 않는다.
+concur {
+    let profileRun: Run<Profile> = spawn loadProfile(id)
+    let profile = await profileRun // concur child 결과를 한 번 관찰한다.
+}
+```
 
-`for await`는 `AsyncSequence<T,E>`의 source-ordered next channel을
-순회한다. source Error `E`와 Cancellation은 별도 terminal이다.
+`Run<T>`는 `concur`에 소속된 one-shot observation handle이다. actor
+request가 만드는 것은 별도의 `Reply<T>`이며 둘 사이에 암시 변환은
+없다.
 
-## 6. 단계별 예제
+## 4. 이름 있는 async 함수와 `await`
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async fetch(url: String) -> Bytes
     throws NetworkError
-    effects network
+    effects { network }
 = {
     return await (client ~ get url)
 }
 ```
 
-`await` 앞에서 URL과 receiver가 한 번 평가되고, resume 뒤에도
-`NetworkError`, effect와 cleanup 책임이 보존된다.
+receiver와 인자는 source 순서대로 한 번 평가된다. suspension 전후에
+선택된 callable identity, `NetworkError`, effect row, live owner와 cleanup
+obligation이 그대로 보존된다. resume 시점에 overload를 다시 고르거나
+Error를 정상값으로 접지 않는다.
 
-<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
-```deeplus
-def#async sum(source: AsyncSequence<Int, IOError>) -> Int
-    throws IOError
-= {
-    var total = 0
-    for await value in source {
-        total += value
-    }
-    return total
-}
-```
-
-sequence를 미리 List로 만들거나 replay 가능하다고 가정하지 않는다.
-
-## 7. 허용·거부·경계 사례
-
-허용: async owner 안의 명시적 await.
-
-<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
-```deeplus
-def#entry#async launch() -> ExitCode = {
-    let status = await loadStatus()
-    return ExitCode::success
-}
-```
-
-거부: Stable script root의 top-level await.
+Stable script root의 top-level `await`는 허용하지 않는다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
@@ -85,82 +70,122 @@ let status = await loadStatus()
 // TOP_LEVEL_AWAIT_NOT_CURRENT
 ```
 
-일반 `{ value => ... }` closure도 expected callable이 있다고 해서 async
-callable literal이 되지 않는다. 그 설계는 Preview Design nonactivatable이다.
+## 5. `for#await`
 
-## 8. 다른 기능과의 연결
+`for#await`는 `for`에 붙은 하나의 owner role이다. `for`, `#`, `await`
+사이에 trivia를 넣지 않는다. 이 표면은 `AsyncSequence<T,E>`의
+source-ordered next channel을 순회하며 일반 `for`나 async
+comprehension으로 재해석되지 않는다.
 
-- `#async` callable의 ErrorSet과 effect row는 ordinary call compatibility에
-  포함된다.
-- live `inout` borrow가 await를 건너려면 별도 안전 증명이 필요하다.
-- AsyncCollector는 async comprehension을 활성화하지 않는 current stdlib
-  profile이다.
-- actor handler의 await는 actor turn identity를 유지한다.
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+def#async sum(source: AsyncSequence<Int, IOError>) -> Int
+    throws IOError
+= {
+    var total = 0
+    for#await value in source {
+        total += value
+    }
+    return total
+}
+```
 
-### 판정 추적
+각 반복은 `next 요청 → suspend → value/Error/Cancellation resume →
+binder commit → body` 순서다. sequence를 미리 `List`로 만들거나 replay
+가능하다고 가정하지 않는다. source Error `E`와 Cancellation은 서로
+다른 terminal이다.
 
-async 호출을 볼 때는 먼저 selected named callable의 value, ErrorSet,
-effect, suspension 책임을 결합한다. 인자와 receiver는 source 순서대로
-한 번 평가하고, 반환된 awaitable 책임에 원래 Error와 Cancellation을
-남긴다. `await` 지점에서는 live owner와 borrow가 suspension을 건널 수
-있는지 검사한 뒤 suspend event를 기록한다. resume 때 다른 overload를
-고르거나 error family를 다시 추측하지 않는다.
+## 6. `concur` 안의 제한형 `#async` lambda
 
-`for await`도 같은 원칙을 반복한다. source를 한 번 만들고, 각 next
-요청의 성공값은 loop binding에 commit하며, source Error와 Cancellation은
-서로 다른 terminal로 보존한다. loop가 중간 종료되면 sequence resource의
-cleanup owner가 누구인지까지 trace에 남겨야 한다.
+일반 first-class async lambda는 아직 활성화하지 않는다. 다만 가장
+가까운 `concur`가 lifetime을 소유하고 값이 밖으로 escape하지 않는
+경우에는 다음 제한형을 사용할 수 있다.
 
-### 흔한 오해와 미니 사례
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+concur {
+    let load = #async { id: UserId => await loadProfile(id) }
+    let run: Run<Profile> = spawn load(userId)
+    render(await run)
+}
+```
 
-`def#async`를 호출하면 자동으로 새 병렬 child가 생긴다고 생각하기
-쉽다. 병렬 child의 lexical owner를 만들려면 `task scope`와 `spawn`이
-별도로 보여야 한다. 또한 `await`는 OS thread를 반드시 막는다는 뜻도,
-실패를 정상값으로 바꾼다는 뜻도 아니다.
+초기 profile의 fence는 다음과 같다.
 
-미니 사례에서 `await loadHeader()` 다음에 `await loadBody()`를 쓰면
-source 순서의 두 suspension이다. 둘을 동시에 시작하려면 다음 장의
-scope에서 두 child를 spawn하고 각각 join해야 한다. 짧은 철자 차이가
-실행 순서와 failure owner를 바꾸므로 성능 추측으로 생략하지 않는다.
+- capture가 없거나, 반복 호출에도 안전하다고 증명된 명시적 `copy`
+  capture만 사용한다.
+- 같은 `concur` 안에서 inward use만 허용한다.
+- return, export, storage, sibling/outward transfer, actor/shared carrier,
+  unknown higher-order API와 erased callable conversion을 거부한다.
+- `move`, `clone`, `deep`, `borrow`, `inout` capture를 이 profile이
+  암시하지 않는다.
 
-세 표면의 책임도 나누어 적는다. named async 호출은 선택된 callable과
-awaitable 책임을 만들고, `await`는 그 책임의 한 suspension/terminal을
-소비하며, `for await`는 source-ordered next를 반복한다. 호출만 했다고
-결과값을 이미 얻은 것도 아니고, await했다고 task의 ErrorSet이나
-Cancellation이 지워진 것도 아니다.
+일반 closure에 expected type만 제공해 `#async`로 바꾸거나, 제한형 lambda를
+`concur` 밖으로 반환하는 것은 거부한다.
 
-검토용 미니 trace는 `receiver 평가 → argument 평가 → async 책임 생성
-→ await 전 owner 검사 → suspend → value/Error/Cancellation resume →
-cleanup` 순서로 쓴다. 각 단계에 동일 receiver와 callable identity가
-남는지 확인한다. resume 뒤 dynamic 이름 검색이나 다른 overload 선택이
-있다면 HIR-H1에서 닫아야 할 결정을 runtime으로 미룬 것이므로 거부한다.
+## 7. 호출·spawn·await의 평가 경계
+
+`spawn loadProfile(id)`에서 callee와 인자는 parent execution이 source
+순서대로 정확히 한 번 평가하고 검사한다. 이 단계가 성공한 뒤에만
+`ConcurRunId`와 lexical `spawn_index`를 commit한다. argument 평가가
+실패하면 child와 handle은 만들어지지 않는다.
+
+`await run`은 one-shot이다. 같은 `Run<T>`를 두 번 기다리거나 이미
+소비된 handle을 다시 넘길 수 없다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
+```deeplus
+concur {
+    let run = spawn compute()
+    let first = await run
+    let second = await run
+    // RUN_ALREADY_CONSUMED
+}
+```
+
+## 8. 흔한 오해
+
+- async 함수를 호출했다고 자동으로 병렬 child가 생기지 않는다.
+- `await`는 OS thread를 반드시 block한다는 뜻이 아니다.
+- `Run<T>`는 자유롭게 detached할 수 있는 future가 아니다.
+- actor request의 `Reply<T>`는 `Run<T>`의 다른 철자가 아니다.
+- `for#await`는 여러 item을 동시에 처리하겠다는 선언이 아니다.
+
+두 request를 순차 실행하려면 두 번 `await invocation`을 쓴다. 동시에
+시작하려면 다음 장처럼 하나의 `concur` 안에서 두 `Run`을 만들고
+관찰한다. 철자 차이는 lifetime owner와 failure aggregation을 바꾸므로
+성능 최적화로 생략할 수 없다.
 
 ## 9. Deeplus다운 작성 관례
 
-중단 가능성을 이름과 source 지점에 드러낸다. 비동기 전환을 호출자에게
-숨기거나, task failure를 Option으로 지우거나, Cancellation을 Error로
-접지 않는다.
+중단 가능성은 callable profile과 `await` 지점에, 병렬 lifetime은
+`concur`와 `Run`에 드러낸다. 실패를 Option으로 지우거나 Cancellation을
+Error로 접거나, background 실행을 암시적으로 시작하지 않는다.
 
 ## 10. 연습 문제
 
-1. **따라 하기:** `def#async` 함수 안에서 하나의 task를 await하는 코드를
+1. **직접 실행:** `def#async` 함수 안에서 하나의 invocation을 직접 기다리는 코드를
    작성하라.
-2. **빈칸 완성:** `AsyncSequence<Item, ___>`의 source failure와
-   Cancellation 차이를 채워라.
-3. **스스로 설계하기:** 두 network request를 순차 실행할 때와 병렬 child
-   task로 실행할 때 owner/cleanup 차이를 표로 적어라.
+2. **경로 분석:** `AsyncSequence<Item, IOError>`의 Error와 Cancellation 경로를 나누어
+   적어라.
+3. **책임 비교:** 같은 두 network 요청을 순차 실행할 때와 `concur`에서 병렬 실행할
+   때의 owner·cleanup 차이를 비교하라.
+4. **경계 설명:** 제한형 `#async` lambda가 `concur` 밖으로 반환될 수 없는 이유를
+   설명하라.
 
 ## 11. 빠른 복습
 
-- named `def#async`와 explicit `await`가 current surface다.
-- top-level await와 async callable literal은 current가 아니다.
-- `for await`는 AsyncSequence의 ordered suspension loop다.
-- task 책임에는 Cancellation과 cleanup이 남는다.
+- named `def#async`와 explicit `await`가 Stable surface다.
+- `spawn`은 `concur` 안에서 `Run<T>`를 만든다.
+- actor request는 별도의 `Reply<T>`를 만든다.
+- `for#await`는 AsyncSequence의 ordered suspension loop다.
+- Error, Cancellation과 cleanup은 suspension을 지나도 지워지지 않는다.
 
 ## 12. 정본 근거와 다음 장
 
 - [비동기 문법·의미](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
-- [Prelude AsyncSequence](../../grammar-reference/19-prelude-providers-diagnostics-and-conformance.md)
+- [Prelude AsyncSequence·Run·Reply](../../grammar-reference/19-prelude-providers-diagnostics-and-conformance.md)
 - [정확 grammar](../../../spec/grammar/deeplus.ebnf)
 
-다음 장에서는 child task를 lexical scope에 묶고 취소 시 cleanup을 닫는다.
+다음 장에서는 `concur`가 child lifetime, 취소와 실패 집계를 닫는 방식을
+다룬다.

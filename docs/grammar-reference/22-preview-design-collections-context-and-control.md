@@ -60,7 +60,7 @@ formatter나 migration은 Preview 표면을 Stable 표면으로 자동 추정하
 각 후보마다 별도 exact grammar와 context policy, terminating checker
 algorithm, deterministic diagnostic/fix-it, ownership·effect·cleanup MIR
 events, formatter/LSP round-trip, positive/negative/boundary/metamorphic corpus,
-xVM/LLVM target receipt와 명시적 Design activation authority가 필요하다.
+xVM/Cranelift target receipt와 명시적 Design activation authority가 필요하다.
 한 후보의 통과가 나머지 후보를 자동 활성화하지 않는다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
@@ -84,7 +84,7 @@ for value in values {
 검토안이다. 아래 코드가 선택된 후보 철자를 보이더라도 current
 Stable/Preview source가 아니며, 철자가 미선정인 항목은 ordinary Deeplus로
 작성한 현행 명시적 대안만 보여 준다. 문서와 정적 예시는 구현·제품
-지원을 만들지 않는다. parser, checker, MIR, xVM, LLVM, formatter/LSP를
+지원을 만들지 않는다. parser, checker, MIR, xVM, Cranelift, formatter/LSP를
 포함한 15개 제품 lane은 모두 `NOT_RUN`이다.
 
 <!-- deeplus-preview-feature-example: contextual_operation_anchor_dmad; registry-status: PREVIEW_DESIGN -->
@@ -206,7 +206,7 @@ coordinates를 표시해야 한다.
 
 **활성화 선행 조건**
 exact parse owner, axis/shape algorithm, failure-atomic allocation, diagnostic
-spans, formatter/LSP, rank·singleton·mismatch mutation corpus와 xVM/LLVM
+spans, formatter/LSP, rank·singleton·mismatch mutation corpus와 xVM/Cranelift
 parity receipt가 필요하다. 모든 제품 lane은 `NOT_RUN`이다.
 
 **설계 검토 시나리오**

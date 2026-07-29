@@ -49,7 +49,7 @@ Preview 문법을 활성화하거나 OPEN P1을 폐쇄하거나 제품 지원을
 | 구조 분해 또는 패턴 매칭 | [패턴, 구조 분해 및 패턴 매칭](10-patterns-destructuring-and-matching.md) |
 | 제어 및 실패 흐름 추적 | [제어 흐름, 오류, 효과 및 정리](11-control-flow-errors-effects-and-cleanup.md) |
 | 값의 책임 추적 | [소유권, 대여 및 책임](12-ownership-borrowing-and-responsibility.md) |
-| 비동기 또는 액터 코드 사용 | [비동기, 태스크, 액터 및 동시성](13-async-tasks-actors-and-concurrency.md) |
+| 비동기 또는 액터 코드 사용 | [비동기 실행, `concur`, 액터 및 동시성](13-async-tasks-actors-and-concurrency.md) |
 | 외부 경계 이해 | [FFI, unsafe, 컴파일러 트리 및 프로필](14-ffi-unsafe-metaprogramming-and-profiles.md) |
 | Preview와 Preview Design 확인 | [Preview 표면](15-preview-surfaces.md) |
 | 정확한 production이 쓰이는 문맥 찾기 | [문맥별 구문과 production 길잡이](16-contextual-syntax-and-production-guide.md) |

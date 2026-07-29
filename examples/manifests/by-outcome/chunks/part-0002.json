@@ -1507,12 +1507,12 @@
     "feature_ids": [
       "async_function_declaration_surface",
       "await_expression_surface",
-      "async_task_control"
+      "async_concur_control"
     ],
     "source_feature_ids": [
       "async_function_declaration_surface",
       "await_expression_surface",
-      "async_task_control"
+      "async_concur_control"
     ],
     "checker_trace_ids": [],
     "provenance_ids": [
@@ -1539,13 +1539,17 @@
   },
   {
     "example_id": "EX-R48E-018",
-    "title": "Structured task scope makes cancellation owner visible",
+    "title": "Structured concur region makes cancellation owner visible",
     "feature_ids": [
-      "structured_task_scope",
+      "async_concur_control",
+      "structured_concur_region",
+      "spawn_body_and_direct_async_invocation",
       "deterministic_primary_suppressed_order"
     ],
     "source_feature_ids": [
-      "structured_task_scope",
+      "async_concur_control",
+      "structured_concur_region",
+      "spawn_body_and_direct_async_invocation",
       "deterministic_primary_suppressed_order"
     ],
     "checker_trace_ids": [],
@@ -1564,7 +1568,7 @@
     "checker_status": "not_run",
     "code_block_id": "EX-R48E-018-B001",
     "code_language": "deeplus",
-    "code_sha256": "9c89188fcb4dc063a3dcb18e8cdafc5d59fd0a53d620c5b5cb65c3a3f36288a4",
+    "code_sha256": "d1fcebfbd03c8f3bd495ffca55c772bb2a0b909cccac06ccc685874468fab9a2",
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",

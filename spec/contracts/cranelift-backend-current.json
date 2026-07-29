@@ -1,0 +1,180 @@
+{
+  "schema": "deeplus.cranelift-backend-current/r1",
+  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "status": "CURRENT_BACKEND_ARCHITECTURE",
+  "decision": "decisions/language/Design_Deeplus_Cranelift_Backend_Adoption_R1.md",
+  "semantic_authority": "Deeplus MIR",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "closed_feature_p1_by_backend_change": 0,
+  "new_feature_p1_by_backend_change": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "execution_paths": [
+    {
+      "ordinal": 1,
+      "id": "xvm_interpreter",
+      "role": "initial development, validation and REPL",
+      "projection": "verified MIR to xVM bytecode",
+      "status": "NOT_RUN"
+    },
+    {
+      "ordinal": 2,
+      "id": "cranelift_object_aot_backend",
+      "role": "initial native object path",
+      "projection": "verified MIR to CLIF to ObjectModule",
+      "status": "NOT_RUN"
+    },
+    {
+      "ordinal": 3,
+      "id": "cranelift_jit_backend",
+      "role": "in-memory native execution path",
+      "projection": "verified MIR to CLIF to JITModule",
+      "status": "NOT_RUN"
+    }
+  ],
+  "toolchain_guard": {
+    "rust_toolchain": "1.85.0",
+    "selected_cranelift_family": "0.121.2",
+    "selection_reason": "compatible implementation baseline for the current Rust toolchain",
+    "cargo_dependency_connected": false,
+    "dependency_or_product_receipt_count": 0,
+    "newer_family_requires": "explicit Rust toolchain upgrade plus Build reproducibility and supply-chain review"
+  },
+  "hir_boundary": {
+    "backend_neutral": true,
+    "backend_specific_field_count": 0,
+    "clif_identity_count": 0,
+    "native_layout_identity_count": 0,
+    "calling_convention_identity_count": 0
+  },
+  "mir_projection": {
+    "input": "Verified<DeeplusMir>",
+    "common_lowering": "deterministic MIR to backend-private CLIF",
+    "module_kinds": [
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "clif_is_semantic_authority": false,
+    "object_and_jit_share_lowering": true,
+    "module_local_id_selects_semantics": false,
+    "symbol_or_link_order_selects_semantics": false
+  },
+  "required_receipt_inputs": [
+    "mir_semantic_digest",
+    "target_triple",
+    "target_isa_and_settings",
+    "cranelift_family_and_lockfile_digest",
+    "module_kind",
+    "pointer_width_and_endianness",
+    "object_format_and_code_relocation_model",
+    "calling_convention",
+    "runtime_abi_digest",
+    "optimization_settings_digest",
+    "runtime_helper_and_safepoint_capability_digest",
+    "object_linker_or_jit_import_map_identity"
+  ],
+  "outcome_guard": {
+    "error": "explicit MIR edge",
+    "defect": "explicit MIR edge",
+    "cancellation": "explicit MIR lifecycle and edge",
+    "suspension": "explicit MIR state transition",
+    "cleanup": "explicit MIR region and action order",
+    "native_exception_semantic_authority": false,
+    "host_unwind_semantic_authority": false,
+    "arbitrary_backend_trap_semantic_authority": false,
+    "trap_requires_preselected_defect_or_verified_unreachable": true
+  },
+  "aot_contract": {
+    "module": "ObjectModule",
+    "finalization": "relocatable object emission followed by an explicit platform linker",
+    "required_output_identity": [
+      "object_bytes_digest",
+      "object_format",
+      "linker_identity",
+      "linker_arguments_digest",
+      "final_artifact_digest"
+    ]
+  },
+  "jit_contract": {
+    "module": "JITModule",
+    "finalization": "code and data finalized in controlled executable memory",
+    "required_output_identity": [
+      "import_allowlist_digest",
+      "resolved_import_map_digest",
+      "executable_memory_policy",
+      "finalized_image_identity",
+      "lifetime_and_retirement_receipt"
+    ],
+    "missing_duplicate_or_signature_mismatched_import": "TERMINAL_LINK_FAILURE"
+  },
+  "managed_reference_guard": {
+    "mir_safepoint_identity_preserved": true,
+    "root_map_requirement_preserved": true,
+    "missing_stack_map_or_stable_handle_capability": "BLOCK_NATIVE_LOWERING",
+    "raw_pointer_fallback": false
+  },
+  "debug_guard": {
+    "source_loc_and_debug_origin_preserved": true,
+    "separate_debug_digest": true,
+    "debug_info_is_semantic_authority": false,
+    "debug_product_support": "NOT_RUN"
+  },
+  "superseded_native_assumptions": [
+    "LLVM IR as a Deeplus contract",
+    "LLVM bitcode",
+    "LLVM pass or LTO pipeline",
+    "LLVM exception personality",
+    "LLVM ORC symbol resolution"
+  ],
+  "rules": [
+    {
+      "rule_id": "CLB-R001",
+      "law": "Deeplus MIR remains the sole execution semantic authority."
+    },
+    {
+      "rule_id": "CLB-R002",
+      "law": "xVM remains the initial development, validation and REPL path."
+    },
+    {
+      "rule_id": "CLB-R003",
+      "law": "Object AOT and in-memory JIT share one verified-MIR-to-CLIF lowering."
+    },
+    {
+      "rule_id": "CLB-R004",
+      "law": "CLIF and every native identity are backend-private projections."
+    },
+    {
+      "rule_id": "CLB-R005",
+      "law": "Exact target, ISA, toolchain, module, ABI and optimization inputs are receipt bound."
+    },
+    {
+      "rule_id": "CLB-R006",
+      "law": "Error, Defect, Cancellation, suspension and cleanup remain explicit MIR outcomes."
+    },
+    {
+      "rule_id": "CLB-R007",
+      "law": "A backend trap requires a preselected Defect or verifier-proven unreachable site."
+    },
+    {
+      "rule_id": "CLB-R008",
+      "law": "Object mode records object and linker identity; JIT mode records imports, image and lifetime."
+    },
+    {
+      "rule_id": "CLB-R009",
+      "law": "Missing managed-reference capabilities block native lowering."
+    },
+    {
+      "rule_id": "CLB-R010",
+      "law": "Debug projection is nonsemantic and digest separated."
+    },
+    {
+      "rule_id": "CLB-R011",
+      "law": "Product support remains NOT_RUN until target-bound receipts exist."
+    },
+    {
+      "rule_id": "CLB-R012",
+      "law": "The backend replacement changes no language feature P1 or semantic P0."
+    }
+  ]
+}

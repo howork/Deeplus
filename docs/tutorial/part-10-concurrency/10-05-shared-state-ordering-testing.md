@@ -16,7 +16,7 @@
 
 ## 3. 선수 지식
 
-borrow/inout, closure lifetime, task scope, actor enqueue/dequeue를 알아야 한다.
+borrow/inout, closure lifetime, `concur`, actor enqueue/dequeue를 알아야 한다.
 
 ## 4. 문제에서 출발하기
 
@@ -27,9 +27,12 @@ owner와 scoped callable 안에서만 관찰·변경하게 한다.
 ## 5. 핵심 모델
 
 `SharedCell<T>`은 immutable observation과 whole-value replacement owner다.
-`withValue`의 borrow는 callback 밖으로 escape하지 않는다.
+`withValue`의 `#scoped`는 callback callable profile이고 source binder는
+`borrow`다. invocation이 그 region을 소유하므로 borrow는 callback 밖으로
+escape하지 않는다.
 `SharedMutex<T>`는 receiver-bound non-suspending scoped mutation을 제공한다.
-lock 안에서 await하거나 guard를 저장하지 않는다.
+여기서도 `#scoped`는 callback profile, `inout`은 binder mode다. lock 안에서
+await하거나 guard를 저장하지 않는다.
 
 최소 ordering:
 
@@ -46,10 +49,10 @@ global FIFO, scheduler fairness, cross-sender order는 보장하지 않는다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let cell = SharedCell::new(move initial)
-let summary = cell.withValue() {
+let summary = cell ~ withValue {
     borrow value => summarize(value)
 }
-let previous = cell.replace(move updated)
+let previous = cell ~ replace move updated
 ```
 
 observation borrow는 closure 밖으로 나오지 않고 replace는 whole owner
@@ -58,7 +61,7 @@ transition을 드러낸다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let mutex = SharedMutex::new(move state)
-mutex.withLock() {
+mutex ~ withLock {
     inout protected =>
     protected.count += 1
 }
@@ -72,16 +75,14 @@ callback은 non-suspending이어야 하고 `protected` inout가 escape하지 않
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-let count = cell.withValue() {
-    borrow items => items.length
-}
+let count = cell ~ withValue { borrow items => items.length }
 ```
 
 거부: lock 안에서 suspend하거나 borrow를 반환한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-let leaked = mutex.withLock() {
+let leaked = mutex ~ withLock {
     inout state =>
     await refresh(state)
     state
@@ -109,6 +110,12 @@ Actor, `SharedCell`, `SharedMutex`라는 다른 owner를 선택한다. 다음으
 callback의 borrow/inout lifetime을 scope 안에 닫고 suspension과 escape가
 없는지 검사한다. 마지막에 acquire, read/write, commit, release event와
 필요한 happens-before edge만 기록한다.
+
+생성은 type-side 일반 한정 호출 `SharedCell::new(...)`와
+`SharedMutex::new(...)`다. 이미 생성된 owner의 `withValue`, `replace`,
+`withLock`은 메시지 호출이므로 `~`를 쓴다. 점 메서드 호출은 이 profile의
+대체 표면이 아니다. 또한 `{ #scoped borrow value => ... }`처럼
+`#scoped`를 binder 자리에 반복하지 않는다.
 
 검증기는 전체 실행을 하나의 순서로 만들지 않는다. parent pre-spawn이
 child start보다 앞선다는 edge와 child cleanup이 await resume보다 앞선다는
@@ -163,6 +170,8 @@ whole replacement 또는 scoped inout로 제한한다. 구현 scheduler의 한 �
 ## 11. 빠른 복습
 
 - shared state는 explicit owner를 갖는다.
+- 생성은 일반 한정 호출, receiver operation은 `~` 메시지 호출이다.
+- `#scoped`는 callback profile이고 source binder는 `borrow` 또는 `inout`다.
 - borrow/inout는 scoped callback 밖으로 escape하지 않는다.
 - lock 안 suspension은 current가 아니다.
 - ordering test는 정본 happens-before만 요구한다.

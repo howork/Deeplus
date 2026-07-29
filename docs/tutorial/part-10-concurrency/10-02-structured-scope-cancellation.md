@@ -1,169 +1,177 @@
-# 10-02 — 구조화된 task scope와 Cancellation
+# 10-02 — `concur`, 구조화된 실행과 Cancellation
 
 ## 1. 상태와 읽는 법
 
 > 상태: `CURRENT_DESIGN_PRODUCT_NOT_RUN`
 
-구조화된 owner와 cancellation ordering은 current design이다. task runtime
-실행은 `NOT_RUN`이다.
+`concur`의 lexical ownership과 cancellation ordering은 현행 Stable
+설계다. runtime 제품 실행은 `NOT_RUN`이다.
 
 ## 2. 학습 목표
 
-- `task scope`, `task group`, `spawn`의 owner 관계를 그린다.
-- detached child가 current가 아닌 이유를 설명한다.
+- `concur`, `spawn`, `Run<T>`의 owner 관계를 그린다.
+- detached child가 허용되지 않는 이유를 설명한다.
 - Cancellation 요청·관찰·cleanup·terminal 순서를 추적한다.
 - 경쟁 failure의 deterministic primary/suppressed 순서를 읽는다.
+- Preview `RunGroup<T>`가 두 번째 lifetime owner가 아님을 구분한다.
 
-## 3. 선수 지식
+## 3. 핵심 모델
 
-async/await, `defer`, Error/Defect/Cancellation 분리를 알아야 한다.
+`concur { ... }`는 구조화된 동시성의 유일한 lexical owner다. body가
+성공, Error, Defect 또는 Cancellation으로 끝나더라도 모든 admitted
+child와 필수 cleanup이 terminal이 되기 전에 바깥으로 나갈 수 없다.
 
-## 4. 문제에서 출발하기
+`spawn`은 다음 두 operand만 받는다.
 
-함수가 끝났는데 background task가 남아 있으면 그 task의 실패와 resource를
-누가 책임지는지 알 수 없다. Deeplus의 구조화된 동시성은 lexical scope가
-child를 소유하고, 모든 child와 cleanup이 terminal이 된 뒤에만 scope를
-닫는다.
+- checker가 정적으로 async invocation으로 선택한 expression
+- 명시적 inline spawn body `{ => ... }`
 
-## 5. 핵심 모델
+둘 다 `Run<T>`를 만들며 별도의 `async` marker를 `spawn` 뒤에 반복하지
+않는다.
 
-`task scope` 또는 허용된 `task group`은 child owner다. `spawn { => ... }`
-와 `spawn async { => ... }`는 제한된 task body이지 일반 closure profile이
-아니다. scope는 child를 join하거나 cancel하고 cleanup barrier를 닫기
-전에는 종료하지 않는다.
+## 4. 단계별 예제
 
-Cancellation lifecycle은 요청 → cooperative boundary 관찰 → cleanup
-완료 → terminal cancellation이다. catch가 이를 회복하지 않는다.
-
-## 6. 단계별 예제
+가장 간결한 형식은 async invocation을 직접 spawn하는 것이다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-task scope {
-    let profile = spawn async { =>
-        await loadProfile(id)
-    }
-    await profile
+concur {
+    let profile: Run<Profile> = spawn loadProfile(id)
+    render(await profile)
 }
 ```
 
-scope는 `profile` handle과 child failure의 owner다.
+inline body가 필요한 경우에는 explicit arrow로 경계를 드러낸다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async supervise() -> Unit = {
-    task scope {
+    concur {
         defer cleanup()
-        let child = spawn async { => await work() }
+        let child: Run<Unit> = spawn { =>
+            await work()
+        }
         await child
     }
 }
 ```
 
-child 성공, 실패, parent Cancellation 모두에서 child terminal 뒤 cleanup이
-한 번 실행된다.
+child 성공, 실패, parent Cancellation 모두에서 child terminal 뒤
+cleanup이 정확히 한 번 실행된다.
 
-## 7. 허용·거부·경계 사례
-
-허용: 두 child의 lexical owner와 명시적 join.
+두 child를 동시에 시작할 수도 있다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-task scope {
-    let first = spawn async { => await loadFirst() }
-    let second = spawn async { => await loadSecond() }
+concur {
+    let first = spawn loadFirst()
+    let second = spawn loadSecond()
     consume(await first, await second)
 }
 ```
 
-거부: child handle escape.
+## 5. admission과 identity
+
+`concur` 진입은 하나의 `ConcurId`를 만든다. 각 성공한 spawn은 lexical
+`spawn_index`, `ConcurRunId`와 child `ExecutionId`를 만든다. callee와
+argument는 parent execution에서 먼저 한 번 평가하므로, 평가 실패에는
+run identity나 child execution이 생기지 않는다.
+
+```text
+ConcurId
+  ├─ spawn_index 0 → ConcurRunId → ExecutionId
+  └─ spawn_index 1 → ConcurRunId → ExecutionId
+```
+
+`Run<T>`는 이 owner 안에서 한 번 관찰한다. return, module export,
+unowned storage나 다른 `concur`로의 전달은 owner-transfer authority가
+없으므로 거부한다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
-def#async detached() -> Task<Int> = {
-    task scope {
-        let child = spawn async { => await compute() }
+def#async detached() -> Run<Int> = {
+    concur {
+        let child = spawn compute()
         return child
     }
 }
-// 별도 owner-transfer authority가 없다.
+// RUN_ESCAPES_CONCUR_OWNER
 ```
 
-경쟁 failure에서는 body failure가 우선한다. child failure끼리는 lexical
-`spawn_index`가 작은 것이 primary이고 나머지는 index 순 suppressed,
-cleanup failure는 실제 LIFO 순으로 뒤에 붙는다.
+## 6. Cancellation과 terminal barrier
 
-## 8. 다른 기능과의 연결
+Cancellation lifecycle은 다음 순서를 갖는다.
 
-- resource cleanup과 defer는 cancellation barrier를 통과한다.
-- actor request task에는 ordinary child와 다른 correlation residue가 있다.
-- shielded scope도 Cancellation을 버리거나 cleanup을 건너뛰지 않는다.
-- HIR/MIR은 scope/task/spawn index와 terminal events를 보존해야 한다.
+1. owner가 cancellation을 요청한다.
+2. child가 cooperative boundary에서 요청을 관찰한다.
+3. child와 owner가 등록한 cleanup을 끝낸다.
+4. child가 terminal cancellation을 기록한다.
+5. 모든 child terminal과 cleanup이 끝난 뒤 `concur`가 닫힌다.
 
-### 판정 추적
+Cancellation은 Error case가 아니며 `catch`가 회복하지 않는다. shield나
+timeout 같은 정책도 cleanup을 건너뛰거나 terminal을 숨기는 권한이
+아니다.
 
-scope에 들어가면 먼저 lexical scope identity를 만들고 각 `spawn`에
-source 기준 `spawn_index`를 부여한다. child body가 끝났다고 곧바로
-scope를 닫지 않고 모든 child terminal, 등록된 cleanup, parent resume
-barrier를 확인한다. Cancellation이 요청되면 cooperative boundary에서
-관찰한 child가 cleanup을 수행하고 terminal cancellation을 기록한 뒤에만
-join이 풀린다.
+## 7. 결정적 failure 집계
 
-실패가 경쟁하면 body failure, child failure, cleanup failure를 구분한다.
-body failure가 있으면 primary이고, 그렇지 않으면 가장 작은
-`spawn_index`의 child failure가 primary다. 나머지 child failure는 index
-순서, cleanup failure는 실제 LIFO 실행 순서로 suppressed에 붙는다.
-scheduler가 우연히 먼저 보고한 시각은 이 정본 순서를 바꾸지 않는다.
+동시에 보이는 실패의 정본 순서는 scheduler 완료 시각과 무관하다.
 
-### 흔한 오해와 미니 사례
+1. body failure가 있으면 primary다.
+2. body failure가 없고 child failure만 있으면 가장 작은 lexical
+   `spawn_index`의 실패가 primary다.
+3. 나머지 child failure는 `spawn_index` 오름차순으로 suppressed에
+   붙는다.
+4. cleanup failure는 실제 LIFO cleanup 실행 순서로 그 뒤에 붙는다.
 
-scope가 자식 lifetime을 소유한다고 해서 자식 실패를 자동으로 성공으로
-바꾸지는 않는다. `await`를 생략해도 scope exit barrier가 책임을 닫지만,
-반환값을 소비하고 실패 정책을 선택하려면 명시적 join 지점이 필요하다.
+따라서 index 1 child가 index 0보다 먼저 실패해도 index 0의 실패가
+primary다. 이 규칙은 backend와 scheduler가 달라도 같은 관찰 결과를
+보장한다.
 
-미니 사례로 index 1 child와 index 2 child가 모두 실패하고 `defer`도
-실패하면, body failure가 없는 경우 index 1 failure가 primary, index 2와
-cleanup failure가 차례로 suppressed다. 실제로 index 2가 먼저 끝났어도
-결과 배열을 완료 시각 순으로 뒤집지 않는다.
+## 8. `RunGroup<T>`의 Preview 경계
 
-scope exit를 검토할 때는 네 질문을 순서대로 답한다. 새 spawn admission이
-닫혔는가, 모든 child가 success/Error/Cancellation 중 하나로 terminal인가,
-등록된 cleanup이 실제 LIFO 순서로 끝났는가, parent가 관찰할 primary와
-suppressed 배열이 결정되었는가다. 하나라도 미정이면 lexical block의
-마지막 줄에 도달했어도 scope는 닫힌 것이 아니다.
+동종 `Run<T>`의 집합 관찰을 위한 `RunGroup<T>`는
+`PREVIEW_DESIGN_NONACTIVATABLE`이다. 이는 새 lexical owner가 아니라
+하나의 `ConcurId` 안에서만 사는 observation/collection value 후보다.
+현재 source syntax, race/quorum/completion-order/backpressure 기본값은
+없다. 따라서 `RunGroup`을 사용한 예시는 현행 코드가 아니며
+implementation이나 activation을 주장하지 않는다.
 
-또 다른 미니 사례는 parent body가 먼저 실패한 뒤 child 둘을 cancel하는
-경우다. parent failure가 primary이며 child가 cancellation cleanup 중
-만든 failure는 정본 suppressed 순서로 남는다. cleanup을 빨리 끝내려고
-child handle을 버리거나 parent return을 먼저 관찰시키면 structured
-owner와 happens-before 경계를 모두 깨뜨린다.
+## 9. 흔한 오해
 
-따라서 “block을 벗어났다”와 “scope가 안전하게 종료되었다”를 같은
-사건으로 기록하지 않는다.
+- block 마지막 문장에 도달했다고 `concur`가 닫힌 것은 아니다.
+- `await`를 생략했다고 child failure가 사라지지 않는다. exit barrier가
+  terminal 책임을 보존한다.
+- `Run<T>`를 반환하면 자동으로 owner가 이전되지 않는다.
+- `receiver ~ spawn`은 ordinary message selector이며 구조화된 prefix
+  `spawn`과 다른 문법 owner다.
+- `concur name { ... }` 같은 named region surface는 없다.
 
-## 9. Deeplus다운 작성 관례
+## 10. Deeplus다운 작성 관례
 
-task lifetime을 lexical code에서 보이게 한다. “fire and forget” 대신
-누가 join하고 누가 cancel하며 실패가 어디로 가는지 먼저 설계한다.
+병렬 실행의 lifetime과 책임을 lexical code에 보이게 한다. “fire and
+forget” 대신 누가 child를 소유하고, 어디서 결과를 관찰하며, 취소와
+cleanup이 언제 끝나는지를 먼저 설계한다.
 
-## 10. 연습 문제
+## 11. 연습 문제
 
-1. **따라 하기:** 두 child를 spawn하고 둘 다 await하는 scope를 작성하라.
-2. **빈칸 완성:** cancellation lifecycle 네 단계를 순서대로 채워라.
-3. **스스로 설계하기:** child 둘과 cleanup 둘이 모두 실패한 경우의
-   primary/suppressed 순서를 계산하라.
+1. **구조화하기:** 두 async invocation을 spawn하고 둘 다 기다리는 `concur`를 작성하라.
+2. **순서 적기:** cancellation lifecycle 다섯 단계를 순서대로 적어라.
+3. **실패 계산:** body, child 둘과 cleanup 둘이 실패할 때 primary/suppressed 순서를
+   계산하라.
+4. **경계 설명:** `RunGroup<T>`가 `concur`의 대체 owner가 될 수 없는 이유를 설명하라.
 
-## 11. 빠른 복습
+## 12. 빠른 복습
 
-- 모든 current child는 lexical owner를 갖는다.
-- scope는 child terminal과 cleanup 뒤에만 닫힌다.
-- Cancellation은 Error catch residual이 아니다.
-- failure aggregation은 scheduler 완료 순서가 아니라 정본 순서를 쓴다.
+- `concur`가 유일한 structured concurrency owner다.
+- `spawn`은 async invocation 또는 inline body에서 `Run<T>`를 만든다.
+- `Run<T>`는 owner-bound, one-shot observation handle이다.
+- Cancellation과 cleanup이 끝나기 전에는 owner가 닫히지 않는다.
+- failure ordering은 lexical하고 deterministic하다.
 
-## 12. 정본 근거와 다음 장
+## 13. 정본 근거와 다음 장
 
-- [task와 Cancellation](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
+- [비동기·actor·동시성 참조](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
 - [actor concurrency contract](../../../spec/contracts/actor-concurrency-coherence.json)
-- [MIR cleanup](../../../spec/mir/semantics.md)
+- [MIR 책임 계약](../../../spec/mir/semantics.md)
 
 다음 장은 mutable state를 actor turn 안에 격리하고 message로 접근한다.

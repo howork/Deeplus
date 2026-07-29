@@ -368,7 +368,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         "predicate_fixtures": 819,
         "no_go": 155,
         "hard_keywords": 29,
-        "contextual_words": 106,
+        "contextual_words": 105,
     }
     if (
         set(counts) != {*fixed_counts, "diagnostics", "prelude_entries"}

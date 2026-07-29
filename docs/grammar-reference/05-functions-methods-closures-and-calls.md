@@ -145,7 +145,7 @@ constant, 정규화된 generic argument, activation-local temporary와
 금지한다.
 
 - `self`, receiver, parameter, default result, caller `Context`;
-- caller task/thread/actor identity, time, random, environment, locale;
+- caller run/thread/actor identity, time, random, environment, locale;
 - mutable global state, ambient provider/authority, dynamic witness lookup;
 - I/O, FFI, actor send/request, `await`, `yield`, cancellation observation;
 - Resource 획득·escape, persistent `needsDrop` residue, body 밖 control transfer;
@@ -412,8 +412,8 @@ prefix `await`은 tilde call보다 강하다. 따라서
 `await receiver ~ fetch key`는 `(await receiver) ~ fetch key`다. call
 전체의 결과를 기다리려면 반드시 `await (receiver ~ fetch key)`처럼
 괄호로 owner를 고정한다. actor `:~` 자체는 suspend하거나 retry하지
-않는다. request는 먼저 `Result<Task<T>, error ActorMessageError>`에서
-task를 추출한 뒤 그 task에 `await`을 적용한다.
+않는다. request는 먼저 `Result<Reply<T>, error ActorMessageError>`에서
+reply를 추출한 뒤 그 reply에 `await`을 적용한다.
 
 ## 허용과 정적 의미
 
@@ -637,7 +637,7 @@ def#guard validPort(port: Int) -> Bool = {
   0/1 aggregate지만, `TrailingClosureGroup`의 구조 검사는 공유한다.
 - actor 경계를 건너는 closure는 독립적으로 transfer/capture/isolation
   검사를 통과해야 하며 trailing 표면이 그 권한을 만들지 않는다.
-- `def#async`와 `await`는 suspension을 숨기지 않으며 structured task
+- `def#async`와 `await`는 suspension을 숨기지 않으며 structured `concur`
   경계를 따라야 한다.
 - 함수 type의 `T...` 및 `Record***`는 public API digest와 compatibility에
   남는다.

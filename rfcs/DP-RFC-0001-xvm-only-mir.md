@@ -7,7 +7,7 @@
 | Status | `DRAFT_PROPOSAL_NONCANONICAL_NONACTIVATABLE` |
 | Baseline | `howork/Deeplus@b5ae4eccee54b185915d7905e45177dc6c276a2e` |
 | Scope | Deeplus MIR의 의미, 자료구조, 검증, 직렬화, xVM 투영 경계 |
-| Current backend authority | xVM 초기 실행 + LLVM AOT + 후속 LLVM ORC JIT |
+| Current backend authority | xVM 초기 실행 + Cranelift ObjectModule AOT + 후속 Cranelift JITModule |
 | Proposed alternative | xVM-only MIR-X1 |
 | Target language version | `FUTURE_0_1_3_DECISION_NOT_ESTABLISHED` |
 | Target spec revision | `FUTURE_REVISION_NOT_ESTABLISHED` |
@@ -21,7 +21,7 @@
 
 ## Authority and execution fence
 
-- 이 문서는 토론과 향후 판정을 위한 비정규·비활성 제안이다. 현재 정본은 [management policy](../governance/policies/management-policy.yaml)와 [MIR 의미 문서](../spec/mir/semantics.md)이며, xVM 초기 실행, LLVM AOT, 후속 LLVM ORC JIT를 보존한다.
+- 이 문서는 토론과 향후 판정을 위한 비정규·비활성 제안이다. 현재 정본은 [management policy](../governance/policies/management-policy.yaml)와 [MIR 의미 문서](../spec/mir/semantics.md)이며, xVM 초기 실행, Cranelift ObjectModule AOT, 후속 Cranelift JITModule를 보존한다.
 - 제목의 “xVM 전용”과 문서 안의 규범형 문장은 모두 **제안 내부에서만** 효력이 있는 대안이다. 현행 backend architecture를 제한하거나 변경하지 않는다.
 - canonical/source 변경, 구현, 활성화, publication 또는 promotion authority는 모두 `NONE`이다.
 - X1-A..X1-E 실행은 Deeplus 0.1.3이 확립되고 별도 Design_ authority가 부여된 뒤에만 검토할 수 있다. 현재 상태는 전부 `NOT_AUTHORIZED / NOT_RUN`이다.
@@ -30,14 +30,14 @@
 
 | Profile | Backend contract | Disposition |
 |---|---|---|
-| Current authority | xVM initial execution + LLVM AOT + later LLVM ORC JIT | 변경 없음 |
+| Current authority | xVM initial execution + Cranelift ObjectModule AOT + later Cranelift JITModule | 변경 없음 |
 | This proposal | xVM-only | 미결; 별도 Design_ 판정 필요 |
 
 ### Open authority question
 
 | Question | Owner | Closure method | Status |
 |---|---|---|---|
-| 현행 xVM + LLVM backend architecture를 xVM-only로 변경할 것인가? | Design_ | 0.1.3 확립 여부를 판정하는 future cycle에서 cross-role evidence를 결합한 명시적 채택·보류·기각 판정 | OPEN |
+| 현행 xVM + Cranelift backend architecture를 xVM-only로 변경할 것인가? | Design_ | 0.1.3 확립 여부를 판정하는 future cycle에서 cross-role evidence를 결합한 명시적 채택·보류·기각 판정 | OPEN |
 
 ### Role decisions
 
@@ -86,7 +86,7 @@ MIR-X1은 다음 불변식을 만족해야 한다.
 1. **한 번의 의미 결정**: HIR/checker가 정한 타입, label, witness, extension, provider, ownership, effect/error를 MIR에서 다시 검색하지 않는다.
 2. **한 번의 평가**: 피연산자·인수·guard·collection entry·cleanup capture의 좌→우 평가가 CFG와 operation 순서에 완전히 드러난다.
 3. **숨은 제어 없음**: 실패, cleanup, cancellation, suspend, actor protocol 결과가 host Rust panic이나 숨은 exception table에 의존하지 않는다.
-4. **책임 보존**: move, borrow, inout, resource, call-right, task ownership을 verifier가 경로별로 증명한다.
+4. **책임 보존**: move, borrow, inout, resource, call-right, concur-run ownership을 verifier가 경로별로 증명한다.
 5. **실행 전 거부**: 검증되지 않은 MIR은 xVM에 도달하지 않는다. 잘못된 MIR은 수정하거나 추측하지 않고 결정적으로 거부한다.
 6. **무정의 값 없음**: `undef`, poison, 암묵적 overflow, 암묵적 widening, 타입 혼동을 허용하지 않는다.
 7. **결정성**: 같은 normalized input은 같은 canonical bytes와 semantic digest를 만든다.
@@ -192,7 +192,7 @@ BasicBlock {
 | `AccessToken` | 한 `LoanId`의 shared borrow 또는 exclusive inout 권리 | 선형이며 `access.end`가 정확히 한 번 소비한다. |
 | `CleanupKey` | runtime cleanup stack의 정확히 한 entry를 조작하는 scoped key | 같은 block에서 pin, owner token에 seal, 또는 합법적 disarm 중 하나로 소비한다. |
 | `BuilderToken` | construction의 부분 초기화 상태 | commit 또는 rollback으로 정확히 한 번 끝난다. |
-| `TaskToken` | structured task ownership | join/cancel/transfer 중 정확히 하나로 끝난다. |
+| `RunToken` | one `ConcurToken`에 속한 structured run ownership | join 또는 cancel-then-join 중 정확히 하나로 끝나며 transfer되지 않는다. |
 | `CallRightToken` | `once` callable 호출권 | 한 번의 consuming call로 끝난다. |
 
 동적 index, downcast, bounds check처럼 실패 가능한 계산은 `Projection` 안에 숨기지 않는다. checked terminator의 성공 edge가 element 값 또는 `(AccessToken, CheckedView)`를 직접 정의한다. 분리된 재사용 가능 proof는 만들지 않는다. mutable base의 checked view와 함께 정의된 `AccessToken`이 base mutation을 막고, immutable SSA aggregate는 원래 변경될 수 없다. 따라서 check 뒤 base를 바꾸고 낡은 proof로 projection하는 경로가 존재하지 않는다.
@@ -223,7 +223,7 @@ access.end AccessToken<LoanId>
 
 mutable dynamic projection의 checked terminator는 성공 edge에서 token과 view를 원자적으로 함께 정의한다. immutable SSA aggregate의 checked index는 element `ValueId`만 반환해도 된다. 초기 X1의 alias 판정은 base 단위로 보수적이다. 같은 mutable base에 inout loan이 하나라도 live하면 index 값이 달라도 두 번째 inout 또는 shared loan을 거부하고, shared loan이 live한 base에도 inout을 거부한다. 서로 다른 동적 index의 disjointness를 이용하려면 향후 `checked_disjoint` 법과 terminator를 별도로 추가한다.
 
-`BlockParam`, `AccessToken`, `CleanupKey`, `BuilderToken`, `TaskToken`, `CallRightToken`은 별도 operand ID 공간이 아니다. 모두 각자의 capability `MirType`을 가진 `ValueId`다. 따라서 `EdgeArg`의 `ValueId` 하나로 ordinary value와 선형 token을 loop/back-edge를 포함한 모든 successor에 전달할 수 있다. 단, raw `CleanupKey`는 같은 block에서 반드시 소비되고 edge를 건널 수 없다. 봉인된 cleanup entry identity는 `BuilderToken`이나 owned value responsibility의 일부로 이동한다.
+`BlockParam`, `AccessToken`, `CleanupKey`, `BuilderToken`, `RunToken`, `ReplyToken`, `CallRightToken`은 별도 operand ID 공간이 아니다. 모두 각자의 capability `MirType`을 가진 `ValueId`다. 따라서 `EdgeArg`의 `ValueId` 하나로 ordinary value와 선형 token을 loop/back-edge를 포함한 모든 successor에 전달할 수 있다. 단, raw `CleanupKey`는 같은 block에서 반드시 소비되고 edge를 건널 수 없다. 봉인된 cleanup entry identity는 `BuilderToken`이나 owned value responsibility의 일부로 이동한다.
 
 ### 6.3 Ownership mode
 
@@ -353,7 +353,7 @@ place_replace
 leave
 suspend
 cancel_check
-task_op
+run_op
 actor_op
 provider_op
 complete
@@ -591,7 +591,7 @@ construction.commit BuilderToken -> constructed_value
 
 Pattern subject는 한 번 평가한다. 구조 test와 guard를 수행하는 동안 source place를 변경하지 않는다. 성공 block에서 모든 binding과 move를 하나의 `binding.commit` operation으로 적용한다. commit은 실패하지 않으며 모든 target place를 동시에 `Initialized`로 바꾼다. 실패 edge에는 binding이나 partial move가 없다.
 
-## 10. async, task, actor
+## 10. async, concur/run/reply, actor
 
 ### 10.1 suspend
 
@@ -612,7 +612,7 @@ SuspendedFrame {
   live Value/Place slots,
   cleanup region/action stack,
   pending outcome,
-  task/context/isolation state,
+  run/reply/context/isolation state,
   root-map id,
 }
 ```
@@ -624,15 +624,21 @@ SuspendedFrame {
 - async/coroutine body 밖에는 `suspend`가 없다.
 - resume 값과 resume block param type이 정확히 일치한다.
 - suspend를 가로지를 수 없는 borrow/inout는 live set에 없다.
-- `suspend`는 running frame ownership을 선형 `SuspensionToken`으로 바꿔 scheduler/task owner에 이전한다. resume과 cancel은 원자적 `Suspended -> Resumed | Cancelled` compare-and-transition 중 정확히 하나만 성공시키고 token을 소비한다.
+- `suspend`는 running frame ownership을 선형 `SuspensionToken`으로 바꿔 scheduler/concur owner에 이전한다. resume과 cancel은 원자적 `Suspended -> Resumed | Cancelled` compare-and-transition 중 정확히 하나만 성공시키고 token을 소비한다.
 - double resume, resume/cancel 경합의 패자, token 유실은 source outcome을 두 번 실행하지 못하며 xVM integrity defect가 된다. owner가 frame을 버리려면 cancel/close 경로를 선택해 `leave`로 cleanup을 끝내야 한다. GC는 live token이 결합된 frame을 finalization 없이 폐기할 수 없다.
-- cancel은 suspend 시점의 resource, task, cleanup responsibility를 정확히 한 번 종료한다.
+- cancel은 suspend 시점의 resource, run/reply, cleanup responsibility를 정확히 한 번 종료한다.
 - `yield value -> $response`는 suspend/resume 후 ordinary binding commit으로 이어진다.
 - 별도 generator close 의미가 필요하면 Cancellation과의 관계를 먼저 법으로 닫고 feature를 추가한다.
 
-### 10.2 task
+### 10.2 concur와 run
 
-`task.spawn`은 owned `TaskToken`을 만든다. lexical task scope를 나갈 때 모든 owned child token은 `join`, `cancel_then_join`, 또는 명시적 transfer 중 하나로 끝나야 한다. task scope 종료가 suspend할 수 있으므로 task operation은 terminator다. cleanup region과 task scope의 상대 순서는 CFG에 명시하며 runtime 관례로 추측하지 않는다.
+`concur.run.spawn`은 하나의 `ConcurToken` 아래 owned `RunToken`을 만든다.
+lexical `concur`를 나갈 때 모든 child token은 `join` 또는
+`cancel_then_join` 중 하나로 끝나야 하며 transfer나 detached 상태는 없다.
+owner 종료가 suspend할 수 있으므로 run operation은 terminator다. cleanup
+region과 `concur` barrier의 상대 순서는 CFG에 명시하며 runtime 관례로
+추측하지 않는다. actor request의 one-shot `ReplyToken`은 별도 identity와
+correlation을 가지며 `RunToken`으로 변환되지 않는다.
 
 ### 10.3 actor
 
@@ -693,14 +699,14 @@ Provider를 runtime 이름으로 재검색하지 않는다. 같은 replay token�
 
 - xVM type layout은 `none`, `managed`, `aggregate(mask)` 같은 trace class를 제공한다.
 - 모든 MIR operation/terminator와 xVM runtime intrinsic은 닫힌 `may_collect` 속성을 가진다. `may_collect=true`이면 `SafepointId`와 root map이 반드시 있어야 하고, `false`이면 그 instruction 실행 중 collector 진입이나 GC callback을 금지한다.
-- 초기 X1에서는 allocation, 모든 call, suspend, actor/task runtime 진입, 명시적 `gc_poll`을 보수적으로 `may_collect=true`로 둔다. 이후 `no_collect`를 증명하더라도 signature와 loader 검증 없이 생략할 수 없다.
+- 초기 X1에서는 allocation, 모든 call, suspend, actor/concur runtime 진입, 명시적 `gc_poll`을 보수적으로 `may_collect=true`로 둔다. 이후 `no_collect`를 증명하더라도 signature와 loader 검증 없이 생략할 수 없다.
 - `SafepointId -> RootMap`은 MIR liveness와 xVM slot allocation에서 파생한다.
 - root에는 live managed value slot, initialized managed Place, cleanup capture, pending outcome, closure environment, suspended frame이 포함된다.
 - derived root map은 semantic digest에 포함하지 않으며 loader/verifier가 재계산해 대조한다.
 - moving collector에 대비해 field borrow는 `base handle + projection`이며 raw interior address가 아니다.
 - resource cleanup은 collector finalization으로 대체할 수 없다.
 
-GC safepoint와 cancellation 전달점은 분리한다. `gc_poll`을 추가하거나 이동해도 cancellation 관찰 시점이 바뀌면 안 된다. Cancellation은 `cancel_check` 또는 signature가 cancellable인 `suspend`/task/actor terminator처럼 `CancellationPointId`를 가진 지점에서만 전달한다. 모든 cancellation point는 cancel successor를 가지며, `gc_poll` 자체는 cancellation point가 될 수 없다.
+GC safepoint와 cancellation 전달점은 분리한다. `gc_poll`을 추가하거나 이동해도 cancellation 관찰 시점이 바뀌면 안 된다. Cancellation은 `cancel_check` 또는 signature가 cancellable인 `suspend`/run/actor terminator처럼 `CancellationPointId`를 가진 지점에서만 전달한다. 모든 cancellation point는 cancel successor를 가지며, `gc_poll` 자체는 cancellation point가 될 수 없다.
 
 `OpProfile.cancellation_point != none`과 cancel successor 존재는 iff 관계다. cancellable `invoke`도 call-site `CancellationPointId`를 반드시 가지며, non-cancellable signature/operation에는 둘 다 없어야 한다. ID는 canonical operation encounter order로 부여한다.
 
@@ -722,7 +728,7 @@ Verifier는 다음 순서로 fail-closed 검증한다.
 | 8. Outcome | ErrorSet/DefectSet/CancellationPoint와 edge iff, `LeavePlan` dynamic binder, abandoned normal payload 정리, handler family 분리 |
 | 9. Cleanup | region nesting, continuation 완전성, key seal/pin/disarm producer, tombstone, effect/error/derived-defect budget, non-suspend/non-cancel, LIFO/suppression |
 | 10. Transaction | binding/construction commit 또는 rollback의 exactly-once 종료 |
-| 11. Async/actor/task | suspend live set, resume type, atomic SuspensionToken 소비, borrow escape, task token, isolation, channel identity |
+| 11. Async/concur/actor | suspend live set, resume type, atomic SuspensionToken 소비, borrow escape, run/reply token, isolation, channel identity |
 | 12. Effects | body effect/error/defect/cancel/authority가 signature 범위 안, OpProfile 직교성, pure profile 위반 없음 |
 | 13. Safepoint | 모든 `may_collect` site의 mandatory safepoint, live managed root, raw/interior reference 금지, exact root map 대조 |
 | 14. Canonical form | table/order/ID/encoding이 유일한 canonical form인지 확인 |
@@ -733,7 +739,7 @@ Block-entry type/place/region state certificate를 artifact에 캐시할 수 있
 
 ## 14. xVM 투영 계약
 
-이 RFC 내부의 xVM-only 대안을 채택한다는 조건 아래, MIR-X1의 기계적 투영 계약을 다음과 같이 제안한다. 이는 현행 LLVM preservation authority를 변경하지 않는다.
+이 RFC 내부의 xVM-only 대안을 채택한다는 조건 아래, MIR-X1의 기계적 투영 계약을 다음과 같이 제안한다. 이는 현행 Cranelift preservation authority를 변경하지 않는다.
 
 ### 14.1 함수 frame
 
@@ -771,7 +777,7 @@ Verified<ProposedMirX1>
   -> execute
 ```
 
-`leave`, `suspend`, task/actor/provider, safepoint는 xVM runtime instruction으로 보존한다. host call stack unwind, Rust panic, GC finalizer, 암시적 scheduler hook으로 대체하지 않는다.
+`leave`, `suspend`, run/reply/actor/provider, safepoint는 xVM runtime instruction으로 보존한다. host call stack unwind, Rust panic, GC finalizer, 암시적 scheduler hook으로 대체하지 않는다.
 
 `verify_projection`은 digest 두 개가 각각 맞는지만 보지 않는다. verified MIR에서 frame layout, typed instruction, successor table, cleanup/suspend/root-map metadata를 결정적으로 다시 방출하고 XBC의 canonical executable payload와 byte-for-byte 비교한다. 따라서 `return 0` MIR digest에 `return 1` XBC를 붙인 artifact는 각 hash가 맞아도 거부된다. 실행 API와 receipt writer는 `VerifiedProjection<Xbc>` 이후 타입만 받는다.
 
@@ -815,7 +821,7 @@ Canonical numbering:
 - static identity는 authority가 정한 fully-qualified identity kind/name/signature key, constant는 `(TypeId, canonical payload bytes)`, type은 `(kind, nominal identity, canonical child keys)`로 정렬한다. 같은 key의 동일 entry는 intern하고, 같은 key인데 bytes가 다르면 tie-break하지 않고 canonicalization 오류로 거부한다.
 - X1의 recursive type은 nominal `StaticIdentity`를 통해서만 cycle을 만들 수 있다. anonymous structural recursive SCC는 feature로 닫히기 전까지 거부하므로 입력 순서에 의존한 SCC numbering이 없다.
 - function은 body와 무관한 `(FunctionId static key, canonical MirSignature)`로 정렬한다.
-- terminator successor 순서는 schema가 다음처럼 고정한다: `br`; `cond_br[true,false]`; `switch_enum[canonical tag...,default]`; `switch_int[numeric key ascending...,default]`; `invoke[ok,error,defect,cancel]`; `checked[ok, reason-tag ascending]`; `place_replace[ok,error,defect]`; `leave[normal,error,defect,cancel]`; `suspend[resume,cancel]`; `cancel_check[continue,cancel]`. task/actor/provider 결과는 opcode schema의 numeric outcome tag 순서다. 존재하지 않는 family는 건너뛰되 상대 순서는 바꾸지 않는다.
+- terminator successor 순서는 schema가 다음처럼 고정한다: `br`; `cond_br[true,false]`; `switch_enum[canonical tag...,default]`; `switch_int[numeric key ascending...,default]`; `invoke[ok,error,defect,cancel]`; `checked[ok, reason-tag ascending]`; `place_replace[ok,error,defect]`; `leave[normal,error,defect,cancel]`; `suspend[resume,cancel]`; `cancel_check[continue,cancel]`. run/reply/actor/provider 결과는 opcode schema의 numeric outcome tag 순서다. 존재하지 않는 family는 건너뛰되 상대 순서는 바꾸지 않는다.
 - entry에서 위 successor order로 DFS한 reverse-postorder를 block order로 쓴다. unreachable block은 제거한다.
 - function parameter place는 signature 순서, 나머지 place는 canonical block/op traversal의 최초 정의 site와 result ordinal 순서다. cleanup region은 parent-first이며 sibling은 최초 `region_enter` encounter 순서다.
 - block parameter와 operation result는 canonical traversal 순서로 하나의 `ValueId` 공간에 번호를 준다. `LoanId`, `CheckSiteId`, `SuspendPointId`, `CancellationPointId`, semantic observation site는 각 producer의 encounter 순서로 번호를 준다.
@@ -904,7 +910,7 @@ Dead-code elimination은 값이 사용되지 않는다는 사실만으로 허용
 | `OP-INIT-009` | static initializer dependency DAG와 one-shot commit |
 | `OP-FAIL-011` | typed primary outcome + ordered suppressed list |
 | `OP-CANCEL-012` | 별도 Cancel edge와 `leave` |
-| `OP-TASK-013` | linear `TaskToken`과 scope-exit join/cancel |
+| `OP-RUN-013` | linear `RunToken`과 concur-exit join/cancel |
 | `OP-ACTOR-014`, `029` | actor channel identity와 enqueue order |
 | `OP-NUMERIC-015` | width/mode별 checked terminator, no hidden widening |
 | `OP-NUMARR-016` | shape check edge와 explicit allocation/authority site |
@@ -941,9 +947,9 @@ Dead-code elimination은 값이 사용되지 않는다는 사실만으로 허용
 
 이 RFC를 향후 별도 authority로 채택하려면 최소한 다음 prospective delta를 함께 판정해야 한다.
 
-1. [management policy](../governance/policies/management-policy.yaml)의 현행 `initial_native_backend: LLVM AOT` 및 `later_native_backend: LLVM ORC JIT` 계약을 유지할지, xVM-only로 수정할지 명시적으로 판정한다.
+1. [management policy](../governance/policies/management-policy.yaml)의 현행 `initial_native_backend: Cranelift ObjectModule AOT` 및 `later_native_backend: Cranelift JITModule` 계약을 유지할지, xVM-only로 수정할지 명시적으로 판정한다.
 2. [MIR 의미 문서](../spec/mir/semantics.md)의 “ordered operand stack”을 **ordered operation stream + explicit operand vectors + xVM frame slots**로 명확히 한다. persistent operand-stack merge는 MIR 의미가 아니다.
-3. 같은 문서의 현행 xVM·LLVM preservation law를 변경하려면 Spec_ 계약과 Design_ authority를 별도로 확정한다.
+3. 같은 문서의 현행 xVM·Cranelift preservation law를 변경하려면 Spec_ 계약과 Design_ authority를 별도로 확정한다.
 4. Deeplus 0.1.3이 확립된 뒤에만 `current/language-version.toml`의 `mir_schema`를 `deeplus.mir/x1`로 배정할 수 있다.
 5. 기존 MIR responsibility/RCTS event 스키마를 executable MIR가 아니라 deterministic trace projection으로 분류한다.
 6. MIR receipt가 `semantic_digest`, authority digest, feature set, xVM artifact digest를 함께 기록하도록 한다.
@@ -988,14 +994,14 @@ Dead-code elimination은 값이 사용되지 않는다는 사실만으로 허용
 
 종료 조건: invalid borrow across suspend, double once-call, lost cleanup, missing live root가 모두 거부됨.
 
-### X1-E — Task, actor, provider, domain operation
+### X1-E — Concur/run/reply, actor, provider, domain operation
 
-- structured TaskToken
+- structured ConcurToken/RunToken and distinct actor ReplyToken
 - actor channel/protocol operation
 - provider replay operation
 - 승인된 NumericArray/measure operation
 
-종료 조건: task leak, sender/receiver FIFO reversal, hidden provider lookup, shape/effect omission mutant가 모두 검출됨.
+종료 조건: run/reply leak, sender/receiver FIFO reversal, hidden provider lookup, shape/effect omission mutant가 모두 검출됨.
 
 ## 21. 최종 채택 기준
 

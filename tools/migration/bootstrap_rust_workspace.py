@@ -16,7 +16,7 @@ CRATES = {
     "deeplus-lowering": "HIR-to-MIR lowering with explicit responsibility preservation",
     "deeplus-xbc": "xVM bytecode model, encoding, decoding, and verifier",
     "deeplus-xvm": "xVM interpreter, debugger hooks, and REPL execution runtime",
-    "deeplus-codegen-llvm": "shared MIR-to-LLVM lowering for AOT and later ORC JIT",
+    "deeplus-codegen-cranelift": "verified MIR-to-CLIF projection shared by ObjectModule AOT and JITModule",
     "deeplus-diagnostics": "stable diagnostic identity, rendering, ordering, and fix-its",
     "deeplus-testkit": "fixtures, mutation, differential, and receipt helpers",
 }

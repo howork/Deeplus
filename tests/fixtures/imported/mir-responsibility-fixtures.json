@@ -29,15 +29,21 @@
     "cancellation_state": [
       "cancellation_request"
     ],
-    "task_scope": [
-      "task_spawn",
-      "task_join",
-      "task_lifecycle"
+    "concur_runs": [
+      "concur_run_spawn",
+      "concur_run_join",
+      "concur_run_lifecycle"
     ],
     "actor_isolation": [
       "actor_enqueue",
       "actor_dequeue",
       "actor_lifecycle"
+    ],
+    "pattern_trace": [
+      "pattern_phase"
+    ],
+    "synchronization_events": [
+      "synchronization"
     ],
     "control_events": [
       "guard",
@@ -49,12 +55,6 @@
     ],
     "evidence_events": [
       "evidence_select"
-    ],
-    "pattern_trace": [
-      "pattern_phase"
-    ],
-    "synchronization_events": [
-      "synchronization"
     ]
   },
   "positive_fixture_count": 3,
@@ -136,7 +136,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -152,7 +152,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -167,8 +167,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -181,7 +181,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -198,7 +198,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -259,76 +259,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -1187,7 +1120,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -1210,7 +1143,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -1233,7 +1166,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -1256,7 +1189,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -1279,7 +1212,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -1287,6 +1220,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -1354,7 +1356,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -1370,7 +1372,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -1385,8 +1387,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -1399,7 +1401,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -1416,7 +1418,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -1477,76 +1479,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_lifecycle",
@@ -1910,7 +1845,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -1933,7 +1868,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -1956,7 +1891,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -1979,7 +1914,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -2002,7 +1937,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -2011,12 +1946,81 @@
             "cancellation_id": null,
             "consuming": false
           }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
+          }
         ]
       },
       "expected": "admission_rejected"
     },
     {
-      "fixture_id": "MIR-POS-TASK-SPAWN-ORDER-001",
+      "fixture_id": "MIR-POS-CONCUR-RUN-SPAWN-ORDER-001",
       "record": {
         "law_id": "OP-EVAL-001",
         "source_order": [
@@ -2093,7 +2097,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -2109,7 +2113,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -2124,8 +2128,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -2138,7 +2142,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -2155,7 +2159,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -2216,141 +2220,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-child-0",
-            "owner_id": "task-scope-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "spawn_index": 0
-          },
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-child-1",
-            "owner_id": "task-scope-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "spawn_index": 1
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-child-1",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 1,
-            "aggregation_scope_id": "scope-order-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "phase": "scope_terminal",
-            "outcome": "error",
-            "failure_id": "child-failure-1",
-            "child_failure_id": "child-failure-1",
-            "primary_failure_id": "child-failure-0",
-            "failure_role": "child_suppressed",
-            "suppression_index": 0
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-43",
-            "sequence": 43,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 43,
-              "end": 44
-            },
-            "task_id": "task-child-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-order-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "phase": "scope_terminal",
-            "outcome": "error",
-            "failure_id": "child-failure-0",
-            "child_failure_id": "child-failure-0",
-            "primary_failure_id": "child-failure-0",
-            "failure_role": "child_primary",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-44",
-            "sequence": 44,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 44,
-              "end": 45
-            },
-            "task_id": "task-child-1",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 1,
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "join_index": 0,
-            "outcome": "failed",
-            "failure_id": "child-failure-1",
-            "failure_role": "child_suppressed",
-            "suppression_index": 0
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-45",
-            "sequence": 45,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 45,
-              "end": 46
-            },
-            "task_id": "task-child-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "join_index": 1,
-            "outcome": "failed",
-            "failure_id": "child-failure-0",
-            "failure_role": "child_primary",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -3166,7 +3038,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -3189,7 +3061,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -3212,7 +3084,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -3235,7 +3107,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -3258,7 +3130,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -3266,6 +3138,142 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "spawn_index": 1
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 1,
+            "aggregation_concur_id": "concur-order-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "phase": "concur_terminal",
+            "outcome": "error",
+            "failure_id": "child-failure-1",
+            "child_failure_id": "child-failure-1",
+            "primary_failure_id": "child-failure-0",
+            "failure_role": "child_suppressed",
+            "suppression_index": 0
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-43",
+            "sequence": 43,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 43,
+              "end": 44
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-order-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "phase": "concur_terminal",
+            "outcome": "error",
+            "failure_id": "child-failure-0",
+            "child_failure_id": "child-failure-0",
+            "primary_failure_id": "child-failure-0",
+            "failure_role": "child_primary",
+            "suppression_index": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-44",
+            "sequence": 44,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 44,
+              "end": 45
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 1,
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "join_index": 0,
+            "outcome": "failed",
+            "failure_id": "child-failure-1",
+            "failure_role": "child_suppressed",
+            "suppression_index": 0
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-45",
+            "sequence": 45,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 45,
+              "end": 46
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "join_index": 1,
+            "outcome": "failed",
+            "failure_id": "child-failure-0",
+            "failure_role": "child_primary",
+            "suppression_index": null
           }
         ]
       },
@@ -3346,7 +3354,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -3364,7 +3372,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -3379,8 +3387,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -3393,7 +3401,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -3410,7 +3418,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -3469,76 +3477,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -4259,7 +4200,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -4282,7 +4223,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -4305,7 +4246,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -4328,7 +4269,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -4351,7 +4292,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -4359,6 +4300,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -4437,7 +4447,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -4453,7 +4463,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -4468,8 +4478,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -4482,7 +4492,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -4499,7 +4509,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -4560,76 +4570,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -5258,7 +5201,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -5281,7 +5224,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -5304,7 +5247,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -5327,7 +5270,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -5350,7 +5293,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -5358,6 +5301,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -5438,7 +5450,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -5454,7 +5466,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -5469,8 +5481,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -5483,7 +5495,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -5500,7 +5512,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -5561,76 +5573,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -6351,7 +6296,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -6374,7 +6319,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -6397,7 +6342,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -6420,7 +6365,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -6443,7 +6388,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -6451,6 +6396,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -6534,7 +6548,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -6550,7 +6564,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -6565,8 +6579,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -6579,7 +6593,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -6596,7 +6610,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -6657,76 +6671,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -7585,7 +7532,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -7608,7 +7555,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -7631,7 +7578,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -7654,7 +7601,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -7677,7 +7624,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -7685,6 +7632,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -7764,7 +7780,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -7780,7 +7796,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -7795,8 +7811,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -7809,7 +7825,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -7826,7 +7842,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -7887,76 +7903,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -8585,7 +8534,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -8608,7 +8557,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -8631,7 +8580,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -8654,7 +8603,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -8677,7 +8626,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -8685,6 +8634,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -8766,7 +8784,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -8782,7 +8800,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -8797,8 +8815,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -8811,7 +8829,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -8828,7 +8846,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -8889,76 +8907,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -9774,7 +9725,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -9797,7 +9748,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -9820,7 +9771,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -9843,7 +9794,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -9851,6 +9802,75 @@
             "handoff_index": 0,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -9931,7 +9951,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -9947,7 +9967,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -9962,8 +9982,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -9976,7 +9996,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -9993,7 +10013,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -10054,76 +10074,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -10844,7 +10797,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -10867,7 +10820,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -10890,7 +10843,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -10913,7 +10866,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_suspend",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -10936,7 +10889,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -10944,6 +10897,75 @@
             "handoff_index": 1,
             "cancellation_id": null,
             "consuming": false
+          }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
           }
         ]
       },
@@ -11022,7 +11044,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -11038,7 +11060,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -11053,8 +11075,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -11067,7 +11089,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -11084,7 +11106,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -11145,76 +11167,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-0",
-            "owner_id": "task-scope-0",
-            "spawn_index": 0,
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0"
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-0",
-            "join_index": 0,
-            "outcome": "completed",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-0",
-            "scope_id": "scope-0",
-            "parent_task_id": null,
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-0",
-            "cancellation_id": "cancellation-0",
-            "cleanup_barrier_id": "cleanup-barrier-0",
-            "phase": "scope_terminal",
-            "outcome": "success",
-            "failure_id": null,
-            "child_failure_id": null,
-            "primary_failure_id": null,
-            "failure_role": "none",
-            "suppression_index": null
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -11843,7 +11798,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -11866,7 +11821,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -11889,7 +11844,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -11912,7 +11867,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -11935,7 +11890,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -11944,6 +11899,75 @@
             "cancellation_id": null,
             "consuming": false
           }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "join_index": 0,
+            "outcome": "completed",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null,
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-0",
+            "execution_id": "execution-0",
+            "concur_id": "concur-0",
+            "parent_execution_id": null,
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-0",
+            "cancellation_id": "cancellation-0",
+            "cleanup_barrier_id": "cleanup-barrier-0",
+            "phase": "concur_terminal",
+            "outcome": "success",
+            "failure_id": null,
+            "child_failure_id": null,
+            "primary_failure_id": null,
+            "failure_role": "none",
+            "suppression_index": null
+          }
         ]
       },
       "expected_errors": [
@@ -11951,7 +11975,7 @@
       ]
     },
     {
-      "fixture_id": "MIR-NEG-TASK-COMPLETION-PRIMARY-001",
+      "fixture_id": "MIR-NEG-CONCUR-RUN-COMPLETION-PRIMARY-001",
       "record": {
         "law_id": "OP-EVAL-001",
         "source_order": [
@@ -12026,7 +12050,7 @@
               "end": 2
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0
           }
         ],
@@ -12042,7 +12066,7 @@
               "end": 3
             },
             "value_id": "value-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "region_id": "region-0",
             "borrow_kind": "shared"
           },
@@ -12057,8 +12081,8 @@
               "end": 4
             },
             "value_id": "value-0",
-            "from_owner_id": "scope-0",
-            "to_owner_id": "scope-1"
+            "from_owner_id": "concur-0",
+            "to_owner_id": "concur-1"
           },
           {
             "kind": "ownership_commit",
@@ -12071,7 +12095,7 @@
               "end": 5
             },
             "value_id": "value-0",
-            "owner_id": "scope-1",
+            "owner_id": "concur-1",
             "commit_point_id": "commit-1"
           }
         ],
@@ -12088,7 +12112,7 @@
               "end": 6
             },
             "value_id": "temp-0",
-            "owner_id": "scope-0",
+            "owner_id": "concur-0",
             "stack_index": 0,
             "cleanup_reason": "scope_exit",
             "outcome": "completed"
@@ -12149,141 +12173,9 @@
             "start": 9,
             "end": 10
           },
-          "task_id": "task-0",
-          "cancellation_target_id": "task-0"
+          "cancellation_target_id": "execution-0",
+          "execution_id": "execution-0"
         },
-        "task_scope": [
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-10",
-            "sequence": 10,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 10,
-              "end": 11
-            },
-            "task_id": "task-child-0",
-            "owner_id": "task-scope-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "spawn_index": 0
-          },
-          {
-            "kind": "task_spawn",
-            "event_id": "ev-11",
-            "sequence": 11,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 11,
-              "end": 12
-            },
-            "task_id": "task-child-1",
-            "owner_id": "task-scope-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "spawn_index": 1
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-29",
-            "sequence": 29,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 29,
-              "end": 30
-            },
-            "task_id": "task-child-1",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 1,
-            "aggregation_scope_id": "scope-order-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "phase": "scope_terminal",
-            "outcome": "error",
-            "failure_id": "child-failure-1",
-            "child_failure_id": "child-failure-1",
-            "primary_failure_id": "child-failure-1",
-            "failure_role": "child_primary",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_lifecycle",
-            "event_id": "ev-43",
-            "sequence": 43,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 43,
-              "end": 44
-            },
-            "task_id": "task-child-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 0,
-            "aggregation_scope_id": "scope-order-0",
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "phase": "scope_terminal",
-            "outcome": "error",
-            "failure_id": "child-failure-0",
-            "child_failure_id": "child-failure-0",
-            "primary_failure_id": "child-failure-1",
-            "failure_role": "child_suppressed",
-            "suppression_index": 0
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-44",
-            "sequence": 44,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 44,
-              "end": 45
-            },
-            "task_id": "task-child-1",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 1,
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "join_index": 0,
-            "outcome": "failed",
-            "failure_id": "child-failure-1",
-            "failure_role": "child_primary",
-            "suppression_index": null
-          },
-          {
-            "kind": "task_join",
-            "event_id": "ev-45",
-            "sequence": 45,
-            "law_id": "OP-EVAL-001",
-            "source_span": {
-              "file": "fixture.dp",
-              "start": 45,
-              "end": 46
-            },
-            "task_id": "task-child-0",
-            "scope_id": "scope-order-0",
-            "parent_task_id": "task-parent-0",
-            "spawn_index": 0,
-            "cancellation_id": "cancellation-order-0",
-            "cleanup_barrier_id": "cleanup-barrier-order-0",
-            "join_index": 1,
-            "outcome": "failed",
-            "failure_id": "child-failure-0",
-            "failure_role": "child_suppressed",
-            "suppression_index": 0
-          }
-        ],
         "actor_isolation": [
           {
             "kind": "actor_enqueue",
@@ -13004,7 +12896,7 @@
             "operation_id": "observe_begin-0",
             "profile": "shared_cell",
             "operation": "observe_begin",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "entered",
             "ordering": "sequentially_consistent",
@@ -13027,7 +12919,7 @@
             "operation_id": "observe_end-0",
             "profile": "shared_cell",
             "operation": "observe_end",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "completed",
             "ordering": "sequentially_consistent",
@@ -13050,7 +12942,7 @@
             "operation_id": "replace_commit-0",
             "profile": "shared_cell",
             "operation": "replace_commit",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "committed",
             "ordering": "sequentially_consistent",
@@ -13073,7 +12965,7 @@
             "operation_id": "lock_acquire-0",
             "profile": "shared_mutex",
             "operation": "lock_acquire",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "acquired",
             "ordering": "mutex_handoff",
@@ -13096,7 +12988,7 @@
             "operation_id": "lock_release-0",
             "profile": "shared_mutex",
             "operation": "lock_release",
-            "owner_id": "task-0",
+            "owner_id": "execution-0",
             "value_id": "value-0",
             "outcome": "released",
             "ordering": "mutex_handoff",
@@ -13105,10 +12997,146 @@
             "cancellation_id": null,
             "consuming": false
           }
+        ],
+        "concur_runs": [
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-10",
+            "sequence": 10,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 10,
+              "end": 11
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "spawn_index": 0
+          },
+          {
+            "kind": "concur_run_spawn",
+            "event_id": "ev-11",
+            "sequence": 11,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 11,
+              "end": 12
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "spawn_index": 1
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-29",
+            "sequence": 29,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 29,
+              "end": 30
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 1,
+            "aggregation_concur_id": "concur-order-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "phase": "concur_terminal",
+            "outcome": "error",
+            "failure_id": "child-failure-1",
+            "child_failure_id": "child-failure-1",
+            "primary_failure_id": "child-failure-1",
+            "failure_role": "child_primary",
+            "suppression_index": null
+          },
+          {
+            "kind": "concur_run_lifecycle",
+            "event_id": "ev-43",
+            "sequence": 43,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 43,
+              "end": 44
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 0,
+            "aggregation_concur_id": "concur-order-0",
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "phase": "concur_terminal",
+            "outcome": "error",
+            "failure_id": "child-failure-0",
+            "child_failure_id": "child-failure-0",
+            "primary_failure_id": "child-failure-1",
+            "failure_role": "child_suppressed",
+            "suppression_index": 0
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-44",
+            "sequence": 44,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 44,
+              "end": 45
+            },
+            "concur_run_id": "concur-run-child-1",
+            "execution_id": "execution-child-1",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 1,
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "join_index": 0,
+            "outcome": "failed",
+            "failure_id": "child-failure-1",
+            "failure_role": "child_primary",
+            "suppression_index": null
+          },
+          {
+            "kind": "concur_run_join",
+            "event_id": "ev-45",
+            "sequence": 45,
+            "law_id": "OP-EVAL-001",
+            "source_span": {
+              "file": "fixture.dp",
+              "start": 45,
+              "end": 46
+            },
+            "concur_run_id": "concur-run-child-0",
+            "execution_id": "execution-child-0",
+            "concur_id": "concur-order-0",
+            "parent_execution_id": "execution-parent-0",
+            "spawn_index": 0,
+            "cancellation_id": "cancellation-order-0",
+            "cleanup_barrier_id": "cleanup-barrier-order-0",
+            "join_index": 1,
+            "outcome": "failed",
+            "failure_id": "child-failure-0",
+            "failure_role": "child_suppressed",
+            "suppression_index": 0
+          }
         ]
       },
       "expected_errors": [
-        "MIR_TASK_PRIMARY_NOT_MIN_SPAWN_INDEX"
+        "MIR_CONCUR_RUN_PRIMARY_NOT_MIN_SPAWN_INDEX"
       ]
     }
   ],

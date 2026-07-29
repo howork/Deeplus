@@ -141,7 +141,7 @@ Shareable/Transferable 계약을 검토할 수 있지만 후자는 actor 경계�
 ## 9. Deeplus다운 작성 관례
 
 actor 경계를 API 경계처럼 다룬다. ordered argument, ownership transfer,
-admission Result, reply task를 모두 source와 type responsibility에
+admission Result, `Reply<T>`를 모두 source와 type responsibility에
 드러낸다.
 
 ## 10. 연습 문제

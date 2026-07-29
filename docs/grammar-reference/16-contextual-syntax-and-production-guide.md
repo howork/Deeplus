@@ -26,7 +26,7 @@ CST/AST/HIR 책임은
 [`spec/mir/semantics.md`](../../spec/mir/semantics.md)에 있다.
 
 이 장의 예제는 설명을 위한 문서 예제다.
-제품 parser, checker, formatter, xVM 및 LLVM 실행 증거는 별도 receipt가
+제품 parser, checker, formatter, xVM 및 Cranelift 실행 증거는 별도 receipt가
 없으므로 `NOT_RUN`이다.
 따라서 “parse된다”는 설명은 통합 문법과 frontend model에 따른
 설계 판정이고, 실제 제품 실행을 주장하지 않는다.
@@ -288,6 +288,31 @@ hash literal sigil은 정반대다.
 사이에 trivia를 허용하지 않는다.
 `def # pure` 같은 role 표면과 `# [1, 2]` 같은 literal 표면을 하나의
 “hash 뒤 공백 규칙”으로 설명하면 잘못이다.
+
+### 4.4 owner-attached role은 폐쇄형이다
+
+`#role`은 독립적인 decorator나 임의 사용자 annotation이 아니다. 바로
+앞의 문법 owner가 허용한 폐쇄형 role 집합에서만 선택되며, 같은 철자도
+owner가 다르면 자동으로 같은 의미가 되지 않는다.
+
+| owner | 현행 예 | role이 결정하는 것 |
+|---|---|---|
+| callable declaration | `def#async`, `def#guard`, `def#cleanup` | 호출·중단·증명·정리 profile |
+| callable type | `#scoped (...) -> ...` | invocation-bounded callable lifetime |
+| binding | `let#lazy` | initialization profile |
+| Enum | `enum#increasing`, `enum#decreasing` | 전체 Enum의 의미상 순서 |
+| Actor | `actor #mailbox(capacity: N)` | mailbox admission profile |
+| async loop | `for#await` | `AsyncSequence` 순회 owner |
+
+`for#await`의 `#await`는 특히 exact-attached role이라 `for`, `#`,
+`await` 사이의 trivia를 허용하지 않고 generic `HashTag` production을
+거치지 않는다. 반대로 callable type의 `#scoped`는 lambda binder mode가
+아니다. `borrow value`와 `inout value`가 binder mode이고 `#scoped`는 그
+callback을 호출 중에만 살게 하는 type profile이다.
+
+새 role을 이름만 보고 등록하거나 role argument/provider를 임의로
+추가하지 않는다. parser가 owner를 정하고, owner의 admitted role set,
+중복·순서·조합 규칙을 통과한 뒤에만 HIR tag가 생긴다.
 
 ## 5. parameter와 argument: 비슷해 보이는 서로 다른 goal
 

@@ -24,7 +24,7 @@
 - 현재 [`language-version.toml`](../current/language-version.toml)에는 HIR schema authority가 없다. `deeplus.hir/h1`은 제안 이름일 뿐 배정된 정본 schema가 아니다.
 - 이 설계는 조직 역할, 담당자, 일정, 승인 절차를 배정하지 않는다. 오직 HIR의 의미·자료구조·검증 경계만 다룬다.
 - 이 문서를 작성하면서 기존 정본 및 현재 미커밋 변경 파일은 수정하지 않는다.
-- 본 설계는 LLVM, Cranelift 또는 특정 native backend의 자료구조를 HIR에 도입하지 않는다. HIR-H1은 backend-neutral한 고수준 의미 계약이며, 실행 권위는 검증된 MIR 이후에만 생긴다.
+- 본 설계는 Cranelift 또는 다른 특정 native backend의 자료구조를 HIR에 도입하지 않는다. HIR-H1은 backend-neutral한 고수준 의미 계약이며, 실행 권위는 검증된 MIR 이후에만 생긴다.
 
 ## 1. 결론
 
@@ -71,7 +71,7 @@ IDE 복구용 `AnalysisHir`에는 missing node, error type, unresolved candidate
 
 - generated declaration 생성
 - property, forwarding, comprehension, loop 정규화
-- actor/protocol 및 structured task scope identity
+- actor/protocol 및 structured `concur`/run/reply identity
 - module, declaration, member, label, associated item, witness, extension, provider entry identity
 - rightward binding을 checker 전에 ordinary `let`/`var`로 정규화
 - 모든 call/member/evidence 선택을 닫은 descriptor를 MIR로 전달
@@ -142,7 +142,7 @@ deeplus-cst / deeplus-ast
 1. 모든 lexical·nominal·extension·witness·actor·provider 선택을 HIR에서 한 번만 닫는다.
 2. 모든 식과 binder에 normalized type과 직교적인 responsibility를 제공한다.
 3. source evaluation order와 formal binding order를 분리하여 exactly-once를 보존한다.
-4. pattern, construction, cleanup, task/message의 transactional 경계를 구조화된 plan으로 보존한다.
+4. pattern, construction, cleanup, run/reply/message의 transactional 경계를 구조화된 plan으로 보존한다.
 5. MIR lowerer가 의미를 새로 결정하지 않고 CFG/SSA/Place/token으로 기계적으로 전개하게 한다.
 6. item header와 body를 분리하여 body 변경이 무관한 item/body를 무효화하지 않게 한다.
 7. semantic origin과 debug origin을 분리해 generated node의 안정적 identity와 정확한 진단을 함께 얻는다.
@@ -377,22 +377,22 @@ ActorId, ActorProtocolId, ActorHandlerId, ActorRequestId
 ActorProtocolRequirementId
 MailboxProfileId, ActorMessageErrorTypeId
 SenderId, ReceiverActorId
-TaskResponsibilityId, TaskScopeId, TaskChildId
+RunResponsibilityId, ReplyResponsibilityId, ConcurId, ConcurRunId, ExecutionId
 HirBodyId, HirLocalId, HirScopeId, HirLexicalBlockId
 HirExprId, HirStmtId, HirCleanupRegistrationId, HirRegionId
 IsolationProofId, ResponsibilityId
 PatternContextPolicyId, CoverageCellId, InitializedFieldId
 ControlTargetId, PatternAttemptId, SuspendSiteId
 MessageProducerSiteId, CorrelationProducerSiteId
-ReplyProducerSiteId, TaskProducerSiteId
+ReplyProducerSiteId, RunProducerSiteId
 CancellationProducerSiteId, FailureProducerSiteId
 ```
 
 한 domain의 정수나 문자열을 다른 domain으로 cast할 수 없어야 한다. runtime `String`은 어떠한 static identity로도 승격되지 않는다.
 
-위 목록의 모든 ID가 `StableSymbolKey`인 것은 아니다. package/item/member/evidence identity는 static/exportable key를 사용하고, node/scope/region/task-responsibility instance/producer site는 owner-local key를 사용한다. module API는 body-local `TaskResponsibilityId` 숫자를 export하지 않고 그 descriptor의 static residue만 투영한다.
+위 목록의 모든 ID가 `StableSymbolKey`인 것은 아니다. package/item/member/evidence identity는 static/exportable key를 사용하고, node/scope/region/run·reply-responsibility instance/producer site는 owner-local key를 사용한다. module API는 body-local `RunResponsibilityId`나 `ReplyResponsibilityId` 숫자를 export하지 않고 descriptor의 static residue만 투영한다.
 
-현행 frontend 모델이 요구하는 `MessageId`, `CorrelationId`, `ReplyId`, `TaskId`, `CancellationId`, `FailureId`는 typed HIR에 존재한다. 다만 이들은 compile-time `StableSymbolKey`가 아니라 runtime에서 생성되는 비위조 value의 정규화 타입과 result binding이다. Canonical HIR는 각 fresh value를 만드는 producer site와 책임을 보존하고, 구체 runtime identity 값을 source span hash나 정적 정수로 미리 만들지 않는다.
+현행 frontend 모델이 요구하는 `MessageId`, `CorrelationId`, `ReplyId`, `ConcurRunId`, `ExecutionId`, `CancellationId`, `FailureId`는 typed HIR에 존재한다. 다만 이들은 compile-time `StableSymbolKey`가 아니라 runtime에서 생성되는 비위조 value의 정규화 타입과 result binding이다. Canonical HIR는 각 fresh value를 만드는 producer site와 책임을 보존하고, 구체 runtime identity 값을 source span hash나 정적 정수로 미리 만들지 않는다.
 
 `MessageProducerSiteId` 등 여섯 producer-site ID는 각각 `ProducerSiteId<MessageId>`처럼 identity kind가 붙은 owner-local newtype이다. 서로 cast할 수 없고 body semantic traversal로 canonical numbering한다.
 
@@ -783,7 +783,7 @@ HirExprKind =
   | CleanupScope
   | Await
   | Yield
-  | TaskScope
+  | Concur
   | ProviderOperation
   | ReturnTo
   | RetTo
@@ -795,7 +795,7 @@ HirExprKind =
 
 `return`과 local `ret`는 같은 node가 아니다. 각각 정확한 `ControlTargetId`와 owner boundary를 갖는다. `break`와 `continue`도 label 문자열이나 depth가 아니라 resolved target을 갖는다.
 
-HIR는 `if`, `match`, `loop`, `try`, task scope를 구조화된 채로 유지한다. MIR가 block/edge와 `LeavePlan`을 만든다.
+HIR는 `if`, `match`, `loop`, `try`, `concur`를 구조화된 채로 유지한다. MIR가 block/edge와 `LeavePlan`을 만든다.
 
 ## 11. 호출
 
@@ -994,7 +994,7 @@ canonical call shape, mailbox profile, transfer plan, admission error set,
 request responsibility를 정적으로 보존한다. precommit failure는 envelope,
 sequence, ownership transfer를 만들지 않는다. 성공은 정확히 한 envelope와
 한 ownership transition을 commit한다. `:~` 자체는 suspend나 retry를 하지
-않으며, request는 `Result`에서 `Task<T>`를 꺼낸 뒤 명시적으로 await한다.
+않으며, request는 `Result`에서 `Reply<T>`를 꺼낸 뒤 명시적으로 await한다.
 같은 selector와 canonical call shape를 가진 `on`/`request` 쌍은
 expected-result selection 없이 일찍 거부한다. actor `:~`는 `defer`에
 들어갈 수 없다.
@@ -1064,13 +1064,11 @@ MessageDispatchTarget =
 
 ReservedMessagePlan =
     Spawn {
-      task_scope: TaskScopeId,
-      child: TaskChildId,
-      lexical_spawn_index: u32,
-      child_identity: FreshValueBinding<TaskId>,
-      exit_obligation: ScopeOwnedUntilTerminalAndCleanupComplete,
-      primary_failure_order: LexicalSpawnIndex,
-      detached: Forbidden,
+      syntax_owner: TildeCallLedMessage,
+      structured_concur_owner: None,
+      structured_run_identity: None,
+      reinterpreted_as_structured_spawn: false,
+      outcome: ResponsibilitySummary,
     }
 
 MessageCallPlan {
@@ -1132,9 +1130,9 @@ FreshValueBinding<IdentityKind> {
   freshness: PerEvaluationNonForgeable,
 }
 
-ActorRequestTaskResponsibility {
-  identity: TaskResponsibilityId,
-  task_value: ValueResultRef<TaskId>,
+ActorRequestReplyResponsibility {
+  identity: ReplyResponsibilityId,
+  reply_value: ValueResultRef<ReplyId>,
   result_type: NormalizedTypeId,
   normalized_handler_error_set: ErrorSet,
   cancellation_axis: CancellationProfile,
@@ -1166,10 +1164,9 @@ ActorCommitSuccessOutputs {
     | Request {
         reply_identity: FreshValueBinding<ReplyId>,
         correlation_identity: FreshValueBinding<CorrelationId>,
-        task_identity: FreshValueBinding<TaskId>,
-        responsibility: ActorRequestTaskResponsibility,
+        responsibility: ActorRequestReplyResponsibility,
         admission_result_type:
-          Result<TaskType, ActorMessageErrorTypeId>,
+          Result<ReplyType, ActorMessageErrorTypeId>,
       },
 }
 
@@ -1196,9 +1193,9 @@ ActorTransportPlan {
 }
 ```
 
-`ValueResultRef<K>`는 runtime 값을 미리 계산한 정수가 아니라, 이 HIR evaluation이 생성하여 이후 typed value가 보유하는 exact non-forgeable identity result를 가리킨다. 그러므로 typed HIR는 concrete per-value `MessageId`, `CorrelationId`, `ReplyId`, `TaskId` 결합을 잃지 않으면서도 source span hash로 runtime identity를 위조하지 않는다. `CancellationId`와 `FailureId`도 해당 outcome producer의 `ValueResultRef`로 같은 원칙을 따른다.
+`ValueResultRef<K>`는 runtime 값을 미리 계산한 정수가 아니라, 이 HIR evaluation이 생성하여 이후 typed value가 보유하는 exact non-forgeable identity result를 가리킨다. 그러므로 typed HIR는 concrete per-value `MessageId`, `CorrelationId`, `ReplyId`, `ConcurRunId`, `ExecutionId` 결합을 잃지 않으면서도 source span hash로 runtime identity를 위조하지 않는다. `CancellationId`와 `FailureId`도 해당 outcome producer의 `ValueResultRef`로 같은 원칙을 따른다.
 
-`receiver_actor_value`는 `MessageEvalStep::EvaluateReceiver.eval_slot`의 actor identity projection을 정확히 참조한다. protocol-typed receiver라도 commit FIFO key와 request-task isolation owner는 이 runtime receiver value를 공유하며, static `ActorProtocolId`나 source type으로 대체하지 않는다. sender도 현재 actor context의 value identity를 명시적으로 참조한다.
+`receiver_actor_value`는 `MessageEvalStep::EvaluateReceiver.eval_slot`의 actor identity projection을 정확히 참조한다. protocol-typed receiver라도 commit FIFO key와 request-reply isolation owner는 이 runtime receiver value를 공유하며, static `ActorProtocolId`나 source type으로 대체하지 않는다. sender도 현재 actor context의 value identity를 명시적으로 참조한다.
 
 Actor 불변식:
 
@@ -1207,13 +1204,13 @@ Actor 불변식:
 - commit은 payload를 정확히 한 번 actor에 이전하고 message identity와 FIFO sequence를 생성한다.
 - commit 뒤 cancellation은 sender ownership을 복구하거나 message를 retract하지 않는다.
 - one-way 결과는 `Result<Unit, error ActorMessageError>`다.
-- request admission 결과는 `Result<Task<T>, error ActorMessageError>`이고 explicit `await`는 Task를 추출한 뒤에만 적용한다.
-- `ActorRequestTaskResponsibility`는 result type, handler `ErrorSet`, cancellation, isolation owner, **그 value의 correlation identity**, terminal `receiverClosedBeforeReply`를 모두 보존한다.
-- request success에서 `responsibility.task_value == task_identity.value_result`, `responsibility.correlation_value == correlation_identity.value_result`, `responsibility.isolation_owner == receiver_actor_value`가 성립해야 한다.
-- `mailboxFull`과 `receiverClosedBeforeAdmission`은 admission result에만 있고 request task descriptor에 들어가지 않는다.
-- request task를 await할 때의 exact error set은 `normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply)`로 재계산된다.
-- module API에는 runtime correlation 값이 아니라 `per_value_non_forgeable` policy marker만 들어간다.
-- ordinary async task에는 actor transport descriptor를 붙이지 않는다.
+- request admission 결과는 `Result<Reply<T>, error ActorMessageError>`이고 explicit `await`는 Reply를 추출한 뒤에만 적용한다.
+- `ActorRequestReplyResponsibility`는 result type, handler `ErrorSet`, cancellation, isolation owner, **그 value의 ReplyId와 correlation identity**, terminal `receiverClosedBeforeReply`를 모두 보존한다.
+- request success에서 `responsibility.reply_value == reply_identity.value_result`, `responsibility.correlation_value == correlation_identity.value_result`, `responsibility.isolation_owner == receiver_actor_value`가 성립해야 한다.
+- `mailboxFull`과 `receiverClosedBeforeAdmission`은 admission result에만 있고 request reply descriptor에 들어가지 않는다.
+- request reply를 await할 때의 exact error set은 `normalize(handler ErrorSet | ActorMessageError::receiverClosedBeforeReply)`로 재계산된다.
+- module API에는 runtime ReplyId/correlation 값이 아니라 각각의 `per_value_non_forgeable` policy marker만 들어간다.
+- structured `Run<T>`에는 actor transport descriptor를 붙이지 않는다.
 
 ## 13. Place와 ownership 계획
 
@@ -1459,7 +1456,7 @@ CaptureDescriptor {
 - escaping closure의 borrow/suspend/isolation 위반은 canonical sealing 전에 거부한다.
 - trailing closure는 별도 closure 종류가 아니다. 일반 `ClosurePlan`이 call/message의 trailing-closure channel에 binding된다.
 
-## 18. Async, generator, task, actor
+## 18. Async, generator, concur/run/reply, actor
 
 HIR는 state machine이 아니다.
 
@@ -1474,10 +1471,22 @@ SuspendPlan {
   isolation: IsolationProfile,
 }
 
-TaskScopePlan {
-  scope: TaskScopeId,
-  children: [TaskChildPlan],
-  lexical_spawn_order: [TaskChildId],
+ConcurRunPlan {
+  owner: ConcurId,
+  run: FreshValueBinding<ConcurRunId>,
+  execution: FreshValueBinding<ExecutionId>,
+  lexical_spawn_index: u32,
+  operand: SelectedAsyncInvocation | InlineSpawnBody,
+  precommit_evaluation: ParentExecutionEvaluateOnce,
+  source_result_type: Run<NormalizedTypeId>,
+  escape: Forbidden,
+  actor_reply_responsibility: None,
+}
+
+ConcurPlan {
+  owner: ConcurId,
+  children: [ConcurRunPlan],
+  lexical_spawn_order: [ConcurRunId],
   exit_policy: Join | CancelThenJoin,
   primary_failure_order: LexicalChildOrder,
 }
@@ -1486,7 +1495,7 @@ TaskScopePlan {
 - HIR는 await/yield, resume type, cancel/isolation constraint를 명시한다.
 - live-across-suspend set, frame field, program counter, root map은 MIR/xVM에서 계산한다.
 - scheduler completion order가 primary failure 선택을 결정하지 않는다. lexical spawn index를 보존한다.
-- task scope 밖으로 나갈 때 child ownership이 남지 않도록 exit policy를 고정한다.
+- `concur` 밖으로 나갈 때 child-run ownership이 남지 않도록 exit policy를 고정한다.
 - actor enqueue/commit 전과 후의 cancellation 책임을 분리한다.
 
 ## 19. Provider 경계
@@ -1568,7 +1577,7 @@ direct `let`과 동치인 rightward binding은 같은 semantic digest를 가질 
 | `HirCleanupScope` | cleanup region/register + `LeavePlan` |
 | `ClosurePlan` | environment construction + call-right token |
 | `SuspendPlan` | suspend terminator + liveness/frame/root metadata |
-| `TaskScopePlan` | `TaskToken`과 exit join/cancel |
+| `ConcurPlan` | `ConcurToken`, owner-bound `RunToken`과 exit join/cancel |
 | `MessageCallPlan` | payload/closure eval + selected dispatch; actor subvariant면 transfer commit + actor runtime op |
 | `ProviderOperationPlan` | fixed provider/replay/authority operation |
 | `SourceOrigin` | MIR provenance projection |
@@ -1615,7 +1624,7 @@ require_mir_capabilities(
    aggregate/projection은 만들지 않는다.
 5. receiver/callee, arguments, trailing closures의 evaluate-once 순서를
    MIR operation stream에 명시한다.
-6. `ModuleId`, `AssociatedItemId`, `ExtensionSetId`, `ActivationOriginId`, `FormalId`, `TaskResponsibilityId` 등 필요한 identity projection을 확정한다.
+6. `ModuleId`, `AssociatedItemId`, `ExtensionSetId`, `ActivationOriginId`, `FormalId`, `RunResponsibilityId`, `ReplyResponsibilityId` 등 필요한 identity projection을 확정한다.
 7. concrete `WitnessId`와 abstract `WitnessParamId`를 구분한다.
 
 이 목록은 기존 RFC 파일을 자동 수정하거나 그 제안을 활성화하지 않는다.
@@ -1659,7 +1668,7 @@ pair verifier는 digest 문자열만 비교하지 않는다.
 10. **Responsibility**: effect/error/defect/cancel/suspend/isolation/authority/cleanup 재계산
 11. **Pattern**: nonconsuming test, probe guard, atomic commit, binder interface, coverage
 12. **Construction/cleanup**: initialization/rollback, registration/LIFO, exit target
-13. **Closure/async/task/actor/provider**: capture, escape, fresh value binding, per-value task/correlation descriptor, transport, replay, isolation
+13. **Closure/async/concur/actor/provider**: capture, escape, fresh value binding, per-value run/reply/correlation descriptor, transport, replay, isolation
 14. **Canonical form**: table order, ID renumbering, no unknown mandatory field
 15. **Digest split**: semantic/API/debug projection과 digest 재계산
 
@@ -1725,7 +1734,7 @@ HirApiSymbolRow {
     parameter_channels,
     result_channel,
     capture_channels,
-    per_channel_task_origin_and_static_task_responsibility,
+    per_channel_reply_responsibility,
   },
   ownership,
   cleanup,
@@ -1750,7 +1759,7 @@ DebugHirProjection {
 }
 ```
 
-`HirApiSymbolRow`는 현행 [`module-api-digest.schema.json`](../schemas/language/module-api-digest.schema.json)의 symbol row를 lossless하게 생성하는 source다. type row의 construction/projection digest, callable row의 callable/named-rest profile, conformance/static-binding의 evidence residue를 schema 조건에 따라 정확히 보존한다. actor-request Task residue는 해당 responsibility channel의 `task_origin = actor_request_admitted`와 static `task_responsibility` descriptor 안에 들어가며 correlation 값 대신 `per_value_non_forgeable` marker를 기록한다. ordinary async Task channel에는 actor descriptor가 없어야 한다. API verifier는 HIR projection으로 해당 current schema payload를 다시 만들고 제출된 canonical API bytes와 byte-for-byte 비교한다.
+`HirApiSymbolRow`는 현행 [`module-api-digest.schema.json`](../schemas/language/module-api-digest.schema.json)의 symbol row를 lossless하게 생성하는 source다. type row의 construction/projection digest, callable row의 callable/named-rest profile, conformance/static-binding의 evidence residue를 schema 조건에 따라 정확히 보존한다. actor-request `Reply<T>` residue는 해당 responsibility channel의 static `reply_responsibility` descriptor 안에 들어가며 concrete ReplyId와 correlation 값 대신 두 `per_value_non_forgeable` marker를 기록한다. owner-bound `Run<T>` channel은 public API export에서 거부한다. API verifier는 HIR projection으로 해당 current schema payload를 다시 만들고 제출된 canonical API bytes와 byte-for-byte 비교한다.
 
 ### 23.3 domain-separated digest
 
@@ -1859,7 +1868,7 @@ assemble_module(ModuleId) -> Verified<CanonicalHirH1>
 
 - capture plan과 call-right
 - await/yield
-- structured task scope
+- structured `concur`/run
 - actor transfer/correlation freshness
 - provider/replay plan
 
@@ -1888,7 +1897,7 @@ assemble_module(ModuleId) -> Verified<CanonicalHirH1>
 | Cleanup | registration order와 LIFO | double cleanup, lost primary outcome |
 | Construction | partial init reverse rollback | publish-before-commit |
 | Closure | ordered capture와 exact mode | once/capture mode 혼합 |
-| Async/task | lexical failure order, live scope 보존 | scheduler completion order 의존 |
+| Async/concur | lexical failure order, live owner 보존 | scheduler completion order 의존 |
 | Actor | fresh producer site, transfer commit | forged/cached correlation identity |
 | Provider | fixed provider/entry/authority | runtime string lookup, HIR injection |
 | Determinism | OS/hash seed/thread 변화에도 같은 bytes | path/span/timestamp가 semantic digest에 유입 |
@@ -1964,7 +1973,7 @@ HIR-H1 제안은 최소한 다음을 모두 만족할 때만 정본 채택 후�
 - 모든 식/binder/capture/call argument에 exact normalized type과 responsibility가 있다.
 - call, label, trailing closure, witness, extension, provider, actor selector가 재탐색 없이 닫혀 있다.
 - Message/ActorMessage의 ordered arguments는 ordinary channel law를 재사용하되 `CallMode`와 selector/transport domain은 지워지지 않는다.
-- pattern, construction, cleanup, task/message transaction이 구조화된 plan으로 lossless하게 보존된다.
+- pattern, construction, cleanup, run/reply/message transaction이 구조화된 plan으로 lossless하게 보존된다.
 - 같은 normalized 의미가 byte-for-byte 같은 canonical HIR를 만든다.
 - item/body incremental invalidation과 semantic/debug digest 분리가 검증된다.
 - 모든 executable HIR variant에 total MIR-X1 lowering과 adversarial verifier test가 있다.

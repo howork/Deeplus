@@ -37,7 +37,7 @@ Module import, context capability, effects/throws, Trait associated static을
 - runtime service: ordinary constructed/injected value와 lifecycle.
 - application adapter: project가 소유한 explicit boundary; Prelude가 아님.
 
-`Task`, `String`, `Result`가 Prelude에 있어도 keyword가 되지 않는다.
+`Run`, `String`, `Result`가 Prelude에 있어도 keyword가 되지 않는다.
 Prelude 이름이 없으면 tutorial convenience function으로 몰래 승격하지
 않는다.
 
