@@ -1537,9 +1537,9 @@
     "feature_refs": [
       "effectrow_core"
     ],
-    "fixit_hint": "remove `unsafe` from effects {...}; use `unsafe { ... }`, a provider authority law, or the separately Preview-gated `extern#C def#unsafe` FFI surface",
+    "fixit_hint": "remove the rejected `effects unsafe` clause; use `unsafe { ... }`, a provider authority law, or the separately Preview-gated `extern#C def#unsafe` FFI surface",
     "fixit_kind": "manual_review",
-    "fixit_policy": "remove `unsafe` from effects {...}; use `unsafe { ... }`, a provider authority law, or the separately Preview-gated `extern#C def#unsafe` FFI surface",
+    "fixit_policy": "remove the rejected `effects unsafe` clause; use `unsafe { ... }`, a provider authority law, or the separately Preview-gated `extern#C def#unsafe` FFI surface",
     "message": "`unsafe` is a safety/authority axis, not an EffectRow atom; use an explicit unsafe boundary.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -1558,23 +1558,23 @@
       "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "EFFECT_ROW_UNION_TOKEN_REQUIRED",
+    "diagnostic_id": "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "effect_error_row_union_bar_surface"
+      "callable_responsibility_clause_repetition"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "offer only a deterministic responsibility-preserving rewrite",
-    "message": "Effect-row alternatives require the visible | token.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "repeat `effects EffectTerm` once per nonempty effect",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "split the nonempty effect list into ordered repeated clauses without changing the normalized EffectRow",
+    "message": "Callable effect responsibilities use one repeated `effects EffectTerm` clause per term; only `effects {}` spells the empty row.",
+    "notes": "Stable declaration-surface diagnostic; type-level EffectRow bar algebra remains available. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
-    "stage": "lexer",
+    "stage": "parser",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
   },

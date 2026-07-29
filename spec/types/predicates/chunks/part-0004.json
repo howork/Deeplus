@@ -735,9 +735,9 @@
   {
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "EffectErrorRowUnionAdmitted",
-    "source_name": "Effect/Error row visible union",
-    "summary": "R51c current design predicate; integrated product checker NOT_RUN.",
+    "predicate_id": "CallableResponsibilityClausesAdmitted",
+    "source_name": "Repeated callable responsibility clause admission",
+    "summary": "Stable-design repeated throws/effects clause predicate; integrated product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -748,19 +748,22 @@
       "element_types"
     ],
     "feature_refs": [
-      "effect_error_row_union_bar_surface"
+      "callable_responsibility_clause_repetition"
     ],
     "diagnostic_refs": [
-      "EFFECT_ROW_UNION_TOKEN_REQUIRED",
-      "ERROR_SET_UNION_TOKEN_REQUIRED"
+      "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+      "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED"
     ],
     "design_seed_diagnostic_refs": [
-      "EFFECT_ROW_UNION_TOKEN_REQUIRED",
-      "ERROR_SET_UNION_TOKEN_REQUIRED"
+      "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+      "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED"
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "each adjacent row atom is separated by |"
+      "each callable throws clause contributes exactly one ErrorSetTerm",
+      "each callable effects clause contributes exactly one effect term or the explicit empty row",
+      "all throws clauses precede all effects clauses",
+      "normalized terms are duplicate-free"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -773,30 +776,33 @@
       "source_role",
       "element_types"
     ],
-    "formal_judgment_id": "J-EffectErrorRowUnionAdmitted",
+    "formal_judgment_id": "J-CallableResponsibilityClausesAdmitted",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "each adjacent row atom is separated by |"
+      "callable declaration list contains no bar union and no nonempty effect-set literal",
+      "throws Never and effects {} are the only explicit empty clauses"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "fold repeated clauses into duplicate-free ErrorSet and EffectRow identities; retain source order only for diagnostics",
     "decision_procedure": [
       "validate the declared descriptor shape as design documentation only",
-      "record EffectErrorRowUnionAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "reject a bar-composed callable throws list with CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED",
+      "reject a nonempty effect-set callable list with CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+      "normalize admitted repeated clauses without source-order identity",
       "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
       "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "EFFECT_ROW_UNION_TOKEN_REQUIRED",
+    "active_primary_diagnostic": "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
     "secondary_diagnostics": [
-      "ERROR_SET_UNION_TOKEN_REQUIRED"
+      "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED"
     ],
     "positive_fixture_ids": [
-      "PF-EffectErrorRowUnionAdmitted-POS"
+      "PF-CallableResponsibilityClausesAdmitted-POS"
     ],
     "negative_fixture_ids": [
-      "PF-EffectErrorRowUnionAdmitted-NEG"
+      "PF-CallableResponsibilityClausesAdmitted-NEG"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],

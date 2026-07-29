@@ -144,11 +144,11 @@ registry에서 `status_enum = PREVIEW`이고
 PreviewFfiDecl ::= PreviewFfiFunctionDecl | PreviewFfiBlockDecl ;
 PreviewFfiFunctionDecl ::= "extern" "#" "C" "def" "#" "unsafe"
                            Identifier ParameterList ReturnClause?
-                           ThrowsClause? EffectsClause? StatementBoundary ;
+                           ThrowsClause* EffectsClause* StatementBoundary ;
 PreviewFfiBlockDecl ::= "extern" "c" "(" PLAIN_STRING_LITERAL ")"
                         "{" PreviewFfiBlockMember* "}" ;
 PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
-                          ReturnClause? ThrowsClause? EffectsClause?
+                          ReturnClause? ThrowsClause* EffectsClause*
                           StatementBoundary ;
 ```
 

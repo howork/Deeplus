@@ -62,7 +62,7 @@ private type PureParser =
 private type FileLoader =
     (String) -> Bytes
         throws IOError
-        effects {io}
+        effects io
 
 private type Command =
     (String, String..., Record***) -> Unit
@@ -81,13 +81,13 @@ public capability FileIO for {io}
 
 private def load(path: String, context fileIO: FileIO) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     return readFile(path, context fileIO)
 }
 ```
 
-`effects {io}`가 권한 값을 만들어 주지 않고, `FileIO` context를 가졌다는
+`effects io`가 권한 값을 만들어 주지 않고, `FileIO` context를 가졌다는
 사실만으로 실제 effect가 발생했다고 간주하지도 않는다.
 
 ### 판정 trace, 미니 사례와 흔한 오해

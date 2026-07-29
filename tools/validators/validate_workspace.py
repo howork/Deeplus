@@ -36,7 +36,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1423, "predicates": 268,
+    "features": 719, "diagnostics": 1424, "predicates": 268,
     "predicate_fixtures": 819, "no_go": 155,
     "hard_keywords": 29, "contextual_words": 106,
 }
@@ -236,7 +236,7 @@ TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-POS-001": "200a65fcdb4f4048e8ca3a9c47ee9a6a3b064d0e1a4c3cb213cee813eaa93964",
     "TCS-R1-POS-002": "bcf8175f86f6beeb7a2f408fb2c6caf0b01b3d7f22a330359a28c9de9a6bc987",
     "TCS-R1-POS-003": "702e9ad35b10a6e6423b6fac2ad91ef026aff2401f7b5cc34f913f6aea0ad3fb",
-    "TCS-R1-POS-004": "cddc9ba52088a8455525c352e564f6f2f0d984d3788ec59ac7868c92cc6e7de9",
+    "TCS-R1-POS-004": "75e53f203bfc6f8644e443b95bd8093627a69c7bbfdab057185dd3963e7529c3",
     "TCS-R1-POS-005": "a3d5f4ac2214934e98d4c46becf91e46c5c0a5ce85a7ffb4627fe0104c8d8677",
     "TCS-R1-POS-006": "6c9343d277a11511992a25c3d57f2bc442332529ef21e739aa2da664f208becb",
     "TCS-R1-POS-007": "7efc43d30b3ed5d4914c0fc06de63c57efcdf761d705d8ac5140af1ce6b20d60",
@@ -257,6 +257,7 @@ TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-NEG-008": "e41d57a96744f8f40b85900fd9282392fe7eefa1248a9946ef18badb9031369a",
     "TCS-R1-NEG-009": "398a9621caf006a6f21d74388e95865ed43034101acc50ad3a6dfe769d09f9a0",
     "TCS-R1-NEG-010": "c41174f295f7ce210fb382996f3216dd54e7a678dce7467b2ebd5a066601e769",
+    "TCS-R1-NEG-011": "d1bf0fe69fa1dc6a3160db99d90c0b9ce0d641a904515fd3bc54f4868ed48c91",
 }
 REFINEMENT_SURFACE_CASE_SHA256 = {
     "TRN-R1-POS-046": "a1847aaebbdd743d8aacc74eb99bc85fdcddf047a15cc39676e82190ae04ecca",
@@ -1602,8 +1603,8 @@ def main() -> int:
     tfc_contract = parsed.get(root / "spec/contracts/type-flow-callable-coherence.json", {})
     tfc_rule_ids = [row.get("rule_id") for row in tfc_contract.get("rules", []) if isinstance(row, dict)]
     check(
-        len(tfc_rule_ids) == 21
-        and len(set(tfc_rule_ids)) == 21
+        len(tfc_rule_ids) == 22
+        and len(set(tfc_rule_ids)) == 22
         and all(
             isinstance(row.get("rule_ids"), list)
             and row["rule_ids"]
@@ -1637,6 +1638,18 @@ def main() -> int:
     }
     trailing_contract = tfc_rule_by_id.get("TFC-R011", {}).get("contract", {})
     message_call_contract = tfc_rule_by_id.get("TFC-R021", {}).get("contract", {})
+    responsibility_clause_contract = tfc_rule_by_id.get("TFC-R022", {}).get(
+        "contract", {}
+    )
+    repeated_responsibility_case = tfc_by_id.get(
+        "TFC-P-028-REPEATED-CALLABLE-RESPONSIBILITIES", {}
+    )
+    rejected_throws_bar_case = tfc_by_id.get(
+        "TFC-N-030-CALLABLE-THROWS-BAR-LIST", {}
+    )
+    effect_clause_boundary = tfc_by_id.get(
+        "TFC-B-022-CALLABLE-EFFECT-CLAUSE-LIST", {}
+    )
     call_frontend = parsed.get(
         root / "spec/frontend/frontend-model.json", {}
     ).get("call_frontend_contract", {})
@@ -1684,6 +1697,51 @@ def main() -> int:
         is True,
         "MESSAGE_CALL_CONTRACT_MACHINE_CLOSURE",
         f"arguments={message_call_contract.get('argument_cardinality')} trailing={trailing_contract.get('multiple_trailing_closures')}",
+    )
+    check(
+        responsibility_clause_contract.get("throws_surface")
+        == "throws ErrorSetTerm"
+        and responsibility_clause_contract.get("effects_surface")
+        == "effects CallableEffectTerm"
+        and responsibility_clause_contract.get("multiple_error_surface")
+        == "repeat throws"
+        and responsibility_clause_contract.get("multiple_effect_surface")
+        == "repeat effects"
+        and responsibility_clause_contract.get("explicit_empty_error_surface")
+        == "throws Never"
+        and responsibility_clause_contract.get("explicit_empty_effect_surface")
+        == "effects {}"
+        and responsibility_clause_contract.get("callable_error_bar_union_count")
+        == 0
+        and responsibility_clause_contract.get(
+            "callable_nonempty_effect_set_literal_count"
+        )
+        == 0
+        and responsibility_clause_contract.get("throws_before_effects") is True
+        and responsibility_clause_contract.get(
+            "duplicate_normalized_term_admitted"
+        )
+        is False
+        and repeated_responsibility_case.get("expected_outcome") == "accept"
+        and repeated_responsibility_case.get("assertions", {}).get(
+            "throws_clause_count"
+        )
+        == 2
+        and repeated_responsibility_case.get("assertions", {}).get(
+            "effects_clause_count"
+        )
+        == 2
+        and rejected_throws_bar_case.get("expected_existing_diagnostic")
+        == "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED"
+        and effect_clause_boundary.get(
+            "expected_existing_diagnostic_for_reject"
+        )
+        == "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+        "TFC_CALLABLE_RESPONSIBILITY_CLAUSE_REPETITION",
+        (
+            f"throws={responsibility_clause_contract.get('multiple_error_surface')} "
+            f"effects={responsibility_clause_contract.get('multiple_effect_surface')}"
+        ),
     )
     check(
         'CallSuffix ::= ArgumentList TrailingClosureGroup?' in message_grammar
@@ -2871,8 +2929,8 @@ def main() -> int:
         current_prelude.get("MutableList<T>", {}).get("signatures")
         == [
             "prelude intrinsic mutable resource type MutableList<T>",
-            "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
-            "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}",
+            "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects allocate",
+            "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects allocate",
         ]
         and "MutableMap<K,V>" not in current_prelude
         and "MutableSet<T>" not in current_prelude
@@ -3891,6 +3949,7 @@ def main() -> int:
         "CONFORMANCE_AUTO_BODY_FORBIDDEN",
         "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
         "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
+        "CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED",
     }
     trait_open_p1 = [f"TCC-P1-{index:03d}" for index in range(2, 9)]
     global_open_p1 = [
@@ -3938,9 +3997,9 @@ def main() -> int:
         and len(trait_cases) == len(
             {row.get("fixture_id") for row in trait_cases if isinstance(row, dict)}
         )
-        == 24
+        == 25
         and trait_surface_fixtures.get("counts")
-        == {"positive": 14, "negative": 10, "total": 24, "executed": 0},
+        == {"positive": 14, "negative": 11, "total": 25, "executed": 0},
         "TRAIT_CONFORMANCE_SUCCESSOR_SURFACE",
         f"revision={frontend.get('revision')} p1={len(global_open_p1)} fixtures={len(trait_cases)}",
     )
@@ -3968,7 +4027,7 @@ def main() -> int:
         and trait_case_projection_sha256
         == TRAIT_SURFACE_CASE_PROJECTION_SHA256
         and trait_auto_receipt_case.get("expected") == "ACCEPT_STATIC"
-        and "public trait AutoReceiptIdentity\nsupports auto {"
+        and "public trait AutoUserIdentity\nsupports auto {"
         in trait_auto_receipt_case.get("source", "")
         and "closed_test_auto_policy"
         in trait_auto_receipt_case.get("assertions", [])

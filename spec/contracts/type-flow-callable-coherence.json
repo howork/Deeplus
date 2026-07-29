@@ -645,6 +645,30 @@
         "implicit_actor_suspension_or_retry": false,
         "product_support": "NOT_RUN"
       }
+    },
+    {
+      "rule_id": "TFC-R022",
+      "domain": "callable_responsibility_surface",
+      "title": "throws and effects repeat one normalized term per clause",
+      "contract": {
+        "throws_surface": "throws ErrorSetTerm",
+        "effects_surface": "effects CallableEffectTerm",
+        "multiple_error_surface": "repeat throws",
+        "multiple_effect_surface": "repeat effects",
+        "explicit_empty_error_surface": "throws Never",
+        "explicit_empty_effect_surface": "effects {}",
+        "callable_error_bar_union_count": 0,
+        "callable_nonempty_effect_set_literal_count": 0,
+        "throws_before_effects": true,
+        "duplicate_normalized_term_admitted": false,
+        "normalized_error_identity": "duplicate-free unordered ErrorSet",
+        "normalized_effect_identity": "duplicate-free unordered EffectRow",
+        "source_order_role": "deterministic diagnostics only",
+        "type_level_error_set_bar_union_preserved": true,
+        "type_level_effect_row_bar_union_preserved": true,
+        "formatter_layout": "one aligned repeated clause per line",
+        "product_support": "NOT_RUN"
+      }
     }
   ],
   "option_optional_binding_preview_design": {
@@ -725,7 +749,7 @@
     "product_execution": "NOT_RUN"
   },
   "machine_acceptance": {
-    "rule_count": 21,
+    "rule_count": 22,
     "rule_ids_unique": true,
     "ordinary_identifier_set": [
       "array",
@@ -767,6 +791,9 @@
     "implicit_actor_suspension_or_retry_count": 0,
     "multiple_trailing_closures_require_all_named": true,
     "duplicate_trailing_closure_labels_admitted": false,
+    "callable_responsibility_clause_form": "REPEATED_SINGLE_TERM",
+    "callable_error_bar_union_count": 0,
+    "callable_nonempty_effect_set_literal_count": 0,
     "product_execution_receipt_count": 0
   }
 }

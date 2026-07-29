@@ -314,8 +314,11 @@ Trait; bodyless `by auto` invokes only that exact policy. An unregistered,
 ambiguous, structural, extension-derived, provider-discovered, or runtime
 policy produces zero candidates.
 
-A nominal `conform Trait { ... }` block groups witnesses for one header clause.
-Names inside the matching block are unqualified; an external body may use
+A nominal `conform Trait { ... }` block groups witnesses for one matching
+header clause and is admitted only inside that Class or Enum body. Lexical
+containment fixes the target nominal owner, so `conform Trait for Type` and a
+top-level `conform` block have no production. Names inside the matching block
+are unqualified; an external `type Target conforms Trait { ... }` body may use
 `Trait::member` to bind one exact requirement. The witness-marker domain stays
 exactly `.`, `+`, `*.`, and `*+`; `as name`, `<T as Trait>::Item`, associated
 bindings, and lowercase `via` retain their existing identities. Conformance is
@@ -500,7 +503,18 @@ type includes its effect row, error set, cancellation responsibility,
 ownership/capture responsibility, suspension capability, isolation, and
 relevant context/witness channels.
 
-The concise throws/effects successor is Preview Design and does not supersede
+Stable callable responsibility spelling repeats one clause per normalized
+term. `throws E1 throws E2` contributes the set union of `E1` and `E2`;
+`effects io effects state` contributes the corresponding effect-row union.
+The formatter places repeated clauses on separate aligned lines. `throws Never`
+and `effects {}` are the only explicit empty spellings. A callable clause never
+uses `|` or a nonempty `{...}` as list punctuation; those forms remain
+type-level ErrorSet/EffectRow algebra. All throws clauses precede all effects
+clauses, duplicate normalized identities are rejected, and source order is
+retained only for deterministic diagnostics. Typed AST/HIR, callable identity,
+API digest, and MIR carry duplicate-free normalized rows.
+
+The concise omission successor remains Preview Design and does not supersede
 current private ErrorSet inference. In that Preview, omission of a syntactically
 admitted `throws` axis normalizes to `Never`, omission of `effects` normalizes
 to `{}`, and a callable implementation is admitted only when its body rows are

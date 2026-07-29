@@ -308,7 +308,7 @@ private def readVersion(
     package: String,
 ) -> Int
     throws ServiceError
-    effects {network}
+    effects network
 = {
     return service.version(package)
 }
@@ -610,7 +610,7 @@ private def#async loadProfileForCollect(
 private def#async collectProfiles(
     userIds: AsyncSequence<UserId, IOError>,
 ) -> List<Profile>
-    throws IOError | NetworkError
+    throws IOError throws NetworkError
 = {
     return await AsyncCollector::list(
         source: userIds,
@@ -668,7 +668,7 @@ terminal cancellation로 남는다.
 private def#async invalidCollect(
     stream: AsyncSequence<UserId, IOError>,
 ) -> List<Profile>
-    throws IOError | NetworkError
+    throws IOError throws NetworkError
 = {
     return await AsyncCollector::list(
         source: stream,

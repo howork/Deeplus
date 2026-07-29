@@ -122,7 +122,7 @@ Preview 설계는 비활성 상태라는 이유로 이름만 나열해서는 안
 ```deeplus
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print(args)
     return ExitCode::success

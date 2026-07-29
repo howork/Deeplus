@@ -74,7 +74,7 @@ block route에서도 library identity와 member별 unsafe/effect가 드러난다
 #preview(ffi_c_extern_unsafe_surface_msp,ffi_minimum_sound_profile)
 extern c("sqlite3") {
     unsafe def sqlite3_close(db: RawPtr<sqlite3>) -> CInt
-        effects {io}
+        effects io
 }
 ```
 

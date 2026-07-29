@@ -2182,7 +2182,7 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 531,
+    "STABLE": 533,
     "PREVIEW": 13
   },
   "numeric_lexical_policy": {
@@ -2404,6 +2404,7 @@
       "class_conformance": "zero-or-more repeated conforms QualifiedTypeReference clauses",
       "trait_inheritance": "zero-or-more repeated derives QualifiedTypeReference clauses; requires remains callable-contract syntax only",
       "nominal_relation_boundary": "each derives, conforms, or supports auto clause starts at LineBreakBoundary; a clause-local where ends with that relation line",
+      "nominal_conform_group": "conform Trait { ... } is a ClassBody or EnumBody item for an already-declared matching header clause; lexical containment supplies the target and no for-clause is admitted",
       "conformance_evidence_selector": "using conformance(Type conforms Trait) remains unchanged"
     },
     "lossless_cst_nodes": [
@@ -2431,7 +2432,10 @@
       "direct": "conforms Trait",
       "provider": "conforms Trait via Provider",
       "automatic": "conforms Trait by auto",
-      "group": "conform Trait { ... }"
+      "group": "conform Trait { ... }",
+      "group_owner": "lexically_enclosing_nominal_body",
+      "group_for_clause_count": 0,
+      "top_level_group_count": 0
     },
     "route_laws": {
       "lowercase_via_preserved": true,
@@ -2477,6 +2481,8 @@
         "public"
       ],
       "function_or_block_local_conformance": false,
+      "top_level_conform_group": false,
+      "conform_group_requires_matching_nominal_header_clause": true,
       "structural_or_runtime_conformance": false,
       "source_or_import_order_ranks_candidates": false,
       "orphan_and_overlap_checks_required": true
@@ -3127,6 +3133,38 @@
       "closed_feature_p1": 0
     },
     "product_lanes": "15/15_NOT_RUN"
+  },
+  "callable_responsibility_clause_contract": {
+    "status": "STABLE_DESIGN",
+    "current_binding": false,
+    "surface": {
+      "throws_term": "throws ErrorSetTerm",
+      "effects_term": "effects CallableEffectTerm",
+      "multiple_errors": "repeat throws once per term",
+      "multiple_effects": "repeat effects once per term",
+      "explicit_empty_errors": "throws Never",
+      "explicit_empty_effects": "effects {}",
+      "callable_bar_union_count": 0,
+      "callable_nonempty_effect_set_literal_count": 0
+    },
+    "ordering": {
+      "throws_before_effects": true,
+      "duplicate_normalized_term_admitted": false,
+      "formatter_repeated_clause_layout": "one aligned clause per line"
+    },
+    "normalization": {
+      "throws_clauses": "duplicate-free ErrorSet union",
+      "effects_clauses": "duplicate-free EffectRow union",
+      "source_order_semantic_identity": false,
+      "source_order_diagnostic_only": true,
+      "typed_ast_hir_api_mir_rows_always_normalized": true
+    },
+    "type_level_algebra": {
+      "error_set_bar_union_preserved": true,
+      "effect_row_bar_union_preserved": true,
+      "callable_clause_punctuation_authority": false
+    },
+    "product_support": "NOT_RUN"
   },
   "concise_throws_effects_preview_frontend_contract": {
     "status": "PREVIEW_DESIGN_NONACTIVATABLE",

@@ -326,6 +326,23 @@
         "trailing_closure_count": 2,
         "all_trailing_closures_named": true
       }
+    },
+    {
+      "fixture_id": "TFC-P-028-REPEATED-CALLABLE-RESPONSIBILITIES",
+      "rule_ids": [
+        "TFC-R022"
+      ],
+      "source": "public def loadReport(path: Path) -> Report\nthrows IOError\nthrows DecodeError\neffects io\neffects decode = {\n  return decodeReport(read(path))\n}",
+      "expected_outcome": "accept",
+      "expected_existing_diagnostic": null,
+      "assertions": {
+        "throws_clause_count": 2,
+        "effects_clause_count": 2,
+        "normalized_error_count": 2,
+        "normalized_effect_count": 2,
+        "callable_bar_union_count": 0,
+        "callable_nonempty_effect_set_literal_count": 0
+      }
     }
   ],
   "negative": [
@@ -649,6 +666,20 @@
         "named_argument_count": 2,
         "unique_named_label_count": 1
       }
+    },
+    {
+      "fixture_id": "TFC-N-030-CALLABLE-THROWS-BAR-LIST",
+      "rule_ids": [
+        "TFC-R022"
+      ],
+      "source": "public def loadReport(path: Path) -> Report throws IOError | DecodeError = {\n  return decodeReport(read(path))\n}",
+      "expected_outcome": "reject",
+      "expected_rejection_reason": "callable error responsibilities repeat one throws clause per ErrorSet term",
+      "expected_existing_diagnostic": "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED",
+      "assertions": {
+        "callable_bar_union_count": 1,
+        "committed_throws_clause_count": 1
+      }
     }
   ],
   "boundary": [
@@ -961,13 +992,25 @@
         "formatter_preserves_semantic_difference": true
       },
       "boundary": "parenthesized Unit is one argument and is never normalized to a zero-argument message"
+    },
+    {
+      "fixture_id": "TFC-B-022-CALLABLE-EFFECT-CLAUSE-LIST",
+      "rule_ids": [
+        "TFC-R022"
+      ],
+      "paired_sources": {
+        "accept": "public def persist(value: Value) -> Unit effects io effects state = { store(value) }",
+        "reject": "public def persist(value: Value) -> Unit effects {io, state} = { store(value) }"
+      },
+      "expected_existing_diagnostic_for_reject": "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+      "boundary": "effects {} is the explicit empty row; every nonempty callable effect term owns one repeated effects clause"
     }
   ],
   "expected_counts": {
-    "positive": 27,
-    "negative": 29,
-    "boundary": 21,
-    "total": 77,
+    "positive": 28,
+    "negative": 30,
+    "boundary": 22,
+    "total": 80,
     "product_executed": 0
   }
 }

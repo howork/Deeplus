@@ -166,8 +166,8 @@ AssociatedTypeRequirementDecl ::= "type" Identifier
 AssociatedValueRequirementDecl ::= "let" "::" Identifier
                                    TypeAnnotation StatementBoundary
 AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
-                                      ReturnClause? ThrowsClause?
-                                      EffectsClause? StatementBoundary
+                                      ReturnClause? ThrowsClause*
+                                      EffectsClause* StatementBoundary
 ```
 
 Trait parent는 물리 줄 경계에서 시작하는 `derives Parent` 절을 반복해
@@ -380,11 +380,41 @@ AssociatedRequirementBinding ::= "type" Identifier "=" TypeRef
                                   StatementBoundary
 ```
 
-`type T conforms Trait { ... }`는 checker-visible evidence를 만든다.
+`type T conforms Trait { ... }`는 타입 선언 밖에서 checker-visible
+evidence를 만드는 외부 conformance 형식이다.
 `as name`은 명시적 conformance 이름이고 소문자 `via path`는 body를
 가질 수 있는 현행 route다. `by auto`는 `supports auto`로 등록된 닫힌
-정책만 호출하며 반드시 bodyless다. nominal body의
-`conform Trait { ... }`는 해당 Trait witness를 한곳에 묶는다.
+정책만 호출하며 반드시 bodyless다.
+
+Class 또는 Enum이 자기 본문에서 witness를 함께 정의할 때에는 header에
+`conforms Trait`를 선언하고 같은 본문 안에 `conform Trait { ... }`를
+둔다. lexical containment가 target nominal owner를 이미 결정하므로
+`for Type` 절은 없으며, top-level `conform`도 허용하지 않는다. 내부
+requirement 이름은 해당 Trait가 확정되어 있으므로 unqualified로 쓴다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/trait-conformance-surface.json -->
+```deeplus
+public trait Display {
+    +def display.() -> String
+        throws Never
+        effects {}
+}
+
+public class User
+conforms Display {
+    +let name: String
+
+    conform Display {
+        def display.() -> String = {
+            return self.name
+        }
+    }
+}
+```
+
+위 `conform Display`의 target은 lexical owner인 `User`다. 같은 block을
+`conform Display for User`로 쓰거나 header의 `conforms Display` 없이
+두면 `CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED`로 거부한다.
 
 ### 공유 Trait/conformance 보고서와 현행 authority의 조정
 
@@ -396,8 +426,9 @@ identity, 전역 coherence, orphan/overlap 검사, source·import·link order
 
 현행 source는 `type T conforms Trait { ... }`, nominal header의 반복
 `conforms`, parent `derives`, 등록된 `supports auto`와 bodyless `by auto`,
-`conform Trait { ... }`, 소문자 `via`를 사용한다. local/first-class
-witness와 specialization은 현행 문법으로 채택하지 않는다.
+Class/Enum body 안의 `conform Trait { ... }`, 소문자 `via`를 사용한다.
+local/first-class witness와 specialization은 현행 문법으로 채택하지
+않는다.
 
 `TCC-P1-002..008`은 정확히 7개 모두 `OPEN`이고 successor는
 `NONACTIVATABLE`이다. parser, checker, HIR/MIR, runtime, formatter/LSP를
@@ -414,7 +445,7 @@ ExtensionSetItem ::= ExtensionSetFunctionDecl
 
 ExtensionSetFunctionDecl ::= MemberVisibility? "def" Identifier
                              ParameterList? ReturnClause?
-                             ThrowsClause? EffectsClause?
+                             ThrowsClause* EffectsClause*
                              WhereClause? FunctionBody
 
 ExtensionPackDecl ::= "extension" "pack" QualifiedPath ExtensionPackBody

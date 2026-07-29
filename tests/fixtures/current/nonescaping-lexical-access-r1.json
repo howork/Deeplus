@@ -94,7 +94,7 @@
         "NLA-R001",
         "NLA-R002"
       ],
-      "source": "def report(prefix: String) effects {io} = {\n  def emitLine(value: String) effects {io} = { print(prefix + value) }\n  emitLine(\"ready\")\n}",
+      "source": "def report(prefix: String) effects io = {\n  def emitLine(value: String) effects io = { print(prefix + value) }\n  emitLine(\"ready\")\n}",
       "expected_outcome": "accept",
       "diagnostic": null,
       "assertions": [

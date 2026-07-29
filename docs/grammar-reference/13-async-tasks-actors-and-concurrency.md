@@ -79,11 +79,11 @@ MailboxClause ::= HashTag "(" "capacity" ":" StaticIntLiteral ")" ;
 ActorBody ::= "{" ActorItem* "}" ;
 ActorItem ::= ActorOnDecl | ActorRequestDecl | MemberDecl ;
 ActorOnDecl ::= MemberVisibility? "on" Identifier
-                ParameterList? ThrowsClause? EffectsClause?
+                ParameterList? ThrowsClause* EffectsClause*
                 FunctionBody ;
 ActorRequestDecl ::= MemberVisibility? "request" Identifier
-                     ParameterList? ReturnClause ThrowsClause?
-                     EffectsClause? FunctionBody ;
+                     ParameterList? ReturnClause ThrowsClause*
+                     EffectsClause* FunctionBody ;
 
 ActorProtocolDecl ::= TopLevelVisibility? "protocol" Identifier
                       ActorProtocolBody ;
@@ -91,11 +91,11 @@ ActorProtocolBody ::= "{" ActorProtocolItem* "}" ;
 ActorProtocolItem ::= ActorProtocolSendRequirement
                     | ActorProtocolRequestRequirement ;
 ActorProtocolSendRequirement ::= "send" Identifier ParameterList?
-                                 ThrowsClause? EffectsClause?
+                                 ThrowsClause* EffectsClause*
                                  StatementBoundary ;
 ActorProtocolRequestRequirement ::= "request" Identifier ParameterList?
-                                    ReturnClause ThrowsClause?
-                                    EffectsClause? StatementBoundary ;
+                                    ReturnClause ThrowsClause*
+                                    EffectsClause* StatementBoundary ;
 ```
 
 `MailboxClause`에서 현재 허용되는 tag는 정확히 `#mailbox`다.
@@ -212,7 +212,7 @@ transform failure, Cancellation을 서로 바꾸거나 지우지 않는다.
 
 ```deeplus
 public def#async collectProfiles(userIds: AsyncSequence<UserId, IOError>) -> List<Profile>
-    throws IOError | NetworkError = {
+    throws IOError throws NetworkError = {
     // checker evidence for `userIds` proves a finite source
     // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
     return await AsyncCollector::list(
@@ -346,7 +346,7 @@ actor Directory {
 }
 
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError | LookupError = {
+    throws ActorMessageError throws LookupError = {
     let Result::ok(task) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
 
@@ -453,7 +453,7 @@ admission 성공·거부, request lifecycle, primary/suppressed failure가
 ```deeplus
 def#async fetch(url: String) -> Bytes
     throws NetworkError
-    effects {io}
+    effects io
 = {
     return await (client ~ get url)
 }

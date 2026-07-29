@@ -126,7 +126,7 @@ target receipt가 필요하다.
 ```deeplus
 // 현행 명시적 대안: policy와 named transform이 source에 드러난다.
 public def#async collectProfiles(ids: AsyncSequence<UserId, IOError>) -> List<Profile>
-    throws IOError | NetworkError
+    throws IOError throws NetworkError
 = {
     return await AsyncCollector::list(
         source: ids,
@@ -398,7 +398,7 @@ unwind law, negative corpus와 여러 native target의 reproducible receipt가
 ```deeplus
 // 현행 명시적 대안: 고정 arity wrapper가 foreign contract를 닫는다.
 public def logThree(format: String, a: Int, b: Int, c: Int) -> Unit
-    effects {io}
+    effects io
 = {
     typedLog3(format, a, b, c)
 }
@@ -659,7 +659,7 @@ execution receipt가 필요하다.
 // 현행 명시적 대안: 초기화 시점과 오류가 caller signature에 드러난다.
 public def initializeModule() -> Cache
     throws IOError
-    effects {io}
+    effects io
 = {
     return loadCache()
 }

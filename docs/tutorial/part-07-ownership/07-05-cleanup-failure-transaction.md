@@ -99,7 +99,7 @@ trailing closure를 cleanup으로 추측하지 않는다.
 public resource class File {
     def#cleanup()
         throws CloseError
-        effects {io}
+        effects io
     = {
         closeHandle()
     }

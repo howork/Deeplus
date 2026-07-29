@@ -344,7 +344,8 @@ public def render<T>(x: T) -> String
 ```deeplus
 public def withLog<T, E, ρ>(body: () -> T throws E effects ρ) -> T
     throws E
-    effects ρ | {io}
+    effects ρ
+    effects io
 = {
     log("start")
     return body()
@@ -540,7 +541,7 @@ public def parse(text: String) -> Result<User, error ParseError>
 ```deeplus
 public def read(ptr: RawPtr) -> Int
     throws Never
-    effects {unsafe}
+    effects unsafe
 = {
     return 0
 }
@@ -1754,7 +1755,7 @@ public def withLock<T>(lock: Lock, body: #scoped (Guard) -> T) -> T
 ```deeplus
 public def#async loadUser(id: UserId) -> User
     throws NetworkError
-    effects { Network }
+    effects Network
 = {
     return await (service ~ fetchUser id)
 }
@@ -1910,7 +1911,7 @@ let bad = SecretHandle${ raw: RawHandle!(0) }
 
 ```deeplus
 public class Socket {
-    +def! new(path: String) throws IOError effects { IO } = {
+    +def! new(path: String) throws IOError effects IO = {
         // opens an OS resource
     }
 }
@@ -2408,7 +2409,7 @@ public actor Worker {
 }
 public def#async run(job: Job) -> Result
     throws ActorMessageError
-    effects {task}
+    effects task
 = {
     let Result::ok(task) = Worker!() :~ compute job
     else Result::err(error) => throw error
@@ -2864,7 +2865,7 @@ let row = "|${name:<12}| ${score:>3}"
 ```deeplus
 public def#async loadUser(id: UserId) -> User
     throws NetworkError
-    effects { Network }
+    effects Network
 = {
     return await (client ~ fetchUser id)
 }
@@ -3732,7 +3733,7 @@ match {
 ```deeplus
 public def moveTo(x: Int, y: Int) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     return print("move to (${x}, ${y})")
 }
@@ -3754,7 +3755,7 @@ moveTo(**point)
 ```deeplus
 public def drawPoint(x: Int, y: Int, color: Color) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     return renderer ~ point x: x, y: y, color: color
 }
@@ -3777,7 +3778,7 @@ drawPoint(**point, color: Color::red)
 ```deeplus
 public def connect(host: String, port: Int) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     return net ~ connect host: host, port: port
 }
@@ -3926,7 +3927,7 @@ public type Logger = (LogLevel, String..., Record***) -> Unit
 
 public def log(level: LogLevel, values...: String, options***: Record) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     for value in values {
         print(value)
@@ -4037,7 +4038,7 @@ let label = @match state {
 ```deeplus
 public def log(level: LogLevel, values...: String) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     for value in values {
         print(value)
@@ -4160,7 +4161,7 @@ public def bad(options***: Record, x: Int) -> Unit
 ```deeplus
 public def command(name: String, args...: String, options***: Record) -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     runCommand(name, args, options)
 }
@@ -4649,9 +4650,9 @@ let dynamic = #map{ "host": "localhost" }
 configure(**dynamic)
 // NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE
 ```
-## EX-R49B-ROW-001 — Effect and error rows use visible bar union
+## EX-R49B-ROW-001 — Callable responsibilities use repeated clauses
 
-- **source_feature_ids:** `effect_error_row_union_bar_surface`
+- **source_feature_ids:** `callable_responsibility_clause_repetition`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -4662,30 +4663,32 @@ configure(**dynamic)
 
 ```deeplus
 public def load() -> Data
-    throws NetworkError | IOError
-    effects Eff | {network, io}
+    throws NetworkError throws IOError
+    effects Eff
+    effects network
+    effects io
 = {
     return fetch()
 }
 ```
-## EX-R49B-ROW-002 — Tokenless effect-row adjacency is rejected
+## EX-R49B-ROW-002 — Nonempty effect-set callable lists are rejected
 
-- **source_feature_ids:** `effect_error_row_union_bar_surface`
+- **source_feature_ids:** `callable_responsibility_clause_repetition`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `reject`
 - **source_activation:** `none`
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `EFFECT_ROW_UNION_TOKEN_REQUIRED`
+- **primary_diagnostic:** `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 public def bad() -> Unit
-    effects Eff {state}
+    effects {state}
 = {
 }
-// EFFECT_ROW_UNION_TOKEN_REQUIRED
+// CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED
 ```
 ## EX-R49B-SEALED-001 — Sealed hierarchy closes direct subclasses to one module
 
@@ -4863,7 +4866,7 @@ let file = move maybeFile ?: openDefaultFile()
 ```deeplus
 def choose(maybe: borrow File?) -> File
     throws IOError
-    effects {io}
+    effects io
 = {
     return maybe ?: openDefaultFile()
 }
@@ -4882,7 +4885,7 @@ def choose(maybe: borrow File?) -> File
 ```deeplus
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     return dispatch(args)
 }
@@ -5254,7 +5257,7 @@ let result: Result<Int, error ParseError> = ::ok(42)
 ```deeplus
 def announce() -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     print("ready")
 }
@@ -5426,7 +5429,7 @@ public trait Loader {
 ```deeplus
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print(args)
     return ExitCode::success
@@ -5733,7 +5736,7 @@ def sign(n: Int) -> Int = {{
 public resource class File {
     def#cleanup()
         throws Never
-        effects {io}
+        effects io
     = { closeHandle() }
 }
 ```
@@ -6141,7 +6144,7 @@ private data class Marker
 ```deeplus
 private data class Tracked
 cleanup budget {
-    effects {io}
+    effects io
 }
 ```
 ## EX-R51a1-044 — value-arm newline separates an open range from the next qualified pattern
@@ -6381,7 +6384,7 @@ def#entry launch() -> ExitCode = {
 ```deeplus
 def#entry#async launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print(args)
     return ExitCode::success
@@ -6435,7 +6438,7 @@ def replace(borrow label: String, inout target: Buffer, move replacement: Buffer
 ```deeplus
 def decode(bytes: Bytes) -> Result<Image, error DecodeError>
     throws IOError
-    effects {io}
+    effects io
 = {
     return parseImage(bytes)
 }
@@ -6565,7 +6568,7 @@ def announceLegacy() -> Unit = {
 
 ```deeplus
 public def#async collectProfiles(stream: AsyncSequence<UserId, IOError>) -> List<Profile>
-    throws IOError | NetworkError = {
+    throws IOError throws NetworkError = {
     // checker evidence for `stream` is not finite
     // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
     return await AsyncCollector::list(
@@ -6589,7 +6592,7 @@ public def#async collectProfiles(stream: AsyncSequence<UserId, IOError>) -> List
 
 ```deeplus
 public def#async collectProfiles(userIds: AsyncSequence<UserId, IOError>) -> List<Profile>
-    throws IOError | NetworkError = {
+    throws IOError throws NetworkError = {
     // checker evidence for `userIds` proves a finite source
     // loadProfileForCollect: #async (UserId) -> Profile throws NetworkError
     return await AsyncCollector::list(
@@ -7713,7 +7716,7 @@ configure(**settings)
 ```deeplus
 def#entry#async launch() -> Unit
     throws Never
-    effects {task}
+    effects task
 = {
     await warmup()
 }
@@ -7945,7 +7948,7 @@ let predicate: #scoped#once#guard (borrow Item) -> Bool = #scoped#once#guard{ it
 ```deeplus
 def#async fetch(url: String) -> Bytes
     throws NetworkError
-    effects {io}
+    effects io
 = {
     return await (client ~ get url)
 }
@@ -7981,7 +7984,7 @@ def#guard validPort(port: Int) -> Bool = {
 public resource class File {
     def#cleanup()
         throws CloseError
-        effects {io}
+        effects io
     = {
         closeHandle()
     }
@@ -8528,7 +8531,7 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 ```deeplus
 extern c("sqlite3") {
     unsafe def sqlite3_close(db: RawPtr<sqlite3>) -> CInt
-        effects {io}
+        effects io
 }
 ```
 ## EX-R51a1-NG-024 — rejected: dynamic unit conversion without active stdlib profile
@@ -9190,7 +9193,7 @@ extension set UserFormatting {
 ```deeplus
 def load() -> Result<Bytes, error IOError>
     throws IOError
-    effects {io}
+    effects io
 = { return read() }
 ```
 ## EX-R51a1-NG-069 — rejected: effectful or authority-bearing R0 refinement predicate

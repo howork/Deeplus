@@ -65,7 +65,7 @@ public capability AppConsole for {io}
 
 public def writeGreeting(name: String, context console: AppConsole) -> Unit
     throws ConsoleError
-    effects {io}
+    effects io
 = {
     return appWriteLine(greeting(name), context console)
 }
@@ -167,7 +167,7 @@ authority와 책임을 드러낸 project-owned API를 선언한다.
 
 1. **따라 하기:** pure `formatScore` 함수를 만들고 String을 반환하라.
 2. **빈칸 완성:** application console adapter에 필요한 context capability,
-   `effects {___}`, `throws ___`를 채워라.
+   `effects ___`, `throws ___`를 채워라.
 3. **스스로 설계하기:** test용 in-memory adapter와 host adapter가 같은
    pure core를 공유하도록 module 경계를 설계하라.
 

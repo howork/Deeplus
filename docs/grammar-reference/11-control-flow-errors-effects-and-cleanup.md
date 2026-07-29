@@ -41,17 +41,40 @@ loop 뒤 subjectless `match`는 직전 loop가 제공한 outcome을 소비한다
 ### 오류, 효과, Result
 
 ```ebnf
-ThrowsClause ::= "throws" ErrorSet
-EffectsClause ::= "effects" EffectRow
+ThrowsClause ::= "throws" ErrorSetTerm
+EffectsClause ::= "effects" CallableEffectTerm
+CallableEffectTerm ::= Identifier | QualifiedTypeReference | EmptyEffectSet
+EmptyEffectSet ::= "{" "}"
 ErrorSet      ::= ErrorSetTerm ("|" ErrorSetTerm)*
 EffectRow     ::= EffectRowTerm ("|" EffectRowTerm)*
 EffectSetLiteral ::= "{" IdentifierList? "}"
 ```
 
 `throws E`는 callable의 recoverable error channel이고
-`effects {io}` 같은 row는 observable effect 책임이다. `Result<T, error E>`
+`effects io` 같은 row는 observable effect 책임이다. `Result<T, error E>`
 는 값 안의 명시적 success/error alternatives다. 한 operation이 같은
 recoverable error family를 `Result`와 `throws` 양쪽에 중복 노출하면
+거부한다.
+
+여러 책임은 comma나 하나의 set literal로 모으지 않고 절을 반복한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+def transfer(request: Request) -> Receipt
+    throws NetworkError
+    throws DecodeError
+    effects network
+    effects audit
+= {
+    return sendAndRecord(request)
+}
+```
+
+선언에서는 모든 `throws`가 먼저, 모든 `effects`가 뒤에 온다.
+`throws Never`와 `effects {}`만 명시적 빈 row를 나타낸다. 반면 generic
+constraint나 row 계산 같은 type-level 위치에서는 `E1 | E2`,
+`Eff | {state, io}` 대수가 그대로 유지된다. 반복 절은 정규화될 때
+중복 없는 ErrorSet/EffectRow 하나로 결합되며, 같은 term을 두 번 적으면
 거부한다.
 
 Error, Defect, Cancellation, suspension은 별도 축이다. Cancellation은
@@ -112,7 +135,7 @@ Preview에서 위 서명은 `throws Never effects {}`와 동일하게 정규화�
 ```deeplus
 def load(path: String, context files: FileIO) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     return readFile(path, context files)
 }
@@ -156,13 +179,13 @@ public capability FileIO for {io}
 
 def load(path: String, context fileIO: FileIO) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     return readFile(path, context fileIO)
 }
 ```
 
-위 함수는 `effects {io}`만 선언하거나 ordinary `FileIO` value를 넘겨
+위 함수는 `effects io`만 선언하거나 ordinary `FileIO` value를 넘겨
 권위를 대체할 수 없다. 반대로 capability를 갖고 있다는 사실만으로
 호출이 실제 `io` effect를 수행했다고 간주하지도 않는다.
 
@@ -194,7 +217,7 @@ DeferredDirectCall  ::= DeferredReceiver ArgumentList
 DeferredMessageCall ::= DeferredReceiver "~" MessageSelector
                         TildeArgumentSequence?
 
-CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody
+CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause* EffectsClause* FunctionBody
 ```
 
 `defer`는 direct/member/type-side/message cleanup invocation 하나만
@@ -253,7 +276,7 @@ required cleanup이 끝난 뒤에만 종료한다.
 ```deeplus
 def announce() -> Unit
     throws Never
-    effects {io}
+    effects io
 = {
     print("ready")
 }
@@ -280,7 +303,7 @@ def validate(x: Int) -> Unit
 ```deeplus
 def decode(bytes: Bytes) -> Result<Image, error DecodeError>
     throws IOError
-    effects {io}
+    effects io
 = {
     return parseImage(bytes)
 }
@@ -321,7 +344,7 @@ process(handle)
 public resource class File {
     def#cleanup()
         throws CloseError
-        effects {io}
+        effects io
     = {
         closeHandle()
     }

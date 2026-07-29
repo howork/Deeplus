@@ -100,7 +100,7 @@ module demo::hello
 
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print(args)
     return ExitCode::success
@@ -428,7 +428,7 @@ function type의 공통 owner다.
 ```ebnf
 ParenTypeSyntax  ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?
 ParenTypeItem    ::= TypeRef | TypeRef "..." | TypeRef "***"
-FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause? EffectsClause?
+FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 ```
 
 닫는 괄호 뒤의 `->`와 내부 comma shape가 commitment에 중요하다.

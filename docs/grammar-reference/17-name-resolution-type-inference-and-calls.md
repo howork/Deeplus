@@ -750,14 +750,14 @@ private def readConfig(
     context access: FileAccess,
     path: String,
 ) -> String
-    effects {io}
+    effects io
 = {
     return openText(context access, path)
 }
 ```
 
 이 예제의 핵심은
-`effects {io}`가 capability를 합성하지 않고,
+`effects io`가 capability를 합성하지 않고,
 `context access`가 효과 row를 지우지 않는다는 것이다.
 구체 Prelude API 이름은 구현 라이브러리 계약에 따라야 하며,
 이 예제는 channel과 책임 분리를 설명한다.
@@ -1313,7 +1313,7 @@ private def transform<T>(
     apply: (T) -> String,
 ) -> String
     throws RenderError
-    effects {render}
+    effects render
 = {
     return apply(value)
 }

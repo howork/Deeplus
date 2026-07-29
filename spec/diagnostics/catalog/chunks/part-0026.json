@@ -25,5 +25,32 @@
     "stage": "checker",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_witness_formal_judgment_core"
+    ],
+    "fixit_hint": "move the block into the matching Class or Enum body and declare `conforms Trait` in that nominal header",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "remove any `for Type` clause and use lexical nominal containment only when the matching header relation already exists",
+    "message": "A `conform Trait { ... }` witness group is valid only inside the matching Class or Enum body; its target is the lexical nominal owner and no `for Type` clause is admitted.",
+    "notes": "Stable nominal conformance-group ownership diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]

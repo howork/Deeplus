@@ -4,7 +4,7 @@
 
 ## 1. 상태와 읽는 법
 
-명시적 `conformance`, coherent evidence와 witness call은 현행 설계다.
+명시적 conformance, coherent evidence와 witness call은 현행 설계다.
 future `VIA`/`AUTO` provider route나 specialization을 현재 소문자 `via`와
 혼동하지 않는다.
 
@@ -85,33 +85,40 @@ child-local 대체 evidence가 같은 결과 문자열을 만들더라도 이 ch
 대체하지 않는다. 이 설명은 열린 TCC P1을 닫거나 successor route를
 활성화하는 실행 증거가 아니다.
 
-### 6.1 UserId의 Display evidence
+### 6.1 User의 본문 안에서 Display evidence 정의
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public data class UserId(+let raw: Int)
-
 public trait Display {
-    +def display+() -> String
+    +def display.() -> String
         throws Never
         effects {}
 }
 
-public type UserId conforms Display {
-    +def display+() -> String
-        throws Never
-        effects {}
-    = {
-        return "UserId(${self.raw})"
+public class User
+conforms Display {
+    +let name: String
+
+    conform Display {
+        def display.() -> String = {
+            return self.name
+        }
     }
 }
 
-let id = UserId${ raw: 13 }
-let text = id ~ display
+let user = User!(name: "Mina")
+let text = user ~ display
 ```
 
-conformance body의 method marker는 Trait witness slot을 구현한다. data class
-자체의 member dispatch와 다른 identity다.
+`conform Display`는 `User` 본문 안에서만 유효하다. target은 lexical
+owner인 `User`이므로 `for User`를 덧붙이지 않는다. header의
+`conforms Display`와 block의 Trait가 정확히 일치해야 한다. block 안의
+method marker는 Trait witness slot을 구현하며 Class 자체의 member
+dispatch와 다른 identity다.
+
+타입 선언과 분리해야 하는 coherence owner라면 외부 형식
+`public type User conforms Display { ... }`를 사용할 수 있다. 두 형식은
+같은 ground target/Trait evidence를 중복으로 만들 수 없다.
 
 ### 6.2 generic 경계에서 evidence 요구
 
@@ -123,7 +130,7 @@ private def render<T>(borrow value: T) -> String
     return value ~ display
 }
 
-let label = render(id)
+let label = render(user)
 ```
 
 `render`는 아무 타입이나 받은 뒤 runtime reflection을 하지 않는다.
@@ -151,11 +158,25 @@ borrowed, nonescaping evidence channel이다.
 허용:
 
 - exact requirement signature를 구현하는 conformance
+- matching header를 가진 Class/Enum body의 `conform Trait { ... }`
 - coherent generic witness selection
 - explicit `using evidence`
 - current lowercase `via`
 
 거부 예제:
+
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED; product: NOT_RUN -->
+```deeplus
+conform Display for User {
+    def display.() -> String = {
+        return self.name
+    }
+}
+// CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED
+```
+
+`conform` block은 top-level target 선언이 아니며 `for` 절을 갖지 않는다.
+외부 evidence가 필요하면 `type User conforms Display { ... }`를 쓴다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN; product: NOT_RUN -->
 ```deeplus
