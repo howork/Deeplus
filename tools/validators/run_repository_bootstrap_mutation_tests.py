@@ -122,10 +122,41 @@ def implementation_status_mismatch(root: Path) -> None:
     path.write_text(value, encoding="utf-8")
 
 
-def pointer_source_revision_wrong(root: Path) -> None:
+def pointer_publication_target_reverted_to_historical(root: Path) -> None:
     path = root / "current/current-pointer.json"
     value = json.loads(path.read_text(encoding="utf-8"))
-    value["publication_authority_source"]["commit"] = "0" * 40
+    value["publication_authority_source"]["commit"] = (
+        "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
+    )
+    write_json(path, value)
+
+
+def pointer_publication_role_conflated_with_audited_baseline(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["publication_authority_source"]["role"] = (
+        "document_consistency_repair_base"
+    )
+    write_json(path, value)
+
+
+def pointer_audited_baseline_rebound_to_publication(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["audited_implementation_baseline"]["commit"] = (
+        "cfd5946c52571119564b9c8beb430f8dd0356750"
+    )
+    write_json(path, value)
+
+
+def pointer_audited_baseline_role_conflated_with_publication(
+    root: Path,
+) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["audited_implementation_baseline"]["role"] = (
+        "publication_authority_source"
+    )
     write_json(path, value)
 
 
@@ -152,17 +183,36 @@ def historical_binding_claims_current(root: Path) -> None:
     write_json(path, value)
 
 
-def pointer_snapshot_id_empty(root: Path) -> None:
-    path = root / "current/current-pointer.json"
+def historical_snapshot_id_empty(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json"
+    )
     value = json.loads(path.read_text(encoding="utf-8"))
-    value["source_snapshot"]["library_file_id"] = ""
+    value["object"]["library_file_id"] = ""
     write_json(path, value)
 
 
-def pointer_snapshot_sha_wrong(root: Path) -> None:
+def historical_snapshot_sha_wrong(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["object"]["sha256"] = "0" * 64
+    write_json(path, value)
+
+
+def pointer_snapshot_reintroduced(root: Path) -> None:
     path = root / "current/current-pointer.json"
     value = json.loads(path.read_text(encoding="utf-8"))
-    value["source_snapshot"]["sha256"] = "0" * 64
+    value["source_snapshot"] = {
+        "library_file_id": "libfile_fc490a0ba3348191af7ef847b2558cd3",
+        "sha256": (
+            "1a330f7a519ef6e823b62310568000586"
+            "b6ab155ad2a1fbb65f95a954f0b646f"
+        ),
+    }
     write_json(path, value)
 
 
@@ -198,6 +248,99 @@ def stale_role_memory(root: Path) -> None:
     path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
     value = json.loads(path.read_text(encoding="utf-8"))
     value["source_revision"] = "r51f3-post-pr16-preview-design-r4"
+    write_json(path, value)
+
+
+def design_authority_fact_removed(root: Path) -> None:
+    path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["current_facts"] = [
+        row for row in value["current_facts"] if row.get("id") != "AUTH-001"
+    ]
+    write_json(path, value)
+
+
+def sfd_execution_owner_conflated_with_closure_authority(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    sfd = next(
+        row for row in value["open_actions"] if row.get("id") == "SFD-P1-009"
+    )
+    sfd["owner"] = "Codex Design_"
+    write_json(path, value)
+
+
+def sfd_closure_authority_reverted(root: Path) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    sfd = next(
+        row for row in value["open_actions"] if row.get("id") == "SFD-P1-009"
+    )
+    sfd["target"] = sfd["target"].replace(
+        "closure authority: Codex Design_",
+        "closure authority: ChatGPT Design_",
+    )
+    write_json(path, value)
+
+
+def current_decision_index_missing(root: Path) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    entry = (
+        "  - path: "
+        "decisions/language/Design_Deeplus_Cranelift_Backend_Adoption_R1.md\n"
+        "    authority: current_user_delegated_design_adoption\n"
+    )
+    if value.count(entry) != 1:
+        raise RuntimeError("Cranelift decision-index entry unavailable")
+    path.write_text(value.replace(entry, "", 1), encoding="utf-8")
+
+
+def current_decision_index_authority_class_wrong(root: Path) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    old = "    authority: current_user_delegated_design_adoption"
+    if value.count(old) < 1:
+        raise RuntimeError("decision-index authority unavailable")
+    path.write_text(
+        value.replace(old, "    authority: imported_current_decisions", 1),
+        encoding="utf-8",
+    )
+
+
+def current_decision_index_authority_transition_report_missing(
+    root: Path,
+) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    entry = (
+        "  - governance/reports/"
+        "Design_Deeplus_Codex_Design_Authority_Transition_R1.md\n"
+    )
+    if value.count(entry) != 1:
+        raise RuntimeError("authority-transition report entry unavailable")
+    path.write_text(value.replace(entry, "", 1), encoding="utf-8")
+
+
+def authority_transition_report_content_drift(root: Path) -> None:
+    path = (
+        root
+        / "governance/reports/"
+        "Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
+    )
+    path.write_text(
+        path.read_text(encoding="utf-8") + "\nmutation\n",
+        encoding="utf-8",
+    )
+
+
+def historical_predecessor_receipt_identity_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/current-publication-m1.3-predecessor-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["pointer_object"]["file_id"] = "file_mutated_but_well_formed"
     write_json(path, value)
 
 
@@ -284,17 +427,65 @@ def run(write_receipt: bool) -> int:
         ("pointer_lane_missing", pointer_lane_missing, "POINTER_LANE_PARITY"),
         ("pointer_lane_extra", pointer_lane_extra, "POINTER_LANE_PARITY"),
         ("implementation_status_mismatch", implementation_status_mismatch, "IMPLEMENTATION_STATUS_PARITY"),
-        ("pointer_source_revision_wrong", pointer_source_revision_wrong, "POINTER_SOURCE_BINDING"),
+        (
+            "pointer_publication_target_reverted_to_historical",
+            pointer_publication_target_reverted_to_historical,
+            "POINTER_PUBLICATION_SOURCE",
+        ),
+        (
+            "pointer_publication_role_conflated_with_audited_baseline",
+            pointer_publication_role_conflated_with_audited_baseline,
+            "POINTER_PUBLICATION_SOURCE",
+        ),
+        (
+            "pointer_audited_baseline_rebound_to_publication",
+            pointer_audited_baseline_rebound_to_publication,
+            "POINTER_AUDITED_BASELINE",
+        ),
+        (
+            "pointer_audited_baseline_role_conflated_with_publication",
+            pointer_audited_baseline_role_conflated_with_publication,
+            "POINTER_AUDITED_BASELINE",
+        ),
         ("pointer_tracking_ref_external", pointer_tracking_ref_external, "POINTER_INTERNAL_TRACKING"),
         ("expr_consumer_digest_wrong", expr_consumer_digest_wrong, "EXPR_CONSUMER_BINDING"),
-        ("historical_binding_claims_current", historical_binding_claims_current, "POINTER_SOURCE_BINDING"),
-        ("pointer_snapshot_id_empty", pointer_snapshot_id_empty, "POINTER_SNAPSHOT_ID"),
-        ("pointer_snapshot_sha_wrong", pointer_snapshot_sha_wrong, "POINTER_SNAPSHOT_BINDING"),
+        ("historical_binding_claims_current", historical_binding_claims_current, "HISTORICAL_PUBLICATION_RECEIPT"),
+        ("historical_snapshot_id_empty", historical_snapshot_id_empty, "HISTORICAL_SOURCE_SNAPSHOT_RECEIPT"),
+        ("historical_snapshot_sha_wrong", historical_snapshot_sha_wrong, "HISTORICAL_SOURCE_SNAPSHOT_RECEIPT"),
+        ("pointer_snapshot_reintroduced", pointer_snapshot_reintroduced, "POINTER_SOURCE_SNAPSHOT"),
+        (
+            "historical_predecessor_receipt_identity_drift",
+            historical_predecessor_receipt_identity_drift,
+            "HISTORICAL_PREDECESSOR_RECEIPT",
+        ),
         ("pointer_predecessor_wrong", pointer_predecessor_wrong, "POINTER_PREDECESSOR_BINDING"),
         ("pointer_action_binding_missing", pointer_action_binding_missing, "POINTER_ACTION_BINDING"),
         ("pointer_action_id_substitution", pointer_action_id_substitution, "POINTER_ACTION_BINDING"),
         ("pointer_review_route_mismatch", pointer_review_route_mismatch, "POINTER_ACTION_BINDING"),
         ("stale_role_memory", stale_role_memory, "ROLE_MEMORY_CURRENT"),
+        ("design_authority_fact_removed", design_authority_fact_removed, "CMA_ROLE_MEMORY_ROTATION"),
+        (
+            "sfd_execution_owner_conflated_with_closure_authority",
+            sfd_execution_owner_conflated_with_closure_authority,
+            "SFD_P1_009_AUTHORITY_TRANSITION",
+        ),
+        ("sfd_closure_authority_reverted", sfd_closure_authority_reverted, "SFD_P1_009_AUTHORITY_TRANSITION"),
+        ("current_decision_index_missing", current_decision_index_missing, "CURRENT_DECISION_INDEX_BINDING"),
+        (
+            "current_decision_index_authority_class_wrong",
+            current_decision_index_authority_class_wrong,
+            "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "current_decision_index_authority_transition_report_missing",
+            current_decision_index_authority_transition_report_missing,
+            "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "authority_transition_report_content_drift",
+            authority_transition_report_content_drift,
+            "CURRENT_INTEGRITY_GENERATOR_CHECK",
+        ),
         ("match_guard_annotation_fixit", match_guard_annotation_fixit, "MATCH_GUARD_FIXIT"),
         ("current_integrity_delta_hash", current_integrity_delta_hash, "CURRENT_DELTA_TRANSITION_EXACT"),
         ("current_integrity_missing_transition", current_integrity_missing_transition, "CURRENT_INTEGRITY_GENERATOR_CHECK"),

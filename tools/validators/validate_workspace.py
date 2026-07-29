@@ -25,6 +25,19 @@ LANGUAGE_COHERENCE_REVISION = "r51f3-current-trait-operator-refinement-r1"
 TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
+AUTHORITY_TRANSITION_BASE_COMMIT = "cfd5946c52571119564b9c8beb430f8dd0356750"
+HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
+HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
+    "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
+)
+HISTORICAL_RECEIPT_SHA256 = {
+    "release/evidence/current-publication-m1.3-git-binding-receipt.json":
+        "eb9761ced47f8c09906d04da4203eb0fba8697c2f08b26e14ba181cb4a2f2bfe",
+    "release/evidence/current-publication-m1.3-source-snapshot-receipt.json":
+        "33657a85c46c110f61dba2d55fa7eff193aaeaded68b5d46daca492d14255c2b",
+    "release/evidence/current-publication-m1.3-predecessor-receipt.json":
+        "4494cba2073e45dd70f06e20938d900c076574b965f2d0e85c109805e21584b8",
+}
 LANGUAGE_COHERENCE_CONTRACT_REL = (
     "spec/contracts/language-coherence-current-integrity-r1.json"
 )
@@ -109,6 +122,18 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A004: Build_",
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
+CURRENT_DECISION_INDEX_PATHS = [
+    "decisions/language/current-decisions.json",
+    "decisions/language/Design_Deeplus_Pattern_Sequence_MultiValue_Adoption_R1.md",
+    "decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
+    "decisions/language/Design_Deeplus_Callable_Responsibility_Static_Lexical_Adoption_R1.md",
+    "decisions/language/Design_Deeplus_Cranelift_Backend_Adoption_R1.md",
+    "decisions/language/Design_Deeplus_Nominal_Conform_And_Callable_Responsibility_Clauses_R1.md",
+    "decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
+]
+AUTHORITY_TRANSITION_REPORT = (
+    "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
+)
 EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
 FIXED_OPERATOR_IDS = [
     "UnaryPlus", "UnaryMinus",
@@ -4033,6 +4058,56 @@ def main() -> int:
             path.relative_to(root).as_posix(),
         )
     check(len(review_consumers) == 7, "EXPR_REVIEW_TEMPLATE_DISCOVERY", str(len(review_consumers)))
+    decision_index_text = (
+        root / "current/decision-index.yaml"
+    ).read_text(encoding="utf-8")
+    indexed_decision_paths = re.findall(
+        r"^  - path: (decisions/language/\S+)$",
+        decision_index_text,
+        re.MULTILINE,
+    )
+    indexed_decision_rows = re.findall(
+        (
+            r"^  - path: (decisions/language/\S+)\r?\n"
+            r"    authority: (\S+)$"
+        ),
+        decision_index_text,
+        re.MULTILINE,
+    )
+    expected_decision_rows = [
+        (
+            relative,
+            (
+                "imported_current_decisions"
+                if relative == "decisions/language/current-decisions.json"
+                else "current_user_delegated_design_adoption"
+            ),
+        )
+        for relative in CURRENT_DECISION_INDEX_PATHS
+    ]
+    indexed_governance_paths = re.findall(
+        r"^  - (governance/\S+)$",
+        decision_index_text,
+        re.MULTILINE,
+    )
+    check(
+        indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
+        and indexed_decision_rows == expected_decision_rows
+        and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS)
+        and indexed_governance_paths
+        == [
+            "governance/policies/management-policy.yaml",
+            AUTHORITY_TRANSITION_REPORT,
+        ]
+        and (root / AUTHORITY_TRANSITION_REPORT).is_file(),
+        "CURRENT_DECISION_INDEX_BINDING",
+        repr(
+            {
+                "decisions": indexed_decision_rows,
+                "governance": indexed_governance_paths,
+            }
+        ),
+    )
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
         check(state.get("candidate_revision") == revision and state.get("authority_digest") == computed_authority and state.get("current_pointer_published") is False, "CANDIDATE_STATE", str(state.get("candidate_revision")))
@@ -4046,7 +4121,7 @@ def main() -> int:
         check(
             publication_source == {
                 "kind": "git-commit",
-                "commit": "b6ff1f6e53ea8a21cfb706864478baa02545d3dd",
+                "commit": AUTHORITY_TRANSITION_BASE_COMMIT,
                 "role": "publication_authority_source",
                 "repository": "https://github.com/howork/Deeplus.git",
             },
@@ -4056,7 +4131,7 @@ def main() -> int:
         check(
             audited_baseline == {
                 "kind": "git-commit",
-                "commit": "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9",
+                "commit": HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
                 "repository": "https://github.com/howork/Deeplus.git",
                 "branch": "main",
                 "role": "document_consistency_repair_base",
@@ -4075,27 +4150,107 @@ def main() -> int:
             str(candidate_binding),
         )
         snapshot = pointer.get("source_snapshot")
-        check(snapshot is None or (set(snapshot) == {"library_file_id", "sha256"} and bool(re.fullmatch(r"[0-9a-f]{64}", snapshot.get("sha256", "")))), "POINTER_SOURCE_SNAPSHOT", str(snapshot))
+        check(snapshot is None, "POINTER_SOURCE_SNAPSHOT", str(snapshot))
         git_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-git-binding-receipt.json", {})
         check(
-            git_receipt.get("result") == "PASS_REVIEWED_HEAD"
+            file_sha(
+                root
+                / "release/evidence/current-publication-m1.3-git-binding-receipt.json"
+            )
+            == HISTORICAL_RECEIPT_SHA256[
+                "release/evidence/current-publication-m1.3-git-binding-receipt.json"
+            ]
+            and git_receipt.get("result") == "PASS_REVIEWED_HEAD"
             and git_receipt.get("scope") == "historical_reviewed_head"
             and git_receipt.get("current_binding") is False
             and git_receipt.get("reviewed_head") == "989bef9da472348971e56fafb2c9abc550100226"
             and git_receipt.get("pull_request") == 7
             and publication_source.get("repository") == git_receipt.get("repository")
-            and publication_source.get("commit") == git_receipt.get("source_authority_commit"),
-            "POINTER_SOURCE_BINDING", str(publication_source),
+            and git_receipt.get("source_authority_commit")
+            == HISTORICAL_PUBLICATION_SOURCE_COMMIT
+            and git_receipt.get("repository")
+            == "https://github.com/howork/Deeplus.git",
+            "HISTORICAL_PUBLICATION_RECEIPT",
+            str(git_receipt),
         )
+        if (root / ".git").exists():
+            publication_object_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "cat-file", "-e",
+                    f"{AUTHORITY_TRANSITION_BASE_COMMIT}^{{commit}}",
+                ],
+                capture_output=True,
+                check=False,
+            )
+            ancestor_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    AUTHORITY_TRANSITION_BASE_COMMIT, "HEAD",
+                ],
+                capture_output=True,
+                check=False,
+            )
+            audited_object_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "cat-file", "-e",
+                    f"{HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT}^{{commit}}",
+                ],
+                capture_output=True,
+                check=False,
+            )
+            audited_ancestor_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
+                    AUTHORITY_TRANSITION_BASE_COMMIT,
+                ],
+                capture_output=True,
+                check=False,
+            )
+            check(
+                publication_object_check.returncode == 0
+                and ancestor_check.returncode == 0
+                and audited_object_check.returncode == 0
+                and audited_ancestor_check.returncode == 0,
+                "POINTER_PUBLICATION_COMMIT_AVAILABLE",
+                (
+                    f"publication={AUTHORITY_TRANSITION_BASE_COMMIT} "
+                    f"audited={HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT}"
+                ),
+            )
         snapshot_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json", {})
         snapshot_object = snapshot_receipt.get("object", {})
-        check(bool(snapshot and snapshot.get("library_file_id")), "POINTER_SNAPSHOT_ID", str(snapshot))
         check(
-            snapshot_receipt.get("result") == "PASS_DIRECT_BYTES"
-            and snapshot == {"library_file_id": snapshot_object.get("library_file_id"), "sha256": snapshot_object.get("sha256")},
-            "POINTER_SNAPSHOT_BINDING", str(snapshot),
+            file_sha(
+                root
+                / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json"
+            )
+            == HISTORICAL_RECEIPT_SHA256[
+                "release/evidence/current-publication-m1.3-source-snapshot-receipt.json"
+            ]
+            and snapshot_receipt.get("result") == "PASS_DIRECT_BYTES"
+            and bool(snapshot_object.get("library_file_id"))
+            and bool(
+                re.fullmatch(
+                    r"[0-9a-f]{64}",
+                    snapshot_object.get("sha256", ""),
+                )
+            ),
+            "HISTORICAL_SOURCE_SNAPSHOT_RECEIPT",
+            str(snapshot_object),
         )
         predecessor_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-predecessor-receipt.json", {})
+        check(
+            file_sha(
+                root
+                / "release/evidence/current-publication-m1.3-predecessor-receipt.json"
+            )
+            == HISTORICAL_RECEIPT_SHA256[
+                "release/evidence/current-publication-m1.3-predecessor-receipt.json"
+            ],
+            "HISTORICAL_PREDECESSOR_RECEIPT",
+            str(predecessor_receipt.get("pointer_object", {})),
+        )
         if revision == LANGUAGE_COHERENCE_REVISION:
             expected_predecessor = PREVIOUS_LANGUAGE_COHERENCE_REVISION
         elif revision == POST_PR16_REVISION:
@@ -4137,6 +4292,20 @@ def main() -> int:
             and all("issues/6" not in row.get("tracking_ref", "") for row in actions),
             "POINTER_INTERNAL_TRACKING",
             str([row.get("tracking_ref") for row in actions]),
+        )
+        sfd_action = next(
+            (row for row in actions if row.get("id") == "SFD-P1-009"),
+            {},
+        )
+        check(
+            sfd_action.get("priority") == "P1"
+            and sfd_action.get("owner") == "Impl_ + Test_"
+            and "closure authority: Codex Design_ after target-bound receipts"
+            in sfd_action.get("target", "")
+            and "ChatGPT Design_" not in sfd_action.get("target", "")
+            and all(status == "NOT_RUN" for status in pointer.get("product_lanes", {}).values()),
+            "SFD_P1_009_AUTHORITY_TRANSITION",
+            str(sfd_action),
         )
         check(pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS, "POINTER_NEXT_REVIEW_BINDING", str(pointer.get("required_next_reviews")))
         review_index = parsed.get(root / "release/evidence/current-publication-m1.3-role-review-index.json", {})
@@ -4545,10 +4714,18 @@ def main() -> int:
             if isinstance(row, dict)
         }
         check(
-            set(facts_by_id) == {
-                "ARCH-001", "EVID-001", "PUB-001", "P1-001",
-                "CMA-001", "MIRX1-001", "EXPR-001",
-            }
+            set(facts_by_id)
+            == (
+                {
+                    "ARCH-001", "EVID-001", "PUB-001", "P1-001",
+                    "CMA-001", "MIRX1-001", "EXPR-001", "AUTH-001",
+                }
+                if path.name == "Design_Deeplus_Current_Memory.json"
+                else {
+                    "ARCH-001", "EVID-001", "PUB-001", "P1-001",
+                    "CMA-001", "MIRX1-001", "EXPR-001",
+                }
+            )
             and "22 total" in facts_by_id.get("P1-001", {}).get("statement", "")
             and "15 product lanes remain NOT_RUN" in facts_by_id.get("EVID-001", {}).get("statement", "")
             and facts_by_id.get("CMA-001", {}).get("introduced")
@@ -4558,6 +4735,22 @@ def main() -> int:
                 else revision
             )
             and "Issue #24 remains open" in facts_by_id.get("MIRX1-001", {}).get("statement", "")
+            and "current backend authority is xVM with Cranelift ObjectModule AOT and later Cranelift JITModule"
+            in facts_by_id.get("MIRX1-001", {}).get("statement", "")
+            and (
+                (
+                    facts_by_id.get("AUTH-001", {}).get("authority")
+                    == "explicit user delegation for the active implementation-readiness Goal"
+                    and facts_by_id.get("AUTH-001", {}).get("source")
+                    == "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
+                    and "does not rewrite historical evidence"
+                    in facts_by_id.get("AUTH-001", {}).get("statement", "")
+                    and "NOT_RUN product lane"
+                    in facts_by_id.get("AUTH-001", {}).get("statement", "")
+                )
+                if path.name == "Design_Deeplus_Current_Memory.json"
+                else "AUTH-001" not in facts_by_id
+            )
             and memory_action_ids <= {"M13-A002", "M13-A005", "M13-TEST-001"}
             and not {"M13-IMPL-A004", "M13-DEVEL-001"}.intersection(memory_action_ids),
             "CMA_ROLE_MEMORY_ROTATION",
