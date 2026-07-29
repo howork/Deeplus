@@ -235,6 +235,30 @@ The terminal valueless `return` is omitted canonically. Recursive functions are 
 
 Function signatures preserve parameter order, labels, context/witness channels, rest channels, effect/error rows, ownership profiles, and return types. Return type alone never selects an overload. Source order never resolves an otherwise ambiguous overload.
 
+Callable error and effect responsibilities use one repeated-clause surface,
+parallel to nominal header relations. Each `throws ErrorTerm` contributes one
+term to the normalized ErrorSet, and each `effects EffectTerm` contributes one
+term to the normalized EffectRow. Multiple responsibilities repeat the keyword:
+
+```deeplus
+public def loadReport(path: Path) -> Report
+throws IOError
+throws DecodeError
+effects io
+effects decode = {
+    // ...
+}
+```
+
+`throws E1 | E2` and nonempty `effects {e1, e2}` are not callable-declaration
+list syntax. The `|` operator remains part of ErrorSet/EffectRow algebra in
+type-level owners and normalized semantic descriptions. In a callable
+declaration, use repeated clauses instead. `throws Never` and `effects {}` are
+the only explicit empty clauses. All `throws` clauses precede all `effects`
+clauses; duplicate normalized terms are rejected. CST preserves clause order
+and spans, while typed AST, HIR, API residue, and MIR store duplicate-free
+normalized rows.
+
 The concise responsibility proposal is a nonactivatable Preview Design. Under
 that successor, each callable owner that admits `throws` and `effects` clauses
 normalizes an omitted `throws` to `Never` and an omitted `effects` to `{}` before
@@ -458,13 +482,14 @@ supports auto {
     +def identity.() -> String throws Never effects {}
 }
 
-public class Receipt
-derives Document
+public class User
 conforms Display
 conforms AutoReceiptIdentity by auto {
+    +let name: String
+
     conform Display {
         def display.() -> String = {
-            return self.title
+            return self.name
         }
     }
 }
@@ -494,9 +519,13 @@ machine-checkable policy and all required input evidence is unique. Merely
 having same-named methods, importing an extension, or finding a provider does
 not create an automatic candidate.
 
-`conform Trait { ... }` groups the witnesses for one already-declared nominal
-header conformance. Inside that group requirement names are unqualified.
-Outside it, `Trait::member` identifies the implemented requirement explicitly.
+`conform Trait { ... }` is admitted only as an item of the same Class or Enum
+body whose header already declares `conforms Trait`. The nominal owner is
+therefore known from lexical containment: there is no `for Type` clause and a
+top-level `conform` block is rejected. The block groups that owner's witnesses
+for the matching header conformance. Inside the group requirement names are
+unqualified. Outside it, an external `type Target conforms Trait { ... }` body
+may use `Trait::member` to identify the implemented requirement explicitly.
 This qualification chooses a requirement; it does not perform runtime lookup
 or create a second conformance.
 
@@ -1043,9 +1072,12 @@ Facet borrow packaging is current. Owned and inout Facet packages remain Preview
 
 ## 34. Effects, errors, defects, and cancellation
 
-Effect rows and error sets use visible union structure. Errors, defects,
-cancellation, suspension, and isolation are distinct axes. Cancellation is
-never an ErrorSet member, and suspension is never hidden in an EffectRow.
+Effect rows and error sets normalize as visible set unions. Their type-level
+algebra may use `|`, but callable declaration lists repeat `throws ErrorTerm`
+and `effects EffectTerm` clauses instead of embedding a union or nonempty set
+literal after one keyword. Errors, defects, cancellation, suspension, and
+isolation are distinct axes. Cancellation is never an ErrorSet member, and
+suspension is never hidden in an EffectRow.
 
 `capability Name for EffectRow` declares one nominal, non-value capability
 identity and binds it to one normalized nonempty effect row. The declaration
@@ -1197,7 +1229,7 @@ An actor owns one isolated mutable state region and one mailbox. Exactly one adm
 
 `ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way `:~` expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Task<T>, error ActorMessageError>`; source extracts the admitted task and only then applies explicit `await`. If an `on` and a `request` have the same selector and canonical call shape, the declaration, protocol composition, or link is rejected rather than using the expected result type to choose. Only a successfully admitted actor-request `Task<T>` is accompanied in typed HIR, module API digest, and MIR by a non-forgeable `TaskResponsibility` descriptor containing the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, request correlation identity, and terminal transport failure; an ordinary async `Task<T>` carries no actor transport descriptor. The module API digest records the static `correlation_id = per_value_non_forgeable` policy marker rather than a concrete runtime identity; each committed request obtains its distinct value-level correlation identity in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Task` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that task terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family. An actor `:~` call is not admitted in `defer`, because its immediate admission result cannot be silently discarded.
 
-The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. Its `next` channel throws the bound source failure set `E`; cancellation is a separate control outcome. `AsyncCollector::list<T, U, ES, ET>` accepts a finite `AsyncSequence<T, ES>` and a named asynchronous transform that throws `ET`, and the collection call exposes exactly the normalized error-set union `throws ES | ET`. It cannot erase either failure channel or fold cancellation into that union.
+The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. Its `next` channel throws the bound source failure set `E`; cancellation is a separate control outcome. `AsyncCollector::list<T, U, ES, ET>` accepts a finite `AsyncSequence<T, ES>` and a named asynchronous transform that throws `ET`. Its declaration repeats `throws ES throws ET`, which normalizes to the exact ErrorSet union `ES | ET`; it cannot erase either failure channel or fold cancellation into that union.
 
 The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured task ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
 
@@ -1572,7 +1604,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `ASSOCIATED_PROJECTION_REQUIRES_BOUND` [error]: Associated projection requires a trait bound declaring that associated requirement.
 - `ASSOCIATED_REQUIREMENT_PROJECTION_UNRESOLVED` [error]: Associated requirement projection cannot be resolved under the current witness/conformance environment.
 - `ASSOCIATED_REQUIREMENT_UNRESOLVED` [error]: Associated type/value requirement cannot be resolved in this witness or constraint environment.
-- `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` [error]: the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + exact result throws ES | ET + sequential/source/failFast/cancelPending/buffer1.
+- `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` [error]: the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + repeated result clauses `throws ES throws ET` normalized to `ES | ET` + sequential/source/failFast/cancelPending/buffer1.
 - `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` [error]: Async/Task/Actor core is language-design stable but product support is NOT_RUN.
 - `AT_CONTROL_EXPR_REQUIRES_AT_PREFIX` [error]: Value-producing control expression requires @if/@match/@try/@scope spelling.
 - `AT_MATCH_ARM_RETURN_IS_NOT_RESULT` [error]: `return` exits the enclosing named function and is not an @match arm result.
@@ -2429,8 +2461,9 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONTEXT_KEYWORD_RESERVED_FOR_CONTEXT_ROLE` [error]: `context` is recognized only in the Stable explicit context parameter, argument, and function-type role positions; it never requests ambient lookup.
 - `DOC_BLOCK_COMMENT_UNTERMINATED` [error]: Documentation block comment opened by `//!!` was not closed by `!!//`.
 - `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: Documentation comment is not attached to a documentable declaration.
-- `EFFECT_ROW_UNION_TOKEN_REQUIRED` [error]: Effect-row alternatives require the visible | token.
-- `ERROR_SET_UNION_TOKEN_REQUIRED` [error]: Error-set alternatives require the visible | token.
+- `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one nonempty effect term per repeated `effects` clause; `effects {}` is reserved for the explicit empty row.
+- `CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one error-set term per repeated `throws` clause; `|` remains type-level ErrorSet algebra rather than callable-list punctuation.
+- `CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED` [error]: `conform Trait { ... }` must be nested in a Class or Enum body whose header declares the same `conforms Trait`; it has no `for` clause.
 - `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE` [error]: A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter.
 - `HARD_KEYWORD_MEMBER_REQUIRES_ESCAPE` [error]: A hard keyword used as a data member name must use the member-only escape, for example obj.\\class.
 - `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` [error]: A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode.

@@ -94,7 +94,7 @@ environment는 `Empty | Explicit(CapturePlan)`이라는 독립 축으로 기록�
 
 ```ebnf
 ClassFlavor ::= "value" | "resource"
-CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody
+CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause* EffectsClause* FunctionBody
 
 FacetType ::= "Facet" "<" "borrow" "any" QualifiedTypeReference
               AssociatedTypeConstraintList? ">"

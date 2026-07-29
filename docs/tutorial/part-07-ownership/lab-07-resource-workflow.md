@@ -37,14 +37,14 @@ public resource class FileSession {
 
     +def read.() -> Bytes
         throws IOError
-        effects {io}
+        effects io
     = {
         return self.handle ~ readAll
     }
 
     def#cleanup()
         throws CloseError
-        effects {io}
+        effects io
     = {
         self.handle ~ close
     }
@@ -60,15 +60,15 @@ constructor가 성공해야 session owner가 publish된다. cleanup responsibili
 ```deeplus
 private def inspect(borrow session: FileSession) -> Int
     throws IOError
-    effects {io}
+    effects io
 = {
     let bytes = session ~ read
     return bytes.length
 }
 
 private def archive(move session: FileSession) -> Unit
-    throws IOError | CloseError
-    effects {io}
+    throws IOError throws CloseError
+    effects io
 = {
     let bytes = session ~ read
     writeArchive(bytes)
@@ -163,8 +163,8 @@ owner는 정확히 한 terminal 책임자로 이어지고, move된 source와 이
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 private def run(path: String) -> Unit
-    throws IOError | CloseError
-    effects {io}
+    throws IOError throws CloseError
+    effects io
 = {
     let audit = openAudit()
     defer audit ~ close

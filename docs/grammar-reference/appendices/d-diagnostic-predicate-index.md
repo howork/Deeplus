@@ -43,7 +43,7 @@
 | `ASSOCIATED_REQUIREMENT_UNRESOLVED` | `checker` | `error` | `active` | Associated type/value requirement cannot be resolved in this witness or constraint environment. |
 | `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | The initial associated static value profile requires immutable, Shareable, no-drop, authority-free, acyclic, statically materializable data. |
 | `ASYNC_CALLABLE_LITERAL_NOT_CURRENT` | `parser` | `error` | `active` | #async callable literals are PREVIEW_DESIGN/nonactivatable. |
-| `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` | `checker` | `error` | `active` | the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + exact result throws ES \| ET + sequential/source/failFast/cancelPending/buffer1. |
+| `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED` | `checker` | `error` | `active` | the current profile Stage 1 admits only List + finite AsyncSequence<T, ES> + named def#async transform throwing ET + repeated result clauses \`throws ES throws ET\` normalized exactly to \`ES \| ET\` + sequential/source/failFast/cancelPending/buffer1. |
 | `ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN` | `checker` | `error` | `active` | Async/Task/Actor core is language-design stable but product support is NOT_RUN. |
 | `ASYNC_FOR_OUTCOME_MATCH_NOT_ADMITTED` | `parser` | `error` | `active` | A \`for await\` loop does not own a subjectless outcome match in the current profile. |
 | `AT_CONTROL_EXPR_REQUIRES_AT_PREFIX` | `checker` | `error` | `active` | Value-producing control expression requires @if/@match/@try/@scope spelling. |
@@ -108,11 +108,13 @@
 | `BYTE_VIEW_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | ByteView requires live Bytes-owner provenance, contiguous byte-addressable storage, and no assumed text encoding or String semantics. |
 | `CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body performs an effect outside the normalized declared EffectRow. |
 | `CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body exposes an Error outside the normalized declared ErrorSet. |
+| `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED` | `parser` | `error` | `active` | Callable effect responsibilities use one repeated \`effects EffectTerm\` clause per term; only \`effects {}\` spells the empty row. |
 | `CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED` | `parser` | `error` | `active` | The callable profile combination is outside the closed Phase-A compatibility table. |
 | `CALLABLE_PROFILE_DUPLICATE` | `parser` | `error` | `active` | A callable profile may occur at most once in a cluster. |
 | `CALLABLE_PROFILE_LITERAL_ATTACHMENT_REQUIRED` | `lexer` | `error` | `active` | The final callable profile and literal { must be adjacent. |
 | `CALLABLE_PROFILE_ONLY_OVERLOAD_FORBIDDEN` | `checker` | `error` | `active` | Callable responsibility profiles cannot be the sole overload discriminator. |
 | `CALLABLE_PROFILE_ORDER_NONCANONICAL` | `parser` | `error` | `active` | Callable profiles must follow scoped, once, mut, pure-or-guard axis order. |
+| `CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED` | `parser` | `error` | `active` | Callable error responsibilities use one repeated \`throws ErrorSetTerm\` clause per term. |
 | `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` | `parser` | `error` | `active` | Member callables use +, -, or # visibility, and nested local functions have lexical visibility; public/common/private are top-level-only callable visibility words. |
 | `CALLBACK_EFFECT_NOT_PROPAGATED` | `checker` | `error` | `active` | Callback effects must be propagated or handled explicitly. |
 | `CALLBACK_THROWS_NOT_PROPAGATED` | `checker` | `error` | `active` | Callback throws row must be propagated or handled explicitly. |
@@ -199,6 +201,7 @@
 | `CONFORMANCE_REQUIREMENT_BINDING_MISSING` | `checker` | `error` | `active` | A conformance must explicitly bind every required trait item. |
 | `CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP` | `parser` | `error` | `active` | A witness inside \`conform Trait { ... }\` already has an exact Trait owner and must use the unqualified requirement name. |
 | `CONFORMS_REQUIRES_KEYWORD` | `lexer` | `error` | `active` | Trait/capability conformance must use \`conforms\` in the stable profile. |
+| `CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED` | `parser` | `error` | `active` | A \`conform Trait { ... }\` witness group is valid only inside the matching Class or Enum body; its target is the lexical nominal owner and no \`for Type\` clause is admitted. |
 | `CONSTRAINT_USED_AS_EXISTENTIAL` | `checker` | `error` | `active` | A responsibility constraint is not a value type. Use \`any Trait\` or \`any Plain\` for an existential boundary. |
 | `CONSTRUCTOR_CHAIN_TERMINAL_MUST_BE_NEW` | `checker` | `error` | `active` | A same-type constructor chain must terminate at root \`new\`. |
 | `CONSTRUCTOR_DELEGATION_ARGUMENT_EFFECT_NOT_DECLARED` | `checker` | `error` | `active` | Effects from selected constructor delegation arguments must be declared by the delegating constructor. |
@@ -293,7 +296,6 @@
 | `EFFECTFUL_OTHERWISE_RIGHT_OPERAND` | `checker` | `error` | `active` | Right operand of \`otherwise\` has effects and is conditionally evaluated; make that responsibility explicit. |
 | `EFFECTROW_DOES_NOT_INCLUDE_SUSPENSION` | `checker` | `note` | `seed` | EffectRow does not include suspension/cancellation/isolation. Use async/await and control/isolation annotations instead. |
 | `EFFECTROW_UNSAFE_AXIS_FORBIDDEN` | `checker` | `error` | `active` | \`unsafe\` is a safety/authority axis, not an EffectRow atom; use an explicit unsafe boundary. |
-| `EFFECT_ROW_UNION_TOKEN_REQUIRED` | `lexer` | `error` | `active` | Effect-row alternatives require the visible \| token. |
 | `EFFECT_ROW_VARIABLE_UNBOUND` | `checker` | `error` | `active` | Effect row variable is not bound in the generic/effect environment. |
 | `ELLIPSIS_CONTEXT_DISAMBIGUATION_REQUIRED` | `checker` | `error` | `seed` | The \`...\` token is not a generic spread placeholder. In R49 it remains valid only for its explicitly admitted contexts such as range tail or gated comprehension unfold; map unfold uses \`**expr\`. |
 | `EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE` | `checker` | `error` | `active` | Empty \`{}\` can mean \`() -> Unit\` only with an expected function type. |
@@ -317,7 +319,6 @@
 | `ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN` | `checker` | `error` | `active` | An exact Enum variant subset may contain only payload-free variants. |
 | `ERRORVALUE_REQUIRED_FOR_ERRORSET_PAYLOAD` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `ERROR_ROW_PRIVATE_TYPE_LEAK` | `checker` | `error` | `seed` | Error row inference leaks a private error type into a public signature. |
-| `ERROR_SET_UNION_TOKEN_REQUIRED` | `lexer` | `error` | `active` | Error-set alternatives require the visible \| token. |
 | `ESCAPED_MEMBER_ADJACENCY_REQUIRED` | `parser` | `error` | `active` | A member escape must be written as attached .\\\\name with no intervening trivia. |
 | `ESCAPED_MEMBER_CONTEXT_ONLY` | `checker` | `error` | `active` | Backslash identifier escape is permitted only in a member-access suffix. |
 | `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE` | `checker` | `error` | `active` | A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter. |
@@ -1269,6 +1270,7 @@
 | `ByteViewAdmitted` | ByteViewAdmitted | apply ReadonlyViewAdmitted first and propagate its selected diagnostic unchanged; require a nonempty owner_provenance and owner_lifetime_valid=true for the borrowed Bytes owner; require contiguous_storage=true and byte_addressable=true; require text_encoding_assumed=false and string_semantics_assumed=false | `DESIGN_STATIC_NOT_RUN` |
 | `CallSideUnfoldStaticEvidence` | CallSideUnfoldStaticEvidence | R51a1 closed design algorithm for CallSideUnfoldStaticEvidence; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CallableProfileAdmitted` | CallableProfileAdmitted | normalize four orthogonal axes; require unique canonical profile order; admit only the closed combination table; reject profile-only overload identity | `DESIGN_STATIC_NOT_RUN` |
+| `CallableResponsibilityClausesAdmitted` | Repeated callable responsibility clause admission | Stable-design repeated throws/effects clause predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `CanResolveUnitSymbol` | CanResolveUnitSymbol | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `CaretPowerAdmitted` | Caret power | Closed static integer, Float, Complex, and Measure power-domain algorithm; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CharScalarAdmitted` | Char Unicode scalar | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1305,7 +1307,6 @@
 | `DisplayUnitDecisionVisible` | DisplayUnitDecisionVisible | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `DynamicUnitConversionProfileAdmitted` | DynamicUnitConversionProfileAdmitted | Separate stdlib profile activation, provider presence and conversion policy completeness; no source current gate is consulted. | `DESIGN_STATIC_NOT_RUN` |
 | `EffectErrorRowPolymorphismAdmitted` | EffectErrorRowPolymorphismAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `EffectErrorRowUnionAdmitted` | Effect/Error row visible union | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EffectRowForwardingAdmitted` | higher-order effect forwarding | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EffectRowSubsumes` | EffectRowSubsumes | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EntrySignatureAdmitted` | EntrySignatureAdmitted | source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds | `DESIGN_STATIC_NOT_RUN` |

@@ -20,7 +20,7 @@ ModuleFunctionDecl ::= TopLevelVisibility? DefIntroducer Identifier FunctionRest
 LocalFunctionDecl  ::= CaptureList? DefIntroducer Identifier FunctionRest
 
 FunctionRest       ::= TypeParameterList? ParameterList FunctionTail
-FunctionTail       ::= ReturnClause? ThrowsClause? EffectsClause?
+FunctionTail       ::= ReturnClause? ThrowsClause* EffectsClause*
                        ContractClause* WhereClause? FunctionBody
 FunctionBody       ::= "=" FunctionBodyContent
 FunctionBodyContent ::= Block | ReturnShorthand | ClauseFunctionBody
@@ -31,6 +31,28 @@ ReturnShorthand    ::= "return" Expr StatementBoundary
 선언적 clause body다. bare `= Expr`는 이름 있는 함수 본문이 아니다.
 
 선언 owner별 현행 profile은 닫혀 있다.
+
+`throws`와 `effects`는 명목 선언의 반복 `conforms`와 같은 방식으로
+책임 하나당 절 하나를 반복한다. 모든 `throws` 절은 모든 `effects` 절보다
+앞선다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
+```deeplus
+public def loadReport(path: Path) -> Report
+    throws IOError
+    throws DecodeError
+    effects io
+    effects decode
+= {
+    return decodeReport(read(path))
+}
+```
+
+`throws Never`와 `effects {}`는 각각 명시적 빈 ErrorSet과 EffectRow다.
+`throws IOError | DecodeError`와 nonempty `effects {io, decode}`는 callable
+목록 표면이 아니다. `|`와 nonempty set literal은 type-level
+ErrorSet/EffectRow 대수에서만 유지된다. AST/HIR은 반복 절을 중복 없는
+정규화 row로 접고, source order는 진단과 formatter에만 보존한다.
 
 | owner | 허용 profile |
 |---|---|
@@ -568,7 +590,7 @@ let outcome = worker ~ process job
 ```deeplus
 def#async fetch(url: String) -> Bytes
     throws NetworkError
-    effects {io}
+    effects io
 = {
     return await (client ~ get url)
 }

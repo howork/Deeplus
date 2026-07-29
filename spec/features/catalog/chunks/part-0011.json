@@ -1624,7 +1624,7 @@
       "async_iterator_protocol_preview",
       "async_task_control"
     ],
-    "notes": "Finite AsyncSequence<T, ES> plus named transform throwing ET yields exactly throws normalize(ES | ET); cancellation stays separate. Policy is sequential/source/failFast/cancelPending/buffer1 with no partial commit and cleanup before return. NOT_RUN.",
+    "notes": "Finite AsyncSequence<T, ES> plus named transform throwing ET repeats `throws ES throws ET`, normalized exactly to `ES | ET`; cancellation stays separate. Policy is sequential/source/failFast/cancelPending/buffer1 with no partial commit and cleanup before return. NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",

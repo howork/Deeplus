@@ -20,7 +20,7 @@
 
 ## 4. 문제에서 출발하기
 
-`effects {io}`는 “이 함수가 I/O를 관찰 가능하게 수행한다”는 설명이다.
+`effects io`는 “이 함수가 I/O를 관찰 가능하게 수행한다”는 설명이다.
 그 문구 자체가 파일을 읽을 권한을 만들어 주지는 않는다. 반대로
 `FileIO` capability를 가진 값이 있다고 해서 함수가 실제로 I/O를 했다는
 증거도 아니다. Deeplus는 설명과 권한을 함께, 그러나 별도 축으로 쓴다.
@@ -36,6 +36,27 @@
 한 operation의 동일한 recoverable error family를 Result와 throws에 동시에
 넣지 않는다. callable overload도 return type, effect/error row만으로
 애매한 승자를 고르지 않는다.
+
+여러 callable 책임은 명목 선언의 반복 `conforms`처럼 하나씩 반복한다.
+Error 책임은 먼저, effect 책임은 뒤에 쓴다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+def loadReport(path: Path, context files: FileIO) -> Report
+    throws IOError
+    throws DecodeError
+    effects io
+    effects decode
+= {
+    return decodeReport(readFile(path, context files))
+}
+```
+
+이는 하나의 중복 없는 ErrorSet `{IOError, DecodeError}`와 EffectRow
+`{io, decode}`로 정규화된다. `throws IOError | DecodeError`나 nonempty
+`effects {io, decode}`는 callable declaration의 목록 형식이 아니다.
+다만 type-level ErrorSet/EffectRow 계산에서는 `|`와 set literal 대수를
+계속 사용한다. 명시적 빈 책임은 `throws Never`, `effects {}`다.
 
 <!-- deeplus-status-fence: PREVIEW_DESIGN_NONACTIVATABLE -->
 
@@ -67,7 +88,7 @@ channel과 중복되지 않는다.
 def loadPort(path: String, context files: FileIO)
     -> Result<Int, error PortError>
     throws IOError
-    effects {io}
+    effects io
 = {
     let text = decodeUtf8(load(path, context files))
     return parsePort(text)
@@ -101,7 +122,7 @@ public capability FileIO for {io}
 
 def load(path: String, context files: FileIO) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     return readFile(path, context files)
 }
@@ -129,7 +150,7 @@ def parsePort(text: String) -> Result<Int, error PortError>
 def loadPort(path: String, context files: FileIO)
     -> Result<Int, error PortError>
     throws IOError
-    effects {io}
+    effects io
 = {
     let text = decodeUtf8(load(path, context files))
     return parsePort(text)
@@ -142,7 +163,7 @@ def loadPort(path: String, context files: FileIO)
 ```deeplus
 def hiddenRead(path: String) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     return readFile(path)
 }
@@ -174,12 +195,12 @@ signature 책임이 닫히지 않는다.
 
 미니 사례로 memory cache hit 경로는 pure helper가 값을 돌려줄 수 있다.
 cache miss 경로가 network adapter를 호출한다면 그 바깥 callable에는
-network capability와 `effects {network}`, transport ErrorSet이 여전히
+network capability와 `effects network`, transport ErrorSet이 여전히
 필요하다. “대부분 pure”라는 통계는 정적 effect row를 줄이지 않는다.
 
 ### 흔한 오해
 
-`effects {io}`를 적으면 파일 권한이 생긴다고 생각하거나, capability
+`effects io`를 적으면 파일 권한이 생긴다고 생각하거나, capability
 값을 받았으니 effect 표기를 생략해도 된다고 생각하기 쉽다. 전자는
 관찰 설명을 권한으로, 후자는 권한을 실제 관찰로 바꾼 오류다. 또한
 `throws Never`는 body가 임의의 Error를 삼켜도 된다는 뜻이 아니라,

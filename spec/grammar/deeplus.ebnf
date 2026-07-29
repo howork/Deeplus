@@ -248,8 +248,14 @@ NameAliasClause ::= "as" Identifier ;
 ReturnClause ::= "->" ReturnTypeSurface ;
 ReturnTypeSurface ::= NonFunctionTypeRef | BareTupleTypeSurface ;
 BareTupleTypeSurface ::= NonFunctionTypeRef "," NonFunctionTypeRef ("," NonFunctionTypeRef)* ;
-ThrowsClause ::= "throws" ErrorSet ;
-EffectsClause ::= "effects" EffectRow ;
+(* Callable responsibilities repeat one clause per normalized term, matching
+   the repeated-clause shape of nominal `conforms` relations. `throws Never`
+   and `effects {}` are the only explicit empty spellings. Composite ErrorSet
+   and EffectRow algebra remains available to type-level owners. *)
+ThrowsClause ::= "throws" ErrorSetTerm ;
+EffectsClause ::= "effects" CallableEffectTerm ;
+CallableEffectTerm ::= Identifier | QualifiedTypeReference | EmptyEffectSet ;
+EmptyEffectSet ::= "{" "}" ;
 ContractClause ::= RequiresClause | EnsuresClause ;
 RequiresClause ::= "requires" PredicateExpr ;
 EnsuresClause ::= "ensures" PredicateExpr ;
@@ -355,9 +361,9 @@ ExtensionFunctionTarget ::= "~" | "::" ;
 LocalFunctionDecl ::= CaptureList? DefIntroducer Identifier FunctionRest ;
 
 FunctionRest ::= TypeParameterList? ParameterList FunctionTail ;
-EntryFunctionRest ::= ParameterList ReturnClause? ThrowsClause? EffectsClause? ContractClause* FunctionBody ;
-FunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* WhereClause? FunctionBody ;
-TraitFunctionTail ::= ReturnClause? ThrowsClause? EffectsClause? ContractClause* WhereClause? (FunctionBody | StatementBoundary) ;
+EntryFunctionRest ::= ParameterList ReturnClause? ThrowsClause* EffectsClause* ContractClause* FunctionBody ;
+FunctionTail ::= ReturnClause? ThrowsClause* EffectsClause* ContractClause* WhereClause? FunctionBody ;
+TraitFunctionTail ::= ReturnClause? ThrowsClause* EffectsClause* ContractClause* WhereClause? (FunctionBody | StatementBoundary) ;
 
 FunctionBody ::= "=" FunctionBodyContent ;
 FunctionBodyContent ::= CallableBlock | ReturnShorthand | ClauseFunctionBody ;
@@ -376,8 +382,8 @@ TypeSideMemberFunctionDecl ::= MemberVisibility? "def" "::" Identifier FunctionR
 
 ConstructorDecl ::= MemberVisibility? "def" "!" Identifier ParameterList
                     ConstructorSignatureTail? ConstructorDelegationClause? "=" Block ;
-ConstructorSignatureTail ::= ThrowsClause EffectsClause? ContractClause* WhereClause?
-                           | EffectsClause ContractClause* WhereClause?
+ConstructorSignatureTail ::= ThrowsClause+ EffectsClause* ContractClause* WhereClause?
+                           | EffectsClause+ ContractClause* WhereClause?
                            | ContractClause+ WhereClause?
                            | WhereClause ;
 ConstructorDelegationClause ::= ":" ConstructorDelegationArm+ ;
@@ -385,7 +391,7 @@ ConstructorDelegationArm ::= ConstructorDelegationTarget PositiveGuard? ;
 ConstructorDelegationTarget ::= Identifier ArgumentList
                               | "super" "!" Identifier? ArgumentList ;
 
-CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause? EffectsClause? FunctionBody ;
+CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause* EffectsClause* FunctionBody ;
 
 (* ---------- Parameters ---------- *)
 
@@ -478,7 +484,7 @@ AssociatedRequirementDecl ::= AssociatedTypeRequirementDecl
 AssociatedTypeRequirementDecl ::= "type" Identifier AssociatedTypeConstraintList? StatementBoundary ;
 AssociatedValueRequirementDecl ::= "let" "::" Identifier TypeAnnotation StatementBoundary ;
 AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
-                                      ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+                                      ReturnClause? ThrowsClause* EffectsClause* StatementBoundary ;
 
 ConformanceDecl ::= ExplicitConformanceDecl | AutomaticConformanceDecl ;
 ExplicitConformanceDecl ::= TopLevelVisibility? "type" TypeRef "conforms" QualifiedTypeReference
@@ -492,6 +498,10 @@ ConformanceBody ::= "{" ConformanceItem* "}" ;
 ConformanceMethodDecl ::= MemberVisibility? DefIntroducer ConformanceMethodName
                           TraitWitnessMarker FunctionRest ;
 ConformanceMethodName ::= Identifier | QualifiedTypeReference "::" Identifier ;
+(* A conform block is admitted only as a ClassBody or EnumBody item. The
+   lexically enclosing nominal declaration is the target and must already
+   carry a matching `conforms Trait` header clause; there is deliberately no
+   `for Type` production. *)
 ConformBlockDecl ::= "conform" QualifiedTypeReference ConformanceBody ;
 ConformanceItem ::= ConformanceMethodDecl
                   | TypeSideMemberFunctionDecl
@@ -508,7 +518,7 @@ ExtensionSetDecl ::= TopLevelVisibility? "extension" TypeRef "as" Identifier Ext
 ExtensionSetBody ::= "{" ExtensionSetItem* "}" ;
 ExtensionSetItem ::= ExtensionSetFunctionDecl | TypeSideMemberFunctionDecl ;
 ExtensionSetFunctionDecl ::= MemberVisibility? "def" Identifier ParameterList?
-                             ReturnClause? ThrowsClause? EffectsClause? WhereClause? FunctionBody ;
+                             ReturnClause? ThrowsClause* EffectsClause* WhereClause? FunctionBody ;
 ExtensionPackDecl ::= "extension" "pack" QualifiedPath ExtensionPackBody ;
 ExtensionPackBody ::= "{" UseExportDecl* "}" ;
 
@@ -563,14 +573,14 @@ ActorDecl ::= TopLevelVisibility? "actor" MailboxClause? Identifier ActorBody ;
 MailboxClause ::= HashTag "(" "capacity" ":" StaticIntLiteral ")" ;
 ActorBody ::= "{" ActorItem* "}" ;
 ActorItem ::= ActorOnDecl | ActorRequestDecl | MemberDecl ;
-ActorOnDecl ::= MemberVisibility? "on" Identifier ParameterList? ThrowsClause? EffectsClause? FunctionBody ;
-ActorRequestDecl ::= MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause? EffectsClause? FunctionBody ;
+ActorOnDecl ::= MemberVisibility? "on" Identifier ParameterList? ThrowsClause* EffectsClause* FunctionBody ;
+ActorRequestDecl ::= MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* FunctionBody ;
 
 ActorProtocolDecl ::= TopLevelVisibility? "protocol" Identifier ActorProtocolBody ;
 ActorProtocolBody ::= "{" ActorProtocolItem* "}" ;
 ActorProtocolItem ::= ActorProtocolSendRequirement | ActorProtocolRequestRequirement ;
-ActorProtocolSendRequirement ::= "send" Identifier ParameterList? ThrowsClause? EffectsClause? StatementBoundary ;
-ActorProtocolRequestRequirement ::= "request" Identifier ParameterList? ReturnClause ThrowsClause? EffectsClause? StatementBoundary ;
+ActorProtocolSendRequirement ::= "send" Identifier ParameterList? ThrowsClause* EffectsClause* StatementBoundary ;
+ActorProtocolRequestRequirement ::= "request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* StatementBoundary ;
 
 (* ---------- Typestate, units and module interfaces ---------- *)
 
@@ -649,7 +659,7 @@ OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;
 ParenTypeSyntax ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail? ;
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","? ;
 ParenTypeItem ::= TypeRef | TypeRef "..." | TypeRef "***" ;
-FunctionTypeTail ::= "->" ReturnTypeSurface ThrowsClause? EffectsClause? ;
+FunctionTypeTail ::= "->" ReturnTypeSurface ThrowsClause* EffectsClause* ;
 
 SharpShapeType ::= "#" StaticDimensionList "[" TypeRef "]" ;
 StaticDimensionList ::= StaticIntLiteral ("," StaticIntLiteral)* ;
@@ -1285,8 +1295,8 @@ PreviewFeatureList ::= Identifier ("," Identifier)* ;
 (* Current gated spelling: extern#C def#unsafe. Token adjacency is not required by grammar. *)
 PreviewFfiDecl ::= PreviewFfiFunctionDecl | PreviewFfiBlockDecl ;
 PreviewFfiFunctionDecl ::= "extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList
-                           ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+                           ReturnClause? ThrowsClause* EffectsClause* StatementBoundary ;
 PreviewFfiBlockDecl ::= "extern" "c" "(" PLAIN_STRING_LITERAL ")"
                         "{" PreviewFfiBlockMember* "}" ;
 PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
-                          ReturnClause? ThrowsClause? EffectsClause? StatementBoundary ;
+                          ReturnClause? ThrowsClause* EffectsClause* StatementBoundary ;

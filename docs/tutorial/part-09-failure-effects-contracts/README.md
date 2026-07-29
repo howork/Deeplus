@@ -36,7 +36,7 @@ callable 계약이 결합된다.
 ```deeplus
 def decode(bytes: Bytes) -> Result<Image, error DecodeError>
     throws IOError
-    effects {io}
+    effects io
 = {
     return parseImage(bytes)
 }

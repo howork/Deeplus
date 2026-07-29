@@ -91,7 +91,7 @@ current 대안에서는 effect/error/capture owner가 signature와 declaration�
 ```deeplus
 public def#async loadProfileTask() -> Profile
     throws NetworkError
-    effects {io}
+    effects io
 = {
     return await loadProfile()
 }
@@ -102,7 +102,7 @@ public def#async loadProfileTask() -> Profile
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 public def#async collectProfiles(ids: AsyncSequence<UserId, IOError>) -> List<Profile>
-    throws IOError | NetworkError
+    throws IOError throws NetworkError
 = {
     return await AsyncCollector::list(
         source: ids,

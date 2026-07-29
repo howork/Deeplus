@@ -75,7 +75,7 @@ module demo::hello
 
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print("argument-count=${args.length}")
     print(args)
@@ -163,7 +163,7 @@ def#entry launch(args: Sequence<String>) -> ExitCode = {
 
 - source role은 함수 profile보다 먼저 결정된다.
 - entry ABI와 ordinary callable compatibility는 같은 규칙이 아니다.
-- `effects {io}`는 출력 권한 자체가 아니라 관측 effect row다.
+- `effects io`는 출력 권한 자체가 아니라 관측 effect row다.
 - `throws Never`와 Defect/Cancellation은 같은 축이 아니다.
 - entry body의 resource와 `defer`는 launcher handoff 전에 정리되어야 한다.
 
@@ -198,7 +198,7 @@ private def renderOne<T>(
     using display: witness Display<T>,
 ) -> String
     throws RenderError
-    effects {render}
+    effects render
 = {
     return renderValue(
         value,
@@ -213,7 +213,7 @@ private def renderUser(
     using userDisplay: witness Display<User>,
 ) -> String
     throws RenderError
-    effects {render}
+    effects render
 = {
     return renderOne(
         user,
@@ -252,7 +252,7 @@ private def renderUser(
    모호하거나 overlapping하지 않는지 확인한다.
 
 7. **effect/error forwarding**
-   callee의 `throws RenderError`, `effects {render}`가
+   callee의 `throws RenderError`, `effects render`가
    caller signature에 보존되는지 검사한다.
 
 8. **escape 검사**
@@ -945,7 +945,7 @@ full axis는 `*`이며 빈 suffix는 `INDEX_SUFFIX_REQUIRES_AXIS`다.
 - named effect capability declaration
 - context authority carrier
 - `throws IOError`
-- `effects {io}`
+- `effects io`
 - `defer`의 single cleanup invocation
 - failure와 cleanup failure ordering
 
@@ -965,7 +965,7 @@ public def load(
     context fileIO: FileIO,
 ) -> Bytes
     throws IOError
-    effects {io}
+    effects io
 = {
     let handle = openFile(path, context fileIO)
     defer closeFile(handle, context fileIO)
@@ -1093,7 +1093,7 @@ public def replace(
     move replacement: Buffer,
 ) -> Unit
     throws BufferError
-    effects {log}
+    effects log
 = {
     log("replace:${label}")
     validate(replacement)
@@ -1102,7 +1102,7 @@ public def replace(
 
 private def update() -> Unit
     throws BufferError
-    effects {log}
+    effects log
 = {
     var current = Buffer!(capacity: 16)
     let next = Buffer!(capacity: 64)
@@ -1227,7 +1227,7 @@ module demo::dashboard
 
 public def#async loadDashboard(id: UserId) -> Dashboard
     throws NetworkError
-    effects {io}
+    effects io
 = {
     task scope {
         let profileTask = spawn async { =>
@@ -1366,7 +1366,7 @@ public actor #mailbox(capacity: 8) Counter {
 
 public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
-    effects {task}
+    effects task
 = {
     task scope {
         let Result::ok(_) = counter :~ add value: 1
@@ -1502,7 +1502,7 @@ private def refresh(
     move next: Config,
 ) -> Config
     throws Never
-    effects {state} | {log}
+    effects state effects log
 = {
     let label = cell.withValue() { borrow current =>
         describe(current)
@@ -1637,7 +1637,7 @@ public def readByte(
     pointer: RawPtr<Byte>,
 ) -> Byte
     throws PointerError
-    effects {memory}
+    effects memory
 = {
     unsafe {
         return pointer ~ load
@@ -1713,7 +1713,7 @@ unsafe를 effect atom으로 쓰면 안 된다.
 ```deeplus
 public def invalidRead(pointer: RawPtr<Byte>) -> Byte
     throws Never
-    effects {unsafe}
+    effects unsafe
 = {
     return 0
 }
@@ -2117,7 +2117,7 @@ deterministic precedence로 첫 진단을 선택해야 한다.
 | class의 `out T` | 구조 CST 가능 | owner variance 거부 |
 | ordinary arg로 context 전달 | call CST 가능 | role mismatch |
 | schema unknown field | materialization CST 가능 | label admission 거부 |
-| `effects {unsafe}` | effect-row CST 가능 | axis separation 거부 |
+| `effects unsafe` | effect-row CST 가능 | axis separation 거부 |
 
 문서와 IDE는 이 차이를 사용자에게 보여 주어야 한다.
 parser가 잘못된 source를 current program으로 승인한 것처럼 표시하거나,

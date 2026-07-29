@@ -35,7 +35,7 @@
       "shared_mutex_no_drop_minimum_profile"
     ],
     "signatures": [
-      "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }"
+      "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε effects state }"
     ],
     "responsibility": "receiver-bound non-reentrant scoped exclusive mutation; the closure cannot suspend or escape, unlock executes exactly once on every outcome and happens-before the next successful lock; no lifecycle payload, poisoning, fairness, or lock-order inference",
     "notes": "Current minimum stdlib profile; product support NOT_RUN",
@@ -45,13 +45,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε | {state} }",
+        "text": "prelude intrinsic SharedMutex<T> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε effects state }",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "52fa164e4bb61ca475bc447c5e37f815797ed0ac1244f0155132677ca6f71519"
+    "normalized_contract_sha256": "9dba2fa8d869327b2015db2e5e3a09829678a63595c48e7790e661986d517ea9"
   },
   {
     "entry_id": "string",

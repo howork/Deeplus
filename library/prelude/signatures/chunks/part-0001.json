@@ -201,7 +201,7 @@
     ],
     "signatures": [
       "public resource type Box<T>",
-      "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects {allocate}"
+      "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects allocate"
     ],
     "responsibility": "unique owning indirection whose canonical constructor is Box!(value), with exactly-once payload cleanup",
     "notes": "R50 core identity closure",
@@ -217,13 +217,13 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       },
       {
-        "text": "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects {allocate}",
+        "text": "prelude intrinsic constructor Box!<T>(move value: T) -> Box<T> throws AllocationError effects allocate",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "ef2bbeb7eae076dc7e0e4032f0e1567929274fe681a11427c33bae632a6c902a"
+    "normalized_contract_sha256": "bc10506bef02eb0c62b4c85310ddfc76a21b160055c5e31b99ed6aaecfc737be"
   },
   {
     "entry_id": "byte_view",
@@ -338,7 +338,7 @@
       "policy_visible_async_collector_msp"
     ],
     "signatures": [
-      "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES | ET"
+      "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES throws ET"
     ],
     "responsibility": "explicit finite AsyncSequence collection service; the result error set is exactly the normalized union of source ES and transform ET; source order, fail-fast first failure, pending-child cancellation, buffer bound one, no partial commit, cleanup before return; cancellation remains a distinct control outcome and finiteness is checker evidence rather than hidden iteration",
     "notes": "Current stdlib design identity; source syntax and product execution are not implied",
@@ -348,13 +348,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES | ET",
+        "text": "public def#async AsyncCollector::list<T, U, ES: ErrorSet, ET: ErrorSet>(source: AsyncSequence<T, ES>, policy: CollectPolicy, transform: #async (T) -> U throws ET) -> List<U> throws ES throws ET",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "a9762f9cd4011e55276074f636ca9e8de5886b1e360285cbf08bc07252aef9f5"
+    "normalized_contract_sha256": "9ba2205fb046696d5494b01267c18ead9261b7c7ca7502a9cf797296b9ed8c1b"
   },
   {
     "entry_id": "async_sequence_t",
@@ -804,7 +804,7 @@
       "trait_associated_projection_explicit_context"
     ],
     "signatures": [
-      "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects {state}; }"
+      "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects state; }"
     ],
     "responsibility": "for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN.",
     "notes": "",
@@ -814,7 +814,7 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects {state}; }",
+        "text": "public trait Iterator { type Item.; +def next.() -> Option<<Self as Iterator>::Item> throws Never effects state; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
@@ -825,7 +825,7 @@
       "iterator_t",
       "iteratorprotocolstablecore"
     ],
-    "normalized_contract_sha256": "d3dca13bebf61e09e2f5ae04a5ecf6cee91b6f591b7794199fcd39071a5168aa"
+    "normalized_contract_sha256": "df54eb95234a075c8c412e737d3149066bb677158d29dd6e75e89aad2353ba85"
   },
   {
     "entry_id": "jsonvalue",
@@ -1093,8 +1093,8 @@
     ],
     "signatures": [
       "prelude intrinsic mutable resource type MutableList<T>",
-      "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
-      "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}"
+      "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects allocate",
+      "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects allocate"
     ],
     "responsibility": "exclusive mutable list owner; snapshot borrows without invalidating the source, while freeze consumes the receiver and completes its ownership transition",
     "notes": "R50 core identity closure",
@@ -1110,19 +1110,19 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       },
       {
-        "text": "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects {allocate}",
+        "text": "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects allocate",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       },
       {
-        "text": "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects {allocate}",
+        "text": "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects allocate",
         "dialect": "prelude_intrinsic",
         "grammar_root": null,
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "380c8bbe258cdc50e954c262095ccf2ab57bbc80d30956d8cd9e9e284ad23379"
+    "normalized_contract_sha256": "541262cc3350a373d8faf27ddd3c0d46f11c40b09306177df61edf4468f2a6a7"
   },
   {
     "entry_id": "multiply_rhs",

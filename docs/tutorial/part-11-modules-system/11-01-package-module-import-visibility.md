@@ -45,7 +45,7 @@ module acme::transport::http
 
 public def request(url: String) -> Response
     throws NetworkError
-    effects {network}
+    effects network
 = {
     return sendRequest(url)
 }
@@ -60,7 +60,7 @@ import acme::transport::http::{request}
 
 private def load() -> Response
     throws NetworkError
-    effects {network}
+    effects network
 = {
     return request("https://example.invalid")
 }

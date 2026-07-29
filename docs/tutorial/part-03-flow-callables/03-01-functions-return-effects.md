@@ -76,7 +76,7 @@ recoverable Error나 observable effect가 남으면 빈 선언 안에 들어가�
 <!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; expected: DESIGN_ONLY; product: NOT_RUN -->
 ```deeplus
 def readText(path: String, context files: FileIO) -> String
-    effects {io}
+    effects io
 = return readFile(path, context files)
 ```
 

@@ -423,13 +423,13 @@
       "effectrow_core",
       "error_set_algebra_msp"
     ],
-    "display_name": "Visible bar union for EffectRow and ErrorSet",
-    "feature_id": "effect_error_row_union_bar_surface",
+    "display_name": "Repeated callable responsibility clauses",
+    "feature_id": "callable_responsibility_clause_repetition",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "EffectRow and ErrorSet unions consume | between atoms; empty effects remain effects {} and Never remains the empty thrown-error set.",
+    "notes": "Callable declarations repeat `throws ErrorSetTerm` and `effects EffectTerm` once per normalized responsibility. `throws Never` and `effects {}` are the only explicit empty clauses. Bar unions remain type-level ErrorSet/EffectRow algebra and nonempty effect-set literals are not callable list punctuation.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -442,17 +442,18 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
-        "EFFECT_ROW_UNION_TOKEN_REQUIRED",
-        "ERROR_SET_UNION_TOKEN_REQUIRED"
+        "CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED",
+        "CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED"
       ],
       "predicates": [
-        "EffectErrorRowUnionAdmitted"
+        "CallableResponsibilityClausesAdmitted"
       ],
       "examples": [
         "EX-R49B-ROW-001",
         "EX-R49B-ROW-002"
       ],
       "productions": [
+        "CallableEffectTerm",
         "EffectsClause",
         "ThrowsClause"
       ],
@@ -517,7 +518,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Effect rows use a token-consuming bar union: effects Eff | {state, io}.",
+    "notes": "Type-level EffectRow expressions retain token-consuming bar union, for example `Eff | {state, io}`. Callable declarations project the same responsibilities as repeated clauses: `effects Eff effects state effects io`.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1174,7 +1175,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Error-set alternatives use the visible bar token, for example throws NetworkError | IOError.",
+    "notes": "Type-level ErrorSet expressions retain visible bar union, for example `NetworkError | IOError`. Callable declarations project the same responsibilities as repeated clauses: `throws NetworkError throws IOError`.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

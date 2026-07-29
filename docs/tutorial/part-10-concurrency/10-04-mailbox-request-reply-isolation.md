@@ -53,7 +53,7 @@ admission Result를 먼저 푼 뒤 task를 await한다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError | LookupError
+    throws ActorMessageError throws LookupError
 = {
     let Result::ok(task) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError

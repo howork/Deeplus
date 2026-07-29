@@ -41,7 +41,7 @@ live owner, borrow region, effect/error row, Cancellation, cleanup obligation이
 ```deeplus
 def#async fetch(url: String) -> Bytes
     throws NetworkError
-    effects {network}
+    effects network
 = {
     return await (client ~ get url)
 }

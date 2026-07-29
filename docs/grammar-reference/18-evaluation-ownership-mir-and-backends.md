@@ -1681,7 +1681,7 @@ private def invalid(cell: SharedCell<Document>) -> borrowed Document = {
 <!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/shared-state-coherence.json -->
 ```deeplus
 private def#async invalidLock(mutex: SharedMutex<State>) -> Unit
-    effects {state}
+    effects state
 = {
     mutex.withLock() { inout state =>
         await refresh(state)

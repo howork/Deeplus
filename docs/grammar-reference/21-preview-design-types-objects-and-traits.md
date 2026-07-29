@@ -1099,7 +1099,7 @@ receipt가 필요하다. compiler·runtime·tooling 제품 lane은 모두 `NOT_R
 // 현행 명시적 대안: effect와 호출 phase를 entry가 소유한다.
 public def initializeCache() -> Cache
     throws IOError
-    effects {io}
+    effects io
 = {
     return loadCache()
 }

@@ -66,7 +66,7 @@ recoverable Error로 선언할 수 있다.
 def loadHeader(path: String, context files: FileStore)
     -> Result<Header, error DecodeError>
     throws IOError
-    effects {io}
+    effects io
 = {
     let bytes = files.read(path)
     return decodeHeader(bytes)

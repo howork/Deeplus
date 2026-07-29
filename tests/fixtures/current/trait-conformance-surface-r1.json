@@ -30,9 +30,9 @@
     },
     {
       "fixture_id": "TCS-R1-POS-004",
-      "source": "public trait AutoReceiptIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic class Receipt\nderives Document\nconforms Display\nconforms AutoReceiptIdentity by auto {\n    conform Display {\n        def display.() -> String = { return self.title }\n    }\n}",
+      "source": "public trait AutoUserIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic class User\nconforms Display\nconforms AutoUserIdentity by auto {\n    +let name: String\n    conform Display {\n        def display.() -> String = { return self.name }\n    }\n}",
       "expected": "ACCEPT_STATIC",
-      "assertions": ["physical_line_relations", "one_class_base", "repeated_nominal_conformance", "nominal_conformance_group", "closed_test_auto_policy"]
+      "assertions": ["physical_line_relations", "repeated_nominal_conformance", "nominal_conformance_group", "lexical_nominal_owner", "for_clause_count_zero", "closed_test_auto_policy"]
     },
     {
       "fixture_id": "TCS-R1-POS-005",
@@ -153,12 +153,19 @@
       "source": "public trait Display supports auto { +def display.() -> String }",
       "expected": "REJECT_STATIC",
       "assertions": ["supports_auto_requires_physical_line_boundary"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-011",
+      "source": "conform Display for User {\n    def display.() -> String = { return self.name }\n}",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED",
+      "assertions": ["top_level_group_forbidden", "for_clause_count_zero", "nominal_owner_must_be_lexical"]
     }
   ],
   "counts": {
     "positive": 14,
-    "negative": 10,
-    "total": 24,
+    "negative": 11,
+    "total": 25,
     "executed": 0
   }
 }

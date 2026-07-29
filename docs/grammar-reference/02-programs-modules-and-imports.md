@@ -158,7 +158,7 @@ type node, type identity, API-digest entry는 모두 0이다. 그 밖에
 ```deeplus
 def#entry launch(args: Sequence<String>) -> ExitCode
     throws Never
-    effects {io}
+    effects io
 = {
     print(args)
     return ExitCode::success

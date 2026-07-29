@@ -72,11 +72,11 @@ PreviewFeatureList ::= Identifier ("," Identifier)* ;
 PreviewFfiDecl ::= PreviewFfiFunctionDecl | PreviewFfiBlockDecl ;
 PreviewFfiFunctionDecl ::= "extern" "#" "C" "def" "#" "unsafe"
                            Identifier ParameterList ReturnClause?
-                           ThrowsClause? EffectsClause? StatementBoundary ;
+                           ThrowsClause* EffectsClause* StatementBoundary ;
 PreviewFfiBlockDecl ::= "extern" "c" "(" PLAIN_STRING_LITERAL ")"
                         "{" PreviewFfiBlockMember* "}" ;
 PreviewFfiBlockMember ::= "unsafe" "def" Identifier ParameterList
-                          ReturnClause? ThrowsClause? EffectsClause?
+                          ReturnClause? ThrowsClause* EffectsClause*
                           StatementBoundary ;
 ```
 
@@ -119,7 +119,7 @@ QuarantineExportFieldCandidate ::= Identifier TypeAnnotation ;
 
 `UnsafeAxisSeparated`와 `UnsafeBoundaryAdmitted`가 다음 경계를 고정한다.
 
-- `unsafe`는 `effects {...}` 안에 쓰는 효과 원자가 아니다.
+- `unsafe`는 `effects unsafe`로 쓰는 효과 원자가 아니다.
 - unsafe 연산은 이를 허용하는 명시적 boundary 안에서만 검사할 수 있다.
 - boundary는 원래 연산의 `EffectRow`, `ErrorSet`, ownership, borrow region,
   cleanup 및 source role을 숨기거나 약화하지 않는다.
@@ -134,7 +134,7 @@ QuarantineExportFieldCandidate ::= Identifier TypeAnnotation ;
 ```deeplus
 public def read(ptr: RawPtr) -> Int
     throws Never
-    effects {unsafe}
+    effects unsafe
 = {
     return 0
 }
@@ -322,7 +322,7 @@ def readByte(pointer: RawPtr<Byte>) -> Byte
 | 모듈 선언이나 source item 뒤의 `#preview(...)` | `PREVIEW_GATE_PLACEMENT_INVALID` |
 | gate 안의 `PREVIEW_DESIGN` ID | `PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE` |
 | 일반 이름 있는 `def#unsafe` | 거부; FFI Preview owner만 해당 철자를 소유 |
-| `effects {unsafe}` | 거부; unsafe는 효과 원자가 아님 |
+| `effects unsafe` | 거부; unsafe는 효과 원자가 아님 |
 | `Plain`을 C layout-safe로 간주 | 거부 |
 | C aggregate, variadic, stored callback을 최소 FFI로 암시 | 비활성 별도 설계 |
 | `typeof(runtimeExpr)` 또는 `typeof(...)` 호출형 | 거부 |

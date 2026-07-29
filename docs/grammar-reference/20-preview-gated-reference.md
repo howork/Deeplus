@@ -140,7 +140,7 @@ dependency가 있으면 구문 body를 의미 분석하기 전에 결정적 gate
 **정적 판정과 상호작용**
 library string은 compile-time plain string이어야 하고 동적 library
 선택을 뜻하지 않는다. block member의 `unsafe`는 foreign call boundary의
-정적 authority이며 `effects {unsafe}`로 치환되지 않는다. 함수와 block
+정적 authority이며 `effects unsafe`로 치환되지 않는다. 함수와 block
 형태 모두 parameter/result의 FFI representability, pointer provenance,
 foreign resource owner와 effect/error mapping을 통과해야 한다. C
 aggregate, variadic, stored callback, implicit layout derivation은 이
@@ -182,7 +182,7 @@ artifact-bound 실행 receipt가 모두 필요하다. 현재 모든 제품 lane�
 #preview(ffi_c_extern_unsafe_surface_msp,ffi_minimum_sound_profile)
 extern c("sqlite3") {
     unsafe def sqlite3_close(db: RawPtr<sqlite3>) -> CInt
-        effects {io}
+        effects io
 }
 ```
 

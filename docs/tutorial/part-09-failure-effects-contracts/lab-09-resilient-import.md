@@ -63,7 +63,7 @@ public capability ImportIO for {io}
 def loadRows(path: String, context store: ImportIO)
     -> Result<List<ImportRow>, error ImportError>
     throws IOError
-    effects {io}
+    effects io
 = {
     let bytes = readImportFile(path, context store)
     return decodeRows(bytes)
@@ -79,7 +79,7 @@ transport는 throws, parsing은 Result에 남는다.
 def importOrEmpty(path: String, context store: ImportIO)
     -> Result<List<ImportRow>, error ImportError>
     throws Never
-    effects {io}
+    effects io
 = {
     return @try {
         loadRows(path, context store)
@@ -111,7 +111,7 @@ pure” 같은 오해를 막을 수 있다. publish adapter가 I/O를 수행한�
 
 ## 중간 점검
 
-- `decodeRows`에 `effects {io}`가 없는가?
+- `decodeRows`에 `effects io`가 없는가?
 - `loadRows`가 context capability와 effect를 모두 표시하는가?
 - `ImportError`가 throws에도 중복되지 않는가?
 - publish 전에 모든 row가 검증되는가?

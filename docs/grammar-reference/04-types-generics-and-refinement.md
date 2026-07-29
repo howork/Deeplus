@@ -86,7 +86,7 @@ Trait 타입 매개변수 위치에서만 사용할 수 있으며, 생산/소비
 ParenTypeSyntax   ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","?
 ParenTypeItem     ::= TypeRef | TypeRef "..." | TypeRef "***"
-FunctionTypeTail  ::= "->" NonFunctionTypeRef ThrowsClause? EffectsClause?
+FunctionTypeTail  ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 ```
 
 - `(T)`는 괄호 타입이다.

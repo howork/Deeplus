@@ -221,7 +221,7 @@ public actor Worker {
 }
 public def#async run(job: Job) -> Result
     throws Never
-    effects {task}
+    effects task
 = {
     return await task {
         Worker!() :~ compute job

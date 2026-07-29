@@ -47,7 +47,7 @@ public def transform<T>(
     using display: witness Display<T>,
 ) -> String
     throws RenderError
-    effects {render}
+    effects render
 = {
     return render(value, context environment, using display)
 }
