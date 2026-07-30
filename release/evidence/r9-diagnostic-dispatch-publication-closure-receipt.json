@@ -1,0 +1,172 @@
+{
+  "schema": "deeplus.r9-diagnostic-dispatch-publication-closure-receipt/v1",
+  "recorded_at": "2026-07-31T06:51:12+09:00",
+  "candidate_verdict": "READY_FOR_PUBLICATION_CLOSURE_MERGE",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_publication": {
+    "pull_request": 50,
+    "url": "https://github.com/howork/Deeplus/pull/50",
+    "branch": "codex/r9-diagnostic-dispatch-closure",
+    "source_commit": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+    "merge_commit": "fd752f560d30a9cbe61f04b24b0e58abdbc150a3",
+    "tree": "3afc92cae7f8cf7232e30944d6516aec811e6981",
+    "parents": [
+      "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+      "94b4d369213ec3ce829c70b66f15301cf3c7039c"
+    ],
+    "merged_at": "2026-07-31T06:48:41+09:00",
+    "post_merge_readback": "PASS"
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30584366374,
+      "job": "validate",
+      "job_id": 91012139929,
+      "head_sha": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30584366374/job/91012139929",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30584366320,
+      "job": "scaffold",
+      "job_id": 91012139727,
+      "head_sha": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30584366320/job/91012139727",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "semantic_pr_validation": {
+    "freeze_pack": {
+      "filename": "Codex_Design_Deeplus_R9_Diagnostic_Dispatch_Closure_Candidate_Freeze_Pack_R5.zip",
+      "bytes": 116490,
+      "sha256": "541da4136e420d80f068fa72dc48b468cd8e8ad551c3ced32c8f881d00e932e0",
+      "semantic_delta_count": 0,
+      "implementation_path_count": {
+        "r4": 44,
+        "r5": 45
+      },
+      "generator_derived_added_path": "tests/conformance/checker-predicates/chunks/part-0029.json"
+    },
+    "diagnostic_dispatch_static_reference": {
+      "schema": "deeplus.r9-diagnostic-dispatch-closure-test-receipt/v1",
+      "result": "PASS",
+      "checks": "9_OF_9_PASS",
+      "base_cases": 18,
+      "adversarial_cases": 13,
+      "mutation_rows": 12,
+      "ordered_reason_keys": 12,
+      "product_execution": "NOT_RUN"
+    },
+    "registry_postimage": {
+      "predicates": 277,
+      "diagnostics": 1436,
+      "relations": 559,
+      "dispatch_rows": 226,
+      "undefined_or_unlisted_dispatch": 0
+    },
+    "grammar_reference_generator": {
+      "result": "PASS",
+      "cases": 33,
+      "mutations": 32,
+      "deterministic_output_count": 8,
+      "repository_write": false
+    },
+    "tutorial_generator": {
+      "result": "TUTORIAL_MUTATION_TEST_PASS",
+      "rejection_mutations": 12
+    },
+    "canonical_source_mutation_during_freeze": 0,
+    "github_mutation_during_freeze": 0
+  },
+  "closure_pr_evidence": {
+    "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+    "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT"
+  },
+  "gap_transition": {
+    "initial_state": "APPROVED_NOT_INTEGRATED",
+    "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+    "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+    "transition_candidate_count": 1,
+    "closed_count_before_closure_readback": 0,
+    "eligible_closed_count_after_readback": 1,
+    "rows": [
+      {
+        "id": "IR-DIAG-P0-052",
+        "severity": "P0",
+        "from": "APPROVED_NOT_INTEGRATED",
+        "at_semantic_merge": "INTEGRATED_UNVERIFIED",
+        "after_closure_readback": "VERIFIED_CLOSED"
+      }
+    ]
+  },
+  "action_ledger": {
+    "source": "current/current-pointer.json#/open_actions",
+    "total_open_actions": 26,
+    "separate_m13_actions": [
+      "M13-A002",
+      "M13-A003",
+      "M13-A004",
+      "M13-A005"
+    ],
+    "canonical_feature_p1_open": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006",
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008",
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008",
+      "SFD-P1-009"
+    ],
+    "canonical_id_array_sha256": "582fa3d9649c380a7a9bf4532fc303626eb9837aeb7f4ed68ce46f2bc02fc296",
+    "closed_by_candidate": 0,
+    "new_feature_p1": 0
+  },
+  "independent_test_verification": {
+    "path": "release/evidence/r9-diagnostic-dispatch-independent-verification.json",
+    "bytes": 4251,
+    "sha256": "531fccf149c618ba19bbaaaecca23dfaff19449b32ac2955889f6d0743042e08",
+    "required_verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+    "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "candidate_binding": false,
+    "source_snapshot": null,
+    "canonical_source_mutation_during_closure": 0,
+    "github_mutation_during_closure": 0
+  },
+  "pointer_target": {
+    "role": "publication_authority_source",
+    "semantic_merge_commit": "fd752f560d30a9cbe61f04b24b0e58abdbc150a3",
+    "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "self_binding_forbidden": true
+  },
+  "next_checkpoint": {
+    "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+    "candidate_cluster": "DEPENDENCY_ORDERED_R10_SELECTION",
+    "gap_scope": [],
+    "activation": "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_BASELINE_OBSERVATION"
+  }
+}

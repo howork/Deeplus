@@ -1,0 +1,113 @@
+{
+  "schema": "deeplus.r9-diagnostic-dispatch-independent-verification/v1",
+  "recorded_at": "2026-07-31T06:51:12+09:00",
+  "role": "Test_",
+  "reviewer_identity": "Codex Test_ independent R9 publication-closure audit",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "repository_write": false,
+  "verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+  "merge_readiness": "HOLD_PENDING_PUBLICATION_CLOSURE_MERGE_AND_READBACK",
+  "semantic_pull_request": 50,
+  "semantic_source_commit": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+  "semantic_merge_commit": "fd752f560d30a9cbe61f04b24b0e58abdbc150a3",
+  "semantic_merge_tree": "3afc92cae7f8cf7232e30944d6516aec811e6981",
+  "semantic_merge_parents": [
+    "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+    "94b4d369213ec3ce829c70b66f15301cf3c7039c"
+  ],
+  "post_semantic_merge_readback": "PASS",
+  "reviewed_gap_ids": [
+    "IR-DIAG-P0-052"
+  ],
+  "frozen_candidate_pack": {
+    "scope": "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE",
+    "filename": "Codex_Design_Deeplus_R9_Diagnostic_Dispatch_Closure_Candidate_Freeze_Pack_R5.zip",
+    "bytes": 116490,
+    "sha256": "541da4136e420d80f068fa72dc48b468cd8e8ad551c3ced32c8f881d00e932e0",
+    "semantic_predecessor": "R4_BYTE_BOUND_UNCHANGED",
+    "semantic_delta_count": 0,
+    "implementation_path_count": {
+      "r4": 44,
+      "r5": 45
+    },
+    "generator_derived_added_path": "tests/conformance/checker-predicates/chunks/part-0029.json"
+  },
+  "verified_semantic_contract": {
+    "closed_input_union_variant_count": 3,
+    "rcts_fallback_count": 0,
+    "predicate_count": 3,
+    "ordered_reason_key_count": 12,
+    "base_fixture_count": 18,
+    "adversarial_fixture_count": 13,
+    "mutation_count": 12,
+    "static_reference_checks": {
+      "passed": 9,
+      "total": 9,
+      "result": "PASS"
+    },
+    "registry_postimage": {
+      "predicates": 277,
+      "diagnostics": 1436,
+      "relations": 559,
+      "dispatch_rows": 226,
+      "undefined_or_unlisted_dispatch": 0
+    },
+    "grammar_reference_generator": {
+      "result": "PASS",
+      "cases": 33,
+      "mutations": 32,
+      "deterministic_output_count": 8,
+      "deterministic_roots": 2,
+      "repository_write": false
+    },
+    "tutorial_generator": {
+      "result": "TUTORIAL_MUTATION_TEST_PASS",
+      "baseline_check_count": 1,
+      "deterministic_write_count": 2,
+      "rejection_mutation_count": 12
+    }
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30584366374,
+      "job": "validate",
+      "job_id": 91012139929,
+      "head_sha": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30584366374/job/91012139929",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30584366320,
+      "job": "scaffold",
+      "job_id": 91012139727,
+      "head_sha": "94b4d369213ec3ce829c70b66f15301cf3c7039c",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30584366320/job/91012139727",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "verified_ledger": {
+    "gap_transition_candidate_count": 1,
+    "gap_state_at_semantic_merge": "INTEGRATED_UNVERIFIED",
+    "closed_before_closure_readback": 0,
+    "eligible_after_closure_readback": 1,
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN",
+    "separate_m13_actions": "4_OPEN",
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0
+  },
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "canonical_source_mutation_during_closure_verification": 0,
+  "github_mutation_during_closure_verification": 0,
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+  "future_closure_commit": "NOT_RECORDED_BEFORE_MERGE",
+  "known_limitations": [
+    "PRODUCTION_PARSER_CHECKER_MIR_XVM_RUNTIME_BACKEND_TOOLING_NOT_RUN",
+    "PRODUCT_LANES_15_OF_15_NOT_RUN",
+    "GAP_CLOSURE_CONDITIONAL_ON_PUBLICATION_CLOSURE_MERGE_READBACK"
+  ],
+  "evidence_honesty": "This independent verification proves the static semantic contract, repository validation, and semantic-PR CI evidence. It does not establish production parser, checker, HIR, MIR, xVM, Cranelift, runtime, formatter, LSP, conformance, or product support."
+}

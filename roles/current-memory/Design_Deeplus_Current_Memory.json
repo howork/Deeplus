@@ -4,7 +4,7 @@
     "id": "design_release_steward",
     "prefix": "Design_"
   },
-  "updated_at": "2026-07-31T03:33:54+09:00",
+  "updated_at": "2026-07-31T06:51:51+09:00",
   "source_revision": "r51f3-current-trait-operator-refinement-r1",
   "current_facts": [
     {
@@ -32,6 +32,15 @@
       "source": "governance/reports/Design_Deeplus_R8_Ownership_Canonical_Promotion_Publication_Closure_R1.md",
       "introduced": "r51f3-current-trait-operator-refinement-r1",
       "review_after": null,
+      "status": "current"
+    },
+    {
+      "id": "PUB-002",
+      "statement": "Semantic PR #50 integrated the R9 Diagnostic Dispatch Closure for IR-DIAG-P0-052 from source commit 94b4d369213ec3ce829c70b66f15301cf3c7039c at merge commit fd752f560d30a9cbe61f04b24b0e58abdbc150a3 with exact tree 3afc92cae7f8cf7232e30944d6516aec811e6981. The gap is INTEGRATED_UNVERIFIED until the separate publication-closure PR is merged and live main is read back, then becomes VERIFIED_CLOSED at design/static evidence level E2 through the canonical closure evidence plus an external post-merge receipt that records the actual closure commit. No future closure SHA is asserted here. Production and product execution remain NOT_RUN; semantic P0 remains 0, the exact feature P1 set remains 22 OPEN, the four M13 actions remain separate and OPEN, and all 15 product lanes remain NOT_RUN.",
+      "authority": "current publication pointer",
+      "source": "governance/reports/Design_Deeplus_R9_Diagnostic_Dispatch_Publication_Closure_R1.md",
+      "introduced": "r51f3-current-trait-operator-refinement-r1",
+      "review_after": "publication-closure merge and external post-merge readback receipt",
       "status": "current"
     },
     {
@@ -112,6 +121,11 @@
     }
   ],
   "recent_releases": [
+    {
+      "release": "github-pr-50-r9-diagnostic-dispatch-semantic-publication",
+      "verdict": "source 94b4d369213ec3ce829c70b66f15301cf3c7039c merged at fd752f560d30a9cbe61f04b24b0e58abdbc150a3 with exact tree 3afc92cae7f8cf7232e30944d6516aec811e6981; IR-DIAG-P0-052 is INTEGRATED_UNVERIFIED pending publication-closure merge and external post-merge readback, then closes only at design/static E2; production and product execution NOT_RUN; semantic P0 0; exact feature P1 22 OPEN; four M13 actions separate and OPEN; product lanes 15/15 NOT_RUN",
+      "report": "governance/reports/Design_Deeplus_R9_Diagnostic_Dispatch_Publication_Closure_R1.md"
+    },
     {
       "release": "github-pr-48-r8-ownership-canonical-semantic-publication",
       "verdict": "semantic merge 9bc2e8694bc44cea28efe34541ce465a9bf2c109 is the current publication target; exact three audit P0 gaps are INTEGRATED_UNVERIFIED pending publication-closure merge/readback; independent verification passed; semantic P0 0; exact feature P1 22 OPEN; four M13 actions separate and OPEN; product lanes 15/15 NOT_RUN",

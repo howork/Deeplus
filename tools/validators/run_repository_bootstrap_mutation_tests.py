@@ -435,6 +435,106 @@ def r4_independent_test_verdict_drift(root: Path) -> None:
     write_json(path, value)
 
 
+def current_decision_index_r9_closure_report_missing(root: Path) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    entry = (
+        "  - governance/reports/"
+        "Design_Deeplus_R9_Diagnostic_Dispatch_"
+        "Publication_Closure_R1.md\n"
+    )
+    if value.count(entry) != 1:
+        raise RuntimeError("R9 closure report entry unavailable")
+    path.write_text(value.replace(entry, "", 1), encoding="utf-8")
+
+
+def r9_closure_report_content_drift(root: Path) -> None:
+    path = (
+        root
+        / "governance/reports/"
+        "Design_Deeplus_R9_Diagnostic_Dispatch_Publication_Closure_R1.md"
+    )
+    path.write_text(
+        path.read_text(encoding="utf-8") + "\nmutation\n",
+        encoding="utf-8",
+    )
+
+
+def r9_closure_receipt_semantic_identity_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r9-diagnostic-dispatch-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["semantic_publication"]["merge_commit"] = "0" * 40
+    write_json(path, value)
+
+
+def r9_closure_receipt_premature_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r9-diagnostic-dispatch-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["gap_transition"]["closed_count_before_closure_readback"] = 1
+    write_json(path, value)
+
+
+def r9_closure_receipt_feature_p1_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r9-diagnostic-dispatch-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["action_ledger"]["closed_by_candidate"] = 1
+    write_json(path, value)
+
+
+def r9_closure_receipt_future_sha_invented(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r9-diagnostic-dispatch-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["closure_pr_evidence"]["merge_commit"] = "f" * 40
+    write_json(path, value)
+
+
+def r9_independent_test_verdict_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r9-diagnostic-dispatch-independent-verification.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["verdict"] = "NOT_AUDITABLE"
+    write_json(path, value)
+
+
+def r9_closure_decision_removed(root: Path) -> None:
+    path = root / "decisions/language/current-decisions.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    decision_id = "DSGN-CURRENT-R9-DIAGNOSTIC-DISPATCH-PUBLICATION-CLOSURE"
+    value["laws"] = [
+        row for row in value["laws"] if row.get("id") != decision_id
+    ]
+    value["law_count"] = len(value["laws"])
+    write_json(path, value)
+
+
+def r9_closure_memory_reverted(root: Path) -> None:
+    path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["current_facts"] = [
+        row for row in value["current_facts"] if row.get("id") != "PUB-002"
+    ]
+    write_json(path, value)
+
+
 def authority_transition_report_content_drift(root: Path) -> None:
     path = (
         root
@@ -643,6 +743,51 @@ def run(write_receipt: bool) -> int:
             "r4_independent_test_verdict_drift",
             r4_independent_test_verdict_drift,
             "R4_INDEPENDENT_TEST_VERIFICATION",
+        ),
+        (
+            "current_decision_index_r9_closure_report_missing",
+            current_decision_index_r9_closure_report_missing,
+            "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "r9_closure_report_content_drift",
+            r9_closure_report_content_drift,
+            "R9_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r9_closure_receipt_semantic_identity_drift",
+            r9_closure_receipt_semantic_identity_drift,
+            "R9_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r9_closure_receipt_premature_closed",
+            r9_closure_receipt_premature_closed,
+            "R9_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r9_closure_receipt_feature_p1_closed",
+            r9_closure_receipt_feature_p1_closed,
+            "R9_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r9_closure_receipt_future_sha_invented",
+            r9_closure_receipt_future_sha_invented,
+            "R9_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r9_independent_test_verdict_drift",
+            r9_independent_test_verdict_drift,
+            "R9_INDEPENDENT_TEST_VERIFICATION",
+        ),
+        (
+            "r9_closure_decision_removed",
+            r9_closure_decision_removed,
+            "R9_PUBLICATION_CLOSURE_DECISION",
+        ),
+        (
+            "r9_closure_memory_reverted",
+            r9_closure_memory_reverted,
+            "R9_PUBLICATION_CLOSURE_MEMORY",
         ),
         (
             "authority_transition_report_content_drift",
