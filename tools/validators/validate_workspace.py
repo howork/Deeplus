@@ -27,7 +27,8 @@ PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalu
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 AUTHORITY_TRANSITION_BASE_COMMIT = "cfd5946c52571119564b9c8beb430f8dd0356750"
 R4_SEMANTIC_PUBLICATION_COMMIT = "8d81d6747488055cb76da8bda1350b96e576b7b1"
-CURRENT_PUBLICATION_TARGET_COMMIT = "8d81d6747488055cb76da8bda1350b96e576b7b1"
+R8_SEMANTIC_PUBLICATION_COMMIT = "9bc2e8694bc44cea28efe34541ce465a9bf2c109"
+CURRENT_PUBLICATION_TARGET_COMMIT = R8_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -151,6 +152,27 @@ R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT = (
 R4_PUBLICATION_CLOSURE_DECISION_ID = (
     "DSGN-CURRENT-R4-NAME-RESOLUTION-MODULES-PUBLICATION-CLOSURE"
 )
+R8_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R8_Ownership_Canonical_Promotion_"
+    "Publication_Closure_R1.md"
+)
+R8_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r8-ownership-canonical-promotion-publication-closure-receipt.json"
+)
+R8_INDEPENDENT_TEST_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r8-ownership-canonical-promotion-independent-verification.json"
+)
+R8_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R8-OWNERSHIP-CANONICAL-PROMOTION-PUBLICATION-CLOSURE"
+)
+R8_PUBLICATION_CLOSURE_GAP_IDS = [
+    "IR-OWN-P0-012",
+    "IR-OWN-P0-013",
+    "IR-OWN-P0-014",
+]
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
     "IR-RES-P0-041",
@@ -14353,12 +14375,14 @@ def main() -> int:
             "governance/policies/management-policy.yaml",
             AUTHORITY_TRANSITION_REPORT,
             R4_PUBLICATION_CLOSURE_REPORT,
+            R8_PUBLICATION_CLOSURE_REPORT,
         ]
         and all(
             (root / relative).is_file()
             for relative in (
                 AUTHORITY_TRANSITION_REPORT,
                 R4_PUBLICATION_CLOSURE_REPORT,
+                R8_PUBLICATION_CLOSURE_REPORT,
             )
         ),
         "CURRENT_DECISION_INDEX_BINDING",
@@ -14601,6 +14625,275 @@ def main() -> int:
             }
         ),
     )
+    r8_closure_receipt = parsed.get(
+        root / R8_PUBLICATION_CLOSURE_RECEIPT, {}
+    )
+    r8_semantic_publication = r8_closure_receipt.get(
+        "semantic_publication", {}
+    )
+    r8_semantic_ci = r8_closure_receipt.get(
+        "semantic_pr_github_ci", []
+    )
+    r8_semantic_validation = r8_closure_receipt.get(
+        "semantic_pr_validation", {}
+    )
+    r8_closure_pr_evidence = r8_closure_receipt.get(
+        "closure_pr_evidence", {}
+    )
+    r8_gap_transition = r8_closure_receipt.get("gap_transition", {})
+    r8_action_ledger = r8_closure_receipt.get("action_ledger", {})
+    r8_independent_test = r8_closure_receipt.get(
+        "independent_test_verification", {}
+    )
+    r8_governance = r8_closure_receipt.get("governance", {})
+    r8_pointer_target = r8_closure_receipt.get("pointer_target", {})
+    expected_r8_gap_rows = [
+        {
+            "id": gap_id,
+            "severity": "P0",
+            "from": "APPROVED_NOT_INTEGRATED",
+            "at_semantic_merge": "INTEGRATED_UNVERIFIED",
+            "after_closure_readback": "VERIFIED_CLOSED",
+        }
+        for gap_id in R8_PUBLICATION_CLOSURE_GAP_IDS
+    ]
+    check(
+        r8_closure_receipt.get("schema")
+        == (
+            "deeplus.r8-ownership-canonical-promotion-publication-"
+            "closure-receipt/v1"
+        )
+        and r8_closure_receipt.get("recorded_at")
+        == "2026-07-31T03:33:54+09:00"
+        and r8_closure_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r8_closure_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r8_semantic_publication
+        == {
+            "pull_request": 48,
+            "url": "https://github.com/howork/Deeplus/pull/48",
+            "branch": "codex/r5-ownership-place-loan",
+            "source_commit": (
+                "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e"
+            ),
+            "merge_commit": R8_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": "26ca3acb8377c860482bf21aa646155377fe81af",
+            "parents": [
+                "1053902449aedccb110cef5bcfe76e5b1af9df01",
+                "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e",
+            ],
+            "merged_at": "2026-07-30T18:25:29Z",
+            "post_merge_readback": "PASS",
+        }
+        and r8_semantic_ci
+        == [
+            {
+                "workflow": "Canonical integrity",
+                "run_id": 30569813548,
+                "job": "validate",
+                "job_id": 90963367240,
+                "head_sha": (
+                    "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e"
+                ),
+                "started_at": "2026-07-30T18:18:20Z",
+                "completed_at": "2026-07-30T18:24:52Z",
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30569813548/job/90963367240"
+                ),
+                "conclusion": "SUCCESS",
+            },
+            {
+                "workflow": "Rust workspace",
+                "run_id": 30569813457,
+                "job": "scaffold",
+                "job_id": 90963366897,
+                "head_sha": (
+                    "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e"
+                ),
+                "started_at": "2026-07-30T18:18:20Z",
+                "completed_at": "2026-07-30T18:18:43Z",
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30569813457/job/90963366897"
+                ),
+                "conclusion": "SUCCESS",
+            },
+        ]
+        and r8_semantic_validation
+        == {
+            "freeze_pack": {
+                "filename": (
+                    "Codex_Design_Deeplus_R8_Ownership_Canonical_"
+                    "Promotion_Source_Candidate_Pack_R8.zip"
+                ),
+                "bytes": 9701905,
+                "sha256": (
+                    "ae730ce57b8985d69d150f4eba9b21609bbfee5003b86016909a"
+                    "04cf68327f3c"
+                ),
+                "member_count": 161,
+            },
+            "source_operations": {
+                "total": 70,
+                "create": 17,
+                "replace": 53,
+                "delete": 0,
+            },
+            "independent_command_matrix": "23_OF_23_PASS",
+            "ownership_checks": "13_OF_13_PASS",
+            "workspace_checks": "3739_OF_3739_PASS",
+            "clippy_baseline_parity": "4_OF_4_PASS",
+            "preparer_normal_path": "PASS",
+            "preparer_mutation_rejection": "PASS",
+            "applicator_normal_path": "PASS",
+            "applicator_mutation_rejection": "PASS",
+            "control_patch_self_validation": "PASS",
+            "pack_integrity": "PASS",
+            "canonical_source_mutation_during_freeze": 0,
+            "github_mutation_during_freeze": 0,
+        }
+        and r8_closure_pr_evidence
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R8_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r8_semantic_publication,
+                "semantic_pr_github_ci": r8_semantic_ci,
+                "semantic_pr_validation": r8_semantic_validation,
+                "closure_pr_evidence": r8_closure_pr_evidence,
+            }
+        ),
+    )
+    check(
+        r8_gap_transition
+        == {
+            "initial_state": "APPROVED_NOT_INTEGRATED",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 3,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 3,
+            "open_audit_gaps_before_closure": {
+                "P0": 13,
+                "P1": 23,
+                "P2": 4,
+            },
+            "rows": expected_r8_gap_rows,
+            "remaining_audit_gaps_after_closure": {
+                "P0": 10,
+                "P1": 23,
+                "P2": 4,
+            },
+            "source_ledger": {
+                "scope": (
+                    "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE"
+                ),
+                "path": (
+                    "audit/implementation-readiness-state/"
+                    "CUMULATIVE_GAP_REGISTER.json"
+                ),
+                "schema": (
+                    "deeplus.implementation-readiness-cumulative-gap-"
+                    "register/r1"
+                ),
+                "bytes": 296938,
+                "sha256": (
+                    "d43d150e2d810fdbf3b2a8c178c79c9c3b2b5728171d8530e74"
+                    "b0aaabcf36855"
+                ),
+                "baseline_through_r4": (
+                    "1053902449aedccb110cef5bcfe76e5b1af9df01"
+                ),
+                "pre_transition_status_counts": {
+                    "DECISION_PENDING": 35,
+                    "EXPLICITLY_DEFERRED": 1,
+                    "DISCOVERED": 4,
+                    "VERIFIED_CLOSED": 12,
+                },
+                "count_correction": (
+                    "The previous checkpoint omitted discovered "
+                    "IR-DIAG-P0-052; the correct nonclosed P0 count is 13 "
+                    "before R8 closure and 10 after it."
+                ),
+            },
+        }
+        and r8_action_ledger
+        == {
+            "source": "current/current-pointer.json#/open_actions",
+            "total_open_actions": 26,
+            "separate_m13_actions": EXPECTED_ACTION_IDS,
+            "canonical_feature_p1_open": SUCCESSOR_ACTION_IDS[
+                len(EXPECTED_ACTION_IDS):
+            ],
+            "canonical_id_array_sha256": (
+                "582fa3d9649c380a7a9bf4532fc303626eb9837aeb7f4ed68ce46"
+                "f2bc02fc296"
+            ),
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r8_independent_test
+        == {
+            "path": R8_INDEPENDENT_TEST_VERIFICATION_RECEIPT,
+            "bytes": 3867,
+            "sha256": (
+                "7431be68b0f844f29e8530ff575732d3869a549552578b29b28ad8"
+                "edee34efe2"
+            ),
+            "required_verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+            "closure_effect": (
+                "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+            ),
+        }
+        and r8_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+        }
+        and r8_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "semantic_merge_commit": R8_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r8_closure_receipt.get("next_checkpoint")
+        == {
+            "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+            "candidate_cluster": "R9_DIAGNOSTIC_DISPATCH_CLOSURE",
+            "gap_scope": ["IR-DIAG-P0-052"],
+            "activation": (
+                "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_"
+                "BASELINE_OBSERVATION"
+            ),
+        }
+        and r8_closure_receipt.get("r8_only_scope_freeze")
+        == {
+            "directive_state_after_r8_final_report": "EXPIRED",
+            "subsequent_cluster_procedure": "STANDARD_CLUSTER_PROCEDURE",
+        },
+        "R8_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "gap_transition": r8_gap_transition,
+                "action_ledger": r8_action_ledger,
+                "independent_test_verification": r8_independent_test,
+                "governance": r8_governance,
+                "pointer_target": r8_pointer_target,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -14611,7 +14904,7 @@ def main() -> int:
         if row.get("id") == R4_PUBLICATION_CLOSURE_DECISION_ID
     ]
     check(
-        current_decisions.get("law_count") == len(current_laws) == 42
+        current_decisions.get("law_count") == len(current_laws) == 43
         and r4_closure_laws
         == [
             {
@@ -14647,6 +14940,49 @@ def main() -> int:
         ],
         "R4_PUBLICATION_CLOSURE_DECISION",
         repr(r4_closure_laws),
+    )
+    r8_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R8_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        r8_closure_laws
+        == [
+            {
+                "id": R8_PUBLICATION_CLOSURE_DECISION_ID,
+                "law": (
+                    "The frozen R8 promotion of the R5 Ownership Surface and "
+                    "Place/Loan contract is canonically integrated by PR #48 "
+                    "at semantic merge commit "
+                    "9bc2e8694bc44cea28efe34541ce465a9bf2c109. Its exact three "
+                    "implementation-readiness audit gaps IR-OWN-P0-012, "
+                    "IR-OWN-P0-013, and IR-OWN-P0-014 moved to "
+                    "INTEGRATED_UNVERIFIED at that semantic merge and become "
+                    "VERIFIED_CLOSED only after the separate publication-"
+                    "closure PR is merged, live main is read back, and the "
+                    "bound independent verification passes. This governance "
+                    "transition changes no language semantics, closes or "
+                    "creates no canonical feature P1, leaves the exact feature "
+                    "P1 set at 22 OPEN, leaves the four M13 actions separate "
+                    "and OPEN, and leaves all 15 product lanes NOT_RUN."
+                ),
+                "status": "CURRENT",
+                "authority_origin": "DESIGNER_ACCEPTED",
+                "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+                "source_evidence": (
+                    "governance/reports/"
+                    "Design_Deeplus_R8_Ownership_Canonical_Promotion_"
+                    "Publication_Closure_R1.md; "
+                    "release/evidence/"
+                    "r8-ownership-canonical-promotion-publication-"
+                    "closure-receipt.json"
+                ),
+                "effective_revision": LANGUAGE_COHERENCE_REVISION,
+            }
+        ],
+        "R8_PUBLICATION_CLOSURE_DECISION",
+        repr(r8_closure_laws),
     )
     r4_test_verification = parsed.get(
         root / R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT, {}
@@ -14737,6 +15073,119 @@ def main() -> int:
         == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
         "R4_INDEPENDENT_TEST_VERIFICATION",
         repr(r4_test_verification),
+    )
+    r8_test_verification = parsed.get(
+        root / R8_INDEPENDENT_TEST_VERIFICATION_RECEIPT, {}
+    )
+    r8_test_path = root / R8_INDEPENDENT_TEST_VERIFICATION_RECEIPT
+    check(
+        r8_test_path.is_file()
+        and r8_test_path.stat().st_size == r8_independent_test.get("bytes")
+        and file_sha(r8_test_path) == r8_independent_test.get("sha256")
+        and r8_test_verification.get("schema")
+        == (
+            "deeplus.r8-ownership-canonical-promotion-independent-"
+            "verification/v1"
+        )
+        and r8_test_verification.get("recorded_at")
+        == "2026-07-31T03:33:54+09:00"
+        and r8_test_verification.get("role") == "Test_"
+        and r8_test_verification.get("reviewer_identity")
+        == (
+            "Codex Test_ independent R8 final-validation audit / "
+            "R8_FINAL_VALIDATION_INDEPENDENT_AUDIT_R1"
+        )
+        and r8_test_verification.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r8_test_verification.get("repository_write") is False
+        and r8_test_verification.get("verdict")
+        == r8_independent_test.get("required_verdict")
+        and r8_test_verification.get("merge_readiness")
+        == "HOLD_PENDING_PUBLICATION_CLOSURE_MERGE_AND_READBACK"
+        and r8_test_verification.get("semantic_merge_commit")
+        == R8_SEMANTIC_PUBLICATION_COMMIT
+        and r8_test_verification.get("semantic_merge_tree")
+        == "26ca3acb8377c860482bf21aa646155377fe81af"
+        and r8_test_verification.get("semantic_merge_parents")
+        == [
+            "1053902449aedccb110cef5bcfe76e5b1af9df01",
+            "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e",
+        ]
+        and r8_test_verification.get("reviewed_gap_ids")
+        == R8_PUBLICATION_CLOSURE_GAP_IDS
+        and r8_test_verification.get("frozen_candidate_pack")
+        == {
+            "scope": (
+                "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE"
+            ),
+            "path": (
+                "audit/implementation-readiness-r8-ownership-canonical-"
+                "promotion/final-freeze-r8/"
+                "Codex_Design_Deeplus_R8_Ownership_Canonical_Promotion_"
+                "Source_Candidate_Pack_R8.zip"
+            ),
+            "filename": (
+                "Codex_Design_Deeplus_R8_Ownership_Canonical_Promotion_"
+                "Source_Candidate_Pack_R8.zip"
+            ),
+            "bytes": 9701905,
+            "sha256": (
+                "ae730ce57b8985d69d150f4eba9b21609bbfee5003b86016909a04"
+                "cf68327f3c"
+            ),
+            "member_count": 161,
+        }
+        and r8_test_verification.get("bound_independent_audit_member")
+        == {
+            "path": (
+                "inputs/execution/"
+                "R8_FINAL_VALIDATION_INDEPENDENT_AUDIT_R1.json"
+            ),
+            "bytes": 9921,
+            "sha256": (
+                "7b2ba7f5941968b086903ff0adb5d9f981d1999aaeb58b3f5681e"
+                "968d6e05be4"
+            ),
+            "result": "PASS_WITH_NONBLOCKING_BASELINE_P2",
+        }
+        and r8_test_verification.get("verified_ledger")
+        == {
+            "gap_transition_candidates": 3,
+            "severity_counts": {"P0": 3, "P1": 0, "P2": 0},
+            "closed_before_closure_readback": 0,
+            "eligible_after_closure_readback": 3,
+            "remaining_audit_gaps_after_closure": {
+                "P0": 10,
+                "P1": 23,
+                "P2": 4,
+            },
+            "semantic_p0": 0,
+            "open_actions": 26,
+            "canonical_feature_p1": "22_OPEN",
+            "separate_m13_actions": 4,
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+            "current_binding": False,
+        }
+        and r8_test_verification.get("verified_evidence", {}).get(
+            "command_matrix", {}
+        ).get("passed") == 23
+        and r8_test_verification.get("verified_evidence", {}).get(
+            "ownership", {}
+        ).get("passed") == 13
+        and r8_test_verification.get("verified_evidence", {}).get(
+            "workspace", {}
+        ).get("passed") == 3739
+        and r8_test_verification.get("verified_evidence", {}).get(
+            "clippy_baseline_parity", {}
+        ).get("passed") == 4
+        and r8_test_verification.get("product_lanes")
+        == "15_OF_15_NOT_RUN"
+        and r8_test_verification.get("product_support") == "NOT_RUN"
+        and r8_test_verification.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R8_INDEPENDENT_TEST_VERIFICATION",
+        repr(r8_test_verification),
     )
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
@@ -15463,27 +15912,8 @@ def main() -> int:
         if row.get("release")
         == "github-pr-46-r4-name-resolution-modules-semantic-publication"
     ]
-    r4_pub_statement = design_facts.get("PUB-001", {}).get(
-        "statement", ""
-    )
     check(
-        design_memory.get("updated_at") == "2026-07-30T11:48:21+09:00"
-        and design_facts.get("PUB-001", {}).get("source")
-        == R4_PUBLICATION_CLOSURE_REPORT
-        and design_facts.get("PUB-001", {}).get("introduced")
-        == LANGUAGE_COHERENCE_REVISION
-        and all(
-            term in r4_pub_statement
-            for term in (
-                "PR #46",
-                R4_SEMANTIC_PUBLICATION_COMMIT,
-                "exact 12 audit gaps are INTEGRATED_UNVERIFIED",
-                "independent Test_ verification",
-                "22 OPEN",
-                "15 product lanes remain NOT_RUN",
-            )
-        )
-        and len(r4_release_rows) == 1
+        len(r4_release_rows) == 1
         and r4_release_rows[0].get("report")
         == R4_PUBLICATION_CLOSURE_REPORT
         and all(
@@ -15499,8 +15929,56 @@ def main() -> int:
         "R4_PUBLICATION_CLOSURE_MEMORY",
         repr(
             {
-                "PUB-001": design_facts.get("PUB-001"),
                 "recent_release": r4_release_rows,
+            }
+        ),
+    )
+    r8_release_rows = [
+        row
+        for row in design_history
+        if row.get("release")
+        == "github-pr-48-r8-ownership-canonical-semantic-publication"
+    ]
+    r8_pub_statement = design_facts.get("PUB-001", {}).get(
+        "statement", ""
+    )
+    check(
+        design_memory.get("updated_at") == "2026-07-31T03:33:54+09:00"
+        and design_facts.get("PUB-001", {}).get("source")
+        == R8_PUBLICATION_CLOSURE_REPORT
+        and design_facts.get("PUB-001", {}).get("introduced")
+        == LANGUAGE_COHERENCE_REVISION
+        and all(
+            term in r8_pub_statement
+            for term in (
+                "PR #48",
+                R8_SEMANTIC_PUBLICATION_COMMIT,
+                "exact three audit P0 gaps are INTEGRATED_UNVERIFIED",
+                "independent verification passes",
+                "22 OPEN",
+                "four M13 actions remain separate and OPEN",
+                "15 product lanes remain NOT_RUN",
+            )
+        )
+        and len(r8_release_rows) == 1
+        and r8_release_rows[0].get("report")
+        == R8_PUBLICATION_CLOSURE_REPORT
+        and all(
+            term in r8_release_rows[0].get("verdict", "")
+            for term in (
+                R8_SEMANTIC_PUBLICATION_COMMIT,
+                "INTEGRATED_UNVERIFIED",
+                "independent verification passed",
+                "22 OPEN",
+                "four M13 actions separate and OPEN",
+                "15/15 NOT_RUN",
+            )
+        ),
+        "R8_PUBLICATION_CLOSURE_MEMORY",
+        repr(
+            {
+                "PUB-001": design_facts.get("PUB-001"),
+                "recent_release": r8_release_rows,
             }
         ),
     )

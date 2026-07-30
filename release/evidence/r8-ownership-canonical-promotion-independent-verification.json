@@ -1,0 +1,101 @@
+{
+  "schema": "deeplus.r8-ownership-canonical-promotion-independent-verification/v1",
+  "recorded_at": "2026-07-31T03:33:54+09:00",
+  "role": "Test_",
+  "reviewer_identity": "Codex Test_ independent R8 final-validation audit / R8_FINAL_VALIDATION_INDEPENDENT_AUDIT_R1",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "repository_write": false,
+  "verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+  "merge_readiness": "HOLD_PENDING_PUBLICATION_CLOSURE_MERGE_AND_READBACK",
+  "semantic_merge_commit": "9bc2e8694bc44cea28efe34541ce465a9bf2c109",
+  "semantic_merge_tree": "26ca3acb8377c860482bf21aa646155377fe81af",
+  "semantic_merge_parents": [
+    "1053902449aedccb110cef5bcfe76e5b1af9df01",
+    "8efc9ef3e1b60723fe5f0fa15ec638479fbed64e"
+  ],
+  "reviewed_gap_ids": [
+    "IR-OWN-P0-012",
+    "IR-OWN-P0-013",
+    "IR-OWN-P0-014"
+  ],
+  "frozen_candidate_pack": {
+    "scope": "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE",
+    "path": "audit/implementation-readiness-r8-ownership-canonical-promotion/final-freeze-r8/Codex_Design_Deeplus_R8_Ownership_Canonical_Promotion_Source_Candidate_Pack_R8.zip",
+    "filename": "Codex_Design_Deeplus_R8_Ownership_Canonical_Promotion_Source_Candidate_Pack_R8.zip",
+    "bytes": 9701905,
+    "sha256": "ae730ce57b8985d69d150f4eba9b21609bbfee5003b86016909a04cf68327f3c",
+    "member_count": 161
+  },
+  "bound_independent_audit_member": {
+    "path": "inputs/execution/R8_FINAL_VALIDATION_INDEPENDENT_AUDIT_R1.json",
+    "bytes": 9921,
+    "sha256": "7b2ba7f5941968b086903ff0adb5d9f981d1999aaeb58b3f5681e968d6e05be4",
+    "result": "PASS_WITH_NONBLOCKING_BASELINE_P2"
+  },
+  "verified_evidence": {
+    "command_matrix": {
+      "path": "inputs/execution/R8_VALIDATION_COMMAND_MATRIX_R1.json",
+      "bytes": 71270,
+      "sha256": "9ce597edf692ad4c9beed7b3606a5f3a27222c39fdc42419b5a32adcf4514fbc",
+      "passed": 23,
+      "total": 23
+    },
+    "ownership": {
+      "path": "inputs/execution/R8_OWNERSHIP_EXACT_13_RECEIPT_R1.json",
+      "bytes": 32985,
+      "sha256": "04bcde1b2fbb2094375fa51b7274632e2a3bceebcb4550df21fc6e38ce5bf992",
+      "passed": 13,
+      "total": 13
+    },
+    "workspace": {
+      "path": "inputs/execution/R8_WORKSPACE_VALIDATION_RECEIPT_R1.json",
+      "bytes": 27423,
+      "sha256": "b9735e52b5dedbe08bf116a62b566b4b4869dd45d1abb3ecfa348daef85f588e",
+      "passed": 3739,
+      "total": 3739
+    },
+    "clippy_baseline_parity": {
+      "passed": 4,
+      "total": 4,
+      "classification": "NONBLOCKING_BASELINE_P2"
+    },
+    "preparer_normal_path": "PASS",
+    "preparer_mutation_rejection": "PASS",
+    "applicator_normal_path": "PASS",
+    "applicator_mutation_rejection": "PASS",
+    "control_patch_self_validation": "PASS",
+    "canonical_source_mutation_during_freeze": 0,
+    "github_mutation_during_freeze": 0
+  },
+  "verified_ledger": {
+    "gap_transition_candidates": 3,
+    "severity_counts": {
+      "P0": 3,
+      "P1": 0,
+      "P2": 0
+    },
+    "closed_before_closure_readback": 0,
+    "eligible_after_closure_readback": 3,
+    "remaining_audit_gaps_after_closure": {
+      "P0": 10,
+      "P1": 23,
+      "P2": 4
+    },
+    "semantic_p0": 0,
+    "open_actions": 26,
+    "canonical_feature_p1": "22_OPEN",
+    "separate_m13_actions": 4,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "current_binding": false
+  },
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+  "known_limitations": [
+    "R8-TOOL-P2-CANDIDATE-MODE-GOVERNANCE",
+    "R8-TOOL-P2-BASELINE-CLIPPY",
+    "NO_POWER_LOSS_ATOMICITY_CLAIM_BEYOND_EXECUTED_TRANSACTION_TESTS"
+  ],
+  "evidence_honesty": "This independent static verification does not establish production parser, checker, HIR, MIR, xVM, Cranelift, runtime, formatter, LSP, conformance, or user-team product support."
+}
