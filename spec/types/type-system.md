@@ -16,6 +16,25 @@ A semantic value identity is independent from storage, serialization, runtime di
 
 An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. `Float` is a Stable closed alias of `Float64`: normalization erases the alias spelling before comparison, so it creates no distinct nominal, precision, serialization, runtime-discriminant, storage, layout, or ABI identity. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
 
+Resolver identities are typed by owner domain. `TargetId` is the canonical
+triple `(PackageId, manifest_target_name, target_kind)`, where `target_kind` is
+`library`, `executable`, or `script`; source-role policy, activation profile,
+file order, absolute path, timestamp, and content digest are not key inputs.
+`DependencyBindingId` is
+`(consumer_package_id, source_visible_binding)`: changing the provider keeps
+that binding identity but changes its bound content and dependency-graph
+digest. It has no direct HIR value projection.
+
+`ResolverScopeId` is a closed tagged sum of package-root, target, module,
+source-contribution, item-owner, and body-local scopes. Only the body-local
+variant projects to `HirScopeId = (HirBodyId, owner_local_scope_id)`.
+`HirLocalId = (HirBodyId, owner_local_binding_id)` is allocated only to a
+committed normalized binding; a provisional or failed pattern probe allocates
+none. `ImportBindingId` is
+`(ResolverScopeId, namespace, local_binding_name)`. Its resolved target is
+required content but is not part of identity. These recipes never use an
+absolute path, source span, timestamp, traversal order, or recovery node.
+
 `Rational` normalizes to one opaque `(BigInt numerator, BigInt denominator)`
 identity with positive denominator, relatively prime magnitudes, and canonical
 zero `0/1`. A `<p/q>` CST retains both unsigned source magnitudes, while the
@@ -285,6 +304,17 @@ ModuleId is `(PackageId, ModulePath)` and scopes namespace, `private`
 visibility, name lookup, and source composition. A filesystem path is not a
 ModulePath and cannot participate in type identity or coherence comparison.
 
+Module artifacts use three noninterchangeable identities. The interface hash
+is the exact effective public semantic residue after visibility and opaque
+facade projection; it excludes source paths, source/origin/proof IDs,
+dependency receipts, private bodies, and debug spans. The implementation hash
+binds that interface identity and the verified private HIR semantics. The full
+compilation receipt separately binds target/module ownership, source
+provenance, package and resolver graphs, dependency, visibility and
+initialization receipts, plus interface and implementation hashes. A
+non-importable script has no interface hash. Equal interface hashes therefore
+do not imply equal private implementation or compilation provenance.
+
 For every other top-level owner whose Grammar production carries
 `TopLevelVisibility?`, omission normalizes to `private`; this default never
 applies to the nine type-producing owners. After that normalization, wider API
@@ -293,6 +323,16 @@ externally exported or re-exported, and `public` residue enters external API
 only through a separately admitted export or module interface.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
+
+For an ordinary member selector, nominal and active-extension applicability are
+computed as independent sets. If both sets are nonempty, the judgment fails
+with `MEMBER_EXTENSION_COLLISION` and produces no selected member. No
+within-domain or cross-domain source/import/activation-order rank is attempted
+to escape that collision. An exact qualified extension selector restricts the
+candidate domain before this test. The former
+`EXTENSION_SHADOWED_BY_MEMBER_COMPAT` and
+`STABLE_MEMBER_EXTENSION_COLLISION` names are nonemitting retired
+compatibility identities.
 
 The Stable declaration surface is normalized before evidence selection.
 `type Target conforms Trait` forms an external record, while `type Name = Type`
@@ -653,6 +693,99 @@ guarded arm never subtracts from exhaustiveness coverage.
 The checker hands MIR a normalized descriptor containing the selected static identities, call channels, labels, type arguments, ownership transitions, cleanup regions, effects/errors, failure edges, suspension/isolation, construction plan, and source provenance. MIR lowering must not repeat open-ended name, witness, extension, or provider lookup.
 
 The canonical architecture is Rust frontend/checker, Deeplus MIR, Rust xVM bytecode/interpreter, Cranelift ObjectModule AOT, and later Cranelift JITModule. This file defines the design handoff only. Until artifact-bound target receipts exist, production parser, integrated checker, MIR lowering, xVM, Cranelift, formatter/LSP, and independent conformance remain `NOT_RUN` regardless of static schema or verifier success.
+
+## Name resolution, visibility and lexical environment judgments
+
+The checker keeps three environment families separate:
+
+```text
+NameEnv              : (Namespace, Spelling) -> Binding | OverloadSet
+ActivationEnv        : ExtensionSetId -> ActivationOriginId
+WitnessVisibilityEnv : (ResolverScopeId, EvidenceOriginId) -> VisibleEvidence
+```
+
+`NameEnv` lookup begins at the innermost frame and stops at the first frame with
+an exact `(Namespace, Spelling)` entry. Outer entries do not join that tier.
+Different namespaces may reuse a spelling. In one frame, two single bindings
+reject, and callable declarations form one overload set only when their
+canonical overload-slot keys are pairwise distinct. A result type,
+responsibility-only difference, or declaration order does not make a slot.
+Parameters and the root callable body share one collision frame.
+
+A syntactically admitted declaration in a proper child block may shadow an
+ancestor module, type, value, callable-overload-set, or import-alias binding,
+and it receives a fresh typed ID. It may not merge an overload set across
+frames. Member/type-side/associated/extension/witness capabilities are not
+lexical shadowing. R4 has no root-connected control-label surface, so
+control-label reuse is not applicable in the current profile; if a future
+`FLOW_CONTROL_PROFILE` activates such a carrier, it must reject live-ancestor
+reuse. A local function is visible only after its declaration. Transactional
+pattern binders remain
+provisional until commit; a successful commit allocates fresh `HirLocalId`
+values and a failed probe changes none of the environments.
+
+The following judgments are independent and fail closed:
+
+```text
+Γgraph ⊢ PackageGraph acyclic
+Γgraph ⊢ ReexportGraph acyclic
+Γheaders ⊢ ModuleHeaderScc header_only
+Γstatic ⊢ StaticBindingGraph acyclic
+Γscope ⊢ (namespace, spelling) ⇓ first_nonempty_frame
+Γimport ⊢ ImportBindingId ↦ ImportTargetIdentity
+Γvis ⊢ ImportTargetIdentity visible_in ResolverScopeId
+Γmodule ⊢ normalized_public_residue ≡ ModuleSignature
+Γhir ⊢ resolver_output sealed
+```
+
+A module-header SCC is admitted only after complete header collection and only
+for module-header, type-declaration, and signature references. Static-value,
+runtime-initializer, and re-export edges are forbidden within it. Static module
+values use an acyclic compile-time graph, publish atomically only after every
+value succeeds, and create zero runtime initializer operations.
+
+Every imported local key is exactly
+`(ResolverScopeId, Namespace, local_name)`. The same key is a duplicate even
+when its target is equal, and is a collision when the target differs.
+Different explicit aliases to one target are distinct.
+`ImportTargetIdentity` is `Module(ModuleId)` for the `MODULE` namespace and
+`Declaration(DeclId)` for `TYPE`, `VALUE`, and `CALLABLE_OVERLOAD_SET`.
+A module target stays a resolver identity and creates no expression-HIR
+reference. Only a declaration used as an expression projects to
+`ResolvedRef::DirectDecl(DeclId)`; `ImportBindingId` remains resolver-trace
+provenance. `SourceOriginId` orders diagnostic locations without turning span
+or file traversal order into semantic priority.
+
+Every admitted import or extension activation carries the provider pair
+`(provider_binding_id_or_self, provider_module_id)`. `self` means that the
+provider package equals the consumer package; it does not mean that the
+provider module equals the consumer module. The nearest ancestor
+`TargetScope` supplies the consumer `TargetId`, and each used pair must match
+exactly one package-graph `visible_module_bindings` row for that target. The
+dependency receipt's `required_interfaces` is exactly the unique used pair set
+after excluding only `provider_module_id == consumer_module_id`. A
+same-package, different-module provider therefore remains required with
+binding `self`. Missing, extra, stale, or graph-unbound pairs fail
+`DependencyInterfaceBindingClosed` before canonical HIR.
+
+The R4 seal may emit a closed noncall `ResolvedRef`, name/import traces, and a
+visibility proof. A callable candidate group is
+`ResolvedOverloadSetRef` in analysis HIR only. Selecting its function,
+completing generics, expected-type-directed choice, applicability/specificity
+ranking, row inference, and result-type-only choice are expressly outside this
+judgment and must be closed before canonical HIR-H1. This section preserves
+already admitted `EvidenceOriginId` values but neither creates nor replaces
+Trait witnesses.
+
+Primary failure is the first failed stage in this exact order:
+package/module/source graph; module skeleton; dependency interface; resolver
+scope tree; reference candidates; visibility/activation; noncall selection;
+resolver-HIR seal; module-interface digest. An exact owner-bound diagnostic
+within a stage precedes its generic fallback. Stable `SourceOriginId` orders
+primary and related spans; enumeration order never does.
+
+This design closure leaves the exact 22 feature P1 items OPEN and all 15 product
+lanes `NOT_RUN`.
 
 
 ## 19. Rightward local-binding normalization judgment

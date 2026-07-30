@@ -139,6 +139,26 @@ let label = id ~ auditLabel
 이 선언은 `UserId conforms Display`를 만들지 않는다. audit API와 Display
 witness는 서로 다른 capability다.
 
+### 6.4 nominal member와 extension이 함께 맞을 때
+
+ordinary selector에 적용 가능한 nominal member와 active extension
+member가 동시에 있으면 Deeplus는 nominal을 우선하지 않는다.
+`MEMBER_EXTENSION_COLLISION`으로 거부하고 selected candidate는 0개다.
+
+```deeplus
+use UserId::audit
+
+// nominal auditLabel과 active extension auditLabel이 모두 맞으면 거부
+let ambiguous = id ~ auditLabel
+
+// exact extension domain을 고르면 cross-domain collision을 피한다.
+let explicit = id ~ UserId::audit::auditLabel
+```
+
+import/use/declaration 순서와 중첩 깊이는 winner가 아니다. `import`는
+이름 frame, `use`는 activation frame만 바꾸며 어느 쪽도 Trait witness를
+만들지 않는다.
+
 ## 7. 허용·거부·경계 사례
 
 허용:
@@ -147,6 +167,7 @@ witness는 서로 다른 capability다.
 - lexical `use`
 - `Type::extension::member` explicit selector
 - 여러 set을 서로 다른 이름으로 병존
+- exact qualified extension selector로 cross-domain collision을 피하기
 
 거부 예제:
 
@@ -163,6 +184,8 @@ let label = render(Logger!())
 extension이 nominal owner의 private constructor를 호출하면
 `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN`이다. extension 실패 뒤
 nominal/Trait/provider domain으로 fallback하지 않는다.
+nominal member와 active extension이 모두 적용 가능한 ordinary selector는
+`MEMBER_EXTENSION_COLLISION`이며 import order로 해결하지 않는다.
 
 ## 8. 다른 기능과의 연결
 

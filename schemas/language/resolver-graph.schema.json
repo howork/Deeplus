@@ -1,0 +1,938 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/resolver-graph.schema.json",
+  "title": "Deeplus deterministic resolver scope and environment graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "package_graph_sha256",
+    "root_scope_ids",
+    "scopes",
+    "name_bindings",
+    "import_bindings",
+    "activation_entries",
+    "witness_visibility_entries",
+    "invariants",
+    "resolver_graph_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.resolver-graph/r1"
+    },
+    "package_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "root_scope_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/resolverScopeId"
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/scope"
+      }
+    },
+    "name_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nameBinding"
+      }
+    },
+    "import_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/importBinding"
+      }
+    },
+    "activation_entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/activationEntry"
+      }
+    },
+    "witness_visibility_entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/witnessEntry"
+      }
+    },
+    "invariants": {
+      "$ref": "#/$defs/invariants"
+    },
+    "resolver_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "resolver_graph_sha256",
+    "array_order": {
+      "root_scope_ids": "ResolverScopeId",
+      "scopes": "ResolverScopeId",
+      "name_bindings": "resolver_scope_id_then_namespace_then_local_name_then_overload_slot_key_or_null_then_SourceOriginId",
+      "import_bindings": "ImportBindingId",
+      "activation_entries": "ActivationOriginId",
+      "witness_visibility_entries": "EvidenceOriginId"
+    }
+  },
+  "$defs": {
+    "resolverScopeId": {
+      "type": "string",
+      "pattern": "^ResolverScopeId:[^\\s]+$"
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^PackageId:[^\\s]+$"
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^TargetId:[^\\s]+$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "sourceFileId": {
+      "type": "string",
+      "pattern": "^SourceFileId:[^\\s]+$"
+    },
+    "declId": {
+      "type": "string",
+      "pattern": "^DeclId:[^\\s]+$"
+    },
+    "hirBodyId": {
+      "type": "string",
+      "pattern": "^HirBodyId:[^\\s]+$"
+    },
+    "hirScopeId": {
+      "type": "string",
+      "pattern": "^HirScopeId:[^\\s]+$"
+    },
+    "boundIdentity": {
+      "type": "string",
+      "pattern": "^(?:ModuleId|DeclId|HirLocalId):[^\\s]+$"
+    },
+    "importTargetIdentity": {
+      "type": "string",
+      "pattern": "^(?:ModuleId|DeclId):[^\\s]+$"
+    },
+    "sourceOriginId": {
+      "type": "string",
+      "pattern": "^SourceOriginId:[^\\s]+$"
+    },
+    "importBindingId": {
+      "type": "string",
+      "pattern": "^ImportBindingId:[^\\s]+$"
+    },
+    "dependencyBindingId": {
+      "type": "string",
+      "pattern": "^DependencyBindingId:[^\\s]+$"
+    },
+    "providerBindingIdOrSelf": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/dependencyBindingId"
+        },
+        {
+          "const": "self"
+        }
+      ]
+    },
+    "activationOriginId": {
+      "type": "string",
+      "pattern": "^ActivationOriginId:[^\\s]+$"
+    },
+    "activatedIdentity": {
+      "type": "string",
+      "pattern": "^ExtensionSetId:[^\\s]+$"
+    },
+    "evidenceOriginId": {
+      "type": "string",
+      "pattern": "^EvidenceOriginId:[^\\s]+$"
+    },
+    "traitWitnessId": {
+      "type": "string",
+      "pattern": "^TraitWitnessId:[^\\s]+$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nameNamespace": {
+      "enum": [
+        "MODULE",
+        "TYPE",
+        "VALUE",
+        "CALLABLE_OVERLOAD_SET"
+      ]
+    },
+    "scope": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/packageRootScope"
+        },
+        {
+          "$ref": "#/$defs/targetScope"
+        },
+        {
+          "$ref": "#/$defs/moduleScope"
+        },
+        {
+          "$ref": "#/$defs/sourceContributionScope"
+        },
+        {
+          "$ref": "#/$defs/itemOwnerScope"
+        },
+        {
+          "$ref": "#/$defs/bodyLocalScope"
+        }
+      ]
+    },
+    "scopeBaseProperties": {
+      "resolver_scope_id": {
+        "$ref": "#/$defs/resolverScopeId"
+      },
+      "parent_scope_id_or_null": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/resolverScopeId"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "packageRootScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "package_id"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "type": "null"
+        },
+        "kind": {
+          "const": "PackageRootScope"
+        },
+        "package_id": {
+          "$ref": "#/$defs/packageId"
+        }
+      }
+    },
+    "targetScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "target_id"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "kind": {
+          "const": "TargetScope"
+        },
+        "target_id": {
+          "$ref": "#/$defs/targetId"
+        }
+      }
+    },
+    "moduleScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "module_id"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "kind": {
+          "const": "ModuleScope"
+        },
+        "module_id": {
+          "$ref": "#/$defs/moduleId"
+        }
+      }
+    },
+    "sourceContributionScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "source_file_id"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "kind": {
+          "const": "SourceContributionScope"
+        },
+        "source_file_id": {
+          "$ref": "#/$defs/sourceFileId"
+        }
+      }
+    },
+    "itemOwnerScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "decl_id"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "kind": {
+          "const": "ItemOwnerScope"
+        },
+        "decl_id": {
+          "$ref": "#/$defs/declId"
+        }
+      }
+    },
+    "bodyLocalScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "parent_scope_id_or_null",
+        "kind",
+        "hir_body_id",
+        "hir_scope_id",
+        "owner_local_scope_id",
+        "scope_preorder_ordinal",
+        "scope_role"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "parent_scope_id_or_null": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "kind": {
+          "const": "BodyLocalScope"
+        },
+        "hir_body_id": {
+          "$ref": "#/$defs/hirBodyId"
+        },
+        "hir_scope_id": {
+          "$ref": "#/$defs/hirScopeId"
+        },
+        "owner_local_scope_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope_preorder_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scope_role": {
+          "enum": [
+            "ROOT_BODY",
+            "NESTED_BODY"
+          ]
+        }
+      }
+    },
+    "nameBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "namespace",
+        "local_name",
+        "binding_kind",
+        "binding_origin_kind",
+        "source_admission",
+        "typed_identity",
+        "hir_body_id_or_null",
+        "owner_local_binding_id_or_null",
+        "binding_commit_ordinal_or_null",
+        "source_origin_id",
+        "visibility_start",
+        "overload_slot_key_or_null"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "namespace": {
+          "$ref": "#/$defs/nameNamespace"
+        },
+        "local_name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "binding_kind": {
+          "enum": [
+            "SINGLE",
+            "CALLABLE_OVERLOAD_SLOT",
+            "HIR_LOCAL"
+          ]
+        },
+        "binding_origin_kind": {
+          "enum": [
+            "DECLARATION",
+            "PARAMETER",
+            "ROOT_BODY_LOCAL",
+            "NESTED_LOCAL",
+            "COMMITTED_PATTERN_BINDING",
+            "LOCAL_FUNCTION"
+          ]
+        },
+        "source_admission": {
+          "const": "CURRENT_GRAMMAR_ADMITTED"
+        },
+        "typed_identity": {
+          "$ref": "#/$defs/boundIdentity"
+        },
+        "hir_body_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hirBodyId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "owner_local_binding_id_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "binding_commit_ordinal_or_null": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        },
+        "visibility_start": {
+          "enum": [
+            "SCOPE_ENTRY",
+            "AFTER_DECLARATION",
+            "AFTER_TRANSACTION_COMMIT"
+          ]
+        },
+        "overload_slot_key_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "MODULE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "binding_kind": {
+                "const": "SINGLE"
+              },
+              "typed_identity": {
+                "type": "string",
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "TYPE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "binding_kind": {
+                "const": "SINGLE"
+              },
+              "typed_identity": {
+                "type": "string",
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "VALUE"
+              }
+            }
+          },
+          "then": {
+            "oneOf": [
+              {
+                "properties": {
+                  "binding_kind": {
+                    "const": "SINGLE"
+                  },
+                  "typed_identity": {
+                    "type": "string",
+                    "pattern": "^DeclId:[^\\s]+$"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "binding_kind": {
+                    "const": "HIR_LOCAL"
+                  },
+                  "typed_identity": {
+                    "type": "string",
+                    "pattern": "^HirLocalId:[^\\s]+$"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "CALLABLE_OVERLOAD_SET"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "binding_kind": {
+                "const": "CALLABLE_OVERLOAD_SLOT"
+              },
+              "typed_identity": {
+                "type": "string",
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_kind": {
+                "const": "CALLABLE_OVERLOAD_SLOT"
+              }
+            },
+            "required": [
+              "binding_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "overload_slot_key_or_null": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "overload_slot_key_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_kind": {
+                "const": "HIR_LOCAL"
+              }
+            },
+            "required": [
+              "binding_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "binding_origin_kind": {
+                "enum": [
+                  "PARAMETER",
+                  "ROOT_BODY_LOCAL",
+                  "NESTED_LOCAL",
+                  "COMMITTED_PATTERN_BINDING"
+                ]
+              },
+              "hir_body_id_or_null": {
+                "$ref": "#/$defs/hirBodyId"
+              },
+              "owner_local_binding_id_or_null": {
+                "type": "string",
+                "minLength": 1
+              },
+              "binding_commit_ordinal_or_null": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "hir_body_id_or_null": {
+                "type": "null"
+              },
+              "owner_local_binding_id_or_null": {
+                "type": "null"
+              },
+              "binding_commit_ordinal_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_origin_kind": {
+                "const": "LOCAL_FUNCTION"
+              }
+            },
+            "required": [
+              "binding_origin_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "binding_kind": {
+                "const": "CALLABLE_OVERLOAD_SLOT"
+              },
+              "visibility_start": {
+                "const": "AFTER_DECLARATION"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_origin_kind": {
+                "const": "PARAMETER"
+              }
+            },
+            "required": [
+              "binding_origin_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "visibility_start": {
+                "const": "SCOPE_ENTRY"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_origin_kind": {
+                "enum": [
+                  "ROOT_BODY_LOCAL",
+                  "NESTED_LOCAL"
+                ]
+              }
+            },
+            "required": [
+              "binding_origin_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "visibility_start": {
+                "const": "AFTER_DECLARATION"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_origin_kind": {
+                "const": "COMMITTED_PATTERN_BINDING"
+              }
+            },
+            "required": [
+              "binding_origin_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "visibility_start": {
+                "const": "AFTER_TRANSACTION_COMMIT"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "binding_origin_kind": {
+                "const": "DECLARATION"
+              }
+            },
+            "required": [
+              "binding_origin_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "visibility_start": {
+                "const": "SCOPE_ENTRY"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "importBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "import_binding_id",
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name",
+        "resolved_target_identity",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "source_origin_id"
+      ],
+      "properties": {
+        "import_binding_id": {
+          "$ref": "#/$defs/importBindingId"
+        },
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "namespace": {
+          "$ref": "#/$defs/nameNamespace"
+        },
+        "local_binding_name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "resolved_target_identity": {
+          "$ref": "#/$defs/importTargetIdentity"
+        },
+        "provider_binding_id_or_self": {
+          "$ref": "#/$defs/providerBindingIdOrSelf"
+        },
+        "provider_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "MODULE"
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "then": {
+            "properties": {
+              "resolved_target_identity": {
+                "type": "string",
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "resolved_target_identity": {
+                "type": "string",
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "activationEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "activation_origin_id",
+        "activated_identity",
+        "activation_kind",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "semantic_site_key"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "activation_origin_id": {
+          "$ref": "#/$defs/activationOriginId"
+        },
+        "activated_identity": {
+          "$ref": "#/$defs/activatedIdentity"
+        },
+        "activation_kind": {
+          "const": "use"
+        },
+        "provider_binding_id_or_self": {
+          "$ref": "#/$defs/providerBindingIdOrSelf"
+        },
+        "provider_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "semantic_site_key": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "witnessEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resolver_scope_id",
+        "evidence_origin_id",
+        "visible_witness_identity"
+      ],
+      "properties": {
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "evidence_origin_id": {
+          "$ref": "#/$defs/evidenceOriginId"
+        },
+        "visible_witness_identity": {
+          "$ref": "#/$defs/traitWitnessId"
+        }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lookup",
+        "same_frame_order_priority",
+        "cross_frame_overload_merge",
+        "provisional_bindings_in_name_env",
+        "environment_cross_creation_count",
+        "runtime_relookup_count"
+      ],
+      "properties": {
+        "lookup": {
+          "const": "INNERMOST_TO_OUTERMOST_STOP_AT_FIRST_NONEMPTY_EXACT_NAMESPACE_AND_SPELLING"
+        },
+        "same_frame_order_priority": {
+          "const": false
+        },
+        "cross_frame_overload_merge": {
+          "const": false
+        },
+        "provisional_bindings_in_name_env": {
+          "const": false
+        },
+        "environment_cross_creation_count": {
+          "const": 0
+        },
+        "runtime_relookup_count": {
+          "const": 0
+        }
+      }
+    }
+  },
+  "x-deeplus-provider-provenance-contract": {
+    "provider_pair_fields": [
+      "provider_binding_id_or_self",
+      "provider_module_id"
+    ],
+    "self_meaning": "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE",
+    "self_does_not_imply": "PROVIDER_MODULE_EQUALS_CONSUMER_MODULE",
+    "consumer_target_for_entry": "NEAREST_ANCESTOR_TARGET_SCOPE_TARGET_ID",
+    "visible_module_binding_match": "EXACT_ONE_PACKAGE_GRAPH_VISIBLE_MODULE_BINDING_WITH_EQUAL_CONSUMER_TARGET_ID_RESOLVED_MODULE_ID_AND_DEPENDENCY_BINDING_ID_OR_SELF",
+    "same_package_other_module": "PROVIDER_BINDING_SELF_AND_DISTINCT_PROVIDER_MODULE_ID",
+    "source_or_traversal_order_is_provenance": false
+  },
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

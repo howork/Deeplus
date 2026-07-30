@@ -90,6 +90,24 @@ Module을 선언할 수 있다. 흔한 오해는 Package를 namespace, Module을
 폴더 별칭으로만 이해하는 것이다. 의존성·artifact version은 Package,
 이름 접근과 source 구성은 Module이 소유한다.
 
+### R4: module graph를 읽는 최소 규칙
+
+Package dependency와 re-export는 cycle을 허용하지 않는다. 서로 type
+header만 참조하는 Module들은 모든 header를 먼저 수집한다는 조건에서
+SCC가 될 수 있지만, 그 안에 static value, runtime initializer 또는
+re-export edge가 들어가면 거부된다. 따라서 “파일을 먼저 읽은 쪽”이
+의미를 정하는 일은 없다.
+
+```text
+catalog header -> pricing header -> catalog header   # header-only: admitted
+catalog static -> pricing static -> catalog static   # rejected
+```
+
+`import`의 local identity는 scope, namespace, local name의 조합이다. 같은
+scope에서 같은 local name을 다시 import하면 target이 같아도 duplicate다.
+서로 다른 alias를 사용하면 별도 binding이다. `import`는 이름만 가져오며
+extension activation은 `use`가 별도로 만든다.
+
 ## 7. 허용·거부·경계 사례
 
 명시적 가시성이 필요한 type owner에서 이를 생략하면 거부한다.
@@ -119,6 +137,9 @@ fixed-glyph conformance의 locality를 결정한다. 지역 `import ... in {}`�
 - directory convention은 편의를 위한 build mapping으로만 설명한다.
 - dependency를 추가하는 일과 이름을 import하는 일을 구분한다.
 - Package/Module을 한 단어처럼 쓰지 않는다.
+- graph cycle을 파일/import 순서로 해결하려 하지 않는다.
+- static module value는 compile-time acyclic graph와 atomic commit으로
+  설계하고 runtime initializer를 기대하지 않는다.
 - 유효한 `::` 경로를 중심으로 가르치고 잘못된 구두점은 필요할 때만
   진단한다.
 

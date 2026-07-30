@@ -534,6 +534,22 @@ loading으로 바뀌지 않는다. nominal member, 활성 extension member,
 conformance evidence의 resolution domain은 명시된 규칙대로 검사한다.
 충돌 또는 ambiguity를 source/import 순서로 해결하지 않는다.
 
+ordinary selector의 applicable nominal set과 active extension set을 각각
+계산한 결과 둘 다 nonempty이면 `MEMBER_EXTENSION_COLLISION`으로 거부하고
+selected candidate는 0개다. nominal을 먼저 고르거나 extension을 shadow
+시키지 않는다. 각 domain 내부에 여러 후보가 있다면 그 domain의
+ambiguity도 order 없이 거부한다. `Type::ExtensionSet::member`처럼 exact
+extension을 한정한 selector는 처음부터 그 domain만 검사하므로 이
+cross-domain collision을 우회한다.
+
+`NameEnv`, extension `ActivationEnv`, Trait
+`WitnessVisibilityEnv`는 별도 frame이다. import는 activation을 만들지
+않고, use는 ordinary name이나 witness를 만들지 않으며, witness visibility
+역시 새 witness를 합성하지 않는다. nested `use` 깊이와 순서는 extension
+winner가 아니다. `EXTENSION_SHADOWED_BY_MEMBER_COMPAT`와
+`STABLE_MEMBER_EXTENSION_COLLISION`은 더 이상 emit하지 않는 과거
+이름이고 sole replacement는 `MEMBER_EXTENSION_COLLISION`이다.
+
 `~` message selector의 qualified path도 이 identity 분리를 재사용한다.
 `receiver ~ SomeTrait::selector`는 receiver의 정적 타입에 대해 이미
 유일한 `TraitWitnessId + RequirementId`가 있을 때만 그 witness domain을

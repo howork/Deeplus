@@ -12,7 +12,10 @@
       "authority",
       "effect_row",
       "error_set",
-      "evidence_ids"
+      "evidence_ids",
+      "r4_interface_envelope.source_contribution_ids",
+      "r4_interface_envelope.export_binding_ids",
+      "r4_interface_envelope.reexported_activation_origin_ids"
     ],
     "set_order": "strict ascending Unicode scalar sequence with no duplicates",
     "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
@@ -1645,6 +1648,231 @@
       ],
       "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"module_id\":\"fixture.api\",\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"construction_row_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"type\",\"normalized_signature\":\"public class alpha::Type\",\"ownership\":\"not_applicable\",\"projection_row_sha256\":null,\"responsibility_profile\":{\"declaration_ownership\":\"not_applicable\",\"profile_kind\":\"type\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"alpha::Type\"},{\"authority\":[\"clock\",\"fs\"],\"callable_profile\":{\"behavior\":\"pure\",\"call_right\":\"once\",\"environment_receiver\":\"shared\",\"lifetime\":\"scoped\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"io\",\"state\"],\"error_set\":[\"IOError\",\"ParseError\"],\"evidence_ids\":[\"conf::Eq\",\"conf::Send\"],\"isolation\":\"task\",\"kind\":\"function\",\"named_rest_residue\":\"Record***\",\"normalized_signature\":\"def beta::function(Record***) -> Unit\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[],\"parameters\":[{\"channel_id\":\"named_rest\",\"cleanup\":\"drop_exactly_once\",\"ownership\":\"move\",\"type_identity\":\"Record***\"}],\"profile_kind\":\"callable\",\"receiver\":null,\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Unit\"}},\"suspends\":false,\"symbol_id\":\"beta::function\"},{\"authority\":[],\"callable_profile\":{\"behavior\":\"ordinary\",\"call_right\":\"repeatable\",\"environment_receiver\":\"mutable\",\"lifetime\":\"escaping\"},\"cancellation\":\"forbidden\",\"cleanup\":\"not_applicable\",\"effect_row\":[\"state\"],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"local\",\"kind\":\"method\",\"named_rest_residue\":null,\"normalized_signature\":\"gamma::Type.method() -> Bool\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"captures\":[{\"channel_id\":\"self\",\"cleanup\":\"view_release\",\"ownership\":\"borrow\",\"type_identity\":\"gamma::Type\"}],\"parameters\":[],\"profile_kind\":\"callable\",\"receiver\":{\"channel_id\":\"self\",\"cleanup\":\"none\",\"ownership\":\"inout\",\"type_identity\":\"gamma::Type\"},\"result\":{\"channel_id\":\"result\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Bool\"}},\"suspends\":false,\"symbol_id\":\"gamma::method\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[\"conf::theta::Display\"],\"isolation\":\"not_applicable\",\"kind\":\"conformance\",\"normalized_signature\":\"theta::Type conforms Display\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"evidence_cleanup\":\"none\",\"evidence_ownership\":\"reusable\",\"profile_kind\":\"conformance\"},\"suspends\":\"not_applicable\",\"symbol_id\":\"theta::conformance\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"let zeta::binding: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"zeta::binding\"}]}",
       "expected_canonical_sha256": "e67b6e58bf551249e45fe9afbb89c6bb95c1e04028e07571139888353b88c2ae"
+    }
+  ],
+  "r4_interface_envelope_fixture_count": 3,
+  "r4_interface_envelope_fixtures": [
+    {
+      "fixture_id": "MODULE-API-R4-POS-001",
+      "fixture_class": "positive",
+      "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "ModuleId:acme.api",
+        "source_role": "library",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "r4_interface_envelope": {
+          "activation_profile": "stable",
+          "public_export_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "namespace": "VALUE",
+              "exported_name": "answer",
+              "referenced_identity_id": "DeclId:acme.api.answer"
+            }
+          ],
+          "public_activation_reexport_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "referenced_activation_identity_id": "ExtensionSetId:acme.display"
+            }
+          ],
+          "opaque_facade_rows": [],
+          "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+          "opaque_facade_relation": "NARROWING_ONLY",
+          "symbols_are_exact_effective_public_residue": true,
+          "private_body_bytes_in_interface_hash": false
+        },
+        "symbols": [
+          {
+            "symbol_id": "acme.api::answer",
+            "kind": "static_binding",
+            "normalized_signature": "public let acme.api::answer: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          }
+        ],
+        "canonical_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04"
+      },
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"interface_profile\":\"R4_NAME_RESOLUTION_MODULES\",\"module_id\":\"ModuleId:acme.api\",\"r4_interface_envelope\":{\"activation_profile\":\"stable\",\"opaque_facade_relation\":\"NARROWING_ONLY\",\"opaque_facade_rows\":[],\"private_body_bytes_in_interface_hash\":false,\"public_activation_reexport_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"referenced_activation_identity_id\":\"ExtensionSetId:acme.display\"}],\"public_export_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"exported_name\":\"answer\",\"namespace\":\"VALUE\",\"referenced_identity_id\":\"DeclId:acme.api.answer\"}],\"signature_relation\":\"EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH\",\"symbols_are_exact_effective_public_residue\":true},\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"public let acme.api::answer: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"acme.api::answer\"}]}",
+      "expected_canonical_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+      "mutation": "PRIVATE_BODY_ONLY_CHANGE_OUTSIDE_INTERFACE_PREIMAGE",
+      "expected": "INTERFACE_DIGEST_UNCHANGED"
+    },
+    {
+      "fixture_id": "MODULE-API-R4-BOUND-002",
+      "fixture_class": "boundary",
+      "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "ModuleId:acme.api",
+        "source_role": "library",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "r4_interface_envelope": {
+          "activation_profile": "stable",
+          "public_export_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "namespace": "VALUE",
+              "exported_name": "answer",
+              "referenced_identity_id": "DeclId:acme.api.answer"
+            }
+          ],
+          "public_activation_reexport_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "referenced_activation_identity_id": "ExtensionSetId:acme.display"
+            }
+          ],
+          "opaque_facade_rows": [],
+          "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+          "opaque_facade_relation": "NARROWING_ONLY",
+          "symbols_are_exact_effective_public_residue": true,
+          "private_body_bytes_in_interface_hash": false
+        },
+        "symbols": [
+          {
+            "symbol_id": "acme.api::answer",
+            "kind": "static_binding",
+            "normalized_signature": "public let acme.api::answer: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          }
+        ],
+        "canonical_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04"
+      },
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"interface_profile\":\"R4_NAME_RESOLUTION_MODULES\",\"module_id\":\"ModuleId:acme.api\",\"r4_interface_envelope\":{\"activation_profile\":\"stable\",\"opaque_facade_relation\":\"NARROWING_ONLY\",\"opaque_facade_rows\":[],\"private_body_bytes_in_interface_hash\":false,\"public_activation_reexport_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"referenced_activation_identity_id\":\"ExtensionSetId:acme.display\"}],\"public_export_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"exported_name\":\"answer\",\"namespace\":\"VALUE\",\"referenced_identity_id\":\"DeclId:acme.api.answer\"}],\"signature_relation\":\"EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH\",\"symbols_are_exact_effective_public_residue\":true},\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"public let acme.api::answer: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"acme.api::answer\"}]}",
+      "expected_canonical_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+      "mutation": "SOURCE_PROVENANCE_ONLY_CHANGE_OUTSIDE_INTERFACE_PREIMAGE",
+      "expected": "INTERFACE_DIGEST_UNCHANGED"
+    },
+    {
+      "fixture_id": "MODULE-API-R4-NEG-003",
+      "fixture_class": "negative",
+      "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+      "payload": {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "ModuleId:acme.api",
+        "source_role": "library",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "r4_interface_envelope": {
+          "activation_profile": "stable",
+          "public_export_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "namespace": "VALUE",
+              "exported_name": "answer",
+              "referenced_identity_id": "DeclId:acme.api.answer"
+            },
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "namespace": "VALUE",
+              "exported_name": "version",
+              "referenced_identity_id": "DeclId:acme.api.version"
+            }
+          ],
+          "public_activation_reexport_rows": [
+            {
+              "export_owner_id": "ModuleId:acme.api",
+              "referenced_activation_identity_id": "ExtensionSetId:acme.display"
+            }
+          ],
+          "opaque_facade_rows": [],
+          "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+          "opaque_facade_relation": "NARROWING_ONLY",
+          "symbols_are_exact_effective_public_residue": true,
+          "private_body_bytes_in_interface_hash": false
+        },
+        "symbols": [
+          {
+            "symbol_id": "acme.api::answer",
+            "kind": "static_binding",
+            "normalized_signature": "public let acme.api::answer: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          },
+          {
+            "symbol_id": "acme.api::version",
+            "kind": "static_binding",
+            "normalized_signature": "public let acme.api::version: Int",
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "responsibility_profile": {
+              "profile_kind": "static_binding",
+              "value": {
+                "channel_id": "value",
+                "type_identity": "Int",
+                "ownership": "reusable",
+                "cleanup": "none"
+              }
+            }
+          }
+        ],
+        "canonical_sha256": "1b56a8e9f097a9ed278343a818589b022e3b7336d2ee7d4ae7d9b428e925cabc"
+      },
+      "canonical_bytes_utf8": "{\"baseline\":\"0.1.2-baseline.r51f3\",\"interface_profile\":\"R4_NAME_RESOLUTION_MODULES\",\"module_id\":\"ModuleId:acme.api\",\"r4_interface_envelope\":{\"activation_profile\":\"stable\",\"opaque_facade_relation\":\"NARROWING_ONLY\",\"opaque_facade_rows\":[],\"private_body_bytes_in_interface_hash\":false,\"public_activation_reexport_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"referenced_activation_identity_id\":\"ExtensionSetId:acme.display\"}],\"public_export_rows\":[{\"export_owner_id\":\"ModuleId:acme.api\",\"exported_name\":\"answer\",\"namespace\":\"VALUE\",\"referenced_identity_id\":\"DeclId:acme.api.answer\"},{\"export_owner_id\":\"ModuleId:acme.api\",\"exported_name\":\"version\",\"namespace\":\"VALUE\",\"referenced_identity_id\":\"DeclId:acme.api.version\"}],\"signature_relation\":\"EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH\",\"symbols_are_exact_effective_public_residue\":true},\"schema\":\"deeplus.module-api-digest/r51f3\",\"source_role\":\"library\",\"symbols\":[{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"public let acme.api::answer: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"acme.api::answer\"},{\"authority\":[],\"cancellation\":\"not_applicable\",\"cleanup\":\"not_applicable\",\"effect_row\":[],\"error_set\":[],\"evidence_ids\":[],\"isolation\":\"not_applicable\",\"kind\":\"static_binding\",\"normalized_signature\":\"public let acme.api::version: Int\",\"ownership\":\"not_applicable\",\"responsibility_profile\":{\"profile_kind\":\"static_binding\",\"value\":{\"channel_id\":\"value\",\"cleanup\":\"none\",\"ownership\":\"reusable\",\"type_identity\":\"Int\"}},\"suspends\":\"not_applicable\",\"symbol_id\":\"acme.api::version\"}]}",
+      "expected_canonical_sha256": "1b56a8e9f097a9ed278343a818589b022e3b7336d2ee7d4ae7d9b428e925cabc",
+      "comparison_baseline_fixture_id": "MODULE-API-R4-POS-001",
+      "mutation": "PUBLIC_RESIDUE_EXTRA_EXPORT",
+      "expected": "MODULE_SIGNATURE_MISMATCH"
     }
   ],
   "product_compiler_execution": "NOT_RUN"

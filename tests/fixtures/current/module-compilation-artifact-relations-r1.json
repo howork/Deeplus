@@ -1,0 +1,891 @@
+{
+  "schema": "deeplus.module-compilation-artifact-relations-fixtures/r1",
+  "profile": "R4_NAME_RESOLUTION_MODULES",
+  "canonicalization": {
+    "json_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "json_algorithm_contract": {
+      "object_member_order": "ASCENDING_UNICODE_SCALAR_KEY_ORDER_RECURSIVE",
+      "string_encoding": "JSON_MANDATORY_ESCAPES_OTHER_SCALARS_DIRECT_UTF8_NO_NORMALIZATION",
+      "number_domain": "SCHEMA_VALIDATED_INTEGER_ONLY_FOR_CURRENT_R4_DIGEST_ARTIFACTS",
+      "whitespace": "NONE_OUTSIDE_STRING_VALUES",
+      "terminal_newline": false
+    },
+    "conformance_vector": {
+      "input": {
+        "z": "\ud55c\ud83d\ude00",
+        "a": "quote:\" slash:\\ newline:\n"
+      },
+      "canonical_utf8_hex": "7b2261223a2271756f74653a5c2220736c6173683a5c5c206e65776c696e653a5c6e222c227a223a22ed959cf09f9880227d",
+      "sha256": "333657884e20443a6ee4c742f2e894b34939238558c85e2a9cd720818169ba3c"
+    },
+    "json_self_hash_exclusion": {
+      "package_graph": "canonical_graph_sha256",
+      "resolver_graph": "resolver_graph_sha256",
+      "resolver_trace": "trace_sha256",
+      "visibility_closure": "closure_sha256",
+      "initialization_plan": "plan_sha256",
+      "module_api": "canonical_sha256",
+      "module_source_contribution_projection": "projection_sha256",
+      "dependency_receipt": "dependency_receipt_sha256",
+      "implementation_digest": "implementation_sha256",
+      "compilation_receipt": "compilation_receipt_sha256"
+    },
+    "hir_semantic_algorithm": "SHA256(domain_utf8 || u64be(byte_length) || semantic_bytes)",
+    "hir_semantic_domain_utf8": "deeplus.hir.semantic/h1\u0000"
+  },
+  "interface_fixture_binding": {
+    "path": "tests/fixtures/imported/module-api-digest-fixtures.json",
+    "fixture_id": "MODULE-API-R4-POS-001",
+    "interface_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04"
+  },
+  "provider_interfaces": {
+    "ModuleId:acme.display": {
+      "schema": "deeplus.module-api-digest/r51f3",
+      "baseline": "0.1.2-baseline.r51f3",
+      "module_id": "ModuleId:acme.display",
+      "source_role": "library",
+      "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+      "r4_interface_envelope": {
+        "activation_profile": "stable",
+        "public_export_rows": [],
+        "public_activation_reexport_rows": [
+          {
+            "export_owner_id": "ModuleId:acme.display",
+            "referenced_activation_identity_id": "ExtensionSetId:acme.display"
+          }
+        ],
+        "opaque_facade_rows": [],
+        "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+        "opaque_facade_relation": "NARROWING_ONLY",
+        "symbols_are_exact_effective_public_residue": true,
+        "private_body_bytes_in_interface_hash": false
+      },
+      "symbols": [],
+      "canonical_sha256": "de873eb6cfe72770d209f6542b20ca40025e0e7187c3813e49ca80225667830d"
+    }
+  },
+  "shared_inputs": {
+    "manifest_bytes_utf8": "package acme@1.0.0 target lib\n",
+    "manifest_sha256": "3a64d932be4a4570e558acfa30f8dd0f5dfa7b23bbfa0ca11c4db676acd39c11",
+    "provider_source_module_id": "ModuleId:acme.display",
+    "provider_source_file_id": "SourceFileId:acme/src/display.dp",
+    "provider_source_bytes_utf8": "public extension Int as display {\n}\n",
+    "provider_source_bytes_sha256": "9f3fd95bd424ffbe78a6527cc533c333dee2f5b8577abdea84827a80eb5727bf",
+    "visibility_closure": {
+      "schema": "deeplus.module-visibility-closure/r1",
+      "module_id": "ModuleId:acme.api",
+      "default_external_export_set": "EMPTY",
+      "export_edges": [
+        {
+          "export_owner_id": "ModuleId:acme.api",
+          "namespace": "VALUE",
+          "exported_name": "answer",
+          "referenced_identity_id": "DeclId:acme.api.answer",
+          "source_origin_id": "SourceOriginId:acme.api.answer-export"
+        }
+      ],
+      "reexport_edges": [
+        {
+          "activation_origin_id": "ActivationOriginId:acme.api.display-reexport",
+          "export_owner_id": "ModuleId:acme.api",
+          "referenced_activation_identity_id": "ExtensionSetId:acme.display",
+          "source_origin_id": "SourceOriginId:acme.api.display-reexport"
+        }
+      ],
+      "visibility_proofs": [
+        {
+          "proof_id": "VisibilityProofId:acme.api.answer-public",
+          "export_owner_id": "ModuleId:acme.api",
+          "referenced_identity_id": "DeclId:acme.api.answer",
+          "api_position_kind": "nested_export",
+          "api_position_path": [
+            "answer"
+          ],
+          "owner_visibility": "public",
+          "referenced_visibility": "public",
+          "package_relation": "same_package",
+          "module_relation": "same_module",
+          "admission": "VISIBLE_NO_WIDENING"
+        }
+      ],
+      "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+      "opaque_facade_relation": "NARROWING_ONLY",
+      "opaque_facades": [],
+      "closure_sha256": "bc4747cd38838201cab0ec96f34ea9d518913661673d8a5f10bbc2fabaf5c686"
+    },
+    "initialization_plan": {
+      "schema": "deeplus.module-initialization-plan/r1",
+      "module_id": "ModuleId:acme.api",
+      "graph_profile": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT",
+      "bindings": [
+        {
+          "binding_decl_id": "DeclId:acme.api.answer",
+          "dependency_decl_ids": [],
+          "value_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+          "evaluation_status": "COMPILE_TIME_SUCCEEDED"
+        }
+      ],
+      "topological_evaluation_order": [
+        "DeclId:acme.api.answer"
+      ],
+      "evaluation_order": "TOPOLOGICAL_THEN_CANONICAL_DECL_ID",
+      "receipt_order": "CANONICAL_DECL_ID_ORDER",
+      "commit": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED",
+      "runtime_initializer_count": 0,
+      "semantic_order_winner": false,
+      "plan_sha256": "ef7a32385a7fee2935c0e3576b6a9335ce1359a251807584b81d7e8c46c37c02"
+    }
+  },
+  "case_count": 2,
+  "cases": [
+    {
+      "case_id": "R4-MODULE-ARTIFACT-BASELINE",
+      "mutation_class": "BASELINE",
+      "source_file_id": "SourceFileId:acme/src/api.dp",
+      "source_bytes_utf8": "use export Int::display\npublic let answer: Int = 42\nprivate def helper() -> Int = {\n    let _ = answer\n    return 1\n}\n",
+      "source_bytes_sha256": "8ce6a87b7f5d969b830ba7de32be6149090e558a93aeb3d926bc91a2cd9ab528",
+      "package_graph": {
+        "schema": "deeplus.package-module-source-graph/r1",
+        "root_package_id": "PackageId:acme",
+        "packages": [
+          {
+            "package_id": "PackageId:acme",
+            "canonical_package_key": {
+              "registry_namespace": "local",
+              "package_name": "acme",
+              "package_version_identity": "1.0.0"
+            },
+            "resolved_artifact_provenance_digest": "3a64d932be4a4570e558acfa30f8dd0f5dfa7b23bbfa0ca11c4db676acd39c11",
+            "dependency_binding_ids": [],
+            "target_ids": [
+              "TargetId:acme.lib"
+            ]
+          }
+        ],
+        "targets": [
+          {
+            "target_id": "TargetId:acme.lib",
+            "package_id": "PackageId:acme",
+            "canonical_manifest_target_name": "lib",
+            "target_kind": "library",
+            "source_role_policy": "library",
+            "activation_profile": "stable",
+            "source_file_ids": [
+              "SourceFileId:acme/src/api.dp",
+              "SourceFileId:acme/src/display.dp"
+            ]
+          }
+        ],
+        "source_contributions": [
+          {
+            "source_file_id": "SourceFileId:acme/src/api.dp",
+            "target_id": "TargetId:acme.lib",
+            "normalized_project_relative_path": "src/api.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:acme.api",
+            "module_path": [
+              "acme",
+              "api"
+            ],
+            "explicit_module_path_or_null": [
+              "acme",
+              "api"
+            ],
+            "source_bytes_sha256": "8ce6a87b7f5d969b830ba7de32be6149090e558a93aeb3d926bc91a2cd9ab528"
+          },
+          {
+            "source_file_id": "SourceFileId:acme/src/display.dp",
+            "target_id": "TargetId:acme.lib",
+            "normalized_project_relative_path": "src/display.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:acme.display",
+            "module_path": [
+              "acme",
+              "display"
+            ],
+            "explicit_module_path_or_null": [
+              "acme",
+              "display"
+            ],
+            "source_bytes_sha256": "9f3fd95bd424ffbe78a6527cc533c333dee2f5b8577abdea84827a80eb5727bf"
+          }
+        ],
+        "dependency_bindings": [],
+        "visible_module_bindings": [
+          {
+            "consumer_target_id": "TargetId:acme.lib",
+            "visible_qualified_path": [
+              "acme",
+              "api"
+            ],
+            "resolved_module_id": "ModuleId:acme.api",
+            "dependency_binding_id_or_self": "self"
+          },
+          {
+            "consumer_target_id": "TargetId:acme.lib",
+            "visible_qualified_path": [
+              "acme",
+              "display"
+            ],
+            "resolved_module_id": "ModuleId:acme.display",
+            "dependency_binding_id_or_self": "self"
+          }
+        ],
+        "module_header_import_edges": [],
+        "graph_policy": {
+          "package_dependency": "ACYCLIC",
+          "module_header_import": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+          "reexport": "ACYCLIC",
+          "static_binding_value_dependency": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        },
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "canonical_graph_sha256": "31b0fb7d872786c279192e58913fad72c206111e7bef64627fe970f0882b4ca6"
+      },
+      "resolver_graph": {
+        "schema": "deeplus.resolver-graph/r1",
+        "package_graph_sha256": "31b0fb7d872786c279192e58913fad72c206111e7bef64627fe970f0882b4ca6",
+        "root_scope_ids": [
+          "ResolverScopeId:acme.package"
+        ],
+        "scopes": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.module",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.target.lib",
+            "kind": "ModuleScope",
+            "module_id": "ModuleId:acme.api"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.api.module",
+            "kind": "SourceContributionScope",
+            "source_file_id": "SourceFileId:acme/src/api.dp"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.package",
+            "parent_scope_id_or_null": null,
+            "kind": "PackageRootScope",
+            "package_id": "PackageId:acme"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.target.lib",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.package",
+            "kind": "TargetScope",
+            "target_id": "TargetId:acme.lib"
+          }
+        ],
+        "name_bindings": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.module",
+            "namespace": "VALUE",
+            "local_name": "answer",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "DeclId:acme.api.answer",
+            "hir_body_id_or_null": null,
+            "owner_local_binding_id_or_null": null,
+            "binding_commit_ordinal_or_null": null,
+            "source_origin_id": "SourceOriginId:acme.api.answer",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": null
+          }
+        ],
+        "import_bindings": [],
+        "activation_entries": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "activation_origin_id": "ActivationOriginId:acme.api.display-reexport",
+            "activated_identity": "ExtensionSetId:acme.display",
+            "activation_kind": "use",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "semantic_site_key": "src/api.dp:use-export:Int::display"
+          }
+        ],
+        "witness_visibility_entries": [],
+        "invariants": {
+          "lookup": "INNERMOST_TO_OUTERMOST_STOP_AT_FIRST_NONEMPTY_EXACT_NAMESPACE_AND_SPELLING",
+          "same_frame_order_priority": false,
+          "cross_frame_overload_merge": false,
+          "provisional_bindings_in_name_env": false,
+          "environment_cross_creation_count": 0,
+          "runtime_relookup_count": 0
+        },
+        "resolver_graph_sha256": "41be039a8c72e8d613b5dbb6211b3c93f268c49d277563afca06e666e68c1699"
+      },
+      "resolver_trace": {
+        "schema": "deeplus.resolver-trace/r1",
+        "resolver_graph_sha256": "41be039a8c72e8d613b5dbb6211b3c93f268c49d277563afca06e666e68c1699",
+        "references": [
+          {
+            "source_origin_id": "SourceOriginId:acme.api.answer-reference",
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "namespace": "VALUE",
+            "source_spelling": "answer",
+            "candidate_origin_ids": [
+              "DeclId:acme.api.answer"
+            ],
+            "visibility_proof_ids": [
+              "VisibilityProofId:acme.api.answer-public"
+            ],
+            "activation_origin_id_or_null": null,
+            "evidence_origin_id_or_null": null,
+            "import_binding_id_or_null": null,
+            "stages": [
+              {
+                "ordinal": 1,
+                "predicate": "PackageModuleSourceGraphAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 2,
+                "predicate": "ModuleItemSkeletonSetAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 3,
+                "predicate": "DependencyInterfaceBindingClosed",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 4,
+                "predicate": "ResolverScopeTreeAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 5,
+                "predicate": "ReferenceCandidateSetResolved",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 6,
+                "predicate": "ReferenceVisibilityActivationAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 7,
+                "predicate": "ResolvedNoncallReferenceSelected",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 8,
+                "predicate": "ResolverHirSealAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 9,
+                "predicate": "ModuleInterfaceDigestVerified",
+                "status": "PASS"
+              }
+            ],
+            "result": {
+              "kind": "RESOLVED_NONCALL_REFERENCE",
+              "resolved_identity": "DeclId:acme.api.answer",
+              "selected_count": 1,
+              "rejection_reason_or_null": null
+            },
+            "source_span": {
+              "start": 96,
+              "end": 102
+            }
+          }
+        ],
+        "diagnostic_order": "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_LOWEST_SOURCE_ORIGIN_ID",
+        "diagnostic_selection": {
+          "winner_source_origin_id_or_null": null,
+          "winner_rejection_reason_or_null": null,
+          "suppressed_source_origin_ids": []
+        },
+        "seal": {
+          "seal_status": "SEALED",
+          "counters": {
+            "unbound_primary_count": 0,
+            "unresolved_count": 0,
+            "candidate_set_count": 0,
+            "missing_typed_id_count": 0,
+            "missing_visibility_proof_count": 0,
+            "recovery_binding_count": 0,
+            "runtime_relookup_count": 0,
+            "overload_winner_count": 0,
+            "canonical_hir_overload_set_ref_count": 0
+          }
+        },
+        "trace_sha256": "84e4da4d15b662b9bd1c39efdbdafb5cc93afa8777656cd6df72c29f64110d9d"
+      },
+      "hir_semantic_digest_preimage": {
+        "schema": "deeplus.fixture-hir-semantic/r1",
+        "module_id": "ModuleId:acme.api",
+        "public_items": [
+          "DeclId:acme.api.answer"
+        ],
+        "private_bodies": [
+          {
+            "decl_id": "DeclId:acme.api.helper",
+            "reference_decl_ids": [
+              "DeclId:acme.api.answer"
+            ],
+            "return_int": 1
+          }
+        ]
+      },
+      "hir_semantic_bytes_utf8": "{\"module_id\":\"ModuleId:acme.api\",\"private_bodies\":[{\"decl_id\":\"DeclId:acme.api.helper\",\"reference_decl_ids\":[\"DeclId:acme.api.answer\"],\"return_int\":1}],\"public_items\":[\"DeclId:acme.api.answer\"],\"schema\":\"deeplus.fixture-hir-semantic/r1\"}",
+      "hir_semantic_sha256": "6a1169220f55d7128f58272c91a541be23ae5ce082fd551d3288648add8c30f2",
+      "module_source_contribution_projection": {
+        "schema": "deeplus.module-source-contribution-projection/r1",
+        "target_id": "TargetId:acme.lib",
+        "module_id": "ModuleId:acme.api",
+        "source_contributions": [
+          {
+            "source_file_id": "SourceFileId:acme/src/api.dp",
+            "normalized_project_relative_path": "src/api.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "source_bytes_sha256": "8ce6a87b7f5d969b830ba7de32be6149090e558a93aeb3d926bc91a2cd9ab528"
+          }
+        ],
+        "projection_sha256": "0342c67840ec13c79286297f611631d37d6127a612814ca3c62299a92b285f23"
+      },
+      "dependency_receipt": {
+        "schema": "deeplus.module-compilation-dependency-receipt/r1",
+        "consumer_target_id": "TargetId:acme.lib",
+        "consumer_module_id": "ModuleId:acme.api",
+        "package_graph_sha256": "31b0fb7d872786c279192e58913fad72c206111e7bef64627fe970f0882b4ca6",
+        "resolver_graph_sha256": "41be039a8c72e8d613b5dbb6211b3c93f268c49d277563afca06e666e68c1699",
+        "import_bindings": [],
+        "activation_bindings": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "activation_origin_id": "ActivationOriginId:acme.api.display-reexport",
+            "activated_identity": "ExtensionSetId:acme.display",
+            "activation_kind": "use",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "semantic_site_key": "src/api.dp:use-export:Int::display"
+          }
+        ],
+        "required_interfaces": [
+          {
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+            "interface_sha256": "de873eb6cfe72770d209f6542b20ca40025e0e7187c3813e49ca80225667830d"
+          }
+        ],
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "dependency_receipt_sha256": "58c6f78c6c38eadeac5c8a83cb4c0b13c1c5cfeee03ed66796711eef673750b0"
+      },
+      "implementation_digest": {
+        "schema": "deeplus.module-implementation-digest/r1",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:acme.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:acme.api",
+        "interface_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+        "hir_semantic_sha256": "6a1169220f55d7128f58272c91a541be23ae5ce082fd551d3288648add8c30f2",
+        "external_compatibility_identity": false,
+        "implementation_sha256": "b9a28c537872f7b21dcf1976a515f77716d5b353c3ac7e785b97d0fde69b876d"
+      },
+      "compilation_receipt": {
+        "schema": "deeplus.module-compilation-receipt/r1",
+        "profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:acme.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:acme.api",
+        "package_graph_sha256": "31b0fb7d872786c279192e58913fad72c206111e7bef64627fe970f0882b4ca6",
+        "module_source_contribution_sha256": "0342c67840ec13c79286297f611631d37d6127a612814ca3c62299a92b285f23",
+        "dependency_receipt_sha256": "58c6f78c6c38eadeac5c8a83cb4c0b13c1c5cfeee03ed66796711eef673750b0",
+        "resolver_trace_sha256": "84e4da4d15b662b9bd1c39efdbdafb5cc93afa8777656cd6df72c29f64110d9d",
+        "visibility_closure_sha256": "bc4747cd38838201cab0ec96f34ea9d518913661673d8a5f10bbc2fabaf5c686",
+        "initialization_plan_sha256": "ef7a32385a7fee2935c0e3576b6a9335ce1359a251807584b81d7e8c46c37c02",
+        "interface_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+        "implementation_sha256": "b9a28c537872f7b21dcf1976a515f77716d5b353c3ac7e785b97d0fde69b876d",
+        "compilation_receipt_sha256": "3844c4424eac6ab60ec7dedbf368eae323f38f6b8a04b46a74026eb538207b3c"
+      }
+    },
+    {
+      "case_id": "R4-MODULE-ARTIFACT-PRIVATE-HIR-CHANGE",
+      "mutation_class": "PRIVATE_SEMANTIC_BODY_CHANGE_PUBLIC_RESIDUE_UNCHANGED",
+      "source_file_id": "SourceFileId:acme/src/api.dp",
+      "source_bytes_utf8": "use export Int::display\npublic let answer: Int = 42\nprivate def helper() -> Int = {\n    let _ = answer\n    return 2\n}\n",
+      "source_bytes_sha256": "41175e93beea26610489b2957f2a08c737541b37e45b09e87bf8f085937bf44d",
+      "package_graph": {
+        "schema": "deeplus.package-module-source-graph/r1",
+        "root_package_id": "PackageId:acme",
+        "packages": [
+          {
+            "package_id": "PackageId:acme",
+            "canonical_package_key": {
+              "registry_namespace": "local",
+              "package_name": "acme",
+              "package_version_identity": "1.0.0"
+            },
+            "resolved_artifact_provenance_digest": "3a64d932be4a4570e558acfa30f8dd0f5dfa7b23bbfa0ca11c4db676acd39c11",
+            "dependency_binding_ids": [],
+            "target_ids": [
+              "TargetId:acme.lib"
+            ]
+          }
+        ],
+        "targets": [
+          {
+            "target_id": "TargetId:acme.lib",
+            "package_id": "PackageId:acme",
+            "canonical_manifest_target_name": "lib",
+            "target_kind": "library",
+            "source_role_policy": "library",
+            "activation_profile": "stable",
+            "source_file_ids": [
+              "SourceFileId:acme/src/api.dp",
+              "SourceFileId:acme/src/display.dp"
+            ]
+          }
+        ],
+        "source_contributions": [
+          {
+            "source_file_id": "SourceFileId:acme/src/api.dp",
+            "target_id": "TargetId:acme.lib",
+            "normalized_project_relative_path": "src/api.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:acme.api",
+            "module_path": [
+              "acme",
+              "api"
+            ],
+            "explicit_module_path_or_null": [
+              "acme",
+              "api"
+            ],
+            "source_bytes_sha256": "41175e93beea26610489b2957f2a08c737541b37e45b09e87bf8f085937bf44d"
+          },
+          {
+            "source_file_id": "SourceFileId:acme/src/display.dp",
+            "target_id": "TargetId:acme.lib",
+            "normalized_project_relative_path": "src/display.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:acme.display",
+            "module_path": [
+              "acme",
+              "display"
+            ],
+            "explicit_module_path_or_null": [
+              "acme",
+              "display"
+            ],
+            "source_bytes_sha256": "9f3fd95bd424ffbe78a6527cc533c333dee2f5b8577abdea84827a80eb5727bf"
+          }
+        ],
+        "dependency_bindings": [],
+        "visible_module_bindings": [
+          {
+            "consumer_target_id": "TargetId:acme.lib",
+            "visible_qualified_path": [
+              "acme",
+              "api"
+            ],
+            "resolved_module_id": "ModuleId:acme.api",
+            "dependency_binding_id_or_self": "self"
+          },
+          {
+            "consumer_target_id": "TargetId:acme.lib",
+            "visible_qualified_path": [
+              "acme",
+              "display"
+            ],
+            "resolved_module_id": "ModuleId:acme.display",
+            "dependency_binding_id_or_self": "self"
+          }
+        ],
+        "module_header_import_edges": [],
+        "graph_policy": {
+          "package_dependency": "ACYCLIC",
+          "module_header_import": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+          "reexport": "ACYCLIC",
+          "static_binding_value_dependency": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        },
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "canonical_graph_sha256": "e69da61ed13b2464f2282098b3ea86907b79f160f224024f43227250190721b1"
+      },
+      "resolver_graph": {
+        "schema": "deeplus.resolver-graph/r1",
+        "package_graph_sha256": "e69da61ed13b2464f2282098b3ea86907b79f160f224024f43227250190721b1",
+        "root_scope_ids": [
+          "ResolverScopeId:acme.package"
+        ],
+        "scopes": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.module",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.target.lib",
+            "kind": "ModuleScope",
+            "module_id": "ModuleId:acme.api"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.api.module",
+            "kind": "SourceContributionScope",
+            "source_file_id": "SourceFileId:acme/src/api.dp"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.package",
+            "parent_scope_id_or_null": null,
+            "kind": "PackageRootScope",
+            "package_id": "PackageId:acme"
+          },
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.target.lib",
+            "parent_scope_id_or_null": "ResolverScopeId:acme.package",
+            "kind": "TargetScope",
+            "target_id": "TargetId:acme.lib"
+          }
+        ],
+        "name_bindings": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.module",
+            "namespace": "VALUE",
+            "local_name": "answer",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "DeclId:acme.api.answer",
+            "hir_body_id_or_null": null,
+            "owner_local_binding_id_or_null": null,
+            "binding_commit_ordinal_or_null": null,
+            "source_origin_id": "SourceOriginId:acme.api.answer",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": null
+          }
+        ],
+        "import_bindings": [],
+        "activation_entries": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "activation_origin_id": "ActivationOriginId:acme.api.display-reexport",
+            "activated_identity": "ExtensionSetId:acme.display",
+            "activation_kind": "use",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "semantic_site_key": "src/api.dp:use-export:Int::display"
+          }
+        ],
+        "witness_visibility_entries": [],
+        "invariants": {
+          "lookup": "INNERMOST_TO_OUTERMOST_STOP_AT_FIRST_NONEMPTY_EXACT_NAMESPACE_AND_SPELLING",
+          "same_frame_order_priority": false,
+          "cross_frame_overload_merge": false,
+          "provisional_bindings_in_name_env": false,
+          "environment_cross_creation_count": 0,
+          "runtime_relookup_count": 0
+        },
+        "resolver_graph_sha256": "12d095a8ab6817a76391ccf1dadf8785744fac8936d28577f7044f2ee6f3f5ca"
+      },
+      "resolver_trace": {
+        "schema": "deeplus.resolver-trace/r1",
+        "resolver_graph_sha256": "12d095a8ab6817a76391ccf1dadf8785744fac8936d28577f7044f2ee6f3f5ca",
+        "references": [
+          {
+            "source_origin_id": "SourceOriginId:acme.api.answer-reference",
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "namespace": "VALUE",
+            "source_spelling": "answer",
+            "candidate_origin_ids": [
+              "DeclId:acme.api.answer"
+            ],
+            "visibility_proof_ids": [
+              "VisibilityProofId:acme.api.answer-public"
+            ],
+            "activation_origin_id_or_null": null,
+            "evidence_origin_id_or_null": null,
+            "import_binding_id_or_null": null,
+            "stages": [
+              {
+                "ordinal": 1,
+                "predicate": "PackageModuleSourceGraphAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 2,
+                "predicate": "ModuleItemSkeletonSetAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 3,
+                "predicate": "DependencyInterfaceBindingClosed",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 4,
+                "predicate": "ResolverScopeTreeAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 5,
+                "predicate": "ReferenceCandidateSetResolved",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 6,
+                "predicate": "ReferenceVisibilityActivationAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 7,
+                "predicate": "ResolvedNoncallReferenceSelected",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 8,
+                "predicate": "ResolverHirSealAdmitted",
+                "status": "PASS"
+              },
+              {
+                "ordinal": 9,
+                "predicate": "ModuleInterfaceDigestVerified",
+                "status": "PASS"
+              }
+            ],
+            "result": {
+              "kind": "RESOLVED_NONCALL_REFERENCE",
+              "resolved_identity": "DeclId:acme.api.answer",
+              "selected_count": 1,
+              "rejection_reason_or_null": null
+            },
+            "source_span": {
+              "start": 96,
+              "end": 102
+            }
+          }
+        ],
+        "diagnostic_order": "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_LOWEST_SOURCE_ORIGIN_ID",
+        "diagnostic_selection": {
+          "winner_source_origin_id_or_null": null,
+          "winner_rejection_reason_or_null": null,
+          "suppressed_source_origin_ids": []
+        },
+        "seal": {
+          "seal_status": "SEALED",
+          "counters": {
+            "unbound_primary_count": 0,
+            "unresolved_count": 0,
+            "candidate_set_count": 0,
+            "missing_typed_id_count": 0,
+            "missing_visibility_proof_count": 0,
+            "recovery_binding_count": 0,
+            "runtime_relookup_count": 0,
+            "overload_winner_count": 0,
+            "canonical_hir_overload_set_ref_count": 0
+          }
+        },
+        "trace_sha256": "bc8ed82a0cb399f748aff25da74841c9fc617b32308aa15dd864cf4292ba2dbf"
+      },
+      "hir_semantic_digest_preimage": {
+        "schema": "deeplus.fixture-hir-semantic/r1",
+        "module_id": "ModuleId:acme.api",
+        "public_items": [
+          "DeclId:acme.api.answer"
+        ],
+        "private_bodies": [
+          {
+            "decl_id": "DeclId:acme.api.helper",
+            "reference_decl_ids": [
+              "DeclId:acme.api.answer"
+            ],
+            "return_int": 2
+          }
+        ]
+      },
+      "hir_semantic_bytes_utf8": "{\"module_id\":\"ModuleId:acme.api\",\"private_bodies\":[{\"decl_id\":\"DeclId:acme.api.helper\",\"reference_decl_ids\":[\"DeclId:acme.api.answer\"],\"return_int\":2}],\"public_items\":[\"DeclId:acme.api.answer\"],\"schema\":\"deeplus.fixture-hir-semantic/r1\"}",
+      "hir_semantic_sha256": "85f42336cb8644d97c3eab9722af51882bc3759ff370bcd66fb7a858bd1b2719",
+      "module_source_contribution_projection": {
+        "schema": "deeplus.module-source-contribution-projection/r1",
+        "target_id": "TargetId:acme.lib",
+        "module_id": "ModuleId:acme.api",
+        "source_contributions": [
+          {
+            "source_file_id": "SourceFileId:acme/src/api.dp",
+            "normalized_project_relative_path": "src/api.dp",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "source_bytes_sha256": "41175e93beea26610489b2957f2a08c737541b37e45b09e87bf8f085937bf44d"
+          }
+        ],
+        "projection_sha256": "150e7e6a082c265e50f84cdb3094290d301ce0d95e386c40978730691e853d60"
+      },
+      "dependency_receipt": {
+        "schema": "deeplus.module-compilation-dependency-receipt/r1",
+        "consumer_target_id": "TargetId:acme.lib",
+        "consumer_module_id": "ModuleId:acme.api",
+        "package_graph_sha256": "e69da61ed13b2464f2282098b3ea86907b79f160f224024f43227250190721b1",
+        "resolver_graph_sha256": "12d095a8ab6817a76391ccf1dadf8785744fac8936d28577f7044f2ee6f3f5ca",
+        "import_bindings": [],
+        "activation_bindings": [
+          {
+            "resolver_scope_id": "ResolverScopeId:acme.api.source",
+            "activation_origin_id": "ActivationOriginId:acme.api.display-reexport",
+            "activated_identity": "ExtensionSetId:acme.display",
+            "activation_kind": "use",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "semantic_site_key": "src/api.dp:use-export:Int::display"
+          }
+        ],
+        "required_interfaces": [
+          {
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:acme.display",
+            "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+            "interface_sha256": "de873eb6cfe72770d209f6542b20ca40025e0e7187c3813e49ca80225667830d"
+          }
+        ],
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "dependency_receipt_sha256": "181d2716843c004dd62629415cd9ce8b1599793daf2250057ea401e726379e35"
+      },
+      "implementation_digest": {
+        "schema": "deeplus.module-implementation-digest/r1",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:acme.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:acme.api",
+        "interface_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+        "hir_semantic_sha256": "85f42336cb8644d97c3eab9722af51882bc3759ff370bcd66fb7a858bd1b2719",
+        "external_compatibility_identity": false,
+        "implementation_sha256": "1bab5ccf1b91638d84981a9f1e55bf41355d63d8164d3651d01eacd5a470f208"
+      },
+      "compilation_receipt": {
+        "schema": "deeplus.module-compilation-receipt/r1",
+        "profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:acme.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:acme.api",
+        "package_graph_sha256": "e69da61ed13b2464f2282098b3ea86907b79f160f224024f43227250190721b1",
+        "module_source_contribution_sha256": "150e7e6a082c265e50f84cdb3094290d301ce0d95e386c40978730691e853d60",
+        "dependency_receipt_sha256": "181d2716843c004dd62629415cd9ce8b1599793daf2250057ea401e726379e35",
+        "resolver_trace_sha256": "bc8ed82a0cb399f748aff25da74841c9fc617b32308aa15dd864cf4292ba2dbf",
+        "visibility_closure_sha256": "bc4747cd38838201cab0ec96f34ea9d518913661673d8a5f10bbc2fabaf5c686",
+        "initialization_plan_sha256": "ef7a32385a7fee2935c0e3576b6a9335ce1359a251807584b81d7e8c46c37c02",
+        "interface_sha256": "b27d9d409e00992cce3453cd5c15dae6983057ee1ac6975966d3a89cb0746d04",
+        "implementation_sha256": "1bab5ccf1b91638d84981a9f1e55bf41355d63d8164d3651d01eacd5a470f208",
+        "compilation_receipt_sha256": "b878487bc748a413bd1e542f94e7d8708dd9ddd5f9754dec87d7727b478ad487"
+      }
+    }
+  ],
+  "expected_relations": {
+    "interface_sha256_equal_across_cases": true,
+    "visibility_closure_sha256_equal_across_cases": true,
+    "initialization_plan_sha256_equal_across_cases": true,
+    "source_bytes_sha256_different_across_cases": true,
+    "module_source_contribution_sha256_different_across_cases": true,
+    "package_graph_sha256_different_across_cases": true,
+    "resolver_graph_sha256_different_across_cases": true,
+    "resolver_trace_sha256_different_across_cases": true,
+    "dependency_receipt_sha256_different_across_cases": true,
+    "hir_semantic_sha256_different_across_cases": true,
+    "implementation_sha256_different_across_cases": true,
+    "compilation_receipt_sha256_different_across_cases": true,
+    "private_body_bytes_in_interface_hash": false
+  },
+  "evidence_level": "E2_STATIC_HASH_RELATION_FIXTURE",
+  "product_compiler_execution": "NOT_RUN"
+}

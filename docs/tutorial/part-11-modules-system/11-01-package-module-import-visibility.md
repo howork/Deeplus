@@ -68,6 +68,25 @@ private def load() -> Response
 
 `import`는 runtime dynamic loading이 아니라 compile-time name graph 입력이다.
 
+### R4: graph와 import binding을 닫기
+
+다음 네 graph를 한 규칙으로 뭉치지 않는다.
+
+| graph | cycle law |
+|---|---|
+| Package dependency | acyclic |
+| re-export | acyclic |
+| Module header | complete header collection 뒤 header/type/signature-only SCC 허용 |
+| immutable static value | acyclic compile-time evaluation, atomic commit |
+
+static value graph에는 runtime initializer가 없고, Module header SCC에는
+static-value/runtime-initializer/re-export edge가 들어갈 수 없다.
+
+한 import binding의 key는 scope, namespace, local name이다. 같은 target을
+`as left`와 `as right`로 가져오면 두 binding이지만, 같은 scope에서
+`as left`를 두 번 쓰면 duplicate다. declaration/dependency order는
+우선순위가 아니다.
+
 ## 7. 허용·거부·경계 사례
 
 scoped import/use는 block 안의 lexical frame만 만든다.
@@ -113,6 +132,13 @@ source contribution이 같은 `(PackageId, ModulePath)`에 들어오면 선언
 identity와 중복·visibility 규칙을 정적으로 결합한다. 그 다음에야
 `import`/`use`가 lexical name frame을 만들고 `export`가 공개 표면을
 재노출하는지 검사한다.
+
+R4 trace는 `ImportBindingId`, `ImportTargetIdentity`,
+`SourceOriginId`를 기록한다. `MODULE` namespace의 target은
+`ModuleId`, `TYPE`·`VALUE`·`CALLABLE_OVERLOAD_SET`의 target은
+`DeclId`다. Module target은 expression HIR를 만들지 않는다. Declaration
+target이 식으로 사용될 때만 `ResolvedRef::DirectDecl(DeclId)`로
+투영되며, import binding identity는 compile-time provenance로 남는다.
 
 public API closure는 반환형만 보는 검사가 아니다. parameter type, generic
 constraint, ErrorSet, context capability, selected witness와 field type까지

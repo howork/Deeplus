@@ -773,8 +773,63 @@
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     }
   ],
+  "r4_name_resolution_module_bridge_cases": [
+    {
+      "fixture_id": "H1MB-R4-NRM-POS-001",
+      "kind": "positive",
+      "resolver_output": "RESOLVED_NONCALL_REFERENCE",
+      "canonical_hir_projection": "ResolvedRef::Local(HirLocalId)",
+      "expected": "SEALED",
+      "assertions": [
+        "BodyLocalScope_projects_exact_HirScopeId=true",
+        "committed_binding_projects_fresh_HirLocalId=true",
+        "runtime_relookup_count=0"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "H1MB-R4-NRM-POS-002",
+      "kind": "positive",
+      "resolver_output": "IMPORT_BINDING_TRACE",
+      "canonical_hir_projection": "MODULE target remains ModuleId without expression-HIR projection; declaration expression use projects ResolvedRef::DirectDecl(DeclId); ImportBindingId retained in trace",
+      "expected": "SEALED",
+      "assertions": [
+        "ImportBindingId_creates_HirLocalId=false",
+        "SourceOriginId_preserved=true",
+        "module_target_is_ModuleId_and_nonmodule_target_is_DeclId=true"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "H1MB-R4-NRM-BOUND-003",
+      "kind": "boundary",
+      "resolver_output": "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR",
+      "canonical_hir_projection": "NONE",
+      "expected": "DEFERRED_TO_NEXT_CLUSTER",
+      "assertions": [
+        "overload_winner_selected=false",
+        "canonical_HIR_overload_set_ref=false",
+        "next_cluster=GENERIC_INFERENCE_AND_ORDINARY_OVERLOAD_RESOLUTION"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "fixture_id": "H1MB-R4-NRM-NEG-004",
+      "kind": "negative",
+      "resolver_output": "REJECTED",
+      "canonical_hir_projection": "NONE",
+      "expected": "REJECTED_BEFORE_SEAL",
+      "assertions": [
+        "unresolved_or_ambiguous_reference_creates_canonical_HIR=false",
+        "recovery_binding_count=0",
+        "runtime_relookup_count=0"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
   "expected_counts": {
     "cases": 48,
+    "r4_name_resolution_module_bridge_cases": 4,
     "positive": 16,
     "negative": 16,
     "boundary": 8,

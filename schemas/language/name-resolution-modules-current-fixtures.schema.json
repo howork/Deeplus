@@ -1,0 +1,344 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/name-resolution-modules-current-fixtures.schema.json",
+  "title": "Deeplus R4 name-resolution and module-contract fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "contract",
+    "semantic_base_sha",
+    "status",
+    "semantic_p0",
+    "open_feature_p1",
+    "product_lanes",
+    "cases"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.name-resolution-modules-current-fixtures/r1"
+    },
+    "contract": {
+      "const": "spec/contracts/name-resolution-modules-current.json"
+    },
+    "semantic_base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "status": {
+      "const": "DESIGN_STATIC_FIXTURES_NOT_EXECUTED"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "open_feature_p1": {
+      "const": 22
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "acceptance_test_id",
+        "gap_id",
+        "kind",
+        "category",
+        "scenario",
+        "input",
+        "expected"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^IR-R4-[A-Z0-9-]+$"
+        },
+        "acceptance_test_id": {
+          "enum": [
+            "IR-R4-GAP-01-P",
+            "IR-R4-GAP-01-B",
+            "IR-R4-GAP-01-N",
+            "IR-R4-GAP-02-P",
+            "IR-R4-GAP-02-B",
+            "IR-R4-GAP-02-N",
+            "IR-R4-GAP-03-P",
+            "IR-R4-GAP-03-B",
+            "IR-R4-GAP-03-N",
+            "IR-R4-GAP-04-P",
+            "IR-R4-GAP-04-B",
+            "IR-R4-GAP-04-N",
+            "IR-R4-GAP-05-P",
+            "IR-R4-GAP-05-B",
+            "IR-R4-GAP-05-N",
+            "IR-R4-GAP-06-P",
+            "IR-R4-GAP-06-B",
+            "IR-R4-GAP-06-N",
+            "IR-R4-GAP-07-P",
+            "IR-R4-GAP-07-B",
+            "IR-R4-GAP-07-N",
+            "IR-R4-GAP-08-P",
+            "IR-R4-GAP-08-B",
+            "IR-R4-GAP-08-N",
+            "IR-R4-GAP-09-P",
+            "IR-R4-GAP-09-B",
+            "IR-R4-GAP-09-N",
+            "IR-R4-GAP-10-P",
+            "IR-R4-GAP-10-B",
+            "IR-R4-GAP-10-N",
+            "IR-R4-GAP-11-P",
+            "IR-R4-GAP-11-B",
+            "IR-R4-GAP-11-N",
+            "IR-R4-GAP-12-P",
+            "IR-R4-GAP-12-B",
+            "IR-R4-GAP-12-N"
+          ]
+        },
+        "gap_id": {
+          "enum": [
+            "IR-RES-P0-040",
+            "IR-RES-P0-041",
+            "IR-MOD-P1-042",
+            "IR-MOD-P1-043",
+            "IR-MOD-P1-044",
+            "IR-MOD-P1-045",
+            "IR-MOD-P1-046",
+            "IR-MOD-P1-047",
+            "IR-RES-P1-048",
+            "IR-RES-P1-049",
+            "IR-TRACE-P1-050",
+            "IR-TRACE-P2-051"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative"
+          ]
+        },
+        "category": {
+          "enum": [
+            "PACKAGE_GRAPH",
+            "MODULE_HEADER_SCC",
+            "REEXPORT_GRAPH",
+            "STATIC_BINDING_GRAPH",
+            "IMPORT_BINDING",
+            "MODULE_SIGNATURE",
+            "VISIBILITY_CLOSURE",
+            "LEXICAL_LOOKUP",
+            "SHADOWING",
+            "TRANSACTIONAL_BINDING",
+            "ENVIRONMENT_SEPARATION",
+            "MEMBER_EXTENSION_COLLISION",
+            "IDENTITY_PROJECTION",
+            "DIAGNOSTIC_PRECEDENCE",
+            "NEXT_CLUSTER_FENCE",
+            "TRACE_PARITY"
+          ]
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "description",
+            "artifact_refs"
+          ],
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_refs": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "outcome",
+        "primary_diagnostic_or_null",
+        "primary_reason_or_null",
+        "suppressed_diagnostics",
+        "selected_count_or_null",
+        "invariants"
+      ],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "ACCEPT",
+            "REJECT"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "ACCEPT_ONE_IMPORT_BINDING_ONE_RESOLVED_REF",
+            "ACCEPT_DISTINCT_HIR_LOCAL_IDS_AND_RESTORE",
+            "REJECT_BEFORE_CANONICAL_HIR",
+            "ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED",
+            "ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED",
+            "REJECT_MEMBER_EXTENSION_COLLISION_SELECTED_COUNT_0",
+            "ACCEPT_ORDER_INVARIANT_PACKAGE_MODULE_GRAPH",
+            "ACCEPT_DISTINCT_PACKAGE_SCOPED_MODULE_IDS",
+            "REJECT_PACKAGE_TARGET_MISSING",
+            "ACCEPT_EXACT_IMPORT_BINDING_AND_RESOLVED_REF",
+            "ACCEPT_EXPLICIT_GRAPH_DISAMBIGUATION",
+            "REJECT_IMPORT_TARGET_NOT_FOUND",
+            "ACCEPT_ORDER_INVARIANT_MODULE_COMPOSITION",
+            "ACCEPT_CARRIER_MAPPED_MODULE_PATH",
+            "REJECT_MODULE_CONTRIBUTION_CONFLICT",
+            "ACCEPT_PUBLIC_API_CLOSURE",
+            "ACCEPT_COMMON_INTERNAL_ONLY",
+            "REJECT_FACADE_WIDENING",
+            "ACCEPT_STABLE_INTERFACE_DIGEST",
+            "ACCEPT_PRIVATE_BODY_INTERFACE_STABILITY",
+            "REJECT_STALE_DEPENDENCY_RECEIPT",
+            "ACCEPT_COMPILE_TIME_INITIALIZATION_PLAN",
+            "ACCEPT_HEADER_ONLY_MODULE_SCC",
+            "REJECT_STATIC_DEPENDENCY_CYCLE",
+            "ACCEPT_EXPLICIT_NESTED_HIR_LOCAL_SHADOW",
+            "ACCEPT_ONE_OVERLOAD_SET",
+            "REJECT_SAME_FRAME_NAMESPACE_COLLISION",
+            "ACCEPT_ONE_PRIMARY_DIAGNOSTIC",
+            "ACCEPT_EARLIEST_STAGE_PRIMARY_AND_SUPPRESS_DOWNSTREAM",
+            "REJECT_UNRESOLVED_REFERENCE_AT_HIR_SEAL",
+            "ACCEPT_BIDIRECTIONAL_TRACE_EQUALITY",
+            "ACCEPT_EXPLICIT_NOT_APPLICABLE",
+            "REJECT_DELETED_CROSSWALK_REFERENCE",
+            "ACCEPT_COMPLETE_FEATURE_TRACE",
+            "ACCEPT_TOOLING_STAGE_NOT_APPLICABLE",
+            "REJECT_INCOMPLETE_STABLE_FEATURE_TRACE"
+          ]
+        },
+        "primary_diagnostic_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "REFERENCE_CANDIDATE_SET_INVALID",
+                "MEMBER_EXTENSION_COLLISION",
+                "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+                "DEPENDENCY_INTERFACE_BINDING_INVALID",
+                "MODULE_ITEM_SKELETON_CONFLICT",
+                "MODULE_INTERFACE_DIGEST_MISMATCH",
+                "RESOLVER_SCOPE_TREE_INVALID",
+                "RESOLVER_HIR_SEAL_INCOMPLETE",
+                "CROSSWALK_REFERENCE_UNRESOLVED"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "primary_reason_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "ZERO_CANDIDATES",
+                "PACKAGE_TARGET_MISSING",
+                "IMPORT_TARGET_NOT_FOUND",
+                "MODULE_CONTRIBUTION_CONFLICT",
+                "FACADE_WIDENING",
+                "STALE_DEPENDENCY_RECEIPT",
+                "STATIC_DEPENDENCY_CYCLE",
+                "IMPORT_LOCAL_COLLISION",
+                "UNRESOLVED_COUNT_NONZERO"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "suppressed_diagnostics": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "REFERENCE_CANDIDATE_SET_INVALID",
+              "MEMBER_EXTENSION_COLLISION",
+              "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+              "DEPENDENCY_INTERFACE_BINDING_INVALID",
+              "MODULE_ITEM_SKELETON_CONFLICT",
+              "MODULE_INTERFACE_DIGEST_MISMATCH",
+              "RESOLVER_SCOPE_TREE_INVALID",
+              "RESOLVER_HIR_SEAL_INCOMPLETE",
+              "CROSSWALK_REFERENCE_UNRESOLVED"
+            ]
+          }
+        },
+        "selected_count_or_null": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invariants": {
+          "$ref": "#/$defs/invariants"
+        }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_order_winner_count",
+        "dependency_order_winner_count",
+        "runtime_relookup_count",
+        "new_witness_count",
+        "product_execution_count"
+      ],
+      "properties": {
+        "source_order_winner_count": {
+          "const": 0
+        },
+        "dependency_order_winner_count": {
+          "const": 0
+        },
+        "runtime_relookup_count": {
+          "const": 0
+        },
+        "new_witness_count": {
+          "const": 0
+        },
+        "product_execution_count": {
+          "const": 0
+        }
+      }
+    }
+  }
+}

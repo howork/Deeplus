@@ -557,8 +557,11 @@
       "explicit_visibility",
       "module_identity",
       "package_identity",
+      "source_contribution_id",
       "external_export_or_module_interface_admitted",
-      "api_dependency_visibilities"
+      "api_dependency_visibilities",
+      "module_visibility_closure_sha256",
+      "visibility_proof_ids"
     ],
     "feature_refs": [
       "top_level_type_visibility_unification"
@@ -572,6 +575,9 @@
       "the type-producing owner set is exactly ClassDecl, TraitDecl, EnumDecl, TypeAliasDecl, SchemaDecl, ActorDecl, ActorProtocolDecl, TypestateResourceDecl, and BitfieldDecl",
       "the source-root set is exactly the stable and preview library, executable, and script roots",
       "a type-producing owner has one explicit public, common, or private word before HIR identity admission",
+      "ModuleId, PackageId, and SourceFileId identities are already resolved in their exact typed domains",
+      "the descriptor binds one verified module-visibility closure digest and its exact VisibilityProofId set",
+      "SourceFileId contributes to the descriptor ModuleId, that ModuleId belongs to the descriptor PackageId, and the closure digest plus proof set belong to the same admitted ModuleId snapshot",
       "an omitted word on every other top-level owner carrying TopLevelVisibility normalizes to private",
       "private is module-local, common is package-wide and nonexportable, and public is only externally eligible through an admitted export or module interface",
       "wider API residue cannot expose a dependency identity from a narrower domain"
@@ -590,14 +596,14 @@
       "validate the closed descriptor and one of the six source roots",
       "derive type-producing ownership from the exact nine-owner set rather than trusting a caller flag"
     ],
-    "normalization": "normalize an explicit visibility verbatim; normalize omission to private only when the declaration kind is outside the exact type-producing owner set",
+    "normalization": "validate exact ModuleId, PackageId, SourceFileId and VisibilityProofId domains; normalize an explicit visibility verbatim; normalize omission to private only when the declaration kind is outside the exact type-producing owner set",
     "decision_procedure": [
-      "validate the descriptor and recompute type_producing_owner from the exact nine-owner set",
+      "validate the closed descriptor, exact typed identity domains and SourceFileId-to-ModuleId-to-PackageId ownership, then bind the closure digest and proof identities from the same admitted ModuleId snapshot and recompute type_producing_owner from the exact nine-owner set",
       "reject a recomputed type-producing owner with no explicit visibility using TYPE_DECL_VISIBILITY_REQUIRED before creating a HIR type node, type identity, or API-digest entry",
       "for every other top-level owner carrying TopLevelVisibility, normalize an omitted word to private; otherwise preserve the explicit private, common, or public domain",
       "derive external_api_eligibility as false for private and common and as the explicit export-or-module-interface admission bit for public",
       "derive an API closure obligation in which public residue may reference only public identities, common residue may reference only common or public identities, and private residue may reference any identity accessible in its declaring module",
-      "return the normalized domain and closure obligation to HIR/API admission without inventing an export, package identity, or visibility word"
+      "return the normalized domain and the bound closure proof to HIR/API admission without inventing an export, package identity, visibility word, closure digest, or proof identity"
     ],
     "termination_metric": "one finite descriptor, one nine-owner membership test, and one finite API-dependency visibility list",
     "success_result": "one normalized visibility domain, one external-API eligibility bit, and one finite API-visibility closure obligation",

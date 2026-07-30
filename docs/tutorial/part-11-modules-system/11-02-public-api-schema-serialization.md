@@ -70,6 +70,20 @@ public def encodeEntry(row: EntryRow) -> Bytes
 `LedgerWireV1`은 application/library가 소유한 explicit codec owner다.
 schema 선언만으로 JSON, field order, ABI가 생기지 않는다.
 
+### R4: ModuleSignature와 dependency receipt
+
+`ModuleSignature` 비교는 schema/self-hash를 제외한 normalized public
+residue의 exact equality다. 이름, kind, visibility, generic/parameter
+channels, ownership, effect/error, evidence와 associated binding 중 하나라도
+누락·추가·변경되면 `MODULE_SIGNATURE_MISMATCH`다. source order와 trivia는
+비교에 들어가지 않는다.
+
+opaque facade는 기존 export 중 일부를 숨기는 narrowing-only projection이다.
+새 export를 만들거나 visibility를 넓힐 수 없다. consumer의 dependency
+receipt가 provider의 현재 `ModuleInterfaceDigest`와 다르면
+`MODULE_INTERFACE_DIGEST_MISMATCH`로 lowering 전에 거부한다. private body만
+바뀌고 public residue가 같다면 interface digest는 유지된다.
+
 ## 7. 허용·거부·경계 사례
 
 Enum의 semantic cases:
@@ -141,6 +155,9 @@ field를 생략할지 명시적으로 encode할지는 `LedgerWireV1`이 결정�
 | public API digest | declaration과 observable responsibility | runtime layout·target ABI |
 | versioned codec | wire tag, encoding, version policy | semantic Enum ordinal |
 | FFI profile | target representation과 ownership | application serialization |
+| ModuleSignature | exact normalized public residue | source order·trivia |
+| dependency receipt | provider `ModuleInterfaceDigest` | private body spelling |
+| opaque facade | existing export의 narrowing subset | 새 export·visibility widening |
 
 이 네 경계를 한 “데이터 모양”으로 합치지 않아야 source refactor,
 protocol migration과 backend 변경을 독립적으로 판단할 수 있다.

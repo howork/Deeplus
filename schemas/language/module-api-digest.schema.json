@@ -30,6 +30,15 @@
         "executable"
       ]
     },
+    "interface_profile": {
+      "enum": [
+        "LEGACY_R51F3",
+        "R4_NAME_RESOLUTION_MODULES"
+      ]
+    },
+    "r4_interface_envelope": {
+      "$ref": "#/$defs/r4ModuleInterfaceEnvelope"
+    },
     "symbols": {
       "type": "array",
       "uniqueItems": true,
@@ -556,7 +565,192 @@
       "pattern": "^[0-9a-f]{64}$"
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "interface_profile"
+        ],
+        "properties": {
+          "interface_profile": {
+            "const": "R4_NAME_RESOLUTION_MODULES"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "r4_interface_envelope"
+        ],
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "pattern": "^ModuleId:[^\\s]+$"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "r4_interface_envelope"
+          ]
+        }
+      }
+    }
+  ],
   "$defs": {
+    "r4ModuleInterfaceEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_profile",
+        "public_export_rows",
+        "public_activation_reexport_rows",
+        "opaque_facade_rows",
+        "signature_relation",
+        "opaque_facade_relation",
+        "symbols_are_exact_effective_public_residue",
+        "private_body_bytes_in_interface_hash"
+      ],
+      "properties": {
+        "activation_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "public_export_rows": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/r4PublicExportRow"
+          }
+        },
+        "public_activation_reexport_rows": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/r4PublicActivationReexportRow"
+          }
+        },
+        "opaque_facade_rows": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/r4OpaqueFacadeRow"
+          }
+        },
+        "signature_relation": {
+          "const": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+        },
+        "opaque_facade_relation": {
+          "const": "NARROWING_ONLY"
+        },
+        "symbols_are_exact_effective_public_residue": {
+          "const": true
+        },
+        "private_body_bytes_in_interface_hash": {
+          "const": false
+        }
+      }
+    },
+    "r4PublicExportRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_owner_id",
+        "namespace",
+        "exported_name",
+        "referenced_identity_id"
+      ],
+      "properties": {
+        "export_owner_id": {
+          "type": "string",
+          "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId):[^\\s]+$"
+        },
+        "namespace": {
+          "enum": [
+            "MODULE",
+            "TYPE",
+            "VALUE",
+            "CALLABLE_OVERLOAD_SET"
+          ]
+        },
+        "exported_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "referenced_identity_id": {
+          "type": "string",
+          "pattern": "^(?:ModuleId|DeclId):[^\\s]+$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "MODULE"
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "then": {
+            "properties": {
+              "referenced_identity_id": {
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "referenced_identity_id": {
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "r4PublicActivationReexportRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_owner_id",
+        "referenced_activation_identity_id"
+      ],
+      "properties": {
+        "export_owner_id": {
+          "type": "string",
+          "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId):[^\\s]+$"
+        },
+        "referenced_activation_identity_id": {
+          "type": "string",
+          "pattern": "^ExtensionSetId:[^\\s]+$"
+        }
+      }
+    },
+    "r4OpaqueFacadeRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_owner_id",
+        "facade_public_residue_identity_ids"
+      ],
+      "properties": {
+        "export_owner_id": {
+          "type": "string",
+          "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId):[^\\s]+$"
+        },
+        "facade_public_residue_identity_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId|AssociatedItemId|ExtensionSetId|ExtensionMemberId|TraitWitnessId):[^\\s]+$"
+          }
+        }
+      }
+    },
     "fixedOperatorConformanceResidue": {
       "type": "object",
       "additionalProperties": false,
@@ -1284,6 +1478,7 @@
     "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
   },
   "x-deeplus-canonical-byte-algorithm": {
+    "algorithm_id": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
     "hash_algorithm": "SHA-256",
     "excluded_top_level_fields": [
       "canonical_sha256"
@@ -1297,7 +1492,11 @@
       "evidence_ids",
       "function_static_activation.used_witness_ids",
       "function_static_activation.used_conformance_ids",
-      "function_static_activation.helper_dependencies"
+      "function_static_activation.helper_dependencies",
+      "r4_interface_envelope.public_export_rows",
+      "r4_interface_envelope.public_activation_reexport_rows",
+      "r4_interface_envelope.opaque_facade_rows",
+      "r4_interface_envelope.opaque_facade_rows.facade_public_residue_identity_ids"
     ],
     "set_order": "strict ascending Unicode scalar sequence with no duplicates",
     "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
@@ -1312,6 +1511,33 @@
       "encode the resulting JSON text as UTF-8 and SHA-256 those bytes"
     ]
   },
+  "x-deeplus-r4-module-interface-contract": {
+    "r4_interface_envelope_required_for_r4_provider_api": true,
+    "legacy_payload_without_envelope": "PRESERVED_FOR_PRE_R4_FIXTURE_COMPATIBILITY_ONLY",
+    "semantic_comparison": "EXACT_PUBLIC_SEMANTIC_RESIDUE_EXCLUDING_PROVENANCE_BUILD_AND_PRIVATE_IMPLEMENTATION",
+    "missing_extra_or_different_residue": "MODULE_SIGNATURE_MISMATCH",
+    "source_order_or_trivia_effect": false,
+    "interface_sha256": "TOP_LEVEL_CANONICAL_SHA256",
+    "public_export_projection": "VISIBILITY_EXPORT_ROWS_WITHOUT_SOURCE_ORIGIN",
+    "public_activation_reexport_projection": "VISIBILITY_REEXPORT_ROWS_WITHOUT_ACTIVATION_OR_SOURCE_ORIGIN",
+    "opaque_facade_projection": "EXPOSED_SUBSET_ONLY",
+    "symbols_projection": "EXACT_API_HIR_EXPORTED_SYMBOLS",
+    "excluded_identity_inputs": [
+      "SourceFileId",
+      "source_path",
+      "SourceOriginId",
+      "ActivationOriginId",
+      "VisibilityProofId",
+      "visibility_closure_sha256",
+      "dependency_receipt_sha256",
+      "private_hir_or_body_bytes",
+      "debug_spans"
+    ],
+    "dependency_receipt_schema": "schemas/language/module-compilation-dependency-receipt.schema.json",
+    "implementation_digest_schema": "schemas/language/module-implementation-digest.schema.json",
+    "compilation_receipt_schema": "schemas/language/module-compilation-receipt.schema.json"
+  },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/module-api-digest-fixtures.json",
-  "x-product-compiler": "NOT_RUN"
+  "x-product-compiler": "NOT_RUN",
+  "x-deeplus-product-compiler": "NOT_RUN"
 }

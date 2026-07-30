@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-initialization-plan.schema.json",
+  "title": "Deeplus static binding compile-time initialization plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "module_id",
+    "graph_profile",
+    "bindings",
+    "topological_evaluation_order",
+    "evaluation_order",
+    "receipt_order",
+    "commit",
+    "runtime_initializer_count",
+    "semantic_order_winner",
+    "plan_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-initialization-plan/r1"
+    },
+    "module_id": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "graph_profile": {
+      "const": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+    },
+    "bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    },
+    "evaluation_order": {
+      "const": "TOPOLOGICAL_THEN_CANONICAL_DECL_ID"
+    },
+    "topological_evaluation_order": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/declId"
+      }
+    },
+    "receipt_order": {
+      "const": "CANONICAL_DECL_ID_ORDER"
+    },
+    "commit": {
+      "const": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED"
+    },
+    "runtime_initializer_count": {
+      "const": 0
+    },
+    "semantic_order_winner": {
+      "const": false
+    },
+    "plan_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "declId": {
+      "type": "string",
+      "pattern": "^DeclId:[^\\s]+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_decl_id",
+        "dependency_decl_ids",
+        "value_sha256",
+        "evaluation_status"
+      ],
+      "properties": {
+        "binding_decl_id": {
+          "$ref": "#/$defs/declId"
+        },
+        "dependency_decl_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/declId"
+          }
+        },
+        "value_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evaluation_status": {
+          "const": "COMPILE_TIME_SUCCEEDED"
+        }
+      }
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "plan_sha256",
+    "set_ordering": {
+      "bindings": "CANONICAL_DECL_ID_ORDER",
+      "bindings[].dependency_decl_ids": "CANONICAL_DECL_ID_ORDER",
+      "topological_evaluation_order": "DETERMINISTIC_TOPOLOGICAL_THEN_CANONICAL_DECL_ID"
+    }
+  },
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

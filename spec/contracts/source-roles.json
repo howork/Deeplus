@@ -2,12 +2,50 @@
   "schema": "deeplus.source-role-contract/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "registry_kind": "source_role_contract",
+  "package_target_source_identity": {
+    "PackageId": "canonical package key encoding",
+    "TargetId": {
+      "key": [
+        "package_id",
+        "canonical_manifest_target_name",
+        "target_kind"
+      ],
+      "target_kind": [
+        "library",
+        "executable",
+        "script"
+      ]
+    },
+    "SourceFileId": {
+      "key": [
+        "target_id",
+        "normalized_project_relative_path"
+      ]
+    },
+    "forbidden_identity_inputs": [
+      "absolute_path",
+      "source_order",
+      "file_enumeration_order",
+      "dependency_enumeration_order",
+      "timestamp",
+      "content_digest"
+    ]
+  },
+  "package_module_source_graph": {
+    "schema": "schemas/language/package-module-source-graph.schema.json",
+    "source_role_equals_target_policy": true,
+    "activation_profile_equals_target_profile": true,
+    "explicit_module_path_must_equal_mapped_module_path": true,
+    "script_module_importable": false,
+    "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER"
+  },
   "roles": {
     "library": {
       "root": "LibrarySourceFile",
       "top_level_statements": false,
       "entry_count": 0,
       "top_level_binding_predicate": "LibraryStaticBindingInitializerAdmitted",
+      "initialization_plan_schema": "schemas/language/module-initialization-plan.schema.json",
       "top_level_binding_exact_conjunction": {
         "source_kind": "Binding",
         "source_role": "library",
@@ -76,6 +114,18 @@
     "inference_by_trying_roots": "forbidden",
     "exactly_one_role": true,
     "preview_selection": "source_activation=explicit_feature_gate maps the same role to Preview{Role}SourceFile"
+  },
+  "graph_cycle_profiles": {
+    "package_dependency": "ACYCLIC",
+    "module_header_import": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+    "reexport": "ACYCLIC",
+    "static_binding_value_dependency": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+  },
+  "static_binding_commit": {
+    "commit": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED",
+    "runtime_initializer_count": 0,
+    "semantic_order_winner": false,
+    "receipt_order": "CANONICAL_DECL_ID_ORDER"
   },
   "shebang_semantics": "script first physical line only",
   "portable_host_profile": {

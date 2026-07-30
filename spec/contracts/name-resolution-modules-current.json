@@ -1,0 +1,1323 @@
+{
+  "schema": "deeplus.name-resolution-modules-current-contract/r1",
+  "revision": "r51f3-name-resolution-modules-r4",
+  "language_version": "0.1.2-internal",
+  "feature_id": "name_resolution_modules_current",
+  "status": "STABLE_DESIGN",
+  "design_verdict": "R4_OPTION_A_CLOSED_NAME_AND_MODULE_CONTRACT",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "authority": {
+    "semantic_base_sha": "53464e47bc280d4f431440eb7538d9d97c0a7aa7",
+    "selected_option": "A",
+    "gap_ids": [
+      "IR-RES-P0-040",
+      "IR-RES-P0-041",
+      "IR-MOD-P1-042",
+      "IR-MOD-P1-043",
+      "IR-MOD-P1-044",
+      "IR-MOD-P1-045",
+      "IR-MOD-P1-046",
+      "IR-MOD-P1-047",
+      "IR-RES-P1-048",
+      "IR-RES-P1-049",
+      "IR-TRACE-P1-050",
+      "IR-TRACE-P2-051"
+    ],
+    "production_implementation_authorized": false,
+    "product_support_claimed": false,
+    "feature_p1_closed": 0,
+    "feature_p1_created": 0
+  },
+  "open_feature_p1": {
+    "class": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006"
+    ],
+    "enumeration": [
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008"
+    ],
+    "trait_conformance": [
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008"
+    ],
+    "static_first_dynamic": [
+      "SFD-P1-009"
+    ],
+    "total": 22
+  },
+  "graph_families": {
+    "package_dependency": {
+      "profile": "ACYCLIC",
+      "self_loop": "REJECT",
+      "nontrivial_scc": "REJECT"
+    },
+    "module_header_import": {
+      "profile": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+      "admitted_scc_edges": [
+        "module_header_reference",
+        "type_declaration_reference",
+        "signature_reference"
+      ],
+      "forbidden_scc_edges": [
+        "static_value_dependency",
+        "runtime_initializer_dependency",
+        "reexport_dependency"
+      ],
+      "semantic_order_winner": false
+    },
+    "reexport": {
+      "profile": "ACYCLIC",
+      "self_loop": "REJECT",
+      "nontrivial_scc": "REJECT"
+    },
+    "static_binding_value_dependency": {
+      "profile": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT",
+      "self_loop": "REJECT",
+      "nontrivial_scc": "REJECT",
+      "commit": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED",
+      "runtime_initializer_count": 0,
+      "receipt_order": "CANONICAL_DECL_ID_ORDER",
+      "semantic_order_winner": false
+    }
+  },
+  "identity_contract": {
+    "PackageId": "canonical encoding of registry namespace, package name, and package version identity",
+    "ModuleId": "PackageId plus nonempty ModulePath",
+    "SourceFileId": "TargetId plus normalized project-relative path",
+    "TargetId": {
+      "key": [
+        "package_id",
+        "canonical_manifest_target_name",
+        "target_kind"
+      ],
+      "target_kind": [
+        "library",
+        "executable",
+        "script"
+      ],
+      "forbidden_inputs": [
+        "source_role_policy",
+        "activation_profile",
+        "source_file_order",
+        "absolute_path",
+        "timestamp",
+        "content_digest"
+      ]
+    },
+    "DependencyBindingId": {
+      "key": [
+        "consumer_package_id",
+        "source_visible_binding"
+      ],
+      "provider_package_id_is_identity_input": false,
+      "provider_change_preserves_id": true
+    },
+    "ResolverScopeId": {
+      "variants": {
+        "PackageRootScope": [
+          "package_id"
+        ],
+        "TargetScope": [
+          "target_id"
+        ],
+        "ModuleScope": [
+          "module_id"
+        ],
+        "SourceContributionScope": [
+          "source_file_id"
+        ],
+        "ItemOwnerScope": [
+          "decl_id"
+        ],
+        "BodyLocalScope": [
+          "hir_body_id",
+          "hir_scope_id"
+        ]
+      },
+      "variant_tag_is_identity_input": true
+    },
+    "HirScopeId": {
+      "key": [
+        "hir_body_id",
+        "owner_local_scope_id"
+      ],
+      "allocation": "DETERMINISTIC_PREORDER_OF_NORMALIZED_SEMANTIC_SCOPE_TREE",
+      "recovery_scope_admitted": false
+    },
+    "HirLocalId": {
+      "key": [
+        "hir_body_id",
+        "owner_local_binding_id"
+      ],
+      "allocation": "DETERMINISTIC_ORDER_OF_COMMITTED_NORMALIZED_BINDINGS",
+      "provisional_pattern_binding_allocates_id": false
+    },
+    "ImportBindingId": {
+      "key": [
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name"
+      ],
+      "resolved_target_is_identity_input": false,
+      "creates_hir_local_id": false
+    },
+    "VisibilityProofId": {
+      "key": [
+        "closure_module_id",
+        "export_owner_id",
+        "referenced_identity_id",
+        "api_position_kind",
+        "api_position_path",
+        "owner_visibility",
+        "referenced_visibility",
+        "package_relation",
+        "module_relation"
+      ],
+      "source_order_or_timestamp_is_identity_input": false
+    },
+    "activation_kind_domain": [
+      "use"
+    ],
+    "preserved_existing_identities": [
+      "DeclId",
+      "SourceOriginId",
+      "ActivationOriginId",
+      "ResolvedRef",
+      "EvidenceOriginId"
+    ],
+    "forbidden_ambiguous_names": [
+      "ScopeId",
+      "LocalBindingId",
+      "BindingId",
+      "NameRefId",
+      "ResolvedReferenceId",
+      "WitnessVisibilityOriginId",
+      "ExportBindingId"
+    ]
+  },
+  "import_binding": {
+    "key": [
+      "resolver_scope_id",
+      "namespace",
+      "local_binding_name"
+    ],
+    "same_key_same_target": "REJECT_DUPLICATE_IMPORT_BINDING",
+    "same_key_distinct_target": "REJECT_IMPORT_BINDING_COLLISION",
+    "same_target_distinct_explicit_alias": "ACCEPT_DISTINCT_IMPORT_BINDINGS",
+    "same_target_distinct_scope": "ACCEPT_DISTINCT_IMPORT_BINDINGS",
+    "target_field": "resolved_target_identity",
+    "target_identity_domain_by_namespace": {
+      "MODULE": "ModuleId",
+      "TYPE": "DeclId",
+      "VALUE": "DeclId",
+      "CALLABLE_OVERLOAD_SET": "DeclId"
+    },
+    "source_or_dependency_order_priority": false
+  },
+  "dependency_provider_provenance": {
+    "entry_kinds": [
+      "import_binding",
+      "activation_entry",
+      "activation_binding"
+    ],
+    "provider_pair_fields": [
+      "provider_binding_id_or_self",
+      "provider_module_id"
+    ],
+    "provider_binding_domain": "DependencyBindingId | self",
+    "self_meaning": "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE",
+    "self_does_not_imply": "PROVIDER_MODULE_EQUALS_CONSUMER_MODULE",
+    "consumer_target_binding": "EACH_USED_PAIR_MATCHES_EXACTLY_ONE_VISIBLE_MODULE_BINDING_FOR_CONSUMER_TARGET_ID",
+    "visible_module_binding_key": [
+      "consumer_target_id",
+      "dependency_binding_id_or_self",
+      "resolved_module_id"
+    ],
+    "required_interface_pair_source": "UNIQUE_PROVIDER_PAIRS_USED_BY_IMPORTS_OR_ACTIVATIONS",
+    "required_interface_exclusion": "ONLY_PROVIDER_MODULE_ID_EQUAL_TO_CONSUMER_MODULE_ID",
+    "same_package_other_module": "REQUIRED_INTERFACE_WITH_PROVIDER_BINDING_SELF",
+    "required_interface_relation": "EXACT_SET_NO_MISSING_OR_EXTRA_PAIR",
+    "mismatch_result": "REJECT_DEPENDENCY_INTERFACE_BINDING_INVALID",
+    "source_dependency_or_traversal_order_priority": false
+  },
+  "visible_module_path_projection": {
+    "self": "EXACT_CANONICAL_MODULE_PATH",
+    "dependency": "SOURCE_VISIBLE_BINDING_REPLACES_PROVIDER_ROOT_SEGMENT",
+    "script_module_importable": false
+  },
+  "module_signature": {
+    "relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+    "comparison": "ALL_MODULE_INTERFACE_DIGEST_SEMANTIC_FIELDS_EXCEPT_SCHEMA_AND_SELF_HASH",
+    "missing_extra_or_different_residue": "REJECT_MODULE_SIGNATURE_MISMATCH",
+    "source_order_or_trivia_effect": false,
+    "opaque_facade_relation": "SEPARATE_NARROWING_ONLY_PROJECTION"
+  },
+  "lexical_resolution": {
+    "lookup_order": "INNERMOST_NAME_ENV_TO_OUTERMOST_NAME_ENV",
+    "stop_rule": "STOP_AT_FIRST_NONEMPTY_FRAME_FOR_EXACT_NAMESPACE_AND_SPELLING",
+    "outer_binding_as_same_tier_candidate": false,
+    "same_frame_declaration_order_priority": false,
+    "different_namespace_same_spelling": "COEXIST",
+    "same_frame_distinct_single_bindings": "REJECT",
+    "callable_grouping": "ONE_OVERLOAD_SET_ONLY_IF_CANONICAL_OVERLOAD_SLOT_KEYS_ARE_PAIRWISE_DISTINCT",
+    "duplicate_overload_slot_key": "REJECT",
+    "result_or_responsibility_only_difference_creates_slot": false,
+    "parameter_and_root_body_local_same_name": "REJECT",
+    "shadowable_child_namespaces": [
+      "MODULE",
+      "TYPE",
+      "VALUE",
+      "CALLABLE_OVERLOAD_SET"
+    ],
+    "proper_child_shadow_result": "NEW_TYPED_BINDING_ID_HIDES_OUTER_UNTIL_SCOPE_EXIT",
+    "resolver_scope_parent_chain": "PackageRootScope -> TargetScope -> ModuleScope -> SourceContributionScope -> ItemOwnerScope -> BodyLocalScope(ROOT_BODY) -> BodyLocalScope(NESTED_BODY)",
+    "cross_frame_overload_merge": false,
+    "live_control_label_reuse": {
+      "r4_status": "NOT_APPLICABLE_CURRENT_PROFILE",
+      "reason": "NO_CURRENT_ROOT_CONNECTED_CONTROL_LABEL_SURFACE",
+      "future_owner": "FLOW_CONTROL_PROFILE",
+      "future_rule_if_activated": "REJECT_LIVE_ANCESTOR_REUSE"
+    },
+    "match_probe": "PROVISIONAL_BINDINGS_NEVER_ENTER_NAME_ENV",
+    "match_commit": "CREATE_FRESH_HIR_LOCAL_IDS",
+    "failed_pattern": "NO_COMMITTED_BINDING",
+    "local_function_visibility": "AFTER_DECLARATION_ONLY",
+    "local_function_hoisting": false
+  },
+  "environment_separation": {
+    "NameEnv": "ordinary module, type, value, callable, and import bindings",
+    "ActivationEnv": "admitted ExtensionSetId activation identities only; provider activation is outside this R4 environment",
+    "WitnessVisibilityEnv": "already-admitted witness evidence only",
+    "name_namespace_domain": [
+      "MODULE",
+      "TYPE",
+      "VALUE",
+      "CALLABLE_OVERLOAD_SET"
+    ],
+    "control_label_environment": "NOT_APPLICABLE_CURRENT_PROFILE_NO_CONTROL_LABEL_CARRIER",
+    "cross_environment_creation_count": 0,
+    "nested_use_order_or_depth_is_extension_winner": false,
+    "scope_exit": "POP_ONLY_EXITED_FRAME"
+  },
+  "member_extension_collision": {
+    "ordinary_selector": "REJECT_WHEN_APPLICABLE_NOMINAL_AND_ACTIVE_EXTENSION_SETS_ARE_BOTH_NONEMPTY",
+    "within_domain_ranking_before_collision": false,
+    "selected_count_on_rejection": 0,
+    "qualified_extension_selector": "RESTRICT_EXACT_EXTENSION_DOMAIN_AND_BYPASS_CROSS_DOMAIN_COLLISION",
+    "sole_active_primary": "MEMBER_EXTENSION_COLLISION",
+    "retired_nonemitting": [
+      "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+      "STABLE_MEMBER_EXTENSION_COLLISION"
+    ]
+  },
+  "diagnostic_precedence": [
+    {
+      "ordinal": 1,
+      "predicate": "PackageModuleSourceGraphAdmitted",
+      "primary": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "reasons": [
+        "PACKAGE_TARGET_MISSING",
+        "PACKAGE_BINDING_AMBIGUOUS",
+        "PACKAGE_CYCLE",
+        "MODULE_MAPPING_MISMATCH"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "predicate": "ModuleItemSkeletonSetAdmitted",
+      "primary": "MODULE_ITEM_SKELETON_CONFLICT",
+      "reasons": [
+        "DUPLICATE_DECLARATION",
+        "OVERLOAD_SLOT_KEY_COLLISION",
+        "MODULE_CONTRIBUTION_CONFLICT"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "predicate": "DependencyInterfaceBindingClosed",
+      "primary": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "reasons": [
+        "IMPORT_TARGET_NOT_FOUND",
+        "IMPORT_TARGET_AMBIGUOUS",
+        "IMPORT_ALIAS_COLLISION",
+        "EXPORT_TARGET_NOT_FOUND",
+        "EXPORT_IDENTITY_MISMATCH",
+        "REEXPORT_CYCLE",
+        "EXPORT_VISIBILITY_LEAK",
+        "MODULE_SIGNATURE_MISMATCH",
+        "FACADE_WIDENING",
+        "STATIC_DEPENDENCY_CYCLE",
+        "STALE_DEPENDENCY_RECEIPT"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "predicate": "ResolverScopeTreeAdmitted",
+      "primary": "RESOLVER_SCOPE_TREE_INVALID",
+      "reasons": [
+        "SAME_FRAME_DUPLICATE",
+        "PARAMETER_BODY_LOCAL_COLLISION",
+        "IMPORT_LOCAL_COLLISION",
+        "ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE",
+        "NAME_ACTIVATION_ENV_CONFLATION",
+        "SCOPE_ESCAPE",
+        "FAILED_PATTERN_PROBE_BINDING_LEAK"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "predicate": "ReferenceCandidateSetResolved",
+      "primary": "REFERENCE_CANDIDATE_SET_INVALID",
+      "reasons": [
+        "ZERO_CANDIDATES",
+        "MULTIPLE_SAME_TIER",
+        "WRONG_NAMESPACE",
+        "STATIC_PATH_UNRESOLVED",
+        "STATIC_PATH_AMBIGUOUS"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "predicate": "ReferenceVisibilityActivationAdmitted",
+      "primary": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "reasons": [
+        "CANDIDATE_NOT_VISIBLE",
+        "ACTIVATION_SCOPE_ESCAPE",
+        "ACTIVATION_IDENTITY_MISMATCH",
+        "MEMBER_VISIBILITY_DOMAIN",
+        "API_VISIBILITY_LEAK",
+        "WITNESS_ORIGIN_INVALID"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "predicate": "ResolvedNoncallReferenceSelected",
+      "primary": "NONCALL_REFERENCE_SELECTION_FAILED",
+      "reasons": [
+        "ZERO_AFTER_FILTER",
+        "MULTIPLE_AFTER_FILTER",
+        "ORDER_TIEBREAKER_REQUIRED"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "predicate": "ResolverHirSealAdmitted",
+      "primary": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "reasons": [
+        "UNBOUND_PRIMARY",
+        "UNRESOLVED_COUNT_NONZERO",
+        "CANDIDATE_SET_COUNT_NONZERO",
+        "MISSING_TYPED_ID",
+        "MISSING_VISIBILITY_PROOF",
+        "RUNTIME_RELOOKUP_RESIDUE"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "predicate": "ModuleInterfaceDigestVerified",
+      "primary": "MODULE_INTERFACE_DIGEST_MISMATCH",
+      "reasons": [
+        "MISSING_EXPORT_EDGE",
+        "INTERFACE_DIGEST_MISMATCH"
+      ]
+    }
+  ],
+  "diagnostic_winner": {
+    "rule": "LOWEST_ORDINAL_FAILED_STAGE",
+    "same_stage": "EXISTING_EXACT_OWNER_BOUND_PRIMARY_PRECEDES_GENERIC_STAGE_FALLBACK",
+    "primary_span": "LOWEST_STABLE_SOURCE_ORIGIN_ID_WITHIN_WINNING_VIOLATION",
+    "related_spans": "SORTED_BY_STABLE_SOURCE_ORIGIN_ID",
+    "batch_primary_emission": false,
+    "recovery_creates_admitted_hir": false
+  },
+  "hir_projection": {
+    "ordinary_local": "ResolvedRef::Local(HirLocalId)",
+    "static_declaration": "ResolvedRef::DirectDecl(DeclId)",
+    "import": "MODULE namespace retains ModuleId as resolver identity without expression-HIR projection; TYPE, VALUE and CALLABLE_OVERLOAD_SET retain DeclId, and only expression references project ResolvedRef::DirectDecl(DeclId); ImportBindingId remains trace provenance",
+    "top_level_resolver_scope_has_hir_projection": false,
+    "unresolved_count": 0,
+    "candidate_set_count": 0,
+    "runtime_relookup_count": 0
+  },
+  "next_cluster_fence": {
+    "owner": "GENERIC_INFERENCE_AND_ORDINARY_OVERLOAD_RESOLUTION",
+    "r4_may_produce": [
+      "RESOLVED_NONCALL_REFERENCE",
+      "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR",
+      "NAME_RESOLUTION_TRACE",
+      "IMPORT_BINDING_TRACE",
+      "VISIBILITY_PROOF"
+    ],
+    "r4_must_not_produce": [
+      "OVERLOAD_WINNER_FUNCTION_ID",
+      "COMPLETE_GENERIC_SUBSTITUTION",
+      "EXPECTED_TYPE_DIRECTED_WINNER",
+      "APPLICABILITY_RANK",
+      "SPECIFICITY_WINNER",
+      "ROW_INFERENCE_RESULT",
+      "RETURN_TYPE_ONLY_WINNER"
+    ],
+    "resolved_overload_set_ref_in_canonical_hir_h1": false,
+    "canonical_hir_callee_seal_requires_next_cluster": true,
+    "trait_witness_selection_or_materialization_owner": "TCC_AUTHORITY"
+  },
+  "module_artifact_identity_contract": {
+    "canonical_json_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "canonical_json_rules": {
+      "object_member_order": "ASCENDING_UNICODE_SCALAR_KEY_ORDER_RECURSIVE",
+      "string_encoding": "JSON_MANDATORY_ESCAPES_OTHER_SCALARS_DIRECT_UTF8_NO_NORMALIZATION",
+      "number_domain": "SCHEMA_VALIDATED_INTEGER_ONLY_FOR_CURRENT_R4_DIGEST_ARTIFACTS",
+      "whitespace": "NONE_OUTSIDE_STRING_VALUES",
+      "terminal_newline": false,
+      "self_hash_field": "REMOVE_EXACTLY_THE_SCHEMA_DECLARED_TOP_LEVEL_SELF_HASH_FIELD",
+      "array_precondition": "SCHEMA_DECLARED_CANONICAL_ORDER_ALREADY_VALIDATED"
+    },
+    "identity_domains": {
+      "public_interface": "EXACT_EFFECTIVE_PUBLIC_SEMANTIC_RESIDUE_ONLY",
+      "private_implementation": "VERIFIED_HIR_SEMANTICS_PLUS_PUBLIC_INTERFACE_BINDING",
+      "full_compilation": "TARGET_MODULE_SOURCE_GRAPH_DEPENDENCY_RESOLVER_VISIBILITY_INITIALIZATION_INTERFACE_IMPLEMENTATION_PROVENANCE"
+    },
+    "hash_domain_aliasing": false,
+    "product_execution": "NOT_RUN"
+  },
+  "canonical_artifacts": [
+    "schemas/language/package-module-source-graph.schema.json",
+    "schemas/language/source-role-carrier.schema.json",
+    "schemas/language/module-compilation-dependency-receipt.schema.json",
+    "schemas/language/module-api-digest.schema.json",
+    "schemas/language/module-implementation-digest.schema.json",
+    "schemas/language/module-source-contribution-projection.schema.json",
+    "schemas/language/module-compilation-receipt.schema.json",
+    "schemas/language/module-initialization-plan.schema.json",
+    "schemas/language/module-visibility-closure.schema.json",
+    "schemas/language/top-level-type-visibility-descriptor.schema.json",
+    "schemas/language/resolver-graph.schema.json",
+    "schemas/language/resolver-trace.schema.json",
+    "schemas/language/name-resolution-modules-current-fixtures.schema.json",
+    "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json",
+    "tests/fixtures/imported/module-api-digest-fixtures.json",
+    "tests/fixtures/current/module-compilation-artifact-relations-r1.json"
+  ],
+  "acceptance_oracles": [
+    {
+      "test_id": "IR-R4-GAP-01-P",
+      "test_class": "positive",
+      "scenario": "One selective import alias receives one ImportBindingId; every use site projects the same existing ResolvedRef::DirectDecl(DeclId) and one visibility proof.",
+      "expected_outcome": "ACCEPT_ONE_IMPORT_BINDING_ONE_RESOLVED_REF",
+      "gap_ids": [
+        "IR-RES-P0-040"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import",
+        "double_colon_static_qualified_path",
+        "trait_witness_resolution_phase_a"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-01-B",
+      "test_class": "boundary",
+      "scenario": "An admitted proper child lexical declaration receives a fresh HirLocalId, hides one ancestor HirLocalId, and scope exit restores the ancestor without identity reuse.",
+      "expected_outcome": "ACCEPT_DISTINCT_HIR_LOCAL_IDS_AND_RESTORE",
+      "gap_ids": [
+        "IR-RES-P0-040"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import",
+        "double_colon_static_qualified_path",
+        "trait_witness_resolution_phase_a"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-01-N",
+      "test_class": "negative",
+      "scenario": "An unresolved ordinary identifier reaches HIR sealing.",
+      "expected_outcome": "REJECT_BEFORE_CANONICAL_HIR",
+      "gap_ids": [
+        "IR-RES-P0-040"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import",
+        "double_colon_static_qualified_path",
+        "trait_witness_resolution_phase_a"
+      ],
+      "primary_diagnostic_or_null": "REFERENCE_CANDIDATE_SET_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "UNRESOLVED_OR_AMBIGUOUS_REFERENCE",
+      "primary_reason_or_null": "ZERO_CANDIDATES",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-02-P",
+      "test_class": "positive",
+      "scenario": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
+      "expected_outcome": "ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED",
+      "gap_ids": [
+        "IR-RES-P0-041"
+      ],
+      "feature_ids": [
+        "method_extension_resolution_policy",
+        "member_extension_collision_error_policy"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-02-B",
+      "test_class": "boundary",
+      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
+      "expected_outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED",
+      "gap_ids": [
+        "IR-RES-P0-041"
+      ],
+      "feature_ids": [
+        "method_extension_resolution_policy",
+        "member_extension_collision_error_policy"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-02-N",
+      "test_class": "negative",
+      "scenario": "An ordinary call has one applicable member and one applicable active extension.",
+      "expected_outcome": "REJECT_MEMBER_EXTENSION_COLLISION_SELECTED_COUNT_0",
+      "gap_ids": [
+        "IR-RES-P0-041"
+      ],
+      "feature_ids": [
+        "method_extension_resolution_policy",
+        "member_extension_collision_error_policy"
+      ],
+      "primary_diagnostic_or_null": "MEMBER_EXTENSION_COLLISION",
+      "diagnostic_identity_status": "EXISTING_ACTIVE_PRIMARY_BOUND",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "MEMBER_EXTENSION_COLLISION",
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-03-P",
+      "test_class": "positive",
+      "scenario": "Manifest, lock and source-row permutations produce identical PackageId, ModuleId and graph digest.",
+      "expected_outcome": "ACCEPT_ORDER_INVARIANT_PACKAGE_MODULE_GRAPH",
+      "gap_ids": [
+        "IR-MOD-P1-042"
+      ],
+      "feature_ids": [
+        "source_role_contract",
+        "module_keyword_source_header",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-03-B",
+      "test_class": "boundary",
+      "scenario": "Two packages expose the same ModulePath and therefore produce distinct ModuleIds.",
+      "expected_outcome": "ACCEPT_DISTINCT_PACKAGE_SCOPED_MODULE_IDS",
+      "gap_ids": [
+        "IR-MOD-P1-042"
+      ],
+      "feature_ids": [
+        "source_role_contract",
+        "module_keyword_source_header",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-03-N",
+      "test_class": "negative",
+      "scenario": "The root package references TargetId T, but T is absent from the target table.",
+      "expected_outcome": "REJECT_PACKAGE_TARGET_MISSING",
+      "gap_ids": [
+        "IR-MOD-P1-042"
+      ],
+      "feature_ids": [
+        "source_role_contract",
+        "module_keyword_source_header",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "PACKAGE_GRAPH_CONFLICT",
+      "primary_reason_or_null": "PACKAGE_TARGET_MISSING",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-04-P",
+      "test_class": "positive",
+      "scenario": "An exact selective import and alias receive one ImportBindingId whose content target is one existing ResolvedRef::DirectDecl(DeclId).",
+      "expected_outcome": "ACCEPT_EXACT_IMPORT_BINDING_AND_RESOLVED_REF",
+      "gap_ids": [
+        "IR-MOD-P1-043"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "block_local_import_directive_msp",
+        "scoped_import_block_msp"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-04-B",
+      "test_class": "boundary",
+      "scenario": "The same ModulePath is visible from two packages but one explicit graph binding selects one PackageId.",
+      "expected_outcome": "ACCEPT_EXPLICIT_GRAPH_DISAMBIGUATION",
+      "gap_ids": [
+        "IR-MOD-P1-043"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "block_local_import_directive_msp",
+        "scoped_import_block_msp"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-04-N",
+      "test_class": "negative",
+      "scenario": "One import binding resolves to zero exported targets.",
+      "expected_outcome": "REJECT_IMPORT_TARGET_NOT_FOUND",
+      "gap_ids": [
+        "IR-MOD-P1-043"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "block_local_import_directive_msp",
+        "scoped_import_block_msp"
+      ],
+      "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "IMPORT_BINDING_UNRESOLVED_OR_AMBIGUOUS",
+      "primary_reason_or_null": "IMPORT_TARGET_NOT_FOUND",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-05-P",
+      "test_class": "positive",
+      "scenario": "Disjoint library contributions compose to identical item and module digests under every file order.",
+      "expected_outcome": "ACCEPT_ORDER_INVARIANT_MODULE_COMPOSITION",
+      "gap_ids": [
+        "IR-MOD-P1-044"
+      ],
+      "feature_ids": [
+        "multi_file_module",
+        "module_keyword_source_header",
+        "script_import_execution_separation_law"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-05-B",
+      "test_class": "boundary",
+      "scenario": "An omitted module declaration receives exactly the carrier ModulePath.",
+      "expected_outcome": "ACCEPT_CARRIER_MAPPED_MODULE_PATH",
+      "gap_ids": [
+        "IR-MOD-P1-044"
+      ],
+      "feature_ids": [
+        "multi_file_module",
+        "module_keyword_source_header",
+        "script_import_execution_separation_law"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-05-N",
+      "test_class": "negative",
+      "scenario": "Two module contributions define different declarations with one StableSymbolKey.",
+      "expected_outcome": "REJECT_MODULE_CONTRIBUTION_CONFLICT",
+      "gap_ids": [
+        "IR-MOD-P1-044"
+      ],
+      "feature_ids": [
+        "multi_file_module",
+        "module_keyword_source_header",
+        "script_import_execution_separation_law"
+      ],
+      "primary_diagnostic_or_null": "MODULE_ITEM_SKELETON_CONFLICT",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "MODULE_CONTRIBUTION_CONFLICT",
+      "primary_reason_or_null": "MODULE_CONTRIBUTION_CONFLICT",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-06-P",
+      "test_class": "positive",
+      "scenario": "A public export with only public structured dependencies produces one visibility-closure proof.",
+      "expected_outcome": "ACCEPT_PUBLIC_API_CLOSURE",
+      "gap_ids": [
+        "IR-MOD-P1-045"
+      ],
+      "feature_ids": [
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "extension_use_reexport_syntax",
+        "top_level_type_visibility_unification"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-06-B",
+      "test_class": "boundary",
+      "scenario": "A common dependency is usable inside the package but absent from the external export set.",
+      "expected_outcome": "ACCEPT_COMMON_INTERNAL_ONLY",
+      "gap_ids": [
+        "IR-MOD-P1-045"
+      ],
+      "feature_ids": [
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "extension_use_reexport_syntax",
+        "top_level_type_visibility_unification"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-06-N",
+      "test_class": "negative",
+      "scenario": "An opaque facade exports one identity absent from its owner interface.",
+      "expected_outcome": "REJECT_FACADE_WIDENING",
+      "gap_ids": [
+        "IR-MOD-P1-045"
+      ],
+      "feature_ids": [
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "extension_use_reexport_syntax",
+        "top_level_type_visibility_unification"
+      ],
+      "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "API_VISIBILITY_CLOSURE_VIOLATION",
+      "primary_reason_or_null": "FACADE_WIDENING",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-07-P",
+      "test_class": "positive",
+      "scenario": "File and symbol enumeration order does not change the ModuleInterfaceDigest.",
+      "expected_outcome": "ACCEPT_STABLE_INTERFACE_DIGEST",
+      "gap_ids": [
+        "IR-MOD-P1-046"
+      ],
+      "feature_ids": [
+        "module_api_digest_core",
+        "module_signature_declaration",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-07-B",
+      "test_class": "boundary",
+      "scenario": "A private body-only change leaves interface digest stable but may change implementation digest.",
+      "expected_outcome": "ACCEPT_PRIVATE_BODY_INTERFACE_STABILITY",
+      "gap_ids": [
+        "IR-MOD-P1-046"
+      ],
+      "feature_ids": [
+        "module_api_digest_core",
+        "module_signature_declaration",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-07-N",
+      "test_class": "negative",
+      "scenario": "One dependency receipt contains a stale ModuleInterfaceDigest.",
+      "expected_outcome": "REJECT_STALE_DEPENDENCY_RECEIPT",
+      "gap_ids": [
+        "IR-MOD-P1-046"
+      ],
+      "feature_ids": [
+        "module_api_digest_core",
+        "module_signature_declaration",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "primary_reason_or_null": "STALE_DEPENDENCY_RECEIPT",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-08-P",
+      "test_class": "positive",
+      "scenario": "An acyclic immutable dependency graph produces one compile-time value per binding and zero runtime initializer events.",
+      "expected_outcome": "ACCEPT_COMPILE_TIME_INITIALIZATION_PLAN",
+      "gap_ids": [
+        "IR-MOD-P1-047"
+      ],
+      "feature_ids": [
+        "library_static_binding_initializer_msp",
+        "multi_file_module"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-08-B",
+      "test_class": "boundary",
+      "scenario": "Two declaration-only modules form a header SCC and close after complete header collection.",
+      "expected_outcome": "ACCEPT_HEADER_ONLY_MODULE_SCC",
+      "gap_ids": [
+        "IR-MOD-P1-047"
+      ],
+      "feature_ids": [
+        "library_static_binding_initializer_msp",
+        "multi_file_module"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-08-N",
+      "test_class": "negative",
+      "scenario": "The static-binding value-dependency graph contains one directed cycle.",
+      "expected_outcome": "REJECT_STATIC_DEPENDENCY_CYCLE",
+      "gap_ids": [
+        "IR-MOD-P1-047"
+      ],
+      "feature_ids": [
+        "library_static_binding_initializer_msp",
+        "multi_file_module"
+      ],
+      "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "DEPENDENCY_CYCLE",
+      "primary_reason_or_null": "STATIC_DEPENDENCY_CYCLE",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-09-P",
+      "test_class": "positive",
+      "scenario": "An admitted proper child value declaration receives a fresh HirLocalId and resolves by lexical owner without reusing the ancestor HirLocalId.",
+      "expected_outcome": "ACCEPT_EXPLICIT_NESTED_HIR_LOCAL_SHADOW",
+      "gap_ids": [
+        "IR-RES-P1-048"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-09-B",
+      "test_class": "boundary",
+      "scenario": "Two callable declarations share a name but have distinct admitted CanonicalOverloadSlotKeys.",
+      "expected_outcome": "ACCEPT_ONE_OVERLOAD_SET",
+      "gap_ids": [
+        "IR-RES-P1-048"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-09-N",
+      "test_class": "negative",
+      "scenario": "A same-frame import alias and local declaration introduce distinct identities with the same name.",
+      "expected_outcome": "REJECT_SAME_FRAME_NAMESPACE_COLLISION",
+      "gap_ids": [
+        "IR-RES-P1-048"
+      ],
+      "feature_ids": [
+        "lexical_import_use_environment_stack",
+        "package_aware_import"
+      ],
+      "primary_diagnostic_or_null": "RESOLVER_SCOPE_TREE_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "NAMESPACE_COLLISION",
+      "primary_reason_or_null": "IMPORT_LOCAL_COLLISION",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-10-P",
+      "test_class": "positive",
+      "scenario": "Each failed resolver stage maps to exactly one approved active primary and one stable owner span.",
+      "expected_outcome": "ACCEPT_ONE_PRIMARY_DIAGNOSTIC",
+      "gap_ids": [
+        "IR-RES-P1-049"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-10-B",
+      "test_class": "boundary",
+      "scenario": "An import target is absent; a later noncall reference depends on that import.",
+      "expected_outcome": "ACCEPT_EARLIEST_STAGE_PRIMARY_AND_SUPPRESS_DOWNSTREAM",
+      "gap_ids": [
+        "IR-RES-P1-049"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade"
+      ],
+      "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "logical_violation_family_or_null": "IMPORT_BINDING_UNRESOLVED_OR_AMBIGUOUS",
+      "suppressed_diagnostics": [
+        "REFERENCE_CANDIDATE_SET_INVALID"
+      ],
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "primary_reason_or_null": "IMPORT_TARGET_NOT_FOUND"
+    },
+    {
+      "test_id": "IR-R4-GAP-10-N",
+      "test_class": "negative",
+      "scenario": "Resolver output with unresolved_count = 1 is offered for canonical HIR sealing.",
+      "expected_outcome": "REJECT_UNRESOLVED_REFERENCE_AT_HIR_SEAL",
+      "gap_ids": [
+        "IR-RES-P1-049"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade"
+      ],
+      "primary_diagnostic_or_null": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "diagnostic_identity_status": "NEW_PRIMARY_INTEGRATED_UNVERIFIED",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "RESOLVER_DIAGNOSTIC_PRECEDENCE_VIOLATION",
+      "primary_reason_or_null": "UNRESOLVED_COUNT_NONZERO",
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-11-P",
+      "test_class": "positive",
+      "scenario": "Every scoped feature forward reference equals the reverse registry projection by identity domain.",
+      "expected_outcome": "ACCEPT_BIDIRECTIONAL_TRACE_EQUALITY",
+      "gap_ids": [
+        "IR-TRACE-P1-050"
+      ],
+      "feature_ids": [
+        "scoped_import_use_grouping",
+        "double_colon_static_qualified_path",
+        "module_static_path_verifier_closure"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-11-B",
+      "test_class": "boundary",
+      "scenario": "A feature has a semantically inapplicable stage with an approved structured not-applicable reason.",
+      "expected_outcome": "ACCEPT_EXPLICIT_NOT_APPLICABLE",
+      "gap_ids": [
+        "IR-TRACE-P1-050"
+      ],
+      "feature_ids": [
+        "scoped_import_use_grouping",
+        "double_colon_static_qualified_path",
+        "module_static_path_verifier_closure"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-11-N",
+      "test_class": "negative",
+      "scenario": "One forward feature-to-diagnostic crosswalk reference is deleted.",
+      "expected_outcome": "REJECT_DELETED_CROSSWALK_REFERENCE",
+      "gap_ids": [
+        "IR-TRACE-P1-050"
+      ],
+      "feature_ids": [
+        "scoped_import_use_grouping",
+        "double_colon_static_qualified_path",
+        "module_static_path_verifier_closure"
+      ],
+      "primary_diagnostic_or_null": "CROSSWALK_REFERENCE_UNRESOLVED",
+      "diagnostic_identity_status": "EXISTING_ACTIVE_PRIMARY_BOUND",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "TRACE_VALIDATION_FAILURE",
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-12-P",
+      "test_class": "positive",
+      "scenario": "Every affected feature has a seven-stage trace row or approved not-applicable reason, and the regenerated tutorial preserves manifest/convention ModulePath authority.",
+      "expected_outcome": "ACCEPT_COMPLETE_FEATURE_TRACE",
+      "gap_ids": [
+        "IR-TRACE-P2-051"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "module_api_digest_core"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-12-B",
+      "test_class": "boundary",
+      "scenario": "A tooling-only digest row has no runtime rule and records runtime as explicitly not applicable.",
+      "expected_outcome": "ACCEPT_TOOLING_STAGE_NOT_APPLICABLE",
+      "gap_ids": [
+        "IR-TRACE-P2-051"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "module_api_digest_core"
+      ],
+      "primary_diagnostic_or_null": null,
+      "diagnostic_identity_status": "NOT_APPLICABLE_ACCEPTANCE",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": null,
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    },
+    {
+      "test_id": "IR-R4-GAP-12-N",
+      "test_class": "negative",
+      "scenario": "One Stable feature trace omits its static-semantics edge.",
+      "expected_outcome": "REJECT_INCOMPLETE_STABLE_FEATURE_TRACE",
+      "gap_ids": [
+        "IR-TRACE-P2-051"
+      ],
+      "feature_ids": [
+        "package_aware_import",
+        "multi_file_module",
+        "module_signature_declaration",
+        "opaque_module_facade",
+        "module_api_digest_core"
+      ],
+      "primary_diagnostic_or_null": "CROSSWALK_REFERENCE_UNRESOLVED",
+      "diagnostic_identity_status": "EXISTING_ACTIVE_PRIMARY_BOUND",
+      "execution": "PROPOSED_OUTLINE_NOT_RUN",
+      "product_lanes": "15/15_NOT_RUN",
+      "candidate_oracle_status": "EXACT_DESIGN_ORACLE_NOT_RUN",
+      "logical_violation_family_or_null": "FEATURE_TRACE_INCOMPLETE",
+      "primary_reason_or_null": null,
+      "suppressed_diagnostics": []
+    }
+  ]
+}

@@ -103,6 +103,22 @@ closed identity를 검증한다. backend build, target run, FFI/console
 behavior는 별도 execution receipt가 있어야 한다. 앞의 표가 모두
 정상이어도 제품 레인은 `NOT_RUN`으로 남는다.
 
+R4 보충으로 다음 receipt 표도 작성한다.
+
+| field | 기록 |
+|---|---|
+| `TargetId` | PackageId + manifest target name + target kind |
+| graph digests | package/module/source contribution |
+| dependency bindings | consumer-visible binding과 provider content digest |
+| public residue | normalized residue digest |
+| interface | `ModuleInterfaceDigest` |
+| resolver | name/import trace digest |
+| HIR | verified semantic digest |
+
+ModuleSignature는 public residue와 exact match하고 opaque facade는
+narrowing-only여야 한다. immutable static value가 있다면 별도 acyclic
+compile-time graph와 one-atomic-commit plan을 기록한다.
+
 ## 중간 점검
 
 - Package와 Module을 같은 것으로 설명하지 않았는가?
@@ -113,6 +129,21 @@ behavior는 별도 execution receipt가 있어야 한다. 앞의 표가 모두
 - API digest와 wire/ABI identity를 합치지 않았는가?
 
 ## 실패 실험
+
+다음 R4 실패를 하나씩 독립적으로 만들어 expected primary를 적는다.
+
+1. Package dependency cycle → `PACKAGE_MODULE_SOURCE_GRAPH_INVALID`
+2. 같은 scope/namespace/local-name import 중복 →
+   `DEPENDENCY_INTERFACE_BINDING_INVALID`
+3. parameter를 root local로 재선언 → `RESOLVER_SCOPE_TREE_INVALID`
+4. nominal과 active extension이 동시에 적용 →
+   `MEMBER_EXTENSION_COLLISION`
+5. stale dependency interface digest →
+   `MODULE_INTERFACE_DIGEST_MISMATCH`
+
+각 실험은 source/import/file 순서를 뒤집어도 같은 결과와 primary
+`SourceOriginId` 순서를 가져야 한다. 실패한 실험은 admitted HIR, runtime
+initializer, MIR operation을 0개 만든다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
@@ -183,6 +214,12 @@ formatter/LSP 제품 동작은 이 실습 범위 밖이다. 따라서 결과 문
 ## 완료 체크리스트
 
 - [ ] Package/Module/file path를 분리했다.
+- [ ] package dependency와 re-export graph가 acyclic이다.
+- [ ] header SCC에는 header/type/signature edge만 있다.
+- [ ] import local key 중복과 alias 차이를 구분했다.
+- [ ] ModuleSignature/public residue와 dependency digest가 정확히 맞는다.
+- [ ] module static value는 compile-time atomic commit이며 runtime init이 0이다.
+- [ ] resolver trace와 verified HIR digest를 receipt에 결합했다.
 - [ ] schema/serialization/ABI를 분리했다.
 - [ ] canonical하지 않은 console API를 Prelude로 주장하지 않았다.
 - [ ] current HIR-H1과 draft RFC를 분리했다.

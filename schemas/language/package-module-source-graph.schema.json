@@ -1,0 +1,463 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/package-module-source-graph.schema.json",
+  "title": "Deeplus package, target, module, and source contribution graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "root_package_id",
+    "packages",
+    "targets",
+    "source_contributions",
+    "dependency_bindings",
+    "visible_module_bindings",
+    "module_header_import_edges",
+    "graph_policy",
+    "canonical_order",
+    "canonical_graph_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.package-module-source-graph/r1"
+    },
+    "root_package_id": {
+      "$ref": "#/$defs/packageId"
+    },
+    "packages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/package"
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/target"
+      }
+    },
+    "source_contributions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/sourceContribution"
+      }
+    },
+    "dependency_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/dependencyBinding"
+      }
+    },
+    "visible_module_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/visibleModuleBinding"
+      }
+    },
+    "module_header_import_edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/moduleHeaderImportEdge"
+      }
+    },
+    "graph_policy": {
+      "$ref": "#/$defs/graphPolicy"
+    },
+    "canonical_order": {
+      "const": "TYPED_ID_CANONICAL_BYTE_ORDER"
+    },
+    "canonical_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "x-deeplus-visible-module-path-projection": {
+    "self": "visible_qualified_path equals the resolved module's canonical module_path",
+    "dependency": "visible_qualified_path equals source_visible_binding followed by the resolved provider module_path after removing its first root segment",
+    "script_module_importable": false
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "canonical_graph_sha256",
+    "array_order": {
+      "packages": "PackageId",
+      "packages[*].dependency_binding_ids": "DependencyBindingId",
+      "packages[*].target_ids": "TargetId",
+      "targets": "TargetId",
+      "targets[*].source_file_ids": "SourceFileId",
+      "source_contributions": "SourceFileId",
+      "source_contributions[*].module_path": "DECLARED_MODULE_PATH_SEGMENT_SEQUENCE",
+      "source_contributions[*].explicit_module_path_or_null": "DECLARED_MODULE_PATH_SEGMENT_SEQUENCE_OR_NULL",
+      "dependency_bindings": "DependencyBindingId",
+      "visible_module_bindings": "consumer_TargetId_then_visible_qualified_path_then_resolved_ModuleId_then_dependency_binding_id_or_self",
+      "visible_module_bindings[*].visible_qualified_path": "VISIBLE_MODULE_PATH_SEGMENT_SEQUENCE",
+      "module_header_import_edges": "from_ModuleId_then_to_ModuleId_then_edge_kind_then_SourceOriginId"
+    }
+  },
+  "$defs": {
+    "packageId": {
+      "type": "string",
+      "pattern": "^PackageId:[^\\s]+$"
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^TargetId:[^\\s]+$"
+    },
+    "sourceFileId": {
+      "type": "string",
+      "pattern": "^SourceFileId:[^\\s]+$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "dependencyBindingId": {
+      "type": "string",
+      "pattern": "^DependencyBindingId:[^\\s]+$"
+    },
+    "sourceOriginId": {
+      "type": "string",
+      "pattern": "^SourceOriginId:[^\\s]+$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "modulePath": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_id",
+        "canonical_package_key",
+        "resolved_artifact_provenance_digest",
+        "dependency_binding_ids",
+        "target_ids"
+      ],
+      "properties": {
+        "package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "canonical_package_key": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "registry_namespace",
+            "package_name",
+            "package_version_identity"
+          ],
+          "properties": {
+            "registry_namespace": {
+              "type": "string",
+              "minLength": 1
+            },
+            "package_name": {
+              "$ref": "#/$defs/identifier"
+            },
+            "package_version_identity": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "resolved_artifact_provenance_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dependency_binding_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/dependencyBindingId"
+          }
+        },
+        "target_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/targetId"
+          }
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "package_id",
+        "canonical_manifest_target_name",
+        "target_kind",
+        "source_role_policy",
+        "activation_profile",
+        "source_file_ids"
+      ],
+      "properties": {
+        "target_id": {
+          "$ref": "#/$defs/targetId"
+        },
+        "package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "canonical_manifest_target_name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "target_kind": {
+          "enum": [
+            "library",
+            "executable",
+            "script"
+          ]
+        },
+        "source_role_policy": {
+          "enum": [
+            "library",
+            "executable",
+            "script"
+          ]
+        },
+        "activation_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_file_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/sourceFileId"
+          }
+        }
+      }
+    },
+    "sourceContribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_file_id",
+        "target_id",
+        "normalized_project_relative_path",
+        "source_role",
+        "activation_profile",
+        "module_id",
+        "module_path",
+        "explicit_module_path_or_null",
+        "source_bytes_sha256"
+      ],
+      "properties": {
+        "source_file_id": {
+          "$ref": "#/$defs/sourceFileId"
+        },
+        "target_id": {
+          "$ref": "#/$defs/targetId"
+        },
+        "normalized_project_relative_path": {
+          "type": "string",
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "source_role": {
+          "enum": [
+            "library",
+            "executable",
+            "script"
+          ]
+        },
+        "activation_profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "module_path": {
+          "$ref": "#/$defs/modulePath"
+        },
+        "explicit_module_path_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/modulePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_bytes_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "dependencyBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_binding_id",
+        "consumer_package_id",
+        "source_visible_binding",
+        "provider_package_id",
+        "provider_interface_sha256"
+      ],
+      "properties": {
+        "dependency_binding_id": {
+          "$ref": "#/$defs/dependencyBindingId"
+        },
+        "consumer_package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "source_visible_binding": {
+          "$ref": "#/$defs/identifier"
+        },
+        "provider_package_id": {
+          "$ref": "#/$defs/packageId"
+        },
+        "provider_interface_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "visibleModuleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consumer_target_id",
+        "visible_qualified_path",
+        "resolved_module_id",
+        "dependency_binding_id_or_self"
+      ],
+      "properties": {
+        "consumer_target_id": {
+          "$ref": "#/$defs/targetId"
+        },
+        "visible_qualified_path": {
+          "$ref": "#/$defs/modulePath"
+        },
+        "resolved_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "dependency_binding_id_or_self": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/dependencyBindingId"
+            },
+            {
+              "const": "self"
+            }
+          ]
+        }
+      }
+    },
+    "moduleHeaderImportEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_module_id",
+        "to_module_id",
+        "edge_kind",
+        "source_origin_id",
+        "scc_admission"
+      ],
+      "properties": {
+        "from_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "to_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "edge_kind": {
+          "enum": [
+            "module_header_reference",
+            "type_declaration_reference",
+            "signature_reference",
+            "static_value_dependency",
+            "runtime_initializer_dependency",
+            "reexport_dependency"
+          ]
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        },
+        "scc_admission": {
+          "enum": [
+            "HEADER_ONLY_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+            "SCC_FORBIDDEN"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "edge_kind": {
+                "enum": [
+                  "module_header_reference",
+                  "type_declaration_reference",
+                  "signature_reference"
+                ]
+              }
+            },
+            "required": [
+              "edge_kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "scc_admission": {
+                "const": "HEADER_ONLY_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "scc_admission": {
+                "const": "SCC_FORBIDDEN"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "graphPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_dependency",
+        "module_header_import",
+        "reexport",
+        "static_binding_value_dependency"
+      ],
+      "properties": {
+        "package_dependency": {
+          "const": "ACYCLIC"
+        },
+        "module_header_import": {
+          "const": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+        },
+        "reexport": {
+          "const": "ACYCLIC"
+        },
+        "static_binding_value_dependency": {
+          "const": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        }
+      }
+    }
+  },
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

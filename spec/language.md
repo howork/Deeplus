@@ -48,6 +48,31 @@ One Module may have multiple admitted source contributions, but duplicate or
 conflicting declarations are rejected before API-digest construction and source
 order never creates identity.
 
+The package dependency graph and the re-export graph are acyclic. A self-loop or
+nontrivial strongly connected component in either graph is rejected. Module
+headers use a narrower rule: a strongly connected component is admitted only
+after every member's header has been collected, and only
+`module_header_reference`, `type_declaration_reference`, and
+`signature_reference` edges may remain inside it. A `static_value_dependency`,
+runtime-initializer dependency, or re-export dependency inside that component is
+rejected. Manifest order, source-file order, import order, and graph traversal
+order never choose a winner.
+
+An immutable module binding whose value is statically materializable belongs to
+one acyclic compile-time dependency graph. The checker evaluates that graph
+without emitting a runtime module initializer and publishes its values in one
+atomic commit only after every value succeeds. Failure publishes no partial
+binding. Its receipt enumerates bindings in canonical binding-identity order,
+not evaluation discovery order. A cycle is a static error rather than an
+implementation-defined initialization order.
+
+A declared `ModuleSignature` must match the normalized public residue exactly
+across every semantic field except the signature schema/self-hash fields.
+Missing, extra, or different residue is `MODULE_SIGNATURE_MISMATCH`; source
+order and trivia are irrelevant. An opaque facade is a separate, explicitly
+narrowing projection. It may hide an existing export but may neither widen
+visibility nor invent an export.
+
 ## 2. Unicode, identifiers, and escaped names
 
 Source text is Unicode. Ordinary identifiers follow the lexical XID policy of the exact Grammar. Hard keywords are reserved only where the scanner must commit. Contextual words remain identifiers outside their admitting owner. `array` and `case` are emitted as `IDENTIFIER` and are absent from the hard-keyword, contextual-word, sigil-role, intrinsic-token, and parser-special-case vocabularies.
@@ -217,6 +242,49 @@ openCounter() -> $$counter        // var counter = openCounter()
 ```
 
 The CST preserves the arrow, `$`/`$$`, annotation, spans, and trivia. Before semantic checking, `$` normalizes to ordinary `let` and `$$` to ordinary `var`. The initializer is evaluated exactly once under the pre-binding environment; the fresh name is committed only after successful initialization. Type inference, coercion, ownership, borrow regions, effects, failure, cleanup, shadowing, and scope are exactly those of ordinary local binding. Only one fresh identifier target is admitted, only as a statement; chaining, pattern/place/member/index targets and guard attachment are rejected. No flow-binding AST/HIR/MIR/xVM/Cranelift node exists. A `yield ... -> $x` still owns its suspension/resume event, then performs the same ordinary response binding after resume.
+
+### 7.1 Lexical frames and resolver identity
+
+Name lookup walks `NameEnv` frames from innermost to outermost and stops at the
+first frame containing an exact `(namespace, spelling)` match. An outer binding
+is therefore hidden, not joined as a same-tier candidate. Different namespaces
+may contain the same spelling. Within one frame, two single bindings or two
+declarations of the same binding are errors. Callable declarations form one
+overload set only when their canonical overload-slot keys are pairwise
+distinct; result type, responsibility rows, declaration order, or source order
+alone do not create a slot. Callable parameters and the root callable body are
+one collision domain, so a root local cannot redeclare a parameter.
+
+A proper child block may shadow an ancestor `MODULE`, `TYPE`, `VALUE`, or
+`CALLABLE_OVERLOAD_SET` name only when that declaration kind is syntactically
+admitted in the child owner. The child receives a fresh typed identity and the
+ancestor becomes visible again on exit. Overload sets never merge across
+frames. A nested import alias may shadow an ancestor alias and receives a fresh
+`ImportBindingId`. The current profile has no root-connected control-label
+surface, so control-label reuse is not applicable; a future
+`FLOW_CONTROL_PROFILE` must reject live-ancestor reuse. Member, type-side,
+associated-item, extension, and witness-capability lookup are separate domains,
+not lexical shadow operations.
+
+Pattern probes are transactional: provisional names never enter `NameEnv`, a
+failed probe commits no binding, and a successful commit assigns fresh
+`HirLocalId` values. A flow binding is fresh in the current block and may shadow
+only an ancestor-block binding. A local function is visible only after its
+declaration. `NameEnv`, `ActivationEnv`, and `WitnessVisibilityEnv` are distinct
+stacks: importing a name creates no activation, `use` creates no ordinary name
+or witness, and witness visibility creates neither a name nor new evidence.
+Exiting a scope pops only that scope's frames.
+
+Module interface, implementation, and compilation-receipt hashes are separate
+domains. The interface hash contains only effective public semantic residue;
+source paths and file identities, source/activation/proof origins, dependency
+receipt bytes, private HIR/body bytes, and debug spans are excluded. The
+implementation hash binds the interface hash and private verified-HIR
+semantics. The full compilation receipt binds target/module ownership, source
+provenance, package/resolver graphs, dependency, visibility and initialization
+receipts, and both semantic hashes. Consequently a private-body-only edit may
+preserve the interface hash while changing implementation and full receipt
+hashes. A script has no importable module interface.
 
 Properties use the exact `get` and `set(name)` accessor productions. An
 optional member-visibility sigil attaches to each accessor, so `+get`, `-get`,
@@ -570,7 +638,18 @@ Extensions are statically identified sets. Activation is lexical/module scoped. 
 
 `+forward { name, age, city } to profile` expands to the listed forwarding declarations in source order. The list is finite and explicit; wildcard, rename, hidden witness creation, duplicate and collision are forbidden.
 
-Resolution considers nominal members, active extension sets, and conformance evidence in the declared order. It never performs hidden runtime provider lookup to decide a static member.
+Ordinary selector resolution computes the applicable nominal-member set and the
+applicable active-extension set independently. If both sets are nonempty, the
+selector is rejected with `MEMBER_EXTENSION_COLLISION`; neither domain is ranked
+first and the selected count is zero. If either domain itself has multiple
+applicable candidates, its own ambiguity rule applies before selection. An
+explicit `Type::ExtensionSet::member` selector restricts lookup to that exact
+extension domain and therefore bypasses the cross-domain collision. Import,
+`use`, nesting depth, declaration order, and source order are never priority.
+`EXTENSION_SHADOWED_BY_MEMBER_COMPAT` and
+`STABLE_MEMBER_EXTENSION_COLLISION` are retired nonemitting names whose sole
+replacement is `MEMBER_EXTENSION_COLLISION`. Resolution never performs hidden
+runtime provider lookup to decide a static member.
 
 ## 16. Operator policy
 
@@ -1449,6 +1528,66 @@ and entry candidates. Resolution must not convert runtime strings into any of
 those identities. The resolver records the selected evidence origin so that
 module API digests and MIR lowering do not repeat an unstable lookup.
 
+The resolver uses typed identities rather than a generic `ScopeId` or
+`BindingId`. `ResolverScopeId` is one of `PackageRootScope(PackageId)`,
+`TargetScope(TargetId)`, `ModuleScope(ModuleId)`,
+`SourceContributionScope(SourceFileId)`, `ItemOwnerScope(DeclId)`, or
+`BodyLocalScope(HirBodyId, HirScopeId)`; the variant tag is part of identity.
+`HirScopeId` and `HirLocalId` are body-local identities allocated by
+deterministic traversal of the normalized committed scope/binding tree.
+Absolute paths, spans, timestamps, file order, and recovery nodes are never
+identity inputs.
+
+An import binding is keyed exactly by
+`(ResolverScopeId, namespace, local_binding_name)`. Repeating that key is an
+error whether it names the same or a different target. Two explicit aliases for
+one target are distinct bindings, and the same alias in distinct scopes is
+distinct. The target is required trace content, not an input to
+`ImportBindingId`. `ImportTargetIdentity` is `Module(ModuleId)` for the
+`MODULE` namespace and `Declaration(DeclId)` for `TYPE`, `VALUE`, and
+`CALLABLE_OVERLOAD_SET`. Module imports have no expression-HIR projection.
+Only a declaration used as an expression projects to
+`ResolvedRef::DirectDecl(DeclId)`, while resolver provenance retains
+`ImportBindingId`, `SourceOriginId`, and the target.
+
+Every admitted import binding and extension activation entry also records the
+provider pair `(provider_binding_id_or_self, provider_module_id)`.
+`provider_binding_id_or_self = self` means that the provider package is the
+consumer package; it does not mean that the provider module is the consumer
+module. For the entry's consumer `TargetId`, the pair must match exactly one
+`visible_module_bindings` row in the admitted package graph, using that row's
+`dependency_binding_id_or_self` and `resolved_module_id`. Source, dependency,
+or traversal order cannot repair or choose a provider pair.
+
+The dependency receipt's `required_interfaces` is exactly the unique provider
+pairs used by its import and activation bindings, excluding only a pair whose
+`provider_module_id` equals the receipt's `consumer_module_id`. Consequently a
+same-package, different-module provider remains in `required_interfaces` with
+`provider_binding_id_or_self = self`. A missing, extra, stale, or graph-unbound
+pair fails `DependencyInterfaceBindingClosed` before canonical HIR or MIR
+lowering. This is a static design contract; resolver, checker, and product
+execution remain `NOT_RUN`.
+
+All R4 module-artifact self hashes use the single
+`DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1` algorithm. After schema validation and
+schema-declared array ordering, it removes exactly the declared top-level
+self-hash field, orders object members recursively by Unicode scalar key,
+emits only mandatory JSON escapes while writing every other scalar directly
+as UTF-8 without normalization, emits no insignificant whitespace or terminal
+newline, and hashes those bytes with SHA-256. Current R4 digest artifacts admit
+only schema-validated integers, so this contract does not silently claim the
+different general-number rules of RFC 8785.
+
+The R4 resolver may seal `RESOLVED_NONCALL_REFERENCE`,
+`NAME_RESOLUTION_TRACE`, `IMPORT_BINDING_TRACE`, and `VISIBILITY_PROOF`.
+Callable lookup may leave a `ResolvedOverloadSetRef` only in analysis HIR.
+Canonical HIR-H1 must not contain it until the separate generic-inference and
+ordinary-overload cluster has selected an exact winner. This resolver contract
+does not define an overload winner, complete generic substitution, expected
+type preference, applicability/specificity rank, row-inference result, or a
+return-type-only winner. Trait witness selection and materialization remain
+under the existing Trait-conformance authority.
+
 The checker evaluates callable channels in this order: ordinary parameters, repeated positional residue, named-rest residue, ownership/place requirements, effect/error rows, isolation/context, and return compatibility. It then applies overload specificity. Named unfold first proves a structural Record with a statically known label row; it then contributes each label once. Duplicate or possibly overlapping labels are rejected before body lowering. A `Map` cannot pass this proof because its key set is a runtime value.
 
 Function-type compatibility preserves `T...` and `Record***` as different residues. It must not erase either residue to a collection carrier. A public API digest records the residue, parameter label policy, effects, errors, ownership, and witness/extension requirements. Two digests that differ in any responsibility-bearing field are not equal merely because their machine ABI could be made identical.
@@ -1591,12 +1730,51 @@ documentation projection.
 This edition states only the current and Preview language profiles. Static
 validation is E2 evidence; product lanes remain `NOT_RUN`.
 
+## 58. Resolver admission stages and deterministic primary diagnostic
+
+The resolver evaluates the following stage predicates in order. The lowest
+ordinal failed stage owns the primary diagnostic. Within one stage, an existing
+exact owner-bound diagnostic precedes the generic stage fallback. The primary
+span is the lowest stable `SourceOriginId` in that violation; related spans are
+sorted by `SourceOriginId`. Source, import, dependency, and file enumeration
+order never choose a primary, and recovery creates no admitted HIR.
+
+| ordinal | predicate | primary diagnostic |
+|---:|---|---|
+| 1 | `PackageModuleSourceGraphAdmitted` | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` |
+| 2 | `ModuleItemSkeletonSetAdmitted` | `MODULE_ITEM_SKELETON_CONFLICT` |
+| 3 | `DependencyInterfaceBindingClosed` | `DEPENDENCY_INTERFACE_BINDING_INVALID` |
+| 4 | `ResolverScopeTreeAdmitted` | `RESOLVER_SCOPE_TREE_INVALID` |
+| 5 | `ReferenceCandidateSetResolved` | `REFERENCE_CANDIDATE_SET_INVALID` |
+| 6 | `ReferenceVisibilityActivationAdmitted` | `REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION` |
+| 7 | `ResolvedNoncallReferenceSelected` | `NONCALL_REFERENCE_SELECTION_FAILED` |
+| 8 | `ResolverHirSealAdmitted` | `RESOLVER_HIR_SEAL_INCOMPLETE` |
+| 9 | `ModuleInterfaceDigestVerified` | `MODULE_INTERFACE_DIGEST_MISMATCH` |
+
+These rules integrate `IR-RES-P0-040`, `IR-RES-P0-041`,
+`IR-MOD-P1-042`–`IR-MOD-P1-047`, `IR-RES-P1-048`,
+`IR-RES-P1-049`, `IR-TRACE-P1-050`, and `IR-TRACE-P2-051` at the
+design-contract layer. Their semantic-source transition is
+`APPROVED_NOT_INTEGRATED -> INTEGRATED_UNVERIFIED`; publication metadata and
+target-bound execution are separate gates. They create no product execution
+receipt, close none of the 22 OPEN feature P1 items, and leave all 15 product
+lanes `NOT_RUN`.
+
 # Part XI — Active diagnostics
 
 This is the sole human diagnostic atlas. Only active rows are reproduced; non-active and audit-only identities remain machine reference data.
 
 ## checker
 
+- `DEPENDENCY_INTERFACE_BINDING_INVALID` [error]: A dependency, import, export, re-export, signature, facade, or static dependency binding is not closed.
+- `MODULE_INTERFACE_DIGEST_MISMATCH` [error]: The normalized module interface or dependency receipt does not match its required digest identity.
+- `MODULE_ITEM_SKELETON_CONFLICT` [error]: Module contributions do not form one conflict-free item-skeleton set.
+- `NONCALL_REFERENCE_SELECTION_FAILED` [error]: The resolver cannot select one deterministic noncall reference outside the callable-overload domain.
+- `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` [error]: The package, target, module, or source-contribution graph is not one closed deterministic graph.
+- `REFERENCE_CANDIDATE_SET_INVALID` [error]: Reference collection did not produce one admissible candidate set in the required namespace.
+- `REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION` [error]: A collected reference is outside its visibility, activation, member, or evidence-origin domain.
+- `RESOLVER_HIR_SEAL_INCOMPLETE` [error]: Resolver output is incomplete and cannot be admitted into canonical HIR-H1.
+- `RESOLVER_SCOPE_TREE_INVALID` [error]: The resolver scope tree or one of its separated environments violates the closed lexical-frame law.
 - `ABSTRACT_CLASS_INSTANTIATION_FORBIDDEN` [error]: An abstract class cannot be instantiated.
 - `ACCEPTED_NAMED_FUNCTION_BLOCK_REQUIRES_RETURN` [error]: Accepted ordinary named function blocks that produce a value must use explicit return; lambda/@match local results use ret.
 - `ACCEPT_WITH_GATE_REQUIRES_PREVIEW_FEATURE` [error]: An accept_with_gate example must reference at least one PREVIEW feature with explicit_feature_gate source activation.
@@ -1806,7 +1984,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `EXTENSION_SET_PATH_AMBIGUOUS` [error]: Extension set activation path is ambiguous; qualify the origin.
 - `EXTENSION_SET_PRIVATE_TARGET_ACCESS_FORBIDDEN` [error]: Extension set member cannot access target private representation outside visibility law.
 - `EXTENSION_SET_RECEIVER_MODE_UNSUPPORTED_IN_MSP` [error]: Named extension set MSP supports borrow receiver only.
-- `EXTENSION_SHADOWED_BY_MEMBER_COMPAT` [error]: the current profile compatibility profile selected the member slot while an active extension is shadowed; strict profile will require explicit selection.
 - `EXTENSION_USE_REEXPORT_STABLE_BUT_PRODUCT_NOT_RUN` [warning]: `use export` is stable design in the current profile; product parser/checker support remains NOT_RUN.
 - `FACET_BORROW_CROSSES_SUSPENSION` [error]: A Phase-A borrowed Facet cannot cross suspension, concur execution, or actor boundaries.
 - `FACET_BORROW_ESCAPE_FORBIDDEN` [error]: A borrowed Facet cannot outlive its payload borrow region or cross an isolation boundary.
@@ -2237,7 +2414,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SOURCE_LEVEL_CONTEXT_ROLE_FORBIDDEN` [error]: ContextRole is checker-internal evidence, not a source trait.
 - `SOURCE_LEVEL_UNIT_WITNESS_FORBIDDEN` [error]: UnitWitness is checker-internal evidence, not a user-implementable source trait.
 - `SPECIALIZATION_NOT_CURRENT` [error]: Conformance specialization remains Preview-design and is not current Stable source.
-- `STABLE_MEMBER_EXTENSION_COLLISION` [error]: Member/extension collision is a stable hard error in the current profile.
 - `STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING` [error]: Static alias conflicts with an existing local binding.
 - `STATIC_CALL_SHAPE_NOT_ADMITTED` [error]: The normalized call shape has a duplicate/unknown label, ambiguous ordering, or conflicting rest residue.
 - `STATIC_EVIDENCE_SELECTOR_ESCAPE_FORBIDDEN` [error]: Static evidence cannot be stored, returned, captured, escaped or selected dynamically.
@@ -2255,7 +2431,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `STRUCTURAL_CONFORMANCE_NOT_CURRENT` [error]: The surface `structural conformance` is recognized but is not current Deeplus.
 - `STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN` [error]: Structural shape coincidence does not form stable conformance.
 - `STRUCTURED_BREAK_CHAIN_CANONICAL_FORM_REQUIRED` [error]: Structured break-chain uses chain spelling such as `break break` or `break break continue`; label/depth target forms are not the current profile canonical stable spelling.
-- `STRUCTURED_BREAK_TARGET_AMBIGUOUS` [error]: Structured break/continue target is ambiguous; use a visible loop label or an unambiguous outer-loop depth.
+- `STRUCTURED_BREAK_TARGET_AMBIGUOUS` [error]: Structured break/continue target is ambiguous; rewrite it as the canonical repeated `break` words or `break ... continue` chain that selects exactly one enclosing loop.
 - `STRUCTURED_LOOP_CONTROL_INVALID_CHAIN` [error]: Structured break-chain is invalid for the surrounding loop nesting.
 - `SUPER_DELEGATION_MUST_BE_IN_CONSTRUCTOR_HEADER` [error]: `super!` constructor delegation must appear in the constructor header delegation clause.
 - `SUPER_DELEGATION_NOT_EXHAUSTIVE` [error]: Root `new` must call exactly one super constructor on every successful path.

@@ -12,8 +12,11 @@
     "explicit_visibility",
     "module_identity",
     "package_identity",
+    "source_contribution_id",
     "external_export_or_module_interface_admitted",
-    "api_dependency_visibilities"
+    "api_dependency_visibilities",
+    "module_visibility_closure_sha256",
+    "visibility_proof_ids"
   ],
   "properties": {
     "schema": {
@@ -71,13 +74,17 @@
     },
     "module_identity": {
       "type": "string",
-      "minLength": 1,
+      "pattern": "^ModuleId:[^\\s]+$",
       "description": "Resolved ModuleId = (PackageId, ModulePath); independent from filesystem path."
     },
     "package_identity": {
       "type": "string",
-      "minLength": 1,
+      "pattern": "^PackageId:[^\\s]+$",
       "description": "Build/dependency/distribution identity supplied by the resolved package graph."
+    },
+    "source_contribution_id": {
+      "type": "string",
+      "pattern": "^SourceFileId:[^\\s]+$"
     },
     "external_export_or_module_interface_admitted": {
       "type": "boolean"
@@ -92,6 +99,25 @@
           "public"
         ]
       }
+    },
+    "module_visibility_closure_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "visibility_proof_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^VisibilityProofId:[^\\s]+$"
+      }
     }
+  },
+  "x-deeplus-r4-visibility-contract": {
+    "default_external_export_set": "EMPTY",
+    "public_declaration_alone_is_external_export": false,
+    "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+    "opaque_facade_relation": "NARROWING_ONLY",
+    "wider_residue_references_narrower_identity": "REJECT"
   }
 }

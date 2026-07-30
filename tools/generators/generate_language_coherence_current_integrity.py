@@ -364,8 +364,8 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
         "features": 719,
-        "predicates": 268,
-        "predicate_fixtures": 819,
+        "predicates": 277,
+        "predicate_fixtures": 846,
         "no_go": 155,
         "hard_keywords": 29,
         "contextual_words": 105,

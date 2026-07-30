@@ -421,6 +421,44 @@
     "current_private_error_inference_changed": false,
     "product_support": "NOT_RUN"
   },
+  "name_resolution_module_bridge": {
+    "contract": "spec/contracts/name-resolution-modules-current.json",
+    "resolver_graph_schema": "schemas/language/resolver-graph.schema.json",
+    "resolver_trace_schema": "schemas/language/resolver-trace.schema.json",
+    "module_dependency_receipt_schema": "schemas/language/module-compilation-dependency-receipt.schema.json",
+    "resolver_scope_to_hir_scope": {
+      "BodyLocalScope": "EXACT_HirScopeId_PROJECTION",
+      "top_level_scope": "NO_DIRECT_HIR_PROJECTION"
+    },
+    "name_binding_to_hir": {
+      "ordinary_local": "ResolvedRef::Local(HirLocalId)",
+      "static_declaration": "ResolvedRef::DirectDecl(DeclId)",
+      "import_binding": "MODULE_NAMESPACE_TARGET_IS_ModuleId; TYPE_VALUE_CALLABLE_TARGET_IS_DeclId; ONLY_EXPRESSION_REFERENCES_PROJECT_ResolvedRef::DirectDecl; ImportBindingId_REMAINS_TRACE_PROVENANCE"
+    },
+    "analysis_hir_overload_set": {
+      "variant": "ResolvedOverloadSetRef",
+      "canonical_hir_h1_admitted": false,
+      "winner_selected_by_r4": false,
+      "owner": "GENERIC_INFERENCE_AND_ORDINARY_OVERLOAD_RESOLUTION"
+    },
+    "module_receipts": {
+      "package_graph_sha256_required": true,
+      "dependency_receipt_sha256_required": true,
+      "module_interface_sha256_required": true,
+      "module_implementation_sha256_is_external_compatibility_identity": false,
+      "runtime_module_initializer_count": 0
+    },
+    "seal": {
+      "unresolved_count": 0,
+      "candidate_set_count": 0,
+      "missing_typed_id_count": 0,
+      "missing_visibility_proof_count": 0,
+      "runtime_relookup_count": 0,
+      "recovery_binding_count": 0
+    },
+    "trait_witness_boundary": "PRESERVE_ALREADY_ADMITTED_EvidenceOriginId_ONLY_NO_SELECTION_OR_MATERIALIZATION",
+    "product_support": "NOT_RUN"
+  },
   "current_mir_bridge": {
     "current_semantic_authority": "spec/mir/semantics.md",
     "compatibility_target": "DP-RFC-0001 ProposedMirX1",
@@ -635,6 +673,7 @@
     "actor_transport_implicit_suspend_count": 0,
     "actor_transport_implicit_retry_count": 0,
     "fixture_count": 48,
+    "r4_name_resolution_module_bridge_fixture_count": 4,
     "positive_fixture_count": 16,
     "negative_fixture_count": 16,
     "boundary_fixture_count": 8,

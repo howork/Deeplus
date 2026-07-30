@@ -1,0 +1,787 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "PackageModuleSourceGraphAdmitted",
+    "source_name": "package, target, module and source-contribution graph",
+    "summary": "Admit one closed deterministic package/module/source graph before any declaration or reference resolution.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4PackageModuleSourceGraphDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "package_id",
+      "target_id",
+      "module_id",
+      "source_file_id",
+      "source_role"
+    ],
+    "rule_facets": [
+      "package_id",
+      "target_id",
+      "module_id",
+      "source_file_id",
+      "source_role"
+    ],
+    "feature_refs": [
+      "module_keyword_source_header",
+      "multi_file_module",
+      "package_aware_import",
+      "source_role_contract"
+    ],
+    "diagnostic_refs": [
+      "PACKAGE_MODULE_SOURCE_GRAPH_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ClosedPackageModuleSourceGraph) | reject(reason)",
+    "requires": [
+      "every package target exists and has one TargetId",
+      "every source contribution maps to exactly one ModuleId",
+      "the package dependency graph is acyclic",
+      "enumeration order is not identity or priority"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-PackageModuleSourceGraphAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "manifest, target and source rows are structurally valid",
+      "typed package, target, module and source identities are available"
+    ],
+    "normalization": "sort identity-bearing rows by their canonical typed keys and exclude paths, timestamps and traversal order from semantic identity",
+    "decision_procedure": [
+      "resolve every declared target to one TargetId",
+      "resolve every module header and source contribution to one ModuleId",
+      "reject a missing or ambiguous package binding or a package cycle",
+      "reject a source/module mapping mismatch",
+      "otherwise emit one closed graph without order-dependent state"
+    ],
+    "termination_metric": "finite package, target, module and source tables",
+    "success_result": "ClosedPackageModuleSourceGraph",
+    "active_primary_diagnostic": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-PackageModuleSourceGraphAdmitted-POS",
+      "PF-PackageModuleSourceGraphAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-PackageModuleSourceGraphAdmitted-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 1: normalize graph -> resolve typed identities -> detect cycle/mapping mismatch -> diagnostic",
+    "dependency_predicates": [],
+    "diagnostic_dispatch": {
+      "PACKAGE_TARGET_MISSING": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "PACKAGE_BINDING_AMBIGUOUS": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "PACKAGE_CYCLE": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "MODULE_MAPPING_MISMATCH": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ModuleItemSkeletonSetAdmitted",
+    "source_name": "module item-skeleton merge",
+    "summary": "Merge all source contributions of one ModuleId into one conflict-free declaration skeleton set.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ModuleItemSkeletonSetDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "module_id",
+      "stable_symbol_key",
+      "overload_slot_key",
+      "source_origin_id"
+    ],
+    "rule_facets": [
+      "module_id",
+      "stable_symbol_key",
+      "overload_slot_key",
+      "source_origin_id"
+    ],
+    "feature_refs": [
+      "module_keyword_source_header",
+      "multi_file_module"
+    ],
+    "diagnostic_refs": [
+      "MODULE_ITEM_SKELETON_CONFLICT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ModuleItemSkeletonSet) | reject(reason)",
+    "requires": [
+      "all contributions belong to one admitted ModuleId",
+      "declaration and overload keys are canonical and deterministic",
+      "contribution enumeration order is not a winner"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ModuleItemSkeletonSetAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "PackageModuleSourceGraphAdmitted succeeded",
+      "every top-level declaration has one StableSymbolKey"
+    ],
+    "normalization": "sort contributions by ModuleId, StableSymbolKey and stable SourceOriginId before checking conflicts",
+    "decision_procedure": [
+      "collect declaration skeletons from every source contribution",
+      "reject a duplicate non-overload declaration key",
+      "reject an overload-slot key collision",
+      "reject incompatible definitions contributed to one StableSymbolKey",
+      "otherwise return one order-independent skeleton set"
+    ],
+    "termination_metric": "finite source contributions and declaration skeletons",
+    "success_result": "ModuleItemSkeletonSet",
+    "active_primary_diagnostic": "MODULE_ITEM_SKELETON_CONFLICT",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ModuleItemSkeletonSetAdmitted-POS",
+      "PF-ModuleItemSkeletonSetAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ModuleItemSkeletonSetAdmitted-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 2: admitted graph -> collect skeletons -> normalize keys -> reject conflict",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "DUPLICATE_DECLARATION": "MODULE_ITEM_SKELETON_CONFLICT",
+      "OVERLOAD_SLOT_KEY_COLLISION": "MODULE_ITEM_SKELETON_CONFLICT",
+      "MODULE_CONTRIBUTION_CONFLICT": "MODULE_ITEM_SKELETON_CONFLICT"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "DependencyInterfaceBindingClosed",
+    "source_name": "dependency, import, export and module-interface closure",
+    "summary": "Close imports, exports, re-exports, signatures, facades and static dependencies against exact typed provider identities.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4DependencyInterfaceBindingDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "dependency_binding_id",
+      "consumer_module_id",
+      "provider_module_id",
+      "namespace",
+      "exported_name",
+      "module_interface_digest"
+    ],
+    "rule_facets": [
+      "dependency_binding_id",
+      "consumer_module_id",
+      "provider_module_id",
+      "namespace",
+      "exported_name",
+      "module_interface_digest"
+    ],
+    "feature_refs": [
+      "extension_pack_module_interface",
+      "extension_use_reexport_syntax",
+      "library_static_binding_initializer_msp",
+      "module_signature_declaration",
+      "opaque_module_facade",
+      "package_aware_import",
+      "top_level_type_visibility_unification"
+    ],
+    "diagnostic_refs": [
+      "DEPENDENCY_INTERFACE_BINDING_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ClosedDependencyInterfaceBindings) | reject(reason)",
+    "requires": [
+      "each import and export resolves to one typed identity",
+      "re-export and static dependency graphs are acyclic",
+      "public residue does not expose a less-visible identity",
+      "facades do not invent or widen exports"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-DependencyInterfaceBindingClosed",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "the package/module graph and item skeleton set are admitted",
+      "all binding names carry an explicit namespace"
+    ],
+    "normalization": "normalize each binding to consumer package, source-visible name, namespace and exact typed target; order does not affect identity",
+    "decision_procedure": [
+      "resolve imports and exports to exact typed targets",
+      "validate aliases, visibility and normalized signature residue",
+      "reject re-export or static-dependency cycles",
+      "reject facade widening or invented exports",
+      "otherwise return closed interface bindings and dependency edges"
+    ],
+    "termination_metric": "finite binding tables and acyclic dependency graph traversal",
+    "success_result": "ClosedDependencyInterfaceBindings",
+    "active_primary_diagnostic": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-DependencyInterfaceBindingClosed-POS",
+      "PF-DependencyInterfaceBindingClosed-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-DependencyInterfaceBindingClosed-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 3: graph/skeleton closure -> bind interfaces -> visibility/signature/facade checks -> cycle check",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "IMPORT_TARGET_NOT_FOUND": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "IMPORT_TARGET_AMBIGUOUS": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "IMPORT_ALIAS_COLLISION": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "EXPORT_TARGET_NOT_FOUND": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "EXPORT_IDENTITY_MISMATCH": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "REEXPORT_CYCLE": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "EXPORT_VISIBILITY_LEAK": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "MODULE_SIGNATURE_MISMATCH": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "STALE_DEPENDENCY_RECEIPT": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "FACADE_WIDENING": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "STATIC_DEPENDENCY_CYCLE": "DEPENDENCY_INTERFACE_BINDING_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ResolverScopeTreeAdmitted",
+    "source_name": "resolver lexical-frame tree",
+    "summary": "Admit deterministic lexical name frames while keeping name, extension-activation and witness-visibility environments separate.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ResolverScopeTreeDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "resolver_scope_id",
+      "parent_scope_id",
+      "namespace",
+      "local_name",
+      "import_binding_id",
+      "activation_origin_id",
+      "evidence_origin_id"
+    ],
+    "rule_facets": [
+      "resolver_scope_id",
+      "parent_scope_id",
+      "namespace",
+      "local_name",
+      "import_binding_id",
+      "activation_origin_id",
+      "evidence_origin_id"
+    ],
+    "feature_refs": [
+      "lexical_import_use_environment_stack",
+      "scoped_import_family",
+      "scoped_import_use_grouping"
+    ],
+    "diagnostic_refs": [
+      "RESOLVER_SCOPE_TREE_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ResolverScopeTree) | reject(reason)",
+    "requires": [
+      "each scope has one typed ResolverScopeId and at most one parent",
+      "same-frame namespace/name keys are unique",
+      "child shadowing allocates a fresh HirLocalId",
+      "failed pattern probes commit no binding",
+      "name, activation and evidence environments are not conflated"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ResolverScopeTreeAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "dependency interface bindings are closed",
+      "every lexical frame has one stable parent relation"
+    ],
+    "normalization": "normalize namespace/name keys and typed origin identities; allocate committed local identities in deterministic semantic preorder",
+    "decision_procedure": [
+      "open one separated name, activation and evidence frame for each resolver scope",
+      "reject same-frame duplicates and parameter/body-local or import/local collisions",
+      "reject illegal cross-frame overload merges and environment conflation",
+      "discard provisional bindings from failed pattern probes",
+      "on scope exit restore the parent frames without leaking child bindings"
+    ],
+    "termination_metric": "finite proper resolver-scope tree and finite bindings per frame",
+    "success_result": "ResolverScopeTree",
+    "active_primary_diagnostic": "RESOLVER_SCOPE_TREE_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ResolverScopeTreeAdmitted-POS",
+      "PF-ResolverScopeTreeAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ResolverScopeTreeAdmitted-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 4: closed dependency bindings -> build separated frames -> admit bindings -> restore parent",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed"
+    ],
+    "diagnostic_dispatch": {
+      "SAME_FRAME_DUPLICATE": "RESOLVER_SCOPE_TREE_INVALID",
+      "PARAMETER_BODY_LOCAL_COLLISION": "RESOLVER_SCOPE_TREE_INVALID",
+      "IMPORT_LOCAL_COLLISION": "RESOLVER_SCOPE_TREE_INVALID",
+      "ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE": "RESOLVER_SCOPE_TREE_INVALID",
+      "NAME_ACTIVATION_ENV_CONFLATION": "RESOLVER_SCOPE_TREE_INVALID",
+      "SCOPE_ESCAPE": "RESOLVER_SCOPE_TREE_INVALID",
+      "FAILED_PATTERN_PROBE_BINDING_LEAK": "RESOLVER_SCOPE_TREE_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ReferenceCandidateSetResolved",
+    "source_name": "reference candidate collection",
+    "summary": "Collect the exact candidate set for one source reference in one namespace before visibility filtering or winner selection.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ReferenceCandidateSetDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "source_origin_id",
+      "resolver_scope_id",
+      "namespace",
+      "qualified_path",
+      "candidate_identity"
+    ],
+    "rule_facets": [
+      "source_origin_id",
+      "resolver_scope_id",
+      "namespace",
+      "qualified_path",
+      "candidate_identity"
+    ],
+    "feature_refs": [
+      "double_colon_static_qualified_path",
+      "package_aware_import",
+      "r49_double_colon_namespace_closure"
+    ],
+    "diagnostic_refs": [
+      "REFERENCE_CANDIDATE_SET_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ReferenceCandidateSet) | reject(reason)",
+    "requires": [
+      "the source reference has one explicit namespace role",
+      "qualified static paths use their exact owner path",
+      "candidate collection does not use return type or source traversal order"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ReferenceCandidateSetResolved",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "the resolver scope tree is admitted",
+      "module and dependency bindings are closed"
+    ],
+    "normalization": "normalize the qualified owner path, namespace and typed candidate identity before set comparison",
+    "decision_procedure": [
+      "select exactly the namespace named by the reference role",
+      "collect lexical, imported, module-static or owner-qualified candidates from the admitted frames",
+      "reject zero candidates, a wrong namespace or an unresolved static path",
+      "reject multiple candidates in the same resolver tier without using enumeration order",
+      "otherwise return the normalized candidate set for later visibility filtering"
+    ],
+    "termination_metric": "finite resolver ancestors and finite bindings per namespace",
+    "success_result": "ReferenceCandidateSet",
+    "active_primary_diagnostic": "REFERENCE_CANDIDATE_SET_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ReferenceCandidateSetResolved-POS",
+      "PF-ReferenceCandidateSetResolved-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ReferenceCandidateSetResolved-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 5: admitted scope tree -> exact namespace/path collection -> same-tier cardinality check",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed",
+      "ResolverScopeTreeAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "ZERO_CANDIDATES": "REFERENCE_CANDIDATE_SET_INVALID",
+      "MULTIPLE_SAME_TIER": "REFERENCE_CANDIDATE_SET_INVALID",
+      "WRONG_NAMESPACE": "REFERENCE_CANDIDATE_SET_INVALID",
+      "STATIC_PATH_UNRESOLVED": "REFERENCE_CANDIDATE_SET_INVALID",
+      "STATIC_PATH_AMBIGUOUS": "REFERENCE_CANDIDATE_SET_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "source_name": "reference visibility, activation and evidence-origin filter",
+    "summary": "Filter a collected candidate set by lexical visibility, extension activation, member visibility and witness evidence origin.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ReferenceVisibilityActivationDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "resolver_scope_id",
+      "candidate_identity",
+      "visibility_domain",
+      "activation_origin_id",
+      "evidence_origin_id"
+    ],
+    "rule_facets": [
+      "resolver_scope_id",
+      "candidate_identity",
+      "visibility_domain",
+      "activation_origin_id",
+      "evidence_origin_id"
+    ],
+    "feature_refs": [
+      "member_visibility_hierarchy_protected",
+      "top_level_type_visibility_unification",
+      "trait_witness_resolution_phase_a"
+    ],
+    "diagnostic_refs": [
+      "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(VisibleActivatedCandidateSet) | reject(reason)",
+    "requires": [
+      "visibility is checked against the declaring owner and consumer scope",
+      "extension activation remains separate from import",
+      "witness evidence is reused only from an admitted EvidenceOriginId",
+      "public residue cannot expose a less-visible identity"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ReferenceVisibilityActivationAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "ReferenceCandidateSetResolved produced a normalized candidate set",
+      "name, activation and evidence environments remain separate"
+    ],
+    "normalization": "normalize visibility domains and typed activation/evidence origins without creating a new witness",
+    "decision_procedure": [
+      "filter candidates outside the lexical or member visibility domain",
+      "filter extension candidates not active in the current resolver scope",
+      "reject activation identity mismatch or scope escape",
+      "reject public API leakage and invalid evidence origin",
+      "otherwise return the visible activated set without materializing witness evidence"
+    ],
+    "termination_metric": "finite normalized candidate set",
+    "success_result": "VisibleActivatedCandidateSet",
+    "active_primary_diagnostic": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ReferenceVisibilityActivationAdmitted-POS",
+      "PF-ReferenceVisibilityActivationAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ReferenceVisibilityActivationAdmitted-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 6: candidate set -> lexical/member visibility -> activation -> evidence origin -> API closure",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed",
+      "ResolverScopeTreeAdmitted",
+      "ReferenceCandidateSetResolved"
+    ],
+    "diagnostic_dispatch": {
+      "CANDIDATE_NOT_VISIBLE": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "ACTIVATION_SCOPE_ESCAPE": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "ACTIVATION_IDENTITY_MISMATCH": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "MEMBER_VISIBILITY_DOMAIN": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "API_VISIBILITY_LEAK": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "WITNESS_ORIGIN_INVALID": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ResolvedNoncallReferenceSelected",
+    "source_name": "deterministic noncall reference selection",
+    "summary": "Select one deterministic noncall reference while leaving callable overload sets to the next cluster.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ResolvedNoncallReferenceDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "source_origin_id",
+      "resolver_scope_id",
+      "namespace",
+      "candidate_identity",
+      "lookup_tier"
+    ],
+    "rule_facets": [
+      "source_origin_id",
+      "resolver_scope_id",
+      "namespace",
+      "candidate_identity",
+      "lookup_tier"
+    ],
+    "feature_refs": [
+      "double_colon_static_qualified_path",
+      "lexical_import_use_environment_stack"
+    ],
+    "diagnostic_refs": [
+      "NONCALL_REFERENCE_SELECTION_FAILED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ResolvedRef) | bypass(ResolvedOverloadSetRef) | reject(reason)",
+    "requires": [
+      "only noncall reference namespaces are eligible for winner selection",
+      "a callable overload set remains ResolvedOverloadSetRef in analysis HIR",
+      "generic substitution, applicability and specificity are owned by the next cluster",
+      "source enumeration order is not a tie-breaker"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ResolvedNoncallReferenceSelected",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "ReferenceVisibilityActivationAdmitted produced a visible candidate set",
+      "the source reference namespace has been classified as call or noncall"
+    ],
+    "normalization": "partition callable-overload candidates from noncall reference candidates before selection",
+    "decision_procedure": [
+      "if the reference is callable, return ResolvedOverloadSetRef to analysis HIR without selecting a winner",
+      "for a noncall reference, filter to the exact namespace and lowest reachable lookup tier",
+      "reject zero or multiple candidates after filtering",
+      "reject any outcome that requires an order tie-breaker",
+      "otherwise commit one existing typed ResolvedRef"
+    ],
+    "termination_metric": "finite visible candidate set and finite lookup tiers",
+    "success_result": "ResolvedRef or analysis-HIR ResolvedOverloadSetRef bypass",
+    "active_primary_diagnostic": "NONCALL_REFERENCE_SELECTION_FAILED",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ResolvedNoncallReferenceSelected-POS",
+      "PF-ResolvedNoncallReferenceSelected-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ResolvedNoncallReferenceSelected-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 7: classify call domain -> bypass overload set or filter noncall namespace/tier -> exact cardinality",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed",
+      "ResolverScopeTreeAdmitted",
+      "ReferenceCandidateSetResolved",
+      "ReferenceVisibilityActivationAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "ZERO_AFTER_FILTER": "NONCALL_REFERENCE_SELECTION_FAILED",
+      "MULTIPLE_AFTER_FILTER": "NONCALL_REFERENCE_SELECTION_FAILED",
+      "ORDER_TIEBREAKER_REQUIRED": "NONCALL_REFERENCE_SELECTION_FAILED"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ResolverHirSealAdmitted",
+    "source_name": "resolver-to-canonical-HIR seal",
+    "summary": "Admit canonical HIR-H1 only when every noncall reference is fully resolved and no runtime relookup residue remains.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ResolverHirSealDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "hir_body_id",
+      "unresolved_count",
+      "candidate_set_count",
+      "resolved_ref",
+      "visibility_proof",
+      "runtime_relookup_count"
+    ],
+    "rule_facets": [
+      "hir_body_id",
+      "unresolved_count",
+      "candidate_set_count",
+      "resolved_ref",
+      "visibility_proof",
+      "runtime_relookup_count"
+    ],
+    "feature_refs": [
+      "module_signature_declaration",
+      "multi_file_module",
+      "opaque_module_facade",
+      "package_aware_import"
+    ],
+    "diagnostic_refs": [
+      "RESOLVER_HIR_SEAL_INCOMPLETE"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(CanonicalHirH1ResolverSeal) | reject(reason)",
+    "requires": [
+      "unresolved_count is zero",
+      "noncall candidate_set_count is zero",
+      "each resolved reference carries an existing typed identity and visibility proof",
+      "runtime relookup residue count is zero",
+      "callable overload sets remain outside canonical HIR-H1 until the next cluster selects a winner"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ResolverHirSealAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "all R4 graph, scope, candidate, visibility and noncall selection stages succeeded",
+      "analysis-HIR callable overload sets are fenced from canonical HIR-H1"
+    ],
+    "normalization": "sort resolver trace rows by stable SourceOriginId and preserve existing typed identity domains",
+    "decision_procedure": [
+      "reject any unbound primary diagnostic state",
+      "reject nonzero unresolved or noncall candidate-set counts",
+      "reject missing typed identity or visibility proof",
+      "reject runtime relookup residue",
+      "otherwise seal the R4-resolved portion of canonical HIR-H1"
+    ],
+    "termination_metric": "finite resolver trace and HIR reference tables",
+    "success_result": "CanonicalHirH1ResolverSeal",
+    "active_primary_diagnostic": "RESOLVER_HIR_SEAL_INCOMPLETE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ResolverHirSealAdmitted-POS",
+      "PF-ResolverHirSealAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ResolverHirSealAdmitted-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 8: completed resolver stages -> count/proof/relookup guards -> canonical HIR-H1 seal",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed",
+      "ResolverScopeTreeAdmitted",
+      "ReferenceCandidateSetResolved",
+      "ReferenceVisibilityActivationAdmitted",
+      "ResolvedNoncallReferenceSelected"
+    ],
+    "diagnostic_dispatch": {
+      "UNBOUND_PRIMARY": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "UNRESOLVED_COUNT_NONZERO": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "CANDIDATE_SET_COUNT_NONZERO": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "MISSING_TYPED_ID": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "MISSING_VISIBILITY_PROOF": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "RUNTIME_RELOOKUP_RESIDUE": "RESOLVER_HIR_SEAL_INCOMPLETE"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ModuleInterfaceDigestVerified",
+    "source_name": "module interface and dependency-receipt digest verification",
+    "summary": "Verify that each dependency receipt binds the exact normalized provider module interface without treating private implementation bytes as interface identity.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R4ModuleInterfaceDigestDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "consumer_module_id",
+      "provider_module_id",
+      "module_interface_digest",
+      "dependency_receipt_digest",
+      "export_edge_set"
+    ],
+    "rule_facets": [
+      "consumer_module_id",
+      "provider_module_id",
+      "module_interface_digest",
+      "dependency_receipt_digest",
+      "export_edge_set"
+    ],
+    "feature_refs": [
+      "module_api_digest_core",
+      "module_signature_declaration",
+      "package_aware_import"
+    ],
+    "diagnostic_refs": [
+      "MODULE_INTERFACE_DIGEST_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(VerifiedModuleInterfaceDigest) | reject(reason)",
+    "requires": [
+      "the interface digest covers normalized exported identity and signature residue",
+      "private provider body bytes do not affect the interface digest",
+      "each dependency receipt names the exact provider ModuleId and interface digest",
+      "required export edges are complete"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-ModuleInterfaceDigestVerified",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "dependency interface bindings are closed",
+      "the resolver-HIR seal is complete for the R4-owned domain"
+    ],
+    "normalization": "canonicalize exported identities, visibility and signature residue before hashing; exclude private body bytes and traversal order",
+    "decision_procedure": [
+      "recompute the normalized provider ModuleInterfaceDigest",
+      "verify every required export edge is present",
+      "compare the dependency receipt against the exact provider ModuleId and interface digest",
+      "reject stale, incomplete or mismatching receipts",
+      "otherwise return the verified interface identity"
+    ],
+    "termination_metric": "finite normalized export and dependency-receipt tables",
+    "success_result": "VerifiedModuleInterfaceDigest",
+    "active_primary_diagnostic": "MODULE_INTERFACE_DIGEST_MISMATCH",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ModuleInterfaceDigestVerified-POS",
+      "PF-ModuleInterfaceDigestVerified-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ModuleInterfaceDigestVerified-NEG"
+    ],
+    "evaluation_order": "R4 ordinal 9: closed interfaces and sealed resolver output -> normalize interface -> verify edges and receipt digest",
+    "dependency_predicates": [
+      "PackageModuleSourceGraphAdmitted",
+      "ModuleItemSkeletonSetAdmitted",
+      "DependencyInterfaceBindingClosed",
+      "ResolverScopeTreeAdmitted",
+      "ReferenceCandidateSetResolved",
+      "ReferenceVisibilityActivationAdmitted",
+      "ResolvedNoncallReferenceSelected",
+      "ResolverHirSealAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "MISSING_EXPORT_EDGE": "MODULE_INTERFACE_DIGEST_MISMATCH",
+      "INTERFACE_DIGEST_MISMATCH": "MODULE_INTERFACE_DIGEST_MISMATCH"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  }
+]

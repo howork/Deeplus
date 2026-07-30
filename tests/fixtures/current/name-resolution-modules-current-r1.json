@@ -1,0 +1,1077 @@
+{
+  "schema": "deeplus.name-resolution-modules-current-fixtures/r1",
+  "contract": "spec/contracts/name-resolution-modules-current.json",
+  "semantic_base_sha": "53464e47bc280d4f431440eb7538d9d97c0a7aa7",
+  "status": "DESIGN_STATIC_FIXTURES_NOT_EXECUTED",
+  "semantic_p0": 0,
+  "open_feature_p1": 22,
+  "product_lanes": "15/15_NOT_RUN",
+  "cases": [
+    {
+      "id": "IR-R4-RES040-POS",
+      "acceptance_test_id": "IR-R4-GAP-01-P",
+      "gap_id": "IR-RES-P0-040",
+      "kind": "positive",
+      "category": "IDENTITY_PROJECTION",
+      "scenario": "One selective import alias receives one ImportBindingId; every use site projects the same existing ResolvedRef::DirectDecl(DeclId) and one visibility proof.",
+      "input": {
+        "description": "One selective import alias receives one ImportBindingId; every use site projects the same existing ResolvedRef::DirectDecl(DeclId) and one visibility proof.",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json",
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_ONE_IMPORT_BINDING_ONE_RESOLVED_REF",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 1,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES040-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-01-B",
+      "gap_id": "IR-RES-P0-040",
+      "kind": "boundary",
+      "category": "NEXT_CLUSTER_FENCE",
+      "scenario": "An admitted proper child lexical declaration receives a fresh HirLocalId, hides one ancestor HirLocalId, and scope exit restores the ancestor without identity reuse.",
+      "input": {
+        "description": "An admitted proper child lexical declaration receives a fresh HirLocalId, hides one ancestor HirLocalId, and scope exit restores the ancestor without identity reuse.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json",
+          "spec/contracts/hir-h1-current-mir-bridge.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_DISTINCT_HIR_LOCAL_IDS_AND_RESTORE",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES040-NEG",
+      "acceptance_test_id": "IR-R4-GAP-01-N",
+      "gap_id": "IR-RES-P0-040",
+      "kind": "negative",
+      "category": "IDENTITY_PROJECTION",
+      "scenario": "An unresolved ordinary identifier reaches HIR sealing.",
+      "input": {
+        "description": "An unresolved ordinary identifier reaches HIR sealing.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_BEFORE_CANONICAL_HIR",
+        "primary_diagnostic_or_null": "REFERENCE_CANDIDATE_SET_INVALID",
+        "primary_reason_or_null": "ZERO_CANDIDATES",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES041-POS",
+      "acceptance_test_id": "IR-R4-GAP-02-P",
+      "gap_id": "IR-RES-P0-041",
+      "kind": "positive",
+      "category": "MEMBER_EXTENSION_COLLISION",
+      "scenario": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
+      "input": {
+        "description": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
+        "artifact_refs": [
+          "schemas/language/method-extension-resolution-trace-schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES041-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-02-B",
+      "gap_id": "IR-RES-P0-041",
+      "kind": "boundary",
+      "category": "MEMBER_EXTENSION_COLLISION",
+      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
+      "input": {
+        "description": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
+        "artifact_refs": [
+          "schemas/language/method-extension-resolution-trace-schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES041-NEG",
+      "acceptance_test_id": "IR-R4-GAP-02-N",
+      "gap_id": "IR-RES-P0-041",
+      "kind": "negative",
+      "category": "MEMBER_EXTENSION_COLLISION",
+      "scenario": "An ordinary call has one applicable member and one applicable active extension.",
+      "input": {
+        "description": "An ordinary call has one applicable member and one applicable active extension.",
+        "artifact_refs": [
+          "schemas/language/method-extension-resolution-trace-schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_MEMBER_EXTENSION_COLLISION_SELECTED_COUNT_0",
+        "primary_diagnostic_or_null": "MEMBER_EXTENSION_COLLISION",
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD042-POS",
+      "acceptance_test_id": "IR-R4-GAP-03-P",
+      "gap_id": "IR-MOD-P1-042",
+      "kind": "positive",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "Manifest, lock and source-row permutations produce identical PackageId, ModuleId and graph digest.",
+      "input": {
+        "description": "Manifest, lock and source-row permutations produce identical PackageId, ModuleId and graph digest.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json",
+          "schemas/language/source-role-carrier.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_ORDER_INVARIANT_PACKAGE_MODULE_GRAPH",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD042-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-03-B",
+      "gap_id": "IR-MOD-P1-042",
+      "kind": "boundary",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "Two packages expose the same ModulePath and therefore produce distinct ModuleIds.",
+      "input": {
+        "description": "Two packages expose the same ModulePath and therefore produce distinct ModuleIds.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json",
+          "schemas/language/module-compilation-dependency-receipt.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_DISTINCT_PACKAGE_SCOPED_MODULE_IDS",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD042-NEG",
+      "acceptance_test_id": "IR-R4-GAP-03-N",
+      "gap_id": "IR-MOD-P1-042",
+      "kind": "negative",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "The root package references TargetId T, but T is absent from the target table.",
+      "input": {
+        "description": "The root package references TargetId T, but T is absent from the target table.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_PACKAGE_TARGET_MISSING",
+        "primary_diagnostic_or_null": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+        "primary_reason_or_null": "PACKAGE_TARGET_MISSING",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD043-POS",
+      "acceptance_test_id": "IR-R4-GAP-04-P",
+      "gap_id": "IR-MOD-P1-043",
+      "kind": "positive",
+      "category": "IMPORT_BINDING",
+      "scenario": "An exact selective import and alias receive one ImportBindingId whose content target is one existing ResolvedRef::DirectDecl(DeclId).",
+      "input": {
+        "description": "An exact selective import and alias receive one ImportBindingId whose content target is one existing ResolvedRef::DirectDecl(DeclId).",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json",
+          "schemas/language/module-compilation-dependency-receipt.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EXACT_IMPORT_BINDING_AND_RESOLVED_REF",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 1,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD043-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-04-B",
+      "gap_id": "IR-MOD-P1-043",
+      "kind": "boundary",
+      "category": "IMPORT_BINDING",
+      "scenario": "The same ModulePath is visible from two packages but one explicit graph binding selects one PackageId.",
+      "input": {
+        "description": "The same ModulePath is visible from two packages but one explicit graph binding selects one PackageId.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EXPLICIT_GRAPH_DISAMBIGUATION",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 1,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD043-NEG",
+      "acceptance_test_id": "IR-R4-GAP-04-N",
+      "gap_id": "IR-MOD-P1-043",
+      "kind": "negative",
+      "category": "IMPORT_BINDING",
+      "scenario": "One import binding resolves to zero exported targets.",
+      "input": {
+        "description": "One import binding resolves to zero exported targets.",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_IMPORT_TARGET_NOT_FOUND",
+        "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        "primary_reason_or_null": "IMPORT_TARGET_NOT_FOUND",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD044-POS",
+      "acceptance_test_id": "IR-R4-GAP-05-P",
+      "gap_id": "IR-MOD-P1-044",
+      "kind": "positive",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "Disjoint library contributions compose to identical item and module digests under every file order.",
+      "input": {
+        "description": "Disjoint library contributions compose to identical item and module digests under every file order.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_ORDER_INVARIANT_MODULE_COMPOSITION",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD044-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-05-B",
+      "gap_id": "IR-MOD-P1-044",
+      "kind": "boundary",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "An omitted module declaration receives exactly the carrier ModulePath.",
+      "input": {
+        "description": "An omitted module declaration receives exactly the carrier ModulePath.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_CARRIER_MAPPED_MODULE_PATH",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD044-NEG",
+      "acceptance_test_id": "IR-R4-GAP-05-N",
+      "gap_id": "IR-MOD-P1-044",
+      "kind": "negative",
+      "category": "PACKAGE_GRAPH",
+      "scenario": "Two module contributions define different declarations with one StableSymbolKey.",
+      "input": {
+        "description": "Two module contributions define different declarations with one StableSymbolKey.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_MODULE_CONTRIBUTION_CONFLICT",
+        "primary_diagnostic_or_null": "MODULE_ITEM_SKELETON_CONFLICT",
+        "primary_reason_or_null": "MODULE_CONTRIBUTION_CONFLICT",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD045-POS",
+      "acceptance_test_id": "IR-R4-GAP-06-P",
+      "gap_id": "IR-MOD-P1-045",
+      "kind": "positive",
+      "category": "VISIBILITY_CLOSURE",
+      "scenario": "A public export with only public structured dependencies produces one visibility-closure proof.",
+      "input": {
+        "description": "A public export with only public structured dependencies produces one visibility-closure proof.",
+        "artifact_refs": [
+          "schemas/language/module-visibility-closure.schema.json",
+          "schemas/language/top-level-type-visibility-descriptor.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_PUBLIC_API_CLOSURE",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD045-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-06-B",
+      "gap_id": "IR-MOD-P1-045",
+      "kind": "boundary",
+      "category": "VISIBILITY_CLOSURE",
+      "scenario": "A common dependency is usable inside the package but absent from the external export set.",
+      "input": {
+        "description": "A common dependency is usable inside the package but absent from the external export set.",
+        "artifact_refs": [
+          "schemas/language/module-visibility-closure.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_COMMON_INTERNAL_ONLY",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD045-NEG",
+      "acceptance_test_id": "IR-R4-GAP-06-N",
+      "gap_id": "IR-MOD-P1-045",
+      "kind": "negative",
+      "category": "VISIBILITY_CLOSURE",
+      "scenario": "An opaque facade exports one identity absent from its owner interface.",
+      "input": {
+        "description": "An opaque facade exports one identity absent from its owner interface.",
+        "artifact_refs": [
+          "schemas/language/module-visibility-closure.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_FACADE_WIDENING",
+        "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        "primary_reason_or_null": "FACADE_WIDENING",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD046-POS",
+      "acceptance_test_id": "IR-R4-GAP-07-P",
+      "gap_id": "IR-MOD-P1-046",
+      "kind": "positive",
+      "category": "MODULE_SIGNATURE",
+      "scenario": "File and symbol enumeration order does not change the ModuleInterfaceDigest.",
+      "input": {
+        "description": "File and symbol enumeration order does not change the ModuleInterfaceDigest.",
+        "artifact_refs": [
+          "schemas/language/module-api-digest.schema.json",
+          "schemas/language/module-compilation-dependency-receipt.schema.json",
+          "schemas/language/module-source-contribution-projection.schema.json",
+          "schemas/language/module-compilation-receipt.schema.json",
+          "tests/fixtures/current/module-compilation-artifact-relations-r1.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_STABLE_INTERFACE_DIGEST",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD046-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-07-B",
+      "gap_id": "IR-MOD-P1-046",
+      "kind": "boundary",
+      "category": "MODULE_SIGNATURE",
+      "scenario": "A private body-only change leaves interface digest stable but may change implementation digest.",
+      "input": {
+        "description": "A private body-only change leaves interface digest stable but may change implementation digest.",
+        "artifact_refs": [
+          "schemas/language/module-api-digest.schema.json",
+          "schemas/language/module-implementation-digest.schema.json",
+          "schemas/language/module-source-contribution-projection.schema.json",
+          "schemas/language/module-compilation-receipt.schema.json",
+          "tests/fixtures/current/module-compilation-artifact-relations-r1.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_PRIVATE_BODY_INTERFACE_STABILITY",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD046-NEG",
+      "acceptance_test_id": "IR-R4-GAP-07-N",
+      "gap_id": "IR-MOD-P1-046",
+      "kind": "negative",
+      "category": "MODULE_SIGNATURE",
+      "scenario": "One dependency receipt contains a stale ModuleInterfaceDigest.",
+      "input": {
+        "description": "One dependency receipt contains a stale ModuleInterfaceDigest.",
+        "artifact_refs": [
+          "schemas/language/module-api-digest.schema.json",
+          "schemas/language/module-source-contribution-projection.schema.json",
+          "schemas/language/module-compilation-receipt.schema.json",
+          "tests/fixtures/current/module-compilation-artifact-relations-r1.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_STALE_DEPENDENCY_RECEIPT",
+        "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        "primary_reason_or_null": "STALE_DEPENDENCY_RECEIPT",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD047-POS",
+      "acceptance_test_id": "IR-R4-GAP-08-P",
+      "gap_id": "IR-MOD-P1-047",
+      "kind": "positive",
+      "category": "STATIC_BINDING_GRAPH",
+      "scenario": "An acyclic immutable dependency graph produces one compile-time value per binding and zero runtime initializer events.",
+      "input": {
+        "description": "An acyclic immutable dependency graph produces one compile-time value per binding and zero runtime initializer events.",
+        "artifact_refs": [
+          "schemas/language/module-initialization-plan.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_COMPILE_TIME_INITIALIZATION_PLAN",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD047-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-08-B",
+      "gap_id": "IR-MOD-P1-047",
+      "kind": "boundary",
+      "category": "MODULE_HEADER_SCC",
+      "scenario": "Two declaration-only modules form a header SCC and close after complete header collection.",
+      "input": {
+        "description": "Two declaration-only modules form a header SCC and close after complete header collection.",
+        "artifact_refs": [
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_HEADER_ONLY_MODULE_SCC",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-MOD047-NEG",
+      "acceptance_test_id": "IR-R4-GAP-08-N",
+      "gap_id": "IR-MOD-P1-047",
+      "kind": "negative",
+      "category": "STATIC_BINDING_GRAPH",
+      "scenario": "The static-binding value-dependency graph contains one directed cycle.",
+      "input": {
+        "description": "The static-binding value-dependency graph contains one directed cycle.",
+        "artifact_refs": [
+          "schemas/language/module-initialization-plan.schema.json",
+          "schemas/language/package-module-source-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_STATIC_DEPENDENCY_CYCLE",
+        "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        "primary_reason_or_null": "STATIC_DEPENDENCY_CYCLE",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES048-POS",
+      "acceptance_test_id": "IR-R4-GAP-09-P",
+      "gap_id": "IR-RES-P1-048",
+      "kind": "positive",
+      "category": "LEXICAL_LOOKUP",
+      "scenario": "An admitted proper child value declaration receives a fresh HirLocalId and resolves by lexical owner without reusing the ancestor HirLocalId.",
+      "input": {
+        "description": "An admitted proper child value declaration receives a fresh HirLocalId and resolves by lexical owner without reusing the ancestor HirLocalId.",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EXPLICIT_NESTED_HIR_LOCAL_SHADOW",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 1,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES048-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-09-B",
+      "gap_id": "IR-RES-P1-048",
+      "kind": "boundary",
+      "category": "SHADOWING",
+      "scenario": "Two callable declarations share a name but have distinct admitted CanonicalOverloadSlotKeys.",
+      "input": {
+        "description": "Two callable declarations share a name but have distinct admitted CanonicalOverloadSlotKeys.",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_ONE_OVERLOAD_SET",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 1,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES048-NEG",
+      "acceptance_test_id": "IR-R4-GAP-09-N",
+      "gap_id": "IR-RES-P1-048",
+      "kind": "negative",
+      "category": "SHADOWING",
+      "scenario": "A same-frame import alias and local declaration introduce distinct identities with the same name.",
+      "input": {
+        "description": "A same-frame import alias and local declaration introduce distinct identities with the same name.",
+        "artifact_refs": [
+          "schemas/language/resolver-graph.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_SAME_FRAME_NAMESPACE_COLLISION",
+        "primary_diagnostic_or_null": "RESOLVER_SCOPE_TREE_INVALID",
+        "primary_reason_or_null": "IMPORT_LOCAL_COLLISION",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES049-POS",
+      "acceptance_test_id": "IR-R4-GAP-10-P",
+      "gap_id": "IR-RES-P1-049",
+      "kind": "positive",
+      "category": "DIAGNOSTIC_PRECEDENCE",
+      "scenario": "Each failed resolver stage maps to exactly one approved active primary and one stable owner span.",
+      "input": {
+        "description": "Each failed resolver stage maps to exactly one approved active primary and one stable owner span.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_ONE_PRIMARY_DIAGNOSTIC",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES049-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-10-B",
+      "gap_id": "IR-RES-P1-049",
+      "kind": "boundary",
+      "category": "DIAGNOSTIC_PRECEDENCE",
+      "scenario": "An import target is absent; a later noncall reference depends on that import.",
+      "input": {
+        "description": "An import target is absent; a later noncall reference depends on that import.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json",
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EARLIEST_STAGE_PRIMARY_AND_SUPPRESS_DOWNSTREAM",
+        "primary_diagnostic_or_null": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        "primary_reason_or_null": "IMPORT_TARGET_NOT_FOUND",
+        "suppressed_diagnostics": [
+          "REFERENCE_CANDIDATE_SET_INVALID"
+        ],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-RES049-NEG",
+      "acceptance_test_id": "IR-R4-GAP-10-N",
+      "gap_id": "IR-RES-P1-049",
+      "kind": "negative",
+      "category": "DIAGNOSTIC_PRECEDENCE",
+      "scenario": "Resolver output with unresolved_count = 1 is offered for canonical HIR sealing.",
+      "input": {
+        "description": "Resolver output with unresolved_count = 1 is offered for canonical HIR sealing.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_UNRESOLVED_REFERENCE_AT_HIR_SEAL",
+        "primary_diagnostic_or_null": "RESOLVER_HIR_SEAL_INCOMPLETE",
+        "primary_reason_or_null": "UNRESOLVED_COUNT_NONZERO",
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE050-POS",
+      "acceptance_test_id": "IR-R4-GAP-11-P",
+      "gap_id": "IR-TRACE-P1-050",
+      "kind": "positive",
+      "category": "TRACE_PARITY",
+      "scenario": "Every scoped feature forward reference equals the reverse registry projection by identity domain.",
+      "input": {
+        "description": "Every scoped feature forward reference equals the reverse registry projection by identity domain.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json",
+          "spec/contracts/name-resolution-modules-current.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_BIDIRECTIONAL_TRACE_EQUALITY",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE050-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-11-B",
+      "gap_id": "IR-TRACE-P1-050",
+      "kind": "boundary",
+      "category": "TRACE_PARITY",
+      "scenario": "A feature has a semantically inapplicable stage with an approved structured not-applicable reason.",
+      "input": {
+        "description": "A feature has a semantically inapplicable stage with an approved structured not-applicable reason.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_EXPLICIT_NOT_APPLICABLE",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE050-NEG",
+      "acceptance_test_id": "IR-R4-GAP-11-N",
+      "gap_id": "IR-TRACE-P1-050",
+      "kind": "negative",
+      "category": "TRACE_PARITY",
+      "scenario": "One forward feature-to-diagnostic crosswalk reference is deleted.",
+      "input": {
+        "description": "One forward feature-to-diagnostic crosswalk reference is deleted.",
+        "artifact_refs": [
+          "schemas/language/resolver-trace.schema.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_DELETED_CROSSWALK_REFERENCE",
+        "primary_diagnostic_or_null": "CROSSWALK_REFERENCE_UNRESOLVED",
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE051-POS",
+      "acceptance_test_id": "IR-R4-GAP-12-P",
+      "gap_id": "IR-TRACE-P2-051",
+      "kind": "positive",
+      "category": "TRACE_PARITY",
+      "scenario": "Every affected feature has a seven-stage trace row or approved not-applicable reason, and the regenerated tutorial preserves manifest/convention ModulePath authority.",
+      "input": {
+        "description": "Every affected feature has a seven-stage trace row or approved not-applicable reason, and the regenerated tutorial preserves manifest/convention ModulePath authority.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_COMPLETE_FEATURE_TRACE",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE051-BOUND",
+      "acceptance_test_id": "IR-R4-GAP-12-B",
+      "gap_id": "IR-TRACE-P2-051",
+      "kind": "boundary",
+      "category": "TRACE_PARITY",
+      "scenario": "A tooling-only digest row has no runtime rule and records runtime as explicitly not applicable.",
+      "input": {
+        "description": "A tooling-only digest row has no runtime rule and records runtime as explicitly not applicable.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json"
+        ]
+      },
+      "expected": {
+        "verdict": "ACCEPT",
+        "outcome": "ACCEPT_TOOLING_STAGE_NOT_APPLICABLE",
+        "primary_diagnostic_or_null": null,
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": null,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    },
+    {
+      "id": "IR-R4-TRACE051-NEG",
+      "acceptance_test_id": "IR-R4-GAP-12-N",
+      "gap_id": "IR-TRACE-P2-051",
+      "kind": "negative",
+      "category": "TRACE_PARITY",
+      "scenario": "One Stable feature trace omits its static-semantics edge.",
+      "input": {
+        "description": "One Stable feature trace omits its static-semantics edge.",
+        "artifact_refs": [
+          "spec/contracts/name-resolution-modules-current.json"
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "outcome": "REJECT_INCOMPLETE_STABLE_FEATURE_TRACE",
+        "primary_diagnostic_or_null": "CROSSWALK_REFERENCE_UNRESOLVED",
+        "primary_reason_or_null": null,
+        "suppressed_diagnostics": [],
+        "selected_count_or_null": 0,
+        "invariants": {
+          "source_order_winner_count": 0,
+          "dependency_order_winner_count": 0,
+          "runtime_relookup_count": 0,
+          "new_witness_count": 0,
+          "product_execution_count": 0
+        }
+      }
+    }
+  ]
+}

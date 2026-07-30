@@ -6,21 +6,118 @@
   "additionalProperties": false,
   "required": [
     "schema",
+    "profile",
+    "package_id",
+    "targets",
+    "package_module_source_graph_sha256",
     "source_files"
   ],
   "properties": {
     "schema": {
-      "const": "deeplus.project/r51f3"
+      "const": "deeplus.source-role-carrier/r2"
+    },
+    "profile": {
+      "const": "R4_NAME_RESOLUTION_MODULES"
+    },
+    "package_id": {
+      "type": "string",
+      "pattern": "^PackageId:[^\\s]+$"
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "canonical_manifest_target_name",
+          "target_kind",
+          "source_role_policy",
+          "activation_profile"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "pattern": "^TargetId:[^\\s]+$"
+          },
+          "canonical_manifest_target_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+          },
+          "target_kind": {
+            "enum": [
+              "library",
+              "executable",
+              "script"
+            ]
+          },
+          "source_role_policy": {
+            "enum": [
+              "library",
+              "executable",
+              "script"
+            ]
+          },
+          "activation_profile": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "oneOf": [
+          {
+            "properties": {
+              "target_kind": {
+                "const": "library"
+              },
+              "source_role_policy": {
+                "const": "library"
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_kind": {
+                "const": "executable"
+              },
+              "source_role_policy": {
+                "const": "executable"
+              }
+            }
+          },
+          {
+            "properties": {
+              "target_kind": {
+                "const": "script"
+              },
+              "source_role_policy": {
+                "const": "script"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "package_module_source_graph_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "source_files": {
       "type": "array",
+      "minItems": 1,
       "uniqueItems": true,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "path",
-          "source_role"
+          "source_role",
+          "source_file_id",
+          "target_id",
+          "activation_profile",
+          "module_id",
+          "module_path"
         ],
         "properties": {
           "path": {
@@ -33,12 +130,47 @@
               "executable",
               "script"
             ]
+          },
+          "source_file_id": {
+            "type": "string",
+            "pattern": "^SourceFileId:[^\\s]+$"
+          },
+          "target_id": {
+            "type": "string",
+            "pattern": "^TargetId:[^\\s]+$"
+          },
+          "activation_profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module_id": {
+            "type": "string",
+            "pattern": "^ModuleId:[^\\s]+$"
+          },
+          "module_path": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+            }
           }
         }
       }
     }
   },
-  "x-deeplus-identity": "path is unique after project-root-relative lexical normalization; symlink resolution is a host policy and must occur before lookup",
+  "x-deeplus-identity": {
+    "PackageId": "canonical package key encoding",
+    "TargetId": "package_id + canonical_manifest_target_name + target_kind",
+    "SourceFileId": "target_id + normalized project-root-relative path",
+    "forbidden_inputs": [
+      "absolute_path",
+      "source_order",
+      "file_enumeration_order",
+      "timestamp",
+      "content_digest"
+    ]
+  },
   "x-deeplus-normalized-path-uniqueness": {
     "algorithm": "normalize each path to a project-root-relative lexical path, then insert into a map before parsing; a second row with the same normalized key is rejected even when its source_role differs",
     "comparison": "Unicode scalar exact after slash normalization and removal of dot segments; case folding is a host policy performed before this contract",
@@ -48,28 +180,91 @@
   "x-deeplus-conflict-fixtures": [
     {
       "fixture_id": "SRCROLE-CARRIER-POS-001",
+      "profile": "R4_NAME_RESOLUTION_MODULES",
+      "package_id": "PackageId:fixture",
+      "targets": [
+        {
+          "target_id": "TargetId:fixture.lib",
+          "canonical_manifest_target_name": "lib",
+          "target_kind": "library",
+          "source_role_policy": "library",
+          "activation_profile": "stable"
+        },
+        {
+          "target_id": "TargetId:fixture.app",
+          "canonical_manifest_target_name": "app",
+          "target_kind": "executable",
+          "source_role_policy": "executable",
+          "activation_profile": "stable"
+        }
+      ],
+      "package_module_source_graph_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
       "source_files": [
         {
           "path": "src/lib.dp",
-          "source_role": "library"
+          "source_role": "library",
+          "source_file_id": "SourceFileId:fixture.lib/src/lib.dp",
+          "target_id": "TargetId:fixture.lib",
+          "activation_profile": "stable",
+          "module_id": "ModuleId:fixture.lib",
+          "module_path": [
+            "fixture",
+            "lib"
+          ]
         },
         {
           "path": "src/main.dp",
-          "source_role": "executable"
+          "source_role": "executable",
+          "source_file_id": "SourceFileId:fixture.app/src/main.dp",
+          "target_id": "TargetId:fixture.app",
+          "activation_profile": "stable",
+          "module_id": "ModuleId:fixture.app",
+          "module_path": [
+            "fixture",
+            "app"
+          ]
         }
       ],
       "expected": "admitted"
     },
     {
       "fixture_id": "SRCROLE-CARRIER-NEG-001",
+      "profile": "R4_NAME_RESOLUTION_MODULES",
+      "package_id": "PackageId:fixture",
+      "targets": [
+        {
+          "target_id": "TargetId:fixture.app",
+          "canonical_manifest_target_name": "app",
+          "target_kind": "executable",
+          "source_role_policy": "executable",
+          "activation_profile": "stable"
+        }
+      ],
+      "package_module_source_graph_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
       "source_files": [
         {
           "path": "src/./main.dp",
-          "source_role": "executable"
+          "source_role": "executable",
+          "source_file_id": "SourceFileId:fixture.app/src/main.dp",
+          "target_id": "TargetId:fixture.app",
+          "activation_profile": "stable",
+          "module_id": "ModuleId:fixture.app",
+          "module_path": [
+            "fixture",
+            "app"
+          ]
         },
         {
           "path": "src/main.dp",
-          "source_role": "script"
+          "source_role": "script",
+          "source_file_id": "SourceFileId:fixture.app/src/main.dp",
+          "target_id": "TargetId:fixture.app",
+          "activation_profile": "stable",
+          "module_id": "ModuleId:fixture.app",
+          "module_path": [
+            "fixture",
+            "app"
+          ]
         }
       ],
       "expected": "SOURCE_ROLE_CARRIER_CONFLICT"

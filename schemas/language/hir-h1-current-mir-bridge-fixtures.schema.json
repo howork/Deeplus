@@ -16,6 +16,7 @@
     "open_feature_p1",
     "product_lanes",
     "cases",
+    "r4_name_resolution_module_bridge_cases",
     "expected_counts"
   ],
   "properties": {
@@ -146,11 +147,21 @@
         "$ref": "#/$defs/case"
       }
     },
+    "r4_name_resolution_module_bridge_cases": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/r4BridgeCase"
+      }
+    },
     "expected_counts": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "cases",
+        "r4_name_resolution_module_bridge_cases",
         "positive",
         "negative",
         "boundary",
@@ -170,6 +181,9 @@
       "properties": {
         "cases": {
           "const": 48
+        },
+        "r4_name_resolution_module_bridge_cases": {
+          "const": 4
         },
         "positive": {
           "const": 16
@@ -220,6 +234,67 @@
     }
   },
   "$defs": {
+    "r4BridgeCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "kind",
+        "resolver_output",
+        "canonical_hir_projection",
+        "expected",
+        "assertions",
+        "execution_state"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^H1MB-R4-NRM-(POS|BOUND|NEG)-[0-9]{3}$"
+        },
+        "kind": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative"
+          ]
+        },
+        "resolver_output": {
+          "enum": [
+            "RESOLVED_NONCALL_REFERENCE",
+            "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR",
+            "IMPORT_BINDING_TRACE",
+            "REJECTED"
+          ]
+        },
+        "canonical_hir_projection": {
+          "enum": [
+            "ResolvedRef::Local(HirLocalId)",
+            "ResolvedRef::DirectDecl(DeclId)",
+            "MODULE target remains ModuleId without expression-HIR projection; declaration expression use projects ResolvedRef::DirectDecl(DeclId); ImportBindingId retained in trace",
+            "NONE"
+          ]
+        },
+        "expected": {
+          "enum": [
+            "SEALED",
+            "DEFERRED_TO_NEXT_CLUSTER",
+            "REJECTED_BEFORE_SEAL"
+          ]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_state": {
+          "const": "DESIGN_STATIC_NOT_RUN"
+        }
+      }
+    },
     "zeroCounts": {
       "type": "object",
       "additionalProperties": false,
