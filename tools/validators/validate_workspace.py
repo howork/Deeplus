@@ -28,7 +28,10 @@ PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 AUTHORITY_TRANSITION_BASE_COMMIT = "cfd5946c52571119564b9c8beb430f8dd0356750"
 R4_SEMANTIC_PUBLICATION_COMMIT = "8d81d6747488055cb76da8bda1350b96e576b7b1"
 R8_SEMANTIC_PUBLICATION_COMMIT = "9bc2e8694bc44cea28efe34541ce465a9bf2c109"
-CURRENT_PUBLICATION_TARGET_COMMIT = R8_SEMANTIC_PUBLICATION_COMMIT
+R9_SEMANTIC_SOURCE_COMMIT = "94b4d369213ec3ce829c70b66f15301cf3c7039c"
+R9_SEMANTIC_PUBLICATION_COMMIT = "fd752f560d30a9cbe61f04b24b0e58abdbc150a3"
+R9_SEMANTIC_PUBLICATION_TREE = "3afc92cae7f8cf7232e30944d6516aec811e6981"
+CURRENT_PUBLICATION_TARGET_COMMIT = R9_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -173,6 +176,34 @@ R8_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-OWN-P0-013",
     "IR-OWN-P0-014",
 ]
+R9_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R9_Diagnostic_Dispatch_Publication_Closure_R1.md"
+)
+R9_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r9-diagnostic-dispatch-publication-closure-receipt.json"
+)
+R9_INDEPENDENT_TEST_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r9-diagnostic-dispatch-independent-verification.json"
+)
+R9_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R9-DIAGNOSTIC-DISPATCH-PUBLICATION-CLOSURE"
+)
+R9_PUBLICATION_CLOSURE_GAP_IDS = ["IR-DIAG-P0-052"]
+R9_PUBLICATION_CLOSURE_REPORT_BYTES = 3844
+R9_PUBLICATION_CLOSURE_REPORT_SHA256 = (
+    "8df6e949ee1f3ad84e6d96770adecd37ff8d795895760aae6b0d1692f63e9016"
+)
+R9_PUBLICATION_CLOSURE_RECEIPT_BYTES = 5760
+R9_PUBLICATION_CLOSURE_RECEIPT_SHA256 = (
+    "c2fa4aed68aa271ad91159515503143a316766590239bd01e62652db5bf142b3"
+)
+R9_INDEPENDENT_TEST_VERIFICATION_BYTES = 4251
+R9_INDEPENDENT_TEST_VERIFICATION_SHA256 = (
+    "531fccf149c618ba19bbaaaecca23dfaff19449b32ac2955889f6d0743042e08"
+)
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
     "IR-RES-P0-041",
@@ -14502,6 +14533,7 @@ def main() -> int:
             AUTHORITY_TRANSITION_REPORT,
             R4_PUBLICATION_CLOSURE_REPORT,
             R8_PUBLICATION_CLOSURE_REPORT,
+            R9_PUBLICATION_CLOSURE_REPORT,
         ]
         and all(
             (root / relative).is_file()
@@ -14509,6 +14541,7 @@ def main() -> int:
                 AUTHORITY_TRANSITION_REPORT,
                 R4_PUBLICATION_CLOSURE_REPORT,
                 R8_PUBLICATION_CLOSURE_REPORT,
+                R9_PUBLICATION_CLOSURE_REPORT,
             )
         ),
         "CURRENT_DECISION_INDEX_BINDING",
@@ -15020,6 +15053,242 @@ def main() -> int:
             }
         ),
     )
+    r9_report_path = root / R9_PUBLICATION_CLOSURE_REPORT
+    r9_receipt_path = root / R9_PUBLICATION_CLOSURE_RECEIPT
+    r9_closure_receipt = parsed.get(r9_receipt_path, {})
+    r9_semantic_publication = r9_closure_receipt.get(
+        "semantic_publication", {}
+    )
+    r9_semantic_ci = r9_closure_receipt.get(
+        "semantic_pr_github_ci", []
+    )
+    r9_semantic_validation = r9_closure_receipt.get(
+        "semantic_pr_validation", {}
+    )
+    r9_closure_pr_evidence = r9_closure_receipt.get(
+        "closure_pr_evidence", {}
+    )
+    r9_gap_transition = r9_closure_receipt.get("gap_transition", {})
+    r9_action_ledger = r9_closure_receipt.get("action_ledger", {})
+    r9_independent_test = r9_closure_receipt.get(
+        "independent_test_verification", {}
+    )
+    r9_governance = r9_closure_receipt.get("governance", {})
+    r9_pointer_target = r9_closure_receipt.get("pointer_target", {})
+    expected_r9_gap_rows = [
+        {
+            "id": "IR-DIAG-P0-052",
+            "severity": "P0",
+            "from": "APPROVED_NOT_INTEGRATED",
+            "at_semantic_merge": "INTEGRATED_UNVERIFIED",
+            "after_closure_readback": "VERIFIED_CLOSED",
+        }
+    ]
+    check(
+        r9_report_path.is_file()
+        and r9_report_path.stat().st_size
+        == R9_PUBLICATION_CLOSURE_REPORT_BYTES
+        and file_sha(r9_report_path)
+        == R9_PUBLICATION_CLOSURE_REPORT_SHA256
+        and r9_receipt_path.is_file()
+        and r9_receipt_path.stat().st_size
+        == R9_PUBLICATION_CLOSURE_RECEIPT_BYTES
+        and file_sha(r9_receipt_path)
+        == R9_PUBLICATION_CLOSURE_RECEIPT_SHA256
+        and r9_closure_receipt.get("schema")
+        == "deeplus.r9-diagnostic-dispatch-publication-closure-receipt/v1"
+        and r9_closure_receipt.get("recorded_at")
+        == "2026-07-31T06:51:12+09:00"
+        and r9_closure_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r9_closure_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r9_semantic_publication
+        == {
+            "pull_request": 50,
+            "url": "https://github.com/howork/Deeplus/pull/50",
+            "branch": "codex/r9-diagnostic-dispatch-closure",
+            "source_commit": R9_SEMANTIC_SOURCE_COMMIT,
+            "merge_commit": R9_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R9_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+                R9_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-07-31T06:48:41+09:00",
+            "post_merge_readback": "PASS",
+        }
+        and r9_semantic_ci
+        == [
+            {
+                "workflow": "Canonical integrity",
+                "run_id": 30584366374,
+                "job": "validate",
+                "job_id": 91012139929,
+                "head_sha": R9_SEMANTIC_SOURCE_COMMIT,
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30584366374/job/91012139929"
+                ),
+                "conclusion": "SUCCESS",
+            },
+            {
+                "workflow": "Rust workspace",
+                "run_id": 30584366320,
+                "job": "scaffold",
+                "job_id": 91012139727,
+                "head_sha": R9_SEMANTIC_SOURCE_COMMIT,
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30584366320/job/91012139727"
+                ),
+                "conclusion": "SUCCESS",
+            },
+        ]
+        and r9_semantic_validation
+        == {
+            "freeze_pack": {
+                "filename": (
+                    "Codex_Design_Deeplus_R9_Diagnostic_Dispatch_Closure_"
+                    "Candidate_Freeze_Pack_R5.zip"
+                ),
+                "bytes": 116490,
+                "sha256": (
+                    "541da4136e420d80f068fa72dc48b468cd8e8ad551c3ced32c8f"
+                    "881d00e932e0"
+                ),
+                "semantic_delta_count": 0,
+                "implementation_path_count": {"r4": 44, "r5": 45},
+                "generator_derived_added_path": (
+                    "tests/conformance/checker-predicates/chunks/"
+                    "part-0029.json"
+                ),
+            },
+            "diagnostic_dispatch_static_reference": {
+                "schema": (
+                    "deeplus.r9-diagnostic-dispatch-closure-test-receipt/v1"
+                ),
+                "result": "PASS",
+                "checks": "9_OF_9_PASS",
+                "base_cases": 18,
+                "adversarial_cases": 13,
+                "mutation_rows": 12,
+                "ordered_reason_keys": 12,
+                "product_execution": "NOT_RUN",
+            },
+            "registry_postimage": {
+                "predicates": 277,
+                "diagnostics": 1436,
+                "relations": 559,
+                "dispatch_rows": 226,
+                "undefined_or_unlisted_dispatch": 0,
+            },
+            "grammar_reference_generator": {
+                "result": "PASS",
+                "cases": 33,
+                "mutations": 32,
+                "deterministic_output_count": 8,
+                "repository_write": False,
+            },
+            "tutorial_generator": {
+                "result": "TUTORIAL_MUTATION_TEST_PASS",
+                "rejection_mutations": 12,
+            },
+            "canonical_source_mutation_during_freeze": 0,
+            "github_mutation_during_freeze": 0,
+        }
+        and r9_closure_pr_evidence
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R9_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r9_semantic_publication,
+                "semantic_pr_github_ci": r9_semantic_ci,
+                "semantic_pr_validation": r9_semantic_validation,
+                "closure_pr_evidence": r9_closure_pr_evidence,
+            }
+        ),
+    )
+    check(
+        r9_gap_transition
+        == {
+            "initial_state": "APPROVED_NOT_INTEGRATED",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 1,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 1,
+            "rows": expected_r9_gap_rows,
+        }
+        and r9_action_ledger
+        == {
+            "source": "current/current-pointer.json#/open_actions",
+            "total_open_actions": 26,
+            "separate_m13_actions": EXPECTED_ACTION_IDS,
+            "canonical_feature_p1_open": SUCCESSOR_ACTION_IDS[
+                len(EXPECTED_ACTION_IDS):
+            ],
+            "canonical_id_array_sha256": (
+                "582fa3d9649c380a7a9bf4532fc303626eb9837aeb7f4ed68ce46"
+                "f2bc02fc296"
+            ),
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r9_independent_test
+        == {
+            "path": R9_INDEPENDENT_TEST_VERIFICATION_RECEIPT,
+            "bytes": R9_INDEPENDENT_TEST_VERIFICATION_BYTES,
+            "sha256": R9_INDEPENDENT_TEST_VERIFICATION_SHA256,
+            "required_verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+            "closure_effect": (
+                "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+            ),
+        }
+        and r9_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+            "canonical_source_mutation_during_closure": 0,
+            "github_mutation_during_closure": 0,
+        }
+        and r9_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "semantic_merge_commit": R9_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r9_closure_receipt.get("next_checkpoint")
+        == {
+            "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+            "candidate_cluster": "DEPENDENCY_ORDERED_R10_SELECTION",
+            "gap_scope": [],
+            "activation": (
+                "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_"
+                "BASELINE_OBSERVATION"
+            ),
+        },
+        "R9_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "gap_transition": r9_gap_transition,
+                "action_ledger": r9_action_ledger,
+                "independent_test_verification": r9_independent_test,
+                "governance": r9_governance,
+                "pointer_target": r9_pointer_target,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -15030,7 +15299,7 @@ def main() -> int:
         if row.get("id") == R4_PUBLICATION_CLOSURE_DECISION_ID
     ]
     check(
-        current_decisions.get("law_count") == len(current_laws) == 43
+        current_decisions.get("law_count") == len(current_laws) == 44
         and r4_closure_laws
         == [
             {
@@ -15109,6 +15378,55 @@ def main() -> int:
         ],
         "R8_PUBLICATION_CLOSURE_DECISION",
         repr(r8_closure_laws),
+    )
+    r9_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R9_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        r9_closure_laws
+        == [
+            {
+                "id": R9_PUBLICATION_CLOSURE_DECISION_ID,
+                "law": (
+                    "The R9 Diagnostic Dispatch Closure for implementation-"
+                    "readiness gap IR-DIAG-P0-052 is canonically integrated "
+                    "by semantic PR #50: source commit "
+                    "94b4d369213ec3ce829c70b66f15301cf3c7039c was merged at "
+                    "fd752f560d30a9cbe61f04b24b0e58abdbc150a3 with exact tree "
+                    "3afc92cae7f8cf7232e30944d6516aec811e6981. "
+                    "IR-DIAG-P0-052 moved to INTEGRATED_UNVERIFIED at that "
+                    "semantic merge and becomes VERIFIED_CLOSED at "
+                    "design/static evidence level E2 only after the separate "
+                    "publication-closure PR is merged, live main is read "
+                    "back, and the external post-merge receipt records the "
+                    "actual closure commit; no future closure commit SHA is "
+                    "predicted here. Production implementation and product "
+                    "execution remain NOT_RUN. This governance transition "
+                    "closes or creates no canonical feature P1, leaves the "
+                    "exact feature P1 set at 22 OPEN, leaves the four M13 "
+                    "actions separate and OPEN, and leaves all 15 product "
+                    "lanes NOT_RUN."
+                ),
+                "status": "CURRENT",
+                "authority_origin": "DESIGNER_ACCEPTED",
+                "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+                "source_evidence": (
+                    "governance/reports/"
+                    "Design_Deeplus_R9_Diagnostic_Dispatch_Publication_"
+                    "Closure_R1.md; release/evidence/"
+                    "r9-diagnostic-dispatch-publication-closure-receipt.json; "
+                    "release/evidence/"
+                    "r9-diagnostic-dispatch-independent-verification.json; "
+                    "external audit/implementation-readiness-state "
+                    "post-merge readback receipt"
+                ),
+                "effective_revision": LANGUAGE_COHERENCE_REVISION,
+            }
+        ],
+        "R9_PUBLICATION_CLOSURE_DECISION",
+        repr(r9_closure_laws),
     )
     r4_test_verification = parsed.get(
         root / R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT, {}
@@ -15312,6 +15630,134 @@ def main() -> int:
         == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
         "R8_INDEPENDENT_TEST_VERIFICATION",
         repr(r8_test_verification),
+    )
+    r9_test_path = root / R9_INDEPENDENT_TEST_VERIFICATION_RECEIPT
+    r9_test_verification = parsed.get(r9_test_path, {})
+    check(
+        r9_test_path.is_file()
+        and r9_test_path.stat().st_size
+        == R9_INDEPENDENT_TEST_VERIFICATION_BYTES
+        and file_sha(r9_test_path)
+        == R9_INDEPENDENT_TEST_VERIFICATION_SHA256
+        and r9_test_path.stat().st_size == r9_independent_test.get("bytes")
+        and file_sha(r9_test_path) == r9_independent_test.get("sha256")
+        and r9_test_verification.get("schema")
+        == "deeplus.r9-diagnostic-dispatch-independent-verification/v1"
+        and r9_test_verification.get("recorded_at")
+        == "2026-07-31T06:51:12+09:00"
+        and r9_test_verification.get("role") == "Test_"
+        and r9_test_verification.get("reviewer_identity")
+        == "Codex Test_ independent R9 publication-closure audit"
+        and r9_test_verification.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r9_test_verification.get("repository_write") is False
+        and r9_test_verification.get("verdict")
+        == r9_independent_test.get("required_verdict")
+        and r9_test_verification.get("merge_readiness")
+        == "HOLD_PENDING_PUBLICATION_CLOSURE_MERGE_AND_READBACK"
+        and r9_test_verification.get("semantic_pull_request") == 50
+        and r9_test_verification.get("semantic_source_commit")
+        == R9_SEMANTIC_SOURCE_COMMIT
+        and r9_test_verification.get("semantic_merge_commit")
+        == R9_SEMANTIC_PUBLICATION_COMMIT
+        and r9_test_verification.get("semantic_merge_tree")
+        == R9_SEMANTIC_PUBLICATION_TREE
+        and r9_test_verification.get("semantic_merge_parents")
+        == [
+            "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+            R9_SEMANTIC_SOURCE_COMMIT,
+        ]
+        and r9_test_verification.get("post_semantic_merge_readback")
+        == "PASS"
+        and r9_test_verification.get("reviewed_gap_ids")
+        == R9_PUBLICATION_CLOSURE_GAP_IDS
+        and r9_test_verification.get("frozen_candidate_pack")
+        == {
+            "scope": (
+                "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE"
+            ),
+            "filename": (
+                "Codex_Design_Deeplus_R9_Diagnostic_Dispatch_Closure_"
+                "Candidate_Freeze_Pack_R5.zip"
+            ),
+            "bytes": 116490,
+            "sha256": (
+                "541da4136e420d80f068fa72dc48b468cd8e8ad551c3ced32c8f"
+                "881d00e932e0"
+            ),
+            "semantic_predecessor": "R4_BYTE_BOUND_UNCHANGED",
+            "semantic_delta_count": 0,
+            "implementation_path_count": {"r4": 44, "r5": 45},
+            "generator_derived_added_path": (
+                "tests/conformance/checker-predicates/chunks/"
+                "part-0029.json"
+            ),
+        }
+        and r9_test_verification.get("verified_semantic_contract")
+        == {
+            "closed_input_union_variant_count": 3,
+            "rcts_fallback_count": 0,
+            "predicate_count": 3,
+            "ordered_reason_key_count": 12,
+            "base_fixture_count": 18,
+            "adversarial_fixture_count": 13,
+            "mutation_count": 12,
+            "static_reference_checks": {
+                "passed": 9,
+                "total": 9,
+                "result": "PASS",
+            },
+            "registry_postimage": {
+                "predicates": 277,
+                "diagnostics": 1436,
+                "relations": 559,
+                "dispatch_rows": 226,
+                "undefined_or_unlisted_dispatch": 0,
+            },
+            "grammar_reference_generator": {
+                "result": "PASS",
+                "cases": 33,
+                "mutations": 32,
+                "deterministic_output_count": 8,
+                "deterministic_roots": 2,
+                "repository_write": False,
+            },
+            "tutorial_generator": {
+                "result": "TUTORIAL_MUTATION_TEST_PASS",
+                "baseline_check_count": 1,
+                "deterministic_write_count": 2,
+                "rejection_mutation_count": 12,
+            },
+        }
+        and r9_test_verification.get("semantic_pr_github_ci")
+        == r9_semantic_ci
+        and r9_test_verification.get("verified_ledger")
+        == {
+            "gap_transition_candidate_count": 1,
+            "gap_state_at_semantic_merge": "INTEGRATED_UNVERIFIED",
+            "closed_before_closure_readback": 0,
+            "eligible_after_closure_readback": 1,
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN",
+            "separate_m13_actions": "4_OPEN",
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+        }
+        and r9_test_verification.get("product_lanes")
+        == "15_OF_15_NOT_RUN"
+        and r9_test_verification.get("product_support") == "NOT_RUN"
+        and r9_test_verification.get(
+            "canonical_source_mutation_during_closure_verification"
+        ) == 0
+        and r9_test_verification.get(
+            "github_mutation_during_closure_verification"
+        ) == 0
+        and r9_test_verification.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+        and r9_test_verification.get("future_closure_commit")
+        == "NOT_RECORDED_BEFORE_MERGE",
+        "R9_INDEPENDENT_TEST_VERIFICATION",
+        repr(r9_test_verification),
     )
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
@@ -15962,7 +16408,7 @@ def main() -> int:
             set(facts_by_id)
             == (
                 {
-                    "ARCH-001", "EVID-001", "PUB-001", "P1-001",
+                    "ARCH-001", "EVID-001", "PUB-001", "PUB-002", "P1-001",
                     "CMA-001", "MIRX1-001", "EXPR-001", "AUTH-001",
                 }
                 if path.name == "Design_Deeplus_Current_Memory.json"
@@ -16069,8 +16515,7 @@ def main() -> int:
         "statement", ""
     )
     check(
-        design_memory.get("updated_at") == "2026-07-31T03:33:54+09:00"
-        and design_facts.get("PUB-001", {}).get("source")
+        design_facts.get("PUB-001", {}).get("source")
         == R8_PUBLICATION_CLOSURE_REPORT
         and design_facts.get("PUB-001", {}).get("introduced")
         == LANGUAGE_COHERENCE_REVISION
@@ -16105,6 +16550,63 @@ def main() -> int:
             {
                 "PUB-001": design_facts.get("PUB-001"),
                 "recent_release": r8_release_rows,
+            }
+        ),
+    )
+    r9_release_rows = [
+        row
+        for row in design_history
+        if row.get("release")
+        == "github-pr-50-r9-diagnostic-dispatch-semantic-publication"
+    ]
+    r9_pub_statement = design_facts.get("PUB-002", {}).get(
+        "statement", ""
+    )
+    check(
+        design_memory.get("updated_at") == "2026-07-31T06:51:51+09:00"
+        and design_facts.get("PUB-002", {}).get("source")
+        == R9_PUBLICATION_CLOSURE_REPORT
+        and design_facts.get("PUB-002", {}).get("introduced")
+        == LANGUAGE_COHERENCE_REVISION
+        and design_facts.get("PUB-002", {}).get("review_after")
+        == "publication-closure merge and external post-merge readback receipt"
+        and all(
+            term in r9_pub_statement
+            for term in (
+                "PR #50",
+                R9_SEMANTIC_SOURCE_COMMIT,
+                R9_SEMANTIC_PUBLICATION_COMMIT,
+                R9_SEMANTIC_PUBLICATION_TREE,
+                "IR-DIAG-P0-052",
+                "INTEGRATED_UNVERIFIED",
+                "No future closure SHA is asserted",
+                "22 OPEN",
+                "four M13 actions remain separate and OPEN",
+                "15 product lanes remain NOT_RUN",
+            )
+        )
+        and len(r9_release_rows) == 1
+        and r9_release_rows[0].get("report")
+        == R9_PUBLICATION_CLOSURE_REPORT
+        and all(
+            term in r9_release_rows[0].get("verdict", "")
+            for term in (
+                R9_SEMANTIC_SOURCE_COMMIT,
+                R9_SEMANTIC_PUBLICATION_COMMIT,
+                R9_SEMANTIC_PUBLICATION_TREE,
+                "IR-DIAG-P0-052",
+                "INTEGRATED_UNVERIFIED",
+                "design/static E2",
+                "22 OPEN",
+                "four M13 actions separate and OPEN",
+                "15/15 NOT_RUN",
+            )
+        ),
+        "R9_PUBLICATION_CLOSURE_MEMORY",
+        repr(
+            {
+                "PUB-002": design_facts.get("PUB-002"),
+                "recent_release": r9_release_rows,
             }
         ),
     )
