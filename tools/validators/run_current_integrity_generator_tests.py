@@ -354,6 +354,34 @@ def run() -> int:
             ),
         )
 
+        def revert_publication_target(path: Path) -> None:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            value["publication_authority_source"]["commit"] = (
+                "cfd5946c52571119564b9c8beb430f8dd0356750"
+            )
+            write_json(path, value)
+
+        pointer_target_before = (root / OUTPUTS[1]).read_bytes()
+        try:
+            revert_publication_target(root / OUTPUTS[1])
+            pointer_target_result = command(root, "--check")
+            pointer_target_raw = (
+                pointer_target_result.stdout
+                if pointer_target_result.stdout.strip()
+                else pointer_target_result.stderr
+            )
+            record(
+                "mutation_pointer_publication_target_reverted",
+                pointer_target_result.returncode in {1, 2}
+                and "R2_3_NON_OWNED_FIELD_DRIFT" in pointer_target_raw,
+                (
+                    f"returncode={pointer_target_result.returncode} "
+                    f"output={pointer_target_raw.strip()}"
+                ),
+            )
+        finally:
+            (root / OUTPUTS[1]).write_bytes(pointer_target_before)
+
         def cycle(path: Path, forbidden: str) -> None:
             text = path.read_text(encoding="utf-8")
             text = text.replace("path: spec/language.md", f"path: {forbidden}", 1)

@@ -1,0 +1,95 @@
+{
+  "schema": "deeplus.r4-name-resolution-modules-independent-test-verification/v1",
+  "recorded_at": "2026-07-30T12:21:47+09:00",
+  "role": "Test_",
+  "reviewer_identity": "Codex Test_ independent closure auditor / r4_visibility_init_dependency_audit",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "repository_write": false,
+  "verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+  "merge_readiness": "HOLD_PENDING_RECEIPT_AND_SOURCE_MANIFEST_BINDING",
+  "semantic_merge_commit": "8d81d6747488055cb76da8bda1350b96e576b7b1",
+  "semantic_merge_tree": "1cc3ff5c5813678b5cc9c3465ceacd922bb63d06",
+  "semantic_merge_parents": [
+    "53464e47bc280d4f431440eb7538d9d97c0a7aa7",
+    "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6"
+  ],
+  "reviewed_gap_ids": [
+    "IR-RES-P0-040",
+    "IR-RES-P0-041",
+    "IR-MOD-P1-042",
+    "IR-MOD-P1-043",
+    "IR-MOD-P1-044",
+    "IR-MOD-P1-045",
+    "IR-MOD-P1-046",
+    "IR-MOD-P1-047",
+    "IR-RES-P1-048",
+    "IR-RES-P1-049",
+    "IR-TRACE-P1-050",
+    "IR-TRACE-P2-051"
+  ],
+  "reviewed_acceptance_oracle": {
+    "scope": "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE",
+    "path": "audit/implementation-readiness-r4-name-resolution-modules/Codex_Design_Deeplus_Name_Resolution_Module_Acceptance_Spec_R4.json",
+    "bytes": 95844,
+    "sha256": "bfbe4ba3d4447835fc6e8f692bbf44125edc2923e7ad68c77b5551c505b5aa38",
+    "structured_outlines": 150,
+    "gap_outlines": 36,
+    "gap_oracle_array_sha256": "454cbbdfaa62cd8892c93c7eb812e9ad1b21dd4eceb3fb3711bee48728b32be3",
+    "executed_product_count": 0
+  },
+  "executed_commands": [
+    {
+      "command": "git status --short --branch; git rev-parse HEAD; git rev-parse HEAD^{tree}; git show -s --format=%P HEAD",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "py -3 -m py_compile tools/validators/validate_workspace.py tools/validators/run_current_integrity_generator_tests.py tools/validators/run_repository_bootstrap_mutation_tests.py",
+      "result": "PASS"
+    },
+    {
+      "command": "repository JSON parse inventory",
+      "result": "316_OF_316_PASS"
+    },
+    {
+      "command": "py -3.9 -B tools/validators/run_current_integrity_generator_tests.py",
+      "result": "36_OF_36_PASS"
+    },
+    {
+      "command": "py -3.9 -B tools/validators/run_name_resolution_module_mutation_tests.py",
+      "result": "73_OF_73_REJECTED_AS_REQUIRED"
+    },
+    {
+      "command": "py -3.9 -B tools/generators/generate_current_integrity.py --root . --check",
+      "result": "PASS_STALE_OUTPUTS_0"
+    },
+    {
+      "command": "py -3.9 -B tools/generators/generate_language_coherence_current_integrity.py --root . --check",
+      "result": "PASS_BOUND_ROOTS_30"
+    }
+  ],
+  "verified_ledger": {
+    "gap_transition_candidates": 12,
+    "severity_counts": {
+      "P0": 2,
+      "P1": 9,
+      "P2": 1
+    },
+    "closed_before_closure_readback": 0,
+    "eligible_after_closure_readback": 12,
+    "semantic_p0": 0,
+    "open_actions": 26,
+    "canonical_feature_p1": "22_OPEN",
+    "separate_m13_actions": 4,
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0,
+    "current_binding": false
+  },
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+  "evidence_honesty": "This independent static Test_ review does not establish production parser, checker, MIR, xVM, Cranelift, runtime, tooling, conformance, or user-team product support."
+}

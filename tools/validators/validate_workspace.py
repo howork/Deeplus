@@ -26,6 +26,8 @@ TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 AUTHORITY_TRANSITION_BASE_COMMIT = "cfd5946c52571119564b9c8beb430f8dd0356750"
+R4_SEMANTIC_PUBLICATION_COMMIT = "8d81d6747488055cb76da8bda1350b96e576b7b1"
+CURRENT_PUBLICATION_TARGET_COMMIT = "8d81d6747488055cb76da8bda1350b96e576b7b1"
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -134,6 +136,39 @@ CURRENT_DECISION_INDEX_PATHS = [
 AUTHORITY_TRANSITION_REPORT = (
     "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
 )
+R4_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R4_Name_Resolution_Module_Publication_Closure_R1.md"
+)
+R4_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r4-name-resolution-modules-publication-closure-receipt.json"
+)
+R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r4-name-resolution-modules-independent-test-verification.json"
+)
+R4_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R4-NAME-RESOLUTION-MODULES-PUBLICATION-CLOSURE"
+)
+R4_PUBLICATION_CLOSURE_GAP_IDS = [
+    "IR-RES-P0-040",
+    "IR-RES-P0-041",
+    *(f"IR-MOD-P1-{index:03d}" for index in range(42, 48)),
+    "IR-RES-P1-048",
+    "IR-RES-P1-049",
+    "IR-TRACE-P1-050",
+    "IR-TRACE-P2-051",
+]
+R4_PUBLICATION_CLOSURE_GAP_SEVERITIES = {
+    "IR-RES-P0-040": "P0",
+    "IR-RES-P0-041": "P0",
+    **{f"IR-MOD-P1-{index:03d}": "P1" for index in range(42, 48)},
+    "IR-RES-P1-048": "P1",
+    "IR-RES-P1-049": "P1",
+    "IR-TRACE-P1-050": "P1",
+    "IR-TRACE-P2-051": "P2",
+}
 EXPECTED_ACTION_IDS = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
 FIXED_OPERATOR_IDS = [
     "UnaryPlus", "UnaryMinus",
@@ -14159,8 +14194,15 @@ def main() -> int:
         == [
             "governance/policies/management-policy.yaml",
             AUTHORITY_TRANSITION_REPORT,
+            R4_PUBLICATION_CLOSURE_REPORT,
         ]
-        and (root / AUTHORITY_TRANSITION_REPORT).is_file(),
+        and all(
+            (root / relative).is_file()
+            for relative in (
+                AUTHORITY_TRANSITION_REPORT,
+                R4_PUBLICATION_CLOSURE_REPORT,
+            )
+        ),
         "CURRENT_DECISION_INDEX_BINDING",
         repr(
             {
@@ -14168,6 +14210,375 @@ def main() -> int:
                 "governance": indexed_governance_paths,
             }
         ),
+    )
+    r4_closure_receipt = parsed.get(
+        root / R4_PUBLICATION_CLOSURE_RECEIPT, {}
+    )
+    r4_semantic_publication = r4_closure_receipt.get(
+        "semantic_publication", {}
+    )
+    r4_semantic_ci = r4_closure_receipt.get(
+        "semantic_pr_github_ci", []
+    )
+    r4_semantic_validation = r4_closure_receipt.get(
+        "semantic_pr_validation", {}
+    )
+    r4_closure_pr_evidence = r4_closure_receipt.get(
+        "closure_pr_evidence", {}
+    )
+    r4_gap_transition = r4_closure_receipt.get("gap_transition", {})
+    r4_action_ledger = r4_closure_receipt.get("action_ledger", {})
+    r4_independent_test = r4_closure_receipt.get(
+        "independent_test_verification", {}
+    )
+    r4_governance = r4_closure_receipt.get("governance", {})
+    r4_pointer_target = r4_closure_receipt.get("pointer_target", {})
+    expected_r4_gap_rows = [
+        {
+            "id": gap_id,
+            "severity": R4_PUBLICATION_CLOSURE_GAP_SEVERITIES[gap_id],
+            "from": "APPROVED_NOT_INTEGRATED",
+            "at_semantic_merge": "INTEGRATED_UNVERIFIED",
+            "after_closure_readback": "VERIFIED_CLOSED",
+        }
+        for gap_id in R4_PUBLICATION_CLOSURE_GAP_IDS
+    ]
+    check(
+        r4_closure_receipt.get("schema")
+        == "deeplus.r4-name-resolution-modules-publication-closure-receipt/v1"
+        and r4_closure_receipt.get("recorded_at")
+        == "2026-07-30T11:48:21+09:00"
+        and r4_closure_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r4_closure_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r4_semantic_publication
+        == {
+            "pull_request": 46,
+            "url": "https://github.com/howork/Deeplus/pull/46",
+            "branch": "codex/r4-name-resolution-modules",
+            "source_commit": (
+                "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6"
+            ),
+            "merge_commit": R4_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": "1cc3ff5c5813678b5cc9c3465ceacd922bb63d06",
+            "parents": [
+                "53464e47bc280d4f431440eb7538d9d97c0a7aa7",
+                "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6",
+            ],
+            "merged_at": "2026-07-30T02:44:17Z",
+            "post_merge_readback": "PASS",
+        }
+        and r4_semantic_ci
+        == [
+            {
+                "workflow": "Canonical integrity",
+                "run_id": 30508985918,
+                "job": "validate",
+                "job_id": 90764770995,
+                "head_sha": (
+                    "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6"
+                ),
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30508985918/job/90764770995"
+                ),
+                "conclusion": "SUCCESS",
+                "duration": "5m27s",
+            },
+            {
+                "workflow": "Rust workspace",
+                "run_id": 30508985919,
+                "job": "scaffold",
+                "job_id": 90764771028,
+                "head_sha": (
+                    "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6"
+                ),
+                "url": (
+                    "https://github.com/howork/Deeplus/actions/runs/"
+                    "30508985919/job/90764771028"
+                ),
+                "conclusion": "SUCCESS",
+                "duration": "22s",
+            },
+        ]
+        and r4_semantic_validation
+        == {
+            "workspace_validator": "2990_OF_2990_PASS",
+            "bootstrap_mutations": "39_OF_39_PASS",
+            "r4_mutations": "73_OF_73_PASS",
+            "actual_relation_probes": "27_OF_27_PASS",
+            "integrated_contract": "58_OF_58_PASS",
+            "helper_selftests": "9_OF_9_PASS",
+            "parallel_isolation": "7_OF_7_PASS",
+            "deterministic_archive": {
+                "bytes": 3141662,
+                "sha256": (
+                    "a46c180e7225d89702a59b759bab435c7f025cb2349ae889c"
+                    "8332ef351c0d1ce"
+                ),
+                "content_tree_sha256": (
+                    "9f32573c62ad00e1e15ddd0fd902a56266cb4e8c5d8e5b3fd"
+                    "b4253c11a538dc3"
+                ),
+                "clean_head_binding": "EXACT_CLEAN_WORKTREE_HEAD",
+            },
+        }
+        and r4_closure_pr_evidence
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R4_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r4_semantic_publication,
+                "semantic_pr_github_ci": r4_semantic_ci,
+                "semantic_pr_validation": r4_semantic_validation,
+                "closure_pr_evidence": r4_closure_pr_evidence,
+            }
+        ),
+    )
+    check(
+        r4_gap_transition
+        == {
+            "initial_state": "APPROVED_NOT_INTEGRATED",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 12,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 12,
+            "open_audit_gaps_before_closure": {
+                "P0": 14,
+                "P1": 32,
+                "P2": 5,
+            },
+            "rows": expected_r4_gap_rows,
+            "remaining_audit_gaps_after_closure": {
+                "P0": 12,
+                "P1": 23,
+                "P2": 4,
+            },
+            "source_ledger": {
+                "scope": (
+                    "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE"
+                ),
+                "path": (
+                    "audit/implementation-readiness-state/"
+                    "CUMULATIVE_GAP_REGISTER.json"
+                ),
+                "schema": (
+                    "deeplus.implementation-readiness-cumulative-gap-"
+                    "register/r1"
+                ),
+                "bytes": 283888,
+                "sha256": (
+                    "6b420087a9679d5b01c56a4015395e9a57a52d78bfdf32c061245"
+                    "7dd9b0cdfa2"
+                ),
+                "baseline_through_r4": (
+                    "cfd5946c52571119564b9c8beb430f8dd0356750"
+                ),
+                "pre_transition_status_counts": {
+                    "DECISION_PENDING": 35,
+                    "EXPLICITLY_DEFERRED": 1,
+                    "DISCOVERED": 3,
+                    "APPROVED_NOT_INTEGRATED": 12,
+                },
+            },
+        }
+        and r4_action_ledger
+        == {
+            "source": "current/current-pointer.json#/open_actions",
+            "total_open_actions": 26,
+            "separate_m13_actions": EXPECTED_ACTION_IDS,
+            "canonical_feature_p1_open": SUCCESSOR_ACTION_IDS[
+                len(EXPECTED_ACTION_IDS):
+            ],
+            "canonical_id_array_sha256": (
+                "582fa3d9649c380a7a9bf4532fc303626eb9837aeb7f4ed68ce46"
+                "f2bc02fc296"
+            ),
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r4_independent_test
+        == {
+            "path": R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT,
+            "bytes": 3518,
+            "sha256": (
+                "6cf010313f5391261efb28c9709a1243c20cb348abb589d61ca6e8"
+                "81e9361238"
+            ),
+            "required_verdict": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+            "closure_effect": (
+                "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+            ),
+        }
+        and r4_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+        }
+        and r4_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "semantic_merge_commit": R4_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        },
+        "R4_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "gap_transition": r4_gap_transition,
+                "action_ledger": r4_action_ledger,
+                "independent_test_verification": r4_independent_test,
+                "governance": r4_governance,
+                "pointer_target": r4_pointer_target,
+            }
+        ),
+    )
+    current_decisions = parsed.get(
+        root / "decisions/language/current-decisions.json", {}
+    )
+    current_laws = current_decisions.get("laws", [])
+    r4_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R4_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        current_decisions.get("law_count") == len(current_laws) == 42
+        and r4_closure_laws
+        == [
+            {
+                "id": R4_PUBLICATION_CLOSURE_DECISION_ID,
+                "law": (
+                    "The R4 Name Resolution, Modules, Package and Visibility "
+                    "contract is canonically integrated by PR #46 at semantic "
+                    "merge commit "
+                    "8d81d6747488055cb76da8bda1350b96e576b7b1. Its exact 12 "
+                    "implementation-readiness audit gaps move from "
+                    "APPROVED_NOT_INTEGRATED to INTEGRATED_UNVERIFIED at that "
+                    "semantic merge and become VERIFIED_CLOSED only after the "
+                    "separate publication-closure PR is merged, live main is "
+                    "read back, and the bound independent Test_ verification "
+                    "passes. This governance transition changes no language "
+                    "semantics, closes or creates no canonical feature P1, "
+                    "leaves the exact feature P1 set at 22 OPEN, and leaves "
+                    "all 15 product lanes NOT_RUN."
+                ),
+                "status": "CURRENT",
+                "authority_origin": "DESIGNER_ACCEPTED",
+                "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+                "source_evidence": (
+                    "governance/reports/"
+                    "Design_Deeplus_R4_Name_Resolution_Module_"
+                    "Publication_Closure_R1.md; "
+                    "release/evidence/"
+                    "r4-name-resolution-modules-publication-closure-"
+                    "receipt.json"
+                ),
+                "effective_revision": LANGUAGE_COHERENCE_REVISION,
+            }
+        ],
+        "R4_PUBLICATION_CLOSURE_DECISION",
+        repr(r4_closure_laws),
+    )
+    r4_test_verification = parsed.get(
+        root / R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT, {}
+    )
+    r4_test_path = root / R4_INDEPENDENT_TEST_VERIFICATION_RECEIPT
+    check(
+        r4_test_path.is_file()
+        and r4_test_path.stat().st_size == r4_independent_test.get("bytes")
+        and file_sha(r4_test_path) == r4_independent_test.get("sha256")
+        and r4_test_verification.get("schema")
+        == (
+            "deeplus.r4-name-resolution-modules-independent-test-"
+            "verification/v1"
+        )
+        and r4_test_verification.get("role") == "Test_"
+        and r4_test_verification.get("reviewer_identity")
+        == (
+            "Codex Test_ independent closure auditor / "
+            "r4_visibility_init_dependency_audit"
+        )
+        and r4_test_verification.get("repository_write") is False
+        and r4_test_verification.get("verdict")
+        == r4_independent_test.get("required_verdict")
+        and r4_test_verification.get("merge_readiness")
+        == "HOLD_PENDING_RECEIPT_AND_SOURCE_MANIFEST_BINDING"
+        and r4_test_verification.get("semantic_merge_commit")
+        == R4_SEMANTIC_PUBLICATION_COMMIT
+        and r4_test_verification.get("semantic_merge_tree")
+        == "1cc3ff5c5813678b5cc9c3465ceacd922bb63d06"
+        and r4_test_verification.get("semantic_merge_parents")
+        == [
+            "53464e47bc280d4f431440eb7538d9d97c0a7aa7",
+            "86669e990e4ad15cd4dd7e9034bf0c34c62cc8d6",
+        ]
+        and r4_test_verification.get("reviewed_gap_ids")
+        == R4_PUBLICATION_CLOSURE_GAP_IDS
+        and r4_test_verification.get("reviewed_acceptance_oracle")
+        == {
+            "scope": (
+                "PERSISTENT_AUDIT_WORKSPACE_OUTSIDE_CANONICAL_GIT_TREE"
+            ),
+            "path": (
+                "audit/implementation-readiness-r4-name-resolution-modules/"
+                "Codex_Design_Deeplus_Name_Resolution_Module_"
+                "Acceptance_Spec_R4.json"
+            ),
+            "bytes": 95844,
+            "sha256": (
+                "bfbe4ba3d4447835fc6e8f692bbf44125edc2923e7ad68c77b555"
+                "1c505b5aa38"
+            ),
+            "structured_outlines": 150,
+            "gap_outlines": 36,
+            "gap_oracle_array_sha256": (
+                "454cbbdfaa62cd8892c93c7eb812e9ad1b21dd4eceb3fb3711bee4"
+                "8728b32be3"
+            ),
+            "executed_product_count": 0,
+        }
+        and r4_test_verification.get("verified_ledger")
+        == {
+            "gap_transition_candidates": 12,
+            "severity_counts": {"P0": 2, "P1": 9, "P2": 1},
+            "closed_before_closure_readback": 0,
+            "eligible_after_closure_readback": 12,
+            "semantic_p0": 0,
+            "open_actions": 26,
+            "canonical_feature_p1": "22_OPEN",
+            "separate_m13_actions": 4,
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+            "current_binding": False,
+        }
+        and len(r4_test_verification.get("executed_commands", [])) == 8
+        and all(
+            row.get("result", "").startswith("PASS")
+            or row.get("result") in {
+                "316_OF_316_PASS",
+                "36_OF_36_PASS",
+                "73_OF_73_REJECTED_AS_REQUIRED",
+            }
+            for row in r4_test_verification.get("executed_commands", [])
+        )
+        and r4_test_verification.get("product_lanes")
+        == "15_OF_15_NOT_RUN"
+        and r4_test_verification.get("product_support") == "NOT_RUN"
+        and r4_test_verification.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R4_INDEPENDENT_TEST_VERIFICATION",
+        repr(r4_test_verification),
     )
     if args.candidate:
         state = parsed.get(root / "release/candidate-state.json", {})
@@ -14182,7 +14593,7 @@ def main() -> int:
         check(
             publication_source == {
                 "kind": "git-commit",
-                "commit": AUTHORITY_TRANSITION_BASE_COMMIT,
+                "commit": CURRENT_PUBLICATION_TARGET_COMMIT,
                 "role": "publication_authority_source",
                 "repository": "https://github.com/howork/Deeplus.git",
             },
@@ -14238,15 +14649,31 @@ def main() -> int:
             publication_object_check = subprocess.run(
                 [
                     "git", "-C", str(root), "cat-file", "-e",
+                    f"{CURRENT_PUBLICATION_TARGET_COMMIT}^{{commit}}",
+                ],
+                capture_output=True,
+                check=False,
+            )
+            publication_ancestor_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    CURRENT_PUBLICATION_TARGET_COMMIT, "HEAD",
+                ],
+                capture_output=True,
+                check=False,
+            )
+            authority_transition_object_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "cat-file", "-e",
                     f"{AUTHORITY_TRANSITION_BASE_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
                 check=False,
             )
-            ancestor_check = subprocess.run(
+            r4_semantic_object_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "merge-base", "--is-ancestor",
-                    AUTHORITY_TRANSITION_BASE_COMMIT, "HEAD",
+                    "git", "-C", str(root), "cat-file", "-e",
+                    f"{R4_SEMANTIC_PUBLICATION_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
                 check=False,
@@ -14259,7 +14686,7 @@ def main() -> int:
                 capture_output=True,
                 check=False,
             )
-            audited_ancestor_check = subprocess.run(
+            audited_to_authority_transition_check = subprocess.run(
                 [
                     "git", "-C", str(root), "merge-base", "--is-ancestor",
                     HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
@@ -14268,15 +14695,39 @@ def main() -> int:
                 capture_output=True,
                 check=False,
             )
+            authority_transition_to_publication_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    AUTHORITY_TRANSITION_BASE_COMMIT,
+                    CURRENT_PUBLICATION_TARGET_COMMIT,
+                ],
+                capture_output=True,
+                check=False,
+            )
+            r4_semantic_to_publication_check = subprocess.run(
+                [
+                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    R4_SEMANTIC_PUBLICATION_COMMIT,
+                    CURRENT_PUBLICATION_TARGET_COMMIT,
+                ],
+                capture_output=True,
+                check=False,
+            )
             check(
                 publication_object_check.returncode == 0
-                and ancestor_check.returncode == 0
+                and publication_ancestor_check.returncode == 0
+                and authority_transition_object_check.returncode == 0
+                and r4_semantic_object_check.returncode == 0
                 and audited_object_check.returncode == 0
-                and audited_ancestor_check.returncode == 0,
+                and audited_to_authority_transition_check.returncode == 0
+                and authority_transition_to_publication_check.returncode == 0
+                and r4_semantic_to_publication_check.returncode == 0,
                 "POINTER_PUBLICATION_COMMIT_AVAILABLE",
                 (
-                    f"publication={AUTHORITY_TRANSITION_BASE_COMMIT} "
-                    f"audited={HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT}"
+                    f"audited={HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT} "
+                    f"authority_transition={AUTHORITY_TRANSITION_BASE_COMMIT} "
+                    f"r4_semantic={R4_SEMANTIC_PUBLICATION_COMMIT} "
+                    f"publication={CURRENT_PUBLICATION_TARGET_COMMIT}"
                 ),
             )
         snapshot_receipt = parsed.get(root / "release/evidence/current-publication-m1.3-source-snapshot-receipt.json", {})
@@ -14842,6 +15293,58 @@ def main() -> int:
         and all(term in pr7_history[0].get("verdict", "") for term in ("tag", "GitHub Release", "Issue closure", "public license", "product promotion", "not inferred")),
         "DESIGN_PR7_HISTORICAL",
         str(pr7_history),
+    )
+    design_facts = {
+        row.get("id"): row
+        for row in design_memory.get("current_facts", [])
+        if isinstance(row, dict)
+    }
+    r4_release_rows = [
+        row
+        for row in design_history
+        if row.get("release")
+        == "github-pr-46-r4-name-resolution-modules-semantic-publication"
+    ]
+    r4_pub_statement = design_facts.get("PUB-001", {}).get(
+        "statement", ""
+    )
+    check(
+        design_memory.get("updated_at") == "2026-07-30T11:48:21+09:00"
+        and design_facts.get("PUB-001", {}).get("source")
+        == R4_PUBLICATION_CLOSURE_REPORT
+        and design_facts.get("PUB-001", {}).get("introduced")
+        == LANGUAGE_COHERENCE_REVISION
+        and all(
+            term in r4_pub_statement
+            for term in (
+                "PR #46",
+                R4_SEMANTIC_PUBLICATION_COMMIT,
+                "exact 12 audit gaps are INTEGRATED_UNVERIFIED",
+                "independent Test_ verification",
+                "22 OPEN",
+                "15 product lanes remain NOT_RUN",
+            )
+        )
+        and len(r4_release_rows) == 1
+        and r4_release_rows[0].get("report")
+        == R4_PUBLICATION_CLOSURE_REPORT
+        and all(
+            term in r4_release_rows[0].get("verdict", "")
+            for term in (
+                R4_SEMANTIC_PUBLICATION_COMMIT,
+                "INTEGRATED_UNVERIFIED",
+                "independent Test_ verification",
+                "22 OPEN",
+                "15/15 NOT_RUN",
+            )
+        ),
+        "R4_PUBLICATION_CLOSURE_MEMORY",
+        repr(
+            {
+                "PUB-001": design_facts.get("PUB-001"),
+                "recent_release": r4_release_rows,
+            }
+        ),
     )
 
     crates = sorted(path for path in (root / "crates").iterdir() if path.is_dir())
