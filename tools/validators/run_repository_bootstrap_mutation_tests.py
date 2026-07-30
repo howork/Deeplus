@@ -637,7 +637,7 @@ def run(write_receipt: bool) -> int:
         (
             "r4_closure_memory_reverted",
             r4_closure_memory_reverted,
-            "R4_PUBLICATION_CLOSURE_MEMORY",
+            "R8_PUBLICATION_CLOSURE_MEMORY",
         ),
         (
             "r4_independent_test_verdict_drift",
