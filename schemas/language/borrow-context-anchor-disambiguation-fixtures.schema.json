@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/borrow-context-anchor-disambiguation-fixtures.schema.json",
+  "title": "BorrowContextAnchorDisambiguationFixturesR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "status",
+    "source_activation",
+    "semantic_p0",
+    "current_binding",
+    "open_feature_p1",
+    "product_lanes",
+    "execution_status",
+    "cases",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.borrow-context-anchor-disambiguation-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/borrow-context-anchor-disambiguation-fixtures.schema.json"
+    },
+    "revision": {
+      "const": "r51f3-r8-ownership-context"
+    },
+    "contract": {
+      "const": "spec/contracts/borrow-context-anchor-disambiguation.json"
+    },
+    "status": {
+      "const": "CURRENT_NORMATIVE_STABLE_DESIGN_FIXTURE"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "semantic_p0": {
+      "const": 0
+    },
+    "current_binding": {
+      "const": true
+    },
+    "open_feature_p1": {
+      "const": 22
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "execution_status": {
+      "const": "SPECIFIED_NOT_RUN"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "test_id",
+          "class",
+          "source_or_scenario",
+          "mutation_source_or_null",
+          "parse_goal",
+          "fixity",
+          "spelling",
+          "expected_cst",
+          "expected_ast",
+          "expected_hir",
+          "expected_semantic_owner",
+          "registered_role_id_or_null",
+          "unit_witness_id_or_null",
+          "expected_result",
+          "primary_diagnostic_or_null",
+          "loan_id_created_in_hir",
+          "loan_id_created_by_mir_lowering",
+          "borrow_event_created",
+          "context_adaptation_plan_count",
+          "operand_evaluation_count",
+          "execution_status"
+        ],
+        "properties": {
+          "test_id": {
+            "enum": [
+              "OWN-SURF-P-001",
+              "OWN-SURF-P-002",
+              "OWN-SURF-N-005",
+              "OWN-SURF-M-007",
+              "OWN-GAP-P-012",
+              "OWN-GAP-B-012",
+              "OWN-GAP-N-012"
+            ]
+          },
+          "class": {
+            "enum": [
+              "positive",
+              "boundary",
+              "negative",
+              "mutation"
+            ]
+          },
+          "source_or_scenario": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mutation_source_or_null": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parse_goal": {
+            "enum": [
+              "expression",
+              "type"
+            ]
+          },
+          "fixity": {
+            "enum": [
+              "prefix",
+              "infix"
+            ]
+          },
+          "spelling": {
+            "enum": [
+              "borrow",
+              "&"
+            ]
+          },
+          "expected_cst": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_ast": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_hir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_semantic_owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "registered_role_id_or_null": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unit_witness_id_or_null": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_result": {
+            "enum": [
+              "ACCEPT",
+              "REJECT"
+            ]
+          },
+          "primary_diagnostic_or_null": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "loan_id_created_in_hir": {
+            "enum": [
+              0
+            ]
+          },
+          "loan_id_created_by_mir_lowering": {
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "borrow_event_created": {
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "context_adaptation_plan_count": {
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "operand_evaluation_count": {
+            "const": 1
+          },
+          "execution_status": {
+            "const": "SPECIFIED_NOT_RUN"
+          }
+        }
+      }
+    },
+    "expected_counts": {
+      "const": {
+        "positive": 3,
+        "boundary": 1,
+        "negative": 2,
+        "mutation": 1,
+        "total": 7,
+        "product_executed": 0
+      }
+    }
+  }
+}

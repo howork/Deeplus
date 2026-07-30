@@ -728,3 +728,28 @@ Refinement boundaries preserve their selected outcome: proven construction has n
 }
 ```
 <!-- POST_PR16_UNIT_END:SFD-N004 -->
+
+
+<!-- IR-OWN-R8-MIR-CONTRACT -->
+## Ownership and context-anchor lowering fence
+
+`borrow place` reuses
+`HirExprKind::PlaceAccess { plan: HirPlacePlan(access = BorrowShared) }`.
+HIR records the region constraints but creates no `LoanId`; MIR lowering
+creates the exact Shared loan and binds it to the owner region.
+
+Expression context-anchor `&` is not an ownership borrow.  The enclosing
+NumericArray or Measure operation owns one `HirContextAdaptationPlan` with
+`context_adaptation_plan_id`, `role_id`, `provider_operand_eval_id`,
+`adapted_operand_eval_id`, `unit_witness_id_or_null`, and `source_origin_id`.
+Operands are evaluated once in source order.  NumericArray requires a null
+unit witness; Measure requires the statically selected `UnitWitnessId`.
+The plan is resolved before MIR and leaves no standalone context node,
+`LoanId`, borrow event, runtime role lookup, or unresolved provider.
+
+The ownership decision state machine consumes the canonical typed descriptor.
+Moves preserve immutable origin provenance, reservations use exact
+`ReservationId` values, n-ary joins are predecessor-order invariant, and
+divergent global loan/token/reservation/conflict state is terminal without an
+output state.  Static execution of the contract does not claim a production
+MIR, xVM, runtime, or Cranelift implementation.

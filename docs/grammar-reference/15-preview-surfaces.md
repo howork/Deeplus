@@ -968,3 +968,12 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
   [`spec/diagnostics/catalog`](../../spec/diagnostics/catalog),
   [`spec/types/predicates`](../../spec/types/predicates),
   [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
+
+
+<!-- IR-OWN-R8-REF-15 -->
+### 문맥 anchor의 Preview 경계
+
+NumericArray와 Measure 두 역할은 닫힌 현행 설계다. transaction, retry,
+tracing 또는 임의 사용자 역할 같은 일반화된 문맥 anchor만 Preview
+Design이며 비활성이다. Preview 확장은 현행 두 역할의 의미를 넓히지
+않는다.

@@ -207,3 +207,13 @@ spaced `a ^ b`는 scalar power, attached `A^`는 transpose다. formatter가
 - [MIR transpose](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 
 다음 장에서는 값의 정확도와 물리 차원을 타입에 보존한다.
+
+
+<!-- IR-OWN-R8-TUTORIAL-08-04 -->
+### NumericArray 문맥 제공자
+
+예: `let shifted = &matrix + row`
+
+여기서 `&matrix`는 가장 가까운 연산에 NumericArray 문맥을 공급한다. matrix를
+borrow하거나 런타임 provider를 검색하지 않으며 각 operand는 한 번만
+평가된다.

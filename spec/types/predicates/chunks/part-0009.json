@@ -900,7 +900,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericArrayContextAnchorAdmitted",
     "source_name": "NumericArray context anchor",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Closed NumericArray context-provider polarity and nearest-owner algorithm; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -914,6 +914,7 @@
       "element_types"
     ],
     "feature_refs": [
+      "context_evidence_anchor_framework",
       "numeric_array_context_anchor_msp",
       "numeric_array_context_anchor_polarity_law"
     ],
@@ -929,11 +930,13 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "one anchor per eligible operation",
-      "anchor marks context provider",
-      "no first-class anchor value"
+      "ContextAnchorOperandAdmitted succeeds first",
+      "nearest eligible operation owns NUMERIC_ARRAY_CONTEXT_PROVIDER",
+      "one provider anchor per operation",
+      "provider operand polarity is not a broadcast marker polarity",
+      "no first-class value, runtime lookup, or ownership-borrow fallback"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -951,16 +954,21 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "one anchor per eligible operation",
-      "anchor marks context provider",
-      "no first-class anchor value"
+      "ContextAnchorOperandAdmitted succeeds first",
+      "nearest eligible operation owns NUMERIC_ARRAY_CONTEXT_PROVIDER",
+      "one provider anchor per operation",
+      "provider operand polarity is not a broadcast marker polarity",
+      "no first-class value, runtime lookup, or ownership-borrow fallback"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericArrayContextAnchorAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed RCTS-V5 input descriptor",
+      "evaluate ContextAnchorOperandAdmitted and propagate its selected diagnostic before the NumericArray-local rule",
+      "bind the nearest eligible operation as the sole NUMERIC_ARRAY_CONTEXT_PROVIDER owner",
+      "reject broadcast-marker polarity before context-provider polarity",
+      "evaluate provider and adapted operands once in source order",
+      "create one HirContextAdaptationPlan and zero LoanId, borrow event, runtime role lookup, or unresolved provider",
+      "return admit or the first exact diagnostic in canonical order"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -970,17 +978,20 @@
       "CONTEXT_ANCHOR_NOT_A_VALUE"
     ],
     "positive_fixture_ids": [
-      "PF-NumericArrayContextAnchorAdmitted-POS"
+      "OWN-SURF-P-002"
     ],
     "negative_fixture_ids": [
-      "PF-NumericArrayContextAnchorAdmitted-NEG"
+      "OWN-SURF-N-005",
+      "OWN-SURF-M-007"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "dependency_predicates": [
+      "ContextAnchorOperandAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "098b1e831a107f06a878182268b958dc8434a2918b28511d344296e27fb8af6c",

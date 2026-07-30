@@ -112,31 +112,33 @@
     "emission_domain": "source"
   },
   {
-    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority": "LANGUAGE / CHECKER",
     "authority_set": [
       "LANGUAGE",
-      "OFFICIAL_TOOLING"
+      "CHECKER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "INOUT_ALIAS_CONFLICT",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "source_truth_projection_unification"
+      "inout_borrow_move_modes"
     ],
-    "fixit_hint": "none",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
-    "message": "inout access conflicts with an existing alias or shared observation.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "fixit_hint": "end the conflicting borrow or inout access, or pass caller places proven disjoint",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "end the conflicting borrow or inout access, or pass caller places proven disjoint",
+    "message": "The inout access overlaps an active borrow, inout access, or another argument place.",
+    "notes": "Current-source diagnostic; product emission receipt NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
-    "related_feature_refs": [],
+    "related_feature_refs": [
+      "region_lifetime_model_phase_a"
+    ],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "diagnostic_id": "INTERPOLATION_BOUNDARY_OUTSIDE_PATH",

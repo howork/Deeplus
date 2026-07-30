@@ -5753,3 +5753,36 @@ lane remains `NOT_RUN`.
 }
 ```
 <!-- POST_PR16_UNIT_END:SFD-N007 -->
+
+
+<!-- IR-OWN-R8-CANONICAL -->
+## 59. Canonical borrow/context ownership and typed decision inputs
+
+The three surface owners are disjoint.  In an expression parse goal,
+`borrow place` is the sole general shared ownership-borrow spelling.
+Expression-prefix `&operand` is an operation-local context-provider marker for
+exactly the registered NumericArray and Measure roles.  In a type parse goal,
+infix `&` forms a closed contract intersection.  No route falls back from one
+owner to another.
+
+A context anchor is consumed by the nearest admitted operation.  The owner
+search crosses only a transparent `ParenExpr` and stops at call-argument,
+index, closure, and control-expression boundaries.  Each source operand is
+evaluated once in source order.  The anchor is absorbed into one
+`HirContextAdaptationPlan`; it creates no standalone HIR expression, `LoanId`,
+borrow event, effect, error, cleanup obligation, authority, synthesized
+witness, runtime role lookup, or unresolved runtime role.  A general
+`borrow`, by contrast, lowers through the existing HIR-H1 place-access plan and
+creates its Shared `LoanId` during MIR lowering.
+
+`BorrowEscapeAdmitted`, `BoxOwnershipAdmitted`, and
+`OwnershipModeAdmitted` accept the closed two-branch
+`OwnershipPredicateInputR1` union.  All other predicates retain the
+`RCTSDescriptorV5` catalog default.  The ownership evaluator reads no legacy
+fixture side channel.  `BorrowEscapeAdmitted` has four predicate-local reason
+keys—return, store, capture-or-suspension, and isolation—and all four select
+the single public primary diagnostic `BORROW_ESCAPE_OWNER_REGION`.
+`OwnershipModeAdmitted` selects `INOUT_ALIAS_CONFLICT` and
+`PLACE_STATE_JOIN_MISMATCH` only for their exact reason keys before its generic
+default.  These are Stable-design contracts; production parser, checker, MIR,
+xVM, Cranelift, formatter, LSP, and conformance execution remain `NOT_RUN`.

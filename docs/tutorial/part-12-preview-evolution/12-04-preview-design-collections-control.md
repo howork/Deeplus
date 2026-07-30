@@ -205,3 +205,11 @@ broadcast나 shaped literal proposal 때문에 바뀌지 않는다.
 
 다음 장에서는 async callable, observation, coroutine group, FFI/runtime
 proposal과 MIR-X1 draft를 current backend authority와 분리한다.
+
+
+<!-- IR-OWN-R8-TUTORIAL-12-04 -->
+### 일반화된 context anchor는 아직 Preview Design
+
+NumericArray와 Measure 두 역할만 닫힌 현행 계약이다. transaction,
+retry, tracing 및 사용자 정의 역할은 예시로 논의할 수 있지만 현재
+source activation, runtime lookup 또는 product support를 갖지 않는다.

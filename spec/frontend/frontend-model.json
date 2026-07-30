@@ -2811,27 +2811,43 @@
     "implicit_this": {
       "surface": "where OrderedComparisonOperator RefinementComparisonOperand",
       "rhs_parse_goal": "RefinementComparisonOperand",
-      "rhs_members": ["Literal", "Identifier", "QualifiedStaticExpr"],
+      "rhs_members": [
+        "Literal",
+        "Identifier",
+        "QualifiedStaticExpr"
+      ],
       "full_predicate_rhs": false,
       "desugaring": "insert exactly one distinguished `this` as the left operand",
       "bare_relational_type_suffix": false,
       "generic_close_commitment": "`>` closes GenericArguments before a following `where`; no refinement reinterpretation"
     },
     "interval_refinement": {
-      "surfaces": ["in lower..upper", "in lower..<upper"],
+      "surfaces": [
+        "in lower..upper",
+        "in lower..<upper"
+      ],
       "bounds": "literal or one statically resolved stable pure value",
       "runtime_bound": "reject with REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
-      "normalization_order": ["lower", "upper"],
+      "normalization_order": [
+        "lower",
+        "upper"
+      ],
       "duplicate_bound_evaluation": false
     },
     "bounded_binder_pattern": {
-      "owners": ["MatchStatement.MatchHead", "MatchExpr.MatchHead"],
+      "owners": [
+        "MatchStatement.MatchHead",
+        "MatchExpr.MatchHead"
+      ],
       "cst": "BoundedBinderPatternCst",
       "ast": "BoundedBinderPattern",
       "hir": "TypedBoundedBinderPattern",
       "scrutinee_evaluation_count": 1,
       "scrutinee_evaluation_point": "before MatchArmSequence",
-      "arm_bound_read_order": ["written-left-bound", "written-right-bound"],
+      "arm_bound_read_order": [
+        "written-left-bound",
+        "written-right-bound"
+      ],
       "bound_read_count_max_each": 1,
       "bound_domain": "Literal or PinPattern resolving to one stable pure statically selected ordered value",
       "mixed_strictness": true,
@@ -3673,8 +3689,18 @@
       "status": "STABLE_DESIGN",
       "represented_in": "spec/contracts/enum-derived-capabilities.json",
       "grammar_owner": "EnumOrderRole",
-      "generated_trait_roots": ["Eq<Rhs>", "Ord<Rhs>"],
-      "comparison_glyphs": ["==", "!=", "<", "<=", ">", ">="],
+      "generated_trait_roots": [
+        "Eq<Rhs>",
+        "Ord<Rhs>"
+      ],
+      "comparison_glyphs": [
+        "==",
+        "!=",
+        "<",
+        "<=",
+        ">",
+        ">="
+      ],
       "range_semantics": "explicit .. and ..< use semantic ascending order; range has no conformance hook",
       "product_support": "NOT_RUN"
     },
@@ -4043,5 +4069,130 @@
       "current_replacement": "explicit expected List<A | B>",
       "stage": "checker"
     }
-  ]
+  ],
+  "borrow_context_anchor_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "source_activation": "none",
+    "contract": "spec/contracts/borrow-context-anchor-disambiguation.json",
+    "parse_goal_partition": [
+      {
+        "parse_goal": "expression",
+        "fixity": "prefix",
+        "spelling": "borrow",
+        "cst": "BorrowExprCst",
+        "ast": "BorrowExpr",
+        "hir": "HirExprKind::PlaceAccess{plan:HirPlacePlan(access=BorrowShared)}",
+        "semantic_owner": "shared_ownership_borrow"
+      },
+      {
+        "parse_goal": "expression",
+        "fixity": "prefix",
+        "spelling": "&",
+        "cst": "ContextAnchorOperandCst",
+        "ast": "ContextAnchorCandidateExpr",
+        "hir": "absorbed_into_HirContextAdaptationPlan_owned_by_enclosing_operation",
+        "semantic_owner": "registered_operation_local_context_anchor"
+      },
+      {
+        "parse_goal": "type",
+        "fixity": "infix",
+        "spelling": "&",
+        "cst": "IntersectionTypeCst",
+        "ast": "IntersectionType",
+        "hir": "compile_time_type_identity",
+        "semantic_owner": "closed_contract_intersection_type_msp"
+      }
+    ],
+    "normalized_ast_partition": {
+      "borrow_expression": "BorrowExpr",
+      "context_anchor_expression": "ContextAnchorCandidateExpr",
+      "type_intersection": "IntersectionType",
+      "fallback_route_count": 0
+    },
+    "hir_projection": {
+      "general_borrow": {
+        "canonical_expression_variant": "HirExprKind::PlaceAccess",
+        "plan": "HirPlacePlan",
+        "access": "BorrowShared",
+        "region_constraints_required": true,
+        "loan_id_created_in_hir": false,
+        "loan_id_created_by_mir_lowering": true
+      },
+      "context_anchor": {
+        "canonical_standalone_expression_variant": null,
+        "consuming_plan": "HirContextAdaptationPlan",
+        "owner": "nearest admitted NumericArray or Measure operation plan",
+        "required_fields": [
+          "context_adaptation_plan_id",
+          "role_id",
+          "provider_operand_eval_id",
+          "adapted_operand_eval_id",
+          "unit_witness_id_or_null",
+          "source_origin_id"
+        ],
+        "evaluation_order": "the enclosing operation evaluates each source operand exactly once in source order and references the resulting eval identities",
+        "role_constraints": {
+          "NUMERIC_ARRAY_CONTEXT_PROVIDER": "unit_witness_id_or_null is null",
+          "MEASURE_UNIT_CONTEXT_PROVIDER": "unit_witness_id_or_null is the statically selected UnitWitnessId"
+        },
+        "loan_id_created": false,
+        "borrow_event_created": false,
+        "runtime_role_lookup_count": 0,
+        "unresolved_role_count": 0
+      },
+      "type_intersection": {
+        "canonical_runtime_expression_variant": null,
+        "result": "normalized closed contract intersection type identity"
+      }
+    },
+    "registered_context_roles": [
+      "NUMERIC_ARRAY_CONTEXT_PROVIDER",
+      "MEASURE_UNIT_CONTEXT_PROVIDER"
+    ],
+    "anchor_binding": {
+      "nearest_owner_search": "transparent ParenExpr only",
+      "hard_boundaries": [
+        "call_argument",
+        "index",
+        "closure",
+        "control_expression"
+      ],
+      "operand_evaluation_count": 1,
+      "canonical_hir_unresolved_anchor_count": 0,
+      "extra_effect_count": 0,
+      "extra_error_count": 0,
+      "extra_cleanup_count": 0
+    },
+    "diagnostic_priority": [
+      "AMPERSAND_POLARITY_UNRESOLVED",
+      "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+      "CONTEXT_EVIDENCE_ROLE_NOT_REGISTERED",
+      "CONTEXT_ANCHOR_NOT_A_VALUE",
+      "CONTEXT_ANCHOR_REQUIRES_ELIGIBLE_OPERATION",
+      "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
+      "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
+      "CONTEXT_ANCHOR_SCOPE_IS_NEAREST_OPERATION"
+    ],
+    "formatter_round_trip": {
+      "borrow": "borrow",
+      "context_anchor": "&",
+      "type_intersection": "&",
+      "automatic_rewrite_count": 0,
+      "execution": "NOT_RUN"
+    },
+    "zero_counts": {
+      "borrow_to_context_fallback": 0,
+      "context_anchor_to_borrow_fallback": 0,
+      "type_intersection_to_expression_route": 0,
+      "address_of_route": 0,
+      "runtime_role_lookup": 0,
+      "implicit_provider_search": 0,
+      "authority_synthesis": 0,
+      "witness_synthesis": 0,
+      "context_anchor_first_class_value": 0,
+      "context_anchor_ownership_borrow_events": 0,
+      "automatic_borrow_ampersand_rewrite": 0
+    },
+    "product_support": "NOT_RUN"
+  }
 }

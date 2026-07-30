@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/borrow-escape-diagnostic-dispatch-fixtures.schema.json",
+  "title": "BorrowEscapeDiagnosticDispatchFixturesR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline_commit",
+    "gap_id",
+    "predicate_id",
+    "status",
+    "product_lanes",
+    "selection_order",
+    "pipeline_order",
+    "dependency_rejection_precedes_local_dispatch",
+    "emitted_primary_count",
+    "later_branch_or_use_status",
+    "primary_route",
+    "reason_rows",
+    "mutation_probes",
+    "residual_dispatch_debt",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.borrow-escape-diagnostic-dispatch-fixtures/r1"
+    },
+    "baseline_commit": {
+      "const": "1053902449aedccb110cef5bcfe76e5b1af9df01"
+    },
+    "gap_id": {
+      "const": "IR-OWN-P0-014"
+    },
+    "predicate_id": {
+      "const": "BorrowEscapeAdmitted"
+    },
+    "status": {
+      "const": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT"
+    },
+    "product_lanes": {
+      "const": "15/15_NOT_RUN"
+    },
+    "selection_order": {
+      "const": "(canonical CFG operation order, numeric branch rank) lexicographic minimum"
+    },
+    "pipeline_order": {
+      "const": [
+        "schema",
+        "normalization",
+        "dependency",
+        "predicate_local_dispatch"
+      ]
+    },
+    "dependency_rejection_precedes_local_dispatch": {
+      "const": true
+    },
+    "emitted_primary_count": {
+      "const": 1
+    },
+    "later_branch_or_use_status": {
+      "const": "NOT_EVALUATED"
+    },
+    "primary_route": {
+      "const": {
+        "violation_id": "BorrowEscapeAdmitted:default",
+        "predicate_id": "BorrowEscapeAdmitted",
+        "diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+        "relation": "primary"
+      }
+    },
+    "reason_rows": {
+      "const": [
+        {
+          "reason_key": "1_return_outlives_owner_region",
+          "branch_rank": 1,
+          "single_mutant_axis": "escape_context.target_region_id_or_null",
+          "expected_diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+          "execution_status": "SPECIFIED_NOT_RUN",
+          "product_support": "NOT_RUN"
+        },
+        {
+          "reason_key": "2_store_outlives_owner_region",
+          "branch_rank": 2,
+          "single_mutant_axis": "escape_context.target_region_id_or_null",
+          "expected_diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+          "execution_status": "SPECIFIED_NOT_RUN",
+          "product_support": "NOT_RUN"
+        },
+        {
+          "reason_key": "3_capture_or_suspension_outlives_owner_region",
+          "branch_rank": 3,
+          "single_mutant_axis": "loan_region_graph.loans[*].end_point_ids",
+          "expected_diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+          "execution_status": "SPECIFIED_NOT_RUN",
+          "product_support": "NOT_RUN"
+        },
+        {
+          "reason_key": "4_isolation_boundary_without_admitted_proof",
+          "branch_rank": 4,
+          "single_mutant_axis": "isolation_context.proof_ids",
+          "expected_diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+          "execution_status": "SPECIFIED_NOT_RUN",
+          "product_support": "NOT_RUN"
+        }
+      ]
+    },
+    "mutation_probes": {
+      "const": [
+        {
+          "mutation_id": "R5_OWN_MUT_01_1_RETURN_OUTLIVES_OWNER_REGION_ABSENT_TARGET",
+          "axis": "diagnostic_dispatch.1_return_outlives_owner_region",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_02_2_STORE_OUTLIVES_OWNER_REGION_ABSENT_TARGET",
+          "axis": "diagnostic_dispatch.2_store_outlives_owner_region",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_03_3_CAPTURE_OR_SUSPENSION_OUTLIVES_OWNER_REGION_ABSENT_TARGET",
+          "axis": "diagnostic_dispatch.3_capture_or_suspension_outlives_owner_region",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_04_4_ISOLATION_BOUNDARY_WITHOUT_ADMITTED_PROOF_ABSENT_TARGET",
+          "axis": "diagnostic_dispatch.4_isolation_boundary_without_admitted_proof",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_05_REMOVE_PREDICATE_DIAGNOSTIC_REF",
+          "axis": "predicate.diagnostic_refs",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_06_REMOVE_DIAGNOSTIC_CATALOG_ID",
+          "axis": "diagnostic_catalog",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        },
+        {
+          "mutation_id": "R5_OWN_MUT_07_REMOVE_PRIMARY_RELATION",
+          "axis": "diagnostic_relations",
+          "expected_validator_result": "REJECTED",
+          "expected_internal_reason": "UNDEFINED_OR_UNROUTABLE_DIAGNOSTIC_TARGET",
+          "execution_status": "SPECIFIED_NOT_RUN"
+        }
+      ]
+    },
+    "residual_dispatch_debt": {
+      "const": {
+        "r5_borrow_escape_unresolved_after_candidate": 0,
+        "outside_r5_gap_id": "IR-DIAG-P0-052",
+        "outside_r5_exact_rows": {
+          "AssociatedRequirementAdmitted": 4,
+          "EffectErrorRowPolymorphismAdmitted": 4,
+          "EffectRowSubsumes": 4
+        },
+        "outside_r5_total": 12,
+        "outside_r5_exact_debt_rows": [
+          {
+            "predicate_id": "AssociatedRequirementAdmitted",
+            "branch": "branch_01",
+            "target": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "AssociatedRequirementAdmitted",
+            "branch": "branch_02",
+            "target": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "AssociatedRequirementAdmitted",
+            "branch": "branch_03",
+            "target": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "AssociatedRequirementAdmitted",
+            "branch": "branch_04",
+            "target": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+            "branch": "branch_01",
+            "target": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+            "branch": "branch_02",
+            "target": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+            "branch": "branch_03",
+            "target": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+            "branch": "branch_04",
+            "target": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectRowSubsumes",
+            "branch": "branch_01",
+            "target": "EFFECTROWSUBSUMES_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectRowSubsumes",
+            "branch": "branch_02",
+            "target": "EFFECTROWSUBSUMES_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectRowSubsumes",
+            "branch": "branch_03",
+            "target": "EFFECTROWSUBSUMES_NOT_ADMITTED"
+          },
+          {
+            "predicate_id": "EffectRowSubsumes",
+            "branch": "branch_04",
+            "target": "EFFECTROWSUBSUMES_NOT_ADMITTED"
+          }
+        ],
+        "global_zero_totality": "BLOCKED_BY_IR-DIAG-P0-052",
+        "new_or_missing_residual": "VALIDATOR_FAIL"
+      }
+    },
+    "expected_counts": {
+      "const": {
+        "reason_rows": 4,
+        "primary_relations": 1,
+        "mutation_probes": 7,
+        "residual_rows": 12,
+        "product_executed": 0
+      }
+    }
+  }
+}

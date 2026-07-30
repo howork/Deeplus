@@ -1178,3 +1178,32 @@ new mutable Prelude family is selected by this contract.
 }
 ```
 <!-- POST_PR16_UNIT_END:SFD-N006 -->
+
+
+<!-- IR-OWN-R8-TYPE-CONTRACT -->
+## Canonical ownership decision judgment
+
+The checker first chooses the surface owner from the fixed parse goal:
+expression `borrow`, expression context-anchor `&`, or type-intersection `&`.
+The choice is terminal and has zero fallback.  General `borrow` proves one
+owner-bounded shared loan; a context anchor proves one of the exact
+NumericArray or Measure context roles and introduces no ownership state.
+
+The predicate input catalog keeps `RCTSDescriptorV5` as its default and has
+exactly three overrides—`BorrowEscapeAdmitted`, `BoxOwnershipAdmitted`, and
+`OwnershipModeAdmitted`—to `OwnershipPredicateInputR1`.  That descriptor is
+the exact union of `RCTSDescriptorV5` and `OwnershipDecisionInputR1`.
+OwnershipDecisionInputR1 is closed, fully typed, and evaluated without fixture
+inheritance, runtime patch lookup, implicit allocation, source-order identity
+selection, or legacy semantic side-channel reads.
+
+Every ownership unit retains immutable `OwnerDef` provenance and exactly one
+derived state binding: Unissued, one unique state-local holder, one
+state-level conditional predecessor-alternative group, or Retired.  A join
+first requires byte-identical global loan, cleanup-token, reservation, and
+prior-conflict state.  A divergent admitted place tuple becomes the internal
+`MaybeMoved` marker only under the closed join law; its first
+ownership-sensitive use or required cleanup emits
+`PLACE_STATE_JOIN_MISMATCH`.  Exact overlapping inout or borrow access emits
+`INOUT_ALIAS_CONFLICT`.  Specific Box and BorrowEscape failures precede the
+generic ownership-mode diagnostic.

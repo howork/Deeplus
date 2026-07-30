@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - name: Validate deterministic catalog reassembly
+        run: python3 tools/generators/refresh_catalog_reassembly.py --root . --check
       - name: Compile repository Python tools
         run: python3 -m compileall -q tools
       - name: Validate deterministic example projections
@@ -44,11 +46,14 @@ jobs:
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Validate parallel tooling isolation
-        run: python3 tools/validators/run_parallel_validator_isolation_tests.py
+        run: |
+          python3 tools/validators/run_parallel_validator_isolation_mutation_tests.py
+          python3 tools/validators/run_parallel_validator_isolation_tests.py
       - name: Run validator mutation suite
         run: |
           python3 tools/validators/run_repository_bootstrap_mutation_tests.py
           python3 tools/validators/run_name_resolution_module_mutation_tests.py
+          python3 tools/validators/run_r5_ownership_decision_mutation_tests.py
       - name: Rebuild environment-scoped deterministic source archive
         run: |
           touch .source-archive-untracked-probe

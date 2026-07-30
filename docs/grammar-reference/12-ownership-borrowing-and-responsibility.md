@@ -376,3 +376,12 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
   [`spec/language.md`](../../spec/language.md)
 - 예제 원본:
   [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
+
+
+<!-- IR-OWN-R8-REF-12 -->
+### 일반 borrow와 문맥 증거의 책임 경계
+
+일반 공유 borrow의 정본 철자는 `borrow`다. 이것은 MIR에서 하나의 Shared
+loan을 만든다. 반면 식 `&`는 등록된 연산 문맥을 표시할 뿐 소유권,
+수명, cleanup 또는 borrow 사건을 추가하지 않는다. 등록되지 않은
+carrier에 `&`를 쓰면 소유권 추론 전에 거부된다.

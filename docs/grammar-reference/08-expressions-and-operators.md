@@ -841,3 +841,15 @@ Preview 후보도 아니다.
 - [`spec/contracts/provider-derive-via.json`](../../spec/contracts/provider-derive-via.json)
 - [`spec/language.md`](../../spec/language.md)
 - [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
+
+
+<!-- IR-OWN-R8-REF-08 -->
+### `borrow`, 식 `&`, 타입 `&`의 서로 다른 소유자
+
+`borrow place`는 공유 소유권 borrow다. 식 위치의 `&operand`는
+NumericArray 또는 Measure 연산의 문맥 제공자이고, 타입 위치의 `A & B`는
+닫힌 contract 교차 타입이다. 파서의 parse goal이 세 소유자를 결정하며
+서로 fallback하지 않는다.
+
+세 경우의 대표 표면은 각각 `let view = borrow matrix`,
+`let sum = &matrix + row`, `type Both = Readable & Display`다.

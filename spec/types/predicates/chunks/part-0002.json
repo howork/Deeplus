@@ -288,8 +288,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "BorrowEscapeAdmitted",
     "source_name": "borrow/view escape",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "Closed borrow-escape decision with four exact local reason keys and one current public primary diagnostic; product checker NOT_RUN.",
+    "input_descriptor": "OwnershipPredicateInputR1",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
@@ -326,20 +326,21 @@
     ],
     "formal_judgment_id": "J-BorrowEscapeAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json",
     "preconditions": [
       "Region remains checker descriptor unless explicitly surfaced by a stable grammar production",
       "row kinds are source-stable under the generic responsibility model"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
+      "validate the schema-discriminated OwnershipPredicateInputR1",
+      "dispatch by top-level schema identity to the unchanged RCTSDescriptorV5 branch or to OwnershipDecisionInputR1; the typed branch requires predicate_id BorrowEscapeAdmitted and reads zero fixture, legacy side-channel, or fabricated adapter fields",
+      "normalize aliases, ownership regions, and identity references",
       "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
-      "construct the borrow region and owner",
-      "walk return/store/capture/suspension/isolation uses",
-      "reject the first use outside region or across forbidden boundary",
-      "close the region without ownership transfer",
-      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+      "classify failed escape uses into the exact four predicate-local reason keys",
+      "select the lexicographic minimum of canonical CFG operation order and numeric reason rank",
+      "map each exact reason key to BORROW_ESCAPE_OWNER_REGION",
+      "emit exactly one primary diagnostic and mark later branch or use candidates NOT_EVALUATED"
     ],
     "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
     "success_result": "admit | reject(diagnostic_id)",
@@ -364,11 +365,12 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "BORROWESCAPEADMITTED_NOT_ADMITTED",
-      "branch_02": "BORROWESCAPEADMITTED_NOT_ADMITTED",
-      "branch_03": "BORROWESCAPEADMITTED_NOT_ADMITTED",
-      "branch_04": "BORROWESCAPEADMITTED_NOT_ADMITTED"
-    }
+      "1_return_outlives_owner_region": "BORROW_ESCAPE_OWNER_REGION",
+      "2_store_outlives_owner_region": "BORROW_ESCAPE_OWNER_REGION",
+      "3_capture_or_suspension_outlives_owner_region": "BORROW_ESCAPE_OWNER_REGION",
+      "4_isolation_boundary_without_admitted_proof": "BORROW_ESCAPE_OWNER_REGION"
+    },
+    "diagnostic_reason_identity_rule": "reason keys are predicate-local trace identities, never public diagnostic IDs"
   },
   {
     "baseline": "0.1.2-baseline.r51f3",
@@ -529,7 +531,7 @@
     "predicate_id": "BoxOwnershipAdmitted",
     "source_name": "BoxOwnershipAdmitted",
     "summary": "construct one unique owner under explicit allocation/failure responsibility; move invalidates source and forbids source_used_after_move; a completed owned lifecycle has payload_cleanup_count exactly one and every borrow has borrow_escapes=false while owner_alive",
-    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor": "OwnershipPredicateInputR1",
     "descriptor_axes": [
       "normalized_type",
       "ownership",
@@ -564,7 +566,7 @@
     ],
     "formal_judgment_id": "J-BoxOwnershipAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json",
     "preconditions": [
       "construct one unique owner under explicit allocation/failure responsibility",
       "move invalidates source and forbids source_used_after_move",
@@ -572,10 +574,13 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the closed RCTS-V5 descriptor",
-      "evaluate dependency predicates left-to-right in listed order",
-      "apply BoxOwnershipAdmitted local rule: construct one unique owner under explicit allocation/failure responsibility; move invalidates source and forbids source_used_after_move; a completed owned lifecycle has payload_cleanup_count exactly one and every borrow has borrow_escapes=false while owner_alive",
-      "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
+      "validate the schema-discriminated OwnershipPredicateInputR1",
+      "dispatch by top-level schema identity to the unchanged RCTSDescriptorV5 branch or to OwnershipDecisionInputR1; the typed branch requires predicate_id BoxOwnershipAdmitted and reads zero fixture, legacy side-channel, or fabricated adapter fields",
+      "evaluate declared dependency predicates left-to-right in listed order",
+      "construct one unique owner under explicit allocation and failure responsibility",
+      "require move to invalidate the source and reject every later source use",
+      "require one payload cleanup on every completed owned lifecycle and keep every borrow nonescaping while the owner is alive",
+      "emit only the active primary diagnostic on local-rule failure"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "BoxOwnershipAdmitted",
@@ -1351,86 +1356,6 @@
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_dispatch": {
       "first_failed_condition": "UNION_VALUE_REQUIRES_NARROWING"
-    },
-    "diagnostic_disposition": "active_primary"
-  },
-  {
-    "predicate_id": "ClosedContractIntersectionAdmitted",
-    "formal_judgment_id": "J-ClosedContractIntersectionAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "concrete_base_count <= 1",
-      "trait contracts are nominal and unique",
-      "associated/responsibility rows are compatible",
-      "no structural merge or automatic distribution"
-    ],
-    "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
-    "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and native conditional constraints",
-      "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
-      "check concrete_base_count <= 1",
-      "check trait contracts are nominal and unique",
-      "check associated/responsibility rows are compatible",
-      "check no structural merge or automatic distribution",
-      "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
-    ],
-    "requires": [
-      "concrete_base_count <= 1",
-      "trait contracts are nominal and unique",
-      "associated/responsibility rows are compatible",
-      "no structural merge or automatic distribution"
-    ],
-    "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN",
-    "secondary_diagnostics": [],
-    "positive_fixture_ids": [
-      "PF-ClosedContractIntersectionAdmitted-POS",
-      "PF-ClosedContractIntersectionAdmitted-BOUNDARY"
-    ],
-    "negative_fixture_ids": [
-      "PF-ClosedContractIntersectionAdmitted-NEG"
-    ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "source_name": "ClosedContractIntersectionAdmitted",
-    "summary": "Admits one payload with at most one concrete nominal base and a finite compatible Trait evidence bundle.",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
-    ],
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
-    ],
-    "feature_refs": [
-      "closed_contract_intersection_type_msp"
-    ],
-    "diagnostic_refs": [
-      "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_dispatch": {
-      "first_failed_condition": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN"
     },
     "diagnostic_disposition": "active_primary"
   }
