@@ -131,6 +131,17 @@ def pointer_publication_target_reverted_to_historical(root: Path) -> None:
     write_json(path, value)
 
 
+def pointer_publication_target_reverted_to_authority_transition(
+    root: Path,
+) -> None:
+    path = root / "current/current-pointer.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["publication_authority_source"]["commit"] = (
+        "cfd5946c52571119564b9c8beb430f8dd0356750"
+    )
+    write_json(path, value)
+
+
 def pointer_publication_role_conflated_with_audited_baseline(root: Path) -> None:
     path = root / "current/current-pointer.json"
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -144,7 +155,7 @@ def pointer_audited_baseline_rebound_to_publication(root: Path) -> None:
     path = root / "current/current-pointer.json"
     value = json.loads(path.read_text(encoding="utf-8"))
     value["audited_implementation_baseline"]["commit"] = (
-        "cfd5946c52571119564b9c8beb430f8dd0356750"
+        "8d81d6747488055cb76da8bda1350b96e576b7b1"
     )
     write_json(path, value)
 
@@ -322,6 +333,108 @@ def current_decision_index_authority_transition_report_missing(
     path.write_text(value.replace(entry, "", 1), encoding="utf-8")
 
 
+def current_decision_index_r4_closure_report_missing(root: Path) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    entry = (
+        "  - governance/reports/"
+        "Design_Deeplus_R4_Name_Resolution_Module_"
+        "Publication_Closure_R1.md\n"
+    )
+    if value.count(entry) != 1:
+        raise RuntimeError("R4 closure report entry unavailable")
+    path.write_text(value.replace(entry, "", 1), encoding="utf-8")
+
+
+def r4_closure_receipt_gap_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["gap_transition"]["rows"][0]["id"] = "IR-RES-P0-MUTATED"
+    write_json(path, value)
+
+
+def r4_closure_receipt_ci_job_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["semantic_pr_github_ci"][0]["job_id"] = 1
+    write_json(path, value)
+
+
+def r4_closure_receipt_premature_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["gap_transition"]["closed_count_before_closure_readback"] = 12
+    write_json(path, value)
+
+
+def r4_closure_receipt_feature_p1_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["action_ledger"]["closed_by_candidate"] = 1
+    write_json(path, value)
+
+
+def r4_closure_receipt_product_overclaim(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["governance"]["product_lanes"] = "14_OF_15_NOT_RUN"
+    write_json(path, value)
+
+
+def r4_closure_decision_removed(root: Path) -> None:
+    path = root / "decisions/language/current-decisions.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    decision_id = (
+        "DSGN-CURRENT-R4-NAME-RESOLUTION-MODULES-PUBLICATION-CLOSURE"
+    )
+    value["laws"] = [
+        row for row in value["laws"] if row.get("id") != decision_id
+    ]
+    value["law_count"] = len(value["laws"])
+    write_json(path, value)
+
+
+def r4_closure_memory_reverted(root: Path) -> None:
+    path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    pub = next(
+        row for row in value["current_facts"] if row.get("id") == "PUB-001"
+    )
+    pub["statement"] = "The historical R4 checkpoint is current."
+    write_json(path, value)
+
+
+def r4_independent_test_verdict_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r4-name-resolution-modules-independent-test-verification.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["verdict"] = "NOT_AUDITABLE"
+    write_json(path, value)
+
+
 def authority_transition_report_content_drift(root: Path) -> None:
     path = (
         root
@@ -433,6 +546,11 @@ def run(write_receipt: bool) -> int:
             "POINTER_PUBLICATION_SOURCE",
         ),
         (
+            "pointer_publication_target_reverted_to_authority_transition",
+            pointer_publication_target_reverted_to_authority_transition,
+            "POINTER_PUBLICATION_SOURCE",
+        ),
+        (
             "pointer_publication_role_conflated_with_audited_baseline",
             pointer_publication_role_conflated_with_audited_baseline,
             "POINTER_PUBLICATION_SOURCE",
@@ -480,6 +598,51 @@ def run(write_receipt: bool) -> int:
             "current_decision_index_authority_transition_report_missing",
             current_decision_index_authority_transition_report_missing,
             "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "current_decision_index_r4_closure_report_missing",
+            current_decision_index_r4_closure_report_missing,
+            "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "r4_closure_receipt_gap_drift",
+            r4_closure_receipt_gap_drift,
+            "R4_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r4_closure_receipt_ci_job_drift",
+            r4_closure_receipt_ci_job_drift,
+            "R4_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r4_closure_receipt_premature_closed",
+            r4_closure_receipt_premature_closed,
+            "R4_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r4_closure_receipt_feature_p1_closed",
+            r4_closure_receipt_feature_p1_closed,
+            "R4_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r4_closure_receipt_product_overclaim",
+            r4_closure_receipt_product_overclaim,
+            "R4_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r4_closure_decision_removed",
+            r4_closure_decision_removed,
+            "R4_PUBLICATION_CLOSURE_DECISION",
+        ),
+        (
+            "r4_closure_memory_reverted",
+            r4_closure_memory_reverted,
+            "R4_PUBLICATION_CLOSURE_MEMORY",
+        ),
+        (
+            "r4_independent_test_verdict_drift",
+            r4_independent_test_verdict_drift,
+            "R4_INDEPENDENT_TEST_VERIFICATION",
         ),
         (
             "authority_transition_report_content_drift",
