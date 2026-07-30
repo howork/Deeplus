@@ -255,6 +255,52 @@
       "omitted_module_decl_uses_mapped_module_path": true,
       "source_order_creates_identity": false,
       "duplicate_or_conflicting_contribution": "reject before public API digest"
+    },
+    "graph_admission": {
+      "package_dependency": {
+        "profile": "ACYCLIC",
+        "self_loop": "REJECT",
+        "nontrivial_scc": "REJECT"
+      },
+      "module_header_import": {
+        "profile": "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION",
+        "admitted_scc_edges": [
+          "module_header_reference",
+          "type_declaration_reference",
+          "signature_reference"
+        ],
+        "forbidden_scc_edges": [
+          "static_value_dependency",
+          "runtime_initializer_dependency",
+          "reexport_dependency"
+        ],
+        "semantic_order_winner": false
+      },
+      "reexport": {
+        "profile": "ACYCLIC",
+        "self_loop": "REJECT",
+        "nontrivial_scc": "REJECT"
+      },
+      "static_binding_value_dependency": {
+        "profile": "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT",
+        "self_loop": "REJECT",
+        "nontrivial_scc": "REJECT",
+        "commit": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED",
+        "runtime_initializer_count": 0,
+        "semantic_order_winner": false,
+        "receipt_order": "CANONICAL_DECL_ID_ORDER"
+      }
+    },
+    "module_interface": {
+      "signature_comparison": "EXACT_NORMALIZED_PUBLIC_RESIDUE",
+      "excluded_semantic_fields": [
+        "schema_identity",
+        "self_hash"
+      ],
+      "missing_extra_or_different_residue": "MODULE_SIGNATURE_MISMATCH",
+      "source_order_or_trivia_affects_match": false,
+      "opaque_facade": "SEPARATE_NARROWING_ONLY_PROJECTION",
+      "facade_widening_or_invented_export": "REJECT"
     }
   },
   "current_surface_decisions": {
@@ -2013,6 +2059,40 @@
       "mir": "the call wrapper ensures FunctionStaticOwnerId after receiver/argument/default staging and before the existing atomic ownership_commit; the activation block is never lowered as ordinary body control flow",
       "checker": "exact owner/profile admission, first-runtime-item placement, caller-data independence, effect/error/suspension/authority/resource closure, static helper closure, and owner identity",
       "formatter": "print canonical static { ... }"
+    },
+    "r4_resolver_handoff": {
+      "allowed_outputs": [
+        "RESOLVED_NONCALL_REFERENCE",
+        "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR",
+        "NAME_RESOLUTION_TRACE",
+        "IMPORT_BINDING_TRACE",
+        "VISIBILITY_PROOF"
+      ],
+      "canonical_hir_forbidden_outputs": [
+        "ResolvedOverloadSetRef",
+        "unresolved_name",
+        "candidate_set",
+        "recovery_binding",
+        "runtime_relookup_residue"
+      ],
+      "deferred_to_generic_and_ordinary_overload_cluster": [
+        "OVERLOAD_WINNER_FUNCTION_ID",
+        "COMPLETE_GENERIC_SUBSTITUTION",
+        "EXPECTED_TYPE_DIRECTED_WINNER",
+        "APPLICABILITY_RANK",
+        "SPECIFICITY_WINNER",
+        "ROW_INFERENCE_RESULT",
+        "RETURN_TYPE_ONLY_WINNER"
+      ],
+      "trait_witness_selection_or_materialization_added": false,
+      "mir_repeats_name_resolution": false,
+      "module_artifact_identity": {
+        "canonical_json_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+        "public_interface_domain": "EFFECTIVE_PUBLIC_SEMANTIC_RESIDUE_ONLY",
+        "private_implementation_domain": "VERIFIED_HIR_PLUS_INTERFACE_BINDING",
+        "full_compilation_domain": "COMPLETE_BUILD_AND_PROVENANCE_BINDING",
+        "hash_domain_aliasing": false
+      }
     }
   },
   "feature_profiles": {
@@ -2025,6 +2105,51 @@
     }
   },
   "diagnostics": [
+    {
+      "id": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 1
+    },
+    {
+      "id": "MODULE_ITEM_SKELETON_CONFLICT",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 2
+    },
+    {
+      "id": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 3
+    },
+    {
+      "id": "RESOLVER_SCOPE_TREE_INVALID",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 4
+    },
+    {
+      "id": "REFERENCE_CANDIDATE_SET_INVALID",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 5
+    },
+    {
+      "id": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 6
+    },
+    {
+      "id": "NONCALL_REFERENCE_SELECTION_FAILED",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 7
+    },
+    {
+      "id": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 8
+    },
+    {
+      "id": "MODULE_INTERFACE_DIGEST_MISMATCH",
+      "stage": "CHECKER",
+      "r4_precedence_ordinal": 9
+    },
     {
       "id": "MODIFIER_NOT_ADMITTED_FOR_OWNER",
       "stage": "PARSER"
@@ -3670,6 +3795,227 @@
     "def_guard_refinement": "stable design: valid GuardSummaryV1 direct calls refine true and false Phi edges without changing the declared type",
     "calls": "stable design: CallExpr modes Ordinary, Message (~), and ActorMessage (:~) share ordered arguments and trailing closures",
     "pattern_controls": "if let / while let / for let transactional bindings; let? remains Preview Design"
+  },
+  "r4_name_resolution_module_contract": {
+    "status": "STABLE_DESIGN",
+    "integration_state": "INTEGRATED_UNVERIFIED",
+    "authority_transition": "APPROVED_NOT_INTEGRATED_TO_INTEGRATED_UNVERIFIED",
+    "publication_closure_owned_here": false,
+    "gap_ids": [
+      "IR-RES-P0-040",
+      "IR-RES-P0-041",
+      "IR-MOD-P1-042",
+      "IR-MOD-P1-043",
+      "IR-MOD-P1-044",
+      "IR-MOD-P1-045",
+      "IR-MOD-P1-046",
+      "IR-MOD-P1-047",
+      "IR-RES-P1-048",
+      "IR-RES-P1-049",
+      "IR-TRACE-P1-050",
+      "IR-TRACE-P2-051"
+    ],
+    "resolver_namespaces": [
+      "MODULE",
+      "TYPE",
+      "VALUE",
+      "CALLABLE_OVERLOAD_SET"
+    ],
+    "frame_lookup": {
+      "order": "INNERMOST_NAME_ENV_TO_OUTERMOST_NAME_ENV",
+      "stop_rule": "FIRST_NONEMPTY_EXACT_NAMESPACE_AND_SPELLING_FRAME",
+      "outer_binding_is_same_tier_candidate": false,
+      "same_frame_declaration_order_priority": false,
+      "different_namespace_same_spelling": "COEXIST"
+    },
+    "same_frame": {
+      "distinct_single_bindings": "REJECT",
+      "repeated_same_binding": "REJECT",
+      "callables": "ONE_OVERLOAD_SET_IF_CANONICAL_SLOT_KEYS_PAIRWISE_DISTINCT",
+      "duplicate_overload_slot": "REJECT",
+      "result_or_responsibility_only_difference_creates_slot": false,
+      "declaration_order_creates_slot": false,
+      "parameter_and_root_body_local": "ONE_COLLISION_DOMAIN"
+    },
+    "child_frame": {
+      "shadow_requires_syntactically_admitted_declaration": true,
+      "shadow_creates_fresh_typed_id": true,
+      "cross_frame_overload_merge": false,
+      "nested_import_alias_shadow": "ACCEPT_WITH_FRESH_IMPORT_BINDING_ID",
+      "capability_lookup_is_lexical_shadow": false,
+      "live_control_label_reuse": {
+        "r4_status": "NOT_APPLICABLE_CURRENT_PROFILE",
+        "reason": "NO_CURRENT_ROOT_CONNECTED_CONTROL_LABEL_SURFACE",
+        "future_owner": "FLOW_CONTROL_PROFILE",
+        "future_rule_if_activated": "REJECT_LIVE_ANCESTOR_REUSE"
+      }
+    },
+    "transactional_bindings": {
+      "pattern_probe_enters_name_env": false,
+      "successful_commit": "FRESH_HIR_LOCAL_IDS",
+      "failed_probe_committed_binding_count": 0,
+      "flow_binding": "FRESH_CURRENT_BLOCK_MAY_SHADOW_ANCESTOR_BLOCK_ONLY",
+      "local_function_visibility": "AFTER_DECLARATION_ONLY",
+      "local_function_hoisting": false
+    },
+    "environment_separation": {
+      "name_env_creates_activation": false,
+      "activation_env_creates_name": false,
+      "witness_visibility_env_creates_name": false,
+      "witness_visibility_env_creates_witness": false,
+      "nested_use_order_or_depth_is_extension_winner": false,
+      "scope_exit": "POP_ONLY_EXITED_FRAME"
+    },
+    "import_binding": {
+      "key": [
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name"
+      ],
+      "same_key_same_target": "REJECT_DUPLICATE_IMPORT",
+      "same_key_different_target": "REJECT_IMPORT_COLLISION",
+      "same_target_different_explicit_alias": "ACCEPT_DISTINCT_IMPORT_BINDING_IDS",
+      "same_target_different_scope": "ACCEPT_DISTINCT_IMPORT_BINDING_IDS",
+      "source_or_dependency_order_priority": false
+    },
+    "dependency_provider_provenance": {
+      "entry_kinds": [
+        "import_binding",
+        "activation_entry",
+        "activation_binding"
+      ],
+      "provider_pair_fields": [
+        "provider_binding_id_or_self",
+        "provider_module_id"
+      ],
+      "provider_binding_domain": "DependencyBindingId | self",
+      "self_meaning": "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE",
+      "self_does_not_imply": "PROVIDER_MODULE_EQUALS_CONSUMER_MODULE",
+      "consumer_target_for_resolver_entry": "NEAREST_ANCESTOR_TARGET_SCOPE_TARGET_ID",
+      "visible_module_binding_match": "EXACT_ONE_EQUAL_CONSUMER_TARGET_PROVIDER_BINDING_AND_PROVIDER_MODULE_ROW",
+      "required_interface_pair_source": "UNIQUE_PROVIDER_PAIRS_USED_BY_IMPORTS_OR_ACTIVATIONS",
+      "required_interface_exclusion": "ONLY_PROVIDER_MODULE_ID_EQUAL_TO_CONSUMER_MODULE_ID",
+      "same_package_other_module": "REQUIRED_INTERFACE_WITH_PROVIDER_BINDING_SELF",
+      "required_interface_relation": "EXACT_SET_NO_MISSING_OR_EXTRA_PAIR",
+      "production_execution": "NOT_RUN"
+    },
+    "identity_recipes": {
+      "DeclId": "StableSymbolKey_of_declared_static_item",
+      "SourceOriginId": [
+        "source_file_id",
+        "lossless_cst_semantic_node_identity",
+        "semantic_origin_role"
+      ],
+      "ActivationOriginId": [
+        "extension_set_id",
+        "activating_resolver_scope_id",
+        "activation_kind",
+        "semantic_site_key"
+      ],
+      "activation_kind_domain": [
+        "use"
+      ],
+      "TargetId": [
+        "package_id",
+        "canonical_manifest_target_name",
+        "target_kind"
+      ],
+      "DependencyBindingId": [
+        "consumer_package_id",
+        "source_visible_binding"
+      ],
+      "ResolverScopeId_variants": {
+        "PackageRootScope": [
+          "package_id"
+        ],
+        "TargetScope": [
+          "target_id"
+        ],
+        "ModuleScope": [
+          "module_id"
+        ],
+        "SourceContributionScope": [
+          "source_file_id"
+        ],
+        "ItemOwnerScope": [
+          "decl_id"
+        ],
+        "BodyLocalScope": [
+          "hir_body_id",
+          "hir_scope_id"
+        ]
+      },
+      "HirScopeId": [
+        "hir_body_id",
+        "owner_local_scope_id"
+      ],
+      "HirLocalId": [
+        "hir_body_id",
+        "owner_local_binding_id"
+      ],
+      "ImportBindingId": [
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name"
+      ],
+      "EvidenceOriginId_preserved": true,
+      "absolute_path_span_timestamp_or_traversal_order_is_identity": false
+    },
+    "trace_projection": {
+      "import_binding_trace": [
+        "ImportBindingId",
+        "ImportTargetIdentity",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "SourceOriginId"
+      ],
+      "activation_binding_trace": [
+        "ActivationOriginId",
+        "ExtensionSetId",
+        "provider_binding_id_or_self",
+        "provider_module_id"
+      ],
+      "import_target_identity_domain": {
+        "MODULE": "ModuleId",
+        "TYPE": "DeclId",
+        "VALUE": "DeclId",
+        "CALLABLE_OVERLOAD_SET": "DeclId"
+      },
+      "canonical_hir_import_projection": "MODULE_HAS_NO_EXPRESSION_HIR_PROJECTION; DECLARATION_EXPRESSION_USE_PROJECTS_ResolvedRef::DirectDecl(DeclId)",
+      "noncall_resolved_ref_variants": [
+        "Local(HirLocalId)",
+        "DirectDecl(DeclId)"
+      ],
+      "analysis_hir_callable_projection": "ResolvedOverloadSetRef",
+      "canonical_hir_callable_projection_before_next_cluster": "FORBIDDEN"
+    },
+    "member_extension_collision": {
+      "ordinary_selector_both_domains_nonempty": "REJECT",
+      "selected_count": 0,
+      "primary_diagnostic": "MEMBER_EXTENSION_COLLISION",
+      "qualified_extension_selector": "EXACT_EXTENSION_DOMAIN_ONLY",
+      "retired_nonemitting_diagnostics": [
+        "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+        "STABLE_MEMBER_EXTENSION_COLLISION"
+      ],
+      "source_import_or_activation_order_winner": false
+    },
+    "diagnostic_precedence": {
+      "winner": "LOWEST_ORDINAL_FAILED_STAGE",
+      "same_stage": "EXISTING_EXACT_OWNER_BOUND_PRIMARY_PRECEDES_GENERIC_FALLBACK",
+      "primary_span": "LOWEST_STABLE_SOURCE_ORIGIN_ID",
+      "related_spans": "SORTED_STABLE_SOURCE_ORIGIN_ID",
+      "source_import_file_enumeration_is_winner": false,
+      "recovery_creates_admitted_hir": false
+    },
+    "invariants": {
+      "semantic_p0": 0,
+      "open_feature_p1": 22,
+      "new_feature_p1": 0,
+      "closed_feature_p1": 0,
+      "product_lanes": "15/15_NOT_RUN",
+      "production_implementation_claim": false
+    }
   },
   "removed_surface_contracts_current": [
     {

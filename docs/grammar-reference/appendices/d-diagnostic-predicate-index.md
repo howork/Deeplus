@@ -259,6 +259,7 @@
 | `DEFER_THROW_NOT_ACCOUNTED` | `checker` | `error` | `seed` | defer cleanup may throw but the enclosing signature or cleanup budget does not account for it. |
 | `DEF_HASH_DROP_REMOVED_USE_CLEANUP` | `parser` | `error` | `active` | def#drop is not current; lifecycle declarations use def#cleanup(). |
 | `DELEGATING_CONSTRUCTOR_CANNOT_INITIALIZE_STORED_FIELD` | `checker` | `error` | `active` | A same-type delegating constructor body is post-init; it cannot initialize stored fields. |
+| `DEPENDENCY_INTERFACE_BINDING_INVALID` | `checker` | `error` | `active` | A dependency, import, export, re-export, signature, facade, or static dependency binding is not closed. |
 | `DERIVATION_ENTRY_SEPARATOR_REQUIRED` | `checker` | `error` | `active` | Same-line derivation delta entries require comma; multi-line entries may use LayoutEntrySep when unambiguous. |
 | `DESIGN_GALLERY_METADATA_REQUIRED` | `checker` | `warning` | `seed` | Design Gallery entry is missing machine-readable metadata. |
 | `DETERMINISTIC_PRIMARY_SUPPRESSED_ORDER_VIOLATION` | `checker` | `error` | `active` | Failure selection or cleanup suppression order differs from the required source-order/reverse-cleanup algorithm. |
@@ -369,7 +370,6 @@
 | `EXTENSION_SET_PRIVATE_TARGET_ACCESS_FORBIDDEN` | `checker` | `error` | `active` | Extension set member cannot access target private representation outside visibility law. |
 | `EXTENSION_SET_RECEIVER_MODE_UNSUPPORTED_IN_MSP` | `checker` | `error` | `active` | Named extension set MSP supports borrow receiver only. |
 | `EXTENSION_SET_STORED_MEMBER_FORBIDDEN` | `parser` | `error` | `active` | An extension set may declare behavior but cannot own a stored field, initializer, layout, or cleanup responsibility. |
-| `EXTENSION_SHADOWED_BY_MEMBER_COMPAT` | `checker` | `error` | `active` | the current profile compatibility profile selected the member slot while an active extension is shadowed; strict profile will require explicit selection. |
 | `EXTENSION_USE_REEXPORT_STABLE_BUT_PRODUCT_NOT_RUN` | `checker` | `warning` | `active` | \`use export\` is stable design in the current profile; product parser/checker support remains NOT_RUN. |
 | `FACET_BORROW_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A Phase-A borrowed Facet cannot cross suspension, concur-run, or actor boundaries. |
 | `FACET_BORROW_ESCAPE_FORBIDDEN` | `checker` | `error` | `active` | A borrowed Facet cannot outlive its payload borrow region or cross an isolation boundary. |
@@ -633,7 +633,9 @@
 | `MIXED_UNIT_ADDITION_REQUIRES_DISPLAY_UNIT_DECISION` | `checker` | `error` | `active` | Mixed-unit addition requires an explicit display-unit decision via \`asUnit\` or an enabled context anchor. |
 | `MODIFIER_NOT_ADMITTED_FOR_OWNER` | `parser` | `error` | `active` | This modifier or role sequence is not admitted for the owning declaration or expression. |
 | `MODULE_API_DIGEST_CHANGED` | `checker` | `error` | `seed` | Public API digest changed and requires compatibility classification. |
+| `MODULE_INTERFACE_DIGEST_MISMATCH` | `checker` | `error` | `active` | The normalized module interface or dependency receipt does not match its required digest identity. |
 | `MODULE_IS_NOT_A_VALUE` | `checker` | `error` | `active` | A module/static path is not a runtime value. |
+| `MODULE_ITEM_SKELETON_CONFLICT` | `checker` | `error` | `active` | Module contributions do not form one conflict-free item-skeleton set. |
 | `MODULE_SIGNATURE_NOT_IMPLEMENTATION_RECEIPT` | `checker` | `warning` | `active` | A module signature declaration is language-design stable but does not imply product parser/checker support. |
 | `MODULE_STATIC_INITIALIZER_NOT_CURRENT` | `parser` | `error` | `active` | Module-level \`static {}\` is nonactivatable Preview-design; use static-admissible top-level let or an explicit lifecycle API. |
 | `MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE` | `lexer` | `error` | `active` | A triple-quoted String closer must appear on its own line after indentation. |
@@ -670,6 +672,7 @@
 | `NEVER_IS_ERRORSET_NOT_VALUETYPE` | `checker` | `note` | `seed` | \`Never\` is the empty ErrorSet, not a ValueType. Use \`Nothing\` for no normal value or \`Unit\` for normal completion. |
 | `NOMINAL_SCHEMA_CONSTRUCTION_REMOVED` | `checker` | `warning` | `deprecated` | This diagnostic is not emitted by current Deeplus. |
 | `NONACTIVATABLE_DESIGN_PROJECTION_NOT_CURRENT` | `checker` | `error` | `active` | This feature is a nonactivatable design projection in the current profile package; ordinary source must reject it. |
+| `NONCALL_REFERENCE_SELECTION_FAILED` | `checker` | `error` | `active` | The resolver cannot select one deterministic noncall reference outside the callable-overload domain. |
 | `NONCOPYABLE_WORDING_DEPRECATED_USE_AFFINE` | `checker` | `warning` | `active` | Use affine ownership terminology instead of noncopyable wording. |
 | `NONE_IS_NOT_A_TYPE` | `checker` | `error` | `active` | None is not a type in Deeplus. |
 | `NOT_IF_MUST_BE_ADJACENT` | `checker` | `error` | `active` | \`!if\` must be adjacent with no whitespace/comment between \`!\` and \`if\`. |
@@ -756,6 +759,7 @@
 | `OWN_CAST_REQUIRES_REUSABLE_SOURCE` | `checker` | `error` | `active` | Owning downcast via as? cannot duplicate affine ownership. Use owner-preserving consuming downcast. |
 | `PACKAGE_ARCHIVE_SHA_MISMATCH` | `design_static` | `error` | `active` | PACKAGE_ARCHIVE_SHA_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `PACKAGE_DECLARATION_RENAMED_TO_MODULE` | `checker` | `error` | `active` | \`package\` is not a Deeplus source namespace declaration; use \`module\`. |
+| `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` | `checker` | `error` | `active` | The package, target, module, or source-contribution graph is not one closed deterministic graph. |
 | `PARALLEL_ASSIGNMENT_ARITY_MISMATCH` | `checker` | `error` | `active` | A local group assignment requires the exact same Tuple arity on its target and value sides. |
 | `PATTERN_ANALYSIS_RESOURCE_LIMIT` | `checker` | `error` | `active` | Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness. |
 | `PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL` | `checker` | `error` | `active` | A group assignment is rejected when all target replacements cannot be reserved for one infallible logical commit. |
@@ -916,6 +920,8 @@
 | `REDUNDANT_ASSOCIATED_PROJECTION_PARENS_BEFORE_OPTIONAL` | `checker` | `lint` | `active` | Parentheses are redundant before an optional suffix on an associated projection; write \`<T as Trait>::Assoc?\`. |
 | `REDUNDANT_ASYNC_AFTER_SPAWN` | `checker` | `error` | `active` | spawn already establishes concur-owned asynchronous execution; \`spawn async\` is not an admitted spelling. |
 | `REDUNDANT_FINAL_VALUELESS_RETURN` | `checker` | `lint` | `active` | The final valueless return is redundant; normal Unit completion is canonical. |
+| `REFERENCE_CANDIDATE_SET_INVALID` | `checker` | `error` | `active` | Reference collection did not produce one admissible candidate set in the required namespace. |
+| `REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION` | `checker` | `error` | `active` | A collected reference is outside its visibility, activation, member, or evidence-origin domain. |
 | `REFINED_ELEMENT_TYPE_REQUIRES_WHERE_THIS` | `checker` | `error` | `seed` | Refined element type requires where this |
 | `REFINEMENT_ASSERTION_MAY_DEFECT` | `checker` | `warning` | `active` | \`as!\` may raise RefinementAssertionDefect if the predicate fails. |
 | `REFINEMENT_DETAILED_CHECK_RETURNS_RESULT` | `checker` | `info` | `active` | Detailed validation uses \`T::check(value)\` or a named factory returning \`Result<T, error E>\`; \`as?\` returns \`Option<T>\`. |
@@ -937,6 +943,8 @@
 | `REJECTED_REVIEW_FIXTURE_EXPECTED_FAILURE` | `checker` | `error` | `seed` | This review-seed reject example is expected to fail under the current Deeplus source rules; a more specific diagnostic should replace this seed before product conformance certification. |
 | `REPEATED_POSITIONAL_PARAMETER_NOT_LAST_BEFORE_NAMED_REST` | `checker` | `error` | `active` | A repeated positional parameter must appear after ordinary positional parameters and before the optional named rest parameter. |
 | `REPLY_ALREADY_CONSUMED` | `checker` | `error` | `active` | A Reply<T> is a one-shot actor-request responsibility and has already been consumed. |
+| `RESOLVER_HIR_SEAL_INCOMPLETE` | `checker` | `error` | `active` | Resolver output is incomplete and cannot be admitted into canonical HIR-H1. |
+| `RESOLVER_SCOPE_TREE_INVALID` | `checker` | `error` | `active` | The resolver scope tree or one of its separated environments violates the closed lexical-frame law. |
 | `RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT` | `checker` | `error` | `active` | Stable Resource inheritance requires a same-module sealed root and explicit cleanup budget. |
 | `RESPONSIBILITY_KIND_NOT_CLOSED` | `checker` | `error` | `active` | The descriptor does not inhabit exactly one admitted responsibility kind or mixes independent kind axes. |
 | `REST_ARGUMENTS_REQUIRE_COMMON_ELEMENT_TYPE` | `checker` | `error` | `active` | Repeated positional arguments must have a common element type unless an explicit union feature is admitted. |
@@ -1032,7 +1040,6 @@
 | `STABLE_FEATURE_PREVIEW_GATE_ANNOTATION_FORBIDDEN_R48` | `design_static` | `error` | `active` | Stable design features must not be documented with \`@feature(..., preview)\` in current-accept examples. |
 | `STABLE_GRAMMAR_PROFILE_STATUS_DRIFT` | `design_static` | `error` | `active` | STABLE_GRAMMAR_PROFILE_STATUS_DRIFT: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `STABLE_GRAMMAR_REQUIRES_PROFILE_AWARE_REFERENCES` | `design_static` | `error` | `active` | STABLE_GRAMMAR_REQUIRES_PROFILE_AWARE_REFERENCES: the current corpus, lifecycle, grammar, and machine authorities must agree. |
-| `STABLE_MEMBER_EXTENSION_COLLISION` | `checker` | `error` | `active` | Member/extension collision is a stable hard error in the current profile. |
 | `STANDALONE_BANG_NOT_CURRENT` | `parser` | `error` | `active` | Standalone \`!expr\` is not current Deeplus Boolean negation; use \`not expr\`. |
 | `STATIC_ACTIVATION_SCOPE_NOT_RESOLVED` | `checker` | `error` | `seed` | Static activation must resolve without import/use order tie-breaks. |
 | `STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING` | `checker` | `error` | `active` | Static alias conflicts with an existing local binding. |
@@ -1311,6 +1318,7 @@
 | `DeclarativeClauseExhaustive` | clause block coverage checker | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `DeclarativeClausePartitionAdmitted` | declarative clause partition | Finite Phase-A clause partition decision procedure; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `DedentedMultilineStringAdmitted` | DedentedMultilineStringAdmitted | R51f3 owner-specific static design seed for dedented_multiline_unicode_string; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `DependencyInterfaceBindingClosed` | dependency, import, export and module-interface closure | Close imports, exports, re-exports, signatures, facades and static dependencies against exact typed provider identities. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `DeterministicPrimarySuppressedOrderAdmitted` | primary/suppressed failure order | candidate operations are evaluated left-to-right in source order and stop ordinary evaluation at the first escaping failure; the first escaping failure is retained as primary; cleanup actions execute in reverse acquisition order even after failure; each cleanup failure is appended to primary.suppressed in cleanup execution order and never replaces primary; if ordinary evaluation succeeds but cleanup fails, the first cleanup failure becomes primary and later cleanup failures are suppressed in execution order | `DESIGN_STATIC_NOT_RUN` |
 | `DisplayUnitDecisionVisible` | DisplayUnitDecisionVisible | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `DynamicUnitConversionProfileAdmitted` | DynamicUnitConversionProfileAdmitted | Separate stdlib profile activation, provider presence and conversion policy completeness; no source current gate is consulted. | `DESIGN_STATIC_NOT_RUN` |
@@ -1390,8 +1398,10 @@
 | `MatrixProductAdmitted` | Matrix product | both operands are rank-2; the left inner dimension equals the right inner dimension; \`**\` participates in the left-to-right LinearProductExpr fold and this predicate is applied independently at the current fold step | `DESIGN_STATIC_NOT_RUN` |
 | `MeasureUnitWitnessAdmitted` | MeasureUnitWitnessAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionPolicyAdmitted` | MemberExtensionCollisionPolicyAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `MemberExtensionCollisionRejected` | MemberExtensionCollisionRejected | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `MethodExtensionResolutionAdmitted` | method/extension message resolution | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `MemberExtensionCollisionRejected` | MemberExtensionCollisionRejected | Reject ordinary member/extension collisions before within-domain ranking. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `MethodExtensionResolutionAdmitted` | method/extension message resolution | Preserve method/extension domains and defer selection. | `DESIGN_STATIC_NOT_RUN` |
+| `ModuleInterfaceDigestVerified` | module interface and dependency-receipt digest verification | Verify that each dependency receipt binds the exact normalized provider module interface without treating private implementation bytes as interface identity. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ModuleItemSkeletonSetAdmitted` | module item-skeleton merge | Merge all source contributions of one ModuleId into one conflict-free declaration skeleton set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MutableCallableEnvironmentAdmitted` | MutableCallableEnvironmentAdmitted | require environment_receiver=mutable; acquire exactly one exclusive mutable environment place for the invocation; reject overlapping mutable access and reentrant invocation without a separately admitted proof | `DESIGN_STATIC_NOT_RUN` |
 | `NamedConformanceAdmitted` | NamedConformanceAdmitted | Admit one static named conformance identity without adding it to automatic witness search. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NamedEvidenceExcludedFromAutomaticResolution` | NamedEvidenceExcludedFromAutomaticResolution | Keep named evidence out of the automatic WitnessResolution candidate set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1424,6 +1434,7 @@
 | `OrdinaryLocalBindingAdmitted` | OrdinaryLocalBindingAdmitted | Shared local binding checker for direct let/var and normalized rightward surfaces. | `DESIGN_STATIC_NOT_RUN` |
 | `OwnedDowncastAdmitted` | OwnedDowncastAdmitted | attempt dynamic type test without consuming into an unrecoverable state; return matched Target or unmatched original Source exactly once | `DESIGN_STATIC_NOT_RUN` |
 | `OwnershipModeAdmitted` | OwnershipModeAdmitted | ordinary mut acquires one argument into a callee-owned mutable local with no caller alias/writeback and retains the caller owner on precommit failure; borrow is a nonescaping shared region; inout is one exclusive caller-place borrow whose successful writes are visible to the caller; move transfers ownership once; cleanup remains with the current owner | `DESIGN_STATIC_NOT_RUN` |
+| `PackageModuleSourceGraphAdmitted` | package, target, module and source-contribution graph | Admit one closed deterministic package/module/source graph before any declaration or reference resolution. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `PatternBindingControlAdmitted` | PatternBindingControlAdmitted | R51f3 owner-specific static design seed for pattern_binding_control_family; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `PatternConditionChainAdmitted` | Pattern condition-chain admission | Admit left-to-right if let and then let and then Bool chains with scoped prior probes and per-term atomic commit. | `` |
 | `PinRangeRelationalPatternAdmitted` | Pin, range and relational Pattern admission | Admit stable-value pins and bounded exact ordered-domain range or relational Patterns. | `` |
@@ -1443,11 +1454,16 @@
 | `ReadonlyViewAdmitted` | ReadonlyViewAdmitted | require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof | `DESIGN_STATIC_NOT_RUN` |
 | `ReceiverOwnerResultAdmitted` | ReceiverOwnerResultAdmitted | Admit exactly one explicit Self-compatible owner result from a consuming receiver. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RecordNamedArgumentSpreadAdmitted` | Record named argument spread | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ReferenceCandidateSetResolved` | reference candidate collection | Collect the exact candidate set for one source reference in one namespace before visibility filtering or winner selection. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ReferenceVisibilityActivationAdmitted` | reference visibility, activation and evidence-origin filter | Filter a collected candidate set by lexical visibility, extension activation, member visibility and witness evidence origin. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RefinementCheckBoundaryAdmitted` | RefinementCheckBoundaryAdmitted | Apply three-valued proof at explicit refinement boundaries. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RefinementR0PredicateAdmitted` | RefinementR0PredicateAdmitted | the predicate syntax belongs to the finite R0 operator/name whitelist; effect_row and authority are empty and suspension is none; the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver; evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary | `DESIGN_STATIC_NOT_RUN` |
 | `RefutableCatchPatternAdmitted` | Refutable catch Pattern admission | Admit source-ordered refutable catch Patterns with pure guards and propagation of unmatched recoverable errors. | `` |
 | `RepeatedParameterOrderAndElementType` | RepeatedParameterOrderAndElementType | R51a1 closed design algorithm for RepeatedParameterOrderAndElementType; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolveIntersectionEvidenceBundle` | ResolveIntersectionEvidenceBundle | Resolve a coherent evidence bundle for all intersection contracts. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ResolvedNoncallReferenceSelected` | deterministic noncall reference selection | Select one deterministic noncall reference while leaving callable overload sets to the next cluster. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ResolverHirSealAdmitted` | resolver-to-canonical-HIR seal | Admit canonical HIR-H1 only when every noncall reference is fully resolved and no runtime relookup residue remains. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ResolverScopeTreeAdmitted` | resolver lexical-frame tree | Admit deterministic lexical name frames while keeping name, extension-activation and witness-visibility environments separate. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResponsibilitySubsumes` | ResponsibilitySubsumes | Compare ownership, effect, failure, authority, isolation and cleanup axes independently. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResultErrorSetModelAdmitted` | ResultErrorSetModelAdmitted | Result value-channel error families and throws control-channel families are normalized independently as duplicate-free sets; source order is retained only for deterministic diagnostic presentation; the intersection of the two normalized recoverable-error sets is empty; Defect and Cancellation classifications are not silently inserted into either recoverable set | `DESIGN_STATIC_NOT_RUN` |
 | `ResultThrowsOverlapForbidden` | Result/throws duplicate channel checker | collect recoverable error-family identities from the normalized \`Result<T, error E>\` value channel in source order; collect recoverable error-family identities from the normalized throws ErrorSet in source order; admit exactly when the two identity sets are disjoint; the first Result-family identity also present in throws emits RESULT_THROWS_CHANNEL_OVERLAP | `DESIGN_STATIC_NOT_RUN` |

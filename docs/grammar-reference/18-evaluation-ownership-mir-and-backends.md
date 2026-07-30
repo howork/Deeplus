@@ -167,6 +167,14 @@ verifier는 “나중에 MIR에서 해결한다”는 TODO를 허용하지 않�
 통과하지 못한 source는 진단을 위한 analysis provenance로 남을 수 있지만
 MIR event나 executable value를 만들지 않는다.
 
+R4 이름 해석은 noncall `ResolvedRef`, name/import trace와 visibility
+proof를 만들 수 있다. callable 후보는 `ResolvedOverloadSetRef`로
+`AnalysisHir`에만 있을 수 있고 exact winner와 complete generic
+substitution 전에는 `CanonicalHirH1`으로 seal할 수 없다.
+`ImportBindingId`, `ResolverScopeId`, `SourceOriginId`,
+`ActivationOriginId`는 compile-time provenance이며 runtime 값이나 MIR
+lookup key가 아니다.
+
 ### 2.3.2 canonical과 executable 사이의 capability receipt
 
 `Verified<CanonicalHirH1>`이 의미적으로 완전하다는 사실만으로 특정 MIR
@@ -1715,6 +1723,11 @@ private let impossible: Int8 = 200
 // 정적으로 범위를 벗어나므로 runtime overflow event가 없다.
 ```
 
+package/re-export/static-value cycle, duplicate import binding, module
+signature mismatch, stale interface digest, incomplete resolver seal도 같은
+원칙을 따른다. 이 실패들은 admitted HIR와 MIR module initializer,
+backend symbol, partial global state를 모두 0개 만든다.
+
 ### 23.7 String과 Bytes
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/mir/semantics.md -->
@@ -1736,6 +1749,40 @@ label, witness, extension, provider identity는
 MIR execution 전에 고정된다.
 backend는 runtime registry를 검색해
 다른 identity를 선택할 수 없다.
+
+name lookup은 innermost exact namespace/spelling frame에서 끝나며 outer
+frame이나 source/import order를 candidate rank로 사용하지 않는다.
+ordinary selector의 nominal과 active extension domain이 모두 nonempty면
+`MEMBER_EXTENSION_COLLISION`으로 끝나고 MIR call은 없다. exact qualified
+extension selector만 그 domain을 직접 고정한다.
+
+### Compile-time module initialization plan
+
+Package dependency와 re-export graph는 acyclic이다. Module-header SCC는
+complete header collection 뒤 header/type/signature edge만 있을 때
+허용한다. static-value/runtime-initializer/re-export edge는 SCC에서
+거부한다.
+
+immutable module static value graph는 compile time에 acyclic하게 평가한다.
+모든 value가 성공한 뒤 canonical `DeclId` order receipt와 함께 한 번
+atomic commit하고 runtime initializer count는 0이다. 실패는 partial
+publication과 cleanup/runtime event를 만들지 않는다. 이 plan은 함수
+`static { ... }`의 first-call activation과 다른 owner다.
+
+모듈 artifact는 세 hash domain을 분리한다. `ModuleInterfaceDigest`는
+effective public semantic residue만 결속하고 source path/file identity,
+origin/proof ID, dependency receipt, private body와 debug span을 제외한다.
+`ModuleImplementationDigest`는 그 interface identity와 verified private HIR
+semantics를 결속한다. `ModuleCompilationReceipt`는 `TargetId`/`ModuleId`,
+package graph, module source-contribution provenance, dependency subreceipt,
+resolver trace, visibility closure, initialization plan, interface와
+implementation hash를 결속한다. 따라서 private-body-only 변경은 interface
+hash를 유지하면서 implementation과 full receipt hash를 바꾼다. script는
+importable interface가 없어서 `interface_sha256 = null`이다. dependency
+subreceipt는 imports, activations, required provider interfaces만 결속하며
+전체 receipt와 같은 artifact가 아니다. stale receipt는 lowering 전에
+거부하며 backend link/load order로 고칠 수 없다. 이 문서 계약은 22 OPEN
+P1과 15/15 `NOT_RUN`을 그대로 유지한다.
 
 ### 24.2 pattern과 ownership
 

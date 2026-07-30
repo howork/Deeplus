@@ -330,6 +330,83 @@ places and outcomes; it performs no lookup or semantic choice.
 This bridge is backend-neutral. It does not activate the noncanonical MIR-X1
 xVM-only proposal and does not change the current backend set.
 
+## Compile-time module initialization and resolver seal
+
+Package dependency, re-export, module-header, and static-binding dependency
+graphs are frontend proof objects and create no runtime graph traversal. Package
+dependencies and re-exports are acyclic. A module-header SCC is admitted only
+after complete header collection and only for module-header, type-declaration,
+and signature references; a static-value, runtime-initializer, or re-export edge
+inside it is rejected before MIR.
+
+An admitted immutable module static-binding graph is acyclic and evaluated at
+compile time. All values publish in one atomic semantic commit only after every
+initializer succeeds, and its deterministic receipt orders entries by canonical
+`DeclId`. Its MIR runtime-initializer count is exactly zero. A failed
+initializer or dependency cycle emits a static diagnostic and produces no
+module initializer, partial global state, cleanup obligation, or backend symbol.
+This is distinct from a function's current `static { ... }` first-call
+activation, which retains the owner-bound runtime state machine specified in
+§2.1.
+
+The resolver-to-HIR seal may hand onward only:
+
+- a closed noncall `ResolvedRef`;
+- `NameResolutionTrace`, `ImportBindingTrace`, and `VisibilityProof` as
+  compile-time provenance;
+- an already selected `EvidenceOriginId` where another current contract
+  supplied Trait evidence.
+
+`ImportBindingId`, `ResolverScopeId`, `SourceOriginId`, and
+`ActivationOriginId` do not become runtime values. An import target is
+`ModuleId` in the `MODULE` namespace and `DeclId` in the other R4 name
+namespaces. A module target has no expression-HIR projection; a declaration
+used as an expression projects to `ResolvedRef::DirectDecl(DeclId)`.
+
+The R4 import/activation provider pair
+`(provider_binding_id_or_self, provider_module_id)` is compile-time
+provenance, not a dynamic-provider MIR value. `self` means same package, not
+same module. For the nearest consumer `TargetId`, every used pair matches
+exactly one package-graph visible-module binding, and the dependency
+subreceipt contains exactly the unique used pairs after excluding only the
+consumer module itself. A same-package, different-module provider therefore
+remains required with binding `self`. A missing, extra, stale, or graph-unbound
+pair rejects before this seal and creates no provider lookup, event, or
+backend repair route.
+
+`ResolvedOverloadSetRef` is
+analysis-HIR-only and cannot enter `ExecutableHirH1` or MIR; an exact call
+winner and complete generic substitution belong to the subsequent generic and
+ordinary-overload cluster. MIR must not rank applicability or specificity,
+choose by expected/result type, infer a row, merge lexical overload sets, or
+perform name/member/extension/witness lookup.
+
+For an ordinary selector with a nonempty nominal set and a nonempty active
+extension set, the frontend emits `MEMBER_EXTENSION_COLLISION` and produces no
+selected reference or MIR. Exact qualified extension selection restricts the
+domain before the seal. Import, `use`, declaration, traversal, and source order
+cannot affect the result.
+
+The module-compilation handoff keeps three hash domains distinct. The module
+interface digest contains only exact effective public semantic residue. The
+module implementation digest contains private verified-HIR semantics and binds
+that interface digest. The full compilation receipt closes target/module
+identity, package graph, source-contribution provenance, dependency subreceipt,
+resolver trace, visibility closure, initialization plan, interface, and
+implementation hashes. Source path/origin/proof records and private body bytes
+never enter the public interface preimage. A stale dependency-interface digest
+is rejected before lowering. Private-body changes that preserve public residue
+leave the interface digest unchanged while changing implementation and full
+receipt identities. No backend link or load order can repair a failed seal.
+Every one of these JSON artifact hashes uses
+`DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1`; interface, implementation, and full
+compilation hashes remain separate identity domains even when they use the
+same canonical byte algorithm.
+
+This design contract adds no production MIR implementation or execution
+receipt. The exact 22 feature P1 items remain OPEN and all 15 product lanes
+remain `NOT_RUN`.
+
 ## 10. xVM and Cranelift preservation
 
 The Rust xVM bytecode interpreter is the first development, validation and REPL

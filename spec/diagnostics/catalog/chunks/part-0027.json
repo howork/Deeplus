@@ -1,0 +1,267 @@
+[
+  {
+    "diagnostic_id": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "The package, target, module, or source-contribution graph is not one closed deterministic graph.",
+    "feature_refs": [
+      "module_keyword_source_header",
+      "multi_file_module",
+      "package_aware_import",
+      "source_role_contract"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "manual review of package, target, module and source-contribution identities",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: PACKAGE_TARGET_MISSING, PACKAGE_BINDING_AMBIGUOUS, PACKAGE_CYCLE, MODULE_MAPPING_MISMATCH. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "MODULE_ITEM_SKELETON_CONFLICT",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "Module contributions do not form one conflict-free item-skeleton set.",
+    "feature_refs": [
+      "module_keyword_source_header",
+      "multi_file_module"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "manual review of duplicate declarations and overload-slot keys",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: DUPLICATE_DECLARATION, OVERLOAD_SLOT_KEY_COLLISION, MODULE_CONTRIBUTION_CONFLICT. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "A dependency, import, export, re-export, signature, facade, or static dependency binding is not closed.",
+    "feature_refs": [
+      "extension_pack_module_interface",
+      "extension_use_reexport_syntax",
+      "library_static_binding_initializer_msp",
+      "module_signature_declaration",
+      "opaque_module_facade",
+      "package_aware_import",
+      "top_level_type_visibility_unification"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "manual review of the exact dependency and interface binding",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: IMPORT_TARGET_NOT_FOUND, IMPORT_TARGET_AMBIGUOUS, IMPORT_ALIAS_COLLISION, EXPORT_TARGET_NOT_FOUND, EXPORT_IDENTITY_MISMATCH, REEXPORT_CYCLE, EXPORT_VISIBILITY_LEAK, MODULE_SIGNATURE_MISMATCH, FACADE_WIDENING, STATIC_DEPENDENCY_CYCLE, STALE_DEPENDENCY_RECEIPT. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "RESOLVER_SCOPE_TREE_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "The resolver scope tree or one of its separated environments violates the closed lexical-frame law.",
+    "feature_refs": [
+      "lexical_import_use_environment_stack",
+      "scoped_import_family",
+      "scoped_import_use_grouping"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "manual review of lexical name, activation and evidence frames",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: SAME_FRAME_DUPLICATE, PARAMETER_BODY_LOCAL_COLLISION, IMPORT_LOCAL_COLLISION, ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE, NAME_ACTIVATION_ENV_CONFLATION, SCOPE_ESCAPE, FAILED_PATTERN_PROBE_BINDING_LEAK. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "REFERENCE_CANDIDATE_SET_INVALID",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "Reference collection did not produce one admissible candidate set in the required namespace.",
+    "feature_refs": [
+      "double_colon_static_qualified_path",
+      "package_aware_import",
+      "r49_double_colon_namespace_closure"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "qualify the owner or repair the imported/exported binding",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: ZERO_CANDIDATES, MULTIPLE_SAME_TIER, WRONG_NAMESPACE, STATIC_PATH_UNRESOLVED, STATIC_PATH_AMBIGUOUS. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "A collected reference is outside its visibility, activation, member, or evidence-origin domain.",
+    "feature_refs": [
+      "member_visibility_hierarchy_protected",
+      "top_level_type_visibility_unification",
+      "trait_witness_resolution_phase_a"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "manual review of visibility, activation and evidence-origin domains",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: CANDIDATE_NOT_VISIBLE, ACTIVATION_SCOPE_ESCAPE, ACTIVATION_IDENTITY_MISMATCH, MEMBER_VISIBILITY_DOMAIN, API_VISIBILITY_LEAK, WITNESS_ORIGIN_INVALID. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "NONCALL_REFERENCE_SELECTION_FAILED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "The resolver cannot select one deterministic noncall reference outside the callable-overload domain.",
+    "feature_refs": [
+      "double_colon_static_qualified_path",
+      "lexical_import_use_environment_stack"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "qualify one exact noncall owner; callable overload selection is a separate phase",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: ZERO_AFTER_FILTER, MULTIPLE_AFTER_FILTER, ORDER_TIEBREAKER_REQUIRED. Callable overload sets remain analysis-HIR input to the next cluster. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "RESOLVER_HIR_SEAL_INCOMPLETE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "Resolver output is incomplete and cannot be admitted into canonical HIR-H1.",
+    "feature_refs": [
+      "module_signature_declaration",
+      "multi_file_module",
+      "opaque_module_facade",
+      "package_aware_import"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "resolve every noncall reference and attach its typed identity and visibility proof",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: UNBOUND_PRIMARY, UNRESOLVED_COUNT_NONZERO, CANDIDATE_SET_COUNT_NONZERO, MISSING_TYPED_ID, MISSING_VISIBILITY_PROOF, RUNTIME_RELOOKUP_RESIDUE. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  },
+  {
+    "diagnostic_id": "MODULE_INTERFACE_DIGEST_MISMATCH",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "checker",
+    "severity": "error",
+    "message": "The normalized module interface or dependency receipt does not match its required digest identity.",
+    "feature_refs": [
+      "module_api_digest_core",
+      "module_signature_declaration",
+      "package_aware_import"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "authority": "LANGUAGE / CHECKER",
+    "fixit_kind": "none",
+    "fixit_hint": "",
+    "fixit_policy": "rebuild the dependency against the exact normalized provider interface",
+    "primary_source": "spec/language.md",
+    "notes": "R4 primary reason set: MISSING_EXPORT_EDGE, INTERFACE_DIGEST_MISMATCH. Product execution remains NOT_RUN.",
+    "product_support": "NOT_RUN"
+  }
+]

@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/method-extension-resolution-trace-schema.json",
   "baseline": "0.1.2-baseline.r51f3",
   "categories": [
     "MemberFinalCall",
@@ -19,13 +21,124 @@
     "import_order",
     "use_order"
   ],
+  "cross_domain_collision": {
+    "ordinary_selector": "NONEMPTY_APPLICABLE_NOMINAL_SET_AND_NONEMPTY_APPLICABLE_ACTIVE_EXTENSION_SET_REJECT",
+    "within_domain_ranking_before_collision": false,
+    "selected_count_on_rejection": 0,
+    "primary_diagnostic": "MEMBER_EXTENSION_COLLISION",
+    "qualified_extension_selector": "RESTRICT_TO_EXACT_EXTENSION_DOMAIN_AND_BYPASS_CROSS_DOMAIN_COLLISION"
+  },
+  "diagnostic_lifecycle": {
+    "active_primary": [
+      "MEMBER_EXTENSION_COLLISION"
+    ],
+    "retired_nonemitting": [
+      "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+      "STABLE_MEMBER_EXTENSION_COLLISION"
+    ],
+    "new_registry_code_count": 0
+  },
   "product_support": "NOT_RUN",
   "registry_kind": "method_extension_resolution_trace_schema",
   "required_fields": [
     "receiver_static_type",
     "selector",
     "candidate_category",
+    "applicable_nominal_candidate_ids",
+    "applicable_active_extension_candidate_ids",
+    "qualified_extension_id_or_null",
     "selected_resolution_category",
+    "selected_count",
+    "rejection_diagnostic_or_null",
     "diagnostics"
-  ]
+  ],
+  "$defs": {
+    "memberExtensionCollisionDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "selector_kind",
+        "applicable_nominal_candidate_ids",
+        "applicable_active_extension_candidate_ids",
+        "qualified_extension_id_or_null"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.member-extension-collision-descriptor/r1"
+        },
+        "selector_kind": {
+          "enum": [
+            "ORDINARY",
+            "QUALIFIED_EXTENSION"
+          ]
+        },
+        "applicable_nominal_candidate_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^MemberId:[^\\s]+$"
+          }
+        },
+        "applicable_active_extension_candidate_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ExtensionMemberId:[^\\s]+$"
+          }
+        },
+        "qualified_extension_id_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^ExtensionSetId:[^\\s]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "selector_kind": {
+                "const": "ORDINARY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "qualified_extension_id_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "selector_kind": {
+                "const": "QUALIFIED_EXTENSION"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "qualified_extension_id_or_null": {
+                "type": "string",
+                "pattern": "^ExtensionSetId:[^\\s]+$"
+              },
+              "applicable_nominal_candidate_ids": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
 }

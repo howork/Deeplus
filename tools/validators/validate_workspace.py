@@ -50,8 +50,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1424, "predicates": 268,
-    "predicate_fixtures": 819, "no_go": 155,
+    "features": 719, "diagnostics": 1433, "predicates": 277,
+    "predicate_fixtures": 846, "no_go": 155,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -338,6 +338,336 @@ EXPR_FIELDS = {
     "restriction_rule": "A restriction must provide an expression-preserving alternative or state an explicit impossibility case.",
     "visibility_rule": "Responsibility, ownership, effects, failure, cleanup, suspension, authority, provider lookup, call domain, and public API residue remain visible.",
 }
+R4_NRM_PRECEDENCE = [
+    (
+        "PackageModuleSourceGraphAdmitted",
+        "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+        (
+            "PACKAGE_TARGET_MISSING",
+            "PACKAGE_BINDING_AMBIGUOUS",
+            "PACKAGE_CYCLE",
+            "MODULE_MAPPING_MISMATCH",
+        ),
+    ),
+    (
+        "ModuleItemSkeletonSetAdmitted",
+        "MODULE_ITEM_SKELETON_CONFLICT",
+        (
+            "DUPLICATE_DECLARATION",
+            "OVERLOAD_SLOT_KEY_COLLISION",
+            "MODULE_CONTRIBUTION_CONFLICT",
+        ),
+    ),
+    (
+        "DependencyInterfaceBindingClosed",
+        "DEPENDENCY_INTERFACE_BINDING_INVALID",
+        (
+            "IMPORT_TARGET_NOT_FOUND",
+            "IMPORT_TARGET_AMBIGUOUS",
+            "IMPORT_ALIAS_COLLISION",
+            "EXPORT_TARGET_NOT_FOUND",
+            "EXPORT_IDENTITY_MISMATCH",
+            "REEXPORT_CYCLE",
+            "EXPORT_VISIBILITY_LEAK",
+            "MODULE_SIGNATURE_MISMATCH",
+            "FACADE_WIDENING",
+            "STATIC_DEPENDENCY_CYCLE",
+            "STALE_DEPENDENCY_RECEIPT",
+        ),
+    ),
+    (
+        "ResolverScopeTreeAdmitted",
+        "RESOLVER_SCOPE_TREE_INVALID",
+        (
+            "SAME_FRAME_DUPLICATE",
+            "PARAMETER_BODY_LOCAL_COLLISION",
+            "IMPORT_LOCAL_COLLISION",
+            "ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE",
+            "NAME_ACTIVATION_ENV_CONFLATION",
+            "SCOPE_ESCAPE",
+            "FAILED_PATTERN_PROBE_BINDING_LEAK",
+        ),
+    ),
+    (
+        "ReferenceCandidateSetResolved",
+        "REFERENCE_CANDIDATE_SET_INVALID",
+        (
+            "ZERO_CANDIDATES",
+            "MULTIPLE_SAME_TIER",
+            "WRONG_NAMESPACE",
+            "STATIC_PATH_UNRESOLVED",
+            "STATIC_PATH_AMBIGUOUS",
+        ),
+    ),
+    (
+        "ReferenceVisibilityActivationAdmitted",
+        "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+        (
+            "CANDIDATE_NOT_VISIBLE",
+            "ACTIVATION_SCOPE_ESCAPE",
+            "ACTIVATION_IDENTITY_MISMATCH",
+            "MEMBER_VISIBILITY_DOMAIN",
+            "API_VISIBILITY_LEAK",
+            "WITNESS_ORIGIN_INVALID",
+        ),
+    ),
+    (
+        "ResolvedNoncallReferenceSelected",
+        "NONCALL_REFERENCE_SELECTION_FAILED",
+        (
+            "ZERO_AFTER_FILTER",
+            "MULTIPLE_AFTER_FILTER",
+            "ORDER_TIEBREAKER_REQUIRED",
+        ),
+    ),
+    (
+        "ResolverHirSealAdmitted",
+        "RESOLVER_HIR_SEAL_INCOMPLETE",
+        (
+            "UNBOUND_PRIMARY",
+            "UNRESOLVED_COUNT_NONZERO",
+            "CANDIDATE_SET_COUNT_NONZERO",
+            "MISSING_TYPED_ID",
+            "MISSING_VISIBILITY_PROOF",
+            "RUNTIME_RELOOKUP_RESIDUE",
+        ),
+    ),
+    (
+        "ModuleInterfaceDigestVerified",
+        "MODULE_INTERFACE_DIGEST_MISMATCH",
+        (
+            "MISSING_EXPORT_EDGE",
+            "INTERFACE_DIGEST_MISMATCH",
+        ),
+    ),
+]
+R4_NRM_TARGET_FILES = (
+    "spec/diagnostics/catalog/chunks/part-0007.json",
+    "spec/diagnostics/catalog/chunks/part-0011.json",
+    "spec/diagnostics/catalog/chunks/part-0018.json",
+    "spec/diagnostics/catalog/chunks/part-0027.json",
+    "spec/diagnostics/relations/chunks/part-0001.json",
+    "spec/diagnostics/relations/chunks/part-0002.json",
+    "spec/diagnostics/relations/chunks/part-0007.json",
+    "spec/types/predicates/chunks/part-0008.json",
+    "spec/types/predicates/chunks/part-0015.json",
+    "spec/types/predicates/chunks/part-0018.json",
+    "tests/conformance/checker-predicates/chunks/part-0015.json",
+    "tests/conformance/checker-predicates/chunks/part-0026.json",
+    "tests/conformance/checker-predicates/chunks/part-0028.json",
+)
+R4_NRM_GAP_IDS = (
+    "IR-RES-P0-040",
+    "IR-RES-P0-041",
+    "IR-MOD-P1-042",
+    "IR-MOD-P1-043",
+    "IR-MOD-P1-044",
+    "IR-MOD-P1-045",
+    "IR-MOD-P1-046",
+    "IR-MOD-P1-047",
+    "IR-RES-P1-048",
+    "IR-RES-P1-049",
+    "IR-TRACE-P1-050",
+    "IR-TRACE-P2-051",
+)
+R4_NRM_ACCEPTANCE_TEST_IDS = tuple(
+    f"IR-R4-GAP-{index:02d}-{suffix}"
+    for index in range(1, 13)
+    for suffix in ("P", "B", "N")
+)
+R4_NRM_ACCEPTANCE_ORACLE_SHA256 = (
+    "454cbbdfaa62cd8892c93c7eb812e9ad1b21dd4eceb3fb3711bee48728b32be3"
+)
+R4_NRM_PREDICATE_FIXTURE_TUPLE_SHA256 = (
+    "508990469db894889f6952f84836c11744e13a44f0d7cb0a624c4766b9258d19"
+)
+R4_NRM_ACCEPTANCE_ARTIFACT_REFS = {
+    ("IR-RES-P0-040", "positive"): (
+        "schemas/language/resolver-graph.schema.json",
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-RES-P0-040", "boundary"): (
+        "spec/contracts/name-resolution-modules-current.json",
+        "spec/contracts/hir-h1-current-mir-bridge.json",
+    ),
+    ("IR-RES-P0-040", "negative"): (
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-RES-P0-041", "positive"): (
+        "schemas/language/method-extension-resolution-trace-schema.json",
+    ),
+    ("IR-RES-P0-041", "boundary"): (
+        "schemas/language/method-extension-resolution-trace-schema.json",
+    ),
+    ("IR-RES-P0-041", "negative"): (
+        "schemas/language/method-extension-resolution-trace-schema.json",
+    ),
+    ("IR-MOD-P1-042", "positive"): (
+        "schemas/language/package-module-source-graph.schema.json",
+        "schemas/language/source-role-carrier.schema.json",
+    ),
+    ("IR-MOD-P1-042", "boundary"): (
+        "schemas/language/package-module-source-graph.schema.json",
+        (
+            "schemas/language/"
+            "module-compilation-dependency-receipt.schema.json"
+        ),
+    ),
+    ("IR-MOD-P1-042", "negative"): (
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-MOD-P1-043", "positive"): (
+        "schemas/language/resolver-graph.schema.json",
+        (
+            "schemas/language/"
+            "module-compilation-dependency-receipt.schema.json"
+        ),
+    ),
+    ("IR-MOD-P1-043", "boundary"): (
+        "spec/contracts/name-resolution-modules-current.json",
+    ),
+    ("IR-MOD-P1-043", "negative"): (
+        "schemas/language/resolver-graph.schema.json",
+    ),
+    ("IR-MOD-P1-044", "positive"): (
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-MOD-P1-044", "boundary"): (
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-MOD-P1-044", "negative"): (
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-MOD-P1-045", "positive"): (
+        "schemas/language/module-visibility-closure.schema.json",
+        (
+            "schemas/language/"
+            "top-level-type-visibility-descriptor.schema.json"
+        ),
+    ),
+    ("IR-MOD-P1-045", "boundary"): (
+        "schemas/language/module-visibility-closure.schema.json",
+    ),
+    ("IR-MOD-P1-045", "negative"): (
+        "schemas/language/module-visibility-closure.schema.json",
+    ),
+    ("IR-MOD-P1-046", "positive"): (
+        "schemas/language/module-api-digest.schema.json",
+        (
+            "schemas/language/"
+            "module-compilation-dependency-receipt.schema.json"
+        ),
+        (
+            "schemas/language/"
+            "module-source-contribution-projection.schema.json"
+        ),
+        "schemas/language/module-compilation-receipt.schema.json",
+        (
+            "tests/fixtures/current/"
+            "module-compilation-artifact-relations-r1.json"
+        ),
+    ),
+    ("IR-MOD-P1-046", "boundary"): (
+        "schemas/language/module-api-digest.schema.json",
+        "schemas/language/module-implementation-digest.schema.json",
+        (
+            "schemas/language/"
+            "module-source-contribution-projection.schema.json"
+        ),
+        "schemas/language/module-compilation-receipt.schema.json",
+        (
+            "tests/fixtures/current/"
+            "module-compilation-artifact-relations-r1.json"
+        ),
+    ),
+    ("IR-MOD-P1-046", "negative"): (
+        "schemas/language/module-api-digest.schema.json",
+        (
+            "schemas/language/"
+            "module-source-contribution-projection.schema.json"
+        ),
+        "schemas/language/module-compilation-receipt.schema.json",
+        (
+            "tests/fixtures/current/"
+            "module-compilation-artifact-relations-r1.json"
+        ),
+    ),
+    ("IR-MOD-P1-047", "positive"): (
+        "schemas/language/module-initialization-plan.schema.json",
+    ),
+    ("IR-MOD-P1-047", "boundary"): (
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-MOD-P1-047", "negative"): (
+        "schemas/language/module-initialization-plan.schema.json",
+        "schemas/language/package-module-source-graph.schema.json",
+    ),
+    ("IR-RES-P1-048", "positive"): (
+        "schemas/language/resolver-graph.schema.json",
+    ),
+    ("IR-RES-P1-048", "boundary"): (
+        "schemas/language/resolver-graph.schema.json",
+    ),
+    ("IR-RES-P1-048", "negative"): (
+        "schemas/language/resolver-graph.schema.json",
+    ),
+    ("IR-RES-P1-049", "positive"): (
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-RES-P1-049", "boundary"): (
+        "spec/contracts/name-resolution-modules-current.json",
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-RES-P1-049", "negative"): (
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-TRACE-P1-050", "positive"): (
+        "schemas/language/resolver-trace.schema.json",
+        "spec/contracts/name-resolution-modules-current.json",
+    ),
+    ("IR-TRACE-P1-050", "boundary"): (
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-TRACE-P1-050", "negative"): (
+        "schemas/language/resolver-trace.schema.json",
+    ),
+    ("IR-TRACE-P2-051", "positive"): (
+        "spec/contracts/name-resolution-modules-current.json",
+    ),
+    ("IR-TRACE-P2-051", "boundary"): (
+        "spec/contracts/name-resolution-modules-current.json",
+    ),
+    ("IR-TRACE-P2-051", "negative"): (
+        "spec/contracts/name-resolution-modules-current.json",
+    ),
+}
+R4_NRM_STAGE_SEQUENCE = tuple(
+    row[0] for row in R4_NRM_PRECEDENCE
+)
+R4_NRM_INTEGRATED_PATHS = (
+    "spec/contracts/name-resolution-modules-current.json",
+    "schemas/language/name-resolution-modules-current-fixtures.schema.json",
+    "tests/fixtures/current/name-resolution-modules-current-r1.json",
+    "schemas/language/package-module-source-graph.schema.json",
+    "schemas/language/source-role-carrier.schema.json",
+    "schemas/language/module-compilation-dependency-receipt.schema.json",
+    "schemas/language/module-compilation-receipt.schema.json",
+    "schemas/language/module-implementation-digest.schema.json",
+    "schemas/language/module-initialization-plan.schema.json",
+    "schemas/language/module-source-contribution-projection.schema.json",
+    "tests/fixtures/current/module-compilation-artifact-relations-r1.json",
+    "schemas/language/module-visibility-closure.schema.json",
+    "schemas/language/top-level-type-visibility-descriptor.schema.json",
+    "schemas/language/resolver-graph.schema.json",
+    "schemas/language/resolver-trace.schema.json",
+    "schemas/language/method-extension-resolution-trace-schema.json",
+    "schemas/language/module-api-digest.schema.json",
+    "tests/fixtures/imported/module-api-digest-fixtures.json",
+    "spec/contracts/hir-h1-current-mir-bridge.json",
+    "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json",
+    "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json",
+    "spec/frontend/frontend-model.json",
+)
 EXPR_TEXT_CONSUMERS = [
     "roles/prompts/Deeplus_Shared_Work_Role_Charter_Prompt.txt",
     "roles/prompts/Design_Deeplus_Design_and_Release_Steward_Prompt.txt",
@@ -350,8 +680,56 @@ EXPR_TEXT_CONSUMERS = [
 ]
 
 
-def canonical_sha(value: Any) -> str:
-    data = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+def has_non_unicode_scalar(value: Any) -> bool:
+    """Return whether a JSON value contains an unpaired UTF-16 surrogate."""
+
+    if isinstance(value, str):
+        return any(0xD800 <= ord(character) <= 0xDFFF for character in value)
+    if isinstance(value, dict):
+        return any(
+            has_non_unicode_scalar(key)
+            or has_non_unicode_scalar(child)
+            for key, child in value.items()
+        )
+    if isinstance(value, list):
+        return any(has_non_unicode_scalar(child) for child in value)
+    return False
+
+
+def is_canonical_json_value(value: Any) -> bool:
+    """Return whether a value is in the closed R4 canonical JSON domain."""
+
+    if value is None or type(value) in {bool, int}:
+        return True
+    if isinstance(value, str):
+        return not has_non_unicode_scalar(value)
+    if isinstance(value, list):
+        return all(is_canonical_json_value(child) for child in value)
+    if isinstance(value, dict):
+        return all(
+            type(key) is str
+            and not has_non_unicode_scalar(key)
+            and is_canonical_json_value(child)
+            for key, child in value.items()
+        )
+    return False
+
+
+def canonical_sha(value: Any) -> str | None:
+    """Hash the closed R4 canonical JSON domain without coercion or crashes."""
+
+    if not is_canonical_json_value(value):
+        return None
+    try:
+        data = json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError, UnicodeEncodeError):
+        return None
     return hashlib.sha256(data).hexdigest()
 
 
@@ -438,6 +816,9683 @@ def fixed_operator_schema_role_rows(schema_def: dict[str, Any]) -> dict[str, Any
     return rows
 
 
+def r4_nrm_contract_results(
+    root: Path,
+) -> list[tuple[bool, str, str]]:
+    """Validate the bounded R4 name-resolution/module diagnostic contract."""
+
+    results: list[tuple[bool, str, str]] = []
+    documents: dict[str, list[dict[str, Any]]] = {}
+
+    def record(condition: bool, code: str, detail: str) -> None:
+        results.append((bool(condition), code, detail))
+
+    for relative in R4_NRM_TARGET_FILES:
+        path = root / relative
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(value, list) or not all(
+                isinstance(row, dict) for row in value
+            ):
+                raise ValueError("expected an array of objects")
+            documents[relative] = value
+            record(
+                path.stat().st_size <= 61440,
+                "R4_NRM_SHARD_SIZE",
+                f"{relative} bytes={path.stat().st_size}",
+            )
+        except Exception as exc:  # noqa: BLE001
+            documents[relative] = []
+            record(False, "R4_NRM_JSON_CLOSURE", f"{relative}: {exc}")
+
+    try:
+        promotion_contract = json.loads(
+            (
+                root
+                / "spec/contracts/name-resolution-modules-current.json"
+            ).read_text(encoding="utf-8")
+        )
+        integrated_cases = json.loads(
+            (
+                root
+                / "tests/fixtures/current/"
+                "name-resolution-modules-current-r1.json"
+            ).read_text(encoding="utf-8")
+        ).get("cases", [])
+    except Exception as exc:  # noqa: BLE001
+        promotion_contract = {}
+        integrated_cases = []
+        record(
+            False,
+            "R4_NRM_PROMOTION_METADATA",
+            f"integrated promotion metadata: {exc}",
+        )
+
+    precedence_ids = [row[0] for row in R4_NRM_PRECEDENCE]
+    primary_by_predicate = {row[0]: row[1] for row in R4_NRM_PRECEDENCE}
+    reasons_by_predicate = {
+        row[0]: set(row[2]) for row in R4_NRM_PRECEDENCE
+    }
+    negative_reason_by_predicate = {
+        "PackageModuleSourceGraphAdmitted": "PACKAGE_TARGET_MISSING",
+        "ModuleItemSkeletonSetAdmitted": "MODULE_CONTRIBUTION_CONFLICT",
+        "DependencyInterfaceBindingClosed": "IMPORT_TARGET_NOT_FOUND",
+        "ResolverScopeTreeAdmitted": "IMPORT_LOCAL_COLLISION",
+        "ReferenceCandidateSetResolved": "ZERO_CANDIDATES",
+        "ReferenceVisibilityActivationAdmitted": "API_VISIBILITY_LEAK",
+        "ResolvedNoncallReferenceSelected": "MULTIPLE_AFTER_FILTER",
+        "ResolverHirSealAdmitted": "UNRESOLVED_COUNT_NONZERO",
+        "ModuleInterfaceDigestVerified": "MISSING_EXPORT_EDGE",
+    }
+
+    new_diagnostics = documents[
+        "spec/diagnostics/catalog/chunks/part-0027.json"
+    ]
+    observed_diagnostic_ids = [
+        row.get("diagnostic_id") for row in new_diagnostics
+    ]
+    expected_diagnostic_ids = [
+        primary_by_predicate[predicate_id]
+        for predicate_id in precedence_ids
+    ]
+    record(
+        observed_diagnostic_ids == expected_diagnostic_ids,
+        "R4_NRM_DIAGNOSTIC_SET",
+        f"observed={observed_diagnostic_ids}",
+    )
+    record(
+        all(
+            row.get("diagnostic_status") == "active"
+            and row.get("diagnostic_maturity") == "active"
+            and row.get("diagnostic_class") == "current_source"
+            and row.get("emission_domain") == "source"
+            and row.get("stage") == "checker"
+            and row.get("severity") == "error"
+            and row.get("primary_source") == "spec/language.md"
+            and row.get("product_support") == "NOT_RUN"
+            for row in new_diagnostics
+        ),
+        "R4_NRM_DIAGNOSTIC_CONTRACT",
+        f"rows={len(new_diagnostics)}",
+    )
+
+    new_relations = documents[
+        "spec/diagnostics/relations/chunks/part-0007.json"
+    ]
+    expected_primary_relations = [
+        {
+            "violation_id": f"{predicate_id}:default",
+            "predicate_id": predicate_id,
+            "diagnostic_id": primary_by_predicate[predicate_id],
+            "relation": "primary",
+        }
+        for predicate_id in precedence_ids
+    ]
+    record(
+        new_relations[:9] == expected_primary_relations
+        and len(new_relations) == 10,
+        "R4_NRM_PRIMARY_RELATIONS",
+        f"rows={len(new_relations)} primary={len(new_relations[:9])}",
+    )
+    expected_compat_relation = {
+        "violation_id": None,
+        "predicate_id": "MethodExtensionResolutionAdmitted",
+        "diagnostic_id": "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+        "relation": "historical",
+        "replacement": "MEMBER_EXTENSION_COLLISION",
+    }
+    record(
+        len(new_relations) == 10
+        and new_relations[-1] == expected_compat_relation,
+        "R4_NRM_COLLISION_RELATIONS",
+        f"historical={new_relations[-1:] or []}",
+    )
+
+    new_predicates = documents[
+        "spec/types/predicates/chunks/part-0018.json"
+    ]
+    observed_predicate_ids = [
+        row.get("predicate_id") for row in new_predicates
+    ]
+    record(
+        observed_predicate_ids == precedence_ids
+        and all(
+            row.get("dependency_predicates") == precedence_ids[:index]
+            for index, row in enumerate(new_predicates)
+        ),
+        "R4_NRM_PRECEDENCE",
+        f"observed={observed_predicate_ids}",
+    )
+    reason_contract = True
+    predicate_contract = True
+    for predicate_id, row in zip(precedence_ids, new_predicates):
+        diagnostic_id = primary_by_predicate[predicate_id]
+        dispatch = row.get("diagnostic_dispatch", {})
+        reason_contract = reason_contract and (
+            isinstance(dispatch, dict)
+            and set(dispatch) == reasons_by_predicate[predicate_id]
+            and set(dispatch.values()) == {diagnostic_id}
+        )
+        predicate_contract = predicate_contract and (
+            row.get("active_primary_diagnostic") == diagnostic_id
+            and row.get("diagnostic_refs") == [diagnostic_id]
+            and row.get("design_seed_diagnostic_refs") == []
+            and row.get("secondary_diagnostics") == []
+            and row.get("predicate_maturity") == "design_algorithm"
+            and row.get("emission_eligible") is True
+            and row.get("execution_receipt") is None
+            and row.get("evidence_status")
+            == "DESIGN_ALGORITHM_STATIC_NOT_RUN"
+            and row.get("positive_fixture_ids")
+            == [
+                f"PF-{predicate_id}-POS",
+                f"PF-{predicate_id}-BOUNDARY",
+            ]
+            and row.get("negative_fixture_ids")
+            == [f"PF-{predicate_id}-NEG"]
+        )
+    record(
+        reason_contract,
+        "R4_NRM_REASON_BINDING",
+        f"predicates={len(new_predicates)}",
+    )
+    record(
+        predicate_contract,
+        "R4_NRM_PREDICATE_CONTRACT",
+        f"predicates={len(new_predicates)}",
+    )
+
+    fixtures = documents[
+        "tests/conformance/checker-predicates/chunks/part-0028.json"
+    ]
+    expected_fixture_ids = [
+        f"PF-{predicate_id}-{suffix}"
+        for predicate_id in precedence_ids
+        for suffix in ("POS", "BOUNDARY", "NEG")
+    ]
+    observed_fixture_ids = [row.get("fixture_id") for row in fixtures]
+    record(
+        observed_fixture_ids == expected_fixture_ids,
+        "R4_NRM_FIXTURE_SET",
+        f"rows={len(fixtures)}",
+    )
+    fixture_binding = True
+    fixture_tuple_projection: list[list[Any]] = []
+    for row in fixtures:
+        predicate_id = row.get("predicate_id")
+        fixture_id = row.get("fixture_id", "")
+        if predicate_id not in primary_by_predicate:
+            fixture_binding = False
+            continue
+        negative = fixture_id.endswith("-NEG")
+        descriptor = row.get("descriptor", {})
+        fixture_tuple_projection.append(
+            [
+                fixture_id,
+                descriptor.get("test_class"),
+                descriptor.get("scenario"),
+                descriptor.get("expected_outcome"),
+                row.get("rule_seed"),
+                row.get("execution_status"),
+            ]
+        )
+        fixture_binding = fixture_binding and (
+            row.get("execution_status") == "DESIGN_STATIC_NOT_RUN"
+            and row.get("baseline") == "0.1.2-baseline.r51f3"
+            and row.get("row_schema_version")
+            == "deeplus.checker-predicate-fixture/r51f3"
+            and row.get("descriptor_v5", {}).get("schema")
+            == "deeplus.rcts-v5/descriptor"
+            and (
+                (
+                    row.get("fixture_kind") == "concrete_negative"
+                    and row.get("expected") == "rejected"
+                    and row.get("expected_primary_diagnostic")
+                    == primary_by_predicate[predicate_id]
+                    and row.get("violated_condition")
+                    == negative_reason_by_predicate[predicate_id]
+                    and descriptor.get("primary_reason")
+                    == negative_reason_by_predicate[predicate_id]
+                )
+                if negative
+                else (
+                    row.get("fixture_kind") == "concrete_positive"
+                    and row.get("expected") == "admitted"
+                    and row.get("expected_primary_diagnostic") is None
+                    and descriptor.get("primary_reason") is None
+                )
+            )
+        )
+    fixture_tuple_sha256 = canonical_sha(fixture_tuple_projection)
+    fixture_binding = (
+        fixture_binding
+        and fixture_tuple_sha256
+        == R4_NRM_PREDICATE_FIXTURE_TUPLE_SHA256
+    )
+    record(
+        fixture_binding,
+        "R4_NRM_FIXTURE_BINDING",
+        (
+            f"statically_bound={len(fixtures)}/27 executed=0/27 "
+            f"tuple_sha256={fixture_tuple_sha256}"
+        ),
+    )
+
+    catalog_rows = [
+        row
+        for relative in (
+            "spec/diagnostics/catalog/chunks/part-0007.json",
+            "spec/diagnostics/catalog/chunks/part-0011.json",
+            "spec/diagnostics/catalog/chunks/part-0018.json",
+        )
+        for row in documents[relative]
+    ]
+    collision_ids = {
+        "MEMBER_EXTENSION_COLLISION",
+        "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+        "STABLE_MEMBER_EXTENSION_COLLISION",
+    }
+    collision_catalog = {
+        row.get("diagnostic_id"): row
+        for row in catalog_rows
+        if row.get("diagnostic_id") in collision_ids
+    }
+    member_collision = collision_catalog.get(
+        "MEMBER_EXTENSION_COLLISION", {}
+    )
+    compatibility_collision = collision_catalog.get(
+        "EXTENSION_SHADOWED_BY_MEMBER_COMPAT", {}
+    )
+    stable_collision = collision_catalog.get(
+        "STABLE_MEMBER_EXTENSION_COLLISION", {}
+    )
+    record(
+        set(collision_catalog) == collision_ids
+        and member_collision.get("diagnostic_status") == "active"
+        and member_collision.get("diagnostic_maturity") == "active"
+        and member_collision.get("emission_domain") == "source"
+        and "replaced_by" not in member_collision
+        and all(
+            row.get("diagnostic_status") == "retired"
+            and row.get("diagnostic_maturity") == "retired"
+            and row.get("emission_domain") == "historical"
+            and row.get("replaced_by") == "MEMBER_EXTENSION_COLLISION"
+            for row in (compatibility_collision, stable_collision)
+        ),
+        "R4_NRM_COLLISION_CATALOG",
+        f"ids={sorted(collision_catalog)}",
+    )
+
+    all_relations = [
+        row
+        for relative in (
+            "spec/diagnostics/relations/chunks/part-0001.json",
+            "spec/diagnostics/relations/chunks/part-0002.json",
+            "spec/diagnostics/relations/chunks/part-0007.json",
+        )
+        for row in documents[relative]
+    ]
+    member_primary_relations = {
+        (row.get("violation_id"), row.get("predicate_id"))
+        for row in all_relations
+        if row.get("diagnostic_id") == "MEMBER_EXTENSION_COLLISION"
+        and row.get("relation") == "primary"
+    }
+    expected_member_primary_relations = {
+        (
+            "MemberExtensionCollisionPolicyAdmitted:default",
+            "MemberExtensionCollisionPolicyAdmitted",
+        ),
+        (
+            "MemberExtensionCollisionRejected:default",
+            "MemberExtensionCollisionRejected",
+        ),
+        (
+            "QualifiedExtensionSelectorAdmitted:default",
+            "QualifiedExtensionSelectorAdmitted",
+        ),
+    }
+    stable_aliases = [
+        row
+        for row in all_relations
+        if row.get("diagnostic_id") == "STABLE_MEMBER_EXTENSION_COLLISION"
+    ]
+    compatibility_relations = [
+        row
+        for row in all_relations
+        if row.get("diagnostic_id") == "EXTENSION_SHADOWED_BY_MEMBER_COMPAT"
+    ]
+    record(
+        member_primary_relations == expected_member_primary_relations
+        and len(stable_aliases) == 1
+        and stable_aliases[0].get("relation") == "alias"
+        and stable_aliases[0].get("replacement")
+        == "MEMBER_EXTENSION_COLLISION"
+        and compatibility_relations == [expected_compat_relation],
+        "R4_NRM_COLLISION_RELATIONS",
+        (
+            f"primary={sorted(member_primary_relations)} "
+            f"aliases={len(stable_aliases)} "
+            f"historical={len(compatibility_relations)}"
+        ),
+    )
+
+    existing_predicates = documents[
+        "spec/types/predicates/chunks/part-0008.json"
+    ]
+    existing_predicate_by_id = {
+        row.get("predicate_id"): row for row in existing_predicates
+    }
+    collision_predicate = existing_predicate_by_id.get(
+        "MemberExtensionCollisionRejected", {}
+    )
+    method_predicate = existing_predicate_by_id.get(
+        "MethodExtensionResolutionAdmitted", {}
+    )
+    record(
+        collision_predicate.get("active_primary_diagnostic")
+        == "MEMBER_EXTENSION_COLLISION"
+        and collision_predicate.get("diagnostic_refs")
+        == ["MEMBER_EXTENSION_COLLISION"]
+        and collision_predicate.get("secondary_diagnostics") == []
+        and collision_predicate.get("predicate_maturity")
+        == "design_algorithm"
+        and collision_predicate.get("emission_eligible") is True
+        and method_predicate.get("dependency_predicates")
+        == ["MemberExtensionCollisionRejected"]
+        and method_predicate.get("predicate_maturity") == "design_seed"
+        and method_predicate.get("emission_eligible") is False
+        and method_predicate.get("evidence_status")
+        == "DESIGN_STATIC_NOT_RUN"
+        and method_predicate.get("execution_receipt") is None,
+        "R4_NRM_COLLISION_PREDICATES",
+        (
+            f"collision={collision_predicate.get('predicate_maturity')} "
+            f"method={method_predicate.get('predicate_maturity')}"
+        ),
+    )
+    method_decision_text = "\n".join(
+        str(step)
+        for step in method_predicate.get("decision_procedure", [])
+    )
+    method_fence_text = "\n".join(
+        (
+            str(method_predicate.get("output", "")),
+            method_decision_text,
+            str(method_predicate.get("termination_metric", "")),
+            str(method_predicate.get("success_result", "")),
+            str(method_predicate.get("evaluation_order", "")),
+        )
+    )
+    forbidden_method_fence_phrases = (
+        "commit one statically selected method or extension identity",
+        "within an extension-only domain, reject multiple same-tier",
+        "OVERLOAD_WINNER_FUNCTION_ID",
+        "COMPLETE_GENERIC_SUBSTITUTION",
+        "EXPECTED_TYPE_DIRECTED_WINNER",
+        "APPLICABILITY_RANK",
+        "SPECIFICITY_WINNER",
+        "ROW_INFERENCE_RESULT",
+        "RETURN_TYPE_ONLY_WINNER",
+    )
+    deferred_collision_cases = {
+        case.get("id"): case.get("expected", {}).get(
+            "selected_count_or_null"
+        )
+        for case in integrated_cases
+        if case.get("id")
+        in {"IR-R4-RES041-POS", "IR-R4-RES041-BOUND"}
+    }
+    record(
+        "ResolvedOverloadSetRef" in method_fence_text
+        and "next cluster" in method_fence_text
+        and "selection_deferred" in method_fence_text
+        and "selected_count = unspecified_in_R4" in method_fence_text
+        and all(
+            phrase not in method_fence_text
+            for phrase in forbidden_method_fence_phrases
+        )
+        and deferred_collision_cases
+        == {
+            "IR-R4-RES041-POS": None,
+            "IR-R4-RES041-BOUND": None,
+        },
+        "R4_NRM_COLLISION_SELECTION_DEFERRED",
+        (
+            f"method={method_predicate.get('predicate_maturity')} "
+            f"selected={deferred_collision_cases}"
+        ),
+    )
+
+    collision_fixture_rows = documents[
+        "tests/conformance/checker-predicates/chunks/part-0015.json"
+    ]
+    collision_fixtures = {
+        row.get("fixture_id"): row
+        for row in collision_fixture_rows
+        if row.get("predicate_id") == "MemberExtensionCollisionRejected"
+    }
+    collision_positive = collision_fixtures.get(
+        "PF-MemberExtensionCollisionRejected-POS", {}
+    )
+    collision_negative = collision_fixtures.get(
+        "PF-MemberExtensionCollisionRejected-NEG", {}
+    )
+    collision_positive_descriptor = collision_positive.get("descriptor", {})
+    collision_negative_descriptor = collision_negative.get("descriptor", {})
+    record(
+        set(collision_fixtures)
+        == {
+            "PF-MemberExtensionCollisionRejected-POS",
+            "PF-MemberExtensionCollisionRejected-NEG",
+        }
+        and collision_positive.get("fixture_kind") == "concrete_positive"
+        and collision_positive.get("expected") == "admitted"
+        and collision_positive.get("diagnostic_disposition")
+        == "no diagnostic"
+        and collision_positive.get("execution_status")
+        == "DESIGN_STATIC_NOT_RUN"
+        and collision_positive_descriptor.get("schema")
+        == "deeplus.member-extension-collision-descriptor/r1"
+        and collision_positive_descriptor.get("selector_kind") == "ORDINARY"
+        and len(
+            collision_positive_descriptor.get(
+                "applicable_nominal_candidate_ids", []
+            )
+        )
+        == 1
+        and all(
+            is_typed_id(candidate_id, "MemberId")
+            for candidate_id in collision_positive_descriptor.get(
+                "applicable_nominal_candidate_ids", []
+            )
+        )
+        and collision_positive_descriptor.get(
+            "applicable_active_extension_candidate_ids"
+        )
+        == []
+        and collision_positive_descriptor.get(
+            "qualified_extension_id_or_null"
+        )
+        is None
+        and collision_negative.get("fixture_kind") == "concrete_negative"
+        and collision_negative.get("expected") == "rejected"
+        and collision_negative.get("expected_primary_diagnostic")
+        == "MEMBER_EXTENSION_COLLISION"
+        and collision_negative.get("diagnostic_disposition")
+        == "active primary design algorithm; product NOT_RUN"
+        and collision_negative.get("execution_status")
+        == "DESIGN_STATIC_NOT_RUN"
+        and collision_negative_descriptor.get("schema")
+        == "deeplus.member-extension-collision-descriptor/r1"
+        and collision_negative_descriptor.get("selector_kind") == "ORDINARY"
+        and len(
+            collision_negative_descriptor.get(
+                "applicable_nominal_candidate_ids", []
+            )
+        )
+        == 1
+        and len(
+            collision_negative_descriptor.get(
+                "applicable_active_extension_candidate_ids", []
+            )
+        )
+        == 1
+        and all(
+            is_typed_id(candidate_id, "MemberId")
+            for candidate_id in collision_negative_descriptor.get(
+                "applicable_nominal_candidate_ids", []
+            )
+        )
+        and all(
+            is_typed_id(candidate_id, "ExtensionMemberId")
+            for candidate_id in collision_negative_descriptor.get(
+                "applicable_active_extension_candidate_ids", []
+            )
+        )
+        and collision_negative_descriptor.get(
+            "qualified_extension_id_or_null"
+        )
+        is None
+        and collision_predicate.get("input_descriptor")
+        == "MemberExtensionCollisionDescriptorR1"
+        and collision_predicate.get("input_descriptor_schema")
+        == (
+            "schemas/language/"
+            "method-extension-resolution-trace-schema.json"
+            "#/$defs/memberExtensionCollisionDescriptor"
+        )
+        and collision_predicate.get("descriptor_axes")
+        == [
+            "selector_kind",
+            "applicable_nominal_candidate_ids",
+            "applicable_active_extension_candidate_ids",
+            "qualified_extension_id_or_null",
+        ],
+        "R4_NRM_COLLISION_FIXTURES",
+        (
+            f"rows={sorted(collision_fixtures)} "
+            "positive_selection=deferred negative_selection=0"
+        ),
+    )
+
+    new_diagnostic_id_set = set(observed_diagnostic_ids)
+    new_primary_oracles = [
+        row
+        for row in promotion_contract.get("acceptance_oracles", [])
+        if row.get("primary_diagnostic_or_null") in new_diagnostic_id_set
+    ]
+    record(
+        len(new_primary_oracles) == 10
+        and all(
+            row.get("diagnostic_identity_status")
+            == "NEW_PRIMARY_INTEGRATED_UNVERIFIED"
+            for row in new_primary_oracles
+        )
+        and not any(
+            row.get("diagnostic_identity_status")
+            == "NEW_PRIMARY_APPROVED_NOT_INTEGRATED_SEED"
+            for row in promotion_contract.get("acceptance_oracles", [])
+        ),
+        "R4_NRM_PROMOTION_METADATA",
+        (
+            f"new_primary_oracles={len(new_primary_oracles)} "
+            f"status={promotion_contract.get('status')}"
+        ),
+    )
+
+    noncall_predicate = next(
+        (
+            row
+            for row in new_predicates
+            if row.get("predicate_id") == "ResolvedNoncallReferenceSelected"
+        ),
+        {},
+    )
+    hir_boundary_fixture = next(
+        (
+            row
+            for row in fixtures
+            if row.get("fixture_id")
+            == "PF-ResolverHirSealAdmitted-BOUNDARY"
+        ),
+        {},
+    )
+    noncall_text = json.dumps(noncall_predicate, ensure_ascii=False)
+    record(
+        "ResolvedOverloadSetRef" in noncall_text
+        and "next cluster" in noncall_text
+        and "generic substitution" in noncall_text
+        and hir_boundary_fixture.get("descriptor", {}).get(
+            "expected_outcome"
+        )
+        == "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
+        "R4_NRM_NEXT_CLUSTER_FENCE",
+        "callable overload winner remains outside R4",
+    )
+    record(
+        all(
+            row.get("product_support") == "NOT_RUN"
+            for row in new_diagnostics + new_predicates
+        )
+        and all(
+            row.get("execution_status") == "DESIGN_STATIC_NOT_RUN"
+            for row in fixtures
+        )
+        and member_collision.get("product_support") == "NOT_RUN",
+        "R4_NRM_PRODUCT_NOT_RUN",
+        "diagnostics, predicates and fixtures remain design-static",
+    )
+    return results
+
+
+def nested_property_consts(value: Any, property_name: str) -> list[Any]:
+    """Collect JSON-Schema ``properties.<name>.const`` values recursively."""
+
+    values: list[Any] = []
+    if isinstance(value, dict):
+        properties = value.get("properties")
+        if isinstance(properties, dict):
+            property_schema = properties.get(property_name)
+            if (
+                isinstance(property_schema, dict)
+                and "const" in property_schema
+            ):
+                values.append(property_schema["const"])
+        for child in value.values():
+            values.extend(nested_property_consts(child, property_name))
+    elif isinstance(value, list):
+        for child in value:
+            values.extend(nested_property_consts(child, property_name))
+    return values
+
+
+def is_typed_id(value: Any, prefix: str | None = None) -> bool:
+    if (
+        not isinstance(value, str)
+        or re.fullmatch(r"[A-Za-z][A-Za-z0-9]*:[^\s]+", value) is None
+    ):
+        return False
+    domain = value.split(":", 1)[0]
+    return prefix is None or domain == prefix
+
+
+def is_typed_id_in(value: Any, domains: set[str]) -> bool:
+    return is_typed_id(value) and value.split(":", 1)[0] in domains
+
+
+def directed_strongly_connected_components(
+    nodes: set[str], edges: list[tuple[str, str]]
+) -> list[set[str]]:
+    """Return directed SCCs iteratively, including edge-only endpoints."""
+
+    all_nodes = set(nodes)
+    for source, target in edges:
+        all_nodes.add(source)
+        all_nodes.add(target)
+    adjacency = {node: [] for node in all_nodes}
+    reverse = {node: [] for node in all_nodes}
+    for source, target in edges:
+        adjacency[source].append(target)
+        reverse[target].append(source)
+
+    visited: set[str] = set()
+    finish_order: list[str] = []
+    for start in sorted(all_nodes):
+        if start in visited:
+            continue
+        stack: list[tuple[str, bool]] = [(start, False)]
+        while stack:
+            node, expanded = stack.pop()
+            if expanded:
+                finish_order.append(node)
+                continue
+            if node in visited:
+                continue
+            visited.add(node)
+            stack.append((node, True))
+            for child in reversed(sorted(adjacency[node])):
+                if child not in visited:
+                    stack.append((child, False))
+
+    components: list[set[str]] = []
+    assigned: set[str] = set()
+    for start in reversed(finish_order):
+        if start in assigned:
+            continue
+        component: set[str] = set()
+        stack = [(start, False)]
+        assigned.add(start)
+        while stack:
+            node, _expanded = stack.pop()
+            component.add(node)
+            for parent in reverse[node]:
+                if parent not in assigned:
+                    assigned.add(parent)
+                    stack.append((parent, False))
+        components.append(component)
+    return components
+
+
+def has_directed_cycle(nodes: set[str], edges: list[tuple[str, str]]) -> bool:
+    self_loops = {(source, target) for source, target in edges if source == target}
+    return bool(self_loops) or any(
+        len(component) > 1
+        for component in directed_strongly_connected_components(nodes, edges)
+    )
+
+
+def canonical_project_relative_path(value: Any) -> str | None:
+    """Return one canonical slash-separated project-relative path."""
+
+    if (
+        not isinstance(value, str)
+        or not value
+        or "\\" in value
+        or value.startswith("/")
+        or re.match(r"^[A-Za-z]:", value)
+    ):
+        return None
+    parts = value.split("/")
+    if any(part in {"", ".", ".."} for part in parts):
+        return None
+    return "/".join(parts)
+
+
+def r4_source_role_carrier_failure_codes(
+    carrier: dict[str, Any],
+) -> set[str]:
+    """Validate target ownership and normalized paths in a source carrier."""
+
+    failures: set[str] = set()
+    if (
+        carrier.get("schema") != "deeplus.source-role-carrier/r2"
+        or carrier.get("profile") != "R4_NAME_RESOLUTION_MODULES"
+        or not is_typed_id(carrier.get("package_id"), "PackageId")
+        or re.fullmatch(
+            r"[0-9a-f]{64}",
+            str(carrier.get("package_module_source_graph_sha256", "")),
+        )
+        is None
+    ):
+        failures.add("CARRIER_PROFILE")
+    targets = carrier.get("targets", [])
+    sources = carrier.get("source_files", [])
+    target_ids = [row.get("target_id") for row in targets]
+    if (
+        not isinstance(targets, list)
+        or not targets
+        or len(target_ids) != len(set(target_ids))
+        or any(not is_typed_id(target_id, "TargetId") for target_id in target_ids)
+    ):
+        failures.add("TARGET_SET")
+    target_by_id = {row.get("target_id"): row for row in targets}
+    target_identity_by_key: dict[tuple[Any, Any, Any], Any] = {}
+    target_key_by_id: dict[Any, tuple[Any, Any, Any]] = {}
+    package_id = carrier.get("package_id")
+    for target in targets:
+        key = (
+            package_id,
+            target.get("canonical_manifest_target_name"),
+            target.get("target_kind"),
+        )
+        previous_target_id = target_identity_by_key.setdefault(
+            key, target.get("target_id")
+        )
+        previous_key = target_key_by_id.setdefault(
+            target.get("target_id"), key
+        )
+        if (
+            None in key
+            or previous_target_id != target.get("target_id")
+            or previous_key != key
+        ):
+            failures.add("TARGET_IDENTITY_RECIPE")
+        if target.get("target_kind") != target.get(
+            "source_role_policy"
+        ):
+            failures.add("TARGET_SOURCE_ROLE_POLICY")
+    source_ids: set[Any] = set()
+    path_keys: set[tuple[Any, str]] = set()
+    observed_source_target_ids: set[Any] = set()
+    module_identity_by_key: dict[tuple[Any, tuple[Any, ...]], Any] = {}
+    module_key_by_id: dict[Any, tuple[Any, tuple[Any, ...]]] = {}
+    for source in sources:
+        source_id = source.get("source_file_id")
+        if (
+            source_id in source_ids
+            or not is_typed_id(source_id, "SourceFileId")
+        ):
+            failures.add("SOURCE_FILE_ID")
+        source_ids.add(source_id)
+        target_id = source.get("target_id")
+        observed_source_target_ids.add(target_id)
+        target = target_by_id.get(target_id)
+        if target is None:
+            failures.add("SOURCE_TARGET_REFERENCE")
+        else:
+            if (
+                source.get("source_role") != target.get("source_role_policy")
+                or source.get("activation_profile")
+                != target.get("activation_profile")
+            ):
+                failures.add("SOURCE_TARGET_PROFILE")
+        path = source.get("path")
+        normalized_path = canonical_project_relative_path(path)
+        if normalized_path is None or normalized_path != path:
+            failures.add("SOURCE_PATH_NORMALIZATION")
+            continue
+        path_key = (target_id, normalized_path)
+        if path_key in path_keys:
+            failures.add("SOURCE_PATH_IDENTITY")
+        path_keys.add(path_key)
+        module_path = source.get("module_path")
+        module_key = (
+            package_id,
+            tuple(module_path) if isinstance(module_path, list) else (),
+        )
+        module_id = source.get("module_id")
+        previous_module_id = module_identity_by_key.setdefault(
+            module_key, module_id
+        )
+        previous_module_key = module_key_by_id.setdefault(
+            module_id, module_key
+        )
+        if (
+            not is_typed_id(module_id, "ModuleId")
+            or not module_key[1]
+            or previous_module_id != module_id
+            or previous_module_key != module_key
+        ):
+            failures.add("MODULE_IDENTITY_RECIPE")
+    if set(target_ids) != observed_source_target_ids:
+        failures.add("TARGET_SOURCE_REFERENCE")
+    return failures
+
+
+def canonical_self_digest(
+    value: dict[str, Any], field: str
+) -> str | None:
+    """Hash canonical JSON after excluding one declared self-hash field."""
+
+    if not isinstance(value, dict):
+        return None
+    payload = dict(value)
+    payload.pop(field, None)
+    return canonical_sha(payload)
+
+
+def r4_module_initialization_failure_codes(
+    plan: dict[str, Any],
+) -> set[str]:
+    """Validate the closed compile-time static-binding initialization plan."""
+
+    failures: set[str] = set()
+    if not isinstance(plan, dict):
+        return {"INITIALIZATION_PROFILE"}
+    expected_plan_fields = {
+        "schema",
+        "module_id",
+        "graph_profile",
+        "bindings",
+        "topological_evaluation_order",
+        "evaluation_order",
+        "receipt_order",
+        "commit",
+        "runtime_initializer_count",
+        "semantic_order_winner",
+        "plan_sha256",
+    }
+    if (
+        set(plan) != expected_plan_fields
+        or plan.get("schema")
+        != "deeplus.module-initialization-plan/r1"
+        or not is_typed_id(plan.get("module_id"), "ModuleId")
+        or plan.get("graph_profile")
+        != "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        or plan.get("evaluation_order")
+        != "TOPOLOGICAL_THEN_CANONICAL_DECL_ID"
+        or plan.get("receipt_order") != "CANONICAL_DECL_ID_ORDER"
+        or plan.get("commit")
+        != "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED"
+        or plan.get("runtime_initializer_count") != 0
+        or plan.get("semantic_order_winner") is not False
+    ):
+        failures.add("INITIALIZATION_PROFILE")
+    bindings = plan.get("bindings", [])
+    if (
+        not isinstance(bindings, list)
+        or any(not isinstance(row, dict) for row in bindings)
+    ):
+        return failures | {"STATIC_BINDING_SET"}
+    expected_binding_fields = {
+        "binding_decl_id",
+        "dependency_decl_ids",
+        "value_sha256",
+        "evaluation_status",
+    }
+    binding_ids = [row.get("binding_decl_id") for row in bindings]
+    if (
+        any(
+            not is_typed_id(binding_id, "DeclId")
+            for binding_id in binding_ids
+        )
+        or len(binding_ids) != len(set(binding_ids))
+    ):
+        failures.add("STATIC_BINDING_SET")
+    binding_set = set(binding_ids)
+    dependency_edges: list[tuple[str, str]] = []
+    for row in bindings:
+        dependencies = row.get("dependency_decl_ids", [])
+        if (
+            set(row) != expected_binding_fields
+        ):
+            failures.add("STATIC_BINDING_SET")
+        if (
+            not isinstance(dependencies, list)
+            or any(
+                not is_typed_id(dependency, "DeclId")
+                for dependency in dependencies
+            )
+            or len(dependencies) != len(set(dependencies))
+            or dependencies != sorted(dependencies)
+        ):
+            failures.add("STATIC_DEPENDENCY_SET")
+            continue
+        if row.get("binding_decl_id") in dependencies:
+            failures.add("STATIC_DEPENDENCY_CYCLE")
+        if any(dependency not in binding_set for dependency in dependencies):
+            failures.add("STATIC_DEPENDENCY_REFERENCE")
+        dependency_edges.extend(
+            (row.get("binding_decl_id"), dependency)
+            for dependency in dependencies
+            if dependency in binding_set
+        )
+        if (
+            re.fullmatch(
+                r"[0-9a-f]{64}", str(row.get("value_sha256", ""))
+            )
+            is None
+            or row.get("evaluation_status")
+            != "COMPILE_TIME_SUCCEEDED"
+        ):
+            failures.add("STATIC_BINDING_RESULT")
+    if has_directed_cycle(binding_set, dependency_edges):
+        failures.add("STATIC_DEPENDENCY_CYCLE")
+
+    dependencies_by_binding = {
+        row.get("binding_decl_id"): set(row.get("dependency_decl_ids", []))
+        for row in bindings
+    }
+    remaining = set(binding_set)
+    emitted: list[str] = []
+    while remaining:
+        ready = sorted(
+            binding_id
+            for binding_id in remaining
+            if not (dependencies_by_binding.get(binding_id, set()) & remaining)
+        )
+        if not ready:
+            break
+        emitted.extend(ready)
+        remaining.difference_update(ready)
+    declared_order = plan.get("topological_evaluation_order", [])
+    if declared_order != emitted or len(emitted) != len(binding_set):
+        failures.add("STATIC_EVALUATION_ORDER")
+    if binding_ids != sorted(binding_ids):
+        failures.add("STATIC_RECEIPT_ORDER")
+    plan_sha256 = plan.get("plan_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(plan_sha256 or "")) is None
+        or plan_sha256 != canonical_self_digest(plan, "plan_sha256")
+    ):
+        failures.add("INITIALIZATION_DIGEST")
+    return failures
+
+
+def r4_dependency_receipt_failure_codes(
+    receipt: dict[str, Any],
+    resolver_graph: dict[str, Any] | None = None,
+    provider_interfaces: dict[str, dict[str, Any]] | None = None,
+    package_graph: dict[str, Any] | None = None,
+) -> set[str]:
+    """Validate dependency rows and optional graph/provider pairings."""
+
+    failures: set[str] = set()
+    if not isinstance(receipt, dict):
+        return {"DEPENDENCY_RECEIPT_PROFILE"}
+    if (
+        set(receipt)
+        != {
+            "schema",
+            "consumer_target_id",
+            "consumer_module_id",
+            "package_graph_sha256",
+            "resolver_graph_sha256",
+            "import_bindings",
+            "activation_bindings",
+            "required_interfaces",
+            "canonical_order",
+            "dependency_receipt_sha256",
+        }
+        or
+        receipt.get("schema")
+        != "deeplus.module-compilation-dependency-receipt/r1"
+        or not is_typed_id(
+            receipt.get("consumer_target_id"), "TargetId"
+        )
+        or not is_typed_id(
+            receipt.get("consumer_module_id"), "ModuleId"
+        )
+        or any(
+            re.fullmatch(r"[0-9a-f]{64}", str(receipt.get(field, "")))
+            is None
+            for field in ("package_graph_sha256", "resolver_graph_sha256")
+        )
+        or receipt.get("canonical_order")
+        != "TYPED_ID_CANONICAL_BYTE_ORDER"
+    ):
+        failures.add("DEPENDENCY_RECEIPT_PROFILE")
+
+    imports = receipt.get("import_bindings", [])
+    activations = receipt.get("activation_bindings", [])
+    interfaces = receipt.get("required_interfaces", [])
+    if not all(
+        isinstance(rows, list) for rows in (imports, activations, interfaces)
+    ):
+        return failures | {"DEPENDENCY_RECEIPT_SHAPE"}
+    if any(
+        not isinstance(row, dict)
+        for rows in (imports, activations, interfaces)
+        for row in rows
+    ):
+        return failures | {"DEPENDENCY_RECEIPT_SHAPE"}
+
+    import_ids: set[Any] = set()
+    import_keys: set[tuple[Any, Any, Any]] = set()
+    used_provider_pairs: set[tuple[Any, Any]] = set()
+    import_fields = {
+        "import_binding_id",
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name",
+        "resolved_target_identity",
+        "source_origin_id",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+    }
+    for row in imports:
+        import_id = row.get("import_binding_id")
+        key = (
+            row.get("resolver_scope_id"),
+            row.get("namespace"),
+            row.get("local_binding_name"),
+        )
+        expected_domain = {
+            "MODULE": "ModuleId",
+            "TYPE": "DeclId",
+            "VALUE": "DeclId",
+            "CALLABLE_OVERLOAD_SET": "DeclId",
+        }.get(row.get("namespace"))
+        if (
+            import_id in import_ids
+            or key in import_keys
+            or not is_typed_id(import_id, "ImportBindingId")
+        ):
+            failures.add("DEPENDENCY_IMPORT_IDENTITY")
+        import_ids.add(import_id)
+        import_keys.add(key)
+        if (
+            set(row) != import_fields
+            or
+            not is_typed_id(
+                row.get("resolver_scope_id"), "ResolverScopeId"
+            )
+            or expected_domain is None
+            or re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_]*",
+                str(row.get("local_binding_name", "")),
+            )
+            is None
+            or not is_typed_id(
+                row.get("resolved_target_identity"), expected_domain
+            )
+            or not is_typed_id(
+                row.get("source_origin_id"), "SourceOriginId"
+            )
+        ):
+            failures.add("DEPENDENCY_IMPORT_DOMAIN")
+        provider_binding = row.get("provider_binding_id_or_self")
+        provider_module = row.get("provider_module_id")
+        if (
+            (
+                provider_binding != "self"
+                and not is_typed_id(
+                    provider_binding, "DependencyBindingId"
+                )
+            )
+            or not is_typed_id(provider_module, "ModuleId")
+        ):
+            failures.add("DEPENDENCY_IMPORT_PROVIDER")
+        else:
+            used_provider_pairs.add((provider_binding, provider_module))
+
+    activation_origins: set[Any] = set()
+    activation_keys: set[tuple[Any, Any, Any, Any]] = set()
+    activation_fields = {
+        "activation_origin_id",
+        "resolver_scope_id",
+        "activated_identity",
+        "activation_kind",
+        "semantic_site_key",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+    }
+    for row in activations:
+        origin = row.get("activation_origin_id")
+        key = (
+            row.get("activated_identity"),
+            row.get("resolver_scope_id"),
+            row.get("activation_kind"),
+            row.get("semantic_site_key"),
+        )
+        if origin in activation_origins or key in activation_keys:
+            failures.add("DEPENDENCY_ACTIVATION_IDENTITY")
+        activation_origins.add(origin)
+        activation_keys.add(key)
+        if (
+            set(row) != activation_fields
+            or
+            not is_typed_id(origin, "ActivationOriginId")
+            or not is_typed_id(
+                row.get("resolver_scope_id"), "ResolverScopeId"
+            )
+            or not is_typed_id(
+                row.get("activated_identity"), "ExtensionSetId"
+            )
+            or row.get("activation_kind") != "use"
+            or not isinstance(row.get("semantic_site_key"), str)
+            or not row.get("semantic_site_key")
+        ):
+            failures.add("DEPENDENCY_ACTIVATION_DOMAIN")
+        provider_binding = row.get("provider_binding_id_or_self")
+        provider_module = row.get("provider_module_id")
+        if (
+            (
+                provider_binding != "self"
+                and not is_typed_id(
+                    provider_binding, "DependencyBindingId"
+                )
+            )
+            or not is_typed_id(provider_module, "ModuleId")
+        ):
+            failures.add("DEPENDENCY_ACTIVATION_PROVIDER")
+        else:
+            used_provider_pairs.add((provider_binding, provider_module))
+
+    required_interface_keys: set[tuple[Any, Any]] = set()
+    interface_fields = {
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "interface_profile",
+        "interface_sha256",
+    }
+    for row in interfaces:
+        provider_binding = row.get("provider_binding_id_or_self")
+        provider_module_id = row.get("provider_module_id")
+        key = (provider_binding, provider_module_id)
+        if (
+            key in required_interface_keys
+            or (
+                provider_binding != "self"
+                and not is_typed_id(
+                    provider_binding, "DependencyBindingId"
+                )
+            )
+            or not is_typed_id(provider_module_id, "ModuleId")
+        ):
+            failures.add("DEPENDENCY_INTERFACE_IDENTITY")
+        required_interface_keys.add(key)
+        if (
+            set(row) != interface_fields
+            or row.get("interface_profile")
+            != "R4_NAME_RESOLUTION_MODULES"
+            or re.fullmatch(
+                r"[0-9a-f]{64}", str(row.get("interface_sha256", ""))
+            )
+            is None
+        ):
+            failures.add("DEPENDENCY_INTERFACE_DOMAIN")
+        if provider_interfaces is not None:
+            provider = (
+                provider_interfaces.get(provider_module_id)
+                if isinstance(provider_interfaces, dict)
+                else None
+            )
+            if (
+                not isinstance(provider, dict)
+                or r4_module_api_failure_codes(provider)
+                or provider.get("module_id") != provider_module_id
+                or provider.get("interface_profile")
+                != "R4_NAME_RESOLUTION_MODULES"
+                or provider.get("canonical_sha256")
+                != row.get("interface_sha256")
+            ):
+                failures.add("STALE_PROVIDER_INTERFACE")
+
+    expected_required_interface_keys = {
+        pair
+        for pair in used_provider_pairs
+        if pair[1] != receipt.get("consumer_module_id")
+    }
+    if required_interface_keys != expected_required_interface_keys:
+        failures.add("DEPENDENCY_INTERFACE_CLOSURE")
+
+    if package_graph is not None:
+        if (
+            receipt.get("package_graph_sha256")
+            != package_graph.get("canonical_graph_sha256")
+        ):
+            failures.add("RECEIPT_PACKAGE_GRAPH_DIGEST")
+        visible_provider_pairs = {
+            (
+                row.get("dependency_binding_id_or_self"),
+                row.get("resolved_module_id"),
+            )
+            for row in package_graph.get("visible_module_bindings", [])
+            if row.get("consumer_target_id")
+            == receipt.get("consumer_target_id")
+        }
+        if not used_provider_pairs.issubset(visible_provider_pairs):
+            failures.add("DEPENDENCY_PROVIDER_GRAPH_BINDING")
+
+    if [row.get("import_binding_id") for row in imports] != sorted(
+        row.get("import_binding_id") for row in imports
+    ):
+        failures.add("DEPENDENCY_RECEIPT_ORDER")
+    if [row.get("activation_origin_id") for row in activations] != sorted(
+        row.get("activation_origin_id") for row in activations
+    ):
+        failures.add("DEPENDENCY_RECEIPT_ORDER")
+    if [
+        (
+            row.get("provider_binding_id_or_self"),
+            row.get("provider_module_id"),
+        )
+        for row in interfaces
+    ] != sorted(
+        (
+            row.get("provider_binding_id_or_self"),
+            row.get("provider_module_id"),
+        )
+        for row in interfaces
+    ):
+        failures.add("DEPENDENCY_RECEIPT_ORDER")
+
+    if resolver_graph is not None:
+        if receipt.get("resolver_graph_sha256") != resolver_graph.get(
+            "resolver_graph_sha256"
+        ):
+            failures.add("RECEIPT_RESOLVER_GRAPH_DIGEST")
+        graph_imports = resolver_graph.get("import_bindings", [])
+        graph_activations = resolver_graph.get("activation_entries", [])
+        if imports != graph_imports:
+            failures.add("RECEIPT_RESOLVER_IMPORT_BINDING")
+        if activations != graph_activations:
+            failures.add("RECEIPT_RESOLVER_ACTIVATION_BINDING")
+
+    receipt_sha256 = receipt.get("dependency_receipt_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(receipt_sha256 or "")) is None
+        or receipt_sha256
+        != canonical_self_digest(receipt, "dependency_receipt_sha256")
+    ):
+        failures.add("DEPENDENCY_RECEIPT_DIGEST")
+    return failures
+
+
+def r4_visibility_closure_failure_codes(
+    closure: dict[str, Any],
+) -> set[str]:
+    """Validate export, proof and opaque-facade relational closure."""
+
+    failures: set[str] = set()
+    if not isinstance(closure, dict):
+        return {"VISIBILITY_CLOSURE_PROFILE"}
+    expected_closure_fields = {
+        "schema",
+        "module_id",
+        "default_external_export_set",
+        "export_edges",
+        "reexport_edges",
+        "visibility_proofs",
+        "signature_relation",
+        "opaque_facade_relation",
+        "opaque_facades",
+        "closure_sha256",
+    }
+    if (
+        set(closure) != expected_closure_fields
+        or closure.get("schema")
+        != "deeplus.module-visibility-closure/r1"
+        or not is_typed_id(closure.get("module_id"), "ModuleId")
+        or closure.get("default_external_export_set") != "EMPTY"
+        or closure.get("signature_relation")
+        != "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+        or closure.get("opaque_facade_relation") != "NARROWING_ONLY"
+    ):
+        failures.add("VISIBILITY_CLOSURE_PROFILE")
+    exports = closure.get("export_edges", [])
+    reexports = closure.get("reexport_edges", [])
+    proofs = closure.get("visibility_proofs", [])
+    facades = closure.get("opaque_facades", [])
+    if not all(
+        isinstance(rows, list)
+        for rows in (exports, reexports, proofs, facades)
+    ):
+        return failures | {"VISIBILITY_CLOSURE_SHAPE"}
+    if any(
+        not isinstance(row, dict)
+        for rows in (exports, reexports, proofs, facades)
+        for row in rows
+    ):
+        return failures | {"VISIBILITY_CLOSURE_SHAPE"}
+
+    export_keys: set[tuple[Any, Any, Any]] = set()
+    export_identity_pairs: set[tuple[Any, Any]] = set()
+    export_owners: set[Any] = {closure.get("module_id")}
+    expected_export_fields = {
+        "export_owner_id",
+        "namespace",
+        "exported_name",
+        "referenced_identity_id",
+        "source_origin_id",
+    }
+    for row in exports:
+        key = (
+            row.get("export_owner_id"),
+            row.get("namespace"),
+            row.get("exported_name"),
+        )
+        expected_domain = {
+            "MODULE": "ModuleId",
+            "TYPE": "DeclId",
+            "VALUE": "DeclId",
+            "CALLABLE_OVERLOAD_SET": "DeclId",
+        }.get(row.get("namespace"))
+        if key in export_keys:
+            failures.add("EXPORT_EDGE_IDENTITY")
+        export_keys.add(key)
+        export_owners.add(row.get("export_owner_id"))
+        export_identity_pairs.add(
+            (
+                row.get("export_owner_id"),
+                row.get("referenced_identity_id"),
+            )
+        )
+        if (
+            set(row) != expected_export_fields
+            or not is_typed_id_in(
+                row.get("export_owner_id"),
+                {"ModuleId", "DeclId", "TypeId", "MemberId"},
+            )
+            or expected_domain is None
+            or re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_]*",
+                str(row.get("exported_name", "")),
+            )
+            is None
+            or not is_typed_id(
+                row.get("referenced_identity_id"), expected_domain
+            )
+            or not is_typed_id(
+                row.get("source_origin_id"), "SourceOriginId"
+            )
+        ):
+            failures.add("EXPORT_EDGE_DOMAIN")
+
+    reexport_origins: set[Any] = set()
+    expected_reexport_fields = {
+        "activation_origin_id",
+        "export_owner_id",
+        "referenced_activation_identity_id",
+        "source_origin_id",
+    }
+    for row in reexports:
+        origin = row.get("activation_origin_id")
+        if origin in reexport_origins:
+            failures.add("REEXPORT_EDGE_IDENTITY")
+        reexport_origins.add(origin)
+        if (
+            set(row) != expected_reexport_fields
+            or not is_typed_id(origin, "ActivationOriginId")
+            or not is_typed_id(
+                row.get("referenced_activation_identity_id"),
+                "ExtensionSetId",
+            )
+            or row.get("export_owner_id") not in export_owners
+            or not is_typed_id(
+                row.get("source_origin_id"), "SourceOriginId"
+            )
+        ):
+            failures.add("REEXPORT_EDGE_DOMAIN")
+
+    allowed_dependencies = {
+        "private": {"private", "common", "public"},
+        "common": {"common", "public"},
+        "public": {"public"},
+    }
+    proof_ids: set[Any] = set()
+    proof_id_by_key: dict[tuple[Any, ...], Any] = {}
+    proof_key_by_id: dict[Any, tuple[Any, ...]] = {}
+    expected_proof_fields = {
+        "proof_id",
+        "export_owner_id",
+        "referenced_identity_id",
+        "api_position_kind",
+        "api_position_path",
+        "owner_visibility",
+        "referenced_visibility",
+        "package_relation",
+        "module_relation",
+        "admission",
+    }
+    api_position_kinds = {
+        "parameter",
+        "result",
+        "field",
+        "generic_constraint",
+        "associated_item",
+        "error_set",
+        "effect_capability",
+        "context_capability",
+        "witness_requirement",
+        "nested_export",
+    }
+    for row in proofs:
+        proof_id = row.get("proof_id")
+        api_position_path = row.get("api_position_path")
+        key = (
+            closure.get("module_id"),
+            row.get("export_owner_id"),
+            row.get("referenced_identity_id"),
+            row.get("api_position_kind"),
+            (
+                tuple(api_position_path)
+                if isinstance(api_position_path, list)
+                and all(
+                    isinstance(component, str)
+                    for component in api_position_path
+                )
+                else ()
+            ),
+            row.get("owner_visibility"),
+            row.get("referenced_visibility"),
+            row.get("package_relation"),
+            row.get("module_relation"),
+        )
+        if proof_id in proof_ids:
+            failures.add("VISIBILITY_PROOF_IDENTITY")
+        proof_ids.add(proof_id)
+        previous_proof_id = proof_id_by_key.setdefault(key, proof_id)
+        previous_key = proof_key_by_id.setdefault(proof_id, key)
+        if previous_proof_id != proof_id or previous_key != key:
+            failures.add("VISIBILITY_PROOF_IDENTITY")
+        relation_pair = (
+            row.get("module_relation"),
+            row.get("package_relation"),
+        )
+        if relation_pair not in {
+            ("same_module", "same_package"),
+            ("same_package_other_module", "same_package"),
+            ("dependency_module", "dependency_package"),
+        }:
+            failures.add("VISIBILITY_RELATION")
+        owner_visibility = row.get("owner_visibility")
+        if row.get("referenced_visibility") not in (
+            allowed_dependencies.get(owner_visibility, set())
+        ):
+            failures.add("VISIBILITY_WIDENING")
+        if (
+            set(row) != expected_proof_fields
+            or not is_typed_id(proof_id, "VisibilityProofId")
+            or row.get("export_owner_id") not in export_owners
+            or not is_typed_id_in(
+                row.get("referenced_identity_id"),
+                {
+                    "ModuleId",
+                    "DeclId",
+                    "TypeId",
+                    "MemberId",
+                    "AssociatedItemId",
+                    "ExtensionSetId",
+                    "ExtensionMemberId",
+                    "TraitWitnessId",
+                },
+            )
+            or row.get("api_position_kind") not in api_position_kinds
+            or row.get("admission") != "VISIBLE_NO_WIDENING"
+            or not isinstance(api_position_path, list)
+            or not api_position_path
+            or any(
+                not isinstance(component, str) or not component
+                for component in (
+                    api_position_path
+                    if isinstance(api_position_path, list)
+                    else []
+                )
+            )
+        ):
+            failures.add("VISIBILITY_PROOF_DOMAIN")
+    if any(
+        pair not in {
+            (row.get("export_owner_id"), row.get("referenced_identity_id"))
+            for row in proofs
+        }
+        for pair in export_identity_pairs
+    ):
+        failures.add("EXPORT_PROOF_LINKAGE")
+
+    facade_owners: set[Any] = set()
+    expected_facade_fields = {
+        "export_owner_id",
+        "owner_public_residue_identity_ids",
+        "facade_public_residue_identity_ids",
+    }
+    residue_domains = {
+        "ModuleId",
+        "DeclId",
+        "TypeId",
+        "MemberId",
+        "AssociatedItemId",
+        "ExtensionSetId",
+        "ExtensionMemberId",
+        "TraitWitnessId",
+    }
+    for row in facades:
+        owner = row.get("export_owner_id")
+        owner_residue = row.get("owner_public_residue_identity_ids", [])
+        facade_residue = row.get(
+            "facade_public_residue_identity_ids", []
+        )
+        if owner in facade_owners:
+            failures.add("OPAQUE_FACADE_IDENTITY")
+        facade_owners.add(owner)
+        if (
+            set(row) != expected_facade_fields
+            or owner not in export_owners
+            or not isinstance(owner_residue, list)
+            or not isinstance(facade_residue, list)
+            or any(
+                not is_typed_id_in(identity, residue_domains)
+                for identity in owner_residue
+            )
+            or any(
+                not is_typed_id_in(identity, residue_domains)
+                for identity in facade_residue
+            )
+            or len(owner_residue) != len(set(owner_residue))
+            or len(facade_residue) != len(set(facade_residue))
+        ):
+            failures.add("OPAQUE_FACADE_DOMAIN")
+        if (
+            isinstance(owner_residue, list)
+            and isinstance(facade_residue, list)
+            and all(
+                isinstance(identity, str)
+                for identity in [*owner_residue, *facade_residue]
+            )
+            and (
+                owner_residue != sorted(owner_residue)
+                or facade_residue != sorted(facade_residue)
+            )
+        ):
+            failures.add("OPAQUE_FACADE_ORDER")
+        facade_subset_valid = (
+            isinstance(owner_residue, list)
+            and isinstance(facade_residue, list)
+            and all(
+                isinstance(identity, str)
+                for identity in [*owner_residue, *facade_residue]
+            )
+            and set(facade_residue).issubset(set(owner_residue))
+        )
+        if not facade_subset_valid:
+            failures.add("OPAQUE_FACADE_WIDENING")
+
+    export_order = [
+        (
+            row.get("export_owner_id"),
+            row.get("namespace"),
+            row.get("exported_name"),
+        )
+        for row in exports
+    ]
+    reexport_order = [
+        row.get("activation_origin_id") for row in reexports
+    ]
+    proof_order = [row.get("proof_id") for row in proofs]
+    facade_order = [row.get("export_owner_id") for row in facades]
+    if (
+        not all(
+            all(isinstance(component, str) for component in key)
+            for key in export_order
+        )
+        or export_order != sorted(export_order)
+        or not all(isinstance(value, str) for value in reexport_order)
+        or reexport_order != sorted(reexport_order)
+        or not all(isinstance(value, str) for value in proof_order)
+        or proof_order != sorted(proof_order)
+        or not all(isinstance(value, str) for value in facade_order)
+        or facade_order != sorted(facade_order)
+    ):
+        failures.add("VISIBILITY_CLOSURE_ORDER")
+
+    closure_sha256 = closure.get("closure_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(closure_sha256 or "")) is None
+        or closure_sha256
+        != canonical_self_digest(closure, "closure_sha256")
+    ):
+        failures.add("VISIBILITY_CLOSURE_DIGEST")
+    return failures
+
+
+def r4_module_api_failure_codes(
+    api: dict[str, Any],
+    visibility_closure: dict[str, Any] | None = None,
+    api_hir_exported_symbols: list[dict[str, Any]] | None = None,
+) -> set[str]:
+    """Validate the provenance-free R4 public semantic interface identity."""
+
+    failures: set[str] = set()
+    if (
+        set(api)
+        != {
+            "schema",
+            "baseline",
+            "module_id",
+            "source_role",
+            "interface_profile",
+            "r4_interface_envelope",
+            "symbols",
+            "canonical_sha256",
+        }
+        or
+        api.get("schema") != "deeplus.module-api-digest/r51f3"
+        or api.get("baseline") != "0.1.2-baseline.r51f3"
+        or api.get("interface_profile") != "R4_NAME_RESOLUTION_MODULES"
+        or not is_typed_id(api.get("module_id"), "ModuleId")
+        or api.get("source_role") not in {"library", "executable"}
+    ):
+        failures.add("MODULE_INTERFACE_PROFILE")
+    envelope = api.get("r4_interface_envelope")
+    if not isinstance(envelope, dict):
+        return failures | {"MODULE_INTERFACE_ENVELOPE"}
+    expected_envelope_fields = {
+        "activation_profile",
+        "public_export_rows",
+        "public_activation_reexport_rows",
+        "opaque_facade_rows",
+        "signature_relation",
+        "opaque_facade_relation",
+        "symbols_are_exact_effective_public_residue",
+        "private_body_bytes_in_interface_hash",
+    }
+    if (
+        set(envelope) != expected_envelope_fields
+        or not isinstance(envelope.get("activation_profile"), str)
+        or not envelope.get("activation_profile")
+        or envelope.get("signature_relation")
+        != "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+        or envelope.get("opaque_facade_relation") != "NARROWING_ONLY"
+        or envelope.get("symbols_are_exact_effective_public_residue")
+        is not True
+        or envelope.get("private_body_bytes_in_interface_hash") is not False
+    ):
+        failures.add("MODULE_INTERFACE_ENVELOPE")
+
+    export_rows = envelope.get("public_export_rows", [])
+    activation_rows = envelope.get(
+        "public_activation_reexport_rows", []
+    )
+    facade_rows = envelope.get("opaque_facade_rows", [])
+    if not all(
+        isinstance(rows, list)
+        for rows in (export_rows, activation_rows, facade_rows)
+    ):
+        return failures | {"MODULE_INTERFACE_PUBLIC_PROJECTION"}
+
+    export_keys: list[tuple[Any, Any, Any, Any]] = []
+    export_name_keys: set[tuple[Any, Any, Any]] = set()
+    for row in export_rows:
+        namespace = row.get("namespace")
+        target_domain = (
+            "ModuleId" if namespace == "MODULE" else "DeclId"
+        )
+        key = (
+            row.get("export_owner_id"),
+            namespace,
+            row.get("exported_name"),
+            row.get("referenced_identity_id"),
+        )
+        export_keys.append(key)
+        name_key = key[:3]
+        if name_key in export_name_keys:
+            failures.add("MODULE_INTERFACE_EXPORT_IDENTITY")
+        export_name_keys.add(name_key)
+        if (
+            set(row)
+            != {
+                "export_owner_id",
+                "namespace",
+                "exported_name",
+                "referenced_identity_id",
+            }
+            or namespace
+            not in {"MODULE", "TYPE", "VALUE", "CALLABLE_OVERLOAD_SET"}
+            or not is_typed_id_in(
+                row.get("export_owner_id"),
+                {"ModuleId", "DeclId", "TypeId", "MemberId"},
+            )
+            or not is_typed_id(
+                row.get("referenced_identity_id"), target_domain
+            )
+            or re.fullmatch(
+                r"[A-Za-z_][A-Za-z0-9_]*",
+                str(row.get("exported_name", "")),
+            )
+            is None
+        ):
+            failures.add("MODULE_INTERFACE_EXPORT_DOMAIN")
+    if export_keys != sorted(export_keys) or len(export_keys) != len(
+        set(export_keys)
+    ):
+        failures.add("MODULE_INTERFACE_EXPORT_ORDER")
+
+    activation_keys: list[tuple[Any, Any]] = []
+    for row in activation_rows:
+        key = (
+            row.get("export_owner_id"),
+            row.get("referenced_activation_identity_id"),
+        )
+        activation_keys.append(key)
+        if (
+            set(row)
+            != {
+                "export_owner_id",
+                "referenced_activation_identity_id",
+            }
+            or not is_typed_id_in(
+                row.get("export_owner_id"),
+                {"ModuleId", "DeclId", "TypeId", "MemberId"},
+            )
+            or not is_typed_id(
+                row.get("referenced_activation_identity_id"),
+                "ExtensionSetId",
+            )
+        ):
+            failures.add("MODULE_INTERFACE_ACTIVATION_DOMAIN")
+    if activation_keys != sorted(activation_keys) or len(
+        activation_keys
+    ) != len(set(activation_keys)):
+        failures.add("MODULE_INTERFACE_ACTIVATION_ORDER")
+
+    facade_keys: list[Any] = []
+    for row in facade_rows:
+        owner = row.get("export_owner_id")
+        residue = row.get("facade_public_residue_identity_ids", [])
+        facade_keys.append(owner)
+        if (
+            set(row)
+            != {
+                "export_owner_id",
+                "facade_public_residue_identity_ids",
+            }
+            or not is_typed_id_in(
+                owner, {"ModuleId", "DeclId", "TypeId", "MemberId"}
+            )
+            or not isinstance(residue, list)
+            or residue != sorted(residue)
+            or len(residue) != len(set(residue))
+            or any(
+                not is_typed_id_in(
+                    identity,
+                    {
+                        "ModuleId",
+                        "DeclId",
+                        "TypeId",
+                        "MemberId",
+                        "AssociatedItemId",
+                        "ExtensionSetId",
+                        "ExtensionMemberId",
+                        "TraitWitnessId",
+                    },
+                )
+                for identity in residue
+            )
+        ):
+            failures.add("MODULE_INTERFACE_FACADE_DOMAIN")
+    if facade_keys != sorted(facade_keys) or len(facade_keys) != len(
+        set(facade_keys)
+    ):
+        failures.add("MODULE_INTERFACE_FACADE_ORDER")
+
+    if visibility_closure is not None:
+        expected_export_rows = sorted(
+            [
+                {
+                    "export_owner_id": row.get("export_owner_id"),
+                    "namespace": row.get("namespace"),
+                    "exported_name": row.get("exported_name"),
+                    "referenced_identity_id": row.get(
+                        "referenced_identity_id"
+                    ),
+                }
+                for row in visibility_closure.get("export_edges", [])
+            ],
+            key=lambda row: (
+                row["export_owner_id"],
+                row["namespace"],
+                row["exported_name"],
+                row["referenced_identity_id"],
+            ),
+        )
+        expected_activation_rows = sorted(
+            [
+                {
+                    "export_owner_id": row.get("export_owner_id"),
+                    "referenced_activation_identity_id": row.get(
+                        "referenced_activation_identity_id"
+                    ),
+                }
+                for row in visibility_closure.get("reexport_edges", [])
+            ],
+            key=lambda row: (
+                row["export_owner_id"],
+                row["referenced_activation_identity_id"],
+            ),
+        )
+        expected_facade_rows = sorted(
+            [
+                {
+                    "export_owner_id": row.get("export_owner_id"),
+                    "facade_public_residue_identity_ids": sorted(
+                        row.get(
+                            "facade_public_residue_identity_ids", []
+                        )
+                    ),
+                }
+                for row in visibility_closure.get("opaque_facades", [])
+            ],
+            key=lambda row: row["export_owner_id"],
+        )
+        if (
+            api.get("module_id") != visibility_closure.get("module_id")
+            or export_rows != expected_export_rows
+            or activation_rows != expected_activation_rows
+            or facade_rows != expected_facade_rows
+        ):
+            failures.add("MODULE_INTERFACE_VISIBILITY_PROJECTION")
+
+    symbols = api.get("symbols")
+    if not isinstance(symbols, list):
+        failures.add("MODULE_INTERFACE_SYMBOL_PROJECTION")
+    else:
+        symbol_ids = [row.get("symbol_id") for row in symbols]
+        if (
+            any(not isinstance(row, dict) for row in symbols)
+            or any(
+                not isinstance(symbol_id, str) or not symbol_id
+                for symbol_id in symbol_ids
+            )
+            or symbol_ids != sorted(symbol_ids)
+            or len(symbol_ids) != len(set(symbol_ids))
+        ):
+            failures.add("MODULE_INTERFACE_SYMBOL_ORDER")
+        for symbol in symbols:
+            for field in (
+                "authority",
+                "effect_row",
+                "error_set",
+                "evidence_ids",
+            ):
+                values = symbol.get(field)
+                if (
+                    not isinstance(values, list)
+                    or values != sorted(values)
+                    or len(values) != len(set(values))
+                ):
+                    failures.add("MODULE_INTERFACE_SYMBOL_SET_ORDER")
+        if (
+            api_hir_exported_symbols is not None
+            and symbols != api_hir_exported_symbols
+        ):
+            failures.add("MODULE_INTERFACE_SYMBOL_PROJECTION")
+    canonical_sha256 = api.get("canonical_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(canonical_sha256 or "")) is None
+        or canonical_sha256
+        != canonical_self_digest(api, "canonical_sha256")
+    ):
+        failures.add("MODULE_INTERFACE_DIGEST")
+    return failures
+
+
+def r4_module_source_projection_failure_codes(
+    projection: dict[str, Any],
+    package_graph: dict[str, Any] | None = None,
+) -> set[str]:
+    """Validate the provenance-only module/source contribution projection."""
+
+    failures: set[str] = set()
+    if (
+        set(projection)
+        != {
+            "schema",
+            "target_id",
+            "module_id",
+            "source_contributions",
+            "projection_sha256",
+        }
+        or
+        projection.get("schema")
+        != "deeplus.module-source-contribution-projection/r1"
+        or not is_typed_id(projection.get("target_id"), "TargetId")
+        or not is_typed_id(projection.get("module_id"), "ModuleId")
+    ):
+        failures.add("MODULE_SOURCE_PROJECTION_PROFILE")
+    rows = projection.get("source_contributions")
+    if not isinstance(rows, list) or not rows:
+        return failures | {"MODULE_SOURCE_PROJECTION_SET"}
+    source_ids: list[Any] = []
+    source_paths: set[Any] = set()
+    expected_fields = {
+        "source_file_id",
+        "normalized_project_relative_path",
+        "source_role",
+        "activation_profile",
+        "source_bytes_sha256",
+    }
+    for row in rows:
+        source_ids.append(row.get("source_file_id"))
+        path = row.get("normalized_project_relative_path")
+        if path in source_paths:
+            failures.add("MODULE_SOURCE_PROJECTION_PATH_IDENTITY")
+        source_paths.add(path)
+        if (
+            set(row) != expected_fields
+            or not is_typed_id(row.get("source_file_id"), "SourceFileId")
+            or canonical_project_relative_path(path) != path
+            or row.get("source_role")
+            not in {"library", "executable", "script"}
+            or not isinstance(row.get("activation_profile"), str)
+            or not row.get("activation_profile")
+            or re.fullmatch(
+                r"[0-9a-f]{64}", str(row.get("source_bytes_sha256", ""))
+            )
+            is None
+        ):
+            failures.add("MODULE_SOURCE_PROJECTION_DOMAIN")
+    if source_ids != sorted(source_ids) or len(source_ids) != len(
+        set(source_ids)
+    ):
+        failures.add("MODULE_SOURCE_PROJECTION_ORDER")
+
+    if package_graph is not None:
+        expected_rows = sorted(
+            [
+                {
+                    "source_file_id": row.get("source_file_id"),
+                    "normalized_project_relative_path": row.get(
+                        "normalized_project_relative_path"
+                    ),
+                    "source_role": row.get("source_role"),
+                    "activation_profile": row.get("activation_profile"),
+                    "source_bytes_sha256": row.get("source_bytes_sha256"),
+                }
+                for row in package_graph.get("source_contributions", [])
+                if row.get("target_id") == projection.get("target_id")
+                and row.get("module_id") == projection.get("module_id")
+            ],
+            key=lambda row: row["source_file_id"],
+        )
+        if rows != expected_rows:
+            failures.add("MODULE_SOURCE_GRAPH_PROJECTION")
+    digest = projection.get("projection_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(digest or "")) is None
+        or digest != canonical_self_digest(projection, "projection_sha256")
+    ):
+        failures.add("MODULE_SOURCE_PROJECTION_DIGEST")
+    return failures
+
+
+def r4_module_implementation_failure_codes(
+    implementation: dict[str, Any],
+    module_api: dict[str, Any] | None = None,
+) -> set[str]:
+    """Validate the private semantic implementation hash domain."""
+
+    failures: set[str] = set()
+    target_kind = implementation.get("target_kind")
+    interface_sha256 = implementation.get("interface_sha256")
+    if (
+        set(implementation)
+        != {
+            "schema",
+            "interface_profile",
+            "target_id",
+            "target_kind",
+            "module_id",
+            "interface_sha256",
+            "hir_semantic_sha256",
+            "external_compatibility_identity",
+            "implementation_sha256",
+        }
+        or
+        implementation.get("schema")
+        != "deeplus.module-implementation-digest/r1"
+        or implementation.get("interface_profile")
+        != "R4_NAME_RESOLUTION_MODULES"
+        or not is_typed_id(implementation.get("target_id"), "TargetId")
+        or not is_typed_id(implementation.get("module_id"), "ModuleId")
+        or target_kind not in {"library", "executable", "script"}
+        or (
+            target_kind == "script"
+            and interface_sha256 is not None
+        )
+        or (
+            target_kind != "script"
+            and re.fullmatch(
+                r"[0-9a-f]{64}", str(interface_sha256 or "")
+            )
+            is None
+        )
+        or re.fullmatch(
+            r"[0-9a-f]{64}",
+            str(implementation.get("hir_semantic_sha256", "")),
+        )
+        is None
+        or implementation.get("external_compatibility_identity") is not False
+    ):
+        failures.add("MODULE_IMPLEMENTATION_PROFILE")
+    if module_api is not None:
+        expected_source_role = {
+            "library": "library",
+            "executable": "executable",
+        }.get(target_kind)
+        if (
+            r4_module_api_failure_codes(module_api)
+            or target_kind == "script"
+            or implementation.get("module_id")
+            != module_api.get("module_id")
+            or interface_sha256 != module_api.get("canonical_sha256")
+            or module_api.get("source_role") != expected_source_role
+        ):
+            failures.add("MODULE_IMPLEMENTATION_INTERFACE_BINDING")
+    digest = implementation.get("implementation_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(digest or "")) is None
+        or digest
+        != canonical_self_digest(
+            implementation, "implementation_sha256"
+        )
+    ):
+        failures.add("MODULE_IMPLEMENTATION_DIGEST")
+    return failures
+
+
+def r4_compilation_receipt_failure_codes(
+    receipt: dict[str, Any],
+    *,
+    package_graph: dict[str, Any] | None = None,
+    source_projection: dict[str, Any] | None = None,
+    dependency_receipt: dict[str, Any] | None = None,
+    resolver_trace: dict[str, Any] | None = None,
+    visibility_closure: dict[str, Any] | None = None,
+    initialization_plan: dict[str, Any] | None = None,
+    module_api: dict[str, Any] | None = None,
+    implementation: dict[str, Any] | None = None,
+) -> set[str]:
+    """Validate the full provenance/build closure and all digest relations."""
+
+    failures: set[str] = set()
+    target_kind = receipt.get("target_kind")
+    if (
+        set(receipt)
+        != {
+            "schema",
+            "profile",
+            "target_id",
+            "target_kind",
+            "module_id",
+            "package_graph_sha256",
+            "module_source_contribution_sha256",
+            "dependency_receipt_sha256",
+            "resolver_trace_sha256",
+            "visibility_closure_sha256",
+            "initialization_plan_sha256",
+            "interface_sha256",
+            "implementation_sha256",
+            "compilation_receipt_sha256",
+        }
+        or
+        receipt.get("schema")
+        != "deeplus.module-compilation-receipt/r1"
+        or receipt.get("profile") != "R4_NAME_RESOLUTION_MODULES"
+        or not is_typed_id(receipt.get("target_id"), "TargetId")
+        or not is_typed_id(receipt.get("module_id"), "ModuleId")
+        or target_kind not in {"library", "executable", "script"}
+        or (
+            target_kind == "script"
+            and receipt.get("interface_sha256") is not None
+        )
+        or (
+            target_kind != "script"
+            and re.fullmatch(
+                r"[0-9a-f]{64}",
+                str(receipt.get("interface_sha256") or ""),
+            )
+            is None
+        )
+        or any(
+            re.fullmatch(r"[0-9a-f]{64}", str(receipt.get(field, "")))
+            is None
+            for field in (
+                "package_graph_sha256",
+                "module_source_contribution_sha256",
+                "dependency_receipt_sha256",
+                "resolver_trace_sha256",
+                "visibility_closure_sha256",
+                "initialization_plan_sha256",
+                "implementation_sha256",
+            )
+        )
+    ):
+        failures.add("MODULE_COMPILATION_RECEIPT_PROFILE")
+
+    expected_bindings: list[tuple[str, Any]] = []
+    if package_graph is not None:
+        expected_bindings.append(
+            (
+                "package_graph_sha256",
+                package_graph.get("canonical_graph_sha256"),
+            )
+        )
+        target_rows = [
+            row
+            for row in package_graph.get("targets", [])
+            if row.get("target_id") == receipt.get("target_id")
+        ]
+        source_rows = [
+            row
+            for row in package_graph.get("source_contributions", [])
+            if row.get("target_id") == receipt.get("target_id")
+            and row.get("module_id") == receipt.get("module_id")
+        ]
+        if (
+            len(target_rows) != 1
+            or target_rows[0].get("target_kind") != target_kind
+            or not source_rows
+        ):
+            failures.add("MODULE_COMPILATION_GRAPH_OWNER_BINDING")
+    if source_projection is not None:
+        expected_bindings.append(
+            (
+                "module_source_contribution_sha256",
+                source_projection.get("projection_sha256"),
+            )
+        )
+        if (
+            receipt.get("target_id") != source_projection.get("target_id")
+            or receipt.get("module_id")
+            != source_projection.get("module_id")
+        ):
+            failures.add("MODULE_COMPILATION_OWNER_BINDING")
+    if dependency_receipt is not None:
+        expected_bindings.append(
+            (
+                "dependency_receipt_sha256",
+                dependency_receipt.get("dependency_receipt_sha256"),
+            )
+        )
+        if (
+            receipt.get("target_id")
+            != dependency_receipt.get("consumer_target_id")
+            or receipt.get("module_id")
+            != dependency_receipt.get("consumer_module_id")
+        ):
+            failures.add("MODULE_COMPILATION_OWNER_BINDING")
+        if package_graph is not None and dependency_receipt.get(
+            "package_graph_sha256"
+        ) != package_graph.get("canonical_graph_sha256"):
+            failures.add("MODULE_COMPILATION_GRAPH_BINDING")
+    if resolver_trace is not None:
+        expected_bindings.append(
+            ("resolver_trace_sha256", resolver_trace.get("trace_sha256"))
+        )
+        if dependency_receipt is not None and resolver_trace.get(
+            "resolver_graph_sha256"
+        ) != dependency_receipt.get("resolver_graph_sha256"):
+            failures.add("MODULE_COMPILATION_RESOLVER_BINDING")
+    if visibility_closure is not None:
+        expected_bindings.append(
+            (
+                "visibility_closure_sha256",
+                visibility_closure.get("closure_sha256"),
+            )
+        )
+        if receipt.get("module_id") != visibility_closure.get("module_id"):
+            failures.add("MODULE_COMPILATION_OWNER_BINDING")
+    if initialization_plan is not None:
+        expected_bindings.append(
+            (
+                "initialization_plan_sha256",
+                initialization_plan.get("plan_sha256"),
+            )
+        )
+        if receipt.get("module_id") != initialization_plan.get("module_id"):
+            failures.add("MODULE_COMPILATION_OWNER_BINDING")
+    if module_api is not None:
+        expected_bindings.append(
+            ("interface_sha256", module_api.get("canonical_sha256"))
+        )
+        if (
+            target_kind == "script"
+            or receipt.get("module_id") != module_api.get("module_id")
+        ):
+            failures.add("MODULE_COMPILATION_INTERFACE_BINDING")
+    if implementation is not None:
+        expected_bindings.append(
+            (
+                "implementation_sha256",
+                implementation.get("implementation_sha256"),
+            )
+        )
+        if (
+            receipt.get("target_id") != implementation.get("target_id")
+            or receipt.get("module_id") != implementation.get("module_id")
+            or target_kind != implementation.get("target_kind")
+            or receipt.get("interface_sha256")
+            != implementation.get("interface_sha256")
+        ):
+            failures.add("MODULE_COMPILATION_IMPLEMENTATION_BINDING")
+    for field, expected in expected_bindings:
+        if receipt.get(field) != expected:
+            failures.add("MODULE_COMPILATION_ARTIFACT_BINDING")
+
+    digest = receipt.get("compilation_receipt_sha256")
+    if (
+        re.fullmatch(r"[0-9a-f]{64}", str(digest or "")) is None
+        or digest
+        != canonical_self_digest(receipt, "compilation_receipt_sha256")
+    ):
+        failures.add("MODULE_COMPILATION_RECEIPT_DIGEST")
+    return failures
+
+
+def r4_module_artifact_relation_fixture_failure_codes(
+    registry: dict[str, Any],
+    module_api_fixtures: dict[str, Any],
+) -> set[str]:
+    """Validate the executable static relation fixture for all three domains."""
+
+    failures: set[str] = set()
+    expected_registry_fields = {
+        "schema",
+        "profile",
+        "canonicalization",
+        "interface_fixture_binding",
+        "provider_interfaces",
+        "shared_inputs",
+        "case_count",
+        "cases",
+        "expected_relations",
+        "evidence_level",
+        "product_compiler_execution",
+    }
+    if (
+        set(registry) != expected_registry_fields
+        or has_non_unicode_scalar(registry)
+        or
+        registry.get("schema")
+        != "deeplus.module-compilation-artifact-relations-fixtures/r1"
+        or registry.get("profile") != "R4_NAME_RESOLUTION_MODULES"
+        or registry.get("case_count") != 2
+        or registry.get("evidence_level")
+        != "E2_STATIC_HASH_RELATION_FIXTURE"
+        or registry.get("product_compiler_execution") != "NOT_RUN"
+    ):
+        failures.add("MODULE_ARTIFACT_FIXTURE_PROFILE")
+    if has_non_unicode_scalar(registry):
+        return failures | {"CANONICAL_JSON_NON_UNICODE_SCALAR"}
+    if not is_canonical_json_value(registry):
+        return failures | {"CANONICAL_JSON_INVALID_VALUE_DOMAIN"}
+
+    canonicalization = registry.get("canonicalization", {})
+    conformance_vector = canonicalization.get("conformance_vector", {})
+    vector_input = conformance_vector.get("input")
+    expected_canonicalization = {
+        "json_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+        "json_algorithm_contract": {
+            "object_member_order": (
+                "ASCENDING_UNICODE_SCALAR_KEY_ORDER_RECURSIVE"
+            ),
+            "string_encoding": (
+                "JSON_MANDATORY_ESCAPES_OTHER_SCALARS_DIRECT_UTF8_"
+                "NO_NORMALIZATION"
+            ),
+            "number_domain": (
+                "SCHEMA_VALIDATED_INTEGER_ONLY_FOR_CURRENT_R4_"
+                "DIGEST_ARTIFACTS"
+            ),
+            "whitespace": "NONE_OUTSIDE_STRING_VALUES",
+            "terminal_newline": False,
+        },
+        "conformance_vector": {
+            "input": {
+                "z": "한😀",
+                "a": "quote:\" slash:\\ newline:\n",
+            },
+            "canonical_utf8_hex": (
+                "7b2261223a2271756f74653a5c2220736c6173683a5c5c206e6577"
+                "6c696e653a5c6e222c227a223a22ed959cf09f9880227d"
+            ),
+            "sha256": (
+                "333657884e20443a6ee4c742f2e894b34939238558c85e2a9cd720"
+                "818169ba3c"
+            ),
+        },
+        "json_self_hash_exclusion": {
+            "package_graph": "canonical_graph_sha256",
+            "resolver_graph": "resolver_graph_sha256",
+            "resolver_trace": "trace_sha256",
+            "visibility_closure": "closure_sha256",
+            "initialization_plan": "plan_sha256",
+            "module_api": "canonical_sha256",
+            "module_source_contribution_projection": (
+                "projection_sha256"
+            ),
+            "dependency_receipt": "dependency_receipt_sha256",
+            "implementation_digest": "implementation_sha256",
+            "compilation_receipt": "compilation_receipt_sha256",
+        },
+        "hir_semantic_algorithm": (
+            "SHA256(domain_utf8 || u64be(byte_length) || semantic_bytes)"
+        ),
+        "hir_semantic_domain_utf8": "deeplus.hir.semantic/h1\0",
+    }
+    vector_digest = canonical_sha(vector_input)
+    vector_bytes = b""
+    if isinstance(vector_input, dict) and vector_digest is not None:
+        vector_bytes = json.dumps(
+            vector_input,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    if (
+        canonicalization != expected_canonicalization
+        or set(canonicalization)
+        != {
+            "json_algorithm",
+            "json_algorithm_contract",
+            "conformance_vector",
+            "json_self_hash_exclusion",
+            "hir_semantic_algorithm",
+            "hir_semantic_domain_utf8",
+        }
+        or set(conformance_vector)
+        != {"input", "canonical_utf8_hex", "sha256"}
+        or
+        canonicalization.get("json_algorithm")
+        != "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1"
+        or conformance_vector.get("canonical_utf8_hex")
+        != vector_bytes.hex()
+        or conformance_vector.get("sha256")
+        != vector_digest
+        or b"\xed\x95\x9c\xf0\x9f\x98\x80" not in vector_bytes
+    ):
+        failures.add("MODULE_ARTIFACT_CANONICALIZATION_CONTRACT")
+
+    binding = registry.get("interface_fixture_binding", {})
+    api_fixture = next(
+        (
+            row
+            for row in module_api_fixtures.get(
+                "r4_interface_envelope_fixtures", []
+            )
+            if row.get("fixture_id") == binding.get("fixture_id")
+        ),
+        None,
+    )
+    module_api = (
+        api_fixture.get("payload", {})
+        if isinstance(api_fixture, dict)
+        else {}
+    )
+    if (
+        set(binding) != {"path", "fixture_id", "interface_sha256"}
+        or
+        binding.get("path")
+        != "tests/fixtures/imported/module-api-digest-fixtures.json"
+        or not module_api
+        or binding.get("interface_sha256")
+        != module_api.get("canonical_sha256")
+        or r4_module_api_failure_codes(module_api)
+    ):
+        failures.add("MODULE_ARTIFACT_INTERFACE_BINDING")
+
+    provider_interfaces = registry.get("provider_interfaces", {})
+    if (
+        not isinstance(provider_interfaces, dict)
+        or not provider_interfaces
+        or any(
+            not isinstance(provider, dict)
+            or module_id != provider.get("module_id")
+            or r4_module_api_failure_codes(provider)
+            for module_id, provider in provider_interfaces.items()
+        )
+    ):
+        failures.add("MODULE_ARTIFACT_PROVIDER_INTERFACE_BINDING")
+
+    shared = registry.get("shared_inputs", {})
+    manifest_bytes = shared.get("manifest_bytes_utf8")
+    provider_source_module_id = shared.get(
+        "provider_source_module_id"
+    )
+    provider_source_file_id = shared.get("provider_source_file_id")
+    provider_source_bytes = shared.get("provider_source_bytes_utf8")
+    visibility_closure = shared.get("visibility_closure")
+    initialization_plan = shared.get("initialization_plan")
+    if (
+        set(shared)
+        != {
+            "manifest_bytes_utf8",
+            "manifest_sha256",
+            "provider_source_module_id",
+            "provider_source_file_id",
+            "provider_source_bytes_utf8",
+            "provider_source_bytes_sha256",
+            "visibility_closure",
+            "initialization_plan",
+        }
+        or
+        not isinstance(manifest_bytes, str)
+        or hashlib.sha256(manifest_bytes.encode("utf-8")).hexdigest()
+        != shared.get("manifest_sha256")
+        or not is_typed_id(
+            provider_source_module_id, "ModuleId"
+        )
+        or not is_typed_id(
+            provider_source_file_id, "SourceFileId"
+        )
+        or provider_source_module_id not in provider_interfaces
+        or provider_source_bytes
+        != "public extension Int as display {\n}\n"
+        or not isinstance(provider_source_bytes, str)
+        or hashlib.sha256(
+            provider_source_bytes.encode("utf-8")
+        ).hexdigest()
+        != shared.get("provider_source_bytes_sha256")
+        or not isinstance(visibility_closure, dict)
+        or r4_visibility_closure_failure_codes(visibility_closure)
+        or not isinstance(initialization_plan, dict)
+        or r4_module_initialization_failure_codes(initialization_plan)
+        or (
+            isinstance(module_api, dict)
+            and r4_module_api_failure_codes(
+                module_api, visibility_closure
+            )
+        )
+    ):
+        failures.add("MODULE_ARTIFACT_SHARED_INPUT_DIGEST")
+
+    cases = registry.get("cases", [])
+    if (
+        not isinstance(cases, list)
+        or [row.get("case_id") for row in cases]
+        != [
+            "R4-MODULE-ARTIFACT-BASELINE",
+            "R4-MODULE-ARTIFACT-PRIVATE-HIR-CHANGE",
+        ]
+        or [row.get("mutation_class") for row in cases]
+        != [
+            "BASELINE",
+            "PRIVATE_SEMANTIC_BODY_CHANGE_PUBLIC_RESIDUE_UNCHANGED",
+        ]
+    ):
+        return failures | {"MODULE_ARTIFACT_FIXTURE_CASE_SET"}
+
+    expected_case_fields = {
+        "case_id",
+        "mutation_class",
+        "source_file_id",
+        "source_bytes_utf8",
+        "source_bytes_sha256",
+        "package_graph",
+        "resolver_graph",
+        "resolver_trace",
+        "hir_semantic_digest_preimage",
+        "hir_semantic_bytes_utf8",
+        "hir_semantic_sha256",
+        "module_source_contribution_projection",
+        "dependency_receipt",
+        "implementation_digest",
+        "compilation_receipt",
+    }
+    expected_source_bytes_by_case = {
+        "R4-MODULE-ARTIFACT-BASELINE": (
+            "use export Int::display\n"
+            "public let answer: Int = 42\n"
+            "private def helper() -> Int = {\n"
+            "    let _ = answer\n"
+            "    return 1\n"
+            "}\n"
+        ),
+        "R4-MODULE-ARTIFACT-PRIVATE-HIR-CHANGE": (
+            "use export Int::display\n"
+            "public let answer: Int = 42\n"
+            "private def helper() -> Int = {\n"
+            "    let _ = answer\n"
+            "    return 2\n"
+            "}\n"
+        ),
+    }
+    expected_hir_preimage_by_case = {
+        "R4-MODULE-ARTIFACT-BASELINE": {
+            "schema": "deeplus.fixture-hir-semantic/r1",
+            "module_id": "ModuleId:acme.api",
+            "public_items": ["DeclId:acme.api.answer"],
+            "private_bodies": [
+                {
+                    "decl_id": "DeclId:acme.api.helper",
+                    "reference_decl_ids": [
+                        "DeclId:acme.api.answer"
+                    ],
+                    "return_int": 1,
+                }
+            ],
+        },
+        "R4-MODULE-ARTIFACT-PRIVATE-HIR-CHANGE": {
+            "schema": "deeplus.fixture-hir-semantic/r1",
+            "module_id": "ModuleId:acme.api",
+            "public_items": ["DeclId:acme.api.answer"],
+            "private_bodies": [
+                {
+                    "decl_id": "DeclId:acme.api.helper",
+                    "reference_decl_ids": [
+                        "DeclId:acme.api.answer"
+                    ],
+                    "return_int": 2,
+                }
+            ],
+        },
+    }
+    expected_provider_modules: set[Any] = set()
+    for case in cases:
+        case_id = case.get("case_id")
+        source_file_id = case.get("source_file_id")
+        source_bytes = case.get("source_bytes_utf8")
+        package_graph = case.get("package_graph")
+        resolver_graph = case.get("resolver_graph")
+        resolver_trace = case.get("resolver_trace")
+        hir_preimage = case.get("hir_semantic_digest_preimage")
+        hir_bytes = case.get("hir_semantic_bytes_utf8")
+        source_projection = case.get(
+            "module_source_contribution_projection"
+        )
+        dependency_receipt = case.get("dependency_receipt")
+        implementation = case.get("implementation_digest")
+        compilation = case.get("compilation_receipt")
+        if not all(
+            isinstance(value, dict)
+            for value in (
+                package_graph,
+                resolver_graph,
+                resolver_trace,
+                hir_preimage,
+                source_projection,
+                dependency_receipt,
+                implementation,
+                compilation,
+            )
+        ) or set(case) != expected_case_fields:
+            failures.add("MODULE_ARTIFACT_FIXTURE_SHAPE")
+            continue
+        if (
+            not is_typed_id(source_file_id, "SourceFileId")
+            or source_bytes
+            != expected_source_bytes_by_case.get(case_id)
+        ):
+            failures.add("MODULE_ARTIFACT_SOURCE_SURFACE")
+        if hir_preimage != expected_hir_preimage_by_case.get(case_id):
+            failures.add("MODULE_ARTIFACT_HIR_SOURCE_RELATION")
+        package_sha = package_graph.get("canonical_graph_sha256")
+        resolver_sha = resolver_graph.get("resolver_graph_sha256")
+        trace_sha = resolver_trace.get("trace_sha256")
+        expected_hir_bytes = json.dumps(
+            hir_preimage,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        hir_domain = registry.get("canonicalization", {}).get(
+            "hir_semantic_domain_utf8"
+        )
+        hir_payload = (
+            str(hir_domain).encode("utf-8")
+            + len(expected_hir_bytes.encode("utf-8")).to_bytes(8, "big")
+            + expected_hir_bytes.encode("utf-8")
+        )
+        if (
+            not isinstance(source_bytes, str)
+            or hashlib.sha256(source_bytes.encode("utf-8")).hexdigest()
+            != case.get("source_bytes_sha256")
+            or r4_package_graph_failure_codes(package_graph)
+            or r4_resolver_graph_failure_codes(resolver_graph)
+            or r4_resolver_trace_failure_codes(resolver_trace)
+            or resolver_graph.get("package_graph_sha256") != package_sha
+            or resolver_trace.get("resolver_graph_sha256") != resolver_sha
+            or hir_bytes != expected_hir_bytes
+            or hashlib.sha256(hir_payload).hexdigest()
+            != case.get("hir_semantic_sha256")
+        ):
+            failures.add("MODULE_ARTIFACT_CASE_PREIMAGE_DIGEST")
+
+        package_rows = (
+            package_graph.get("packages", [])
+            if isinstance(package_graph.get("packages"), list)
+            else []
+        )
+        target_rows = (
+            package_graph.get("targets", [])
+            if isinstance(package_graph.get("targets"), list)
+            else []
+        )
+        source_rows = (
+            package_graph.get("source_contributions", [])
+            if isinstance(
+                package_graph.get("source_contributions"), list
+            )
+            else []
+        )
+        visible_module_rows = (
+            package_graph.get("visible_module_bindings", [])
+            if isinstance(
+                package_graph.get("visible_module_bindings"), list
+            )
+            else []
+        )
+        root_package_rows = [
+            row
+            for row in package_rows
+            if isinstance(row, dict)
+            and row.get("package_id")
+            == package_graph.get("root_package_id")
+        ]
+        if (
+            len(root_package_rows) != 1
+            or root_package_rows[0].get(
+                "resolved_artifact_provenance_digest"
+            )
+            != shared.get("manifest_sha256")
+        ):
+            failures.add("MODULE_ARTIFACT_MANIFEST_GRAPH_BINDING")
+
+        projection_rows = (
+            source_projection.get("source_contributions", [])
+            if isinstance(
+                source_projection.get("source_contributions"), list
+            )
+            else []
+        )
+        consumer_source_rows = [
+            row
+            for row in source_rows
+            if isinstance(row, dict)
+            and row.get("source_file_id") == source_file_id
+        ]
+        consumer_projection_rows = [
+            row
+            for row in projection_rows
+            if isinstance(row, dict)
+            and row.get("source_file_id") == source_file_id
+        ]
+        if (
+            len(consumer_source_rows) != 1
+            or len(consumer_projection_rows) != 1
+            or consumer_source_rows[0].get("target_id")
+            != source_projection.get("target_id")
+            or consumer_source_rows[0].get("module_id")
+            != source_projection.get("module_id")
+            or consumer_source_rows[0].get("source_bytes_sha256")
+            != case.get("source_bytes_sha256")
+            or consumer_projection_rows[0].get(
+                "source_bytes_sha256"
+            )
+            != case.get("source_bytes_sha256")
+        ):
+            failures.add("MODULE_ARTIFACT_CONSUMER_SOURCE_BINDING")
+
+        provider_source_rows = [
+            row
+            for row in source_rows
+            if isinstance(row, dict)
+            and row.get("source_file_id") == provider_source_file_id
+            and row.get("module_id") == provider_source_module_id
+        ]
+        if (
+            len(provider_source_rows) != 1
+            or provider_source_rows[0].get("source_bytes_sha256")
+            != shared.get("provider_source_bytes_sha256")
+        ):
+            failures.add("MODULE_ARTIFACT_PROVIDER_SOURCE_BINDING")
+
+        package_by_id = {
+            row.get("package_id"): row
+            for row in package_rows
+            if isinstance(row, dict)
+            and isinstance(row.get("package_id"), str)
+        }
+        target_by_id = {
+            row.get("target_id"): row
+            for row in target_rows
+            if isinstance(row, dict)
+            and isinstance(row.get("target_id"), str)
+        }
+        source_by_id = {
+            row.get("source_file_id"): row
+            for row in source_rows
+            if isinstance(row, dict)
+            and isinstance(row.get("source_file_id"), str)
+        }
+        resolver_scopes = (
+            resolver_graph.get("scopes", [])
+            if isinstance(resolver_graph.get("scopes"), list)
+            else []
+        )
+        scope_by_id = {
+            row.get("resolver_scope_id"): row
+            for row in resolver_scopes
+            if isinstance(row, dict)
+            and isinstance(row.get("resolver_scope_id"), str)
+        }
+        resolver_package_relation_valid = True
+        for scope in resolver_scopes:
+            if not isinstance(scope, dict):
+                resolver_package_relation_valid = False
+                continue
+            kind = scope.get("kind")
+            parent = scope_by_id.get(scope.get("parent_scope_id_or_null"))
+            if kind == "PackageRootScope":
+                resolver_package_relation_valid &= (
+                    scope.get("package_id") in package_by_id
+                )
+            elif kind == "TargetScope":
+                target = target_by_id.get(scope.get("target_id"))
+                resolver_package_relation_valid &= (
+                    isinstance(target, dict)
+                    and isinstance(parent, dict)
+                    and parent.get("kind") == "PackageRootScope"
+                    and parent.get("package_id")
+                    == target.get("package_id")
+                )
+            elif kind == "ModuleScope":
+                target = (
+                    target_by_id.get(parent.get("target_id"))
+                    if isinstance(parent, dict)
+                    else None
+                )
+                resolver_package_relation_valid &= (
+                    isinstance(parent, dict)
+                    and parent.get("kind") == "TargetScope"
+                    and isinstance(target, dict)
+                    and any(
+                        row.get("target_id") == target.get("target_id")
+                        and row.get("module_id") == scope.get("module_id")
+                        for row in source_rows
+                        if isinstance(row, dict)
+                    )
+                )
+            elif kind == "SourceContributionScope":
+                source = source_by_id.get(scope.get("source_file_id"))
+                module_scope = parent
+                target_scope = (
+                    scope_by_id.get(
+                        module_scope.get("parent_scope_id_or_null")
+                    )
+                    if isinstance(module_scope, dict)
+                    else None
+                )
+                resolver_package_relation_valid &= (
+                    isinstance(source, dict)
+                    and isinstance(module_scope, dict)
+                    and module_scope.get("kind") == "ModuleScope"
+                    and source.get("module_id")
+                    == module_scope.get("module_id")
+                    and isinstance(target_scope, dict)
+                    and target_scope.get("kind") == "TargetScope"
+                    and source.get("target_id")
+                    == target_scope.get("target_id")
+                )
+        if not resolver_package_relation_valid:
+            failures.add("MODULE_ARTIFACT_RESOLVER_PACKAGE_BINDING")
+
+        resolver_imports = (
+            resolver_graph.get("import_bindings", [])
+            if isinstance(
+                resolver_graph.get("import_bindings"), list
+            )
+            else []
+        )
+        resolver_activations = (
+            resolver_graph.get("activation_entries", [])
+            if isinstance(
+                resolver_graph.get("activation_entries"), list
+            )
+            else []
+        )
+        resolver_witnesses = (
+            resolver_graph.get("witness_visibility_entries", [])
+            if isinstance(
+                resolver_graph.get("witness_visibility_entries"), list
+            )
+            else []
+        )
+        consumer_module_id = dependency_receipt.get(
+            "consumer_module_id"
+        )
+        provider_api_residue_valid = True
+        for row in [*resolver_imports, *resolver_activations]:
+            if not isinstance(row, dict):
+                provider_api_residue_valid = False
+                continue
+            provider_module_id = row.get("provider_module_id")
+            if provider_module_id == consumer_module_id:
+                continue
+            expected_provider_modules.add(provider_module_id)
+            provider_api = provider_interfaces.get(provider_module_id)
+            envelope = (
+                provider_api.get("r4_interface_envelope", {})
+                if isinstance(provider_api, dict)
+                else {}
+            )
+            if "activated_identity" in row:
+                provider_api_residue_valid &= any(
+                    candidate.get("export_owner_id")
+                    == provider_module_id
+                    and candidate.get(
+                        "referenced_activation_identity_id"
+                    )
+                    == row.get("activated_identity")
+                    for candidate in envelope.get(
+                        "public_activation_reexport_rows", []
+                    )
+                    if isinstance(candidate, dict)
+                )
+            else:
+                resolved_identity = row.get(
+                    "resolved_target_identity"
+                )
+                provider_api_residue_valid &= (
+                    (
+                        row.get("namespace") == "MODULE"
+                        and resolved_identity == provider_module_id
+                    )
+                    or any(
+                        candidate.get("namespace")
+                        == row.get("namespace")
+                        and candidate.get(
+                            "referenced_identity_id"
+                        )
+                        == resolved_identity
+                        for candidate in envelope.get(
+                            "public_export_rows", []
+                        )
+                        if isinstance(candidate, dict)
+                    )
+                )
+        if not provider_api_residue_valid:
+            failures.add("MODULE_ARTIFACT_PROVIDER_API_RESIDUE")
+
+        resolver_name_bindings = (
+            resolver_graph.get("name_bindings", [])
+            if isinstance(
+                resolver_graph.get("name_bindings"), list
+            )
+            else []
+        )
+        resolver_binding_ids = {
+            row.get("typed_identity")
+            for row in resolver_name_bindings
+            if isinstance(row, dict)
+        } | {
+            row.get("resolved_target_identity")
+            for row in resolver_imports
+            if isinstance(row, dict)
+        }
+        resolver_binding_ids.discard(None)
+        export_identity_ids = {
+            row.get("referenced_identity_id")
+            for row in visibility_closure.get("export_edges", [])
+            if isinstance(row, dict)
+        }
+        resolver_activation_pairs = {
+            (
+                row.get("activation_origin_id"),
+                row.get("activated_identity"),
+            )
+            for row in resolver_activations
+            if isinstance(row, dict)
+        }
+        reexport_activation_pairs = {
+            (
+                row.get("activation_origin_id"),
+                row.get("referenced_activation_identity_id"),
+            )
+            for row in visibility_closure.get("reexport_edges", [])
+            if isinstance(row, dict)
+        }
+        if (
+            not export_identity_ids.issubset(resolver_binding_ids)
+            or not reexport_activation_pairs.issubset(
+                resolver_activation_pairs
+            )
+        ):
+            failures.add("MODULE_ARTIFACT_PUBLIC_RESIDUE_RELATION")
+
+        initialization_binding_ids = {
+            row.get("binding_decl_id")
+            for row in initialization_plan.get("bindings", [])
+            if isinstance(row, dict)
+        }
+        if not initialization_binding_ids.issubset(
+            resolver_binding_ids
+        ):
+            failures.add("MODULE_ARTIFACT_INITIALIZATION_RELATION")
+
+        graph_candidate_ids = set(resolver_binding_ids)
+        for row in resolver_name_bindings:
+            if isinstance(row, dict):
+                graph_candidate_ids.update(
+                    value
+                    for value in (
+                        row.get("hir_body_id_or_null"),
+                        row.get("owner_local_binding_id_or_null"),
+                    )
+                    if value is not None
+                )
+        graph_candidate_ids.update(
+            row.get("import_binding_id")
+            for row in resolver_imports
+            if isinstance(row, dict)
+        )
+        graph_candidate_ids.update(
+            value
+            for row in resolver_activations
+            if isinstance(row, dict)
+            for value in (
+                row.get("activation_origin_id"),
+                row.get("activated_identity"),
+            )
+        )
+        graph_candidate_ids.update(
+            value
+            for row in resolver_witnesses
+            if isinstance(row, dict)
+            for value in (
+                row.get("evidence_origin_id"),
+                row.get("visible_witness_identity"),
+            )
+        )
+        graph_candidate_ids.update(
+            row.get("resolved_module_id")
+            for row in visible_module_rows
+            if isinstance(row, dict)
+        )
+        graph_candidate_ids.discard(None)
+        import_ids = {
+            row.get("import_binding_id")
+            for row in resolver_imports
+            if isinstance(row, dict)
+        }
+        activation_ids = {
+            row.get("activation_origin_id")
+            for row in resolver_activations
+            if isinstance(row, dict)
+        }
+        evidence_ids = {
+            row.get("evidence_origin_id")
+            for row in resolver_witnesses
+            if isinstance(row, dict)
+        }
+        proof_by_id = {
+            row.get("proof_id"): row
+            for row in visibility_closure.get(
+                "visibility_proofs", []
+            )
+            if isinstance(row, dict)
+        }
+        source_bytes_by_file_id = {
+            source_file_id: source_bytes,
+            provider_source_file_id: provider_source_bytes,
+        }
+        trace_graph_valid = True
+        trace_visibility_valid = True
+        trace_source_valid = True
+        for reference in resolver_trace.get("references", []):
+            if not isinstance(reference, dict):
+                trace_graph_valid = False
+                continue
+            trace_graph_valid &= (
+                reference.get("resolver_scope_id") in scope_by_id
+            )
+            candidate_ids = set(
+                reference.get("candidate_origin_ids", [])
+            )
+            trace_graph_valid &= candidate_ids.issubset(
+                graph_candidate_ids
+            )
+            result = reference.get("result", {})
+            resolved_identity = (
+                result.get("resolved_identity")
+                if isinstance(result, dict)
+                else None
+            )
+            if resolved_identity is not None:
+                trace_graph_valid &= (
+                    resolved_identity in candidate_ids
+                    and resolved_identity in graph_candidate_ids
+                )
+            optional_origin_sets = (
+                ("import_binding_id_or_null", import_ids),
+                ("activation_origin_id_or_null", activation_ids),
+                ("evidence_origin_id_or_null", evidence_ids),
+            )
+            for field, admitted_ids in optional_origin_sets:
+                value = reference.get(field)
+                if value is not None:
+                    trace_graph_valid &= value in admitted_ids
+            proof_ids = set(reference.get("visibility_proof_ids", []))
+            trace_visibility_valid &= proof_ids.issubset(
+                set(proof_by_id)
+            )
+            if resolved_identity is not None and proof_ids:
+                trace_visibility_valid &= any(
+                    proof_by_id[proof_id].get(
+                        "referenced_identity_id"
+                    )
+                    == resolved_identity
+                    for proof_id in proof_ids
+                    if proof_id in proof_by_id
+                )
+
+            source_scope = scope_by_id.get(
+                reference.get("resolver_scope_id")
+            )
+            trace_source_bytes = (
+                source_bytes_by_file_id.get(
+                    source_scope.get("source_file_id")
+                )
+                if isinstance(source_scope, dict)
+                and source_scope.get("kind")
+                == "SourceContributionScope"
+                else None
+            )
+            span = reference.get("source_span", {})
+            start = span.get("start") if isinstance(span, dict) else None
+            end = span.get("end") if isinstance(span, dict) else None
+            if (
+                not isinstance(trace_source_bytes, str)
+                or type(start) is not int
+                or type(end) is not int
+            ):
+                trace_source_valid = False
+            else:
+                source_utf8 = trace_source_bytes.encode("utf-8")
+                try:
+                    observed_spelling = source_utf8[start:end].decode(
+                        "utf-8"
+                    )
+                except UnicodeDecodeError:
+                    observed_spelling = None
+                trace_source_valid &= (
+                    0 <= start <= end <= len(source_utf8)
+                    and observed_spelling
+                    == reference.get("source_spelling")
+                )
+        if not trace_graph_valid:
+            failures.add("MODULE_ARTIFACT_TRACE_GRAPH_RELATION")
+        if not trace_visibility_valid:
+            failures.add("MODULE_ARTIFACT_TRACE_VISIBILITY_RELATION")
+        if not trace_source_valid:
+            failures.add("MODULE_ARTIFACT_TRACE_SOURCE_BINDING")
+
+        if (
+            r4_module_source_projection_failure_codes(
+                source_projection, package_graph
+            )
+            or source_projection.get("projection_sha256")
+            != compilation.get(
+                "module_source_contribution_sha256"
+            )
+        ):
+            failures.add("MODULE_ARTIFACT_SOURCE_PROJECTION")
+        if (
+            r4_dependency_receipt_failure_codes(
+                dependency_receipt,
+                resolver_graph=resolver_graph,
+                provider_interfaces=provider_interfaces,
+                package_graph=package_graph,
+            )
+            or dependency_receipt.get("package_graph_sha256")
+            != package_sha
+            or dependency_receipt.get("resolver_graph_sha256")
+            != resolver_sha
+        ):
+            failures.add("MODULE_ARTIFACT_DEPENDENCY_RECEIPT")
+        if r4_module_implementation_failure_codes(
+            implementation, module_api
+        ) or implementation.get("hir_semantic_sha256") != case.get(
+            "hir_semantic_sha256"
+        ):
+            failures.add("MODULE_ARTIFACT_IMPLEMENTATION")
+
+        relation_failures = r4_compilation_receipt_failure_codes(
+            compilation,
+            package_graph=package_graph,
+            source_projection=source_projection,
+            dependency_receipt=dependency_receipt,
+            resolver_trace=resolver_trace,
+            visibility_closure=visibility_closure,
+            initialization_plan=initialization_plan,
+            module_api=module_api,
+            implementation=implementation,
+        )
+        if relation_failures:
+            failures.add("MODULE_ARTIFACT_COMPILATION_RELATION")
+
+    if (
+        set(provider_interfaces) != expected_provider_modules
+        or expected_provider_modules
+        != {provider_source_module_id}
+    ):
+        failures.add("MODULE_ARTIFACT_PROVIDER_SET_CLOSURE")
+
+    if len(cases) == 2:
+        baseline, changed = cases
+        expected_relations = registry.get("expected_relations", {})
+        observed_relations = {
+            "interface_sha256_equal_across_cases": (
+                baseline.get("implementation_digest", {}).get(
+                    "interface_sha256"
+                )
+                == changed.get("implementation_digest", {}).get(
+                    "interface_sha256"
+                )
+            ),
+            "visibility_closure_sha256_equal_across_cases": (
+                baseline.get("compilation_receipt", {}).get(
+                    "visibility_closure_sha256"
+                )
+                == changed.get("compilation_receipt", {}).get(
+                    "visibility_closure_sha256"
+                )
+            ),
+            "initialization_plan_sha256_equal_across_cases": (
+                baseline.get("compilation_receipt", {}).get(
+                    "initialization_plan_sha256"
+                )
+                == changed.get("compilation_receipt", {}).get(
+                    "initialization_plan_sha256"
+                )
+            ),
+            "source_bytes_sha256_different_across_cases": (
+                baseline.get("source_bytes_sha256")
+                != changed.get("source_bytes_sha256")
+            ),
+            "module_source_contribution_sha256_different_across_cases": (
+                baseline.get(
+                    "module_source_contribution_projection", {}
+                ).get("projection_sha256")
+                != changed.get(
+                    "module_source_contribution_projection", {}
+                ).get("projection_sha256")
+            ),
+            "package_graph_sha256_different_across_cases": (
+                baseline.get("package_graph", {}).get(
+                    "canonical_graph_sha256"
+                )
+                != changed.get("package_graph", {}).get(
+                    "canonical_graph_sha256"
+                )
+            ),
+            "resolver_graph_sha256_different_across_cases": (
+                baseline.get("resolver_graph", {}).get(
+                    "resolver_graph_sha256"
+                )
+                != changed.get("resolver_graph", {}).get(
+                    "resolver_graph_sha256"
+                )
+            ),
+            "resolver_trace_sha256_different_across_cases": (
+                baseline.get("resolver_trace", {}).get("trace_sha256")
+                != changed.get("resolver_trace", {}).get(
+                    "trace_sha256"
+                )
+            ),
+            "dependency_receipt_sha256_different_across_cases": (
+                baseline.get("dependency_receipt", {}).get(
+                    "dependency_receipt_sha256"
+                )
+                != changed.get("dependency_receipt", {}).get(
+                    "dependency_receipt_sha256"
+                )
+            ),
+            "hir_semantic_sha256_different_across_cases": (
+                baseline.get("hir_semantic_sha256")
+                != changed.get("hir_semantic_sha256")
+            ),
+            "implementation_sha256_different_across_cases": (
+                baseline.get("implementation_digest", {}).get(
+                    "implementation_sha256"
+                )
+                != changed.get("implementation_digest", {}).get(
+                    "implementation_sha256"
+                )
+            ),
+            "compilation_receipt_sha256_different_across_cases": (
+                baseline.get("compilation_receipt", {}).get(
+                    "compilation_receipt_sha256"
+                )
+                != changed.get("compilation_receipt", {}).get(
+                    "compilation_receipt_sha256"
+                )
+            ),
+            "private_body_bytes_in_interface_hash": (
+                module_api.get("r4_interface_envelope", {}).get(
+                    "private_body_bytes_in_interface_hash"
+                )
+            ),
+        }
+        if expected_relations != observed_relations or not all(
+            value is True
+            for key, value in observed_relations.items()
+            if key != "private_body_bytes_in_interface_hash"
+        ) or observed_relations.get(
+            "private_body_bytes_in_interface_hash"
+        ) is not False:
+            failures.add("MODULE_ARTIFACT_CHANGE_MATRIX")
+    return failures
+
+
+def r4_module_artifact_relation_fixture_mutation_results(
+    registry: dict[str, Any],
+    module_api_fixtures: dict[str, Any],
+) -> list[tuple[bool, str, str]]:
+    """Reseal adversarial actual-fixture mutations and require relations."""
+
+    def clone(value: Any) -> Any:
+        return json.loads(json.dumps(value))
+
+    def reseal(value: dict[str, Any], field: str) -> None:
+        value[field] = canonical_self_digest(value, field)
+
+    def reseal_registry(mutant: dict[str, Any]) -> None:
+        shared = mutant["shared_inputs"]
+        shared["manifest_sha256"] = hashlib.sha256(
+            shared["manifest_bytes_utf8"].encode("utf-8")
+        ).hexdigest()
+        shared["provider_source_bytes_sha256"] = hashlib.sha256(
+            shared["provider_source_bytes_utf8"].encode("utf-8")
+        ).hexdigest()
+        reseal(shared["visibility_closure"], "closure_sha256")
+        reseal(shared["initialization_plan"], "plan_sha256")
+        for provider in mutant["provider_interfaces"].values():
+            reseal(provider, "canonical_sha256")
+        api_fixture = next(
+            row
+            for row in module_api_fixtures.get(
+                "r4_interface_envelope_fixtures", []
+            )
+            if row.get("fixture_id")
+            == mutant["interface_fixture_binding"]["fixture_id"]
+        )
+        module_api = api_fixture["payload"]
+        hir_domain = mutant["canonicalization"][
+            "hir_semantic_domain_utf8"
+        ].encode("utf-8")
+        for case in mutant["cases"]:
+            case["source_bytes_sha256"] = hashlib.sha256(
+                case["source_bytes_utf8"].encode("utf-8")
+            ).hexdigest()
+            package_graph = case["package_graph"]
+            reseal(package_graph, "canonical_graph_sha256")
+            resolver_graph = case["resolver_graph"]
+            resolver_graph["package_graph_sha256"] = package_graph[
+                "canonical_graph_sha256"
+            ]
+            reseal(resolver_graph, "resolver_graph_sha256")
+            resolver_trace = case["resolver_trace"]
+            resolver_trace["resolver_graph_sha256"] = resolver_graph[
+                "resolver_graph_sha256"
+            ]
+            reseal(resolver_trace, "trace_sha256")
+            hir_bytes = json.dumps(
+                case["hir_semantic_digest_preimage"],
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            case["hir_semantic_bytes_utf8"] = hir_bytes
+            encoded_hir = hir_bytes.encode("utf-8")
+            case["hir_semantic_sha256"] = hashlib.sha256(
+                hir_domain
+                + len(encoded_hir).to_bytes(8, "big")
+                + encoded_hir
+            ).hexdigest()
+            source_projection = case[
+                "module_source_contribution_projection"
+            ]
+            reseal(source_projection, "projection_sha256")
+            dependency_receipt = case["dependency_receipt"]
+            dependency_receipt[
+                "package_graph_sha256"
+            ] = package_graph["canonical_graph_sha256"]
+            dependency_receipt[
+                "resolver_graph_sha256"
+            ] = resolver_graph["resolver_graph_sha256"]
+            for row in dependency_receipt["required_interfaces"]:
+                provider = mutant["provider_interfaces"].get(
+                    row["provider_module_id"]
+                )
+                if provider is not None:
+                    row["interface_sha256"] = provider[
+                        "canonical_sha256"
+                    ]
+            reseal(
+                dependency_receipt, "dependency_receipt_sha256"
+            )
+            implementation = case["implementation_digest"]
+            implementation["interface_sha256"] = module_api[
+                "canonical_sha256"
+            ]
+            implementation["hir_semantic_sha256"] = case[
+                "hir_semantic_sha256"
+            ]
+            reseal(implementation, "implementation_sha256")
+            compilation = case["compilation_receipt"]
+            compilation.update(
+                package_graph_sha256=package_graph[
+                    "canonical_graph_sha256"
+                ],
+                module_source_contribution_sha256=source_projection[
+                    "projection_sha256"
+                ],
+                dependency_receipt_sha256=dependency_receipt[
+                    "dependency_receipt_sha256"
+                ],
+                resolver_trace_sha256=resolver_trace["trace_sha256"],
+                visibility_closure_sha256=shared[
+                    "visibility_closure"
+                ]["closure_sha256"],
+                initialization_plan_sha256=shared[
+                    "initialization_plan"
+                ]["plan_sha256"],
+                interface_sha256=module_api["canonical_sha256"],
+                implementation_sha256=implementation[
+                    "implementation_sha256"
+                ],
+            )
+            reseal(compilation, "compilation_receipt_sha256")
+
+    def extra_provider(mutant: dict[str, Any]) -> None:
+        provider = clone(
+            mutant["provider_interfaces"]["ModuleId:acme.display"]
+        )
+        provider["module_id"] = "ModuleId:unused"
+        provider["r4_interface_envelope"][
+            "public_activation_reexport_rows"
+        ][0]["export_owner_id"] = "ModuleId:unused"
+        mutant["provider_interfaces"]["ModuleId:unused"] = provider
+
+    def ghost_trace_candidate(mutant: dict[str, Any]) -> None:
+        reference = mutant["cases"][0]["resolver_trace"][
+            "references"
+        ][0]
+        reference["candidate_origin_ids"] = ["DeclId:ghost"]
+        reference["result"]["resolved_identity"] = "DeclId:ghost"
+
+    def public_residue_divergence(mutant: dict[str, Any]) -> None:
+        case = mutant["cases"][0]
+        binding = case["resolver_graph"]["name_bindings"][0]
+        binding["local_name"] = "ghost"
+        binding["typed_identity"] = "DeclId:ghost"
+        binding["source_origin_id"] = "SourceOriginId:ghost"
+        reference = case["resolver_trace"]["references"][0]
+        reference["candidate_origin_ids"] = ["DeclId:ghost"]
+        reference["result"]["resolved_identity"] = "DeclId:ghost"
+
+    def ghost_initialization(mutant: dict[str, Any]) -> None:
+        plan = mutant["shared_inputs"]["initialization_plan"]
+        plan["bindings"][0]["binding_decl_id"] = "DeclId:ghost"
+        plan["topological_evaluation_order"] = ["DeclId:ghost"]
+
+    def graph_unbound_provider(mutant: dict[str, Any]) -> None:
+        graph = mutant["cases"][0]["package_graph"]
+        graph["visible_module_bindings"] = [
+            row
+            for row in graph["visible_module_bindings"]
+            if row["resolved_module_id"] != "ModuleId:acme.display"
+        ]
+
+    mutations: list[
+        tuple[str, str, Any, bool]
+    ] = [
+        (
+            "canonical-contract",
+            "MODULE_ARTIFACT_CANONICALIZATION_CONTRACT",
+            lambda value: value["canonicalization"][
+                "json_algorithm_contract"
+            ].__setitem__("whitespace", "DRIFT"),
+            True,
+        ),
+        (
+            "self-hash-exclusion-contract",
+            "MODULE_ARTIFACT_CANONICALIZATION_CONTRACT",
+            lambda value: value["canonicalization"][
+                "json_self_hash_exclusion"
+            ].__setitem__("package_graph", "wrong"),
+            True,
+        ),
+        (
+            "hir-algorithm-contract",
+            "MODULE_ARTIFACT_CANONICALIZATION_CONTRACT",
+            lambda value: value["canonicalization"].__setitem__(
+                "hir_semantic_algorithm", "wrong"
+            ),
+            True,
+        ),
+        (
+            "hir-domain-rebound",
+            "MODULE_ARTIFACT_CANONICALIZATION_CONTRACT",
+            lambda value: value["canonicalization"].__setitem__(
+                "hir_semantic_domain_utf8", "evil\0"
+            ),
+            True,
+        ),
+        (
+            "consumer-source-drift",
+            "MODULE_ARTIFACT_SOURCE_SURFACE",
+            lambda value: value["cases"][0].__setitem__(
+                "source_bytes_utf8",
+                value["cases"][0]["source_bytes_utf8"] + "// drift\n",
+            ),
+            True,
+        ),
+        (
+            "provider-source-drift",
+            "MODULE_ARTIFACT_PROVIDER_SOURCE_BINDING",
+            lambda value: value["shared_inputs"].__setitem__(
+                "provider_source_bytes_utf8",
+                value["shared_inputs"]["provider_source_bytes_utf8"]
+                + "// drift\n",
+            ),
+            True,
+        ),
+        (
+            "manifest-source-drift",
+            "MODULE_ARTIFACT_MANIFEST_GRAPH_BINDING",
+            lambda value: value["shared_inputs"].__setitem__(
+                "manifest_bytes_utf8",
+                value["shared_inputs"]["manifest_bytes_utf8"]
+                + "feature drift\n",
+            ),
+            True,
+        ),
+        (
+            "consumer-graph-source-drift",
+            "MODULE_ARTIFACT_CONSUMER_SOURCE_BINDING",
+            lambda value: next(
+                row
+                for row in value["cases"][0]["package_graph"][
+                    "source_contributions"
+                ]
+                if row["module_id"] == "ModuleId:acme.api"
+            ).__setitem__("source_bytes_sha256", "1" * 64),
+            True,
+        ),
+        (
+            "provider-graph-source-drift",
+            "MODULE_ARTIFACT_PROVIDER_SOURCE_BINDING",
+            lambda value: next(
+                row
+                for row in value["cases"][0]["package_graph"][
+                    "source_contributions"
+                ]
+                if row["module_id"] == "ModuleId:acme.display"
+            ).__setitem__("source_bytes_sha256", "2" * 64),
+            True,
+        ),
+        (
+            "manifest-graph-drift",
+            "MODULE_ARTIFACT_MANIFEST_GRAPH_BINDING",
+            lambda value: value["cases"][0]["package_graph"][
+                "packages"
+            ][0].__setitem__(
+                "resolved_artifact_provenance_digest", "3" * 64
+            ),
+            True,
+        ),
+        (
+            "pseudo-provider-residue",
+            "MODULE_ARTIFACT_PROVIDER_API_RESIDUE",
+            lambda value: value["provider_interfaces"][
+                "ModuleId:acme.display"
+            ]["r4_interface_envelope"][
+                "public_activation_reexport_rows"
+            ][0].__setitem__(
+                "referenced_activation_identity_id",
+                "ExtensionSetId:pseudo",
+            ),
+            True,
+        ),
+        (
+            "extra-provider",
+            "MODULE_ARTIFACT_PROVIDER_SET_CLOSURE",
+            extra_provider,
+            True,
+        ),
+        (
+            "ghost-target-scope",
+            "MODULE_ARTIFACT_RESOLVER_PACKAGE_BINDING",
+            lambda value: next(
+                row
+                for row in value["cases"][0]["resolver_graph"]["scopes"]
+                if row["kind"] == "TargetScope"
+            ).__setitem__("target_id", "TargetId:ghost"),
+            True,
+        ),
+        (
+            "ghost-source-scope",
+            "MODULE_ARTIFACT_RESOLVER_PACKAGE_BINDING",
+            lambda value: next(
+                row
+                for row in value["cases"][0]["resolver_graph"]["scopes"]
+                if row["kind"] == "SourceContributionScope"
+            ).__setitem__("source_file_id", "SourceFileId:ghost"),
+            True,
+        ),
+        (
+            "ghost-module-scope",
+            "MODULE_ARTIFACT_RESOLVER_PACKAGE_BINDING",
+            lambda value: next(
+                row
+                for row in value["cases"][0]["resolver_graph"]["scopes"]
+                if row["kind"] == "ModuleScope"
+            ).__setitem__("module_id", "ModuleId:ghost"),
+            True,
+        ),
+        (
+            "ghost-trace-scope",
+            "MODULE_ARTIFACT_TRACE_GRAPH_RELATION",
+            lambda value: value["cases"][0]["resolver_trace"][
+                "references"
+            ][0].__setitem__(
+                "resolver_scope_id", "ResolverScopeId:ghost"
+            ),
+            True,
+        ),
+        (
+            "ghost-trace-candidate",
+            "MODULE_ARTIFACT_TRACE_GRAPH_RELATION",
+            ghost_trace_candidate,
+            True,
+        ),
+        (
+            "ghost-trace-proof",
+            "MODULE_ARTIFACT_TRACE_VISIBILITY_RELATION",
+            lambda value: value["cases"][0]["resolver_trace"][
+                "references"
+            ][0].__setitem__(
+                "visibility_proof_ids",
+                ["VisibilityProofId:ghost"],
+            ),
+            True,
+        ),
+        (
+            "trace-source-span-drift",
+            "MODULE_ARTIFACT_TRACE_SOURCE_BINDING",
+            lambda value: value["cases"][0]["resolver_trace"][
+                "references"
+            ][0]["source_span"].__setitem__("start", 95),
+            True,
+        ),
+        (
+            "resolver-public-residue-divergence",
+            "MODULE_ARTIFACT_PUBLIC_RESIDUE_RELATION",
+            public_residue_divergence,
+            True,
+        ),
+        (
+            "ghost-initialization-binding",
+            "MODULE_ARTIFACT_INITIALIZATION_RELATION",
+            ghost_initialization,
+            True,
+        ),
+        (
+            "hir-source-divergence",
+            "MODULE_ARTIFACT_HIR_SOURCE_RELATION",
+            lambda value: value["cases"][0][
+                "hir_semantic_digest_preimage"
+            ]["private_bodies"][0].__setitem__("return_int", 99),
+            True,
+        ),
+        (
+            "graph-unbound-provider",
+            "MODULE_ARTIFACT_DEPENDENCY_RECEIPT",
+            graph_unbound_provider,
+            True,
+        ),
+        (
+            "missing-provider",
+            "MODULE_ARTIFACT_PROVIDER_SET_CLOSURE",
+            lambda value: value["provider_interfaces"].pop(
+                "ModuleId:acme.display"
+            ),
+            True,
+        ),
+        (
+            "stale-dependency-digest",
+            "MODULE_ARTIFACT_DEPENDENCY_RECEIPT",
+            lambda value: value["cases"][0][
+                "dependency_receipt"
+            ].__setitem__("dependency_receipt_sha256", "0" * 64),
+            False,
+        ),
+        (
+            "unknown-provider-field",
+            "MODULE_ARTIFACT_PROVIDER_INTERFACE_BINDING",
+            lambda value: value["provider_interfaces"][
+                "ModuleId:acme.display"
+            ].__setitem__("unknown", True),
+            True,
+        ),
+        (
+            "change-matrix-tamper",
+            "MODULE_ARTIFACT_CHANGE_MATRIX",
+            lambda value: value["expected_relations"].__setitem__(
+                "interface_sha256_equal_across_cases", False
+            ),
+            False,
+        ),
+    ]
+    results: list[tuple[bool, str, str]] = []
+    for mutation_id, expected_failure, mutate, should_reseal in mutations:
+        mutant = clone(registry)
+        mutate(mutant)
+        if should_reseal:
+            reseal_registry(mutant)
+        observed = r4_module_artifact_relation_fixture_failure_codes(
+            mutant, module_api_fixtures
+        )
+        results.append(
+            (
+                expected_failure in observed,
+                mutation_id,
+                (
+                    f"expected={expected_failure} "
+                    f"observed={sorted(observed)}"
+                ),
+            )
+        )
+    return results
+
+
+def has_exact_object_keys(value: Any, keys: set[str]) -> bool:
+    return isinstance(value, dict) and set(value) == keys
+
+
+def is_canonically_sorted(
+    values: Any, key: Any = lambda value: value
+) -> bool:
+    if not isinstance(values, list):
+        return False
+    try:
+        return values == sorted(values, key=key)
+    except (TypeError, ValueError):
+        return False
+
+
+def r4_package_graph_shape_and_order_failure_codes(
+    graph: dict[str, Any],
+) -> set[str]:
+    """Bind the executable graph helper to its closed schema and ordering."""
+
+    failures: set[str] = set()
+    top_fields = {
+        "schema",
+        "root_package_id",
+        "packages",
+        "targets",
+        "source_contributions",
+        "dependency_bindings",
+        "visible_module_bindings",
+        "module_header_import_edges",
+        "graph_policy",
+        "canonical_order",
+        "canonical_graph_sha256",
+    }
+    package_fields = {
+        "package_id",
+        "canonical_package_key",
+        "resolved_artifact_provenance_digest",
+        "dependency_binding_ids",
+        "target_ids",
+    }
+    package_key_fields = {
+        "registry_namespace",
+        "package_name",
+        "package_version_identity",
+    }
+    target_fields = {
+        "target_id",
+        "package_id",
+        "canonical_manifest_target_name",
+        "target_kind",
+        "source_role_policy",
+        "activation_profile",
+        "source_file_ids",
+    }
+    source_fields = {
+        "source_file_id",
+        "target_id",
+        "normalized_project_relative_path",
+        "source_role",
+        "activation_profile",
+        "module_id",
+        "module_path",
+        "explicit_module_path_or_null",
+        "source_bytes_sha256",
+    }
+    dependency_fields = {
+        "dependency_binding_id",
+        "consumer_package_id",
+        "source_visible_binding",
+        "provider_package_id",
+        "provider_interface_sha256",
+    }
+    visible_fields = {
+        "consumer_target_id",
+        "visible_qualified_path",
+        "resolved_module_id",
+        "dependency_binding_id_or_self",
+    }
+    header_edge_fields = {
+        "from_module_id",
+        "to_module_id",
+        "edge_kind",
+        "source_origin_id",
+        "scc_admission",
+    }
+    graph_policy_fields = {
+        "package_dependency",
+        "module_header_import",
+        "reexport",
+        "static_binding_value_dependency",
+    }
+    arrays_and_fields = (
+        ("packages", package_fields),
+        ("targets", target_fields),
+        ("source_contributions", source_fields),
+        ("dependency_bindings", dependency_fields),
+        ("visible_module_bindings", visible_fields),
+        ("module_header_import_edges", header_edge_fields),
+    )
+    if (
+        not has_exact_object_keys(graph, top_fields)
+        or graph.get("schema")
+        != "deeplus.package-module-source-graph/r1"
+        or graph.get("canonical_order")
+        != "TYPED_ID_CANONICAL_BYTE_ORDER"
+        or not has_exact_object_keys(
+            graph.get("graph_policy"), graph_policy_fields
+        )
+        or graph.get("graph_policy")
+        != {
+            "package_dependency": "ACYCLIC",
+            "module_header_import": (
+                "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+            ),
+            "reexport": "ACYCLIC",
+            "static_binding_value_dependency": (
+                "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+            ),
+        }
+        or any(
+            not isinstance(graph.get(field), list)
+            or any(
+                not has_exact_object_keys(row, row_fields)
+                for row in graph.get(field, [])
+            )
+            for field, row_fields in arrays_and_fields
+        )
+        or any(
+            not has_exact_object_keys(
+                row.get("canonical_package_key"), package_key_fields
+            )
+            for row in graph.get("packages", [])
+            if isinstance(row, dict)
+        )
+    ):
+        failures.add("PACKAGE_GRAPH_SCHEMA_SHAPE")
+
+    packages = graph.get("packages", [])
+    targets = graph.get("targets", [])
+    sources = graph.get("source_contributions", [])
+    bindings = graph.get("dependency_bindings", [])
+    visible = graph.get("visible_module_bindings", [])
+    edges = graph.get("module_header_import_edges", [])
+    if (
+        not is_canonically_sorted(
+            packages, lambda row: row.get("package_id", "")
+        )
+        or not is_canonically_sorted(
+            targets, lambda row: row.get("target_id", "")
+        )
+        or not is_canonically_sorted(
+            sources, lambda row: row.get("source_file_id", "")
+        )
+        or not is_canonically_sorted(
+            bindings,
+            lambda row: row.get("dependency_binding_id", ""),
+        )
+        or not is_canonically_sorted(
+            visible,
+            lambda row: (
+                row.get("consumer_target_id", ""),
+                tuple(row.get("visible_qualified_path", [])),
+                row.get("resolved_module_id", ""),
+                row.get("dependency_binding_id_or_self", ""),
+            ),
+        )
+        or not is_canonically_sorted(
+            edges,
+            lambda row: (
+                row.get("from_module_id", ""),
+                row.get("to_module_id", ""),
+                row.get("edge_kind", ""),
+                row.get("source_origin_id", ""),
+            ),
+        )
+        or any(
+            not is_canonically_sorted(
+                row.get("dependency_binding_ids", [])
+            )
+            or not is_canonically_sorted(row.get("target_ids", []))
+            for row in packages
+            if isinstance(row, dict)
+        )
+        or any(
+            not is_canonically_sorted(row.get("source_file_ids", []))
+            for row in targets
+            if isinstance(row, dict)
+        )
+    ):
+        failures.add("PACKAGE_GRAPH_CANONICAL_ORDER")
+    return failures
+
+
+def r4_package_graph_failure_codes(graph: dict[str, Any]) -> set[str]:
+    """Bounded feasibility validator for the frozen package/module graph."""
+
+    failures = r4_package_graph_shape_and_order_failure_codes(graph)
+    unicode_scalar_failure = has_non_unicode_scalar(graph)
+    canonical_domain_failure = not is_canonical_json_value(graph)
+    if unicode_scalar_failure:
+        failures.add("CANONICAL_JSON_NON_UNICODE_SCALAR")
+    elif canonical_domain_failure:
+        failures.add("CANONICAL_JSON_INVALID_VALUE_DOMAIN")
+    packages = graph.get("packages", [])
+    targets = graph.get("targets", [])
+    sources = graph.get("source_contributions", [])
+    bindings = graph.get("dependency_bindings", [])
+    visible = graph.get("visible_module_bindings", [])
+    header_edges = graph.get("module_header_import_edges", [])
+
+    package_ids = [row.get("package_id") for row in packages]
+    target_ids = [row.get("target_id") for row in targets]
+    source_ids = [row.get("source_file_id") for row in sources]
+    module_ids = [row.get("module_id") for row in sources]
+    dependency_ids = [
+        row.get("dependency_binding_id") for row in bindings
+    ]
+    if (
+        not packages
+        or not targets
+        or not sources
+        or any(not row.get("target_ids") for row in packages)
+        or any(not row.get("source_file_ids") for row in targets)
+        or len(package_ids) != len(set(package_ids))
+        or len(target_ids) != len(set(target_ids))
+        or len(source_ids) != len(set(source_ids))
+        or len(dependency_ids) != len(set(dependency_ids))
+    ):
+        failures.add("OWNER_SET")
+    domain_rows = (
+        ([graph.get("root_package_id"), *package_ids], "PackageId:"),
+        (target_ids, "TargetId:"),
+        (source_ids, "SourceFileId:"),
+        (module_ids, "ModuleId:"),
+        (dependency_ids, "DependencyBindingId:"),
+    )
+    if any(
+        not isinstance(value, str) or not value.startswith(prefix)
+        for values, prefix in domain_rows
+        for value in values
+    ):
+        failures.add("IDENTITY_DOMAIN")
+
+    package_set = set(package_ids)
+    target_set = set(target_ids)
+    module_set = set(module_ids)
+    dependency_set = set(dependency_ids)
+    package_identity_keys: dict[tuple[Any, Any, Any], Any] = {}
+    for package in packages:
+        canonical_key = package.get("canonical_package_key", {})
+        key = (
+            canonical_key.get("registry_namespace"),
+            canonical_key.get("package_name"),
+            canonical_key.get("package_version_identity"),
+        )
+        previous_id = package_identity_keys.setdefault(
+            key, package.get("package_id")
+        )
+        if None in key or previous_id != package.get("package_id"):
+            failures.add("PACKAGE_IDENTITY_RECIPE")
+    target_identity_keys: dict[tuple[Any, Any, Any], Any] = {}
+    for target in targets:
+        key = (
+            target.get("package_id"),
+            target.get("canonical_manifest_target_name"),
+            target.get("target_kind"),
+        )
+        previous_id = target_identity_keys.setdefault(
+            key, target.get("target_id")
+        )
+        if None in key or previous_id != target.get("target_id"):
+            failures.add("TARGET_IDENTITY_RECIPE")
+    if graph.get("root_package_id") not in package_set:
+        failures.add("ROOT_PACKAGE")
+    target_by_id = {
+        row.get("target_id"): row for row in targets
+    }
+    dependency_by_id = {
+        row.get("dependency_binding_id"): row for row in bindings
+    }
+    for package in packages:
+        package_id = package.get("package_id")
+        target_id_rows = package.get("target_ids", [])
+        expected_targets = set(target_id_rows)
+        observed_targets = {
+            target.get("target_id")
+            for target in targets
+            if target.get("package_id") == package_id
+        }
+        if (
+            len(target_id_rows) != len(expected_targets)
+            or expected_targets != observed_targets
+            or any(
+                target_id not in target_set
+                or target_by_id[target_id].get("package_id")
+                != package_id
+                for target_id in expected_targets
+            )
+        ):
+            failures.add("PACKAGE_TARGET_REFERENCE")
+        dependency_id_rows = package.get("dependency_binding_ids", [])
+        expected_dependencies = set(dependency_id_rows)
+        observed_dependencies = {
+            binding.get("dependency_binding_id")
+            for binding in bindings
+            if binding.get("consumer_package_id") == package_id
+        }
+        if (
+            len(dependency_id_rows) != len(expected_dependencies)
+            or expected_dependencies != observed_dependencies
+            or any(
+                dependency_id not in dependency_set
+                or dependency_by_id[dependency_id].get(
+                    "consumer_package_id"
+                )
+                != package_id
+                for dependency_id in expected_dependencies
+            )
+        ):
+            failures.add("PACKAGE_DEPENDENCY_REFERENCE")
+    for target in targets:
+        if target.get("target_kind") != target.get(
+            "source_role_policy"
+        ):
+            failures.add("TARGET_SOURCE_ROLE_POLICY")
+        if target.get("package_id") not in package_set:
+            failures.add("TARGET_PACKAGE_REFERENCE")
+        source_id_rows = target.get("source_file_ids", [])
+        expected_sources = set(source_id_rows)
+        observed_sources = {
+            row.get("source_file_id")
+            for row in sources
+            if row.get("target_id") == target.get("target_id")
+        }
+        if (
+            len(source_id_rows) != len(expected_sources)
+            or expected_sources != observed_sources
+        ):
+            failures.add("TARGET_SOURCE_REFERENCE")
+    module_identity_keys: dict[tuple[Any, tuple[Any, ...]], Any] = {}
+    module_key_by_id: dict[Any, tuple[Any, tuple[Any, ...]]] = {}
+    module_owner_packages: dict[Any, set[Any]] = {}
+    module_owner_target_kinds: dict[Any, set[Any]] = {}
+    module_paths: dict[Any, tuple[Any, ...]] = {}
+    source_path_keys: set[tuple[Any, str]] = set()
+    for source in sources:
+        target = target_by_id.get(source.get("target_id"))
+        if target is None:
+            failures.add("SOURCE_TARGET_REFERENCE")
+            continue
+        module_key = (
+            target.get("package_id"),
+            tuple(source.get("module_path", [])),
+        )
+        previous_module_id = module_identity_keys.setdefault(
+            module_key, source.get("module_id")
+        )
+        previous_module_key = module_key_by_id.setdefault(
+            source.get("module_id"), module_key
+        )
+        if (
+            previous_module_id != source.get("module_id")
+            or previous_module_key != module_key
+        ):
+            failures.add("MODULE_IDENTITY_RECIPE")
+        module_owner_packages.setdefault(
+            source.get("module_id"), set()
+        ).add(target.get("package_id"))
+        module_owner_target_kinds.setdefault(
+            source.get("module_id"), set()
+        ).add(target.get("target_kind"))
+        module_paths.setdefault(
+            source.get("module_id"),
+            tuple(source.get("module_path", [])),
+        )
+        if (
+            source.get("source_role") != target.get("source_role_policy")
+            or source.get("activation_profile")
+            != target.get("activation_profile")
+        ):
+            failures.add("SOURCE_TARGET_PROFILE")
+        explicit = source.get("explicit_module_path_or_null")
+        if explicit is not None and explicit != source.get("module_path"):
+            failures.add("MODULE_MAPPING")
+        normalized_path = canonical_project_relative_path(
+            source.get("normalized_project_relative_path")
+        )
+        if (
+            normalized_path is None
+            or normalized_path
+            != source.get("normalized_project_relative_path")
+        ):
+            failures.add("SOURCE_PATH_NORMALIZATION")
+        else:
+            path_key = (source.get("target_id"), normalized_path)
+            if path_key in source_path_keys:
+                failures.add("SOURCE_PATH_IDENTITY")
+            source_path_keys.add(path_key)
+
+    dependency_keys: set[tuple[Any, Any]] = set()
+    package_edges: list[tuple[str, str]] = []
+    for binding in bindings:
+        key = (
+            binding.get("consumer_package_id"),
+            binding.get("source_visible_binding"),
+        )
+        if key in dependency_keys:
+            failures.add("DEPENDENCY_BINDING_KEY")
+        dependency_keys.add(key)
+        consumer = binding.get("consumer_package_id")
+        provider = binding.get("provider_package_id")
+        if consumer not in package_set or provider not in package_set:
+            failures.add("DEPENDENCY_PACKAGE_REFERENCE")
+        else:
+            package_edges.append((consumer, provider))
+    if has_directed_cycle(package_set, package_edges):
+        failures.add("PACKAGE_CYCLE")
+
+    visible_keys: set[tuple[Any, tuple[Any, ...]]] = set()
+    for row in visible:
+        key = (
+            row.get("consumer_target_id"),
+            tuple(row.get("visible_qualified_path", [])),
+        )
+        if key in visible_keys:
+            failures.add("VISIBLE_MODULE_KEY")
+        visible_keys.add(key)
+        if row.get("consumer_target_id") not in target_set:
+            failures.add("VISIBLE_TARGET_REFERENCE")
+        if row.get("resolved_module_id") not in module_set:
+            failures.add("VISIBLE_MODULE_REFERENCE")
+        if "script" in module_owner_target_kinds.get(
+            row.get("resolved_module_id"), set()
+        ):
+            failures.add("SCRIPT_MODULE_IMPORT")
+        dependency = row.get("dependency_binding_id_or_self")
+        consumer_target = target_by_id.get(row.get("consumer_target_id"))
+        consumer_package = (
+            consumer_target.get("package_id")
+            if consumer_target is not None
+            else None
+        )
+        module_owners = module_owner_packages.get(
+            row.get("resolved_module_id"), set()
+        )
+        if dependency == "self":
+            if module_owners != {consumer_package}:
+                failures.add("VISIBLE_DEPENDENCY_REFERENCE")
+            expected_visible_path = module_paths.get(
+                row.get("resolved_module_id")
+            )
+        elif dependency not in dependency_set:
+            failures.add("VISIBLE_DEPENDENCY_REFERENCE")
+            expected_visible_path = None
+        else:
+            binding = dependency_by_id[dependency]
+            if (
+                binding.get("consumer_package_id") != consumer_package
+                or module_owners
+                != {binding.get("provider_package_id")}
+            ):
+                failures.add("VISIBLE_DEPENDENCY_REFERENCE")
+            provider_path = module_paths.get(
+                row.get("resolved_module_id"), ()
+            )
+            expected_visible_path = (
+                binding.get("source_visible_binding"),
+                *provider_path[1:],
+            )
+        if tuple(row.get("visible_qualified_path", [])) != (
+            expected_visible_path
+        ):
+            failures.add("VISIBLE_PATH_PROJECTION")
+
+    admitted_edge_kinds = {
+        "module_header_reference",
+        "type_declaration_reference",
+        "signature_reference",
+    }
+    forbidden_edge_kinds = {
+        "static_value_dependency",
+        "runtime_initializer_dependency",
+        "reexport_dependency",
+    }
+    all_module_edges: list[tuple[str, str]] = []
+    forbidden_edges: set[tuple[str, str]] = set()
+    for row in header_edges:
+        source = row.get("from_module_id")
+        target = row.get("to_module_id")
+        kind = row.get("edge_kind")
+        if source not in module_set or target not in module_set:
+            failures.add("MODULE_EDGE_REFERENCE")
+            continue
+        all_module_edges.append((source, target))
+        if kind in forbidden_edge_kinds:
+            forbidden_edges.add((source, target))
+            if row.get("scc_admission") != "SCC_FORBIDDEN":
+                failures.add("MODULE_EDGE_ADMISSION")
+        elif kind in admitted_edge_kinds and row.get("scc_admission") != (
+            "HEADER_ONLY_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+        ):
+            failures.add("MODULE_EDGE_ADMISSION")
+        elif kind not in admitted_edge_kinds:
+            failures.add("MODULE_EDGE_ADMISSION")
+    components = directed_strongly_connected_components(
+        module_set, all_module_edges
+    )
+    component_by_module = {
+        module_id: component
+        for component in components
+        for module_id in component
+    }
+    if any(
+        source == target
+        or (
+            target in component_by_module.get(source, set())
+            and len(component_by_module.get(source, set())) > 1
+        )
+        for source, target in forbidden_edges
+    ):
+        failures.add("FORBIDDEN_MODULE_CYCLE")
+    graph_sha256 = graph.get("canonical_graph_sha256")
+    if (
+        not canonical_domain_failure
+        and (
+        re.fullmatch(r"[0-9a-f]{64}", str(graph_sha256 or "")) is None
+        or graph_sha256
+        != canonical_self_digest(graph, "canonical_graph_sha256")
+        )
+    ):
+        failures.add("PACKAGE_GRAPH_DIGEST")
+    return failures
+
+
+def r4_top_level_visibility_failure_codes(
+    descriptor: dict[str, Any],
+) -> set[str]:
+    """Validate R4 top-level visibility relations beyond JSON shape."""
+
+    failures: set[str] = set()
+    type_producing_owners = {
+        "ClassDecl",
+        "TraitDecl",
+        "EnumDecl",
+        "TypeAliasDecl",
+        "SchemaDecl",
+        "ActorDecl",
+        "ActorProtocolDecl",
+        "TypestateResourceDecl",
+        "BitfieldDecl",
+    }
+    computed_type_owner = (
+        descriptor.get("declaration_kind") in type_producing_owners
+    )
+    if descriptor.get("type_producing_owner") is not computed_type_owner:
+        failures.add("TYPE_OWNER_CLASSIFICATION")
+
+    explicit_visibility = descriptor.get("explicit_visibility")
+    if computed_type_owner and explicit_visibility is None:
+        failures.add("TYPE_DECL_VISIBILITY_REQUIRED")
+    normalized_visibility = (
+        explicit_visibility
+        if explicit_visibility is not None
+        else "private"
+    )
+    if (
+        normalized_visibility in {"private", "common"}
+        and descriptor.get(
+            "external_export_or_module_interface_admitted"
+        )
+        is not False
+    ):
+        failures.add("EXTERNAL_EXPORT_INELIGIBLE")
+
+    allowed_dependencies = {
+        "private": {"private", "common", "public"},
+        "common": {"common", "public"},
+        "public": {"public"},
+    }
+    dependency_visibilities = descriptor.get(
+        "api_dependency_visibilities", []
+    )
+    if (
+        normalized_visibility not in allowed_dependencies
+        or not isinstance(dependency_visibilities, list)
+        or any(
+            visibility
+            not in allowed_dependencies.get(normalized_visibility, set())
+            for visibility in dependency_visibilities
+        )
+    ):
+        failures.add("API_VISIBILITY_LEAK")
+
+    if (
+        normalized_visibility == "public"
+        and descriptor.get(
+            "external_export_or_module_interface_admitted"
+        )
+        is True
+        and not descriptor.get("visibility_proof_ids")
+    ):
+        failures.add("PUBLIC_EXPORT_PROOF_MISSING")
+    return failures
+
+
+def r4_resolver_graph_shape_and_order_failure_codes(
+    graph: dict[str, Any],
+) -> set[str]:
+    """Bind the resolver helper to its closed schema and array order."""
+
+    failures: set[str] = set()
+    top_fields = {
+        "schema",
+        "package_graph_sha256",
+        "root_scope_ids",
+        "scopes",
+        "name_bindings",
+        "import_bindings",
+        "activation_entries",
+        "witness_visibility_entries",
+        "invariants",
+        "resolver_graph_sha256",
+    }
+    scope_fields = {
+        "PackageRootScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "package_id",
+        },
+        "TargetScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "target_id",
+        },
+        "ModuleScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "module_id",
+        },
+        "SourceContributionScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "source_file_id",
+        },
+        "ItemOwnerScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "decl_id",
+        },
+        "BodyLocalScope": {
+            "resolver_scope_id",
+            "parent_scope_id_or_null",
+            "kind",
+            "hir_body_id",
+            "hir_scope_id",
+            "owner_local_scope_id",
+            "scope_preorder_ordinal",
+            "scope_role",
+        },
+    }
+    name_fields = {
+        "resolver_scope_id",
+        "namespace",
+        "local_name",
+        "binding_kind",
+        "binding_origin_kind",
+        "source_admission",
+        "typed_identity",
+        "hir_body_id_or_null",
+        "owner_local_binding_id_or_null",
+        "binding_commit_ordinal_or_null",
+        "source_origin_id",
+        "visibility_start",
+        "overload_slot_key_or_null",
+    }
+    import_fields = {
+        "import_binding_id",
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name",
+        "resolved_target_identity",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "source_origin_id",
+    }
+    activation_fields = {
+        "resolver_scope_id",
+        "activation_origin_id",
+        "activated_identity",
+        "activation_kind",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "semantic_site_key",
+    }
+    witness_fields = {
+        "resolver_scope_id",
+        "evidence_origin_id",
+        "visible_witness_identity",
+    }
+    invariant_fields = {
+        "lookup",
+        "same_frame_order_priority",
+        "cross_frame_overload_merge",
+        "provisional_bindings_in_name_env",
+        "environment_cross_creation_count",
+        "runtime_relookup_count",
+    }
+    scopes = graph.get("scopes", [])
+    row_arrays = (
+        ("name_bindings", name_fields),
+        ("import_bindings", import_fields),
+        ("activation_entries", activation_fields),
+        ("witness_visibility_entries", witness_fields),
+    )
+    if (
+        not has_exact_object_keys(graph, top_fields)
+        or graph.get("schema") != "deeplus.resolver-graph/r1"
+        or re.fullmatch(
+            r"[0-9a-f]{64}",
+            str(graph.get("package_graph_sha256") or ""),
+        )
+        is None
+        or not isinstance(graph.get("root_scope_ids"), list)
+        or not isinstance(scopes, list)
+        or any(
+            not isinstance(row, dict)
+            or not has_exact_object_keys(
+                row, scope_fields.get(row.get("kind"), set())
+            )
+            for row in scopes
+        )
+        or any(
+            not isinstance(graph.get(field), list)
+            or any(
+                not has_exact_object_keys(row, row_fields)
+                for row in graph.get(field, [])
+            )
+            for field, row_fields in row_arrays
+        )
+        or not has_exact_object_keys(
+            graph.get("invariants"), invariant_fields
+        )
+    ):
+        failures.add("RESOLVER_GRAPH_SCHEMA_SHAPE")
+
+    if (
+        not is_canonically_sorted(graph.get("root_scope_ids"))
+        or not is_canonically_sorted(
+            scopes, lambda row: row.get("resolver_scope_id", "")
+        )
+        or not is_canonically_sorted(
+            graph.get("name_bindings"),
+            lambda row: (
+                row.get("resolver_scope_id", ""),
+                row.get("namespace", ""),
+                row.get("local_name", ""),
+                row.get("overload_slot_key_or_null") or "",
+                row.get("source_origin_id", ""),
+            ),
+        )
+        or not is_canonically_sorted(
+            graph.get("import_bindings"),
+            lambda row: row.get("import_binding_id", ""),
+        )
+        or not is_canonically_sorted(
+            graph.get("activation_entries"),
+            lambda row: row.get("activation_origin_id", ""),
+        )
+        or not is_canonically_sorted(
+            graph.get("witness_visibility_entries"),
+            lambda row: row.get("evidence_origin_id", ""),
+        )
+    ):
+        failures.add("RESOLVER_GRAPH_CANONICAL_ORDER")
+    return failures
+
+
+def r4_resolver_graph_failure_codes(graph: dict[str, Any]) -> set[str]:
+    """Bounded feasibility validator for resolver ownership and key laws."""
+
+    failures = r4_resolver_graph_shape_and_order_failure_codes(graph)
+    unicode_scalar_failure = has_non_unicode_scalar(graph)
+    canonical_domain_failure = not is_canonical_json_value(graph)
+    if unicode_scalar_failure:
+        failures.add("CANONICAL_JSON_NON_UNICODE_SCALAR")
+    elif canonical_domain_failure:
+        failures.add("CANONICAL_JSON_INVALID_VALUE_DOMAIN")
+    scopes = graph.get("scopes", [])
+    scope_ids = [row.get("resolver_scope_id") for row in scopes]
+    if not scopes or len(scope_ids) != len(set(scope_ids)):
+        failures.add("SCOPE_SET")
+    if any(
+        not isinstance(scope_id, str)
+        or not scope_id.startswith("ResolverScopeId:")
+        for scope_id in scope_ids
+    ):
+        failures.add("SCOPE_ID_DOMAIN")
+    scope_set = set(scope_ids)
+    scope_by_id = {
+        row.get("resolver_scope_id"): row for row in scopes
+    }
+    root_scope_ids = graph.get("root_scope_ids", [])
+    package_root_ids = {
+        scope.get("resolver_scope_id")
+        for scope in scopes
+        if scope.get("kind") == "PackageRootScope"
+    }
+    if (
+        not root_scope_ids
+        or len(root_scope_ids) != len(set(root_scope_ids))
+        or set(root_scope_ids) != package_root_ids
+        or any(
+            not is_typed_id(root_scope_id, "ResolverScopeId")
+            for root_scope_id in root_scope_ids
+        )
+    ):
+        failures.add("ROOT_SCOPE_REFERENCE")
+    parent_edges: list[tuple[str, str]] = []
+    owner_domains = {
+        "PackageRootScope": (("package_id", "PackageId"),),
+        "TargetScope": (("target_id", "TargetId"),),
+        "ModuleScope": (("module_id", "ModuleId"),),
+        "SourceContributionScope": (
+            ("source_file_id", "SourceFileId"),
+        ),
+        "ItemOwnerScope": (("decl_id", "DeclId"),),
+        "BodyLocalScope": (
+            ("hir_body_id", "HirBodyId"),
+            ("hir_scope_id", "HirScopeId"),
+        ),
+    }
+    scope_identity_keys: dict[tuple[Any, tuple[Any, ...]], Any] = {}
+    scope_key_by_id: dict[Any, tuple[Any, tuple[Any, ...]]] = {}
+    root_body_scope_by_body: dict[Any, Any] = {}
+    hir_scope_by_owner_key: dict[tuple[Any, Any], Any] = {}
+    hir_scope_key_by_id: dict[Any, tuple[Any, Any]] = {}
+    scope_ordinals_by_body: dict[Any, set[int]] = {}
+    for scope in scopes:
+        parent = scope.get("parent_scope_id_or_null")
+        if scope.get("kind") == "PackageRootScope":
+            if parent is not None:
+                failures.add("ROOT_SCOPE_PARENT")
+        elif parent not in scope_set:
+            failures.add("SCOPE_PARENT_REFERENCE")
+        else:
+            parent_edges.append((scope.get("resolver_scope_id"), parent))
+            expected_parent_kind = {
+                "TargetScope": "PackageRootScope",
+                "ModuleScope": "TargetScope",
+                "SourceContributionScope": "ModuleScope",
+                "ItemOwnerScope": "SourceContributionScope",
+            }.get(scope.get("kind"))
+            if (
+                expected_parent_kind is not None
+                and scope_by_id.get(parent, {}).get("kind")
+                != expected_parent_kind
+            ):
+                failures.add("SCOPE_PARENT_KIND")
+        expected_owner_domains = owner_domains.get(scope.get("kind"))
+        if expected_owner_domains is None or any(
+            not is_typed_id(scope.get(field), domain)
+            for field, domain in expected_owner_domains
+        ):
+            failures.add("SCOPE_OWNER_DOMAIN")
+        elif expected_owner_domains is not None:
+            owner_key = (
+                scope.get("kind"),
+                tuple(scope.get(field) for field, _domain in expected_owner_domains),
+            )
+            previous_scope_id = scope_identity_keys.setdefault(
+                owner_key, scope.get("resolver_scope_id")
+            )
+            previous_owner_key = scope_key_by_id.setdefault(
+                scope.get("resolver_scope_id"), owner_key
+            )
+            if (
+                previous_scope_id != scope.get("resolver_scope_id")
+                or previous_owner_key != owner_key
+            ):
+                failures.add("SCOPE_IDENTITY_RECIPE")
+        if scope.get("kind") == "BodyLocalScope":
+            scope_role = scope.get("scope_role")
+            if scope_role not in {"ROOT_BODY", "NESTED_BODY"}:
+                failures.add("BODY_SCOPE_ROLE")
+            if scope_role == "ROOT_BODY":
+                previous_root = root_body_scope_by_body.setdefault(
+                    scope.get("hir_body_id"),
+                    scope.get("resolver_scope_id"),
+                )
+                if previous_root != scope.get("resolver_scope_id"):
+                    failures.add("ROOT_BODY_SCOPE_IDENTITY")
+                if scope_by_id.get(parent, {}).get("kind") != (
+                    "ItemOwnerScope"
+                ):
+                    failures.add("SCOPE_PARENT_KIND")
+            hir_scope_key = (
+                scope.get("hir_body_id"),
+                scope.get("owner_local_scope_id"),
+            )
+            previous_hir_scope = hir_scope_by_owner_key.setdefault(
+                hir_scope_key, scope.get("hir_scope_id")
+            )
+            previous_hir_scope_key = hir_scope_key_by_id.setdefault(
+                scope.get("hir_scope_id"), hir_scope_key
+            )
+            scope_body_id = scope.get("hir_body_id")
+            scope_ordinal = scope.get("scope_preorder_ordinal")
+            body_scope_ordinals = scope_ordinals_by_body.setdefault(
+                scope_body_id, set()
+            )
+            if (
+                None in hir_scope_key
+                or previous_hir_scope != scope.get("hir_scope_id")
+                or previous_hir_scope_key != hir_scope_key
+                or scope_ordinal in body_scope_ordinals
+                or type(scope_ordinal) is not int
+                or scope_ordinal < 0
+                or (
+                    scope_role == "ROOT_BODY"
+                    and (
+                        scope.get("owner_local_scope_id") != "root"
+                        or scope.get("scope_preorder_ordinal") != 0
+                    )
+                )
+            ):
+                failures.add("HIR_SCOPE_IDENTITY_RECIPE")
+            if type(scope_ordinal) is int:
+                body_scope_ordinals.add(scope_ordinal)
+    if any(
+        ordinals != set(range(len(ordinals)))
+        for ordinals in scope_ordinals_by_body.values()
+    ):
+        failures.add("HIR_SCOPE_PREORDER")
+    for scope in scopes:
+        if (
+            scope.get("kind") == "BodyLocalScope"
+            and scope.get("scope_role") == "NESTED_BODY"
+        ):
+            parent_scope = scope_by_id.get(
+                scope.get("parent_scope_id_or_null"), {}
+            )
+            if (
+                parent_scope.get("kind") != "BodyLocalScope"
+                or parent_scope.get("hir_body_id")
+                != scope.get("hir_body_id")
+                or type(parent_scope.get("scope_preorder_ordinal")) is not int
+                or type(scope.get("scope_preorder_ordinal")) is not int
+                or parent_scope.get("scope_preorder_ordinal")
+                >= scope.get("scope_preorder_ordinal")
+            ):
+                failures.add("BODY_SCOPE_PARENT")
+    if has_directed_cycle(scope_set, parent_edges):
+        failures.add("SCOPE_CYCLE")
+    name_binding_domains = {
+        ("MODULE", "SINGLE"): "ModuleId",
+        ("TYPE", "SINGLE"): "DeclId",
+        ("VALUE", "SINGLE"): "DeclId",
+        ("VALUE", "HIR_LOCAL"): "HirLocalId",
+        ("CALLABLE_OVERLOAD_SET", "CALLABLE_OVERLOAD_SLOT"): "DeclId",
+    }
+    name_key_kinds: dict[tuple[Any, Any, Any], str] = {}
+    overload_keys: set[tuple[Any, Any, Any, Any]] = set()
+    hir_local_ids: set[Any] = set()
+    hir_local_by_owner_key: dict[tuple[Any, Any], Any] = {}
+    hir_local_key_by_id: dict[Any, tuple[Any, Any]] = {}
+    binding_ordinals_by_body: dict[Any, set[int]] = {}
+    for row in graph.get("name_bindings", []):
+        key = (
+            row.get("resolver_scope_id"),
+            row.get("namespace"),
+            row.get("local_name"),
+        )
+        if row.get("resolver_scope_id") not in scope_set:
+            failures.add("NAME_SCOPE_REFERENCE")
+        binding_kind = row.get("binding_kind")
+        binding_origin_kind = row.get("binding_origin_kind")
+        owner_scope = scope_by_id.get(row.get("resolver_scope_id"), {})
+        if row.get("source_admission") != "CURRENT_GRAMMAR_ADMITTED":
+            failures.add("BINDING_SOURCE_ADMISSION")
+        expected_identity_domain = name_binding_domains.get(
+            (row.get("namespace"), binding_kind)
+        )
+        expected_visibility_start = {
+            "DECLARATION": "SCOPE_ENTRY",
+            "PARAMETER": "SCOPE_ENTRY",
+            "ROOT_BODY_LOCAL": "AFTER_DECLARATION",
+            "NESTED_LOCAL": "AFTER_DECLARATION",
+            "COMMITTED_PATTERN_BINDING": (
+                "AFTER_TRANSACTION_COMMIT"
+            ),
+            "LOCAL_FUNCTION": "AFTER_DECLARATION",
+        }.get(binding_origin_kind)
+        if (
+            expected_identity_domain is None
+            or not is_typed_id(
+                row.get("typed_identity"), expected_identity_domain
+            )
+            or (
+                expected_visibility_start is not None
+                and row.get("visibility_start")
+                != expected_visibility_start
+            )
+        ):
+            failures.add("NAME_ENVIRONMENT_SEPARATION")
+        if binding_kind == "HIR_LOCAL":
+            hir_local_id = row.get("typed_identity")
+            if hir_local_id in hir_local_ids:
+                failures.add("HIR_LOCAL_ID_REUSE")
+            hir_local_ids.add(hir_local_id)
+            local_owner_key = (
+                row.get("hir_body_id_or_null"),
+                row.get("owner_local_binding_id_or_null"),
+            )
+            previous_local_id = hir_local_by_owner_key.setdefault(
+                local_owner_key, hir_local_id
+            )
+            previous_local_key = hir_local_key_by_id.setdefault(
+                hir_local_id, local_owner_key
+            )
+            local_body_id = row.get("hir_body_id_or_null")
+            binding_ordinal = row.get("binding_commit_ordinal_or_null")
+            body_binding_ordinals = binding_ordinals_by_body.setdefault(
+                local_body_id, set()
+            )
+            if (
+                None in local_owner_key
+                or previous_local_id != hir_local_id
+                or previous_local_key != local_owner_key
+                or binding_ordinal in body_binding_ordinals
+                or type(binding_ordinal) is not int
+                or binding_ordinal < 0
+                or row.get("hir_body_id_or_null")
+                != owner_scope.get("hir_body_id")
+            ):
+                failures.add("HIR_LOCAL_IDENTITY_RECIPE")
+            if type(binding_ordinal) is int:
+                body_binding_ordinals.add(binding_ordinal)
+            if (
+                owner_scope.get("kind") != "BodyLocalScope"
+                or binding_origin_kind
+                not in {
+                    "PARAMETER",
+                    "ROOT_BODY_LOCAL",
+                    "NESTED_LOCAL",
+                    "COMMITTED_PATTERN_BINDING",
+                }
+            ):
+                failures.add("HIR_LOCAL_SCOPE_DOMAIN")
+            if (
+                binding_origin_kind
+                in {"PARAMETER", "ROOT_BODY_LOCAL"}
+                and owner_scope.get("scope_role") != "ROOT_BODY"
+            ):
+                failures.add("ROOT_BODY_BINDING_FRAME")
+            if (
+                binding_origin_kind == "NESTED_LOCAL"
+                and owner_scope.get("scope_role") != "NESTED_BODY"
+            ):
+                failures.add("NESTED_BINDING_FRAME")
+        elif binding_origin_kind == "LOCAL_FUNCTION":
+            if (
+                owner_scope.get("kind") != "BodyLocalScope"
+                or binding_kind != "CALLABLE_OVERLOAD_SLOT"
+                or row.get("visibility_start") != "AFTER_DECLARATION"
+            ):
+                failures.add("LOCAL_FUNCTION_VISIBILITY")
+        elif binding_origin_kind != "DECLARATION":
+            failures.add("BINDING_ORIGIN_KIND")
+        if binding_kind != "HIR_LOCAL" and any(
+            row.get(field) is not None
+            for field in (
+                "hir_body_id_or_null",
+                "owner_local_binding_id_or_null",
+                "binding_commit_ordinal_or_null",
+            )
+        ):
+            failures.add("HIR_LOCAL_IDENTITY_RECIPE")
+        if binding_origin_kind == "DECLARATION":
+            allowed_declaration_scopes = {
+                "MODULE": {
+                    "PackageRootScope",
+                    "TargetScope",
+                    "ModuleScope",
+                },
+                "TYPE": {"ModuleScope", "ItemOwnerScope"},
+                "VALUE": {"ModuleScope", "ItemOwnerScope"},
+                "CALLABLE_OVERLOAD_SET": {
+                    "ModuleScope",
+                    "ItemOwnerScope",
+                },
+            }
+            if owner_scope.get("kind") not in allowed_declaration_scopes.get(
+                row.get("namespace"), set()
+            ):
+                failures.add("BINDING_SCOPE_DOMAIN")
+        key_kind = (
+            "CALLABLE"
+            if binding_kind == "CALLABLE_OVERLOAD_SLOT"
+            else "SINGLE"
+        )
+        previous_kind = name_key_kinds.get(key)
+        if previous_kind is not None and (
+            previous_kind != "CALLABLE" or key_kind != "CALLABLE"
+        ):
+            failures.add("SAME_FRAME_NAME_KEY")
+        name_key_kinds.setdefault(key, key_kind)
+        if binding_kind == "CALLABLE_OVERLOAD_SLOT":
+            slot = (*key, row.get("overload_slot_key_or_null"))
+            if (
+                row.get("namespace") != "CALLABLE_OVERLOAD_SET"
+                or slot in overload_keys
+                or not isinstance(slot[-1], str)
+                or not slot[-1]
+            ):
+                failures.add("OVERLOAD_SLOT_KEY")
+            overload_keys.add(slot)
+        elif row.get("overload_slot_key_or_null") is not None:
+            failures.add("OVERLOAD_SLOT_KEY")
+        if "overload_slot_key_or_null" not in row:
+            failures.add("OVERLOAD_SLOT_KEY")
+        if (
+            not is_typed_id(row.get("typed_identity"))
+            or not is_typed_id(row.get("source_origin_id"), "SourceOriginId")
+        ):
+            failures.add("NAME_IDENTITY_DOMAIN")
+    if any(
+        ordinals != set(range(len(ordinals)))
+        for ordinals in binding_ordinals_by_body.values()
+    ):
+        failures.add("HIR_LOCAL_COMMIT_ORDER")
+
+    import_keys: set[tuple[Any, Any, Any]] = set()
+    import_ids: set[Any] = set()
+    for row in graph.get("import_bindings", []):
+        key = (
+            row.get("resolver_scope_id"),
+            row.get("namespace"),
+            row.get("local_binding_name"),
+        )
+        if row.get("resolver_scope_id") not in scope_set:
+            failures.add("IMPORT_SCOPE_REFERENCE")
+        elif scope_by_id.get(
+            row.get("resolver_scope_id"), {}
+        ).get("kind") not in {
+            "ModuleScope",
+            "SourceContributionScope",
+            "ItemOwnerScope",
+            "BodyLocalScope",
+        }:
+            failures.add("IMPORT_SCOPE_DOMAIN")
+        if row.get("namespace") not in {
+            "MODULE",
+            "TYPE",
+            "VALUE",
+            "CALLABLE_OVERLOAD_SET",
+        }:
+            failures.add("IMPORT_ENVIRONMENT_SEPARATION")
+        if key in import_keys or key in name_key_kinds:
+            failures.add("IMPORT_BINDING_KEY")
+        import_keys.add(key)
+        import_id = row.get("import_binding_id")
+        if (
+            import_id in import_ids
+            or not is_typed_id(import_id, "ImportBindingId")
+        ):
+            failures.add("IMPORT_BINDING_ID")
+        import_ids.add(import_id)
+        expected_import_domain = {
+            "MODULE": "ModuleId",
+            "TYPE": "DeclId",
+            "VALUE": "DeclId",
+            "CALLABLE_OVERLOAD_SET": "DeclId",
+        }.get(row.get("namespace"))
+        if (
+            expected_import_domain is None
+            or not is_typed_id(
+                row.get("resolved_target_identity"),
+                expected_import_domain,
+            )
+            or not is_typed_id(row.get("source_origin_id"), "SourceOriginId")
+        ):
+            failures.add("IMPORT_IDENTITY_DOMAIN")
+        provider_binding = row.get("provider_binding_id_or_self")
+        if (
+            (
+                provider_binding != "self"
+                and not is_typed_id(
+                    provider_binding, "DependencyBindingId"
+                )
+            )
+            or not is_typed_id(
+                row.get("provider_module_id"), "ModuleId"
+            )
+        ):
+            failures.add("IMPORT_PROVIDER_DOMAIN")
+
+    activation_keys: set[tuple[Any, Any]] = set()
+    activation_by_origin: dict[Any, tuple[Any, Any]] = {}
+    for row in graph.get("activation_entries", []):
+        key = (
+            row.get("resolver_scope_id"),
+            row.get("activated_identity"),
+        )
+        if row.get("resolver_scope_id") not in scope_set:
+            failures.add("ACTIVATION_SCOPE_REFERENCE")
+        elif scope_by_id.get(
+            row.get("resolver_scope_id"), {}
+        ).get("kind") not in {
+            "ModuleScope",
+            "SourceContributionScope",
+            "ItemOwnerScope",
+            "BodyLocalScope",
+        }:
+            failures.add("ACTIVATION_SCOPE_DOMAIN")
+        if key in activation_keys:
+            failures.add("ACTIVATION_ENTRY_KEY")
+        activation_keys.add(key)
+        origin_key = (
+            row.get("activated_identity"),
+            row.get("resolver_scope_id"),
+            row.get("activation_kind"),
+            row.get("semantic_site_key"),
+        )
+        previous_origin_key = activation_by_origin.setdefault(
+            row.get("activation_origin_id"), origin_key
+        )
+        if previous_origin_key != origin_key:
+            failures.add("ACTIVATION_ORIGIN_IDENTITY")
+        if (
+            not is_typed_id(
+                row.get("activation_origin_id"), "ActivationOriginId"
+            )
+            or not is_typed_id_in(
+                row.get("activated_identity"),
+                {"ExtensionSetId"},
+            )
+            or row.get("activation_kind") != "use"
+            or not isinstance(row.get("semantic_site_key"), str)
+            or not row.get("semantic_site_key")
+        ):
+            failures.add("ACTIVATION_IDENTITY_DOMAIN")
+        provider_binding = row.get("provider_binding_id_or_self")
+        if (
+            (
+                provider_binding != "self"
+                and not is_typed_id(
+                    provider_binding, "DependencyBindingId"
+                )
+            )
+            or not is_typed_id(
+                row.get("provider_module_id"), "ModuleId"
+            )
+        ):
+            failures.add("ACTIVATION_PROVIDER_DOMAIN")
+
+    witness_keys: set[tuple[Any, Any]] = set()
+    witness_by_evidence: dict[Any, Any] = {}
+    for row in graph.get("witness_visibility_entries", []):
+        key = (
+            row.get("resolver_scope_id"),
+            row.get("evidence_origin_id"),
+        )
+        if row.get("resolver_scope_id") not in scope_set:
+            failures.add("WITNESS_SCOPE_REFERENCE")
+        elif scope_by_id.get(
+            row.get("resolver_scope_id"), {}
+        ).get("kind") not in {
+            "ModuleScope",
+            "ItemOwnerScope",
+            "BodyLocalScope",
+        }:
+            failures.add("WITNESS_SCOPE_DOMAIN")
+        if key in witness_keys:
+            failures.add("WITNESS_ENTRY_KEY")
+        witness_keys.add(key)
+        previous_witness = witness_by_evidence.setdefault(
+            row.get("evidence_origin_id"),
+            row.get("visible_witness_identity"),
+        )
+        if previous_witness != row.get("visible_witness_identity"):
+            failures.add("WITNESS_EVIDENCE_IDENTITY")
+        if (
+            not is_typed_id(
+                row.get("evidence_origin_id"), "EvidenceOriginId"
+            )
+            or not is_typed_id(
+                row.get("visible_witness_identity"), "TraitWitnessId"
+            )
+        ):
+            failures.add("WITNESS_IDENTITY_DOMAIN")
+
+    invariants = graph.get("invariants", {})
+    if (
+        invariants.get("lookup")
+        != "INNERMOST_TO_OUTERMOST_STOP_AT_FIRST_NONEMPTY_EXACT_NAMESPACE_AND_SPELLING"
+        or invariants.get("same_frame_order_priority") is not False
+        or invariants.get("cross_frame_overload_merge") is not False
+        or invariants.get("provisional_bindings_in_name_env") is not False
+        or type(invariants.get("environment_cross_creation_count")) is not int
+        or invariants.get("environment_cross_creation_count") != 0
+        or type(invariants.get("runtime_relookup_count")) is not int
+        or invariants.get("runtime_relookup_count") != 0
+    ):
+        failures.add("RESOLVER_INVARIANTS")
+    resolver_graph_sha256 = graph.get("resolver_graph_sha256")
+    if (
+        not canonical_domain_failure
+        and (
+            re.fullmatch(
+                r"[0-9a-f]{64}", str(resolver_graph_sha256 or "")
+            )
+            is None
+            or resolver_graph_sha256
+            != canonical_self_digest(graph, "resolver_graph_sha256")
+        )
+    ):
+        failures.add("RESOLVER_GRAPH_DIGEST")
+    return failures
+
+
+def r4_resolver_trace_shape_and_order_failure_codes(
+    trace: dict[str, Any],
+) -> set[str]:
+    """Bind resolver traces to their closed schema and canonical order."""
+
+    failures: set[str] = set()
+    top_fields = {
+        "schema",
+        "resolver_graph_sha256",
+        "references",
+        "diagnostic_order",
+        "diagnostic_selection",
+        "seal",
+        "trace_sha256",
+    }
+    reference_fields = {
+        "source_origin_id",
+        "resolver_scope_id",
+        "namespace",
+        "source_spelling",
+        "candidate_origin_ids",
+        "visibility_proof_ids",
+        "activation_origin_id_or_null",
+        "evidence_origin_id_or_null",
+        "import_binding_id_or_null",
+        "stages",
+        "result",
+        "source_span",
+    }
+    diagnostic_fields = {
+        "winner_source_origin_id_or_null",
+        "winner_rejection_reason_or_null",
+        "suppressed_source_origin_ids",
+    }
+    seal_fields = {"seal_status", "counters"}
+    counter_fields = {
+        "unbound_primary_count",
+        "unresolved_count",
+        "candidate_set_count",
+        "missing_typed_id_count",
+        "missing_visibility_proof_count",
+        "recovery_binding_count",
+        "runtime_relookup_count",
+        "overload_winner_count",
+        "canonical_hir_overload_set_ref_count",
+    }
+    references = trace.get("references", [])
+    if (
+        not has_exact_object_keys(trace, top_fields)
+        or trace.get("schema") != "deeplus.resolver-trace/r1"
+        or re.fullmatch(
+            r"[0-9a-f]{64}",
+            str(trace.get("resolver_graph_sha256") or ""),
+        )
+        is None
+        or not isinstance(references, list)
+        or any(
+            not has_exact_object_keys(row, reference_fields)
+            or not isinstance(row.get("stages"), list)
+            or any(
+                not has_exact_object_keys(
+                    stage, {"ordinal", "predicate", "status"}
+                )
+                for stage in row.get("stages", [])
+            )
+            or not has_exact_object_keys(
+                row.get("source_span"), {"start", "end"}
+            )
+            for row in references
+            if isinstance(row, dict)
+        )
+        or any(not isinstance(row, dict) for row in references)
+        or not has_exact_object_keys(
+            trace.get("diagnostic_selection"), diagnostic_fields
+        )
+        or not has_exact_object_keys(trace.get("seal"), seal_fields)
+        or not has_exact_object_keys(
+            trace.get("seal", {}).get("counters"), counter_fields
+        )
+    ):
+        failures.add("RESOLVER_TRACE_SCHEMA_SHAPE")
+
+    if (
+        not is_canonically_sorted(
+            references, lambda row: row.get("source_origin_id", "")
+        )
+        or any(
+            not is_canonically_sorted(row.get("candidate_origin_ids"))
+            or not is_canonically_sorted(
+                row.get("visibility_proof_ids")
+            )
+            or [
+                stage.get("ordinal")
+                for stage in row.get("stages", [])
+                if isinstance(stage, dict)
+            ]
+            != list(range(1, 10))
+            for row in references
+            if isinstance(row, dict)
+        )
+        or not is_canonically_sorted(
+            trace.get("diagnostic_selection", {}).get(
+                "suppressed_source_origin_ids"
+            )
+        )
+    ):
+        failures.add("RESOLVER_TRACE_CANONICAL_ORDER")
+    return failures
+
+
+def r4_resolver_trace_failure_codes(trace: dict[str, Any]) -> set[str]:
+    """Bounded feasibility validator for the nine-stage resolver trace."""
+
+    failures = r4_resolver_trace_shape_and_order_failure_codes(trace)
+    unicode_scalar_failure = has_non_unicode_scalar(trace)
+    canonical_domain_failure = not is_canonical_json_value(trace)
+    if unicode_scalar_failure:
+        failures.add("CANONICAL_JSON_NON_UNICODE_SCALAR")
+    elif canonical_domain_failure:
+        failures.add("CANONICAL_JSON_INVALID_VALUE_DOMAIN")
+    references = trace.get("references", [])
+    if not isinstance(references, list) or not references:
+        return failures | {"REFERENCE_SHAPE"}
+    reference_required = {
+        "source_origin_id",
+        "resolver_scope_id",
+        "namespace",
+        "source_spelling",
+        "candidate_origin_ids",
+        "visibility_proof_ids",
+        "activation_origin_id_or_null",
+        "evidence_origin_id_or_null",
+        "import_binding_id_or_null",
+        "stages",
+        "result",
+        "source_span",
+    }
+    namespaces = {
+        "MODULE",
+        "TYPE",
+        "VALUE",
+        "CALLABLE_OVERLOAD_SET",
+    }
+    observed_reference_ids: set[Any] = set()
+    failed_reference_rows: list[tuple[int, str, str]] = []
+    hir_seal_reasons: list[str] = []
+    observed_reference_order = [
+        row.get("source_origin_id")
+        for row in references
+        if isinstance(row, dict)
+    ]
+    if (
+        any(not isinstance(value, str) for value in observed_reference_order)
+        or observed_reference_order != sorted(observed_reference_order)
+    ):
+        failures.add("REFERENCE_ORDER")
+    for reference in references:
+        if not isinstance(reference, dict):
+            failures.add("REFERENCE_SHAPE")
+            continue
+        if set(reference) != reference_required:
+            failures.add("REFERENCE_SHAPE")
+        source_origin_id = reference.get("source_origin_id")
+        if (
+            source_origin_id in observed_reference_ids
+            or not is_typed_id(source_origin_id, "SourceOriginId")
+        ):
+            failures.add("REFERENCE_IDENTITY")
+        observed_reference_ids.add(source_origin_id)
+        if (
+            not is_typed_id(
+                reference.get("resolver_scope_id"), "ResolverScopeId"
+            )
+            or reference.get("namespace") not in namespaces
+            or not isinstance(reference.get("source_spelling"), str)
+            or not reference.get("source_spelling")
+        ):
+            failures.add("REFERENCE_DOMAIN")
+        candidate_origins = reference.get("candidate_origin_ids")
+        if (
+            not isinstance(candidate_origins, list)
+            or any(
+                not is_typed_id_in(
+                    value,
+                    {
+                        "DeclId",
+                        "HirLocalId",
+                        "ModuleId",
+                        "ImportBindingId",
+                        "ActivationOriginId",
+                        "EvidenceOriginId",
+                        "ExtensionSetId",
+                        "TraitWitnessId",
+                    },
+                )
+                for value in candidate_origins
+            )
+            or len(candidate_origins) != len(set(candidate_origins))
+            or candidate_origins != sorted(candidate_origins)
+        ):
+            failures.add("REFERENCE_DOMAIN")
+        visibility_proofs = reference.get("visibility_proof_ids")
+        if (
+            not isinstance(visibility_proofs, list)
+            or any(
+                not is_typed_id(value, "VisibilityProofId")
+                for value in visibility_proofs
+            )
+            or len(visibility_proofs) != len(set(visibility_proofs))
+            or visibility_proofs != sorted(visibility_proofs)
+        ):
+            failures.add("REFERENCE_DOMAIN")
+        for field, domain in (
+            ("activation_origin_id_or_null", "ActivationOriginId"),
+            ("evidence_origin_id_or_null", "EvidenceOriginId"),
+            ("import_binding_id_or_null", "ImportBindingId"),
+        ):
+            value = reference.get(field)
+            if value is not None and not is_typed_id(value, domain):
+                failures.add("REFERENCE_DOMAIN")
+            if (
+                value is not None
+                and isinstance(candidate_origins, list)
+                and value not in candidate_origins
+            ):
+                failures.add("REFERENCE_ORIGIN_LINKAGE")
+        candidate_origin_kinds = {
+            str(value).split(":", 1)[0]
+            for value in candidate_origins
+            if isinstance(value, str) and ":" in value
+        }
+        for kind, field in (
+            ("ActivationOriginId", "activation_origin_id_or_null"),
+            ("EvidenceOriginId", "evidence_origin_id_or_null"),
+            ("ImportBindingId", "import_binding_id_or_null"),
+        ):
+            if (
+                kind in candidate_origin_kinds
+                and reference.get(field) is None
+            ):
+                failures.add("REFERENCE_ORIGIN_LINKAGE")
+        source_span = reference.get("source_span", {})
+        if not isinstance(source_span, dict):
+            failures.add("SOURCE_SPAN")
+            source_span = {}
+        span_start = source_span.get("start")
+        span_end = source_span.get("end")
+        if (
+            set(source_span) != {"start", "end"}
+            or type(span_start) is not int
+            or type(span_end) is not int
+            or span_start < 0
+            or span_end < span_start
+        ):
+            failures.add("SOURCE_SPAN")
+
+        stages = reference.get("stages", [])
+        stage_sequence_invalid = (
+            not isinstance(stages, list)
+            or not all(isinstance(row, dict) for row in stages)
+            or len(stages) != 9
+            or [row.get("ordinal") for row in stages]
+            != list(range(1, 10))
+            or [row.get("predicate") for row in stages]
+            != list(R4_NRM_STAGE_SEQUENCE)
+            or any(
+                set(row) != {"ordinal", "predicate", "status"}
+                or type(row.get("ordinal")) is not int
+                for row in stages
+            )
+        )
+        if stage_sequence_invalid:
+            failures.add("STAGE_SEQUENCE")
+            continue
+        statuses = [row.get("status") for row in stages]
+        failed_indices = [
+            index for index, status in enumerate(statuses)
+            if status == "FAIL"
+        ]
+        if failed_indices:
+            failed_index = failed_indices[0]
+            if (
+                statuses[:failed_index] != ["PASS"] * failed_index
+                or statuses[failed_index] != "FAIL"
+                or statuses[failed_index + 1:]
+                != ["NOT_EVALUATED"] * (8 - failed_index)
+                or len(failed_indices) != 1
+            ):
+                failures.add("FAILURE_ORDER")
+            result = reference.get("result", {})
+            if not isinstance(result, dict):
+                result = {}
+            if result.get("kind") != "REJECTED":
+                failures.add("REJECTED_RESULT")
+            if (
+                set(result)
+                != {
+                    "kind",
+                    "resolved_ref_or_null",
+                    "selected_count",
+                    "rejection_reason",
+                }
+                or result.get("resolved_ref_or_null") is not None
+                or type(result.get("selected_count")) is not int
+                or result.get("selected_count") != 0
+            ):
+                failures.add("REJECTED_RESULT")
+            reason = result.get("rejection_reason")
+            if reason not in set(R4_NRM_PRECEDENCE[failed_index][2]):
+                failures.add("REJECTION_REASON_STAGE")
+            if isinstance(source_origin_id, str) and isinstance(reason, str):
+                failed_reference_rows.append(
+                    (failed_index, source_origin_id, reason)
+                )
+            if failed_index == 7 and isinstance(reason, str):
+                hir_seal_reasons.append(reason)
+        else:
+            if statuses != ["PASS"] * 9:
+                failures.add("PASS_SEQUENCE")
+            result = reference.get("result", {})
+            if not isinstance(result, dict):
+                result = {}
+            result_kind = result.get("kind")
+            if not candidate_origins:
+                failures.add("ACCEPTED_CANDIDATE_EVIDENCE")
+            import_binding_id = reference.get("import_binding_id_or_null")
+            if (
+                import_binding_id is not None
+                and import_binding_id not in candidate_origins
+            ):
+                failures.add("ACCEPTED_CANDIDATE_EVIDENCE")
+            if result_kind == "RESOLVED_NONCALL_REFERENCE":
+                namespace = reference.get("namespace")
+                resolved_identity = result.get("resolved_identity")
+                resolved_identity_domain_ok = (
+                    (
+                        namespace == "MODULE"
+                        and is_typed_id(resolved_identity, "ModuleId")
+                    )
+                    or (
+                        namespace == "TYPE"
+                        and is_typed_id(resolved_identity, "DeclId")
+                    )
+                    or (
+                        namespace == "VALUE"
+                        and is_typed_id_in(
+                            resolved_identity,
+                            {"HirLocalId", "DeclId"},
+                        )
+                    )
+                )
+                if (
+                    set(result)
+                    != {
+                        "kind",
+                        "resolved_identity",
+                        "selected_count",
+                        "rejection_reason_or_null",
+                    }
+                    or not resolved_identity_domain_ok
+                    or type(result.get("selected_count")) is not int
+                    or result.get("selected_count") != 1
+                    or result.get("rejection_reason_or_null") is not None
+                    or namespace == "CALLABLE_OVERLOAD_SET"
+                ):
+                    failures.add("ACCEPTED_RESULT")
+                if (
+                    not visibility_proofs
+                    or len(candidate_origins) != 1
+                    or (
+                        import_binding_id is None
+                        and resolved_identity not in candidate_origins
+                    )
+                ):
+                    failures.add("ACCEPTED_CANDIDATE_EVIDENCE")
+            elif (
+                result_kind
+                == "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR"
+            ):
+                if (
+                    set(result)
+                    != {
+                        "kind",
+                        "analysis_hir_overload_set_ref",
+                        "canonical_hir_projection",
+                        "winner_selected",
+                    }
+                    or not is_typed_id(
+                        result.get("analysis_hir_overload_set_ref"),
+                        "ResolvedOverloadSetRef",
+                    )
+                    or result.get("canonical_hir_projection") is not False
+                    or result.get("winner_selected") is not False
+                    or reference.get("namespace")
+                    != "CALLABLE_OVERLOAD_SET"
+                ):
+                    failures.add("ACCEPTED_RESULT")
+            else:
+                failures.add("ACCEPTED_RESULT")
+        if statuses[4] == "PASS" and not candidate_origins:
+            failures.add("STAGE_EVIDENCE_BINDING")
+        if (
+            statuses[5] == "PASS"
+            and reference.get("namespace") != "CALLABLE_OVERLOAD_SET"
+            and not visibility_proofs
+        ):
+            failures.add("STAGE_EVIDENCE_BINDING")
+    if trace.get("diagnostic_order") != (
+        "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_"
+        "LOWEST_SOURCE_ORIGIN_ID"
+    ):
+        failures.add("DIAGNOSTIC_ORDER")
+    diagnostic_selection = trace.get("diagnostic_selection", {})
+    if not isinstance(diagnostic_selection, dict):
+        diagnostic_selection = {}
+    expected_diagnostic_fields = {
+        "winner_source_origin_id_or_null",
+        "winner_rejection_reason_or_null",
+        "suppressed_source_origin_ids",
+    }
+    ordered_failures = sorted(failed_reference_rows)
+    if ordered_failures:
+        expected_winner = ordered_failures[0]
+        expected_suppressed = sorted(
+            source_origin_id
+            for _, source_origin_id, _ in ordered_failures[1:]
+        )
+        diagnostic_selection_valid = (
+            set(diagnostic_selection) == expected_diagnostic_fields
+            and diagnostic_selection.get(
+                "winner_source_origin_id_or_null"
+            )
+            == expected_winner[1]
+            and diagnostic_selection.get(
+                "winner_rejection_reason_or_null"
+            )
+            == expected_winner[2]
+            and diagnostic_selection.get(
+                "suppressed_source_origin_ids"
+            )
+            == expected_suppressed
+        )
+    else:
+        diagnostic_selection_valid = (
+            set(diagnostic_selection) == expected_diagnostic_fields
+            and diagnostic_selection.get(
+                "winner_source_origin_id_or_null"
+            )
+            is None
+            and diagnostic_selection.get(
+                "winner_rejection_reason_or_null"
+            )
+            is None
+            and diagnostic_selection.get(
+                "suppressed_source_origin_ids"
+            )
+            == []
+        )
+    if not diagnostic_selection_valid:
+        failures.add("DIAGNOSTIC_SELECTION")
+
+    seal = trace.get("seal", {})
+    if not isinstance(seal, dict):
+        return failures | {"HIR_SEAL"}
+    seal_counter_fields = {
+        "unbound_primary_count",
+        "unresolved_count",
+        "candidate_set_count",
+        "missing_typed_id_count",
+        "missing_visibility_proof_count",
+        "recovery_binding_count",
+        "runtime_relookup_count",
+        "overload_winner_count",
+        "canonical_hir_overload_set_ref_count",
+    }
+    counters = seal.get("counters", {})
+    seal_shape_valid = (
+        set(seal) == {"seal_status", "counters"}
+        and isinstance(counters, dict)
+        and set(counters) == seal_counter_fields
+    )
+    if not seal_shape_valid:
+        failures.add("HIR_SEAL")
+        return failures
+
+    failure_indices = [row[0] for row in failed_reference_rows]
+    if any(index < 7 for index in failure_indices):
+        expected_seal_status = "NOT_EVALUATED"
+    elif any(index == 7 for index in failure_indices):
+        expected_seal_status = "REJECTED_AT_HIR_SEAL"
+    else:
+        expected_seal_status = "SEALED"
+    if seal.get("seal_status") != expected_seal_status:
+        failures.add("HIR_SEAL")
+
+    if expected_seal_status == "NOT_EVALUATED":
+        if any(counters.get(key) is not None for key in seal_counter_fields):
+            failures.add("HIR_SEAL")
+    elif expected_seal_status == "SEALED":
+        if any(
+            type(counters.get(key)) is not int
+            or counters.get(key) != 0
+            for key in seal_counter_fields
+        ):
+            failures.add("HIR_SEAL")
+    else:
+        reason_to_counter = {
+            "UNBOUND_PRIMARY": "unbound_primary_count",
+            "UNRESOLVED_COUNT_NONZERO": "unresolved_count",
+            "CANDIDATE_SET_COUNT_NONZERO": "candidate_set_count",
+            "MISSING_TYPED_ID": "missing_typed_id_count",
+            "MISSING_VISIBILITY_PROOF": (
+                "missing_visibility_proof_count"
+            ),
+            "RUNTIME_RELOOKUP_RESIDUE": "runtime_relookup_count",
+        }
+        expected_counts = {
+            key: 0 for key in seal_counter_fields
+        }
+        for reason in hir_seal_reasons:
+            counter = reason_to_counter.get(reason)
+            if counter is not None:
+                expected_counts[counter] += 1
+        if any(
+            type(counters.get(key)) is not int
+            or counters.get(key) != expected_counts[key]
+            for key in seal_counter_fields
+        ):
+            failures.add("HIR_SEAL_COUNTER_BINDING")
+    trace_sha256 = trace.get("trace_sha256")
+    if (
+        not canonical_domain_failure
+        and (
+            re.fullmatch(r"[0-9a-f]{64}", str(trace_sha256 or ""))
+            is None
+            or trace_sha256
+            != canonical_self_digest(trace, "trace_sha256")
+        )
+    ):
+        failures.add("RESOLVER_TRACE_DIGEST")
+    return failures
+
+
+def r4_nrm_mechanical_self_test_results() -> list[tuple[bool, str, str]]:
+    """Run E2 design-static probes; product lanes remain 15/15 NOT_RUN."""
+
+    zero = "0" * 64
+    canonical_unicode_vector = {
+        "z": "한😀",
+        "a": "quote:\" slash:\\ newline:\n",
+    }
+    canonical_unicode_vector_bytes = json.dumps(
+        canonical_unicode_vector,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    canonical_unicode_vector_pass = (
+        canonical_unicode_vector_bytes.hex()
+        == (
+            "7b2261223a2271756f74653a5c2220736c6173683a5c5c206e6577"
+            "6c696e653a5c6e222c227a223a22ed959cf09f9880227d"
+        )
+        and canonical_sha(canonical_unicode_vector)
+        == "333657884e20443a6ee4c742f2e894b34939238558c85e2a9cd720818169ba3c"
+        and canonical_sha({"invalid": "\ud800"}) is None
+    )
+    invalid_canonical_values: list[Any] = [
+        {1: "coerced-key"},
+        {"mixed": "key", 1: "value"},
+        {"finite_float": 1.25},
+        {"nan": float("nan")},
+        {"positive_infinity": float("inf")},
+        {"negative_infinity": float("-inf")},
+        ("tuple",),
+        b"bytes",
+        bytearray(b"bytes"),
+        {"set"},
+        object(),
+    ]
+    canonical_invalid_domain_pass = (
+        all(canonical_sha(value) is None for value in invalid_canonical_values)
+        and canonical_self_digest(
+            {1: "coerced-key", "sha256": "0" * 64}, "sha256"
+        )
+        is None
+        and canonical_sha({"1": "string-key"}) is not None
+    )
+    source_role_carrier: dict[str, Any] = {
+        "schema": "deeplus.source-role-carrier/r2",
+        "profile": "R4_NAME_RESOLUTION_MODULES",
+        "package_id": "PackageId:root",
+        "targets": [
+            {
+                "target_id": "TargetId:root.lib",
+                "canonical_manifest_target_name": "lib",
+                "target_kind": "library",
+                "source_role_policy": "library",
+                "activation_profile": "stable",
+            }
+        ],
+        "package_module_source_graph_sha256": zero,
+        "source_files": [
+            {
+                "path": "src/lib.dp",
+                "source_role": "library",
+                "source_file_id": "SourceFileId:root.lib/src/lib.dp",
+                "target_id": "TargetId:root.lib",
+                "activation_profile": "stable",
+                "module_id": "ModuleId:root.lib",
+                "module_path": ["root", "lib"],
+            }
+        ],
+    }
+    source_role_dangling_target = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_dangling_target["source_files"][0][
+        "target_id"
+    ] = "TargetId:missing"
+    source_role_profile_mismatch = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_profile_mismatch["source_files"][0][
+        "activation_profile"
+    ] = "preview"
+    source_role_noncanonical_path = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_noncanonical_path["source_files"][0][
+        "path"
+    ] = "src/../src/lib.dp"
+    source_role_duplicate_path = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_duplicate_path["source_files"].append(
+        {
+            **source_role_duplicate_path["source_files"][0],
+            "source_file_id": "SourceFileId:root.lib/src/lib-copy.dp",
+        }
+    )
+    source_role_target_policy_mismatch = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_target_policy_mismatch["targets"][0][
+        "source_role_policy"
+    ] = "script"
+    source_role_target_key_collision = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_target_key_collision["targets"].append(
+        {
+            **source_role_target_key_collision["targets"][0],
+            "target_id": "TargetId:root.lib-alias",
+        }
+    )
+    source_role_empty_sources = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_empty_sources["source_files"] = []
+    source_role_module_identity_collision = json.loads(
+        json.dumps(source_role_carrier)
+    )
+    source_role_module_identity_collision["source_files"].append(
+        {
+            **source_role_module_identity_collision["source_files"][0],
+            "path": "src/other.dp",
+            "source_file_id": "SourceFileId:root.lib/src/other.dp",
+            "module_id": "ModuleId:root.alias",
+        }
+    )
+    source_role_mutants = [
+        ("SOURCE_TARGET_REFERENCE", source_role_dangling_target),
+        ("SOURCE_TARGET_PROFILE", source_role_profile_mismatch),
+        ("SOURCE_PATH_NORMALIZATION", source_role_noncanonical_path),
+        ("SOURCE_PATH_IDENTITY", source_role_duplicate_path),
+        (
+            "TARGET_SOURCE_ROLE_POLICY",
+            source_role_target_policy_mismatch,
+        ),
+        ("TARGET_IDENTITY_RECIPE", source_role_target_key_collision),
+        ("TARGET_SOURCE_REFERENCE", source_role_empty_sources),
+        (
+            "MODULE_IDENTITY_RECIPE",
+            source_role_module_identity_collision,
+        ),
+    ]
+    source_role_pass = not r4_source_role_carrier_failure_codes(
+        source_role_carrier
+    )
+    source_role_mutants_pass = all(
+        expected in r4_source_role_carrier_failure_codes(mutant)
+        for expected, mutant in source_role_mutants
+    )
+
+    package_graph: dict[str, Any] = {
+        "schema": "deeplus.package-module-source-graph/r1",
+        "root_package_id": "PackageId:root",
+        "packages": [
+            {
+                "package_id": "PackageId:root",
+                "canonical_package_key": {
+                    "registry_namespace": "local",
+                    "package_name": "root",
+                    "package_version_identity": "0",
+                },
+                "resolved_artifact_provenance_digest": zero,
+                "dependency_binding_ids": [],
+                "target_ids": ["TargetId:root.lib"],
+            }
+        ],
+        "targets": [
+            {
+                "target_id": "TargetId:root.lib",
+                "package_id": "PackageId:root",
+                "canonical_manifest_target_name": "lib",
+                "target_kind": "library",
+                "source_role_policy": "library",
+                "activation_profile": "stable",
+                "source_file_ids": [
+                    "SourceFileId:root.lib/src/lib.dp"
+                ],
+            }
+        ],
+        "source_contributions": [
+            {
+                "source_file_id": "SourceFileId:root.lib/src/lib.dp",
+                "target_id": "TargetId:root.lib",
+                "normalized_project_relative_path": "src/lib.dp",
+                "source_role": "library",
+                "activation_profile": "stable",
+                "module_id": "ModuleId:root.lib",
+                "module_path": ["root", "lib"],
+                "explicit_module_path_or_null": ["root", "lib"],
+                "source_bytes_sha256": zero,
+            }
+        ],
+        "dependency_bindings": [],
+        "visible_module_bindings": [
+            {
+                "consumer_target_id": "TargetId:root.lib",
+                "visible_qualified_path": ["root", "lib"],
+                "resolved_module_id": "ModuleId:root.lib",
+                "dependency_binding_id_or_self": "self",
+            }
+        ],
+        "module_header_import_edges": [],
+        "graph_policy": {
+            "package_dependency": "ACYCLIC",
+            "module_header_import": (
+                "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+            ),
+            "reexport": "ACYCLIC",
+            "static_binding_value_dependency": (
+                "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+            ),
+        },
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "canonical_graph_sha256": zero,
+    }
+    package_graph["canonical_graph_sha256"] = canonical_self_digest(
+        package_graph, "canonical_graph_sha256"
+    )
+    package_mutants = []
+    wrong_domain = json.loads(json.dumps(package_graph))
+    wrong_domain["root_package_id"] = "HirLocalId:root"
+    package_mutants.append(("IDENTITY_DOMAIN", wrong_domain))
+    unknown_graph_field = json.loads(json.dumps(package_graph))
+    unknown_graph_field["not_in_schema"] = True
+    unknown_graph_field["canonical_graph_sha256"] = canonical_self_digest(
+        unknown_graph_field, "canonical_graph_sha256"
+    )
+    package_mutants.append(
+        ("PACKAGE_GRAPH_SCHEMA_SHAPE", unknown_graph_field)
+    )
+    unknown_package_field = json.loads(json.dumps(package_graph))
+    unknown_package_field["packages"][0]["not_in_schema"] = True
+    unknown_package_field["canonical_graph_sha256"] = (
+        canonical_self_digest(
+            unknown_package_field, "canonical_graph_sha256"
+        )
+    )
+    package_mutants.append(
+        ("PACKAGE_GRAPH_SCHEMA_SHAPE", unknown_package_field)
+    )
+    unsorted_package_rows = json.loads(json.dumps(package_graph))
+    unsorted_package_rows["packages"] = [
+        {
+            **unsorted_package_rows["packages"][0],
+            "package_id": "PackageId:z",
+            "canonical_package_key": {
+                "registry_namespace": "local",
+                "package_name": "z",
+                "package_version_identity": "0",
+            },
+            "target_ids": ["TargetId:root.lib"],
+        },
+        unsorted_package_rows["packages"][0],
+    ]
+    unsorted_package_rows["canonical_graph_sha256"] = (
+        canonical_self_digest(
+            unsorted_package_rows, "canonical_graph_sha256"
+        )
+    )
+    package_mutants.append(
+        ("PACKAGE_GRAPH_CANONICAL_ORDER", unsorted_package_rows)
+    )
+    package_digest_flip = json.loads(json.dumps(package_graph))
+    package_digest_flip["canonical_graph_sha256"] = "f" * 64
+    package_mutants.append(("PACKAGE_GRAPH_DIGEST", package_digest_flip))
+    package_lone_surrogate = json.loads(json.dumps(package_graph))
+    package_lone_surrogate["packages"][0]["canonical_package_key"][
+        "registry_namespace"
+    ] = "\ud800"
+    package_mutants.append(
+        ("CANONICAL_JSON_NON_UNICODE_SCALAR", package_lone_surrogate)
+    )
+    package_invalid_json_domain = json.loads(json.dumps(package_graph))
+    package_invalid_json_domain["packages"][0]["canonical_package_key"][
+        "registry_namespace"
+    ] = 1.25
+    package_mutants.append(
+        (
+            "CANONICAL_JSON_INVALID_VALUE_DOMAIN",
+            package_invalid_json_domain,
+        )
+    )
+    dangling_target = json.loads(json.dumps(package_graph))
+    dangling_target["packages"][0]["target_ids"] = ["TargetId:missing"]
+    package_mutants.append(("PACKAGE_TARGET_REFERENCE", dangling_target))
+    cycle = json.loads(json.dumps(package_graph))
+    cycle["dependency_bindings"] = [
+        {
+            "dependency_binding_id": "DependencyBindingId:self",
+            "consumer_package_id": "PackageId:root",
+            "source_visible_binding": "self",
+            "provider_package_id": "PackageId:root",
+        }
+    ]
+    cycle["packages"][0]["dependency_binding_ids"] = [
+        "DependencyBindingId:self"
+    ]
+    package_mutants.append(("PACKAGE_CYCLE", cycle))
+    static_cycle = json.loads(json.dumps(package_graph))
+    static_cycle["module_header_import_edges"] = [
+        {
+            "from_module_id": "ModuleId:root.lib",
+            "to_module_id": "ModuleId:root.lib",
+            "edge_kind": "static_value_dependency",
+            "scc_admission": "SCC_FORBIDDEN",
+        }
+    ]
+    package_mutants.append(("FORBIDDEN_MODULE_CYCLE", static_cycle))
+    omitted_reverse_target = json.loads(json.dumps(package_graph))
+    omitted_reverse_target["targets"].append(
+        {
+            "target_id": "TargetId:root.extra",
+            "package_id": "PackageId:root",
+            "source_role_policy": "library",
+            "activation_profile": "stable",
+            "source_file_ids": [
+                "SourceFileId:root.extra/src/lib.dp"
+            ],
+        }
+    )
+    omitted_reverse_target["source_contributions"].append(
+        {
+            "source_file_id": "SourceFileId:root.extra/src/lib.dp",
+            "target_id": "TargetId:root.extra",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:root.extra",
+            "module_path": ["root", "extra"],
+            "explicit_module_path_or_null": ["root", "extra"],
+        }
+    )
+    package_mutants.append(
+        ("PACKAGE_TARGET_REFERENCE", omitted_reverse_target)
+    )
+    mixed_module_cycle = json.loads(json.dumps(package_graph))
+    mixed_module_cycle["targets"][0]["source_file_ids"].append(
+        "SourceFileId:root.lib/src/other.dp"
+    )
+    mixed_module_cycle["source_contributions"].append(
+        {
+            "source_file_id": "SourceFileId:root.lib/src/other.dp",
+            "target_id": "TargetId:root.lib",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:root.other",
+            "module_path": ["root", "other"],
+            "explicit_module_path_or_null": ["root", "other"],
+        }
+    )
+    mixed_module_cycle["module_header_import_edges"] = [
+        {
+            "from_module_id": "ModuleId:root.lib",
+            "to_module_id": "ModuleId:root.other",
+            "edge_kind": "static_value_dependency",
+            "scc_admission": "SCC_FORBIDDEN",
+        },
+        {
+            "from_module_id": "ModuleId:root.other",
+            "to_module_id": "ModuleId:root.lib",
+            "edge_kind": "module_header_reference",
+            "scc_admission": (
+                "HEADER_ONLY_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+            ),
+        },
+    ]
+    package_mutants.append(
+        ("FORBIDDEN_MODULE_CYCLE", mixed_module_cycle)
+    )
+    two_package_graph = json.loads(json.dumps(package_graph))
+    two_package_graph["packages"].append(
+        {
+            "package_id": "PackageId:dep",
+            "dependency_binding_ids": [],
+            "target_ids": ["TargetId:dep.lib"],
+        }
+    )
+    two_package_graph["targets"].append(
+        {
+            "target_id": "TargetId:dep.lib",
+            "package_id": "PackageId:dep",
+            "source_role_policy": "library",
+            "activation_profile": "stable",
+            "source_file_ids": ["SourceFileId:dep.lib/src/lib.dp"],
+        }
+    )
+    two_package_graph["source_contributions"].append(
+        {
+            "source_file_id": "SourceFileId:dep.lib/src/lib.dp",
+            "target_id": "TargetId:dep.lib",
+            "source_role": "library",
+            "activation_profile": "stable",
+            "module_id": "ModuleId:dep.lib",
+            "module_path": ["dep", "lib"],
+            "explicit_module_path_or_null": ["dep", "lib"],
+        }
+    )
+    orphan_dependency = json.loads(json.dumps(two_package_graph))
+    orphan_dependency["dependency_bindings"].append(
+        {
+            "dependency_binding_id": "DependencyBindingId:dep",
+            "consumer_package_id": "PackageId:root",
+            "source_visible_binding": "dep",
+            "provider_package_id": "PackageId:dep",
+        }
+    )
+    package_mutants.append(
+        ("PACKAGE_DEPENDENCY_REFERENCE", orphan_dependency)
+    )
+    foreign_self_binding = json.loads(json.dumps(two_package_graph))
+    foreign_self_binding["visible_module_bindings"].append(
+        {
+            "consumer_target_id": "TargetId:root.lib",
+            "visible_qualified_path": ["dep", "lib"],
+            "resolved_module_id": "ModuleId:dep.lib",
+            "dependency_binding_id_or_self": "self",
+        }
+    )
+    package_mutants.append(
+        ("VISIBLE_DEPENDENCY_REFERENCE", foreign_self_binding)
+    )
+    wrong_visible_path = json.loads(json.dumps(package_graph))
+    wrong_visible_path["visible_module_bindings"][0][
+        "visible_qualified_path"
+    ] = ["wrong", "path"]
+    package_mutants.append(
+        ("VISIBLE_PATH_PROJECTION", wrong_visible_path)
+    )
+    target_policy_mismatch = json.loads(json.dumps(package_graph))
+    target_policy_mismatch["targets"][0][
+        "source_role_policy"
+    ] = "script"
+    package_mutants.append(
+        ("TARGET_SOURCE_ROLE_POLICY", target_policy_mismatch)
+    )
+    script_import = json.loads(json.dumps(package_graph))
+    script_import["targets"][0]["target_kind"] = "script"
+    script_import["targets"][0]["source_role_policy"] = "script"
+    script_import["source_contributions"][0][
+        "source_role"
+    ] = "script"
+    package_mutants.append(("SCRIPT_MODULE_IMPORT", script_import))
+    deep_nodes = {f"Node:{index}" for index in range(1500)}
+    deep_edges = [
+        (f"Node:{index}", f"Node:{index + 1}")
+        for index in range(1499)
+    ]
+    iterative_graph_pass = not has_directed_cycle(
+        deep_nodes, deep_edges
+    )
+    package_pass = not r4_package_graph_failure_codes(package_graph)
+    package_mutants_pass = all(
+        expected in r4_package_graph_failure_codes(mutant)
+        for expected, mutant in package_mutants
+    )
+
+    initialization_plan: dict[str, Any] = {
+        "schema": "deeplus.module-initialization-plan/r1",
+        "module_id": "ModuleId:root.lib",
+        "graph_profile": (
+            "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        ),
+        "bindings": [
+            {
+                "binding_decl_id": "DeclId:a",
+                "dependency_decl_ids": [],
+                "value_sha256": zero,
+                "evaluation_status": "COMPILE_TIME_SUCCEEDED",
+            },
+            {
+                "binding_decl_id": "DeclId:b",
+                "dependency_decl_ids": [],
+                "value_sha256": "1" * 64,
+                "evaluation_status": "COMPILE_TIME_SUCCEEDED",
+            },
+            {
+                "binding_decl_id": "DeclId:c",
+                "dependency_decl_ids": ["DeclId:a", "DeclId:b"],
+                "value_sha256": "2" * 64,
+                "evaluation_status": "COMPILE_TIME_SUCCEEDED",
+            },
+        ],
+        "topological_evaluation_order": [
+            "DeclId:a",
+            "DeclId:b",
+            "DeclId:c",
+        ],
+        "evaluation_order": "TOPOLOGICAL_THEN_CANONICAL_DECL_ID",
+        "receipt_order": "CANONICAL_DECL_ID_ORDER",
+        "commit": "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED",
+        "runtime_initializer_count": 0,
+        "semantic_order_winner": False,
+        "plan_sha256": zero,
+    }
+    initialization_plan["plan_sha256"] = canonical_self_digest(
+        initialization_plan, "plan_sha256"
+    )
+
+    def reseal(value: dict[str, Any], field: str) -> dict[str, Any]:
+        value[field] = canonical_self_digest(value, field)
+        return value
+
+    initialization_cycle = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_cycle["bindings"][0]["dependency_decl_ids"] = [
+        "DeclId:c"
+    ]
+    reseal(initialization_cycle, "plan_sha256")
+    initialization_dangling = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_dangling["bindings"][2][
+        "dependency_decl_ids"
+    ] = ["DeclId:missing"]
+    reseal(initialization_dangling, "plan_sha256")
+    initialization_wrong_order = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_wrong_order[
+        "topological_evaluation_order"
+    ] = ["DeclId:b", "DeclId:a", "DeclId:c"]
+    reseal(initialization_wrong_order, "plan_sha256")
+    initialization_wrong_domain = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_wrong_domain["bindings"][0][
+        "binding_decl_id"
+    ] = "DependencyBindingId:a"
+    reseal(initialization_wrong_domain, "plan_sha256")
+    initialization_bad_digest = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_bad_digest["plan_sha256"] = zero
+    initialization_unknown_top = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_unknown_top["not_in_schema"] = True
+    reseal(initialization_unknown_top, "plan_sha256")
+    initialization_unknown_binding = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_unknown_binding["bindings"][0][
+        "not_in_schema"
+    ] = True
+    reseal(initialization_unknown_binding, "plan_sha256")
+    initialization_dependency_permutation = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_dependency_permutation["bindings"][2][
+        "dependency_decl_ids"
+    ].reverse()
+    reseal(initialization_dependency_permutation, "plan_sha256")
+    initialization_binding_permutation = json.loads(
+        json.dumps(initialization_plan)
+    )
+    initialization_binding_permutation["bindings"][0:2] = reversed(
+        initialization_binding_permutation["bindings"][0:2]
+    )
+    reseal(initialization_binding_permutation, "plan_sha256")
+    initialization_mutants = [
+        ("STATIC_DEPENDENCY_CYCLE", initialization_cycle),
+        ("STATIC_DEPENDENCY_REFERENCE", initialization_dangling),
+        ("STATIC_EVALUATION_ORDER", initialization_wrong_order),
+        ("STATIC_BINDING_SET", initialization_wrong_domain),
+        ("INITIALIZATION_PROFILE", initialization_unknown_top),
+        ("STATIC_BINDING_SET", initialization_unknown_binding),
+        (
+            "STATIC_DEPENDENCY_SET",
+            initialization_dependency_permutation,
+        ),
+        ("STATIC_RECEIPT_ORDER", initialization_binding_permutation),
+        ("INITIALIZATION_DIGEST", initialization_bad_digest),
+    ]
+    initialization_pass = (
+        not r4_module_initialization_failure_codes(initialization_plan)
+    )
+    initialization_mutants_pass = all(
+        expected in r4_module_initialization_failure_codes(mutant)
+        for expected, mutant in initialization_mutants
+    )
+
+    receipt_imports = [
+        {
+            "import_binding_id": "ImportBindingId:Widget",
+            "resolver_scope_id": "ResolverScopeId:source",
+            "namespace": "TYPE",
+            "local_binding_name": "Widget",
+            "resolved_target_identity": "DeclId:Widget",
+            "source_origin_id": "SourceOriginId:import-Widget",
+            "provider_binding_id_or_self": "DependencyBindingId:dep",
+            "provider_module_id": "ModuleId:dep.lib",
+        }
+    ]
+    receipt_activations = [
+        {
+            "activation_origin_id": "ActivationOriginId:extension",
+            "resolver_scope_id": "ResolverScopeId:source",
+            "activated_identity": "ExtensionSetId:extension",
+            "activation_kind": "use",
+            "semantic_site_key": "source:use-extension",
+            "provider_binding_id_or_self": "DependencyBindingId:dep",
+            "provider_module_id": "ModuleId:dep.extra",
+        }
+    ]
+    provider_interface: dict[str, Any] = {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "ModuleId:dep.lib",
+        "source_role": "library",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "r4_interface_envelope": {
+            "activation_profile": "stable",
+            "public_export_rows": [],
+            "public_activation_reexport_rows": [],
+            "opaque_facade_rows": [],
+            "signature_relation": (
+                "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+            ),
+            "opaque_facade_relation": "NARROWING_ONLY",
+            "symbols_are_exact_effective_public_residue": True,
+            "private_body_bytes_in_interface_hash": False,
+        },
+        "symbols": [],
+        "canonical_sha256": zero,
+    }
+    reseal(provider_interface, "canonical_sha256")
+    provider_interface_extra = json.loads(json.dumps(provider_interface))
+    provider_interface_extra["module_id"] = "ModuleId:dep.extra"
+    reseal(provider_interface_extra, "canonical_sha256")
+    receipt_package_graph = json.loads(json.dumps(package_graph))
+    receipt_package_graph["packages"][0]["dependency_binding_ids"] = [
+        "DependencyBindingId:dep"
+    ]
+    receipt_package_graph["packages"].append(
+        {
+            "package_id": "PackageId:dep",
+            "canonical_package_key": {
+                "registry_namespace": "local",
+                "package_name": "dep",
+                "package_version_identity": "1",
+            },
+            "resolved_artifact_provenance_digest": "9" * 64,
+            "dependency_binding_ids": [],
+            "target_ids": ["TargetId:dep.lib"],
+        }
+    )
+    receipt_package_graph["targets"].append(
+        {
+            "target_id": "TargetId:dep.lib",
+            "package_id": "PackageId:dep",
+            "canonical_manifest_target_name": "lib",
+            "target_kind": "library",
+            "source_role_policy": "library",
+            "activation_profile": "stable",
+            "source_file_ids": [
+                "SourceFileId:dep.lib/src/lib.dp",
+                "SourceFileId:dep.lib/src/extra.dp",
+            ],
+        }
+    )
+    receipt_package_graph["source_contributions"].extend(
+        [
+            {
+                "source_file_id": "SourceFileId:dep.lib/src/lib.dp",
+                "target_id": "TargetId:dep.lib",
+                "normalized_project_relative_path": "src/lib.dp",
+                "source_role": "library",
+                "activation_profile": "stable",
+                "module_id": "ModuleId:dep.lib",
+                "module_path": ["dep", "lib"],
+                "explicit_module_path_or_null": ["dep", "lib"],
+                "source_bytes_sha256": "7" * 64,
+            },
+            {
+                "source_file_id": "SourceFileId:dep.lib/src/extra.dp",
+                "target_id": "TargetId:dep.lib",
+                "normalized_project_relative_path": "src/extra.dp",
+                "source_role": "library",
+                "activation_profile": "stable",
+                "module_id": "ModuleId:dep.extra",
+                "module_path": ["dep", "extra"],
+                "explicit_module_path_or_null": ["dep", "extra"],
+                "source_bytes_sha256": "8" * 64,
+            },
+        ]
+    )
+    receipt_package_graph["dependency_bindings"] = [
+        {
+            "dependency_binding_id": "DependencyBindingId:dep",
+            "consumer_package_id": "PackageId:root",
+            "source_visible_binding": "dep",
+            "provider_package_id": "PackageId:dep",
+            "provider_interface_sha256": provider_interface[
+                "canonical_sha256"
+            ],
+        }
+    ]
+    receipt_package_graph["visible_module_bindings"].extend(
+        [
+            {
+                "consumer_target_id": "TargetId:root.lib",
+                "visible_qualified_path": ["dep", "lib"],
+                "resolved_module_id": "ModuleId:dep.lib",
+                "dependency_binding_id_or_self": (
+                    "DependencyBindingId:dep"
+                ),
+            },
+            {
+                "consumer_target_id": "TargetId:root.lib",
+                "visible_qualified_path": ["dep", "extra"],
+                "resolved_module_id": "ModuleId:dep.extra",
+                "dependency_binding_id_or_self": (
+                    "DependencyBindingId:dep"
+                ),
+            },
+        ]
+    )
+    reseal(receipt_package_graph, "canonical_graph_sha256")
+    dependency_receipt: dict[str, Any] = {
+        "schema": "deeplus.module-compilation-dependency-receipt/r1",
+        "consumer_target_id": "TargetId:root.lib",
+        "consumer_module_id": "ModuleId:root.lib",
+        "package_graph_sha256": receipt_package_graph[
+            "canonical_graph_sha256"
+        ],
+        "resolver_graph_sha256": "5" * 64,
+        "import_bindings": receipt_imports,
+        "activation_bindings": receipt_activations,
+        "required_interfaces": [
+            {
+                "provider_binding_id_or_self": "DependencyBindingId:dep",
+                "provider_module_id": "ModuleId:dep.extra",
+                "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+                "interface_sha256": provider_interface_extra[
+                    "canonical_sha256"
+                ],
+            },
+            {
+                "provider_binding_id_or_self": "DependencyBindingId:dep",
+                "provider_module_id": "ModuleId:dep.lib",
+                "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+                "interface_sha256": provider_interface[
+                    "canonical_sha256"
+                ],
+            }
+        ],
+        "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER",
+        "dependency_receipt_sha256": zero,
+    }
+    reseal(dependency_receipt, "dependency_receipt_sha256")
+    receipt_graph = {
+        "resolver_graph_sha256": "5" * 64,
+        "import_bindings": receipt_imports,
+        "activation_entries": receipt_activations,
+    }
+    provider_interfaces = {
+        "ModuleId:dep.lib": provider_interface,
+        "ModuleId:dep.extra": provider_interface_extra,
+    }
+    receipt_wrong_import_domain = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_wrong_import_domain["import_bindings"][0][
+        "resolved_target_identity"
+    ] = "ModuleId:not-a-type"
+    reseal(receipt_wrong_import_domain, "dependency_receipt_sha256")
+    receipt_wrong_activation = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_wrong_activation["activation_bindings"][0][
+        "activation_kind"
+    ] = "teleport"
+    reseal(receipt_wrong_activation, "dependency_receipt_sha256")
+    receipt_stale_provider = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_stale_provider["required_interfaces"][0][
+        "interface_sha256"
+    ] = "6" * 64
+    reseal(receipt_stale_provider, "dependency_receipt_sha256")
+    receipt_graph_mismatch = json.loads(json.dumps(dependency_receipt))
+    receipt_graph_mismatch["resolver_graph_sha256"] = "7" * 64
+    reseal(receipt_graph_mismatch, "dependency_receipt_sha256")
+    receipt_missing_interface = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_missing_interface["required_interfaces"].pop()
+    reseal(receipt_missing_interface, "dependency_receipt_sha256")
+    receipt_unbound_provider = json.loads(json.dumps(dependency_receipt))
+    receipt_unbound_provider["import_bindings"][0][
+        "provider_module_id"
+    ] = "ModuleId:dep.missing"
+    reseal(receipt_unbound_provider, "dependency_receipt_sha256")
+    receipt_bad_digest = json.loads(json.dumps(dependency_receipt))
+    receipt_bad_digest["dependency_receipt_sha256"] = zero
+    receipt_duplicate_interface_pair = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_duplicate_interface_pair["required_interfaces"].append(
+        json.loads(
+            json.dumps(
+                receipt_duplicate_interface_pair[
+                    "required_interfaces"
+                ][0]
+            )
+        )
+    )
+    reseal(
+        receipt_duplicate_interface_pair,
+        "dependency_receipt_sha256",
+    )
+    receipt_unknown_top = json.loads(json.dumps(dependency_receipt))
+    receipt_unknown_top["not_in_schema"] = True
+    reseal(receipt_unknown_top, "dependency_receipt_sha256")
+    receipt_unknown_import = json.loads(json.dumps(dependency_receipt))
+    receipt_unknown_import["import_bindings"][0][
+        "not_in_schema"
+    ] = True
+    reseal(receipt_unknown_import, "dependency_receipt_sha256")
+    receipt_unknown_activation = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_unknown_activation["activation_bindings"][0][
+        "not_in_schema"
+    ] = True
+    reseal(receipt_unknown_activation, "dependency_receipt_sha256")
+    receipt_unknown_interface = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_unknown_interface["required_interfaces"][0][
+        "not_in_schema"
+    ] = True
+    reseal(receipt_unknown_interface, "dependency_receipt_sha256")
+    receipt_bad_local_name = json.loads(json.dumps(dependency_receipt))
+    receipt_bad_local_name["import_bindings"][0][
+        "local_binding_name"
+    ] = "not-an-identifier"
+    reseal(receipt_bad_local_name, "dependency_receipt_sha256")
+    receipt_interface_permutation = json.loads(
+        json.dumps(dependency_receipt)
+    )
+    receipt_interface_permutation["required_interfaces"].reverse()
+    reseal(
+        receipt_interface_permutation,
+        "dependency_receipt_sha256",
+    )
+    pseudo_provider_interface = {
+        "module_id": "ModuleId:dep.lib",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "canonical_sha256": zero,
+    }
+    reseal(pseudo_provider_interface, "canonical_sha256")
+    receipt_pseudo_provider = json.loads(json.dumps(dependency_receipt))
+    next(
+        row
+        for row in receipt_pseudo_provider["required_interfaces"]
+        if row["provider_module_id"] == "ModuleId:dep.lib"
+    )["interface_sha256"] = pseudo_provider_interface[
+        "canonical_sha256"
+    ]
+    reseal(receipt_pseudo_provider, "dependency_receipt_sha256")
+    pseudo_provider_interfaces = dict(provider_interfaces)
+    pseudo_provider_interfaces[
+        "ModuleId:dep.lib"
+    ] = pseudo_provider_interface
+    receipt_mutants = [
+        (
+            "DEPENDENCY_IMPORT_DOMAIN",
+            receipt_wrong_import_domain,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_ACTIVATION_DOMAIN",
+            receipt_wrong_activation,
+            provider_interfaces,
+        ),
+        (
+            "STALE_PROVIDER_INTERFACE",
+            receipt_stale_provider,
+            provider_interfaces,
+        ),
+        (
+            "RECEIPT_RESOLVER_GRAPH_DIGEST",
+            receipt_graph_mismatch,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_INTERFACE_CLOSURE",
+            receipt_missing_interface,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_PROVIDER_GRAPH_BINDING",
+            receipt_unbound_provider,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_INTERFACE_IDENTITY",
+            receipt_duplicate_interface_pair,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_RECEIPT_PROFILE",
+            receipt_unknown_top,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_IMPORT_DOMAIN",
+            receipt_unknown_import,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_ACTIVATION_DOMAIN",
+            receipt_unknown_activation,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_INTERFACE_DOMAIN",
+            receipt_unknown_interface,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_IMPORT_DOMAIN",
+            receipt_bad_local_name,
+            provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_RECEIPT_ORDER",
+            receipt_interface_permutation,
+            provider_interfaces,
+        ),
+        (
+            "STALE_PROVIDER_INTERFACE",
+            receipt_pseudo_provider,
+            pseudo_provider_interfaces,
+        ),
+        (
+            "DEPENDENCY_RECEIPT_DIGEST",
+            receipt_bad_digest,
+            provider_interfaces,
+        ),
+    ]
+    receipt_pass = not r4_dependency_receipt_failure_codes(
+        dependency_receipt,
+        receipt_graph,
+        provider_interfaces,
+        receipt_package_graph,
+    )
+    receipt_mutants_pass = all(
+        expected
+        in r4_dependency_receipt_failure_codes(
+            mutant,
+            receipt_graph,
+            mutant_provider_interfaces,
+            receipt_package_graph,
+        )
+        for expected, mutant, mutant_provider_interfaces
+        in receipt_mutants
+    )
+
+    visibility_closure: dict[str, Any] = {
+        "schema": "deeplus.module-visibility-closure/r1",
+        "module_id": "ModuleId:root.lib",
+        "default_external_export_set": "EMPTY",
+        "export_edges": [
+            {
+                "export_owner_id": "ModuleId:root.lib",
+                "namespace": "TYPE",
+                "exported_name": "Widget",
+                "referenced_identity_id": "DeclId:Widget",
+                "source_origin_id": "SourceOriginId:export-Widget",
+            }
+        ],
+        "reexport_edges": [],
+        "visibility_proofs": [
+            {
+                "proof_id": "VisibilityProofId:Widget",
+                "export_owner_id": "ModuleId:root.lib",
+                "referenced_identity_id": "DeclId:Widget",
+                "api_position_kind": "nested_export",
+                "api_position_path": ["Widget"],
+                "owner_visibility": "public",
+                "referenced_visibility": "public",
+                "package_relation": "same_package",
+                "module_relation": "same_module",
+                "admission": "VISIBLE_NO_WIDENING",
+            }
+        ],
+        "signature_relation": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH",
+        "opaque_facade_relation": "NARROWING_ONLY",
+        "opaque_facades": [
+            {
+                "export_owner_id": "ModuleId:root.lib",
+                "owner_public_residue_identity_ids": ["DeclId:Widget"],
+                "facade_public_residue_identity_ids": ["DeclId:Widget"],
+            }
+        ],
+        "closure_sha256": zero,
+    }
+    reseal(visibility_closure, "closure_sha256")
+    visibility_missing_proof = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_missing_proof["visibility_proofs"] = []
+    reseal(visibility_missing_proof, "closure_sha256")
+    visibility_widening = json.loads(json.dumps(visibility_closure))
+    visibility_widening["visibility_proofs"][0][
+        "referenced_visibility"
+    ] = "private"
+    reseal(visibility_widening, "closure_sha256")
+    visibility_facade_widening = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_facade_widening["opaque_facades"][0][
+        "facade_public_residue_identity_ids"
+    ].append("DeclId:Hidden")
+    reseal(visibility_facade_widening, "closure_sha256")
+    visibility_wrong_export_domain = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_wrong_export_domain["export_edges"][0][
+        "referenced_identity_id"
+    ] = "ModuleId:not-a-type"
+    reseal(visibility_wrong_export_domain, "closure_sha256")
+    visibility_bad_digest = json.loads(json.dumps(visibility_closure))
+    visibility_bad_digest["closure_sha256"] = zero
+    visibility_unknown_top = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_unknown_top["not_in_schema"] = True
+    reseal(visibility_unknown_top, "closure_sha256")
+    visibility_unknown_export = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_unknown_export["export_edges"][0][
+        "not_in_schema"
+    ] = True
+    reseal(visibility_unknown_export, "closure_sha256")
+    visibility_unknown_reexport = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_unknown_reexport["reexport_edges"] = [
+        {
+            "activation_origin_id": "ActivationOriginId:extra",
+            "export_owner_id": "ModuleId:root.lib",
+            "referenced_activation_identity_id": (
+                "ExtensionSetId:extra"
+            ),
+            "source_origin_id": "SourceOriginId:extra",
+            "not_in_schema": True,
+        }
+    ]
+    reseal(visibility_unknown_reexport, "closure_sha256")
+    visibility_unknown_proof = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_unknown_proof["visibility_proofs"][0][
+        "not_in_schema"
+    ] = True
+    reseal(visibility_unknown_proof, "closure_sha256")
+    visibility_unknown_facade = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_unknown_facade["opaque_facades"][0][
+        "not_in_schema"
+    ] = True
+    reseal(visibility_unknown_facade, "closure_sha256")
+    visibility_row_permutation = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_row_permutation["export_edges"].append(
+        {
+            "export_owner_id": "ModuleId:root.lib",
+            "namespace": "TYPE",
+            "exported_name": "Alpha",
+            "referenced_identity_id": "DeclId:Alpha",
+            "source_origin_id": "SourceOriginId:export-Alpha",
+        }
+    )
+    visibility_row_permutation["visibility_proofs"].append(
+        {
+            "proof_id": "VisibilityProofId:Alpha",
+            "export_owner_id": "ModuleId:root.lib",
+            "referenced_identity_id": "DeclId:Alpha",
+            "api_position_kind": "nested_export",
+            "api_position_path": ["Alpha"],
+            "owner_visibility": "public",
+            "referenced_visibility": "public",
+            "package_relation": "same_package",
+            "module_relation": "same_module",
+            "admission": "VISIBLE_NO_WIDENING",
+        }
+    )
+    reseal(visibility_row_permutation, "closure_sha256")
+    visibility_facade_permutation = json.loads(
+        json.dumps(visibility_closure)
+    )
+    visibility_facade_permutation["opaque_facades"][0][
+        "owner_public_residue_identity_ids"
+    ] = ["DeclId:Alpha", "DeclId:Widget"]
+    visibility_facade_permutation["opaque_facades"][0][
+        "facade_public_residue_identity_ids"
+    ] = ["DeclId:Widget", "DeclId:Alpha"]
+    reseal(visibility_facade_permutation, "closure_sha256")
+    visibility_mutants = [
+        ("EXPORT_PROOF_LINKAGE", visibility_missing_proof),
+        ("VISIBILITY_WIDENING", visibility_widening),
+        ("OPAQUE_FACADE_WIDENING", visibility_facade_widening),
+        ("EXPORT_EDGE_DOMAIN", visibility_wrong_export_domain),
+        ("VISIBILITY_CLOSURE_PROFILE", visibility_unknown_top),
+        ("EXPORT_EDGE_DOMAIN", visibility_unknown_export),
+        ("REEXPORT_EDGE_DOMAIN", visibility_unknown_reexport),
+        ("VISIBILITY_PROOF_DOMAIN", visibility_unknown_proof),
+        ("OPAQUE_FACADE_DOMAIN", visibility_unknown_facade),
+        ("VISIBILITY_CLOSURE_ORDER", visibility_row_permutation),
+        ("OPAQUE_FACADE_ORDER", visibility_facade_permutation),
+        ("VISIBILITY_CLOSURE_DIGEST", visibility_bad_digest),
+    ]
+    visibility_pass = not r4_visibility_closure_failure_codes(
+        visibility_closure
+    )
+    visibility_mutants_pass = all(
+        expected in r4_visibility_closure_failure_codes(mutant)
+        for expected, mutant in visibility_mutants
+    )
+
+    api_hir_symbols = [
+        {
+            "symbol_id": "DeclId:Widget",
+            "kind": "type",
+            "normalized_signature": "public class Widget",
+            "responsibility_profile": {
+                "profile_kind": "type",
+                "declaration_ownership": "not_applicable",
+            },
+            "ownership": "not_applicable",
+            "cleanup": "not_applicable",
+            "error_set": [],
+            "effect_row": [],
+            "cancellation": "not_applicable",
+            "suspends": "not_applicable",
+            "authority": [],
+            "isolation": "not_applicable",
+            "evidence_ids": [],
+            "construction_row_sha256": zero,
+            "projection_row_sha256": None,
+        }
+    ]
+    module_api: dict[str, Any] = {
+        "schema": "deeplus.module-api-digest/r51f3",
+        "baseline": "0.1.2-baseline.r51f3",
+        "module_id": "ModuleId:root.lib",
+        "source_role": "library",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "r4_interface_envelope": {
+            "activation_profile": "stable",
+            "public_export_rows": [
+                {
+                    "export_owner_id": "ModuleId:root.lib",
+                    "namespace": "TYPE",
+                    "exported_name": "Widget",
+                    "referenced_identity_id": "DeclId:Widget",
+                }
+            ],
+            "public_activation_reexport_rows": [],
+            "opaque_facade_rows": [
+                {
+                    "export_owner_id": "ModuleId:root.lib",
+                    "facade_public_residue_identity_ids": [
+                        "DeclId:Widget"
+                    ],
+                }
+            ],
+            "signature_relation": (
+                "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+            ),
+            "opaque_facade_relation": "NARROWING_ONLY",
+            "symbols_are_exact_effective_public_residue": True,
+            "private_body_bytes_in_interface_hash": False,
+        },
+        "symbols": api_hir_symbols,
+        "canonical_sha256": zero,
+    }
+    reseal(module_api, "canonical_sha256")
+    source_projection: dict[str, Any] = {
+        "schema": (
+            "deeplus.module-source-contribution-projection/r1"
+        ),
+        "target_id": "TargetId:root.lib",
+        "module_id": "ModuleId:root.lib",
+        "source_contributions": [
+            {
+                "source_file_id": (
+                    "SourceFileId:root.lib/src/lib.dp"
+                ),
+                "normalized_project_relative_path": "src/lib.dp",
+                "source_role": "library",
+                "activation_profile": "stable",
+                "source_bytes_sha256": zero,
+            }
+        ],
+        "projection_sha256": zero,
+    }
+    reseal(source_projection, "projection_sha256")
+    module_implementation: dict[str, Any] = {
+        "schema": "deeplus.module-implementation-digest/r1",
+        "interface_profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:root.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:root.lib",
+        "interface_sha256": module_api["canonical_sha256"],
+        "hir_semantic_sha256": "7" * 64,
+        "external_compatibility_identity": False,
+        "implementation_sha256": zero,
+    }
+    reseal(module_implementation, "implementation_sha256")
+    artifact_trace = {
+        "resolver_graph_sha256": dependency_receipt[
+            "resolver_graph_sha256"
+        ],
+        "trace_sha256": "8" * 64,
+    }
+    compilation_receipt: dict[str, Any] = {
+        "schema": "deeplus.module-compilation-receipt/r1",
+        "profile": "R4_NAME_RESOLUTION_MODULES",
+        "target_id": "TargetId:root.lib",
+        "target_kind": "library",
+        "module_id": "ModuleId:root.lib",
+        "package_graph_sha256": receipt_package_graph[
+            "canonical_graph_sha256"
+        ],
+        "module_source_contribution_sha256": source_projection[
+            "projection_sha256"
+        ],
+        "dependency_receipt_sha256": dependency_receipt[
+            "dependency_receipt_sha256"
+        ],
+        "resolver_trace_sha256": artifact_trace["trace_sha256"],
+        "visibility_closure_sha256": visibility_closure[
+            "closure_sha256"
+        ],
+        "initialization_plan_sha256": initialization_plan[
+            "plan_sha256"
+        ],
+        "interface_sha256": module_api["canonical_sha256"],
+        "implementation_sha256": module_implementation[
+            "implementation_sha256"
+        ],
+        "compilation_receipt_sha256": zero,
+    }
+    reseal(compilation_receipt, "compilation_receipt_sha256")
+    artifact_relations = {
+        "package_graph": receipt_package_graph,
+        "source_projection": source_projection,
+        "dependency_receipt": dependency_receipt,
+        "resolver_trace": artifact_trace,
+        "visibility_closure": visibility_closure,
+        "initialization_plan": initialization_plan,
+        "module_api": module_api,
+        "implementation": module_implementation,
+    }
+    module_artifact_pass = (
+        not r4_module_api_failure_codes(
+            module_api, visibility_closure, api_hir_symbols
+        )
+        and not r4_module_source_projection_failure_codes(
+            source_projection, receipt_package_graph
+        )
+        and not r4_module_implementation_failure_codes(
+            module_implementation, module_api
+        )
+        and not r4_compilation_receipt_failure_codes(
+            compilation_receipt, **artifact_relations
+        )
+    )
+
+    api_provenance_leak = json.loads(json.dumps(module_api))
+    api_provenance_leak["r4_interface_envelope"][
+        "visibility_closure_sha256"
+    ] = visibility_closure["closure_sha256"]
+    reseal(api_provenance_leak, "canonical_sha256")
+    api_projection_drift = json.loads(json.dumps(module_api))
+    api_projection_drift["r4_interface_envelope"][
+        "public_export_rows"
+    ][0]["exported_name"] = "Renamed"
+    reseal(api_projection_drift, "canonical_sha256")
+    source_projection_drift = json.loads(json.dumps(source_projection))
+    source_projection_drift["source_contributions"][0][
+        "normalized_project_relative_path"
+    ] = "src/renamed.dp"
+    reseal(source_projection_drift, "projection_sha256")
+    implementation_interface_drift = json.loads(
+        json.dumps(module_implementation)
+    )
+    implementation_interface_drift["interface_sha256"] = "9" * 64
+    reseal(
+        implementation_interface_drift, "implementation_sha256"
+    )
+    compilation_artifact_drift = json.loads(
+        json.dumps(compilation_receipt)
+    )
+    compilation_artifact_drift[
+        "module_source_contribution_sha256"
+    ] = "a" * 64
+    reseal(
+        compilation_artifact_drift, "compilation_receipt_sha256"
+    )
+    compilation_bad_digest = json.loads(
+        json.dumps(compilation_receipt)
+    )
+    compilation_bad_digest["compilation_receipt_sha256"] = zero
+    module_artifact_mutants_pass = (
+        "MODULE_INTERFACE_ENVELOPE"
+        in r4_module_api_failure_codes(
+            api_provenance_leak, visibility_closure, api_hir_symbols
+        )
+        and "MODULE_INTERFACE_VISIBILITY_PROJECTION"
+        in r4_module_api_failure_codes(
+            api_projection_drift, visibility_closure, api_hir_symbols
+        )
+        and "MODULE_SOURCE_GRAPH_PROJECTION"
+        in r4_module_source_projection_failure_codes(
+            source_projection_drift, receipt_package_graph
+        )
+        and "MODULE_IMPLEMENTATION_INTERFACE_BINDING"
+        in r4_module_implementation_failure_codes(
+            implementation_interface_drift, module_api
+        )
+        and "MODULE_COMPILATION_ARTIFACT_BINDING"
+        in r4_compilation_receipt_failure_codes(
+            compilation_artifact_drift, **artifact_relations
+        )
+        and "MODULE_COMPILATION_RECEIPT_DIGEST"
+        in r4_compilation_receipt_failure_codes(
+            compilation_bad_digest, **artifact_relations
+        )
+    )
+
+    private_change_implementation = json.loads(
+        json.dumps(module_implementation)
+    )
+    private_change_implementation["hir_semantic_sha256"] = "b" * 64
+    reseal(
+        private_change_implementation, "implementation_sha256"
+    )
+    private_change_receipt = json.loads(
+        json.dumps(compilation_receipt)
+    )
+    private_change_receipt[
+        "implementation_sha256"
+    ] = private_change_implementation["implementation_sha256"]
+    reseal(private_change_receipt, "compilation_receipt_sha256")
+    module_artifact_private_change_pass = (
+        module_api["canonical_sha256"]
+        == module_implementation["interface_sha256"]
+        == private_change_implementation["interface_sha256"]
+        and module_implementation["implementation_sha256"]
+        != private_change_implementation["implementation_sha256"]
+        and compilation_receipt["compilation_receipt_sha256"]
+        != private_change_receipt["compilation_receipt_sha256"]
+    )
+
+    resolver_graph: dict[str, Any] = {
+        "schema": "deeplus.resolver-graph/r1",
+        "package_graph_sha256": package_graph[
+            "canonical_graph_sha256"
+        ],
+        "root_scope_ids": ["ResolverScopeId:package-root"],
+        "scopes": [
+            {
+                "resolver_scope_id": "ResolverScopeId:package-root",
+                "parent_scope_id_or_null": None,
+                "kind": "PackageRootScope",
+                "package_id": "PackageId:root",
+            }
+        ],
+        "name_bindings": [],
+        "import_bindings": [],
+        "activation_entries": [],
+        "witness_visibility_entries": [],
+        "invariants": {
+            "lookup": (
+                "INNERMOST_TO_OUTERMOST_STOP_AT_FIRST_NONEMPTY_"
+                "EXACT_NAMESPACE_AND_SPELLING"
+            ),
+            "same_frame_order_priority": False,
+            "cross_frame_overload_merge": False,
+            "provisional_bindings_in_name_env": False,
+            "environment_cross_creation_count": 0,
+            "runtime_relookup_count": 0,
+        },
+        "resolver_graph_sha256": zero,
+    }
+    resolver_graph["resolver_graph_sha256"] = canonical_self_digest(
+        resolver_graph, "resolver_graph_sha256"
+    )
+    resolver_graph_full = json.loads(json.dumps(resolver_graph))
+    resolver_graph_full["scopes"].extend(
+        [
+            {
+                "resolver_scope_id": "ResolverScopeId:target",
+                "parent_scope_id_or_null": (
+                    "ResolverScopeId:package-root"
+                ),
+                "kind": "TargetScope",
+                "target_id": "TargetId:root.lib",
+            },
+            {
+                "resolver_scope_id": "ResolverScopeId:module",
+                "parent_scope_id_or_null": "ResolverScopeId:target",
+                "kind": "ModuleScope",
+                "module_id": "ModuleId:root.lib",
+            },
+            {
+                "resolver_scope_id": "ResolverScopeId:source",
+                "parent_scope_id_or_null": "ResolverScopeId:module",
+                "kind": "SourceContributionScope",
+                "source_file_id": "SourceFileId:root.lib/src/lib.dp",
+            },
+            {
+                "resolver_scope_id": "ResolverScopeId:item",
+                "parent_scope_id_or_null": "ResolverScopeId:source",
+                "kind": "ItemOwnerScope",
+                "decl_id": "DeclId:function",
+            },
+            {
+                "resolver_scope_id": "ResolverScopeId:body-root",
+                "parent_scope_id_or_null": "ResolverScopeId:item",
+                "kind": "BodyLocalScope",
+                "hir_body_id": "HirBodyId:function",
+                "hir_scope_id": "HirScopeId:function.root",
+                "owner_local_scope_id": "root",
+                "scope_preorder_ordinal": 0,
+                "scope_role": "ROOT_BODY",
+            },
+            {
+                "resolver_scope_id": "ResolverScopeId:body-nested",
+                "parent_scope_id_or_null": (
+                    "ResolverScopeId:body-root"
+                ),
+                "kind": "BodyLocalScope",
+                "hir_body_id": "HirBodyId:function",
+                "hir_scope_id": "HirScopeId:function.nested",
+                "owner_local_scope_id": "nested:block-1",
+                "scope_preorder_ordinal": 1,
+                "scope_role": "NESTED_BODY",
+            },
+        ]
+    )
+    resolver_graph_full["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:target",
+            "namespace": "MODULE",
+            "local_name": "lib",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "ModuleId:root.lib",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:module",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:module",
+            "namespace": "TYPE",
+            "local_name": "Widget",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "DeclId:Widget",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:Widget",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:body-root",
+            "namespace": "VALUE",
+            "local_name": "input",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "PARAMETER",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:function.input",
+            "hir_body_id_or_null": "HirBodyId:function",
+            "owner_local_binding_id_or_null": "parameter:0",
+            "binding_commit_ordinal_or_null": 0,
+            "source_origin_id": "SourceOriginId:input",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:body-root",
+            "namespace": "VALUE",
+            "local_name": "rootValue",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "ROOT_BODY_LOCAL",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:function.root-value",
+            "hir_body_id_or_null": "HirBodyId:function",
+            "owner_local_binding_id_or_null": "binding:root-value",
+            "binding_commit_ordinal_or_null": 1,
+            "source_origin_id": "SourceOriginId:root-value",
+            "visibility_start": "AFTER_DECLARATION",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:body-nested",
+            "namespace": "VALUE",
+            "local_name": "nestedValue",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "NESTED_LOCAL",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:function.nested-value",
+            "hir_body_id_or_null": "HirBodyId:function",
+            "owner_local_binding_id_or_null": "binding:nested-value",
+            "binding_commit_ordinal_or_null": 2,
+            "source_origin_id": "SourceOriginId:nested-value",
+            "visibility_start": "AFTER_DECLARATION",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:body-nested",
+            "namespace": "VALUE",
+            "local_name": "patternValue",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "COMMITTED_PATTERN_BINDING",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:function.pattern-value",
+            "hir_body_id_or_null": "HirBodyId:function",
+            "owner_local_binding_id_or_null": "binding:pattern-value",
+            "binding_commit_ordinal_or_null": 3,
+            "source_origin_id": "SourceOriginId:pattern-value",
+            "visibility_start": "AFTER_TRANSACTION_COMMIT",
+            "overload_slot_key_or_null": None,
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:body-nested",
+            "namespace": "CALLABLE_OVERLOAD_SET",
+            "local_name": "helper",
+            "binding_kind": "CALLABLE_OVERLOAD_SLOT",
+            "binding_origin_kind": "LOCAL_FUNCTION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "DeclId:helper",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:helper",
+            "visibility_start": "AFTER_DECLARATION",
+            "overload_slot_key_or_null": "()",
+        },
+    ]
+    resolver_graph_full["import_bindings"] = [
+        {
+            "import_binding_id": "ImportBindingId:Widget",
+            "resolver_scope_id": "ResolverScopeId:source",
+            "namespace": "TYPE",
+            "local_binding_name": "ImportedWidget",
+            "resolved_target_identity": "DeclId:ImportedWidget",
+            "source_origin_id": "SourceOriginId:import-widget",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:root.lib",
+        }
+    ]
+    resolver_graph_full["activation_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:source",
+            "activation_origin_id": "ActivationOriginId:extension",
+            "activated_identity": "ExtensionSetId:extension",
+            "activation_kind": "use",
+            "semantic_site_key": "source:use-extension",
+            "provider_binding_id_or_self": "self",
+            "provider_module_id": "ModuleId:root.lib",
+        }
+    ]
+    resolver_graph_full["witness_visibility_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:item",
+            "evidence_origin_id": "EvidenceOriginId:witness",
+            "visible_witness_identity": "TraitWitnessId:witness",
+        }
+    ]
+    resolver_graph_full["scopes"].sort(
+        key=lambda row: row["resolver_scope_id"]
+    )
+    resolver_graph_full["name_bindings"].sort(
+        key=lambda row: (
+            row["resolver_scope_id"],
+            row["namespace"],
+            row["local_name"],
+            row["overload_slot_key_or_null"] or "",
+            row["source_origin_id"],
+        )
+    )
+    resolver_graph_full["import_bindings"].sort(
+        key=lambda row: row["import_binding_id"]
+    )
+    resolver_graph_full["activation_entries"].sort(
+        key=lambda row: row["activation_origin_id"]
+    )
+    resolver_graph_full["witness_visibility_entries"].sort(
+        key=lambda row: row["evidence_origin_id"]
+    )
+    resolver_graph_full["resolver_graph_sha256"] = (
+        canonical_self_digest(
+            resolver_graph_full, "resolver_graph_sha256"
+        )
+    )
+    resolver_wrong_domain = json.loads(json.dumps(resolver_graph))
+    resolver_wrong_domain["scopes"][0][
+        "resolver_scope_id"
+    ] = "ModuleId:package-root"
+    resolver_dangling_parent = json.loads(json.dumps(resolver_graph))
+    resolver_dangling_parent["scopes"].append(
+        {
+            "resolver_scope_id": "ResolverScopeId:child",
+            "parent_scope_id_or_null": "ResolverScopeId:missing",
+            "kind": "ModuleScope",
+            "module_id": "ModuleId:root.lib",
+        }
+    )
+    resolver_empty_roots = json.loads(json.dumps(resolver_graph))
+    resolver_empty_roots["root_scope_ids"] = []
+    duplicate_scope_owner = json.loads(json.dumps(resolver_graph))
+    duplicate_scope_owner["root_scope_ids"].append(
+        "ResolverScopeId:package-root-alias"
+    )
+    duplicate_scope_owner["scopes"].append(
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root-alias",
+            "parent_scope_id_or_null": None,
+            "kind": "PackageRootScope",
+            "package_id": "PackageId:root",
+        }
+    )
+    wrong_scope_parent_kind = json.loads(json.dumps(resolver_graph))
+    wrong_scope_parent_kind["scopes"].append(
+        {
+            "resolver_scope_id": "ResolverScopeId:module-wrong-parent",
+            "parent_scope_id_or_null": "ResolverScopeId:package-root",
+            "kind": "ModuleScope",
+            "module_id": "ModuleId:wrong-parent",
+        }
+    )
+    single_binding = {
+        "resolver_scope_id": "ResolverScopeId:package-root",
+        "namespace": "VALUE",
+        "local_name": "same",
+        "binding_kind": "SINGLE",
+        "binding_origin_kind": "DECLARATION",
+        "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+        "typed_identity": "DeclId:single",
+        "hir_body_id_or_null": None,
+        "owner_local_binding_id_or_null": None,
+        "binding_commit_ordinal_or_null": None,
+        "source_origin_id": "SourceOriginId:single",
+        "visibility_start": "SCOPE_ENTRY",
+        "overload_slot_key_or_null": None,
+    }
+    callable_binding = {
+        "resolver_scope_id": "ResolverScopeId:package-root",
+        "namespace": "VALUE",
+        "local_name": "same",
+        "binding_kind": "CALLABLE_OVERLOAD_SLOT",
+        "binding_origin_kind": "DECLARATION",
+        "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+        "typed_identity": "DeclId:callable",
+        "hir_body_id_or_null": None,
+        "owner_local_binding_id_or_null": None,
+        "binding_commit_ordinal_or_null": None,
+        "source_origin_id": "SourceOriginId:callable",
+        "visibility_start": "SCOPE_ENTRY",
+        "overload_slot_key_or_null": "()",
+    }
+    resolver_single_then_callable = json.loads(
+        json.dumps(resolver_graph)
+    )
+    resolver_single_then_callable["name_bindings"] = [
+        single_binding,
+        callable_binding,
+    ]
+    resolver_callable_then_single = json.loads(
+        json.dumps(resolver_graph)
+    )
+    resolver_callable_then_single["name_bindings"] = [
+        callable_binding,
+        single_binding,
+    ]
+    duplicate_import_identity = json.loads(json.dumps(resolver_graph))
+    duplicate_import_identity["import_bindings"] = [
+        {
+            "import_binding_id": "ImportBindingId:duplicate",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "TYPE",
+            "local_binding_name": "First",
+            "resolved_target_identity": "DeclId:first",
+            "source_origin_id": "SourceOriginId:first",
+        },
+        {
+            "import_binding_id": "ImportBindingId:duplicate",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "VALUE",
+            "local_binding_name": "second",
+            "resolved_target_identity": "DeclId:second",
+            "source_origin_id": "SourceOriginId:second",
+        },
+    ]
+    wrong_import_target_domain = json.loads(json.dumps(resolver_graph))
+    wrong_import_target_domain["import_bindings"] = [
+        {
+            "import_binding_id": "ImportBindingId:wrong-domain",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "TYPE",
+            "local_binding_name": "Wrong",
+            "resolved_target_identity": "ModuleId:not-a-declaration",
+            "source_origin_id": "SourceOriginId:wrong-domain",
+        }
+    ]
+    wrong_module_import_target_domain = json.loads(
+        json.dumps(resolver_graph)
+    )
+    wrong_module_import_target_domain["import_bindings"] = [
+        {
+            "import_binding_id": "ImportBindingId:wrong-module-domain",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "MODULE",
+            "local_binding_name": "WrongModule",
+            "resolved_target_identity": "DeclId:not-a-module",
+            "source_origin_id": "SourceOriginId:wrong-module-domain",
+        }
+    ]
+    dangling_activation = json.loads(json.dumps(resolver_graph))
+    dangling_activation["activation_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:missing",
+            "activation_origin_id": "ActivationOriginId:test",
+            "activated_identity": "ExtensionId:test",
+            "activation_kind": "use",
+            "semantic_site_key": "site:test",
+        }
+    ]
+    dangling_witness = json.loads(json.dumps(resolver_graph))
+    dangling_witness["witness_visibility_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:missing",
+            "evidence_origin_id": "EvidenceOriginId:test",
+            "visible_witness_identity": "TraitWitnessId:test",
+        }
+    ]
+    wrong_activation_domain = json.loads(json.dumps(resolver_graph))
+    wrong_activation_domain["activation_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "activation_origin_id": "ModuleId:not-an-activation-origin",
+            "activated_identity": "ExtensionSetId:test",
+            "activation_kind": "use",
+            "semantic_site_key": "site:test",
+        }
+    ]
+    reused_activation_origin = json.loads(json.dumps(resolver_graph))
+    reused_activation_origin["activation_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "activation_origin_id": "ActivationOriginId:reused",
+            "activated_identity": "ExtensionSetId:first",
+            "activation_kind": "use",
+            "semantic_site_key": "site:first",
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "activation_origin_id": "ActivationOriginId:reused",
+            "activated_identity": "ExtensionSetId:second",
+            "activation_kind": "use",
+            "semantic_site_key": "site:second",
+        },
+    ]
+    wrong_witness_domain = json.loads(json.dumps(resolver_graph))
+    wrong_witness_domain["witness_visibility_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "evidence_origin_id": "EvidenceOriginId:test",
+            "visible_witness_identity": "DeclId:not-a-witness",
+        }
+    ]
+    duplicate_witness_evidence = json.loads(json.dumps(resolver_graph))
+    duplicate_witness_evidence["witness_visibility_entries"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "evidence_origin_id": "EvidenceOriginId:same",
+            "visible_witness_identity": "TraitWitnessId:first",
+        },
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "evidence_origin_id": "EvidenceOriginId:same",
+            "visible_witness_identity": "TraitWitnessId:second",
+        },
+    ]
+    extension_in_name_env = json.loads(json.dumps(resolver_graph))
+    extension_in_name_env["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "EXTENSION_SET",
+            "local_name": "ext",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "ExtensionSetId:test",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:extension-name",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        }
+    ]
+    witness_in_name_env = json.loads(json.dumps(resolver_graph))
+    witness_in_name_env["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "TRAIT_WITNESS",
+            "local_name": "witness",
+            "binding_kind": "SINGLE",
+            "binding_origin_kind": "DECLARATION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "TraitWitnessId:test",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:witness-name",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        }
+    ]
+    extension_import_namespace = json.loads(json.dumps(resolver_graph))
+    extension_import_namespace["import_bindings"] = [
+        {
+            "import_binding_id": "ImportBindingId:extension",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "EXTENSION_SET",
+            "local_binding_name": "ext",
+            "resolved_target_identity": "DeclId:extension",
+            "source_origin_id": "SourceOriginId:extension-import",
+        }
+    ]
+    early_hir_local = json.loads(json.dumps(resolver_graph))
+    early_hir_local["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "VALUE",
+            "local_name": "local",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "NESTED_LOCAL",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:test",
+            "hir_body_id_or_null": "HirBodyId:missing-owner",
+            "owner_local_binding_id_or_null": "local",
+            "binding_commit_ordinal_or_null": 0,
+            "source_origin_id": "SourceOriginId:local",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": None,
+        }
+    ]
+    reused_hir_local = json.loads(json.dumps(resolver_graph))
+    reused_hir_local["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "VALUE",
+            "local_name": local_name,
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "NESTED_LOCAL",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:reused",
+            "hir_body_id_or_null": "HirBodyId:reused",
+            "owner_local_binding_id_or_null": local_name,
+            "binding_commit_ordinal_or_null": (
+                0 if local_name == "first" else 1
+            ),
+            "source_origin_id": f"SourceOriginId:{local_name}",
+            "visibility_start": "AFTER_TRANSACTION_COMMIT",
+            "overload_slot_key_or_null": None,
+        }
+        for local_name in ("first", "second")
+    ]
+    hir_local_outside_body = json.loads(json.dumps(resolver_graph))
+    hir_local_outside_body["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "VALUE",
+            "local_name": "outside",
+            "binding_kind": "HIR_LOCAL",
+            "binding_origin_kind": "ROOT_BODY_LOCAL",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "HirLocalId:outside",
+            "hir_body_id_or_null": "HirBodyId:outside",
+            "owner_local_binding_id_or_null": "outside",
+            "binding_commit_ordinal_or_null": 0,
+            "source_origin_id": "SourceOriginId:outside",
+            "visibility_start": "AFTER_TRANSACTION_COMMIT",
+            "overload_slot_key_or_null": None,
+        }
+    ]
+    local_function_hoist = json.loads(json.dumps(resolver_graph))
+    local_function_hoist["scopes"].append(
+        {
+            "resolver_scope_id": "ResolverScopeId:body-local-function",
+            "parent_scope_id_or_null": "ResolverScopeId:package-root",
+            "kind": "BodyLocalScope",
+            "hir_body_id": "HirBodyId:local-function",
+            "hir_scope_id": "HirScopeId:local-function",
+            "owner_local_scope_id": "root",
+            "scope_preorder_ordinal": 0,
+            "scope_role": "ROOT_BODY",
+        }
+    )
+    local_function_hoist["name_bindings"] = [
+        {
+            "resolver_scope_id": "ResolverScopeId:body-local-function",
+            "namespace": "CALLABLE_OVERLOAD_SET",
+            "local_name": "later",
+            "binding_kind": "CALLABLE_OVERLOAD_SLOT",
+            "binding_origin_kind": "LOCAL_FUNCTION",
+            "source_admission": "CURRENT_GRAMMAR_ADMITTED",
+            "typed_identity": "DeclId:later",
+            "hir_body_id_or_null": None,
+            "owner_local_binding_id_or_null": None,
+            "binding_commit_ordinal_or_null": None,
+            "source_origin_id": "SourceOriginId:later",
+            "visibility_start": "SCOPE_ENTRY",
+            "overload_slot_key_or_null": "()",
+        }
+    ]
+    duplicate_root_body = json.loads(json.dumps(resolver_graph))
+    duplicate_root_body["scopes"].extend(
+        [
+            {
+                "resolver_scope_id": f"ResolverScopeId:root-body-{index}",
+                "parent_scope_id_or_null": "ResolverScopeId:package-root",
+                "kind": "BodyLocalScope",
+                "hir_body_id": "HirBodyId:shared",
+                "hir_scope_id": f"HirScopeId:root-{index}",
+                "owner_local_scope_id": "root",
+                "scope_preorder_ordinal": 0,
+                "scope_role": "ROOT_BODY",
+            }
+            for index in (1, 2)
+        ]
+    )
+    wrong_lookup = json.loads(json.dumps(resolver_graph))
+    wrong_lookup["invariants"]["lookup"] = "WRONG"
+    boolean_counter = json.loads(json.dumps(resolver_graph))
+    boolean_counter["invariants"]["environment_cross_creation_count"] = (
+        False
+    )
+    invalid_source_admission = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    invalid_source_admission["name_bindings"][0][
+        "source_admission"
+    ] = "UNPROVEN"
+    declaration_wrong_visibility = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    next(
+        row
+        for row in declaration_wrong_visibility["name_bindings"]
+        if row["local_name"] == "Widget"
+    )[
+        "visibility_start"
+    ] = "AFTER_DECLARATION"
+    declaration_wrong_scope = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    next(
+        row
+        for row in declaration_wrong_scope["name_bindings"]
+        if row["local_name"] == "Widget"
+    )[
+        "resolver_scope_id"
+    ] = "ResolverScopeId:body-root"
+    cross_body_hir_local = json.loads(json.dumps(resolver_graph_full))
+    next(
+        row
+        for row in cross_body_hir_local["name_bindings"]
+        if row["local_name"] == "input"
+    )[
+        "hir_body_id_or_null"
+    ] = "HirBodyId:other"
+    sparse_scope_preorder = json.loads(json.dumps(resolver_graph_full))
+    next(
+        row
+        for row in sparse_scope_preorder["scopes"]
+        if row.get("kind") == "BodyLocalScope"
+        and row.get("scope_preorder_ordinal") == 1
+    )[
+        "scope_preorder_ordinal"
+    ] = 7
+    sparse_binding_order = json.loads(json.dumps(resolver_graph_full))
+    next(
+        row
+        for row in sparse_binding_order["name_bindings"]
+        if row["local_name"] == "patternValue"
+    )[
+        "binding_commit_ordinal_or_null"
+    ] = 9
+    import_wrong_scope_domain = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    import_wrong_scope_domain["import_bindings"][0][
+        "resolver_scope_id"
+    ] = "ResolverScopeId:package-root"
+    activation_wrong_scope_domain = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    activation_wrong_scope_domain["activation_entries"][0][
+        "resolver_scope_id"
+    ] = "ResolverScopeId:package-root"
+    witness_wrong_scope_domain = json.loads(
+        json.dumps(resolver_graph_full)
+    )
+    witness_wrong_scope_domain["witness_visibility_entries"][0][
+        "resolver_scope_id"
+    ] = "ResolverScopeId:source"
+    resolver_unknown_field = json.loads(json.dumps(resolver_graph))
+    resolver_unknown_field["not_in_schema"] = True
+    resolver_unknown_field["resolver_graph_sha256"] = (
+        canonical_self_digest(
+            resolver_unknown_field, "resolver_graph_sha256"
+        )
+    )
+    resolver_unknown_nested = json.loads(json.dumps(resolver_graph))
+    resolver_unknown_nested["scopes"][0]["not_in_schema"] = True
+    resolver_unknown_nested["resolver_graph_sha256"] = (
+        canonical_self_digest(
+            resolver_unknown_nested, "resolver_graph_sha256"
+        )
+    )
+    resolver_unsorted_rows = json.loads(json.dumps(resolver_graph_full))
+    resolver_unsorted_rows["scopes"][0], resolver_unsorted_rows[
+        "scopes"
+    ][1] = (
+        resolver_unsorted_rows["scopes"][1],
+        resolver_unsorted_rows["scopes"][0],
+    )
+    resolver_unsorted_rows["resolver_graph_sha256"] = (
+        canonical_self_digest(
+            resolver_unsorted_rows, "resolver_graph_sha256"
+        )
+    )
+    resolver_digest_flip = json.loads(json.dumps(resolver_graph))
+    resolver_digest_flip["resolver_graph_sha256"] = "f" * 64
+    resolver_lone_surrogate = json.loads(json.dumps(resolver_graph))
+    resolver_lone_surrogate["invariants"]["lookup"] = "\ud800"
+    resolver_mutants = [
+        ("RESOLVER_GRAPH_SCHEMA_SHAPE", resolver_unknown_field),
+        ("RESOLVER_GRAPH_SCHEMA_SHAPE", resolver_unknown_nested),
+        ("RESOLVER_GRAPH_CANONICAL_ORDER", resolver_unsorted_rows),
+        ("RESOLVER_GRAPH_DIGEST", resolver_digest_flip),
+        (
+            "CANONICAL_JSON_NON_UNICODE_SCALAR",
+            resolver_lone_surrogate,
+        ),
+        ("SCOPE_ID_DOMAIN", resolver_wrong_domain),
+        ("SCOPE_PARENT_REFERENCE", resolver_dangling_parent),
+        ("ROOT_SCOPE_REFERENCE", resolver_empty_roots),
+        ("SCOPE_IDENTITY_RECIPE", duplicate_scope_owner),
+        ("SCOPE_PARENT_KIND", wrong_scope_parent_kind),
+        ("SAME_FRAME_NAME_KEY", resolver_single_then_callable),
+        ("SAME_FRAME_NAME_KEY", resolver_callable_then_single),
+        ("IMPORT_BINDING_ID", duplicate_import_identity),
+        ("IMPORT_IDENTITY_DOMAIN", wrong_import_target_domain),
+        ("IMPORT_IDENTITY_DOMAIN", wrong_module_import_target_domain),
+        ("ACTIVATION_SCOPE_REFERENCE", dangling_activation),
+        ("WITNESS_SCOPE_REFERENCE", dangling_witness),
+        ("ACTIVATION_IDENTITY_DOMAIN", wrong_activation_domain),
+        ("ACTIVATION_ORIGIN_IDENTITY", reused_activation_origin),
+        ("WITNESS_IDENTITY_DOMAIN", wrong_witness_domain),
+        ("WITNESS_ENTRY_KEY", duplicate_witness_evidence),
+        ("NAME_ENVIRONMENT_SEPARATION", extension_in_name_env),
+        ("NAME_ENVIRONMENT_SEPARATION", witness_in_name_env),
+        ("IMPORT_ENVIRONMENT_SEPARATION", extension_import_namespace),
+        ("NAME_ENVIRONMENT_SEPARATION", early_hir_local),
+        ("HIR_LOCAL_ID_REUSE", reused_hir_local),
+        ("HIR_LOCAL_SCOPE_DOMAIN", hir_local_outside_body),
+        ("LOCAL_FUNCTION_VISIBILITY", local_function_hoist),
+        ("ROOT_BODY_SCOPE_IDENTITY", duplicate_root_body),
+        ("RESOLVER_INVARIANTS", wrong_lookup),
+        ("RESOLVER_INVARIANTS", boolean_counter),
+        ("BINDING_SOURCE_ADMISSION", invalid_source_admission),
+        ("NAME_ENVIRONMENT_SEPARATION", declaration_wrong_visibility),
+        ("BINDING_SCOPE_DOMAIN", declaration_wrong_scope),
+        ("HIR_LOCAL_IDENTITY_RECIPE", cross_body_hir_local),
+        ("HIR_SCOPE_PREORDER", sparse_scope_preorder),
+        ("HIR_LOCAL_COMMIT_ORDER", sparse_binding_order),
+        ("IMPORT_SCOPE_DOMAIN", import_wrong_scope_domain),
+        ("ACTIVATION_SCOPE_DOMAIN", activation_wrong_scope_domain),
+        ("WITNESS_SCOPE_DOMAIN", witness_wrong_scope_domain),
+    ]
+    resolver_pass = all(
+        not r4_resolver_graph_failure_codes(value)
+        for value in (resolver_graph, resolver_graph_full)
+    )
+    resolver_mutants_pass = all(
+        expected in r4_resolver_graph_failure_codes(mutant)
+        for expected, mutant in resolver_mutants
+    )
+
+    def make_stages(failed_index: int | None = None) -> list[dict[str, Any]]:
+        rows = [
+            {
+                "ordinal": index,
+                "predicate": predicate,
+                "status": "PASS",
+            }
+            for index, predicate in enumerate(R4_NRM_STAGE_SEQUENCE, 1)
+        ]
+        if failed_index is not None:
+            rows[failed_index]["status"] = "FAIL"
+            for row in rows[failed_index + 1:]:
+                row["status"] = "NOT_EVALUATED"
+        return rows
+
+    def make_seal(
+        status: str,
+        reason: str | None = None,
+    ) -> dict[str, Any]:
+        fields = (
+            "unbound_primary_count",
+            "unresolved_count",
+            "candidate_set_count",
+            "missing_typed_id_count",
+            "missing_visibility_proof_count",
+            "recovery_binding_count",
+            "runtime_relookup_count",
+            "overload_winner_count",
+            "canonical_hir_overload_set_ref_count",
+        )
+        if status == "NOT_EVALUATED":
+            counters: dict[str, Any] = {field: None for field in fields}
+        else:
+            counters = {field: 0 for field in fields}
+        reason_counter = {
+            "UNBOUND_PRIMARY": "unbound_primary_count",
+            "UNRESOLVED_COUNT_NONZERO": "unresolved_count",
+            "CANDIDATE_SET_COUNT_NONZERO": "candidate_set_count",
+            "MISSING_TYPED_ID": "missing_typed_id_count",
+            "MISSING_VISIBILITY_PROOF": (
+                "missing_visibility_proof_count"
+            ),
+            "RUNTIME_RELOOKUP_RESIDUE": "runtime_relookup_count",
+        }.get(reason)
+        if reason_counter is not None:
+            counters[reason_counter] = 1
+        return {"seal_status": status, "counters": counters}
+
+    def make_success_reference(
+        suffix: str,
+        namespace: str,
+        identity: str,
+        *,
+        callable_deferred: bool = False,
+    ) -> dict[str, Any]:
+        result: dict[str, Any]
+        if callable_deferred:
+            result = {
+                "kind": "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR",
+                "analysis_hir_overload_set_ref": (
+                    f"ResolvedOverloadSetRef:{suffix}"
+                ),
+                "canonical_hir_projection": False,
+                "winner_selected": False,
+            }
+        else:
+            result = {
+                "kind": "RESOLVED_NONCALL_REFERENCE",
+                "resolved_identity": identity,
+                "selected_count": 1,
+                "rejection_reason_or_null": None,
+            }
+        return {
+            "source_origin_id": f"SourceOriginId:{suffix}",
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": namespace,
+            "source_spelling": suffix,
+            "candidate_origin_ids": [identity],
+            "visibility_proof_ids": (
+                [] if callable_deferred
+                else [f"VisibilityProofId:{suffix}"]
+            ),
+            "activation_origin_id_or_null": None,
+            "evidence_origin_id_or_null": None,
+            "import_binding_id_or_null": None,
+            "stages": make_stages(),
+            "result": result,
+            "source_span": {"start": 0, "end": len(suffix)},
+        }
+
+    successful_references = [
+        make_success_reference(
+            "a-module", "MODULE", "ModuleId:root.lib"
+        ),
+        make_success_reference("b-type", "TYPE", "DeclId:Widget"),
+        make_success_reference("c-value-decl", "VALUE", "DeclId:value"),
+        make_success_reference(
+            "d-value-local", "VALUE", "HirLocalId:body.local"
+        ),
+        make_success_reference(
+            "e-callable",
+            "CALLABLE_OVERLOAD_SET",
+            "DeclId:callable",
+            callable_deferred=True,
+        ),
+    ]
+    trace: dict[str, Any] = {
+        "schema": "deeplus.resolver-trace/r1",
+        "resolver_graph_sha256": resolver_graph_full[
+            "resolver_graph_sha256"
+        ],
+        "references": successful_references,
+        "diagnostic_order": (
+            "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_"
+            "LOWEST_SOURCE_ORIGIN_ID"
+        ),
+        "diagnostic_selection": {
+            "winner_source_origin_id_or_null": None,
+            "winner_rejection_reason_or_null": None,
+            "suppressed_source_origin_ids": [],
+        },
+        "seal": make_seal("SEALED"),
+        "trace_sha256": zero,
+    }
+    reseal(trace, "trace_sha256")
+
+    rejected_traces: list[dict[str, Any]] = []
+    for failed_index, (_, _, reasons) in enumerate(R4_NRM_PRECEDENCE):
+        reason = reasons[0]
+        candidate_ids = (
+            [] if failed_index <= 4 else ["DeclId:rejected"]
+        )
+        proof_ids = (
+            [] if failed_index <= 5
+            else ["VisibilityProofId:rejected"]
+        )
+        reference = {
+            "source_origin_id": (
+                f"SourceOriginId:rejected-stage-{failed_index + 1}"
+            ),
+            "resolver_scope_id": "ResolverScopeId:package-root",
+            "namespace": "VALUE",
+            "source_spelling": "rejected",
+            "candidate_origin_ids": candidate_ids,
+            "visibility_proof_ids": proof_ids,
+            "activation_origin_id_or_null": None,
+            "evidence_origin_id_or_null": None,
+            "import_binding_id_or_null": None,
+            "stages": make_stages(failed_index),
+            "result": {
+                "kind": "REJECTED",
+                "resolved_ref_or_null": None,
+                "selected_count": 0,
+                "rejection_reason": reason,
+            },
+            "source_span": {"start": 0, "end": 8},
+        }
+        if failed_index < 7:
+            seal_status = "NOT_EVALUATED"
+        elif failed_index == 7:
+            seal_status = "REJECTED_AT_HIR_SEAL"
+        else:
+            seal_status = "SEALED"
+        rejected_value = {
+            "schema": "deeplus.resolver-trace/r1",
+            "resolver_graph_sha256": resolver_graph_full[
+                "resolver_graph_sha256"
+            ],
+            "references": [reference],
+            "diagnostic_order": trace["diagnostic_order"],
+            "diagnostic_selection": {
+                "winner_source_origin_id_or_null": (
+                    reference["source_origin_id"]
+                ),
+                "winner_rejection_reason_or_null": reason,
+                "suppressed_source_origin_ids": [],
+            },
+            "seal": make_seal(seal_status, reason),
+            "trace_sha256": zero,
+        }
+        reseal(rejected_value, "trace_sha256")
+        rejected_traces.append(rejected_value)
+    rejected_trace = rejected_traces[2]
+    deferred_trace = {
+        **trace,
+        "references": [
+            json.loads(json.dumps(successful_references[-1]))
+        ],
+    }
+    reseal(deferred_trace, "trace_sha256")
+    trace_swap = json.loads(json.dumps(trace))
+    trace_swap["references"][0]["stages"][0]["predicate"] = (
+        "ModuleInterfaceDigestVerified"
+    )
+    trace_after_fail = json.loads(json.dumps(rejected_trace))
+    trace_after_fail["references"][0]["stages"][3]["status"] = "PASS"
+    malformed_accepted = json.loads(json.dumps(trace))
+    malformed_accepted["references"][0]["result"]["selected_count"] = 0
+    malformed_rejected = json.loads(json.dumps(rejected_trace))
+    del malformed_rejected["references"][0]["result"]["selected_count"]
+    boolean_seal = json.loads(json.dumps(trace))
+    boolean_seal["seal"]["counters"]["unresolved_count"] = False
+    wrong_rejection_stage = json.loads(json.dumps(rejected_trace))
+    wrong_rejection_stage["references"][0]["result"][
+        "rejection_reason"
+    ] = "PACKAGE_CYCLE"
+    wrong_diagnostic_order = json.loads(json.dumps(trace))
+    wrong_diagnostic_order["diagnostic_order"] = "SOURCE_ORDER"
+    wrong_diagnostic_selection = json.loads(json.dumps(rejected_trace))
+    wrong_diagnostic_selection["diagnostic_selection"][
+        "winner_rejection_reason_or_null"
+    ] = "PACKAGE_CYCLE"
+    missing_reference_field = json.loads(json.dumps(trace))
+    del missing_reference_field["references"][0]["source_origin_id"]
+    activated_deferred_winner = json.loads(json.dumps(deferred_trace))
+    activated_deferred_winner["references"][0]["result"][
+        "winner_selected"
+    ] = True
+    wrong_accepted_domain = json.loads(json.dumps(trace))
+    wrong_accepted_domain["references"][0]["result"][
+        "resolved_identity"
+    ] = "DeclId:not-a-module"
+    wrong_deferred_domain = json.loads(json.dumps(deferred_trace))
+    wrong_deferred_domain["references"][0]["result"][
+        "analysis_hir_overload_set_ref"
+    ] = "OverloadSetRef:not-canonical"
+    wrong_optional_origin_domain = json.loads(json.dumps(trace))
+    wrong_optional_origin_domain["references"][0][
+        "activation_origin_id_or_null"
+    ] = "ModuleId:not-an-activation-origin"
+    empty_accepted_candidates = json.loads(json.dumps(trace))
+    empty_accepted_candidates["references"][0]["candidate_origin_ids"] = []
+    empty_accepted_proofs = json.loads(json.dumps(trace))
+    empty_accepted_proofs["references"][0]["visibility_proof_ids"] = []
+    unbound_import_candidate = json.loads(json.dumps(trace))
+    unbound_import_candidate["references"][0][
+        "import_binding_id_or_null"
+    ] = "ImportBindingId:value"
+    unsorted_references = json.loads(json.dumps(trace))
+    unsorted_references["references"][0], unsorted_references[
+        "references"
+    ][1] = (
+        unsorted_references["references"][1],
+        unsorted_references["references"][0],
+    )
+    reseal(unsorted_references, "trace_sha256")
+    unsorted_candidates = json.loads(json.dumps(deferred_trace))
+    unsorted_candidates["references"][0]["candidate_origin_ids"] = [
+        "DeclId:z",
+        "DeclId:a",
+    ]
+    wrong_seal_counter_binding = json.loads(
+        json.dumps(rejected_traces[7])
+    )
+    wrong_seal_counter_binding["seal"]["counters"][
+        "unbound_primary_count"
+    ] = 0
+    trace_unknown_field = json.loads(json.dumps(trace))
+    trace_unknown_field["not_in_schema"] = True
+    reseal(trace_unknown_field, "trace_sha256")
+    trace_unknown_nested = json.loads(json.dumps(trace))
+    trace_unknown_nested["references"][0]["not_in_schema"] = True
+    reseal(trace_unknown_nested, "trace_sha256")
+    trace_digest_flip = json.loads(json.dumps(trace))
+    trace_digest_flip["trace_sha256"] = "f" * 64
+    trace_lone_surrogate = json.loads(json.dumps(trace))
+    trace_lone_surrogate["references"][0][
+        "source_spelling"
+    ] = "\ud800"
+    trace_mutants = [
+        ("RESOLVER_TRACE_SCHEMA_SHAPE", trace_unknown_field),
+        ("RESOLVER_TRACE_SCHEMA_SHAPE", trace_unknown_nested),
+        ("RESOLVER_TRACE_DIGEST", trace_digest_flip),
+        ("CANONICAL_JSON_NON_UNICODE_SCALAR", trace_lone_surrogate),
+        ("STAGE_SEQUENCE", trace_swap),
+        ("FAILURE_ORDER", trace_after_fail),
+        ("ACCEPTED_RESULT", malformed_accepted),
+        ("REJECTED_RESULT", malformed_rejected),
+        ("HIR_SEAL", boolean_seal),
+        ("REJECTION_REASON_STAGE", wrong_rejection_stage),
+        ("DIAGNOSTIC_ORDER", wrong_diagnostic_order),
+        ("DIAGNOSTIC_SELECTION", wrong_diagnostic_selection),
+        ("REFERENCE_SHAPE", missing_reference_field),
+        ("ACCEPTED_RESULT", activated_deferred_winner),
+        ("ACCEPTED_RESULT", wrong_accepted_domain),
+        ("ACCEPTED_RESULT", wrong_deferred_domain),
+        ("REFERENCE_DOMAIN", wrong_optional_origin_domain),
+        ("ACCEPTED_CANDIDATE_EVIDENCE", empty_accepted_candidates),
+        ("ACCEPTED_CANDIDATE_EVIDENCE", empty_accepted_proofs),
+        ("REFERENCE_ORIGIN_LINKAGE", unbound_import_candidate),
+        ("REFERENCE_ORDER", unsorted_references),
+        ("REFERENCE_DOMAIN", unsorted_candidates),
+        ("HIR_SEAL_COUNTER_BINDING", wrong_seal_counter_binding),
+    ]
+    trace_pass = all(
+        not r4_resolver_trace_failure_codes(value)
+        for value in [trace, deferred_trace, *rejected_traces]
+    )
+    trace_mutants_pass = all(
+        expected in r4_resolver_trace_failure_codes(mutant)
+        for expected, mutant in trace_mutants
+    )
+    return [
+        (
+            source_role_pass and source_role_mutants_pass,
+            "R4_NRM_SOURCE_ROLE_CARRIER_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={source_role_pass} "
+                f"mutants={len(source_role_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            package_pass
+            and package_mutants_pass
+            and iterative_graph_pass
+            and canonical_unicode_vector_pass
+            and canonical_invalid_domain_pass,
+            "R4_NRM_GRAPH_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={package_pass} "
+                f"mutants={len(package_mutants)} "
+                f"iterative_deep_dag={iterative_graph_pass} "
+                f"canonical_unicode={canonical_unicode_vector_pass} "
+                f"canonical_invalid_domain={canonical_invalid_domain_pass} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            initialization_pass and initialization_mutants_pass,
+            "R4_NRM_INITIALIZATION_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={initialization_pass} "
+                f"mutants={len(initialization_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            receipt_pass and receipt_mutants_pass,
+            "R4_NRM_DEPENDENCY_RECEIPT_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={receipt_pass} "
+                f"mutants={len(receipt_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            visibility_pass and visibility_mutants_pass,
+            "R4_NRM_VISIBILITY_CLOSURE_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={visibility_pass} "
+                f"mutants={len(visibility_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            module_artifact_pass
+            and module_artifact_mutants_pass
+            and module_artifact_private_change_pass,
+            "R4_NRM_MODULE_ARTIFACT_RELATIONAL_SELF_TEST",
+            (
+                f"baseline={module_artifact_pass} "
+                "mutants=6 "
+                f"private_change_matrix={module_artifact_private_change_pass} "
+                "hash_domains=interface,implementation,compilation "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            resolver_pass and resolver_mutants_pass,
+            "R4_NRM_RESOLVER_VALIDATOR_SELF_TEST",
+            (
+                f"baseline={resolver_pass} "
+                f"mutants={len(resolver_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            trace_pass and trace_mutants_pass,
+            "R4_NRM_TRACE_VALIDATOR_SELF_TEST",
+            (
+                f"baselines={11 if trace_pass else 0}/11 "
+                f"mutants={len(trace_mutants)} "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+        (
+            True,
+            "R4_NRM_MECHANICAL_EVIDENCE_BOUNDARY",
+            (
+                "scope=SYNTHETIC_HELPER_SELF_TEST "
+                "repository_instance_execution=NOT_RUN "
+                "evidence=E2 product=15/15_NOT_RUN"
+            ),
+        ),
+    ]
+
+
+def r4_nrm_integrated_contract_results(
+    root: Path,
+) -> list[tuple[bool, str, str]]:
+    """Validate R4 integrated oracles and mechanical schema closure."""
+
+    results: list[tuple[bool, str, str]] = []
+    documents: dict[str, dict[str, Any]] = {}
+
+    def record(condition: bool, code: str, detail: str) -> None:
+        results.append((bool(condition), code, detail))
+
+    for relative in R4_NRM_INTEGRATED_PATHS:
+        try:
+            value = json.loads((root / relative).read_text(encoding="utf-8"))
+            if not isinstance(value, dict):
+                raise ValueError("expected a JSON object")
+            documents[relative] = value
+            record(True, "R4_NRM_INTEGRATED_JSON", relative)
+        except Exception as exc:  # noqa: BLE001
+            documents[relative] = {}
+            record(False, "R4_NRM_INTEGRATED_JSON", f"{relative}: {exc}")
+
+    contract = documents[
+        "spec/contracts/name-resolution-modules-current.json"
+    ]
+    fixture = documents[
+        "tests/fixtures/current/name-resolution-modules-current-r1.json"
+    ]
+    fixture_schema = documents[
+        "schemas/language/name-resolution-modules-current-fixtures.schema.json"
+    ]
+
+    open_feature_p1 = contract.get("open_feature_p1", {})
+    observed_open_p1 = [
+        item
+        for key in (
+            "class",
+            "enumeration",
+            "trait_conformance",
+            "static_first_dynamic",
+        )
+        for item in open_feature_p1.get(key, [])
+    ]
+    record(
+        contract.get("semantic_p0") == 0
+        and open_feature_p1.get("total") == 22
+        and observed_open_p1
+        == SUCCESSOR_ACTION_IDS[len(EXPECTED_ACTION_IDS):]
+        and contract.get("product_lanes") == "15/15_NOT_RUN"
+        and contract.get("source_activation") == "none"
+        and contract.get("current_binding") is False,
+        "R4_NRM_STATE_FENCE",
+        (
+            f"semantic_p0={contract.get('semantic_p0')} "
+            f"open_p1={open_feature_p1.get('total')} "
+            f"product={contract.get('product_lanes')}"
+        ),
+    )
+
+    graph_families = contract.get("graph_families", {})
+    module_header = graph_families.get("module_header_import", {})
+    static_graph = graph_families.get(
+        "static_binding_value_dependency", {}
+    )
+    record(
+        graph_families.get("package_dependency")
+        == {
+            "profile": "ACYCLIC",
+            "self_loop": "REJECT",
+            "nontrivial_scc": "REJECT",
+        }
+        and module_header.get("profile")
+        == "HEADER_ONLY_SCC_ALLOWED_AFTER_COMPLETE_HEADER_COLLECTION"
+        and module_header.get("admitted_scc_edges")
+        == [
+            "module_header_reference",
+            "type_declaration_reference",
+            "signature_reference",
+        ]
+        and module_header.get("forbidden_scc_edges")
+        == [
+            "static_value_dependency",
+            "runtime_initializer_dependency",
+            "reexport_dependency",
+        ]
+        and module_header.get("semantic_order_winner") is False
+        and graph_families.get("reexport")
+        == {
+            "profile": "ACYCLIC",
+            "self_loop": "REJECT",
+            "nontrivial_scc": "REJECT",
+        }
+        and static_graph.get("profile")
+        == "ACYCLIC_COMPILE_TIME_EVALUATION_ZERO_RUNTIME_INIT"
+        and static_graph.get("self_loop") == "REJECT"
+        and static_graph.get("nontrivial_scc") == "REJECT"
+        and static_graph.get("commit")
+        == "ONE_ATOMIC_COMMIT_AFTER_ALL_VALUES_SUCCEED"
+        and static_graph.get("runtime_initializer_count") == 0
+        and static_graph.get("semantic_order_winner") is False,
+        "R4_NRM_GRAPH_CONTRACT",
+        f"families={sorted(graph_families)}",
+    )
+    initialization_schema = documents[
+        "schemas/language/module-initialization-plan.schema.json"
+    ]
+    initialization_binding_schema = (
+        initialization_schema.get("$defs", {}).get("binding", {})
+    )
+    initialization_binding_properties = (
+        initialization_binding_schema.get("properties", {})
+    )
+    record(
+        set(initialization_binding_schema.get("required", []))
+        == {
+            "binding_decl_id",
+            "dependency_decl_ids",
+            "value_sha256",
+            "evaluation_status",
+        }
+        and initialization_binding_properties.get(
+            "binding_decl_id", {}
+        ).get("$ref")
+        == "#/$defs/declId"
+        and initialization_binding_properties.get(
+            "dependency_decl_ids", {}
+        ).get("items", {}).get("$ref")
+        == "#/$defs/declId"
+        and initialization_schema.get("properties", {})
+        .get("evaluation_order", {})
+        .get("const")
+        == "TOPOLOGICAL_THEN_CANONICAL_DECL_ID"
+        and initialization_schema.get("properties", {})
+        .get("receipt_order", {})
+        .get("const")
+        == "CANONICAL_DECL_ID_ORDER"
+        and static_graph.get("receipt_order")
+        == "CANONICAL_DECL_ID_ORDER",
+        "R4_NRM_INITIALIZATION_SCHEMA_CLOSURE",
+        (
+            "identity=DeclId order=CANONICAL_DECL_ID_ORDER "
+            "product=15/15_NOT_RUN"
+        ),
+    )
+
+    lexical = contract.get("lexical_resolution", {})
+    environments = contract.get("environment_separation", {})
+    record(
+        lexical.get("lookup_order")
+        == "INNERMOST_NAME_ENV_TO_OUTERMOST_NAME_ENV"
+        and lexical.get("stop_rule")
+        == "STOP_AT_FIRST_NONEMPTY_FRAME_FOR_EXACT_NAMESPACE_AND_SPELLING"
+        and lexical.get("same_frame_declaration_order_priority") is False
+        and lexical.get("cross_frame_overload_merge") is False
+        and lexical.get("match_probe")
+        == "PROVISIONAL_BINDINGS_NEVER_ENTER_NAME_ENV"
+        and lexical.get("match_commit") == "CREATE_FRESH_HIR_LOCAL_IDS"
+        and lexical.get("failed_pattern") == "NO_COMMITTED_BINDING"
+        and environments.get("cross_environment_creation_count") == 0
+        and environments.get(
+            "nested_use_order_or_depth_is_extension_winner"
+        )
+        is False,
+        "R4_NRM_RESOLVER_CONTRACT",
+        (
+            f"lookup={lexical.get('lookup_order')} "
+            f"cross_env={environments.get('cross_environment_creation_count')}"
+        ),
+    )
+
+    oracles = contract.get("acceptance_oracles", [])
+    oracle_ids = [
+        row.get("test_id") for row in oracles if isinstance(row, dict)
+    ]
+    record(
+        len(oracles) == 36
+        and oracle_ids == list(R4_NRM_ACCEPTANCE_TEST_IDS)
+        and len(set(oracle_ids)) == 36,
+        "R4_NRM_ACCEPTANCE_TEST_IDS",
+        f"count={len(oracles)} ids={oracle_ids}",
+    )
+    record(
+        canonical_sha(oracles) == R4_NRM_ACCEPTANCE_ORACLE_SHA256,
+        "R4_NRM_ACCEPTANCE_ORACLE_IDENTITY",
+        f"sha256={canonical_sha(oracles)}",
+    )
+
+    cases = fixture.get("cases", [])
+    case_ids = [
+        row.get("acceptance_test_id")
+        for row in cases
+        if isinstance(row, dict)
+    ]
+    record(
+        len(cases) == 36
+        and case_ids == list(R4_NRM_ACCEPTANCE_TEST_IDS)
+        and len(set(case_ids)) == 36,
+        "R4_NRM_INTEGRATED_CASE_COUNT",
+        f"count={len(cases)} ids={len(set(case_ids))}",
+    )
+    expected_gap_kind = [
+        (
+            gap_id,
+            kind,
+        )
+        for gap_id in R4_NRM_GAP_IDS
+        for kind in ("positive", "boundary", "negative")
+    ]
+    observed_gap_kind = [
+        (row.get("gap_id"), row.get("kind"))
+        for row in cases
+        if isinstance(row, dict)
+    ]
+    record(
+        observed_gap_kind == expected_gap_kind
+        and len(set(observed_gap_kind)) == 36,
+        "R4_NRM_GAP_KIND_COVERAGE",
+        f"rows={len(observed_gap_kind)}",
+    )
+
+    oracle_binding = len(oracles) == len(cases) == 36
+    artifact_refs_closed = True
+    invariant_zero = True
+    for oracle, case in zip(oracles, cases):
+        if not isinstance(oracle, dict) or not isinstance(case, dict):
+            oracle_binding = False
+            continue
+        expected = case.get("expected", {})
+        case_input = case.get("input", {})
+        oracle_binding = oracle_binding and (
+            case.get("acceptance_test_id") == oracle.get("test_id")
+            and [case.get("gap_id")] == oracle.get("gap_ids")
+            and case.get("kind") == oracle.get("test_class")
+            and case.get("scenario") == oracle.get("scenario")
+            and case_input.get("description") == oracle.get("scenario")
+            and expected.get("outcome")
+            == oracle.get("expected_outcome")
+            and expected.get("primary_diagnostic_or_null")
+            == oracle.get("primary_diagnostic_or_null")
+            and expected.get("primary_reason_or_null")
+            == oracle.get("primary_reason_or_null")
+            and expected.get("suppressed_diagnostics")
+            == oracle.get("suppressed_diagnostics")
+        )
+        references = case_input.get("artifact_refs", [])
+        expected_references = R4_NRM_ACCEPTANCE_ARTIFACT_REFS.get(
+            (case.get("gap_id"), case.get("kind"))
+        )
+        artifact_refs_closed = artifact_refs_closed and (
+            isinstance(references, list)
+            and bool(references)
+            and len(references) == len(set(references))
+            and tuple(references) == expected_references
+            and all(
+                isinstance(relative, str)
+                and not relative.startswith(("candidate/", "/"))
+                and (root / relative).is_file()
+                for relative in references
+            )
+        )
+        invariants = expected.get("invariants", {})
+        invariant_zero = invariant_zero and (
+            isinstance(invariants, dict)
+            and invariants
+            and set(invariants.values()) == {0}
+        )
+    record(
+        oracle_binding,
+        "R4_NRM_ACCEPTANCE_ORACLE_BINDING",
+        (
+            f"statically_bound={len(oracles)}/36 "
+            f"cases={len(cases)}/36 executed=0/36"
+        ),
+    )
+    record(
+        artifact_refs_closed,
+        "R4_NRM_ORACLE_ARTIFACT_REFS",
+        f"cases={len(cases)}",
+    )
+    record(
+        invariant_zero,
+        "R4_NRM_INVARIANT_ZERO",
+        f"cases={len(cases)}",
+    )
+    record(
+        fixture.get("semantic_p0") == 0
+        and fixture.get("open_feature_p1") == 22
+        and fixture.get("product_lanes") == "15/15_NOT_RUN",
+        "R4_NRM_INTEGRATED_PRODUCT_NOT_RUN",
+        (
+            f"p0={fixture.get('semantic_p0')} "
+            f"p1={fixture.get('open_feature_p1')} "
+            f"product={fixture.get('product_lanes')}"
+        ),
+    )
+
+    case_array_schema = (
+        fixture_schema.get("properties", {}).get("cases", {})
+    )
+    case_id_schema = (
+        fixture_schema.get("$defs", {})
+        .get("case", {})
+        .get("properties", {})
+        .get("acceptance_test_id", {})
+    )
+    record(
+        case_array_schema.get("minItems") == 36
+        and case_array_schema.get("maxItems") == 36
+        and case_id_schema.get("enum")
+        == list(R4_NRM_ACCEPTANCE_TEST_IDS),
+        "R4_NRM_INTEGRATED_SCHEMA_CARDINALITY",
+        (
+            f"min={case_array_schema.get('minItems')} "
+            f"max={case_array_schema.get('maxItems')}"
+        ),
+    )
+
+    domain_schema_paths = (
+        "schemas/language/package-module-source-graph.schema.json",
+        "schemas/language/module-compilation-dependency-receipt.schema.json",
+        "schemas/language/module-initialization-plan.schema.json",
+        "schemas/language/module-visibility-closure.schema.json",
+        "schemas/language/resolver-graph.schema.json",
+        "schemas/language/resolver-trace.schema.json",
+    )
+    generic_typed_id_pattern = r"^[A-Za-z][A-Za-z0-9]*:[^\s]+$"
+    generic_typed_id_uses = {
+        relative: scalar_occurrences(
+            documents[relative], generic_typed_id_pattern
+        )
+        for relative in domain_schema_paths
+    }
+    record(
+        all(count == 0 for count in generic_typed_id_uses.values())
+        and all(
+            "typedId" not in documents[relative].get("$defs", {})
+            for relative in domain_schema_paths
+        ),
+        "R4_NRM_TYPED_ID_DOMAINS",
+        f"generic_uses={generic_typed_id_uses}",
+    )
+
+    package_schema = documents[
+        "schemas/language/package-module-source-graph.schema.json"
+    ]
+    package_properties = package_schema.get("properties", {})
+    record(
+        all(
+            package_properties.get(name, {}).get("minItems") == 1
+            for name in ("packages", "targets", "source_contributions")
+        )
+        and set(package_schema.get("$defs", {}))
+        >= {
+            "packageId",
+            "targetId",
+            "sourceFileId",
+            "moduleId",
+            "dependencyBindingId",
+            "sourceOriginId",
+        },
+        "R4_NRM_GRAPH_SCHEMA_CLOSURE",
+        (
+            "required nonempty owner sets and domain-specific "
+            "identity definitions"
+        ),
+    )
+
+    resolver_trace_schema = documents[
+        "schemas/language/resolver-trace.schema.json"
+    ]
+    stage_array = (
+        resolver_trace_schema.get("$defs", {})
+        .get("referenceTrace", {})
+        .get("properties", {})
+        .get("stages", {})
+    )
+    prefix_items = stage_array.get("prefixItems", [])
+    observed_stage_ordinals = [
+        nested_property_consts(item, "ordinal")
+        for item in prefix_items
+    ]
+    observed_stage_predicates = [
+        nested_property_consts(item, "predicate")
+        for item in prefix_items
+    ]
+    record(
+        stage_array.get("minItems") == 9
+        and stage_array.get("maxItems") == 9
+        and stage_array.get("items") is False
+        and observed_stage_ordinals == [[index] for index in range(1, 10)]
+        and observed_stage_predicates
+        == [[predicate] for predicate in R4_NRM_STAGE_SEQUENCE],
+        "R4_NRM_TRACE_STAGE_SCHEMA",
+        (
+            f"items={len(prefix_items)} "
+            f"ordinals={observed_stage_ordinals}"
+        ),
+    )
+
+    module_api_schema = documents[
+        "schemas/language/module-api-digest.schema.json"
+    ]
+    module_api_profile = (
+        module_api_schema.get("properties", {}).get("interface_profile", {})
+    )
+    r4_envelope_required = any(
+        "r4_interface_envelope"
+        in clause.get("then", {}).get("required", [])
+        and "R4_NAME_RESOLUTION_MODULES"
+        in nested_property_consts(clause.get("if", {}), "interface_profile")
+        for clause in module_api_schema.get("allOf", [])
+        if isinstance(clause, dict)
+    )
+    r4_envelope_forbidden_else = any(
+        "r4_interface_envelope"
+        in clause.get("else", {}).get("not", {}).get("required", [])
+        and "R4_NAME_RESOLUTION_MODULES"
+        in nested_property_consts(clause.get("if", {}), "interface_profile")
+        for clause in module_api_schema.get("allOf", [])
+        if isinstance(clause, dict)
+    )
+    r4_module_id_pattern = next(
+        (
+            clause.get("then", {})
+            .get("properties", {})
+            .get("module_id", {})
+            .get("pattern")
+            for clause in module_api_schema.get("allOf", [])
+            if isinstance(clause, dict)
+            and "R4_NAME_RESOLUTION_MODULES"
+            in nested_property_consts(
+                clause.get("if", {}), "interface_profile"
+            )
+        ),
+        None,
+    )
+    r4_envelope_schema = (
+        module_api_schema.get("$defs", {})
+        .get("r4ModuleInterfaceEnvelope", {})
+    )
+    r4_envelope_fields = set(r4_envelope_schema.get("required", []))
+    r4_export_schema = (
+        module_api_schema.get("$defs", {}).get("r4PublicExportRow", {})
+    )
+    r4_export_properties = r4_export_schema.get("properties", {})
+    r4_export_target_pattern = r4_export_properties.get(
+        "referenced_identity_id", {}
+    ).get("pattern")
+    r4_export_namespace_domain = r4_export_properties.get(
+        "namespace", {}
+    ).get("enum")
+    r4_export_module_target_pattern = None
+    r4_export_decl_target_pattern = None
+    for clause in r4_export_schema.get("allOf", []):
+        if (
+            nested_property_consts(clause.get("if", {}), "namespace")
+            == ["MODULE"]
+        ):
+            r4_export_module_target_pattern = (
+                clause.get("then", {})
+                .get("properties", {})
+                .get("referenced_identity_id", {})
+                .get("pattern")
+            )
+            r4_export_decl_target_pattern = (
+                clause.get("else", {})
+                .get("properties", {})
+                .get("referenced_identity_id", {})
+                .get("pattern")
+            )
+    receipt_schema = documents[
+        "schemas/language/module-compilation-dependency-receipt.schema.json"
+    ]
+    provider_resolver_schema = documents[
+        "schemas/language/resolver-graph.schema.json"
+    ]
+    required_interface = (
+        receipt_schema.get("$defs", {}).get("requiredInterface", {})
+    )
+    required_interface_fields = set(required_interface.get("required", []))
+    required_profile_consts = nested_property_consts(
+        required_interface, "interface_profile"
+    )
+    resolver_import_provider_fields = set(
+        provider_resolver_schema.get("$defs", {})
+        .get("importBinding", {})
+        .get("required", [])
+    )
+    resolver_activation_provider_fields = set(
+        provider_resolver_schema.get("$defs", {})
+        .get("activationEntry", {})
+        .get("required", [])
+    )
+    receipt_import_provider_fields = set(
+        receipt_schema.get("$defs", {})
+        .get("importBinding", {})
+        .get("required", [])
+    )
+    receipt_activation_provider_fields = set(
+        receipt_schema.get("$defs", {})
+        .get("activationBinding", {})
+        .get("required", [])
+    )
+    resolver_provider_contract = provider_resolver_schema.get(
+        "x-deeplus-provider-provenance-contract", {}
+    )
+    receipt_provider_contract = receipt_schema.get(
+        "x-deeplus-provider-provenance-contract", {}
+    )
+    record(
+        set(module_api_profile.get("enum", []))
+        >= {"LEGACY_R51F3", "R4_NAME_RESOLUTION_MODULES"}
+        and r4_envelope_required
+        and r4_module_id_pattern == "^ModuleId:[^\\s]+$"
+        and r4_envelope_fields
+        == {
+            "activation_profile",
+            "public_export_rows",
+            "public_activation_reexport_rows",
+            "opaque_facade_rows",
+            "signature_relation",
+            "opaque_facade_relation",
+            "symbols_are_exact_effective_public_residue",
+            "private_body_bytes_in_interface_hash",
+        }
+        and {
+            "provider_binding_id_or_self",
+            "provider_module_id",
+            "interface_profile",
+            "interface_sha256",
+        }
+        == required_interface_fields
+        and required_profile_consts == ["R4_NAME_RESOLUTION_MODULES"],
+        "R4_NRM_INTERFACE_ENVELOPE",
+        (
+            f"profile={module_api_profile.get('enum')} "
+            f"module_id={r4_module_id_pattern} "
+            f"envelope_required={sorted(r4_envelope_fields)} "
+            f"receipt_required={sorted(required_interface_fields)}"
+        ),
+    )
+    record(
+        r4_envelope_forbidden_else,
+        "R4_NRM_INTERFACE_PROFILE_EXCLUSIVITY",
+        (
+            "R4 requires the envelope; legacy or absent profile "
+            "forbids it"
+        ),
+    )
+    record(
+        module_api_profile.get("enum")
+        == ["LEGACY_R51F3", "R4_NAME_RESOLUTION_MODULES"],
+        "R4_NRM_INTERFACE_PROFILE_DOMAIN",
+        f"profile={module_api_profile.get('enum')}",
+    )
+    provider_fields = {
+        "provider_binding_id_or_self",
+        "provider_module_id",
+    }
+    record(
+        provider_fields <= resolver_import_provider_fields
+        and provider_fields <= resolver_activation_provider_fields
+        and provider_fields <= receipt_import_provider_fields
+        and provider_fields <= receipt_activation_provider_fields
+        and resolver_provider_contract.get("self_meaning")
+        == "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE"
+        and receipt_provider_contract.get("self_meaning")
+        == "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE"
+        and receipt_provider_contract.get(
+            "required_interface_relation"
+        )
+        == "EXACT_SET_NO_MISSING_OR_EXTRA_PAIR"
+        and receipt_provider_contract.get(
+            "required_interface_exclusion"
+        )
+        == "ONLY_PROVIDER_MODULE_ID_EQUAL_TO_CONSUMER_MODULE_ID",
+        "R4_NRM_PROVIDER_PROVENANCE_CONTRACT",
+        (
+            "resolver/receipt import+activation provider pair required; "
+            "self=same-package; exact external module interface set"
+        ),
+    )
+    record(
+        r4_export_namespace_domain
+        == ["MODULE", "TYPE", "VALUE", "CALLABLE_OVERLOAD_SET"]
+        and r4_export_target_pattern == "^(?:ModuleId|DeclId):[^\\s]+$"
+        and r4_export_module_target_pattern == "^ModuleId:[^\\s]+$"
+        and r4_export_decl_target_pattern == "^DeclId:[^\\s]+$",
+        "R4_NRM_EXPORT_ID_DOMAINS",
+        (
+            f"namespaces={r4_export_namespace_domain} "
+            f"target={r4_export_target_pattern} "
+            f"module={r4_export_module_target_pattern} "
+            f"declaration={r4_export_decl_target_pattern}"
+        ),
+    )
+
+    r4_interface_contract = module_api_schema.get(
+        "x-deeplus-r4-module-interface-contract", {}
+    )
+    excluded_interface_inputs = set(
+        r4_interface_contract.get("excluded_identity_inputs", [])
+    )
+    module_implementation_schema = documents[
+        "schemas/language/module-implementation-digest.schema.json"
+    ]
+    module_source_projection_schema = documents[
+        "schemas/language/module-source-contribution-projection.schema.json"
+    ]
+    module_compilation_schema = documents[
+        "schemas/language/module-compilation-receipt.schema.json"
+    ]
+    implementation_required = set(
+        module_implementation_schema.get("required", [])
+    )
+    source_projection_required = set(
+        module_source_projection_schema.get("required", [])
+    )
+    compilation_required = set(
+        module_compilation_schema.get("required", [])
+    )
+    compilation_bindings = module_compilation_schema.get(
+        "x-deeplus-artifact-bindings", {}
+    )
+    canonical_algorithm_ids = {
+        module_api_schema.get(
+            "x-deeplus-canonical-byte-algorithm", {}
+        ).get("algorithm_id"),
+        receipt_schema.get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("algorithm"),
+        module_implementation_schema.get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("algorithm"),
+        module_source_projection_schema.get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("algorithm"),
+        module_compilation_schema.get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("algorithm"),
+        documents[
+            "schemas/language/module-initialization-plan.schema.json"
+        ].get("x-deeplus-digest-canonicalization", {}).get("algorithm"),
+        documents[
+            "schemas/language/module-visibility-closure.schema.json"
+        ].get("x-deeplus-digest-canonicalization", {}).get("algorithm"),
+        documents[
+            "schemas/language/package-module-source-graph.schema.json"
+        ].get("x-deeplus-digest-canonicalization", {}).get("algorithm"),
+        documents[
+            "schemas/language/resolver-graph.schema.json"
+        ].get("x-deeplus-digest-canonicalization", {}).get("algorithm"),
+        documents[
+            "schemas/language/resolver-trace.schema.json"
+        ].get("x-deeplus-digest-canonicalization", {}).get("algorithm"),
+    }
+    canonical_self_hash_fields = {
+        path: documents[path].get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("self_hash_field_excluded")
+        for path in (
+            "schemas/language/package-module-source-graph.schema.json",
+            "schemas/language/resolver-graph.schema.json",
+            "schemas/language/resolver-trace.schema.json",
+        )
+    }
+    canonical_array_order_declarations = {
+        path: documents[path].get(
+            "x-deeplus-digest-canonicalization", {}
+        ).get("array_order", {})
+        for path in canonical_self_hash_fields
+    }
+    record(
+        {
+            "SourceFileId",
+            "source_path",
+            "SourceOriginId",
+            "ActivationOriginId",
+            "VisibilityProofId",
+            "visibility_closure_sha256",
+            "dependency_receipt_sha256",
+            "private_hir_or_body_bytes",
+            "debug_spans",
+        }
+        <= excluded_interface_inputs
+        and r4_interface_contract.get("interface_sha256")
+        == "TOP_LEVEL_CANONICAL_SHA256"
+        and r4_interface_contract.get("semantic_comparison")
+        == (
+            "EXACT_PUBLIC_SEMANTIC_RESIDUE_EXCLUDING_PROVENANCE_BUILD_"
+            "AND_PRIVATE_IMPLEMENTATION"
+        )
+        and {
+            "schema",
+            "interface_profile",
+            "target_id",
+            "target_kind",
+            "module_id",
+            "interface_sha256",
+            "hir_semantic_sha256",
+            "external_compatibility_identity",
+            "implementation_sha256",
+        }
+        == implementation_required
+        and {
+            "schema",
+            "target_id",
+            "module_id",
+            "source_contributions",
+            "projection_sha256",
+        }
+        == source_projection_required
+        and {
+            "schema",
+            "profile",
+            "target_id",
+            "target_kind",
+            "module_id",
+            "package_graph_sha256",
+            "module_source_contribution_sha256",
+            "dependency_receipt_sha256",
+            "resolver_trace_sha256",
+            "visibility_closure_sha256",
+            "initialization_plan_sha256",
+            "interface_sha256",
+            "implementation_sha256",
+            "compilation_receipt_sha256",
+        }
+        == compilation_required
+        and set(compilation_bindings)
+        == {
+            "package_graph_sha256",
+            "module_source_contribution_sha256",
+            "dependency_receipt_sha256",
+            "resolver_trace_sha256",
+            "visibility_closure_sha256",
+            "initialization_plan_sha256",
+            "interface_sha256",
+            "implementation_sha256",
+        }
+        and canonical_algorithm_ids
+        == {"DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1"}
+        and canonical_self_hash_fields
+        == {
+            "schemas/language/package-module-source-graph.schema.json":
+                "canonical_graph_sha256",
+            "schemas/language/resolver-graph.schema.json":
+                "resolver_graph_sha256",
+            "schemas/language/resolver-trace.schema.json":
+                "trace_sha256",
+        }
+        and all(canonical_array_order_declarations.values()),
+        "R4_NRM_MODULE_ARTIFACT_HASH_DOMAINS",
+        (
+            f"interface_exclusions={len(excluded_interface_inputs)} "
+            f"implementation_fields={len(implementation_required)} "
+            f"source_fields={len(source_projection_required)} "
+            f"receipt_fields={len(compilation_required)} "
+            f"bindings={sorted(compilation_bindings)} "
+            f"canonical_algorithms={sorted(canonical_algorithm_ids)}"
+        ),
+    )
+
+    visibility_schema = documents[
+        "schemas/language/module-visibility-closure.schema.json"
+    ]
+    top_level_visibility_schema = documents[
+        "schemas/language/top-level-type-visibility-descriptor.schema.json"
+    ]
+    visibility_domain = (
+        visibility_schema.get("$defs", {})
+        .get("visibility", {})
+        .get("enum")
+    )
+    explicit_visibility_domain = (
+        top_level_visibility_schema.get("properties", {})
+        .get("explicit_visibility", {})
+        .get("oneOf", [{}])[0]
+        .get("enum")
+    )
+    dependency_visibility_domain = (
+        top_level_visibility_schema.get("properties", {})
+        .get("api_dependency_visibilities", {})
+        .get("items", {})
+        .get("enum")
+    )
+    common_boundary_case = next(
+        (
+            case
+            for case in cases
+            if case.get("id") == "IR-R4-MOD045-BOUND"
+        ),
+        {},
+    )
+    record(
+        visibility_domain == ["private", "common", "public"]
+        and visibility_domain == explicit_visibility_domain
+        and visibility_domain == dependency_visibility_domain
+        and "common" in str(common_boundary_case.get("scenario", ""))
+        and common_boundary_case.get("expected", {}).get("outcome")
+        == "ACCEPT_COMMON_INTERNAL_ONLY",
+        "R4_NRM_VISIBILITY_VOCABULARY",
+        (
+            f"closure={visibility_domain} "
+            f"descriptor={explicit_visibility_domain} "
+            f"dependency={dependency_visibility_domain}"
+        ),
+    )
+    visibility_predicates = json.loads(
+        (
+            root / "spec/types/predicates/chunks/part-0015.json"
+        ).read_text(encoding="utf-8")
+    )
+    visibility_predicate = next(
+        (
+            row
+            for row in visibility_predicates
+            if row.get("predicate_id") == "TopLevelTypeVisibilityAdmitted"
+        ),
+        {},
+    )
+    visibility_fixture_rows = json.loads(
+        (
+            root
+            / "tests/conformance/checker-predicates/chunks/part-0026.json"
+        ).read_text(encoding="utf-8")
+    )
+    visibility_fixtures = {
+        row.get("fixture_id"): row
+        for row in visibility_fixture_rows
+        if row.get("predicate_id") == "TopLevelTypeVisibilityAdmitted"
+    }
+    visibility_required = set(top_level_visibility_schema.get("required", []))
+    expected_visibility_required = {
+        "schema",
+        "source_root",
+        "declaration_kind",
+        "type_producing_owner",
+        "explicit_visibility",
+        "module_identity",
+        "package_identity",
+        "source_contribution_id",
+        "external_export_or_module_interface_admitted",
+        "api_dependency_visibilities",
+        "module_visibility_closure_sha256",
+        "visibility_proof_ids",
+    }
+    visibility_axes = set(visibility_predicate.get("descriptor_axes", []))
+    visibility_descriptor_rows = [
+        row.get("descriptor", {}) for row in visibility_fixtures.values()
+    ]
+    visibility_semantic_failures = {
+        fixture_id: r4_top_level_visibility_failure_codes(
+            row.get("descriptor", {})
+        )
+        for fixture_id, row in visibility_fixtures.items()
+    }
+    visibility_descriptor_fields_ok = all(
+        set(descriptor) == expected_visibility_required
+        and is_typed_id(descriptor.get("module_identity"), "ModuleId")
+        and is_typed_id(descriptor.get("package_identity"), "PackageId")
+        and is_typed_id(
+            descriptor.get("source_contribution_id"), "SourceFileId"
+        )
+        and re.fullmatch(
+            r"[0-9a-f]{64}",
+            str(descriptor.get("module_visibility_closure_sha256", "")),
+        )
+        is not None
+        and all(
+            is_typed_id(proof_id, "VisibilityProofId")
+            for proof_id in descriptor.get("visibility_proof_ids", [])
+        )
+        for descriptor in visibility_descriptor_rows
+    )
+    record(
+        visibility_required == expected_visibility_required
+        and visibility_axes
+        >= expected_visibility_required - {"schema"}
+        and set(visibility_fixtures)
+        == {
+            "PF-TopLevelTypeVisibilityAdmitted-POS",
+            "PF-TopLevelTypeVisibilityAdmitted-BOUNDARY",
+            "PF-TopLevelTypeVisibilityAdmitted-NEG",
+        }
+        and visibility_descriptor_fields_ok
+        and visibility_fixtures[
+            "PF-TopLevelTypeVisibilityAdmitted-POS"
+        ]
+        .get("descriptor", {})
+        .get("visibility_proof_ids")
+        == ["VisibilityProofId:acme.geometry.public"]
+        and visibility_semantic_failures
+        == {
+            "PF-TopLevelTypeVisibilityAdmitted-POS": set(),
+            "PF-TopLevelTypeVisibilityAdmitted-BOUNDARY": set(),
+            "PF-TopLevelTypeVisibilityAdmitted-NEG": {
+                "TYPE_DECL_VISIBILITY_REQUIRED"
+            },
+        }
+        and (
+            visibility_fixtures[
+                "PF-TopLevelTypeVisibilityAdmitted-POS"
+            ].get("expected")
+            == "admitted"
+        )
+        and (
+            visibility_fixtures[
+                "PF-TopLevelTypeVisibilityAdmitted-BOUNDARY"
+            ].get("expected")
+            == "admitted"
+        )
+        and (
+            visibility_fixtures[
+                "PF-TopLevelTypeVisibilityAdmitted-NEG"
+            ].get("expected")
+            == "rejected"
+        )
+        and (
+            visibility_fixtures[
+                "PF-TopLevelTypeVisibilityAdmitted-NEG"
+            ].get("expected_primary_diagnostic")
+            == "TYPE_DECL_VISIBILITY_REQUIRED"
+        )
+        and all(
+            row.get("execution_status") == "DESIGN_STATIC_NOT_RUN"
+            for row in visibility_fixtures.values()
+        )
+        and (
+            top_level_visibility_schema.get("properties", {})
+            .get("module_identity", {})
+            .get("pattern")
+            == r"^ModuleId:[^\s]+$"
+        )
+        and (
+            top_level_visibility_schema.get("properties", {})
+            .get("package_identity", {})
+            .get("pattern")
+            == r"^PackageId:[^\s]+$"
+        )
+        and (
+            top_level_visibility_schema.get("properties", {})
+            .get("visibility_proof_ids", {})
+            .get("items", {})
+            .get("pattern")
+            == r"^VisibilityProofId:[^\s]+$"
+        ),
+        "R4_NRM_VISIBILITY_FIXTURE_BINDING",
+        (
+            f"required={len(visibility_required)} "
+            f"axes={len(visibility_axes)} fixtures={len(visibility_fixtures)} "
+            f"semantic={visibility_semantic_failures}"
+        ),
+    )
+    resolver_graph_schema = documents[
+        "schemas/language/resolver-graph.schema.json"
+    ]
+    activation_patterns = {
+        "receipt": (
+            receipt_schema.get("$defs", {})
+            .get("activatedIdentity", {})
+            .get("pattern")
+        ),
+        "visibility": (
+            visibility_schema.get("$defs", {})
+            .get("activationIdentityId", {})
+            .get("pattern")
+        ),
+        "resolver": (
+            resolver_graph_schema.get("$defs", {})
+            .get("activatedIdentity", {})
+            .get("pattern")
+        ),
+    }
+    activation_kind_values = {
+        "receipt": (
+            receipt_schema.get("$defs", {})
+            .get("activationBinding", {})
+            .get("properties", {})
+            .get("activation_kind", {})
+            .get("const")
+        ),
+        "resolver": (
+            resolver_graph_schema.get("$defs", {})
+            .get("activationEntry", {})
+            .get("properties", {})
+            .get("activation_kind", {})
+            .get("const")
+        ),
+    }
+    frontend_model = documents["spec/frontend/frontend-model.json"]
+    frontend_activation_domain = (
+        frontend_model.get("r4_name_resolution_module_contract", {})
+        .get("identity_recipes", {})
+        .get("activation_kind_domain")
+    )
+    contract_activation_domain = (
+        contract.get("identity_contract", {})
+        .get("activation_kind_domain")
+    )
+    record(
+        set(activation_patterns.values()) == {"^ExtensionSetId:[^\\s]+$"}
+        and set(activation_kind_values.values()) == {"use"}
+        and frontend_activation_domain == ["use"]
+        and contract_activation_domain == ["use"],
+        "R4_NRM_ACTIVATION_DOMAIN_SEPARATION",
+        (
+            f"patterns={activation_patterns} "
+            f"kinds={activation_kind_values}"
+        ),
+    )
+    witness_pattern = (
+        resolver_graph_schema.get("$defs", {})
+        .get("traitWitnessId", {})
+        .get("pattern")
+    )
+    record(
+        witness_pattern == "^TraitWitnessId:[^\\s]+$",
+        "R4_NRM_WITNESS_DOMAIN_SEPARATION",
+        f"pattern={witness_pattern}",
+    )
+    resolver_defs = resolver_graph_schema.get("$defs", {})
+    name_binding_schema = resolver_defs.get("nameBinding", {})
+    import_binding_schema = resolver_defs.get("importBinding", {})
+    name_namespace_domain = resolver_defs.get("nameNamespace", {}).get("enum")
+    binding_branches = {}
+    for clause in name_binding_schema.get("allOf", []):
+        namespace = (
+            clause.get("if", {})
+            .get("properties", {})
+            .get("namespace", {})
+            .get("const")
+        )
+        if namespace is not None:
+            binding_branches[namespace] = clause.get("then", {})
+    module_binding_properties = binding_branches.get("MODULE", {}).get(
+        "properties", {}
+    )
+    type_binding_properties = binding_branches.get("TYPE", {}).get(
+        "properties", {}
+    )
+    callable_binding_properties = binding_branches.get(
+        "CALLABLE_OVERLOAD_SET", {}
+    ).get("properties", {})
+    value_binding_options = binding_branches.get("VALUE", {}).get(
+        "oneOf", []
+    )
+    value_binding_pairs = {
+        (
+            option.get("properties", {})
+            .get("binding_kind", {})
+            .get("const"),
+            option.get("properties", {})
+            .get("typed_identity", {})
+            .get("pattern"),
+            option.get("properties", {})
+            .get("visibility_start", {})
+            .get("const"),
+        )
+        for option in value_binding_options
+    }
+    committed_pattern_visibility = next(
+        (
+            clause.get("then", {})
+            .get("properties", {})
+            .get("visibility_start", {})
+            .get("const")
+            for clause in name_binding_schema.get("allOf", [])
+            if (
+                clause.get("if", {})
+                .get("properties", {})
+                .get("binding_origin_kind", {})
+                .get("const")
+                == "COMMITTED_PATTERN_BINDING"
+            )
+        ),
+        None,
+    )
+    record(
+        name_namespace_domain
+        == ["MODULE", "TYPE", "VALUE", "CALLABLE_OVERLOAD_SET"]
+        and (
+            name_binding_schema.get("properties", {})
+            .get("namespace", {})
+            .get("$ref")
+            == "#/$defs/nameNamespace"
+        )
+        and (
+            import_binding_schema.get("properties", {})
+            .get("namespace", {})
+            .get("$ref")
+            == "#/$defs/nameNamespace"
+        )
+        and set(binding_branches)
+        == {"MODULE", "TYPE", "VALUE", "CALLABLE_OVERLOAD_SET"}
+        and module_binding_properties.get("binding_kind", {}).get("const")
+        == "SINGLE"
+        and module_binding_properties.get("typed_identity", {}).get("pattern")
+        == r"^ModuleId:[^\s]+$"
+        and type_binding_properties.get("binding_kind", {}).get("const")
+        == "SINGLE"
+        and type_binding_properties.get("typed_identity", {}).get("pattern")
+        == r"^DeclId:[^\s]+$"
+        and callable_binding_properties.get("binding_kind", {}).get("const")
+        == "CALLABLE_OVERLOAD_SLOT"
+        and callable_binding_properties.get("typed_identity", {}).get(
+            "pattern"
+        )
+        == r"^DeclId:[^\s]+$"
+        and value_binding_pairs
+        == {
+            ("SINGLE", r"^DeclId:[^\s]+$", None),
+            (
+                "HIR_LOCAL",
+                r"^HirLocalId:[^\s]+$",
+                None,
+            ),
+        }
+        and committed_pattern_visibility == "AFTER_TRANSACTION_COMMIT"
+        and environments.get("name_namespace_domain")
+        == ["MODULE", "TYPE", "VALUE", "CALLABLE_OVERLOAD_SET"]
+        and environments.get("control_label_environment")
+        == "NOT_APPLICABLE_CURRENT_PROFILE_NO_CONTROL_LABEL_CARRIER"
+        and contract.get("lexical_resolution", {}).get(
+            "live_control_label_reuse"
+        )
+        == {
+            "r4_status": "NOT_APPLICABLE_CURRENT_PROFILE",
+            "reason": "NO_CURRENT_ROOT_CONNECTED_CONTROL_LABEL_SURFACE",
+            "future_owner": "FLOW_CONTROL_PROFILE",
+            "future_rule_if_activated": "REJECT_LIVE_ANCESTOR_REUSE",
+        }
+        and "control_label_bindings"
+        not in resolver_graph_schema.get("properties", {})
+        and "LabelId" not in json.dumps(
+            resolver_graph_schema, sort_keys=True
+        ),
+        "R4_NRM_RESOLVER_ENVIRONMENT_SEPARATION",
+        (
+            f"namespaces={name_namespace_domain} "
+            f"branches={sorted(str(key) for key in binding_branches)} "
+            f"pattern_visibility={committed_pattern_visibility}"
+        ),
+    )
+
+    trace_defs = resolver_trace_schema.get("$defs", {})
+    resolved_identity_patterns = {
+        "receiptImportTargetIdentity": (
+            receipt_schema.get("$defs", {})
+            .get("importTargetIdentity", {})
+            .get("pattern")
+        ),
+        "resolverImportTargetIdentity": (
+            resolver_graph_schema.get("$defs", {})
+            .get("importTargetIdentity", {})
+            .get("pattern")
+        ),
+        "resolverBoundIdentity": (
+            resolver_graph_schema.get("$defs", {})
+            .get("boundIdentity", {})
+            .get("pattern")
+        ),
+        "traceResolvedIdentity": (
+            trace_defs.get("resolvedIdentity", {}).get("pattern")
+        ),
+        "analysisHirOverloadSetRef": (
+            trace_defs.get("analysisHirOverloadSetRef", {}).get("pattern")
+        ),
+    }
+    record(
+        resolved_identity_patterns
+        == {
+            "receiptImportTargetIdentity": (
+                "^(?:ModuleId|DeclId):[^\\s]+$"
+            ),
+            "resolverImportTargetIdentity": (
+                "^(?:ModuleId|DeclId):[^\\s]+$"
+            ),
+            "resolverBoundIdentity": (
+                "^(?:ModuleId|DeclId|HirLocalId):[^\\s]+$"
+            ),
+            "traceResolvedIdentity": (
+                "^(?:HirLocalId|DeclId|ModuleId):[^\\s]+$"
+            ),
+            "analysisHirOverloadSetRef": (
+                "^ResolvedOverloadSetRef:[^\\s]+$"
+            ),
+        },
+        "R4_NRM_RESOLVED_IDENTITY_DOMAINS",
+        f"patterns={resolved_identity_patterns}",
+    )
+    candidate_origin_pattern = (
+        trace_defs.get("candidateOriginId", {}).get("pattern")
+    )
+    record(
+        candidate_origin_pattern
+        == (
+            "^(?:HirLocalId|DeclId|ModuleId|ImportBindingId|"
+            "ActivationOriginId|EvidenceOriginId|ExtensionSetId|"
+            "TraitWitnessId):[^\\s]+$"
+        ),
+        "R4_NRM_TRACE_CANDIDATE_DOMAINS",
+        f"pattern={candidate_origin_pattern}",
+    )
+
+    reference_trace_schema = trace_defs.get("referenceTrace", {})
+    coherence_branches = reference_trace_schema.get("oneOf", [])
+    expected_status_sequences = [
+        ["PASS"] * 9,
+        *[
+            ["PASS"] * failed_index
+            + ["FAIL"]
+            + ["NOT_EVALUATED"] * (8 - failed_index)
+            for failed_index in range(9)
+        ],
+    ]
+    observed_status_sequences: list[list[Any]] = []
+    result_bindings_closed = len(coherence_branches) == 10
+    for branch_index, branch in enumerate(coherence_branches):
+        prefix = (
+            branch.get("properties", {})
+            .get("stages", {})
+            .get("prefixItems", [])
+        )
+        status_sequence: list[Any] = []
+        for item in prefix:
+            status_values = nested_property_consts(item, "status")
+            reference = item.get("$ref") if isinstance(item, dict) else None
+            if (
+                not status_values
+                and isinstance(reference, str)
+                and reference.startswith("#/$defs/")
+            ):
+                status_values = nested_property_consts(
+                    trace_defs.get(reference.removeprefix("#/$defs/"), {}),
+                    "status",
+                )
+            status_sequence.append(
+                status_values[0] if len(status_values) == 1 else None
+            )
+        observed_status_sequences.append(status_sequence)
+        result_schema = (
+            branch.get("properties", {}).get("result", {})
+        )
+        if branch_index == 0:
+            success_branches = branch.get("oneOf", [])
+            accepted = (
+                success_branches[0].get("properties", {})
+                if len(success_branches) == 2
+                and isinstance(success_branches[0], dict)
+                else {}
+            )
+            deferred = (
+                success_branches[1].get("properties", {})
+                if len(success_branches) == 2
+                and isinstance(success_branches[1], dict)
+                else {}
+            )
+            result_bindings_closed = result_bindings_closed and (
+                accepted.get("namespace", {})
+                .get("not", {})
+                .get("const")
+                == "CALLABLE_OVERLOAD_SET"
+                and accepted.get("result", {}).get("$ref")
+                == "#/$defs/acceptedResult"
+                and deferred.get("namespace", {}).get("const")
+                == "CALLABLE_OVERLOAD_SET"
+                and deferred.get("result", {}).get("$ref")
+                == "#/$defs/deferredOverloadResult"
+            )
+        else:
+            result_all_of = result_schema.get("allOf", [])
+            reason_values = (
+                result_all_of[1]
+                .get("properties", {})
+                .get("rejection_reason", {})
+                .get("enum", [])
+                if len(result_all_of) == 2
+                and isinstance(result_all_of[1], dict)
+                else []
+            )
+            result_bindings_closed = result_bindings_closed and (
+                len(result_all_of) == 2
+                and result_all_of[0].get("$ref")
+                == "#/$defs/rejectedResult"
+                and reason_values
+                == list(R4_NRM_PRECEDENCE[branch_index - 1][2])
+            )
+    record(
+        observed_status_sequences == expected_status_sequences
+        and result_bindings_closed,
+        "R4_NRM_TRACE_STATUS_RESULT_SCHEMA",
+        (
+            f"branches={len(coherence_branches)} "
+            f"result_bindings={result_bindings_closed}"
+        ),
+    )
+    seal_schema = trace_defs.get("seal", {})
+    diagnostic_selection_schema = trace_defs.get(
+        "diagnosticSelection", {}
+    )
+    seal_status_values = (
+        seal_schema.get("properties", {})
+        .get("seal_status", {})
+        .get("enum", [])
+    )
+    seal_counter_fields = set(
+        trace_defs.get("sealCounters", {})
+        .get("properties", {})
+    )
+    zero_counter_all_of = trace_defs.get(
+        "zeroSealCounters", {}
+    ).get("allOf", [])
+    zero_counter_properties = (
+        zero_counter_all_of[1].get("properties", {})
+        if len(zero_counter_all_of) > 1
+        and isinstance(zero_counter_all_of[1], dict)
+        else {}
+    )
+    not_evaluated_counter_all_of = trace_defs.get(
+        "notEvaluatedSealCounters", {}
+    ).get("allOf", [])
+    not_evaluated_counter_properties = (
+        not_evaluated_counter_all_of[1].get("properties", {})
+        if len(not_evaluated_counter_all_of) > 1
+        and isinstance(not_evaluated_counter_all_of[1], dict)
+        else {}
+    )
+    rejected_counter_all_of = trace_defs.get(
+        "rejectedSealCounters", {}
+    ).get("allOf", [])
+    rejected_counter_guard = (
+        rejected_counter_all_of[1]
+        if len(rejected_counter_all_of) > 1
+        and isinstance(rejected_counter_all_of[1], dict)
+        else {}
+    )
+    record(
+        seal_status_values
+        == ["SEALED", "REJECTED_AT_HIR_SEAL", "NOT_EVALUATED"]
+        and seal_counter_fields
+        == {
+            "unbound_primary_count",
+            "unresolved_count",
+            "candidate_set_count",
+            "missing_typed_id_count",
+            "missing_visibility_proof_count",
+            "recovery_binding_count",
+            "runtime_relookup_count",
+            "overload_winner_count",
+            "canonical_hir_overload_set_ref_count",
+        }
+        and set(diagnostic_selection_schema.get("required", []))
+        == {
+            "winner_source_origin_id_or_null",
+            "winner_rejection_reason_or_null",
+            "suppressed_source_origin_ids",
+        },
+        "R4_NRM_TRACE_SEAL_DIAGNOSTIC_SHAPE",
+        (
+            f"seal_status={seal_status_values} "
+            f"counter_fields={sorted(seal_counter_fields)}"
+        ),
+    )
+    record(
+        resolver_trace_schema.get("properties", {})
+        .get("diagnostic_order", {})
+        .get("const")
+        == (
+            "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_"
+            "LOWEST_SOURCE_ORIGIN_ID"
+        )
+        and len(diagnostic_selection_schema.get("oneOf", [])) == 2
+        and set(zero_counter_properties) == seal_counter_fields
+        and all(
+            row.get("const") == 0
+            for row in zero_counter_properties.values()
+        )
+        and set(not_evaluated_counter_properties)
+        == seal_counter_fields
+        and all(
+            row.get("type") == "null"
+            for row in not_evaluated_counter_properties.values()
+        )
+        and len(rejected_counter_guard.get("anyOf", [])) == 6
+        and {
+            key: row.get("const")
+            for key, row in rejected_counter_guard.get(
+                "properties", {}
+            ).items()
+        }
+        == {
+            "recovery_binding_count": 0,
+            "overload_winner_count": 0,
+            "canonical_hir_overload_set_ref_count": 0,
+        },
+        "R4_NRM_TRACE_SEAL_DIAGNOSTIC_SCHEMA",
+        (
+            "diagnostic_selection=EXACT "
+            "sealed=ALL_ZERO rejected=REASON_BOUND "
+            "not_evaluated=ALL_NULL"
+        ),
+    )
+
+    hir_bridge_contract = documents[
+        "spec/contracts/hir-h1-current-mir-bridge.json"
+    ]
+    hir_bridge_fixture = documents[
+        "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json"
+    ]
+    hir_bridge_rows = hir_bridge_fixture.get(
+        "r4_name_resolution_module_bridge_cases", []
+    )
+    expected_hir_bridge_rows = [
+        {
+            "fixture_id": "H1MB-R4-NRM-POS-001",
+            "kind": "positive",
+            "resolver_output": "RESOLVED_NONCALL_REFERENCE",
+            "canonical_hir_projection": (
+                "ResolvedRef::Local(HirLocalId)"
+            ),
+            "expected": "SEALED",
+            "assertions": [
+                "BodyLocalScope_projects_exact_HirScopeId=true",
+                "committed_binding_projects_fresh_HirLocalId=true",
+                "runtime_relookup_count=0",
+            ],
+            "execution_state": "DESIGN_STATIC_NOT_RUN",
+        },
+        {
+            "fixture_id": "H1MB-R4-NRM-POS-002",
+            "kind": "positive",
+            "resolver_output": "IMPORT_BINDING_TRACE",
+            "canonical_hir_projection": (
+                "MODULE target remains ModuleId without expression-HIR "
+                "projection; declaration expression use projects "
+                "ResolvedRef::DirectDecl(DeclId); ImportBindingId retained "
+                "in trace"
+            ),
+            "expected": "SEALED",
+            "assertions": [
+                "ImportBindingId_creates_HirLocalId=false",
+                "SourceOriginId_preserved=true",
+                (
+                    "module_target_is_ModuleId_and_nonmodule_target_is_"
+                    "DeclId=true"
+                ),
+            ],
+            "execution_state": "DESIGN_STATIC_NOT_RUN",
+        },
+        {
+            "fixture_id": "H1MB-R4-NRM-BOUND-003",
+            "kind": "boundary",
+            "resolver_output": (
+                "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR"
+            ),
+            "canonical_hir_projection": "NONE",
+            "expected": "DEFERRED_TO_NEXT_CLUSTER",
+            "assertions": [
+                "overload_winner_selected=false",
+                "canonical_HIR_overload_set_ref=false",
+                (
+                    "next_cluster=GENERIC_INFERENCE_AND_ORDINARY_"
+                    "OVERLOAD_RESOLUTION"
+                ),
+            ],
+            "execution_state": "DESIGN_STATIC_NOT_RUN",
+        },
+        {
+            "fixture_id": "H1MB-R4-NRM-NEG-004",
+            "kind": "negative",
+            "resolver_output": "REJECTED",
+            "canonical_hir_projection": "NONE",
+            "expected": "REJECTED_BEFORE_SEAL",
+            "assertions": [
+                (
+                    "unresolved_or_ambiguous_reference_creates_"
+                    "canonical_HIR=false"
+                ),
+                "recovery_binding_count=0",
+                "runtime_relookup_count=0",
+            ],
+            "execution_state": "DESIGN_STATIC_NOT_RUN",
+        },
+    ]
+    hir_bridge_counts = hir_bridge_fixture.get("expected_counts", {})
+    hir_machine_acceptance = hir_bridge_contract.get(
+        "machine_acceptance", {}
+    )
+    record(
+        hir_bridge_rows == expected_hir_bridge_rows
+        and hir_bridge_counts.get(
+            "r4_name_resolution_module_bridge_cases"
+        )
+        == 4
+        and hir_machine_acceptance.get(
+            "r4_name_resolution_module_bridge_fixture_count"
+        )
+        == 4
+        and all(
+            row.get("execution_state") == "DESIGN_STATIC_NOT_RUN"
+            for row in hir_bridge_rows
+        ),
+        "R4_NRM_HIR_BRIDGE_EXACT_STATIC_BINDING",
+        (
+            f"rows={len(hir_bridge_rows)}/4 "
+            "executed=0/4 product=15/15_NOT_RUN"
+        ),
+    )
+
+    module_api_fixtures = documents[
+        "tests/fixtures/imported/module-api-digest-fixtures.json"
+    ]
+    r4_fixture_rows = module_api_fixtures.get(
+        "r4_interface_envelope_fixtures", []
+    )
+    r4_fixture_payloads = [
+        row.get("payload", {}) for row in r4_fixture_rows
+    ]
+    record(
+        module_api_fixtures.get("r4_interface_envelope_fixture_count") == 3
+        and [row.get("fixture_class") for row in r4_fixture_rows]
+        == ["positive", "boundary", "negative"]
+        and {
+            row.get("interface_profile") for row in r4_fixture_rows
+        }
+        == {"R4_NAME_RESOLUTION_MODULES"}
+        and module_api_fixtures.get("product_compiler_execution")
+        == "NOT_RUN"
+        and all(
+            not r4_module_api_failure_codes(payload)
+            for payload in r4_fixture_payloads
+        )
+        and all(
+            row.get("canonical_bytes_utf8")
+            == json.dumps(
+                {
+                    key: value
+                    for key, value in payload.items()
+                    if key != "canonical_sha256"
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            and row.get("expected_canonical_sha256")
+            == payload.get("canonical_sha256")
+            for row, payload in zip(
+                r4_fixture_rows, r4_fixture_payloads
+            )
+        )
+        and len(r4_fixture_payloads) == 3
+        and r4_fixture_payloads[0].get("canonical_sha256")
+        == r4_fixture_payloads[1].get("canonical_sha256")
+        and r4_fixture_payloads[0].get("canonical_sha256")
+        != r4_fixture_payloads[2].get("canonical_sha256"),
+        "R4_NRM_INTERFACE_FIXTURES",
+        f"rows={len(r4_fixture_rows)}",
+    )
+    artifact_relation_fixture = documents[
+        "tests/fixtures/current/module-compilation-artifact-relations-r1.json"
+    ]
+    artifact_relation_failures = (
+        r4_module_artifact_relation_fixture_failure_codes(
+            artifact_relation_fixture, module_api_fixtures
+        )
+    )
+    record(
+        not artifact_relation_failures,
+        "R4_NRM_MODULE_ARTIFACT_RELATION_FIXTURE",
+        (
+            "cases="
+            f"{artifact_relation_fixture.get('case_count')} "
+            f"failures={sorted(artifact_relation_failures)} "
+            "evidence=E2 product=15/15_NOT_RUN"
+        ),
+    )
+    artifact_relation_mutation_results = (
+        r4_module_artifact_relation_fixture_mutation_results(
+            artifact_relation_fixture, module_api_fixtures
+        )
+    )
+    failed_artifact_relation_mutations = [
+        f"{mutation_id}({details})"
+        for passed, mutation_id, details
+        in artifact_relation_mutation_results
+        if not passed
+    ]
+    record(
+        not failed_artifact_relation_mutations
+        and len(artifact_relation_mutation_results) == 27,
+        "R4_NRM_MODULE_ARTIFACT_RELATION_MUTATION_SELF_TEST",
+        (
+            "passed="
+            f"{len(artifact_relation_mutation_results) - len(failed_artifact_relation_mutations)}"
+            f"/{len(artifact_relation_mutation_results)} "
+            f"failures={failed_artifact_relation_mutations} "
+            "resealed=true evidence=E2 product=15/15_NOT_RUN"
+        ),
+    )
+    return results
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -485,8 +10540,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 719
-                and fixed_counts.get("predicates") == 268
-                and fixed_counts.get("predicate_fixtures") == 819
+                and fixed_counts.get("predicates") == 277
+                and fixed_counts.get("predicate_fixtures") == 846
                 and fixed_counts.get("no_go") == 155
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -693,6 +10748,12 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001
             errors.append(f"JSON_PARSE: {path.relative_to(root)}: {exc}")
     check(len(parsed) == len(json_files), "JSON_CLOSURE", f"{len(parsed)}/{len(json_files)}")
+    for condition, code, detail in r4_nrm_contract_results(root):
+        check(condition, code, detail)
+    for condition, code, detail in r4_nrm_integrated_contract_results(root):
+        check(condition, code, detail)
+    for condition, code, detail in r4_nrm_mechanical_self_test_results():
+        check(condition, code, detail)
     try:
         tomllib.loads((root / "current/language-version.toml").read_text(encoding="utf-8"))
         tomllib.loads((root / "Cargo.toml").read_text(encoding="utf-8"))

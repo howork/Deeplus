@@ -70,6 +70,33 @@ def update(inout value: Counter, delta: Int) -> Unit
 MIR은 target place/read/right operand/final write 순서를 보존하고 failure
 전 original owner/value를 지켜야 한다.
 
+### R4: resolver seal과 module initialization
+
+R4 resolver가 닫는 것은 noncall `ResolvedRef`, name/import trace,
+visibility proof다. callable 후보는 `ResolvedOverloadSetRef`로 analysis
+HIR에만 남을 수 있다. exact overload winner와 complete generic
+substitution 전에는 canonical HIR나 MIR로 갈 수 없다.
+
+`ResolverScopeId`, `ImportBindingId`, `SourceOriginId`,
+`ActivationOriginId`는 typed compile-time identity다. absolute path, span,
+timestamp, source/import order를 identity로 쓰지 않는다. MIR는 이
+identity로 이름 검색을 다시 하지 않고 이미 선택된 target만 소비한다.
+
+immutable module static value graph는 compile time에 모두 성공한 뒤
+atomic commit하고 runtime initializer를 0개 만든다. cycle, stale
+dependency receipt, incomplete resolver seal은 admitted HIR/MIR를 만들지
+않는다.
+
+모듈 hash 하나가 모든 책임을 겸하지 않는다. interface hash는 외부에
+보이는 semantic API만 나타내고, implementation hash는 그 interface와
+비공개 HIR 의미를 함께 나타낸다. full compilation receipt는 source
+provenance와 package/resolver graph, dependency, visibility,
+initialization, interface, implementation 관계를 재현 가능하게 닫는다.
+따라서 private helper의 구현만 바뀌면 interface hash는 그대로일 수
+있지만 implementation과 full receipt는 바뀐다. 반대로 source path나
+trivia는 public interface identity가 아니며, script는 importable
+interface를 만들지 않는다.
+
 ## 7. 허용·거부·경계 사례
 
 허용: statically selected Trait associated function.
@@ -155,6 +182,15 @@ failure/cleanup 관찰은 같아야 한다.
 바꾸지 않으며, MIR은 event order를 구체화하지만 name lookup을 반복하지
 않는다. backend는 representation을 선택하지만 semantic identity를
 재해석하지 않는다.
+
+R4에서는 추가로 묻는다.
+
+1. exact namespace/spelling의 first nonempty frame에서 멈췄는가.
+2. import binding key와 resolved target을 분리했는가.
+3. `NameEnv`, `ActivationEnv`, `WitnessVisibilityEnv`를 섞지 않았는가.
+4. callable candidate set이 analysis HIR 밖으로 새지 않았는가.
+5. module static value가 runtime initializer로 변하지 않았는가.
+6. source/import/link order가 winner가 되지 않았는가.
 
 evidence 표에도 범위를 적는다. source/hash 검사는 bytes identity,
 HIR-H1 receipt는 closed typed responsibility, MIR verifier는 event

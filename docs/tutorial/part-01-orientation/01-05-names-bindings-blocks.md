@@ -90,6 +90,32 @@ mutation 전후 invariant를 적는다. 흔한 오해는 `let`을 literal만 담
 binding이며 차이는 이후 place mutation 허용 여부다. shadowing도 기존
 값의 갱신이 아니라 새 lexical identity의 생성이다.
 
+### R4: 이름을 찾는 frame 규칙
+
+resolver는 안쪽 lexical frame부터 검색하고 exact namespace와 spelling이
+처음 나타난 frame에서 멈춘다. outer 이름은 같은 후보 집합에 합치지
+않는다.
+
+```deeplus
+private def choose(value: Int) -> Int = {
+    {
+        let value = 10       // fresh child identity
+        consume(value)
+    }
+    return value             // parameter identity
+}
+```
+
+proper child block의 shadowing은 새 identity다. 같은 frame의 중복은
+shadowing이 아니라 오류다. 특히 parameter와 함수 root body는 한 frame이므로
+root local로 parameter 이름을 다시 선언할 수 없다. local function은
+선언 뒤부터만 보인다.
+
+Pattern binder는 match가 성공하기 전 provisional이다. 실패한 probe는
+local을 0개 commit한다. `NameEnv`, extension `ActivationEnv`, Trait
+`WitnessVisibilityEnv`는 별도라서 import/use/witness visibility가 서로를
+암시하지 않는다.
+
 ## 7. 허용·거부·경계 사례
 
 블록 안 이름은 밖으로 새어 나오지 않는다.
@@ -143,6 +169,9 @@ capture하면 해당 이름의 lexical lifetime만으로 충분한지 escape 검
 - `let`은 immutable binding, `var`는 mutable place다.
 - initializer 성공 전에는 새 이름이 commit되지 않는다.
 - block은 lexical scope와 cleanup 경계를 만든다.
+- 같은 frame의 중복과 child-frame shadowing을 구분한다.
+- callable overload set은 frame을 건너 merge하지 않는다.
+- source order로 이름이나 overload 우선순위를 만들지 않는다.
 - `$name`/`$$name`은 fresh ordinary local로 정규화된다.
 - scope 밖 이름은 자동 승격되지 않는다.
 

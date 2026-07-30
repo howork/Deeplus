@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-implementation-digest.schema.json",
+  "title": "Deeplus private module semantic implementation digest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "interface_profile",
+    "target_id",
+    "target_kind",
+    "module_id",
+    "interface_sha256",
+    "hir_semantic_sha256",
+    "external_compatibility_identity",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-implementation-digest/r1"
+    },
+    "interface_profile": {
+      "const": "R4_NAME_RESOLUTION_MODULES"
+    },
+    "target_id": {
+      "type": "string",
+      "pattern": "^TargetId:[^\\s]+$"
+    },
+    "target_kind": {
+      "enum": [
+        "library",
+        "executable",
+        "script"
+      ]
+    },
+    "module_id": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "interface_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "hir_semantic_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "external_compatibility_identity": {
+      "const": false
+    },
+    "implementation_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "target_kind": {
+            "const": "script"
+          }
+        },
+        "required": [
+          "target_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "interface_sha256": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "interface_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "implementation_sha256",
+    "hir_semantic_sha256_excludes": [
+      "source_path",
+      "source_file_split",
+      "trivia",
+      "debug_span"
+    ],
+    "interface_sha256_in_implementation_preimage": true,
+    "private_implementation_changes_public_interface_identity": false
+  },
+  "x-deeplus-artifact-bindings": {
+    "interface_sha256": "module-api-digest.canonical_sha256",
+    "hir_semantic_sha256": "rfcs/DP-RFC-0002-current-hir-h1.md#23.3 hir_semantic_digest"
+  },
+  "x-product-compiler": "NOT_RUN",
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

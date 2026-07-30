@@ -165,6 +165,19 @@ block-local import도 compile-time 이름 가시성 변화일 뿐,
 반대로 같은 Deeplus declaration identity를 서로 다른 backend가
 다른 mangled symbol로 표현할 수 있다.
 
+### 3.4 R4 module graph와 interface closure
+
+Package dependency와 re-export graph는 acyclic이다. Module header graph는
+모든 header를 먼저 수집한 뒤 module-header/type-declaration/signature
+reference만 있는 SCC를 허용한다. static-value, runtime-initializer,
+re-export edge가 SCC 안에 있으면 거부한다. immutable module static
+value는 acyclic compile-time graph에서 평가하고 전부 성공한 뒤 atomic
+commit하며 runtime initializer는 만들지 않는다.
+
+`ModuleSignature`는 schema/self-hash 외 normalized public residue를 exact
+match한다. opaque facade는 narrowing-only다. dependency receipt의
+`ModuleInterfaceDigest`가 stale하면 HIR/MIR handoff 전에 거부한다.
+
 ## 4. 이름 공간과 가시성
 
 ### 4.1 lexical lookup
@@ -202,6 +215,29 @@ private def choose(input: Int) -> Int = {
 block을 나가면 바깥 `value`가 다시 보인다.
 두 binding은 같은 문자열을 사용하지만
 HIR identity와 cleanup 범위가 다르다.
+
+R4의 정확한 frame 법칙은 다음과 같다.
+
+1. `NameEnv`를 innermost에서 outermost로 검색한다.
+2. exact `(namespace, spelling)`이 처음 나타난 frame에서 멈춘다.
+3. 같은 frame의 single binding 중복은 거부한다.
+4. callable은 canonical overload-slot key가 pairwise distinct할 때만 한
+   overload set을 이룬다. return type, responsibility-only 차이와 선언
+   순서는 slot이 아니다.
+5. parameter와 callable root body local은 한 collision domain이다.
+6. proper child block은 문법상 허용된 module/type/value/callable/import
+   alias만 fresh typed identity로 shadow한다. frame 사이 overload merge는
+   없다.
+7. pattern probe는 commit 전까지 provisional이고 실패 시 binding ID가
+   0개다. local function은 선언 뒤부터 보인다.
+
+`NameEnv`, `ActivationEnv`, `WitnessVisibilityEnv`는 별도 stack이다.
+`ImportBindingId`의 key는
+`(ResolverScopeId, namespace, local_binding_name)`이며, 같은 key는
+target이 같아도 duplicate다. resolved target은 trace content인
+`ImportTargetIdentity`다. `MODULE` target은 `ModuleId`로 남고 expression
+HIR를 만들지 않는다. 나머지 namespace의 `DeclId`는 식 사용 지점에서만
+`ResolvedRef::DirectDecl(DeclId)`로 투영된다.
 
 ### 4.2 최상위 가시성
 
@@ -247,6 +283,13 @@ Trait conformance가 존재한다고 같은 이름의 extension이
 witness member로 바뀌지 않는다.
 같은 glyph 또는 selector를 공유하더라도
 AST/HIR owner와 API residue가 다르다.
+
+ordinary selector의 nominal 후보 집합과 active extension 후보 집합이
+둘 다 nonempty이면 우선순위를 적용하지 않고
+`MEMBER_EXTENSION_COLLISION`으로 거부한다. selected candidate 수는 0이다.
+`Type::ExtensionSet::member`처럼 exact extension domain을 지정하면
+cross-domain collision을 우회한다. import/use/declaration/source 순서는
+winner가 아니다.
 
 #### 5.1.1 네 capability 표면은 closed search domain이다
 
@@ -1471,6 +1514,27 @@ private def invalidFactory(base: Int) -> (() -> Int) = {
 
 같은 소스에 여러 문제가 보이더라도
 checker는 안정적인 primary diagnostic을 선택해야 한다.
+이름 해석과 module closure의 R4 선행 단계는 다음 exact table을 먼저
+적용한다.
+
+| 순서 | stage predicate | primary diagnostic |
+|---:|---|---|
+| 1 | `PackageModuleSourceGraphAdmitted` | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` |
+| 2 | `ModuleItemSkeletonSetAdmitted` | `MODULE_ITEM_SKELETON_CONFLICT` |
+| 3 | `DependencyInterfaceBindingClosed` | `DEPENDENCY_INTERFACE_BINDING_INVALID` |
+| 4 | `ResolverScopeTreeAdmitted` | `RESOLVER_SCOPE_TREE_INVALID` |
+| 5 | `ReferenceCandidateSetResolved` | `REFERENCE_CANDIDATE_SET_INVALID` |
+| 6 | `ReferenceVisibilityActivationAdmitted` | `REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION` |
+| 7 | `ResolvedNoncallReferenceSelected` | `NONCALL_REFERENCE_SELECTION_FAILED` |
+| 8 | `ResolverHirSealAdmitted` | `RESOLVER_HIR_SEAL_INCOMPLETE` |
+| 9 | `ModuleInterfaceDigestVerified` | `MODULE_INTERFACE_DIGEST_MISMATCH` |
+
+가장 낮은 ordinal의 실패가 primary다. 같은 stage의 existing exact
+owner-bound primary가 generic fallback보다 먼저다. primary span은 그
+violation에서 가장 낮은 stable `SourceOriginId`, related span은 같은 ID
+순서다. source/import/file enumeration과 recovery는 winner 또는 admitted
+HIR를 만들지 않는다.
+
 호출 관련 권장 판정 계층은 정본 계약에 맞춰
 다음과 같이 읽는다.
 
@@ -1517,6 +1581,14 @@ primary로 삼는다. 예를 들어 `T::cache`가 mutable associated value를
 특히 call shape가 실패한 뒤
 lambda body type error를 primary로 내는 방식은
 불안정한 후보 선택을 노출할 수 있다.
+
+R4는 noncall reference, name/import trace, visibility proof까지만 닫는다.
+callable candidate는 `ResolvedOverloadSetRef`로 analysis HIR에만 남을 수
+있으며 canonical HIR-H1에는 들어가지 않는다. exact overload winner,
+complete generic substitution, expected-type choice, applicability/specificity
+rank, row inference와 result-type-only choice는 다음
+generic/ordinary-overload cluster가 닫는다. 이 장의 R4 보충은 22 OPEN P1과
+15/15 `NOT_RUN`을 바꾸지 않는다.
 
 ## 18. 상호작용
 

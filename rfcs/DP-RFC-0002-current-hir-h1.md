@@ -13,6 +13,9 @@
 | Proposed schema | `deeplus.hir/h1` |
 | Target language version | `0.1.2-internal` |
 | Target spec revision | `r51f3-current-numeric-guard-call-enum-coherence-r1` |
+| R4 supplement baseline | `howork/Deeplus@53464e47bc280d4f431440eb7538d9d97c0a7aa7` |
+| R4 supplement profile | `R4_NAME_RESOLUTION_MODULES` |
+| R4 supplement date | 2026-07-30 |
 | Tracking issue | `TBD` |
 | Supersedes | None |
 | Created | 2026-07-24 |
@@ -362,7 +365,7 @@ Closure, constant initializer, default-argument initializer, property accessor, 
 최소 identity domain은 다음과 같다.
 
 ```text
-PackageId, ModuleId, SourceFileId
+PackageId, ModuleId, SourceFileId, TargetId, DependencyBindingId
 ItemId, ItemOwnerId, BodyOwnerId, DeclId, FunctionId, TypeDeclId
 RuntimeTypeId, ClassId, EnumId, VariantId
 MemberId, ClassSlotId, AssociatedItemId
@@ -370,7 +373,8 @@ TraitId, RequirementId, ConformanceId
 WitnessId, WitnessParamId, RequirementBindingId
 FacetTypeId, FacetInstanceId, AbiTag
 ExtensionSetId, ExtensionMemberId, ActivationOriginId
-LabelId, FormalId, EvidenceOriginId
+LabelId, FormalId, EvidenceOriginId, SourceOriginId
+ResolverScopeId, ImportBindingId
 ProviderId, AuthorityId, EntryCandidateId
 ProviderVersionId, CacheIdentityId, ReplayTokenId
 ActorId, ActorProtocolId, ActorHandlerId, ActorRequestId
@@ -1963,6 +1967,275 @@ owner의 네 lookup domain도 HIR에서 분리된다. Trait-associated 선택은
 보충으로 companion object, class activation, xVM-only backend 전환 또는
 제품 구현이 활성화되지는 않는다.
 
+## 29.1 R4 이름 해석·모듈 seal
+
+이 절은 `IR-RES-P0-040`, `IR-RES-P0-041`,
+`IR-MOD-P1-042`–`IR-MOD-P1-047`, `IR-RES-P1-048`,
+`IR-RES-P1-049`, `IR-TRACE-P1-050`, `IR-TRACE-P2-051`의
+동결된 Option A를 HIR-H1 경계에 투영한다. generic inference와 ordinary
+overload winner, Trait witness 생성·선택, production 구현은 이 절의
+권위가 아니다. 이 source projection의 상태 전이는
+`APPROVED_NOT_INTEGRATED -> INTEGRATED_UNVERIFIED`이며 publication
+metadata나 제품 실행 완료를 뜻하지 않는다.
+
+### 29.1.1 typed resolver identity
+
+```text
+TargetId = CanonicalTargetKey(
+  package_id,
+  canonical_manifest_target_name,
+  target_kind: library | executable | script,
+)
+
+DependencyBindingId = (
+  consumer_package_id,
+  source_visible_binding,
+)
+
+ResolverScopeId =
+    PackageRootScope(PackageId)
+  | TargetScope(TargetId)
+  | ModuleScope(ModuleId)
+  | SourceContributionScope(SourceFileId)
+  | ItemOwnerScope(DeclId)
+  | BodyLocalScope(HirBodyId, HirScopeId)
+
+HirScopeId = (HirBodyId, owner_local_scope_id)
+HirLocalId = (HirBodyId, owner_local_binding_id)
+ImportBindingId = (ResolverScopeId, Namespace, local_binding_name)
+```
+
+`TargetId`에는 source-role policy, activation profile, source-file order,
+absolute path, timestamp, content digest가 들어가지 않는다.
+`DependencyBindingId`에는 provider package가 들어가지 않는다. provider가
+바뀌면 같은 source-visible binding identity가 새 content와 graph digest를
+가리킨다. 두 identity 모두 HIR 값으로 직접 투영되지 않고 target/module
+compilation receipt에 남는다.
+
+`ResolverScopeId`의 variant tag는 identity의 일부다. absolute path와
+span은 key가 아니다. body-local variant만 exact `HirScopeId`를 가진다.
+`HirScopeId`는 normalized semantic scope tree의 deterministic preorder,
+`HirLocalId`는 committed normalized binding의 deterministic order로
+배정한다. recovery scope와 provisional pattern binder는 ID를 얻지 않고,
+shadowing은 outer ID를 재사용하지 않는다.
+
+`SourceOriginId`는 `(source_file_id, lossless CST semantic node identity,
+semantic origin role)`에서 만들어지고 diagnostic 위치의 안정 순서를
+제공한다. `ActivationOriginId`는 `(extension_set_id,
+activating_resolver_scope_id, activation_kind, semantic_site_key)`이고,
+오직 admitted `use`가 만든다. path, timestamp, traversal/import order는
+둘의 identity 입력이 아니다.
+
+다음 모호한 별칭은 canonical HIR field 이름으로 사용할 수 없다.
+
+| 금지 이름 | canonical replacement |
+|---|---|
+| `WitnessVisibilityOriginId` | `EvidenceOriginId` |
+| `ImportOriginId` | `ImportBindingId` |
+| `BindingId` | owner에 따라 `DeclId`, `HirLocalId`, `ImportBindingId` |
+| `ScopeId` | owner에 따라 `ResolverScopeId`, `HirScopeId` |
+| `NameRefId` | `SourceOriginId` + existing `ResolvedRef` |
+| `ResolvedReferenceId` | existing `ResolvedRef` |
+| `ExportBindingId` | `(ModuleId, namespace, exported_name)` map key + typed target |
+
+### 29.1.2 환경과 import trace
+
+```text
+ResolverFrame {
+  resolver_scope_id,
+  name_env,
+  activation_env,
+  witness_visibility_env,
+}
+
+ImportBindingTrace {
+  binding: ImportBindingId,
+  target: ImportTargetIdentity,
+  provider_binding_id_or_self: DependencyBindingId | self,
+  provider_module_id: ModuleId,
+  origin: SourceOriginId,
+}
+
+ActivationBindingTrace {
+  activation: ActivationOriginId,
+  activated_identity: ExtensionSetId,
+  provider_binding_id_or_self: DependencyBindingId | self,
+  provider_module_id: ModuleId,
+}
+```
+
+For the R4 supplement, `ImportTargetIdentity` is the closed sum
+`Module(ModuleId) | Declaration(DeclId)`. A `MODULE` import remains a resolver
+identity and never creates an expression-HIR `ResolvedRef`. A declaration
+target projects to `ResolvedRef::DirectDecl(DeclId)` only at an expression use
+site. `ImportBindingId` remains provenance and is never the HIR target.
+
+Every import and activation trace retains one provider pair. In that pair,
+`self` means that provider and consumer belong to the same package; it does
+not assert that their `ModuleId` values are equal. The owning resolver scope's
+nearest `TargetScope` supplies the consumer `TargetId`, and the pair must match
+exactly one package-graph `visible_module_bindings` row for that target:
+`provider_binding_id_or_self` matches `dependency_binding_id_or_self`, and
+`provider_module_id` matches `resolved_module_id`. This relation is
+provenance; it does not change `ImportBindingId`, `ActivationOriginId`, or the
+resolved HIR target.
+
+The current source profile has no root-connected control-label carrier.
+Control-label shadowing is therefore `NOT_APPLICABLE_CURRENT_PROFILE`; the
+live-ancestor reuse prohibition is reserved for a separately activated future
+`FLOW_CONTROL_PROFILE`.
+
+`NameEnv`는 innermost부터 검색해 exact `(namespace, spelling)`가 처음
+나타난 frame에서 멈춘다. outer frame은 같은 tier의 candidate가 아니다.
+같은 frame의 single binding 중복은 거부하고, callable은 canonical
+overload-slot key가 pairwise distinct할 때만 하나의 overload set을 이룬다.
+return type, responsibility-only 차이와 선언 순서는 slot을 만들지 않는다.
+parameter와 root callable body는 한 collision domain이다.
+
+proper child block은 문법상 허용된 module/type/value/callable declaration과
+import alias만 fresh typed identity로 shadow할 수 있다. overload set은
+frame을 건너 merge하지 않는다. member, type-side, associated, extension,
+witness capability는 lexical shadow가 아니다. 별도
+`FLOW_CONTROL_PROFILE`이 활성화된 경우에만 live-ancestor control-label
+재사용을 거부하며, current source profile에는 이 검사가 적용되지 않는다.
+local function은 선언 뒤부터 보이고 hoisting하지 않는다.
+pattern probe는 provisional이며 성공한 atomic commit만 fresh
+`HirLocalId`를 만든다.
+
+`NameEnv`, `ActivationEnv`, `WitnessVisibilityEnv`는 서로 생성 권한을
+전달하지 않는다. 특히 `import`는 extension activation을 만들지 않고,
+`use`는 이름이나 witness를 만들지 않으며, witness visibility는 새
+evidence를 만들지 않는다. scope exit는 그 frame만 pop한다.
+
+같은 `(ResolverScopeId, Namespace, local_name)` import key는 target이
+같아도 duplicate이고 target이 다르면 collision이다. 같은 target을 서로
+다른 explicit alias나 scope로 가져오는 것은 distinct
+`ImportBindingId`다. resolved target은 required content이지 binding key가
+아니다. `TYPE`, `VALUE`, `CALLABLE_OVERLOAD_SET` namespace의
+declaration-valued target은 expression use-site에서 exact declaration이
+이미 선택된 경우에만 `ResolvedRef::DirectDecl(DeclId)`로 투영할 수
+있지만 `MODULE` import는 resolver identity로만 남고 expression HIR을
+만들지 않는다.
+`ImportBindingId`는 두 경우 모두 resolver trace에 남긴다.
+
+### 29.1.3 analysis HIR와 canonical HIR 경계
+
+R4가 닫을 수 있는 결과는 다음뿐이다.
+
+```text
+RESOLVED_NONCALL_REFERENCE          // resolver-trace outcome, not a HIR node kind
+ResolvedOverloadSetRef              // AnalysisHir only
+NameResolutionTrace
+ImportBindingTrace
+VisibilityProof
+```
+
+`RESOLVED_NONCALL_REFERENCE`는 resolver trace의 선택 결과 이름이다.
+`ModuleId` 결과는 resolver identity로만 남고 canonical expression-HIR
+projection은 `NONE`이다. Expression local/declaration 결과만 각각
+`ResolvedRef::Local(HirLocalId)` 또는
+`ResolvedRef::DirectDecl(DeclId)`로 투영한다.
+
+`ResolvedOverloadSetRef`는 다음 generic/ordinary-overload cluster가 exact
+winner와 complete substitution을 고르기 전까지 `AnalysisHir`에만 있다.
+`CanonicalHirH1`과 MIR에는 들어갈 수 없다. R4는
+`OVERLOAD_WINNER_FUNCTION_ID`, `COMPLETE_GENERIC_SUBSTITUTION`,
+`EXPECTED_TYPE_DIRECTED_WINNER`, `APPLICABILITY_RANK`,
+`SPECIFICITY_WINNER`, `ROW_INFERENCE_RESULT`,
+`RETURN_TYPE_ONLY_WINNER`를 만들지 않는다. 기존
+`EvidenceOriginId` visibility는 보존하지만 witness를 생성하거나 parent
+witness를 대체하지 않는다.
+
+ordinary selector에서 applicable nominal set과 active extension set이
+모두 nonempty이면 `MEMBER_EXTENSION_COLLISION`으로 끝나고 selected
+reference 수는 0이다. exact qualified extension selector는 처음부터 그
+extension domain만 사용한다. source/import/activation order는 winner가
+아니다.
+
+### 29.1.4 module compilation receipt와 verifier
+
+```text
+ModuleCompilationReceipt {
+  profile,
+  target_id,
+  target_kind,
+  module_id,
+  package_graph_sha256,
+  module_source_contribution_sha256,
+  dependency_receipt_sha256,
+  resolver_trace_sha256,
+  visibility_closure_sha256,
+  initialization_plan_sha256,
+  interface_sha256,
+  implementation_sha256,
+  compilation_receipt_sha256,
+}
+```
+
+`ModuleCompilationDependencyReceipt` is the dependency subreceipt defined by
+`schemas/language/module-compilation-dependency-receipt.schema.json`; it binds
+one consumer module's imports, activations, and required provider interfaces.
+Each import and activation binding repeats its exact provider pair. The
+receipt's `required_interfaces` is the exact unique set of those pairs after
+excluding only `provider_module_id == consumer_module_id`. Therefore a
+same-package, different-module provider remains required with binding
+`self`; `self` is a package relation, not a same-module shortcut. Every used
+pair must also match one package-graph `visible_module_bindings` row for
+`consumer_target_id`. Missing, extra, stale, or graph-unbound pairs are
+rejected by `DependencyInterfaceBindingClosed`.
+`ModuleCompilationReceipt` is the enclosing artifact and must not be used as
+an alias for that subreceipt. The three hashes have separate identity domains:
+`ModuleInterfaceDigest.canonical_sha256` contains only effective public
+semantic residue; `ModuleImplementationDigest.implementation_sha256` contains
+private HIR semantics and binds that interface hash; and
+`ModuleCompilationReceipt.compilation_receipt_sha256` closes source provenance,
+graph, dependency, resolver, visibility, initialization, interface, and
+implementation artifacts. Source paths, `SourceFileId`, origin/proof IDs,
+dependency-receipt bytes, private HIR, and debug spans never enter the public
+interface preimage. A script has no importable interface and therefore binds
+`interface_sha256 = null`.
+
+All JSON self hashes in this closure use
+`DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1`: validate the closed schema and its
+declared canonical array order; remove exactly the artifact's top-level
+self-hash field; recursively order object members by Unicode scalar key; emit
+mandatory JSON escapes and otherwise direct UTF-8 scalars without Unicode
+normalization, whitespace, or terminal newline; then SHA-256 the bytes.
+Current R4 digest schemas admit integers but no general floating-point number
+domain, so this contract must not be relabeled as RFC 8785. Reusing this byte
+algorithm does not merge the public-interface, private-implementation, and
+full-compilation identity domains.
+
+package dependency와 re-export graph는 acyclic이다. module-header SCC는
+모든 header를 모은 뒤 module-header/type-declaration/signature reference만
+남을 때 허용한다. static-value, runtime-initializer, re-export edge는 그
+SCC에서 금지한다. module static value graph는 acyclic compile-time
+evaluation이고, 모든 값이 성공한 뒤 한 번 atomic commit하며 runtime
+initializer는 0이다.
+
+`ModuleSignature`는 schema/self-hash 외 모든 normalized public residue가
+exact match해야 한다. opaque facade는 narrowing-only projection이다.
+stale dependency receipt 또는 interface digest mismatch는 HIR/MIR
+lowering 전에 거부한다.
+
+verifier는 다음 순서의 첫 실패를 primary로 고정한다.
+
+1. `PackageModuleSourceGraphAdmitted`
+2. `ModuleItemSkeletonSetAdmitted`
+3. `DependencyInterfaceBindingClosed`
+4. `ResolverScopeTreeAdmitted`
+5. `ReferenceCandidateSetResolved`
+6. `ReferenceVisibilityActivationAdmitted`
+7. `ResolvedNoncallReferenceSelected`
+8. `ResolverHirSealAdmitted`
+9. `ModuleInterfaceDigestVerified`
+
+같은 stage에서는 existing exact owner-bound diagnostic이 generic fallback보다
+먼저이고, primary/related span은 stable `SourceOriginId` 순서다. source,
+import, file enumeration은 우선순위가 아니다. 이 설계 정합성은 production
+resolver/checker 실행 영수증이 아니며, 22 OPEN feature P1과
+15/15 `NOT_RUN` product lane을 바꾸지 않는다.
+
 ## 30. 최종 채택 기준
 
 HIR-H1 제안은 최소한 다음을 모두 만족할 때만 정본 채택 후보가 될 수 있다.
@@ -1970,16 +2243,25 @@ HIR-H1 제안은 최소한 다음을 모두 만족할 때만 정본 채택 후�
 - current authority와 live delta가 하나의 명시적 canonical revision으로 고정된다.
 - `deeplus.hir/h1` schema/version authority가 정식으로 배정된다.
 - canonical HIR에 unresolved name, candidate set, inference variable, recovery node가 존재하지 않는다.
+- callable candidate는 analysis HIR의 `ResolvedOverloadSetRef`에서만
+  머물고 exact winner 전에는 canonical HIR로 seal되지 않는다.
+- resolver scope, committed local, import binding, source/activation origin이
+  이 RFC의 typed identity recipe와 일치한다.
 - 모든 식/binder/capture/call argument에 exact normalized type과 responsibility가 있다.
 - call, label, trailing closure, witness, extension, provider, actor selector가 재탐색 없이 닫혀 있다.
 - Message/ActorMessage의 ordered arguments는 ordinary channel law를 재사용하되 `CallMode`와 selector/transport domain은 지워지지 않는다.
 - pattern, construction, cleanup, run/reply/message transaction이 구조화된 plan으로 lossless하게 보존된다.
 - 같은 normalized 의미가 byte-for-byte 같은 canonical HIR를 만든다.
 - item/body incremental invalidation과 semantic/debug digest 분리가 검증된다.
-- 모든 executable HIR variant에 total MIR-X1 lowering과 adversarial verifier test가 있다.
+- 모든 executable HIR variant에 canonical Deeplus MIR로의 total lowering과
+  adversarial verifier test가 있다. MIR-X1은 선택적 비권위 compatibility
+  projection이며 adoption gate가 아니다.
 - HIR→MIR pair는 deterministic relowering으로 검증된다.
 - MIR와 xVM에 backend가 의미를 다시 결정해야 하는 opaque hole이 없다.
 
 가장 중요한 경계는 한 문장으로 요약된다.
 
-> **HIR-H1은 “소스에 가까운 마지막 의미 표현”이고, MIR-X1은 “실행에 가까운 첫 의미 권위”다. HIR에서 모든 정적 결정을 닫고, MIR에서는 그 결정을 CFG·Place·token·outcome으로만 전개한다.**
+> **HIR-H1은 “소스에 가까운 마지막 의미 표현”이고, canonical Deeplus
+> MIR는 “실행에 가까운 첫 현행 의미 handoff”다. HIR에서 모든 정적
+> 결정을 닫고, MIR에서는 그 결정을 CFG·Place·token·outcome으로만
+> 전개한다. MIR-X1은 선택적 비권위 compatibility projection이다.**

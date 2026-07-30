@@ -1273,6 +1273,26 @@ ordered condition algorithm은
 source order와 registry order가
 진단 winner를 바꾸지 않는다.
 
+R4 module/resolver cluster는 다음 exact stage order를 사용한다.
+
+| ordinal | predicate | primary |
+|---:|---|---|
+| 1 | `PackageModuleSourceGraphAdmitted` | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` |
+| 2 | `ModuleItemSkeletonSetAdmitted` | `MODULE_ITEM_SKELETON_CONFLICT` |
+| 3 | `DependencyInterfaceBindingClosed` | `DEPENDENCY_INTERFACE_BINDING_INVALID` |
+| 4 | `ResolverScopeTreeAdmitted` | `RESOLVER_SCOPE_TREE_INVALID` |
+| 5 | `ReferenceCandidateSetResolved` | `REFERENCE_CANDIDATE_SET_INVALID` |
+| 6 | `ReferenceVisibilityActivationAdmitted` | `REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION` |
+| 7 | `ResolvedNoncallReferenceSelected` | `NONCALL_REFERENCE_SELECTION_FAILED` |
+| 8 | `ResolverHirSealAdmitted` | `RESOLVER_HIR_SEAL_INCOMPLETE` |
+| 9 | `ModuleInterfaceDigestVerified` | `MODULE_INTERFACE_DIGEST_MISMATCH` |
+
+가장 낮은 ordinal 실패가 primary다. 같은 stage에서는 existing exact
+owner-bound primary가 generic fallback보다 우선한다. primary span은
+violation 안의 lowest stable `SourceOriginId`, related spans는 같은 ID의
+오름차순이다. source/import/file enumeration은 winner가 아니며 batch
+primary와 recovery-created admitted HIR는 없다.
+
 AsyncCollector에서는
 다음 조건이 순서 있는 admission을 이룬다.
 
@@ -1334,6 +1354,14 @@ parser/checker status가 `not_run`이면
 문서 예제도 마찬가지다.
 source semantics를 설명하지만
 artifact-bound receipt가 아니다.
+
+R4의 각 gap은 `IR-R4-GAP-01-P/B/N`부터
+`IR-R4-GAP-12-P/B/N`까지 positive/boundary/negative oracle 세 개를
+가진다. negative oracle은 한 stage만 실패시켜 위 primary를 확인해야
+한다. boundary oracle은 manifest/source/import 열거 순서 반전,
+같은 target의 다른 alias, private-body-only interface 변화처럼 semantic
+identity가 바뀌지 않는 경우를 분리한다. 모든 oracle은
+`DESIGN_SEED_NOT_RUN`이며 제품 PASS가 아니다.
 
 ## 18. conformance identity
 
@@ -1579,6 +1607,18 @@ generated source digest와 sidecar를 갖는다.
 generation PASS가
 scanner/checker/MIR PASS를 의미하지 않는다.
 
+R4 `ModuleCompilationReceipt`는 최소한 `TargetId`,
+package/module/source graph digest,
+`ModuleCompilationDependencyReceipt`, normalized public residue digest,
+`ModuleInterfaceDigest`, resolver trace digest, verified HIR semantic digest를
+결합한다. dependency subreceipt는 import·activation·required-interface
+binding만 담당한다. import trace는 `ImportBindingId`,
+`ImportTargetIdentity`, `SourceOriginId`를 보존한다. 정적 module values의
+receipt order는 canonical `DeclId` order이며 runtime initializer count는
+0이다.
+이 receipt의 정적 byte/field 검증도 production compiler 실행을 대신하지
+않는다.
+
 ### 21.4 proof receipt
 
 R2 certificate는
@@ -1650,7 +1690,7 @@ PASS는 해당 lane과
 
 ### 23.4 cross-backend
 
-xVM, AOT, ORC의
+xVM, Cranelift ObjectModule AOT, Cranelift JITModule의
 ordered observable parity를 비교한다.
 
 각 backend가 개별적으로 종료했다는 사실만으로
@@ -2002,6 +2042,7 @@ receipt는 null이다.
 - “UML output은 recheck된다.”
 - “derive-via는 MIR injection을 금지한다.”
 - “predicate는 first failed condition을 고른다.”
+- “R4 resolver는 exact typed identity와 stage precedence로 seal된다.”
 
 다음 문장을 뜻하지 않는다.
 
@@ -2013,6 +2054,10 @@ receipt는 null이다.
 
 설계 정적 계약과
 제품 실행 evidence를 정확히 분리해야 한다.
+R4 closure도 22 OPEN feature P1을 닫지 않으며 15/15 product lane은
+계속 `NOT_RUN`이다. `ResolvedOverloadSetRef`에서 exact winner를 고르는
+generic/ordinary-overload cluster와 Trait witness materialization은 이
+장 보충의 실행 권위가 아니다.
 
 ## 32. 검토 체크리스트
 

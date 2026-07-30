@@ -1035,84 +1035,69 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MemberExtensionCollisionRejected",
     "source_name": "MemberExtensionCollisionRejected",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "Reject ordinary member/extension collisions before within-domain ranking.",
+    "input_descriptor": "MemberExtensionCollisionDescriptorR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "call_shape",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "selector_kind",
+      "applicable_nominal_candidate_ids",
+      "applicable_active_extension_candidate_ids",
+      "qualified_extension_id_or_null"
     ],
     "feature_refs": [
       "member_extension_collision_error_policy",
       "method_extension_resolution_policy"
     ],
     "diagnostic_refs": [
-      "MEMBER_EXTENSION_COLLISION",
-      "STABLE_MEMBER_EXTENSION_COLLISION"
+      "MEMBER_EXTENSION_COLLISION"
     ],
-    "design_seed_diagnostic_refs": [
-      "MEMBER_EXTENSION_COLLISION",
-      "STABLE_MEMBER_EXTENSION_COLLISION"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "member candidate and active extension candidate are both applicable",
-      "no return/effect/use-order tie break"
+      "ordinary selector syntax is in use",
+      "applicability is computed from the receiver static type and normalized call shape",
+      "nominal-member and active-extension candidate domains remain distinct",
+      "return type, import order, use order and source traversal order are not tie-breakers"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "call_shape",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "selector_kind",
+      "applicable_nominal_candidate_ids",
+      "applicable_active_extension_candidate_ids",
+      "qualified_extension_id_or_null"
     ],
     "formal_judgment_id": "J-MemberExtensionCollisionRejected",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/method-extension-resolution-trace-schema.json#/$defs/memberExtensionCollisionDescriptor",
     "preconditions": [
-      "member candidate and active extension candidate are both applicable",
-      "no return/effect/use-order tie break"
+      "ordinary selector syntax is in use",
+      "candidate sets have been collected in their distinct nominal-member and active-extension domains"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize receiver TypeId, call shape and candidate identities; sort diagnostics by stable SourceOriginId but never use enumeration order as semantic priority",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record MemberExtensionCollisionRejected requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "compute the applicable nominal-member set and applicable active-extension set independently",
+      "if either set is empty, return admit and leave selection to the owning within-domain rule",
+      "if both sets are nonempty, do not rank either set and commit no selected candidate",
+      "reject with MEMBER_EXTENSION_COLLISION as the sole active primary and selected_count = 0",
+      "an exact qualified extension selector restricts lookup to its named extension domain and therefore bypasses this cross-domain predicate"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
+    "termination_metric": "two finite normalized candidate sets",
+    "success_result": "admit | reject(MEMBER_EXTENSION_COLLISION, selected_count = 0)",
     "active_primary_diagnostic": "MEMBER_EXTENSION_COLLISION",
-    "secondary_diagnostics": [
-      "STABLE_MEMBER_EXTENSION_COLLISION"
-    ],
+    "secondary_diagnostics": [],
     "positive_fixture_ids": [
       "PF-MemberExtensionCollisionRejected-POS"
     ],
     "negative_fixture_ids": [
       "PF-MemberExtensionCollisionRejected-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "collect separate domains -> test emptiness -> reject cross-domain collision before within-domain ranking",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "9be8348cf7be9985c0d8d5c198d75c14c6eff186d2bc514e11b8c42e98f4cee9",
@@ -1124,7 +1109,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MethodExtensionResolutionAdmitted",
     "source_name": "method/extension message resolution",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Preserve method/extension domains and defer selection.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1157,12 +1142,12 @@
       "EXTENSION_IMPORTED_BUT_NOT_ACTIVE",
       "RECEIVER_MODE_MISMATCH"
     ],
-    "output": "admit | reject(diagnostic_id)",
+    "output": "design_seed(ResolvedOverloadSetRef, selection_deferred) | reject_after_next_cluster(diagnostic_id)",
     "requires": [
-      "methods resolve slots",
-      "extensions resolve static functions",
-      "import is not use",
-      "runtime receiver type is not used for extension lookup"
+      "methods are slots; extensions are static functions",
+      "import is not use; runtime receiver type never drives lookup",
+      "cross-domain collision precedes ranking; qualification selects one extension domain",
+      "the next cluster owns applicability, substitution, rank and winner"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1185,20 +1170,18 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "methods resolve slots",
-      "extensions resolve static functions",
-      "import is not use",
-      "runtime receiver type is not used for extension lookup"
+      "candidate, activation and call-shape identities are normalized",
+      "the next cluster supplies any applicable-domain partition"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize receiver, call, activation and candidate IDs; preserve unordered partitions",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record MethodExtensionResolutionAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "collect nominal and active-extension IDs separately; qualification restricts the extension domain",
+      "hand ResolvedOverloadSetRef to the next cluster without applicability, substitution, rank or winner",
+      "when supplied applicability has both domains, run MemberExtensionCollisionRejected before selection",
+      "otherwise selection_deferred with selected_count = unspecified_in_R4; emit nothing and never runtime-relook up"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
+    "termination_metric": "finite normalized domains; R4 performs no winner search",
+    "success_result": "selection_deferred(ResolvedOverloadSetRef, selected_count = unspecified_in_R4)",
     "active_primary_diagnostic": "AMBIGUOUS_EXTENSION_CANDIDATE",
     "secondary_diagnostics": [
       "DYNAMIC_EXTENSION_DISPATCH_FORBIDDEN",
@@ -1212,10 +1195,12 @@
     "negative_fixture_ids": [
       "PF-MethodExtensionResolutionAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "normalize -> partition -> ResolvedOverloadSetRef -> next cluster applicability -> collision check -> defer",
+    "dependency_predicates": [
+      "MemberExtensionCollisionRejected"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "diagnostic_disposition": "design_seed_nonemitting_selection_deferred_to_next_cluster",
     "predicate_maturity": "design_seed",
     "emission_eligible": false,
     "predecessor_identity": {

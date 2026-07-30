@@ -86,6 +86,17 @@ identity가 바뀌어서도 안 된다.
 중복 선언이나 충돌은 public API digest를 만들기 전에 거부하며 source
 순서를 identity나 충돌 해소 규칙으로 사용하지 않는다.
 
+Package dependency와 re-export graph는 acyclic이어야 한다. self-loop와
+nontrivial SCC는 거부한다. Module header graph만 예외적으로 SCC를
+허용하지만, 모든 header를 먼저 수집한 뒤 그 SCC 안의 edge가
+module-header/type-declaration/signature reference뿐이어야 한다.
+static-value, runtime-initializer, re-export edge가 하나라도 있으면
+거부한다. 파일, import, manifest 열거 순서는 winner가 아니다.
+
+Module의 immutable static value는 별도 acyclic compile-time graph에서
+평가하고 모두 성공한 뒤 한 번에 commit한다. 부분 publication과 runtime
+module initializer는 0개다. cycle이나 평가 실패는 정적 오류다.
+
 `array`와 `case`는 일반 식별자다. 이를 키워드로 어휘 분석하거나
 가르쳐서는 안 된다. `String`, `Record`, `Sequence`와 같은 Prelude 이름은
 바인딩이며 키워드가 아니다.
@@ -112,6 +123,21 @@ UseExportDecl ::= "use" "export" QualifiedPath StatementBoundary ;
 
 `export`는 공개 API 잔여물을 기록한다. 가시성, 소유권, 일관성 또는
 모듈 시그니처 검사를 우회하지 않는다.
+
+한 import local의 정적 key는
+`(ResolverScopeId, namespace, local_binding_name)`이다. 같은 key를 다시
+가져오면 target이 같아도 duplicate, target이 다르면 collision이다. 같은
+target에 서로 다른 explicit alias를 주거나 다른 scope에서 가져오면 서로
+다른 `ImportBindingId`다. import 순서와 dependency 순서는 우선순위가
+아니다. `import`는 `NameEnv`만 바꾸며 extension `ActivationEnv`를 만들지
+않는다. 반대로 `use`는 activation만 만들고 일반 이름이나 Trait evidence를
+만들지 않는다.
+
+`ModuleSignature`는 schema/self-hash를 제외한 normalized public residue가
+exact match해야 한다. 누락·추가·차이는 `MODULE_SIGNATURE_MISMATCH`다.
+source order와 trivia는 영향을 주지 않는다. opaque facade는 기존 export를
+숨길 수만 있는 narrowing projection이며 새 export나 더 넓은 visibility를
+만들 수 없다.
 
 ## 최상위 가시성
 
@@ -195,6 +221,12 @@ def ask() -> Int
   얻을 수 없다.
 - 지역 import는 실행 시간 로딩이 아니며 조건부 실행 시간 권위가 될 수
   없다.
+- 같은 scope/namespace/local-name import를 중복 선언할 수 없다.
+- Package dependency 또는 re-export cycle, static-value cycle은 거부한다.
+- header SCC에 static value, runtime initializer, re-export edge를 섞을
+  수 없다.
+- stale module-interface receipt와 public residue mismatch는 lowering 전에
+  거부한다.
 - 중첩 지역 함수에는 `public`, `common`, `private`를 붙일 수 없다.
 - 멤버에서 `+`, `-`, `#` 대신 최상위 가시성 단어를 사용할 수 없다.
 - `common` 선언은 자신의 패키지 밖으로 내보낼 수 없다.
@@ -209,6 +241,10 @@ def ask() -> Int
   시점에서 보여야 한다.
 - 범위가 있는 import와 use는 이름 해석에 영향을 주지만 소유자 사실,
   적합성 증거 또는 실행 시간 권위를 만들어 내지는 않는다.
+- canonical HIR는 import의 resolved target만 보존하고 `ImportBindingId`는
+  resolver trace provenance로 남긴다.
+- 이 R4 설명은 22 OPEN feature P1과 15/15 `NOT_RUN` 제품 lane을 바꾸지
+  않는다.
 
 ## 권위 추적
 

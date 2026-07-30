@@ -1,0 +1,1010 @@
+[
+  {
+    "fixture_id": "PF-PackageModuleSourceGraphAdmitted-POS",
+    "predicate_id": "PackageModuleSourceGraphAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One root package, target, module and source row form one closed graph.",
+      "expected_outcome": "ADMIT_CLOSED_PACKAGE_MODULE_SOURCE_GRAPH",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4PackageModuleSourceGraphDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the package, target, module and source-contribution graph is closed",
+    "rule_seed": "ADMIT_CLOSED_PACKAGE_MODULE_SOURCE_GRAPH",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PackageModuleSourceGraphAdmitted-BOUNDARY",
+    "predicate_id": "PackageModuleSourceGraphAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "Reverse manifest, target and source-row enumeration.",
+      "expected_outcome": "UNCHANGED_GRAPH_AND_DIGEST",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4PackageModuleSourceGraphDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "enumeration order does not change graph identity or digest",
+    "rule_seed": "UNCHANGED_GRAPH_AND_DIGEST",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-PackageModuleSourceGraphAdmitted-NEG",
+    "predicate_id": "PackageModuleSourceGraphAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "The root package references one TargetId absent from the target table.",
+      "expected_outcome": "REJECT_PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+      "primary_reason": "PACKAGE_TARGET_MISSING"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4PackageModuleSourceGraphDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID",
+    "violated_condition": "PACKAGE_TARGET_MISSING",
+    "rule_seed": "PACKAGE_TARGET_MISSING",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleItemSkeletonSetAdmitted-POS",
+    "predicate_id": "ModuleItemSkeletonSetAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "Two module contributions use disjoint StableSymbolKeys.",
+      "expected_outcome": "ADMIT_CONFLICT_FREE_ITEM_SKELETON_SET",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleItemSkeletonSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "all module-contribution declaration keys are disjoint",
+    "rule_seed": "ADMIT_CONFLICT_FREE_ITEM_SKELETON_SET",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleItemSkeletonSetAdmitted-BOUNDARY",
+    "predicate_id": "ModuleItemSkeletonSetAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "Reverse contribution enumeration.",
+      "expected_outcome": "UNCHANGED_ITEM_SKELETON_SET",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleItemSkeletonSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "source-contribution order does not change the item-skeleton set",
+    "rule_seed": "UNCHANGED_ITEM_SKELETON_SET",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleItemSkeletonSetAdmitted-NEG",
+    "predicate_id": "ModuleItemSkeletonSetAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "Two contributions define different declarations with one StableSymbolKey.",
+      "expected_outcome": "REJECT_MODULE_ITEM_SKELETON_CONFLICT",
+      "primary_reason": "MODULE_CONTRIBUTION_CONFLICT"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleItemSkeletonSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "MODULE_ITEM_SKELETON_CONFLICT",
+    "violated_condition": "MODULE_CONTRIBUTION_CONFLICT",
+    "rule_seed": "MODULE_CONTRIBUTION_CONFLICT",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DependencyInterfaceBindingClosed-POS",
+    "predicate_id": "DependencyInterfaceBindingClosed",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One import binding selects one exported identity and matching interface digest.",
+      "expected_outcome": "ADMIT_CLOSED_DEPENDENCY_INTERFACE_BINDING",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4DependencyInterfaceBindingDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the import selects one exact exported identity and matching interface digest",
+    "rule_seed": "ADMIT_CLOSED_DEPENDENCY_INTERFACE_BINDING",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DependencyInterfaceBindingClosed-BOUNDARY",
+    "predicate_id": "DependencyInterfaceBindingClosed",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "Only a private provider body changes.",
+      "expected_outcome": "UNCHANGED_INTERFACE_BINDING_AND_DIGEST",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4DependencyInterfaceBindingDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a private body change does not alter public interface binding identity",
+    "rule_seed": "UNCHANGED_INTERFACE_BINDING_AND_DIGEST",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-DependencyInterfaceBindingClosed-NEG",
+    "predicate_id": "DependencyInterfaceBindingClosed",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "One import binding resolves to zero exported targets.",
+      "expected_outcome": "REJECT_DEPENDENCY_INTERFACE_BINDING_INVALID",
+      "primary_reason": "IMPORT_TARGET_NOT_FOUND"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4DependencyInterfaceBindingDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "DEPENDENCY_INTERFACE_BINDING_INVALID",
+    "violated_condition": "IMPORT_TARGET_NOT_FOUND",
+    "rule_seed": "IMPORT_TARGET_NOT_FOUND",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverScopeTreeAdmitted-POS",
+    "predicate_id": "ResolverScopeTreeAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One proper child binding shadows an ancestor with a fresh HirLocalId.",
+      "expected_outcome": "ADMIT_CLOSED_RESOLVER_SCOPE_TREE",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverScopeTreeDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a child-frame shadow allocates a fresh local identity",
+    "rule_seed": "ADMIT_CLOSED_RESOLVER_SCOPE_TREE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverScopeTreeAdmitted-BOUNDARY",
+    "predicate_id": "ResolverScopeTreeAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "Exiting the child scope restores the ancestor binding.",
+      "expected_outcome": "RESTORE_ANCESTOR_BINDING",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverScopeTreeDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "leaving a child frame restores the unchanged ancestor frame",
+    "rule_seed": "RESTORE_ANCESTOR_BINDING",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverScopeTreeAdmitted-NEG",
+    "predicate_id": "ResolverScopeTreeAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "One frame contains an import alias and local declaration with the same namespace and spelling.",
+      "expected_outcome": "REJECT_RESOLVER_SCOPE_TREE_INVALID",
+      "primary_reason": "IMPORT_LOCAL_COLLISION"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverScopeTreeDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "RESOLVER_SCOPE_TREE_INVALID",
+    "violated_condition": "IMPORT_LOCAL_COLLISION",
+    "rule_seed": "IMPORT_LOCAL_COLLISION",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceCandidateSetResolved-POS",
+    "predicate_id": "ReferenceCandidateSetResolved",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One noncall reference namespace contains exactly one visible candidate.",
+      "expected_outcome": "ADMIT_ONE_NONCALL_CANDIDATE",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceCandidateSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one noncall candidate exists in the exact namespace",
+    "rule_seed": "ADMIT_ONE_NONCALL_CANDIDATE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceCandidateSetResolved-BOUNDARY",
+    "predicate_id": "ReferenceCandidateSetResolved",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "A fully qualified owner path disambiguates the same final spelling.",
+      "expected_outcome": "ADMIT_EXACT_OWNER_QUALIFICATION",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceCandidateSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the exact owner-qualified path selects the intended namespace candidate",
+    "rule_seed": "ADMIT_EXACT_OWNER_QUALIFICATION",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceCandidateSetResolved-NEG",
+    "predicate_id": "ReferenceCandidateSetResolved",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "One noncall reference namespace contains zero candidates.",
+      "expected_outcome": "REJECT_REFERENCE_CANDIDATE_SET_INVALID",
+      "primary_reason": "ZERO_CANDIDATES"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceCandidateSetDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "REFERENCE_CANDIDATE_SET_INVALID",
+    "violated_condition": "ZERO_CANDIDATES",
+    "rule_seed": "ZERO_CANDIDATES",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-POS",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One public identity is visible from the importing module.",
+      "expected_outcome": "ADMIT_VISIBLE_REFERENCE",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the public identity is visible in the consumer module",
+    "rule_seed": "ADMIT_VISIBLE_REFERENCE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-BOUNDARY",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "One common identity is visible inside its package and absent externally.",
+      "expected_outcome": "ADMIT_PACKAGE_LOCAL_VISIBILITY",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "common visibility is admitted only within the declaring package",
+    "rule_seed": "ADMIT_PACKAGE_LOCAL_VISIBILITY",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-NEG",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "One public residue references a common identity.",
+      "expected_outcome": "REJECT_REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "primary_reason": "API_VISIBILITY_LEAK"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+    "violated_condition": "API_VISIBILITY_LEAK",
+    "rule_seed": "API_VISIBILITY_LEAK",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolvedNoncallReferenceSelected-POS",
+    "predicate_id": "ResolvedNoncallReferenceSelected",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "One noncall candidate remains after namespace and visibility filtering.",
+      "expected_outcome": "ADMIT_ONE_RESOLVED_NONCALL_REFERENCE",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolvedNoncallReferenceDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "exactly one noncall candidate remains after filtering",
+    "rule_seed": "ADMIT_ONE_RESOLVED_NONCALL_REFERENCE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolvedNoncallReferenceSelected-BOUNDARY",
+    "predicate_id": "ResolvedNoncallReferenceSelected",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "A same-spelling candidate in a different namespace is excluded before selection.",
+      "expected_outcome": "ADMIT_EXACT_NAMESPACE_NONCALL_REFERENCE",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolvedNoncallReferenceDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "same spelling in another namespace is not a selection candidate",
+    "rule_seed": "ADMIT_EXACT_NAMESPACE_NONCALL_REFERENCE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolvedNoncallReferenceSelected-NEG",
+    "predicate_id": "ResolvedNoncallReferenceSelected",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "Two noncall candidates remain in the same resolver tier after filtering.",
+      "expected_outcome": "REJECT_NONCALL_REFERENCE_SELECTION_FAILED",
+      "primary_reason": "MULTIPLE_AFTER_FILTER"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolvedNoncallReferenceDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "NONCALL_REFERENCE_SELECTION_FAILED",
+    "violated_condition": "MULTIPLE_AFTER_FILTER",
+    "rule_seed": "MULTIPLE_AFTER_FILTER",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverHirSealAdmitted-POS",
+    "predicate_id": "ResolverHirSealAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "Resolver output has zero unresolved references and every noncall reference has a typed ResolvedRef.",
+      "expected_outcome": "ADMIT_CANONICAL_HIR_SEAL",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverHirSealDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "all noncall references are typed and unresolved_count is zero",
+    "rule_seed": "ADMIT_CANONICAL_HIR_SEAL",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverHirSealAdmitted-BOUNDARY",
+    "predicate_id": "ResolverHirSealAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "A callable overload set remains ResolvedOverloadSetRef in analysis HIR and is not offered to canonical HIR-H1.",
+      "expected_outcome": "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverHirSealDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the callable overload set is fenced to analysis HIR and the next cluster",
+    "rule_seed": "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ResolverHirSealAdmitted-NEG",
+    "predicate_id": "ResolverHirSealAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "Resolver output with unresolved_count = 1 is offered for canonical HIR sealing.",
+      "expected_outcome": "REJECT_RESOLVER_HIR_SEAL_INCOMPLETE",
+      "primary_reason": "UNRESOLVED_COUNT_NONZERO"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ResolverHirSealDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "RESOLVER_HIR_SEAL_INCOMPLETE",
+    "violated_condition": "UNRESOLVED_COUNT_NONZERO",
+    "rule_seed": "UNRESOLVED_COUNT_NONZERO",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleInterfaceDigestVerified-POS",
+    "predicate_id": "ModuleInterfaceDigestVerified",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "The dependency receipt digest equals the provider ModuleInterfaceDigest.",
+      "expected_outcome": "ADMIT_MATCHING_INTERFACE_DIGEST",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleInterfaceDigestDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "dependency and provider interface digests are identical",
+    "rule_seed": "ADMIT_MATCHING_INTERFACE_DIGEST",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleInterfaceDigestVerified-BOUNDARY",
+    "predicate_id": "ModuleInterfaceDigestVerified",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "Only a private provider body changes.",
+      "expected_outcome": "INTERFACE_DIGEST_UNCHANGED",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleInterfaceDigestDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "private implementation bytes do not change ModuleInterfaceDigest",
+    "rule_seed": "INTERFACE_DIGEST_UNCHANGED",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ModuleInterfaceDigestVerified-NEG",
+    "predicate_id": "ModuleInterfaceDigestVerified",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "The normalized provider interface omits one required public export edge.",
+      "expected_outcome": "REJECT_MODULE_INTERFACE_DIGEST_MISMATCH",
+      "primary_reason": "MISSING_EXPORT_EDGE"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ModuleInterfaceDigestDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "MODULE_INTERFACE_DIGEST_MISMATCH",
+    "violated_condition": "MISSING_EXPORT_EDGE",
+    "rule_seed": "MISSING_EXPORT_EDGE",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

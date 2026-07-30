@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-visibility-closure.schema.json",
+  "title": "Deeplus module export and visibility closure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "module_id",
+    "default_external_export_set",
+    "export_edges",
+    "reexport_edges",
+    "visibility_proofs",
+    "signature_relation",
+    "opaque_facade_relation",
+    "opaque_facades",
+    "closure_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-visibility-closure/r1"
+    },
+    "module_id": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "default_external_export_set": {
+      "const": "EMPTY"
+    },
+    "export_edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/exportEdge"
+      }
+    },
+    "reexport_edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/reexportEdge"
+      }
+    },
+    "visibility_proofs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/visibilityProof"
+      }
+    },
+    "signature_relation": {
+      "const": "EXACT_NORMALIZED_PUBLIC_RESIDUE_MATCH"
+    },
+    "opaque_facade_relation": {
+      "const": "NARROWING_ONLY"
+    },
+    "opaque_facades": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/opaqueFacade"
+      }
+    },
+    "closure_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "exportOwnerId": {
+      "type": "string",
+      "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId):[^\\s]+$"
+    },
+    "referencedIdentityId": {
+      "type": "string",
+      "pattern": "^(?:ModuleId|DeclId|TypeId|MemberId|AssociatedItemId|ExtensionSetId|ExtensionMemberId|TraitWitnessId):[^\\s]+$"
+    },
+    "sourceOriginId": {
+      "type": "string",
+      "pattern": "^SourceOriginId:[^\\s]+$"
+    },
+    "activationOriginId": {
+      "type": "string",
+      "pattern": "^ActivationOriginId:[^\\s]+$"
+    },
+    "activationIdentityId": {
+      "type": "string",
+      "pattern": "^ExtensionSetId:[^\\s]+$"
+    },
+    "visibilityProofId": {
+      "type": "string",
+      "pattern": "^VisibilityProofId:[^\\s]+$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "namespace": {
+      "enum": [
+        "MODULE",
+        "TYPE",
+        "VALUE",
+        "CALLABLE_OVERLOAD_SET"
+      ]
+    },
+    "visibility": {
+      "enum": [
+        "private",
+        "common",
+        "public"
+      ]
+    },
+    "exportEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_owner_id",
+        "namespace",
+        "exported_name",
+        "referenced_identity_id",
+        "source_origin_id"
+      ],
+      "properties": {
+        "export_owner_id": {
+          "$ref": "#/$defs/exportOwnerId"
+        },
+        "namespace": {
+          "$ref": "#/$defs/namespace"
+        },
+        "exported_name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "referenced_identity_id": {
+          "$ref": "#/$defs/referencedIdentityId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "MODULE"
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "then": {
+            "properties": {
+              "referenced_identity_id": {
+                "type": "string",
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "referenced_identity_id": {
+                "type": "string",
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reexportEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_origin_id",
+        "export_owner_id",
+        "referenced_activation_identity_id",
+        "source_origin_id"
+      ],
+      "properties": {
+        "activation_origin_id": {
+          "$ref": "#/$defs/activationOriginId"
+        },
+        "export_owner_id": {
+          "$ref": "#/$defs/exportOwnerId"
+        },
+        "referenced_activation_identity_id": {
+          "$ref": "#/$defs/activationIdentityId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        }
+      }
+    },
+    "visibilityProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proof_id",
+        "export_owner_id",
+        "referenced_identity_id",
+        "api_position_kind",
+        "api_position_path",
+        "owner_visibility",
+        "referenced_visibility",
+        "package_relation",
+        "module_relation",
+        "admission"
+      ],
+      "properties": {
+        "proof_id": {
+          "$ref": "#/$defs/visibilityProofId"
+        },
+        "export_owner_id": {
+          "$ref": "#/$defs/exportOwnerId"
+        },
+        "referenced_identity_id": {
+          "$ref": "#/$defs/referencedIdentityId"
+        },
+        "api_position_kind": {
+          "enum": [
+            "parameter",
+            "result",
+            "field",
+            "generic_constraint",
+            "associated_item",
+            "error_set",
+            "effect_capability",
+            "context_capability",
+            "witness_requirement",
+            "nested_export"
+          ]
+        },
+        "api_position_path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "owner_visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "referenced_visibility": {
+          "$ref": "#/$defs/visibility"
+        },
+        "package_relation": {
+          "enum": [
+            "same_package",
+            "dependency_package",
+            "unrelated_package"
+          ]
+        },
+        "module_relation": {
+          "enum": [
+            "same_module",
+            "same_package_other_module",
+            "dependency_module"
+          ]
+        },
+        "admission": {
+          "const": "VISIBLE_NO_WIDENING"
+        }
+      }
+    },
+    "opaqueFacade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "export_owner_id",
+        "owner_public_residue_identity_ids",
+        "facade_public_residue_identity_ids"
+      ],
+      "properties": {
+        "export_owner_id": {
+          "$ref": "#/$defs/exportOwnerId"
+        },
+        "owner_public_residue_identity_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/referencedIdentityId"
+          }
+        },
+        "facade_public_residue_identity_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/referencedIdentityId"
+          }
+        }
+      }
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "closure_sha256",
+    "array_order": {
+      "export_edges": "export_owner_id_namespace_exported_name",
+      "reexport_edges": "activation_origin_id",
+      "visibility_proofs": "proof_id",
+      "opaque_facades": "export_owner_id",
+      "opaque_facades[].owner_public_residue_identity_ids": "REFERENCED_IDENTITY_ID_CANONICAL_ORDER",
+      "opaque_facades[].facade_public_residue_identity_ids": "REFERENCED_IDENTITY_ID_CANONICAL_ORDER"
+    }
+  },
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

@@ -12771,3 +12771,159 @@ let isUrgent = Priority::normal < Priority::high
 let allPriorities = Priority::low..Priority::high
 let beforeHigh = Priority::low..<Priority::high
 ```
+
+# R4 name-resolution and module closure oracles
+
+## IR-R4-GAP-MATRIX — Exact R4 positive, boundary and negative oracle crosswalk
+
+- **source_feature_ids:** `lexical_import_use_environment_stack`, `package_aware_import`, `double_colon_static_qualified_path`, `trait_witness_resolution_phase_a`, `method_extension_resolution_policy`, `member_extension_collision_error_policy`, `source_role_contract`, `module_keyword_source_header`, `block_local_import_directive_msp`, `scoped_import_block_msp`, `multi_file_module`, `script_import_execution_separation_law`, `module_signature_declaration`, `opaque_module_facade`, `extension_use_reexport_syntax`, `top_level_type_visibility_unification`, `module_api_digest_core`, `library_static_binding_initializer_msp`, `scoped_import_use_grouping`, `module_static_path_verifier_closure`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+/*
+<!-- deeplus-r4-oracle-set: IR-R4-GAP-01..12; authority: spec/language.md; product: NOT_RUN -->
+
+이 표의 ID는 R4 gap별 stable positive/boundary/negative design oracle이다.
+모든 행의 execution은 `design_static_product_not_run`, parser/checker와 15개
+제품 lane은 `NOT_RUN`이다. 표의 존재나 Markdown 검증은 product PASS가
+아니다.
+
+| oracle ID | gap | class | expected outcome | expected primary/reason |
+|---|---|---|---|---|
+| `IR-R4-GAP-01-P` | `IR-RES-P0-040` | positive | `ACCEPT_ONE_IMPORT_BINDING_ONE_RESOLVED_REF` | — |
+| `IR-R4-GAP-01-B` | `IR-RES-P0-040` | boundary | `ACCEPT_DISTINCT_HIR_LOCAL_IDS_AND_RESTORE` | — |
+| `IR-R4-GAP-01-N` | `IR-RES-P0-040` | negative | `REJECT_BEFORE_CANONICAL_HIR` | `REFERENCE_CANDIDATE_SET_INVALID/ZERO_CANDIDATES` |
+| `IR-R4-GAP-02-P` | `IR-RES-P0-041` | positive | `ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED` | — |
+| `IR-R4-GAP-02-B` | `IR-RES-P0-041` | boundary | `ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED` | — |
+| `IR-R4-GAP-02-N` | `IR-RES-P0-041` | negative | `REJECT_MEMBER_EXTENSION_COLLISION_SELECTED_COUNT_0` | `MEMBER_EXTENSION_COLLISION` |
+| `IR-R4-GAP-03-P` | `IR-MOD-P1-042` | positive | `ACCEPT_ORDER_INVARIANT_PACKAGE_MODULE_GRAPH` | — |
+| `IR-R4-GAP-03-B` | `IR-MOD-P1-042` | boundary | `ACCEPT_DISTINCT_PACKAGE_SCOPED_MODULE_IDS` | — |
+| `IR-R4-GAP-03-N` | `IR-MOD-P1-042` | negative | `REJECT_PACKAGE_TARGET_MISSING` | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID/PACKAGE_TARGET_MISSING` |
+| `IR-R4-GAP-04-P` | `IR-MOD-P1-043` | positive | `ACCEPT_EXACT_IMPORT_BINDING_AND_RESOLVED_REF` | — |
+| `IR-R4-GAP-04-B` | `IR-MOD-P1-043` | boundary | `ACCEPT_EXPLICIT_GRAPH_DISAMBIGUATION` | — |
+| `IR-R4-GAP-04-N` | `IR-MOD-P1-043` | negative | `REJECT_IMPORT_TARGET_NOT_FOUND` | `DEPENDENCY_INTERFACE_BINDING_INVALID/IMPORT_TARGET_NOT_FOUND` |
+| `IR-R4-GAP-05-P` | `IR-MOD-P1-044` | positive | `ACCEPT_ORDER_INVARIANT_MODULE_COMPOSITION` | — |
+| `IR-R4-GAP-05-B` | `IR-MOD-P1-044` | boundary | `ACCEPT_CARRIER_MAPPED_MODULE_PATH` | — |
+| `IR-R4-GAP-05-N` | `IR-MOD-P1-044` | negative | `REJECT_MODULE_CONTRIBUTION_CONFLICT` | `MODULE_ITEM_SKELETON_CONFLICT/MODULE_CONTRIBUTION_CONFLICT` |
+| `IR-R4-GAP-06-P` | `IR-MOD-P1-045` | positive | `ACCEPT_PUBLIC_API_CLOSURE` | — |
+| `IR-R4-GAP-06-B` | `IR-MOD-P1-045` | boundary | `ACCEPT_COMMON_INTERNAL_ONLY` | — |
+| `IR-R4-GAP-06-N` | `IR-MOD-P1-045` | negative | `REJECT_FACADE_WIDENING` | `DEPENDENCY_INTERFACE_BINDING_INVALID/FACADE_WIDENING` |
+| `IR-R4-GAP-07-P` | `IR-MOD-P1-046` | positive | `ACCEPT_STABLE_INTERFACE_DIGEST` | — |
+| `IR-R4-GAP-07-B` | `IR-MOD-P1-046` | boundary | `ACCEPT_PRIVATE_BODY_INTERFACE_STABILITY` | — |
+| `IR-R4-GAP-07-N` | `IR-MOD-P1-046` | negative | `REJECT_STALE_DEPENDENCY_RECEIPT` | `MODULE_INTERFACE_DIGEST_MISMATCH/STALE_DEPENDENCY_RECEIPT` |
+| `IR-R4-GAP-08-P` | `IR-MOD-P1-047` | positive | `ACCEPT_COMPILE_TIME_INITIALIZATION_PLAN` | — |
+| `IR-R4-GAP-08-B` | `IR-MOD-P1-047` | boundary | `ACCEPT_HEADER_ONLY_MODULE_SCC` | — |
+| `IR-R4-GAP-08-N` | `IR-MOD-P1-047` | negative | `REJECT_STATIC_DEPENDENCY_CYCLE` | `DEPENDENCY_INTERFACE_BINDING_INVALID/STATIC_DEPENDENCY_CYCLE` |
+| `IR-R4-GAP-09-P` | `IR-RES-P1-048` | positive | `ACCEPT_EXPLICIT_NESTED_HIR_LOCAL_SHADOW` | — |
+| `IR-R4-GAP-09-B` | `IR-RES-P1-048` | boundary | `ACCEPT_ONE_OVERLOAD_SET` | — |
+| `IR-R4-GAP-09-N` | `IR-RES-P1-048` | negative | `REJECT_SAME_FRAME_NAMESPACE_COLLISION` | `RESOLVER_SCOPE_TREE_INVALID/IMPORT_LOCAL_COLLISION` |
+| `IR-R4-GAP-10-P` | `IR-RES-P1-049` | positive | `ACCEPT_ONE_PRIMARY_DIAGNOSTIC` | — |
+| `IR-R4-GAP-10-B` | `IR-RES-P1-049` | boundary | `ACCEPT_EARLIEST_STAGE_PRIMARY_AND_SUPPRESS_DOWNSTREAM` | `DEPENDENCY_INTERFACE_BINDING_INVALID/IMPORT_TARGET_NOT_FOUND` |
+| `IR-R4-GAP-10-N` | `IR-RES-P1-049` | negative | `REJECT_UNRESOLVED_REFERENCE_AT_HIR_SEAL` | `RESOLVER_HIR_SEAL_INCOMPLETE/UNRESOLVED_COUNT_NONZERO` |
+| `IR-R4-GAP-11-P` | `IR-TRACE-P1-050` | positive | `ACCEPT_BIDIRECTIONAL_TRACE_EQUALITY` | — |
+| `IR-R4-GAP-11-B` | `IR-TRACE-P1-050` | boundary | `ACCEPT_EXPLICIT_NOT_APPLICABLE` | — |
+| `IR-R4-GAP-11-N` | `IR-TRACE-P1-050` | negative | `REJECT_DELETED_CROSSWALK_REFERENCE` | `CROSSWALK_REFERENCE_UNRESOLVED` |
+| `IR-R4-GAP-12-P` | `IR-TRACE-P2-051` | positive | `ACCEPT_COMPLETE_FEATURE_TRACE` | — |
+| `IR-R4-GAP-12-B` | `IR-TRACE-P2-051` | boundary | `ACCEPT_TOOLING_STAGE_NOT_APPLICABLE` | — |
+| `IR-R4-GAP-12-N` | `IR-TRACE-P2-051` | negative | `REJECT_INCOMPLETE_STABLE_FEATURE_TRACE` | `CROSSWALK_REFERENCE_UNRESOLVED` |
+*/
+```
+
+## EX-R4-RESOLVE-001 — import target and child shadow keep typed identities
+
+- **source_feature_ids:** `lexical_import_use_environment_stack`, `package_aware_import`, `double_colon_static_qualified_path`
+- **checker_trace_ids:** `ReferenceCandidateSetResolved`, `ResolverScopeTreeAdmitted`, `DependencyInterfaceBindingClosed`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+// oracles: IR-R4-GAP-01-P, IR-R4-GAP-01-B,
+//          IR-R4-GAP-04-P, IR-R4-GAP-09-P
+module app::reports
+import app::model::{Report as ModelReport}
+
+private def inspect(report: ModelReport) -> String = {
+    {
+        let report = "preview"
+        consume(report)
+    }
+    return report ~ title
+}
+// The import has one ImportBindingId and one existing target.
+// The child report has a fresh HirLocalId; exit restores the parameter.
+```
+
+## EX-R4-RESOLVE-NG-002 — ordinary member/extension collision is terminal
+
+- **source_feature_ids:** `method_extension_resolution_policy`, `member_extension_collision_error_policy`
+- **checker_trace_ids:** `MethodExtensionResolutionAdmitted`, `MemberExtensionCollisionRejected`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **primary_diagnostic:** `MEMBER_EXTENSION_COLLISION`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+// oracle: IR-R4-GAP-02-N
+use app::display::userDisplay
+let text = user ~ display
+// MEMBER_EXTENSION_COLLISION: selected_count = 0
+// Boundary IR-R4-GAP-02-B uses:
+// user ~ User::userDisplay::display
+```
+
+## EX-R4-MODULE-003 — header SCC and static-value cycle are different
+
+- **source_feature_ids:** `library_static_binding_initializer_msp`, `multi_file_module`
+- **checker_trace_ids:** `DependencyInterfaceBindingClosed`, `PackageModuleSourceGraphAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+// IR-R4-GAP-08-P: acyclic static values, compile-time atomic commit.
+// IR-R4-GAP-08-B: A header -> B header -> A header is admitted only
+// after complete header collection.
+// IR-R4-GAP-08-N mutation: A::left -> B::right -> A::left
+// rejects DEPENDENCY_INTERFACE_BINDING_INVALID/STATIC_DEPENDENCY_CYCLE.
+// runtime_initializer_count = 0
+// partial_commit_count = 0
+```
+
+## EX-R4-TRACE-004 — resolver seal and interface receipt
+
+- **source_feature_ids:** `module_api_digest_core`, `module_signature_declaration`, `package_aware_import`, `multi_file_module`, `opaque_module_facade`, `scoped_import_use_grouping`, `module_static_path_verifier_closure`
+- **checker_trace_ids:** `ModuleInterfaceDigestVerified`, `ResolverHirSealAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+// positive/boundary trace:
+// sealed noncall target = ResolvedRef::DirectDecl(DeclId)
+// import trace = ImportBindingId + ResolvedRef + SourceOriginId
+// callable candidate = ResolvedOverloadSetRef (AnalysisHir only)
+// negative mutations:
+// stale interface receipt -> MODULE_INTERFACE_DIGEST_MISMATCH
+// unresolved_count = 1 -> RESOLVER_HIR_SEAL_INCOMPLETE
+// product_lanes = 15/15_NOT_RUN
+// open_feature_p1 = 22
+```

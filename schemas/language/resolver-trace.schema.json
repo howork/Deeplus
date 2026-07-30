@@ -1,0 +1,1340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/resolver-trace.schema.json",
+  "title": "Deeplus deterministic name-resolution trace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "resolver_graph_sha256",
+    "references",
+    "diagnostic_order",
+    "diagnostic_selection",
+    "seal",
+    "trace_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.resolver-trace/r1"
+    },
+    "resolver_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "references": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/referenceTrace"
+      }
+    },
+    "diagnostic_order": {
+      "const": "LOWEST_FAILED_STAGE_THEN_EXACT_OWNER_PRIMARY_THEN_LOWEST_SOURCE_ORIGIN_ID"
+    },
+    "diagnostic_selection": {
+      "$ref": "#/$defs/diagnosticSelection"
+    },
+    "seal": {
+      "$ref": "#/$defs/seal"
+    },
+    "trace_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "trace_sha256",
+    "array_order": {
+      "references": "SourceOriginId",
+      "references[*].candidate_origin_ids": "TYPED_ID_CANONICAL_BYTE_ORDER",
+      "references[*].visibility_proof_ids": "VisibilityProofId",
+      "references[*].stages": "ordinal_1_through_9_FIXED_SEMANTIC_SEQUENCE",
+      "diagnostic_selection.suppressed_source_origin_ids": "SourceOriginId"
+    }
+  },
+  "x-deeplus-resolver-outcome-hir-projection": {
+    "RESOLVED_NONCALL_REFERENCE_is_resolver_trace_outcome_not_hir_node": true,
+    "module_identity": "MODULE_ModuleId_REMAINS_RESOLVER_ONLY_CANONICAL_EXPRESSION_HIR_PROJECTION_NONE",
+    "local_expression_identity": "ResolvedRef::Local(HirLocalId)",
+    "declaration_expression_identity": "ResolvedRef::DirectDecl(DeclId)",
+    "declaration_nonexpression_identity": "DeclId_RETAINED_BY_OWNER_SPECIFIC_TYPED_HIR_WITHOUT_EXPRESSION_RESOLVED_REF"
+  },
+  "x-deeplus-product-compiler": "NOT_RUN",
+  "$defs": {
+    "sourceOriginId": {
+      "type": "string",
+      "pattern": "^SourceOriginId:[^\\s]+$"
+    },
+    "resolverScopeId": {
+      "type": "string",
+      "pattern": "^ResolverScopeId:[^\\s]+$"
+    },
+    "candidateOriginId": {
+      "type": "string",
+      "pattern": "^(?:HirLocalId|DeclId|ModuleId|ImportBindingId|ActivationOriginId|EvidenceOriginId|ExtensionSetId|TraitWitnessId):[^\\s]+$"
+    },
+    "visibilityProofId": {
+      "type": "string",
+      "pattern": "^VisibilityProofId:[^\\s]+$"
+    },
+    "activationOriginId": {
+      "type": "string",
+      "pattern": "^ActivationOriginId:[^\\s]+$"
+    },
+    "evidenceOriginId": {
+      "type": "string",
+      "pattern": "^EvidenceOriginId:[^\\s]+$"
+    },
+    "importBindingId": {
+      "type": "string",
+      "pattern": "^ImportBindingId:[^\\s]+$"
+    },
+    "resolvedIdentity": {
+      "type": "string",
+      "pattern": "^(?:HirLocalId|DeclId|ModuleId):[^\\s]+$"
+    },
+    "analysisHirOverloadSetRef": {
+      "type": "string",
+      "pattern": "^ResolvedOverloadSetRef:[^\\s]+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "namespace": {
+      "enum": [
+        "MODULE",
+        "TYPE",
+        "VALUE",
+        "CALLABLE_OVERLOAD_SET"
+      ]
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal",
+        "predicate",
+        "status"
+      ],
+      "properties": {
+        "ordinal": {
+          "minimum": 1,
+          "maximum": 9,
+          "type": "integer"
+        },
+        "predicate": {
+          "enum": [
+            "PackageModuleSourceGraphAdmitted",
+            "ModuleItemSkeletonSetAdmitted",
+            "DependencyInterfaceBindingClosed",
+            "ResolverScopeTreeAdmitted",
+            "ReferenceCandidateSetResolved",
+            "ReferenceVisibilityActivationAdmitted",
+            "ResolvedNoncallReferenceSelected",
+            "ResolverHirSealAdmitted",
+            "ModuleInterfaceDigestVerified"
+          ]
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "NOT_EVALUATED"
+          ]
+        }
+      }
+    },
+    "passStageStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "PASS"
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "failStageStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "FAIL"
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "notEvaluatedStageStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "NOT_EVALUATED"
+        }
+      },
+      "required": [
+        "status"
+      ]
+    },
+    "rejectionReason": {
+      "enum": [
+        "PACKAGE_TARGET_MISSING",
+        "PACKAGE_BINDING_AMBIGUOUS",
+        "PACKAGE_CYCLE",
+        "MODULE_MAPPING_MISMATCH",
+        "DUPLICATE_DECLARATION",
+        "OVERLOAD_SLOT_KEY_COLLISION",
+        "MODULE_CONTRIBUTION_CONFLICT",
+        "IMPORT_TARGET_NOT_FOUND",
+        "IMPORT_TARGET_AMBIGUOUS",
+        "IMPORT_ALIAS_COLLISION",
+        "EXPORT_TARGET_NOT_FOUND",
+        "EXPORT_IDENTITY_MISMATCH",
+        "REEXPORT_CYCLE",
+        "EXPORT_VISIBILITY_LEAK",
+        "MODULE_SIGNATURE_MISMATCH",
+        "FACADE_WIDENING",
+        "STATIC_DEPENDENCY_CYCLE",
+        "SAME_FRAME_DUPLICATE",
+        "PARAMETER_BODY_LOCAL_COLLISION",
+        "IMPORT_LOCAL_COLLISION",
+        "ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE",
+        "NAME_ACTIVATION_ENV_CONFLATION",
+        "SCOPE_ESCAPE",
+        "FAILED_PATTERN_PROBE_BINDING_LEAK",
+        "ZERO_CANDIDATES",
+        "MULTIPLE_SAME_TIER",
+        "WRONG_NAMESPACE",
+        "STATIC_PATH_UNRESOLVED",
+        "STATIC_PATH_AMBIGUOUS",
+        "CANDIDATE_NOT_VISIBLE",
+        "ACTIVATION_SCOPE_ESCAPE",
+        "ACTIVATION_IDENTITY_MISMATCH",
+        "MEMBER_VISIBILITY_DOMAIN",
+        "API_VISIBILITY_LEAK",
+        "WITNESS_ORIGIN_INVALID",
+        "ZERO_AFTER_FILTER",
+        "MULTIPLE_AFTER_FILTER",
+        "ORDER_TIEBREAKER_REQUIRED",
+        "UNBOUND_PRIMARY",
+        "UNRESOLVED_COUNT_NONZERO",
+        "CANDIDATE_SET_COUNT_NONZERO",
+        "MISSING_TYPED_ID",
+        "MISSING_VISIBILITY_PROOF",
+        "RUNTIME_RELOOKUP_RESIDUE",
+        "STALE_DEPENDENCY_RECEIPT",
+        "MISSING_EXPORT_EDGE",
+        "INTERFACE_DIGEST_MISMATCH"
+      ]
+    },
+    "referenceTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_origin_id",
+        "resolver_scope_id",
+        "namespace",
+        "source_spelling",
+        "candidate_origin_ids",
+        "visibility_proof_ids",
+        "activation_origin_id_or_null",
+        "evidence_origin_id_or_null",
+        "import_binding_id_or_null",
+        "stages",
+        "result",
+        "source_span"
+      ],
+      "properties": {
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        },
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "namespace": {
+          "$ref": "#/$defs/namespace"
+        },
+        "source_spelling": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_origin_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/candidateOriginId"
+          }
+        },
+        "visibility_proof_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/visibilityProofId"
+          }
+        },
+        "activation_origin_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/activationOriginId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_origin_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/evidenceOriginId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "import_binding_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/importBindingId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stages": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "prefixItems": [
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 1
+                    },
+                    "predicate": {
+                      "const": "PackageModuleSourceGraphAdmitted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 2
+                    },
+                    "predicate": {
+                      "const": "ModuleItemSkeletonSetAdmitted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 3
+                    },
+                    "predicate": {
+                      "const": "DependencyInterfaceBindingClosed"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 4
+                    },
+                    "predicate": {
+                      "const": "ResolverScopeTreeAdmitted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 5
+                    },
+                    "predicate": {
+                      "const": "ReferenceCandidateSetResolved"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 6
+                    },
+                    "predicate": {
+                      "const": "ReferenceVisibilityActivationAdmitted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 7
+                    },
+                    "predicate": {
+                      "const": "ResolvedNoncallReferenceSelected"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 8
+                    },
+                    "predicate": {
+                      "const": "ResolverHirSealAdmitted"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/stage"
+                },
+                {
+                  "properties": {
+                    "ordinal": {
+                      "const": 9
+                    },
+                    "predicate": {
+                      "const": "ModuleInterfaceDigestVerified"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "items": false
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/acceptedResult"
+            },
+            {
+              "$ref": "#/$defs/rejectedResult"
+            },
+            {
+              "$ref": "#/$defs/deferredOverloadResult"
+            }
+          ]
+        },
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start",
+            "end"
+          ],
+          "properties": {
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"}
+              ]
+            }
+          },
+          "oneOf": [
+            {
+              "properties": {
+                "namespace": {
+                  "not": {
+                    "const": "CALLABLE_OVERLOAD_SET"
+                  }
+                },
+                "candidate_origin_ids": {
+                  "minItems": 1
+                },
+                "visibility_proof_ids": {
+                  "minItems": 1
+                },
+                "result": {
+                  "$ref": "#/$defs/acceptedResult"
+                }
+              },
+              "oneOf": [
+                {
+                  "properties": {
+                    "namespace": {
+                      "const": "MODULE"
+                    },
+                    "result": {
+                      "properties": {
+                        "resolved_identity": {
+                          "pattern": "^ModuleId:[^\\s]+$"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "namespace": {
+                      "const": "TYPE"
+                    },
+                    "result": {
+                      "properties": {
+                        "resolved_identity": {
+                          "pattern": "^DeclId:[^\\s]+$"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "namespace": {
+                      "const": "VALUE"
+                    },
+                    "result": {
+                      "properties": {
+                        "resolved_identity": {
+                          "pattern": "^(?:HirLocalId|DeclId):[^\\s]+$"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "properties": {
+                "namespace": {
+                  "const": "CALLABLE_OVERLOAD_SET"
+                },
+                "candidate_origin_ids": {
+                  "minItems": 1
+                },
+                "result": {
+                  "$ref": "#/$defs/deferredOverloadResult"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "PACKAGE_TARGET_MISSING",
+                        "PACKAGE_BINDING_AMBIGUOUS",
+                        "PACKAGE_CYCLE",
+                        "MODULE_MAPPING_MISMATCH"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "DUPLICATE_DECLARATION",
+                        "OVERLOAD_SLOT_KEY_COLLISION",
+                        "MODULE_CONTRIBUTION_CONFLICT"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "IMPORT_TARGET_NOT_FOUND",
+                        "IMPORT_TARGET_AMBIGUOUS",
+                        "IMPORT_ALIAS_COLLISION",
+                        "EXPORT_TARGET_NOT_FOUND",
+                        "EXPORT_IDENTITY_MISMATCH",
+                        "REEXPORT_CYCLE",
+                        "EXPORT_VISIBILITY_LEAK",
+                        "MODULE_SIGNATURE_MISMATCH",
+                        "FACADE_WIDENING",
+                        "STATIC_DEPENDENCY_CYCLE",
+                        "STALE_DEPENDENCY_RECEIPT"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "SAME_FRAME_DUPLICATE",
+                        "PARAMETER_BODY_LOCAL_COLLISION",
+                        "IMPORT_LOCAL_COLLISION",
+                        "ILLEGAL_CROSS_FRAME_OVERLOAD_MERGE",
+                        "NAME_ACTIVATION_ENV_CONFLATION",
+                        "SCOPE_ESCAPE",
+                        "FAILED_PATTERN_PROBE_BINDING_LEAK"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "ZERO_CANDIDATES",
+                        "MULTIPLE_SAME_TIER",
+                        "WRONG_NAMESPACE",
+                        "STATIC_PATH_UNRESOLVED",
+                        "STATIC_PATH_AMBIGUOUS"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "CANDIDATE_NOT_VISIBLE",
+                        "ACTIVATION_SCOPE_ESCAPE",
+                        "ACTIVATION_IDENTITY_MISMATCH",
+                        "MEMBER_VISIBILITY_DOMAIN",
+                        "API_VISIBILITY_LEAK",
+                        "WITNESS_ORIGIN_INVALID"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "ZERO_AFTER_FILTER",
+                        "MULTIPLE_AFTER_FILTER",
+                        "ORDER_TIEBREAKER_REQUIRED"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"},
+                {"$ref": "#/$defs/notEvaluatedStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "UNBOUND_PRIMARY",
+                        "UNRESOLVED_COUNT_NONZERO",
+                        "CANDIDATE_SET_COUNT_NONZERO",
+                        "MISSING_TYPED_ID",
+                        "MISSING_VISIBILITY_PROOF",
+                        "RUNTIME_RELOOKUP_RESIDUE"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "properties": {
+            "stages": {
+              "prefixItems": [
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/passStageStatus"},
+                {"$ref": "#/$defs/failStageStatus"}
+              ]
+            },
+            "result": {
+              "allOf": [
+                {"$ref": "#/$defs/rejectedResult"},
+                {
+                  "properties": {
+                    "rejection_reason": {
+                      "enum": [
+                        "MISSING_EXPORT_EDGE",
+                        "INTERFACE_DIGEST_MISMATCH"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "acceptedResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "resolved_identity",
+        "selected_count",
+        "rejection_reason_or_null"
+      ],
+      "properties": {
+        "kind": {
+          "const": "RESOLVED_NONCALL_REFERENCE"
+        },
+        "resolved_identity": {
+          "$ref": "#/$defs/resolvedIdentity"
+        },
+        "selected_count": {
+          "const": 1
+        },
+        "rejection_reason_or_null": {
+          "type": "null"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "resolved_identity": {
+                "pattern": "^ModuleId:"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "resolved_identity": {
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rejectedResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "resolved_ref_or_null",
+        "selected_count",
+        "rejection_reason"
+      ],
+      "properties": {
+        "kind": {
+          "const": "REJECTED"
+        },
+        "resolved_ref_or_null": {
+          "type": "null"
+        },
+        "selected_count": {
+          "const": 0
+        },
+        "rejection_reason": {
+          "$ref": "#/$defs/rejectionReason"
+        }
+      }
+    },
+    "deferredOverloadResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "analysis_hir_overload_set_ref",
+        "canonical_hir_projection",
+        "winner_selected"
+      ],
+      "properties": {
+        "kind": {
+          "const": "RESOLVED_OVERLOAD_SET_REF_IN_ANALYSIS_HIR"
+        },
+        "analysis_hir_overload_set_ref": {
+          "$ref": "#/$defs/analysisHirOverloadSetRef"
+        },
+        "canonical_hir_projection": {
+          "const": false
+        },
+        "winner_selected": {
+          "const": false
+        }
+      }
+    },
+    "diagnosticSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "winner_source_origin_id_or_null",
+        "winner_rejection_reason_or_null",
+        "suppressed_source_origin_ids"
+      ],
+      "properties": {
+        "winner_source_origin_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sourceOriginId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "winner_rejection_reason_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rejectionReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "suppressed_source_origin_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/sourceOriginId"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "winner_source_origin_id_or_null": {
+              "type": "null"
+            },
+            "winner_rejection_reason_or_null": {
+              "type": "null"
+            },
+            "suppressed_source_origin_ids": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "properties": {
+            "winner_source_origin_id_or_null": {
+              "$ref": "#/$defs/sourceOriginId"
+            },
+            "winner_rejection_reason_or_null": {
+              "$ref": "#/$defs/rejectionReason"
+            }
+          }
+        }
+      ]
+    },
+    "seal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "seal_status",
+        "counters"
+      ],
+      "properties": {
+        "seal_status": {
+          "enum": [
+            "SEALED",
+            "REJECTED_AT_HIR_SEAL",
+            "NOT_EVALUATED"
+          ]
+        },
+        "counters": {
+          "$ref": "#/$defs/sealCounters"
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "seal_status": {
+              "const": "SEALED"
+            },
+            "counters": {
+              "$ref": "#/$defs/zeroSealCounters"
+            }
+          }
+        },
+        {
+          "properties": {
+            "seal_status": {
+              "const": "REJECTED_AT_HIR_SEAL"
+            },
+            "counters": {
+              "$ref": "#/$defs/rejectedSealCounters"
+            }
+          }
+        },
+        {
+          "properties": {
+            "seal_status": {
+              "const": "NOT_EVALUATED"
+            },
+            "counters": {
+              "$ref": "#/$defs/notEvaluatedSealCounters"
+            }
+          }
+        }
+      ]
+    },
+    "sealCounters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unbound_primary_count",
+        "unresolved_count",
+        "candidate_set_count",
+        "missing_typed_id_count",
+        "missing_visibility_proof_count",
+        "recovery_binding_count",
+        "runtime_relookup_count",
+        "overload_winner_count",
+        "canonical_hir_overload_set_ref_count"
+      ],
+      "properties": {
+        "unbound_primary_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "unresolved_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "candidate_set_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "missing_typed_id_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "missing_visibility_proof_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "recovery_binding_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "runtime_relookup_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "overload_winner_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "canonical_hir_overload_set_ref_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "zeroSealCounters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/sealCounters"
+        },
+        {
+          "properties": {
+            "unbound_primary_count": {
+              "const": 0
+            },
+            "unresolved_count": {
+              "const": 0
+            },
+            "candidate_set_count": {
+              "const": 0
+            },
+            "missing_typed_id_count": {
+              "const": 0
+            },
+            "missing_visibility_proof_count": {
+              "const": 0
+            },
+            "recovery_binding_count": {
+              "const": 0
+            },
+            "runtime_relookup_count": {
+              "const": 0
+            },
+            "overload_winner_count": {
+              "const": 0
+            },
+            "canonical_hir_overload_set_ref_count": {
+              "const": 0
+            }
+          }
+        }
+      ]
+    },
+    "rejectedSealCounters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/sealCounters"
+        },
+        {
+          "properties": {
+            "recovery_binding_count": {
+              "const": 0
+            },
+            "overload_winner_count": {
+              "const": 0
+            },
+            "canonical_hir_overload_set_ref_count": {
+              "const": 0
+            }
+          },
+          "anyOf": [
+            {
+              "properties": {
+                "unbound_primary_count": {
+                  "minimum": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "unresolved_count": {
+                  "minimum": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "candidate_set_count": {
+                  "minimum": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "missing_typed_id_count": {
+                  "minimum": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "missing_visibility_proof_count": {
+                  "minimum": 1
+                }
+              }
+            },
+            {
+              "properties": {
+                "runtime_relookup_count": {
+                  "minimum": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "notEvaluatedSealCounters": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/sealCounters"
+        },
+        {
+          "properties": {
+            "unbound_primary_count": {
+              "type": "null"
+            },
+            "unresolved_count": {
+              "type": "null"
+            },
+            "candidate_set_count": {
+              "type": "null"
+            },
+            "missing_typed_id_count": {
+              "type": "null"
+            },
+            "missing_visibility_proof_count": {
+              "type": "null"
+            },
+            "recovery_binding_count": {
+              "type": "null"
+            },
+            "runtime_relookup_count": {
+              "type": "null"
+            },
+            "overload_winner_count": {
+              "type": "null"
+            },
+            "canonical_hir_overload_set_ref_count": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

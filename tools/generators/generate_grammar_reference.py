@@ -61,10 +61,10 @@ PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
     "grammar_productions": 638,
     "features": 719,
-    "diagnostics": 1424,
-    "predicates": 268,
+    "diagnostics": 1433,
+    "predicates": 277,
     "prelude_entries": 72,
-    "examples": 733,
+    "examples": 738,
     "hard_keywords": 29,
     "contextual_words": 105,
 }

@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-compilation-receipt.schema.json",
+  "title": "Deeplus full module compilation provenance receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "profile",
+    "target_id",
+    "target_kind",
+    "module_id",
+    "package_graph_sha256",
+    "module_source_contribution_sha256",
+    "dependency_receipt_sha256",
+    "resolver_trace_sha256",
+    "visibility_closure_sha256",
+    "initialization_plan_sha256",
+    "interface_sha256",
+    "implementation_sha256",
+    "compilation_receipt_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-compilation-receipt/r1"
+    },
+    "profile": {
+      "const": "R4_NAME_RESOLUTION_MODULES"
+    },
+    "target_id": {
+      "type": "string",
+      "pattern": "^TargetId:[^\\s]+$"
+    },
+    "target_kind": {
+      "enum": [
+        "library",
+        "executable",
+        "script"
+      ]
+    },
+    "module_id": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "package_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "module_source_contribution_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "dependency_receipt_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "resolver_trace_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "visibility_closure_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "initialization_plan_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "interface_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "implementation_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "compilation_receipt_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "target_kind": {
+            "const": "script"
+          }
+        },
+        "required": [
+          "target_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "interface_sha256": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "interface_sha256": {
+            "$ref": "#/$defs/sha256"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "x-deeplus-artifact-bindings": {
+    "package_graph_sha256": "package-module-source-graph.canonical_graph_sha256",
+    "module_source_contribution_sha256": "module-source-contribution-projection.projection_sha256",
+    "dependency_receipt_sha256": "module-compilation-dependency-receipt.dependency_receipt_sha256",
+    "resolver_trace_sha256": "resolver-trace.trace_sha256",
+    "visibility_closure_sha256": "module-visibility-closure.closure_sha256",
+    "initialization_plan_sha256": "module-initialization-plan.plan_sha256",
+    "interface_sha256": "module-api-digest.canonical_sha256",
+    "implementation_sha256": "module-implementation-digest.implementation_sha256"
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "compilation_receipt_sha256",
+    "identity_domain": "PROVENANCE_BUILD_CLOSURE_NOT_PUBLIC_INTERFACE"
+  },
+  "x-product-compiler": "NOT_RUN",
+  "x-deeplus-product-compiler": "NOT_RUN"
+}

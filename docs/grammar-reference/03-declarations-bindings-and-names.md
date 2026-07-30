@@ -124,6 +124,42 @@ AccessorDecl         ::= MemberVisibility? "get" Block
   보존해야 한다. 값으로 반환하는 안정 프로퍼티는 재사용 가능하고
   no-drop/lifecycle-free 조건을 만족해야 한다.
 
+### R4 lexical frame and resolver identity
+
+lexical lookup은 innermost `NameEnv`에서 시작해 exact
+`(namespace, spelling)`이 있는 첫 frame에서 멈춘다. outer binding은 같은
+tier 후보에 합쳐지지 않는다. 같은 철자는 서로 다른 namespace에서 공존할
+수 있다. 한 frame에서는 single binding 중복을 거부하고, callable은
+canonical overload-slot key가 모두 다를 때만 하나의 overload set을 만든다.
+return type, responsibility-only 차이, 선언 순서는 새 slot이 아니다.
+parameter와 callable root body local은 한 collision domain이다.
+
+proper child block의 문법상 허용된 module/type/value/callable 또는 import
+alias declaration은 ancestor 이름을 shadow할 수 있다. 이때 fresh typed
+identity를 만들며 scope exit 뒤 outer identity가 다시 보인다. overload
+set을 frame 사이에서 merge하지 않는다. member, associated item,
+extension, witness capability는 lexical shadow가 아니다. 현행 profile에는
+root-connected control-label surface가 없으므로 control-label 재사용
+판정은 적용되지 않는다. 미래 `FLOW_CONTROL_PROFILE`이 별도 carrier를
+활성화하면 그때 live ancestor 재사용을 거부한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/name-resolution-modules-current.json -->
+```deeplus
+private def inspect(value: Int) -> Int = {
+    {
+        let value = 2       // fresh child HirLocalId
+        consume(value)
+    }
+    return value            // parameter identity is visible again
+}
+```
+
+match/pattern probe의 binder는 provisional이므로 `NameEnv`에 들어가지
+않는다. 성공 commit만 fresh `HirLocalId`를 만들고 실패는 0개를 만든다.
+local function은 declaration 뒤부터 보이며 hoisting하지 않는다.
+`NameEnv`, extension `ActivationEnv`, `WitnessVisibilityEnv`는 서로
+독립이고 scope exit는 해당 frame만 pop한다.
+
 ## 평가·소유권·효과
 
 일반 바인딩과 오른쪽 방향 바인딩은 initializer를 정확히 한 번 평가한다.
@@ -215,6 +251,11 @@ def incrementCount() -> Int = {
   정한다.
 - 최상위 이름의 외부 노출은 source root, module interface, export,
   public API digest가 함께 결정한다.
+- import alias identity는 `(ResolverScopeId, namespace, local_name)`이며
+  resolved target과 `SourceOriginId`는 trace content다.
+- canonical HIR에는 analysis-HIR의 unresolved name이나
+  `ResolvedOverloadSetRef`를 남기지 않는다. exact callable winner는
+  다음 generic/ordinary-overload cluster의 책임이다.
 - 멤버 가시성과 class dispatch marker는 서로 다른 축이다. 예를 들어
   `+def render.()`의 `+`는 가시성이고 `.`은 final dispatch slot이다.
 - `#lazy`의 `#`는 member visibility가 아니라 선언 profile role이다.

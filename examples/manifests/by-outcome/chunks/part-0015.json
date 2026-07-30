@@ -1054,5 +1054,236 @@
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
     "card_line_start": 12752,
     "card_line_end": 12773
+  },
+  {
+    "example_id": "IR-R4-GAP-MATRIX",
+    "title": "Exact R4 positive, boundary and negative oracle crosswalk",
+    "feature_ids": [
+      "lexical_import_use_environment_stack",
+      "package_aware_import",
+      "double_colon_static_qualified_path",
+      "trait_witness_resolution_phase_a",
+      "method_extension_resolution_policy",
+      "member_extension_collision_error_policy",
+      "source_role_contract",
+      "module_keyword_source_header",
+      "block_local_import_directive_msp",
+      "scoped_import_block_msp",
+      "multi_file_module",
+      "script_import_execution_separation_law",
+      "module_signature_declaration",
+      "opaque_module_facade",
+      "extension_use_reexport_syntax",
+      "top_level_type_visibility_unification",
+      "module_api_digest_core",
+      "library_static_binding_initializer_msp",
+      "scoped_import_use_grouping",
+      "module_static_path_verifier_closure"
+    ],
+    "source_feature_ids": [
+      "lexical_import_use_environment_stack",
+      "package_aware_import",
+      "double_colon_static_qualified_path",
+      "trait_witness_resolution_phase_a",
+      "method_extension_resolution_policy",
+      "member_extension_collision_error_policy",
+      "source_role_contract",
+      "module_keyword_source_header",
+      "block_local_import_directive_msp",
+      "scoped_import_block_msp",
+      "multi_file_module",
+      "script_import_execution_separation_law",
+      "module_signature_declaration",
+      "opaque_module_facade",
+      "extension_use_reexport_syntax",
+      "top_level_type_visibility_unification",
+      "module_api_digest_core",
+      "library_static_binding_initializer_msp",
+      "scoped_import_use_grouping",
+      "module_static_path_verifier_closure"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "IR-R4-GAP-MATRIX"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "IR-R4-GAP-MATRIX-B001",
+    "code_language": "deeplus",
+    "code_sha256": "6984b5f16dcea4ce9add0ca8882a3d9b5c7f5f70bdee86842d8b94123db2ac5d",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 12777,
+    "card_line_end": 12836
+  },
+  {
+    "example_id": "EX-R4-RESOLVE-001",
+    "title": "import target and child shadow keep typed identities",
+    "feature_ids": [
+      "lexical_import_use_environment_stack",
+      "package_aware_import",
+      "double_colon_static_qualified_path"
+    ],
+    "source_feature_ids": [
+      "lexical_import_use_environment_stack",
+      "package_aware_import",
+      "double_colon_static_qualified_path"
+    ],
+    "checker_trace_ids": [
+      "ReferenceCandidateSetResolved",
+      "ResolverScopeTreeAdmitted",
+      "DependencyInterfaceBindingClosed"
+    ],
+    "provenance_ids": [
+      "EX-R4-RESOLVE-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R4-RESOLVE-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "d3ccdb31e9fdb66e5c519176fcef415e2250b303cfb46ddc6a93b5f36ab0570d",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 12838,
+    "card_line_end": 12864
+  },
+  {
+    "example_id": "EX-R4-RESOLVE-NG-002",
+    "title": "ordinary member/extension collision is terminal",
+    "feature_ids": [
+      "method_extension_resolution_policy",
+      "member_extension_collision_error_policy"
+    ],
+    "source_feature_ids": [
+      "method_extension_resolution_policy",
+      "member_extension_collision_error_policy"
+    ],
+    "checker_trace_ids": [
+      "MethodExtensionResolutionAdmitted",
+      "MemberExtensionCollisionRejected"
+    ],
+    "provenance_ids": [
+      "EX-R4-RESOLVE-NG-002"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "MEMBER_EXTENSION_COLLISION",
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R4-RESOLVE-NG-002-B001",
+    "code_language": "deeplus",
+    "code_sha256": "e4234c514aa081d8e056ea88e2f71a4c142a447753f5600723f3b83e5d1908cc",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 12866,
+    "card_line_end": 12885
+  },
+  {
+    "example_id": "EX-R4-MODULE-003",
+    "title": "header SCC and static-value cycle are different",
+    "feature_ids": [
+      "library_static_binding_initializer_msp",
+      "multi_file_module"
+    ],
+    "source_feature_ids": [
+      "library_static_binding_initializer_msp",
+      "multi_file_module"
+    ],
+    "checker_trace_ids": [
+      "DependencyInterfaceBindingClosed",
+      "PackageModuleSourceGraphAdmitted"
+    ],
+    "provenance_ids": [
+      "EX-R4-MODULE-003"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R4-MODULE-003-B001",
+    "code_language": "deeplus",
+    "code_sha256": "f06198209712b3e920f28928f1084347c42960beb51fd1e6211338011d636e2a",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 12887,
+    "card_line_end": 12906
+  },
+  {
+    "example_id": "EX-R4-TRACE-004",
+    "title": "resolver seal and interface receipt",
+    "feature_ids": [
+      "module_api_digest_core",
+      "module_signature_declaration",
+      "package_aware_import",
+      "multi_file_module",
+      "opaque_module_facade",
+      "scoped_import_use_grouping",
+      "module_static_path_verifier_closure"
+    ],
+    "source_feature_ids": [
+      "module_api_digest_core",
+      "module_signature_declaration",
+      "package_aware_import",
+      "multi_file_module",
+      "opaque_module_facade",
+      "scoped_import_use_grouping",
+      "module_static_path_verifier_closure"
+    ],
+    "checker_trace_ids": [
+      "ModuleInterfaceDigestVerified",
+      "ResolverHirSealAdmitted"
+    ],
+    "provenance_ids": [
+      "EX-R4-TRACE-004"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R4-TRACE-004-B001",
+    "code_language": "deeplus",
+    "code_sha256": "bee59f4e65b774c5c3f3a838a9631f0a917d105fec930118fa18610474980f9f",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 12908,
+    "card_line_end": 12929
   }
 ]

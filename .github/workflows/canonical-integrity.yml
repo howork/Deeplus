@@ -46,7 +46,9 @@ jobs:
       - name: Validate parallel tooling isolation
         run: python3 tools/validators/run_parallel_validator_isolation_tests.py
       - name: Run validator mutation suite
-        run: python3 tools/validators/run_repository_bootstrap_mutation_tests.py
+        run: |
+          python3 tools/validators/run_repository_bootstrap_mutation_tests.py
+          python3 tools/validators/run_name_resolution_module_mutation_tests.py
       - name: Rebuild environment-scoped deterministic source archive
         run: |
           touch .source-archive-untracked-probe

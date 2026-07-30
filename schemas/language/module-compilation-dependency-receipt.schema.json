@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/module-compilation-dependency-receipt.schema.json",
+  "title": "Deeplus module compilation dependency receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "consumer_target_id",
+    "consumer_module_id",
+    "package_graph_sha256",
+    "resolver_graph_sha256",
+    "import_bindings",
+    "activation_bindings",
+    "required_interfaces",
+    "canonical_order",
+    "dependency_receipt_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.module-compilation-dependency-receipt/r1"
+    },
+    "consumer_module_id": {
+      "$ref": "#/$defs/moduleId"
+    },
+    "consumer_target_id": {
+      "$ref": "#/$defs/targetId"
+    },
+    "package_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "resolver_graph_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "import_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/importBinding"
+      }
+    },
+    "activation_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/activationBinding"
+      }
+    },
+    "required_interfaces": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/requiredInterface"
+      }
+    },
+    "canonical_order": {
+      "const": "TYPED_ID_CANONICAL_BYTE_ORDER"
+    },
+    "dependency_receipt_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^ModuleId:[^\\s]+$"
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^TargetId:[^\\s]+$"
+    },
+    "importBindingId": {
+      "type": "string",
+      "pattern": "^ImportBindingId:[^\\s]+$"
+    },
+    "resolverScopeId": {
+      "type": "string",
+      "pattern": "^ResolverScopeId:[^\\s]+$"
+    },
+    "importTargetIdentity": {
+      "type": "string",
+      "pattern": "^(?:ModuleId|DeclId):[^\\s]+$"
+    },
+    "sourceOriginId": {
+      "type": "string",
+      "pattern": "^SourceOriginId:[^\\s]+$"
+    },
+    "activationOriginId": {
+      "type": "string",
+      "pattern": "^ActivationOriginId:[^\\s]+$"
+    },
+    "activatedIdentity": {
+      "type": "string",
+      "pattern": "^ExtensionSetId:[^\\s]+$"
+    },
+    "dependencyBindingId": {
+      "type": "string",
+      "pattern": "^DependencyBindingId:[^\\s]+$"
+    },
+    "providerBindingIdOrSelf": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/dependencyBindingId"
+        },
+        {
+          "const": "self"
+        }
+      ]
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "namespace": {
+      "enum": [
+        "MODULE",
+        "TYPE",
+        "VALUE",
+        "CALLABLE_OVERLOAD_SET"
+      ]
+    },
+    "importBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "import_binding_id",
+        "resolver_scope_id",
+        "namespace",
+        "local_binding_name",
+        "resolved_target_identity",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "source_origin_id"
+      ],
+      "properties": {
+        "import_binding_id": {
+          "$ref": "#/$defs/importBindingId"
+        },
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "namespace": {
+          "$ref": "#/$defs/namespace"
+        },
+        "local_binding_name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "resolved_target_identity": {
+          "$ref": "#/$defs/importTargetIdentity"
+        },
+        "provider_binding_id_or_self": {
+          "$ref": "#/$defs/providerBindingIdOrSelf"
+        },
+        "provider_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/sourceOriginId"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "namespace": {
+                "const": "MODULE"
+              }
+            },
+            "required": [
+              "namespace"
+            ]
+          },
+          "then": {
+            "properties": {
+              "resolved_target_identity": {
+                "type": "string",
+                "pattern": "^ModuleId:[^\\s]+$"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "resolved_target_identity": {
+                "type": "string",
+                "pattern": "^DeclId:[^\\s]+$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "activationBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activation_origin_id",
+        "resolver_scope_id",
+        "activated_identity",
+        "activation_kind",
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "semantic_site_key"
+      ],
+      "properties": {
+        "activation_origin_id": {
+          "$ref": "#/$defs/activationOriginId"
+        },
+        "resolver_scope_id": {
+          "$ref": "#/$defs/resolverScopeId"
+        },
+        "activated_identity": {
+          "$ref": "#/$defs/activatedIdentity"
+        },
+        "activation_kind": {
+          "const": "use"
+        },
+        "provider_binding_id_or_self": {
+          "$ref": "#/$defs/providerBindingIdOrSelf"
+        },
+        "provider_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "semantic_site_key": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "requiredInterface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_binding_id_or_self",
+        "provider_module_id",
+        "interface_profile",
+        "interface_sha256"
+      ],
+      "properties": {
+        "provider_binding_id_or_self": {
+          "$ref": "#/$defs/providerBindingIdOrSelf"
+        },
+        "provider_module_id": {
+          "$ref": "#/$defs/moduleId"
+        },
+        "interface_profile": {
+          "const": "R4_NAME_RESOLUTION_MODULES"
+        },
+        "interface_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  },
+  "x-deeplus-digest-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "self_hash_field_excluded": "dependency_receipt_sha256",
+    "array_order": {
+      "import_bindings": "ImportBindingId",
+      "activation_bindings": "ActivationOriginId",
+      "required_interfaces": "provider_binding_id_or_self_then_ModuleId"
+    }
+  },
+  "x-deeplus-provider-provenance-contract": {
+    "provider_pair_fields": [
+      "provider_binding_id_or_self",
+      "provider_module_id"
+    ],
+    "self_meaning": "PROVIDER_PACKAGE_EQUALS_CONSUMER_PACKAGE",
+    "self_does_not_imply": "PROVIDER_MODULE_EQUALS_CONSUMER_MODULE",
+    "visible_module_binding_match": "EACH_USED_PAIR_MATCHES_EXACTLY_ONE_PACKAGE_GRAPH_VISIBLE_MODULE_BINDING_FOR_CONSUMER_TARGET_ID",
+    "required_interface_pair_source": "UNIQUE_PROVIDER_PAIRS_USED_BY_IMPORT_BINDINGS_OR_ACTIVATION_BINDINGS",
+    "required_interface_exclusion": "ONLY_PROVIDER_MODULE_ID_EQUAL_TO_CONSUMER_MODULE_ID",
+    "same_package_other_module": "REQUIRED_WITH_PROVIDER_BINDING_SELF",
+    "required_interface_relation": "EXACT_SET_NO_MISSING_OR_EXTRA_PAIR",
+    "source_or_traversal_order_is_provenance": false
+  },
+  "x-deeplus-product-compiler": "NOT_RUN"
+}
