@@ -188,3 +188,12 @@ borrow가 run, Actor, return, storage 또는 escaping closure를 건너려면
 - [MIR inout/assignment](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 
 다음 장에서는 owner 이전과 복제 책임을 더 세밀하게 구분한다.
+
+
+<!-- IR-OWN-R8-TUTORIAL-07-02 -->
+### `borrow`를 소유권 철자로 기억하기
+
+공유 소유권 borrow는 `borrow value`로 쓴다. `&value`는 borrow의 축약이
+아니며 NumericArray/Measure 연산 문맥을 표시하는 별도 표면이다.
+
+예: `let view = borrow values`

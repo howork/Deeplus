@@ -615,3 +615,12 @@ let city = @match userAddress {
 ```
 
 <!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
+
+
+<!-- IR-OWN-R8-REF-22 -->
+### 닫힌 현행 역할과 일반화 후보
+
+현행 역할 집합은 `NUMERIC_ARRAY_CONTEXT_PROVIDER`와
+`MEASURE_UNIT_CONTEXT_PROVIDER` 두 개다. 다른 collection/control 문맥은
+Preview Design 후보일 뿐 현행 역할 registry, witness 또는 런타임
+provider를 생성하지 않는다.

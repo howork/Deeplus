@@ -628,3 +628,17 @@ public enum Day {
   [`library/prelude/`](../../library/prelude/)
 - 검토 예제:
   [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
+
+
+<!-- IR-OWN-R8-REF-07 -->
+### Measure 문맥 제공자와 단위 증거
+
+Measure 연산에서 `&provider`는 일반 borrow가 아니라 가장 가까운 연산이
+소유하는 문맥 제공자다. 이 역할은 정적으로 선택된 `UnitWitnessId`가
+있을 때만 성립하며, 런타임 provider 검색이나 암묵 단위 합성을 하지
+않는다.
+
+예를 들어 `let metre = 1.0 m` 뒤에
+`let length = &metre + 25.0`을 평가할 수 있다.
+
+위 `&metre`는 Measure 문맥 역할을 공급하지만 `LoanId`를 만들지 않는다.

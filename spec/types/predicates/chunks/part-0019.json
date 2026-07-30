@@ -1,0 +1,82 @@
+[
+  {
+    "predicate_id": "ClosedContractIntersectionAdmitted",
+    "formal_judgment_id": "J-ClosedContractIntersectionAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "concrete_base_count <= 1",
+      "trait contracts are nominal and unique",
+      "associated/responsibility rows are compatible",
+      "no structural merge or automatic distribution"
+    ],
+    "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
+    "decision_procedure": [
+      "validate the closed RCTSDescriptorV5 and native conditional constraints",
+      "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
+      "check concrete_base_count <= 1",
+      "check trait contracts are nominal and unique",
+      "check associated/responsibility rows are compatible",
+      "check no structural merge or automatic distribution",
+      "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
+    ],
+    "requires": [
+      "concrete_base_count <= 1",
+      "trait contracts are nominal and unique",
+      "associated/responsibility rows are compatible",
+      "no structural merge or automatic distribution"
+    ],
+    "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ClosedContractIntersectionAdmitted-POS",
+      "PF-ClosedContractIntersectionAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ClosedContractIntersectionAdmitted-NEG"
+    ],
+    "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "source_name": "ClosedContractIntersectionAdmitted",
+    "summary": "Admits one payload with at most one concrete nominal base and a finite compatible Trait evidence bundle.",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "call_shape",
+      "product_evidence"
+    ],
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "call_shape",
+      "product_evidence"
+    ],
+    "feature_refs": [
+      "closed_contract_intersection_type_msp"
+    ],
+    "diagnostic_refs": [
+      "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_dispatch": {
+      "first_failed_condition": "INTERSECTION_MULTIPLE_CONCRETE_BASES_FORBIDDEN"
+    },
+    "diagnostic_disposition": "active_primary"
+  }
+]

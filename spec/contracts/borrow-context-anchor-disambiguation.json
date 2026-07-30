@@ -1,0 +1,240 @@
+{
+  "schema": "deeplus.borrow-context-anchor-disambiguation-contract/r1",
+  "revision": "r51f3-r8-ownership-context",
+  "language_version": "0.1.2-internal",
+  "gap_id": "IR-OWN-P0-012",
+  "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
+  "source_activation": "none",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "semantic_p0": 0,
+  "product_lanes": "15/15_NOT_RUN",
+  "authority_fence": {
+    "source_baseline_commit": "1053902449aedccb110cef5bcfe76e5b1af9df01",
+    "source_decision": "ACCEPT_OPTION_A",
+    "canonical_path": "spec/contracts/borrow-context-anchor-disambiguation.json",
+    "product_support": "NOT_RUN",
+    "production_implementation": "NOT_PERFORMED"
+  },
+  "surface_owners": [
+    {
+      "parse_goal": "expression",
+      "fixity": "prefix",
+      "spelling": "borrow",
+      "cst": "BorrowExprCst",
+      "ast": "BorrowExpr",
+      "hir": "HirExprKind::PlaceAccess{plan:HirPlacePlan(access=BorrowShared)}",
+      "semantic_owner": "shared_ownership_borrow"
+    },
+    {
+      "parse_goal": "expression",
+      "fixity": "prefix",
+      "spelling": "&",
+      "cst": "ContextAnchorOperandCst",
+      "ast": "ContextAnchorCandidateExpr",
+      "hir": "absorbed_into_HirContextAdaptationPlan_owned_by_enclosing_operation",
+      "semantic_owner": "registered_operation_local_context_anchor"
+    },
+    {
+      "parse_goal": "type",
+      "fixity": "infix",
+      "spelling": "&",
+      "cst": "IntersectionTypeCst",
+      "ast": "IntersectionType",
+      "hir": "compile_time_type_identity",
+      "semantic_owner": "closed_contract_intersection_type_msp"
+    }
+  ],
+  "registered_context_roles": [
+    {
+      "role_id": "NUMERIC_ARRAY_CONTEXT_PROVIDER",
+      "authority_feature": "numeric_array_context_anchor_msp",
+      "requires": "closed ContextAdaptationPlanId selected by the nearest NumericArray operation"
+    },
+    {
+      "role_id": "MEASURE_UNIT_CONTEXT_PROVIDER",
+      "authority_feature": "measure_context_anchor_msp",
+      "requires": "closed ContextAdaptationPlanId and statically known UnitWitnessId selected by the nearest Measure operation"
+    }
+  ],
+  "nonactivatable_roles": [
+    "contextual_operation_anchor_dmad",
+    "explicit_context_argument_ampersand_spelling",
+    "explicit_broadcast_marker_msp"
+  ],
+  "anchor_binding": {
+    "nearest_owner_search": "transparent ParenExpr only",
+    "hard_boundaries": [
+      "call_argument",
+      "index",
+      "closure",
+      "control_expression"
+    ],
+    "operand_evaluation_count": 1,
+    "canonical_hir_unresolved_anchor_count": 0,
+    "extra_effect_count": 0,
+    "extra_error_count": 0,
+    "extra_cleanup_count": 0
+  },
+  "diagnostic_priority": [
+    "AMPERSAND_POLARITY_UNRESOLVED",
+    "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR",
+    "CONTEXT_EVIDENCE_ROLE_NOT_REGISTERED",
+    "CONTEXT_ANCHOR_NOT_A_VALUE",
+    "CONTEXT_ANCHOR_REQUIRES_ELIGIBLE_OPERATION",
+    "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
+    "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
+    "CONTEXT_ANCHOR_SCOPE_IS_NEAREST_OPERATION"
+  ],
+  "diagnostic_dispatch": [
+    {
+      "priority_rank": 1,
+      "condition": "the parser/CST cannot assign exactly one of expression-prefix context anchor or type-infix intersection under the fixed parse goal",
+      "diagnostic_id": "AMPERSAND_POLARITY_UNRESOLVED"
+    },
+    {
+      "priority_rank": 2,
+      "condition": "the nearest operation and carrier are the recognized NumericArray role family but ampersand is attached to the adapted operand rather than the context-provider operand",
+      "diagnostic_id": "BROADCAST_MARKER_POLARITY_IS_CONTEXT_ANCHOR"
+    },
+    {
+      "priority_rank": 3,
+      "condition": "the carrier type belongs to neither registered context role family",
+      "diagnostic_id": "CONTEXT_EVIDENCE_ROLE_NOT_REGISTERED"
+    },
+    {
+      "priority_rank": 4,
+      "condition": "a registered carrier appears in a standalone value position with no enclosing operation frame",
+      "diagnostic_id": "CONTEXT_ANCHOR_NOT_A_VALUE"
+    },
+    {
+      "priority_rank": 5,
+      "condition": "the nearest enclosing operation frame does not consume the carrier's exact registered role",
+      "diagnostic_id": "CONTEXT_ANCHOR_REQUIRES_ELIGIBLE_OPERATION"
+    },
+    {
+      "priority_rank": 6,
+      "condition": "one operation frame contains more than one context anchor",
+      "diagnostic_id": "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED"
+    },
+    {
+      "priority_rank": 7,
+      "condition": "Measure context carrier has no statically known UnitWitnessId",
+      "diagnostic_id": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
+    },
+    {
+      "priority_rank": 8,
+      "condition": "an ancestor operation attempts to reuse an anchor already consumed by the nearest child operation",
+      "diagnostic_id": "CONTEXT_ANCHOR_SCOPE_IS_NEAREST_OPERATION"
+    }
+  ],
+  "diagnostic_emission": {
+    "primary_count": 1,
+    "first_matching_condition_only": true,
+    "later_conditions": "NOT_EVALUATED"
+  },
+  "hir_projection_contract": {
+    "general_borrow": {
+      "canonical_expression_variant": "HirExprKind::PlaceAccess",
+      "plan": "HirPlacePlan",
+      "access": "BorrowShared",
+      "region_constraints_required": true,
+      "loan_id_created_in_hir": false,
+      "loan_id_created_by_mir_lowering": true
+    },
+    "context_anchor": {
+      "canonical_standalone_expression_variant": null,
+      "consuming_plan": "HirContextAdaptationPlan",
+      "owner": "nearest admitted NumericArray or Measure operation plan",
+      "required_fields": [
+        "context_adaptation_plan_id",
+        "role_id",
+        "provider_operand_eval_id",
+        "adapted_operand_eval_id",
+        "unit_witness_id_or_null",
+        "source_origin_id"
+      ],
+      "evaluation_order": "the enclosing operation evaluates each source operand exactly once in source order and references the resulting eval identities",
+      "role_constraints": {
+        "NUMERIC_ARRAY_CONTEXT_PROVIDER": "unit_witness_id_or_null is null",
+        "MEASURE_UNIT_CONTEXT_PROVIDER": "unit_witness_id_or_null is the statically selected UnitWitnessId"
+      },
+      "loan_id_created": false,
+      "borrow_event_created": false,
+      "runtime_role_lookup_count": 0,
+      "unresolved_role_count": 0
+    },
+    "type_intersection": {
+      "canonical_runtime_expression_variant": null,
+      "result": "normalized closed contract intersection type identity"
+    }
+  },
+  "feature_trace_owners": {
+    "general_borrow": [
+      "borrow_escape_law_phase_a",
+      "region_lifetime_model_phase_a"
+    ],
+    "context_framework": [
+      "context_evidence_anchor_framework"
+    ],
+    "numeric_array_role": [
+      "numeric_array_context_anchor_msp"
+    ],
+    "measure_role": [
+      "measure_context_anchor_msp"
+    ],
+    "type_intersection": [
+      "closed_contract_intersection_type_msp"
+    ]
+  },
+  "formatter_lsp": {
+    "borrow_format": "borrow <operand>",
+    "context_anchor_format": "&<operand>",
+    "type_intersection_format": "<left> & <right>",
+    "automatic_rewrite_count": 0,
+    "quick_fix_reinterpretation_count": 0,
+    "round_trip_preserves": [
+      "cst_role",
+      "ast_role",
+      "context_role_id"
+    ]
+  },
+  "zero_counts": {
+    "borrow_to_context_fallback": 0,
+    "context_anchor_to_borrow_fallback": 0,
+    "type_intersection_to_expression_route": 0,
+    "address_of_route": 0,
+    "runtime_role_lookup": 0,
+    "implicit_provider_search": 0,
+    "authority_synthesis": 0,
+    "witness_synthesis": 0,
+    "context_anchor_first_class_value": 0,
+    "context_anchor_ownership_borrow_events": 0,
+    "automatic_borrow_ampersand_rewrite": 0
+  },
+  "fixture_binding": {
+    "schema": "schemas/language/borrow-context-anchor-disambiguation-fixtures.schema.json",
+    "fixture": "tests/fixtures/current/borrow-context-anchor-disambiguation-r1.json",
+    "exact_case_count": 7,
+    "ordered_test_ids": [
+      "OWN-SURF-P-001",
+      "OWN-SURF-P-002",
+      "OWN-SURF-N-005",
+      "OWN-SURF-M-007",
+      "OWN-GAP-P-012",
+      "OWN-GAP-B-012",
+      "OWN-GAP-N-012"
+    ]
+  },
+  "machine_acceptance": {
+    "surface_owner_count": 3,
+    "registered_context_role_count": 2,
+    "diagnostic_priority_count": 8,
+    "fixture_case_count": 7,
+    "hir_h1_existing_artifact_delta": 0,
+    "context_anchor_loan_id_count": 0,
+    "context_anchor_borrow_event_count": 0,
+    "runtime_role_lookup_count": 0,
+    "unresolved_role_count": 0,
+    "product_execution": "NOT_RUN"
+  }
+}

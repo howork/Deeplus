@@ -1,0 +1,2190 @@
+{
+  "schema": "deeplus.ownership-decision-input-contract/r1",
+  "baseline_commit": "1053902449aedccb110cef5bcfe76e5b1af9df01",
+  "gap_id": "IR-OWN-P0-013",
+  "decision": "ACCEPT_OPTION_A_SEPARATE_TYPED_INPUT",
+  "candidate_status": "STABLE_DESIGN_APPROVED_NOT_INTEGRATED",
+  "rcts_v5_effect": "UNCHANGED",
+  "legacy_semantic_side_channel_read_count": 0,
+  "product_support": "NOT_RUN",
+  "predicate_input_dispatch": {
+    "discriminator": "top-level schema identity before semantic evaluation",
+    "canonical_union_schema_binding": {
+      "input_descriptor": "OwnershipPredicateInputR1",
+      "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json",
+      "json_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/ownership-predicate-input-r1.schema.json",
+        "title": "OwnershipPredicateInputR1",
+        "oneOf": [
+          {
+            "$ref": "rcts-v5-descriptor.schema.json"
+          },
+          {
+            "$ref": "ownership-decision-input-r1.schema.json"
+          }
+        ]
+      },
+      "predicate_row_overrides": {
+        "BorrowEscapeAdmitted": {
+          "input_descriptor": "OwnershipPredicateInputR1",
+          "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json"
+        },
+        "BoxOwnershipAdmitted": {
+          "input_descriptor": "OwnershipPredicateInputR1",
+          "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json"
+        },
+        "OwnershipModeAdmitted": {
+          "input_descriptor": "OwnershipPredicateInputR1",
+          "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json"
+        }
+      },
+      "catalog_metadata_binding": {
+        "baseline_default_fields": {
+          "input_descriptor": "RCTSDescriptorV5",
+          "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json"
+        },
+        "override_key": "input_descriptor_overrides",
+        "override_shape": "object keyed by exact predicate_id; each value has exactly input_descriptor and input_descriptor_schema",
+        "override_count": 3
+      },
+      "checker_predicate_row_schema_effect": "BYTE_IDENTICAL"
+    },
+    "heterogeneous_predicates": {
+      "BorrowEscapeAdmitted": [
+        "RCTSDescriptorV5",
+        "OwnershipDecisionInputR1"
+      ],
+      "BoxOwnershipAdmitted": [
+        "RCTSDescriptorV5",
+        "OwnershipDecisionInputR1"
+      ],
+      "OwnershipModeAdmitted": [
+        "RCTSDescriptorV5",
+        "OwnershipDecisionInputR1"
+      ]
+    },
+    "legacy_rcts_rule": "existing RCTSDescriptorV5 rows and their schema remain byte-identical and use only existing type-responsibility predicates",
+    "ownership_rule": "OwnershipDecisionInputR1.predicate_id must equal the catalog predicate being evaluated and the typed evaluator reads zero fixture or legacy side-channel fields",
+    "other_predicates": "retain their baseline input descriptor sets unchanged",
+    "fabricated_adapter_count": 0
+  },
+  "canonical_conformance_catalog_envelope": {
+    "reassembly_contract": {
+      "legacy_file": "deeplus-0.1.2-r5-ownership-decision-conformance.json",
+      "array_key": "scenarios",
+      "id_key": "test_id",
+      "partition_key": "class",
+      "shard_encoding": "ordered_json_arrays_max_61440_bytes",
+      "shard_root": "tests/conformance/ownership-decisions",
+      "metadata_path": "tests/conformance/ownership-decisions/catalog-metadata.json",
+      "row_count": 19,
+      "ordered_shard_paths": [
+        "tests/conformance/ownership-decisions/chunks/part-0001.json"
+      ],
+      "canonical_object_sha256": "GENERATOR_OWNED_64_LOWERCASE_HEX_AFTER_EXACT_REASSEMBLY"
+    },
+    "catalog_metadata": {
+      "schema": "deeplus.ownership-decision-conformance/r1",
+      "baseline": "0.1.2-baseline.r51f3",
+      "scenario_count": 19,
+      "step_input_count": 27,
+      "row_schema": "schemas/language/ownership-decision-fixture-row-r1.schema.json",
+      "payload_schema": "schemas/language/ownership-decision-fixtures-r1.schema.json",
+      "payload_path": "tests/fixtures/current/ownership-decision-inputs-r1.json",
+      "execution_status": "SPECIFIED_NOT_RUN",
+      "product_support": "NOT_RUN",
+      "evidence_boundary": "fully materialized typed semantic inputs and expected outputs; production evaluator NOT_RUN"
+    },
+    "row_contract": {
+      "array_element_identity": "test_id",
+      "partition_domain": [
+        "positive",
+        "boundary",
+        "negative",
+        "mutation"
+      ],
+      "exact_partition_counts": {
+        "positive": 6,
+        "boundary": 5,
+        "negative": 7,
+        "mutation": 1
+      },
+      "payload_binding": "each row binds exact scenario_locator, scenario_sha256, step_count, ordered step input SHA-256 values and expected evaluator residue"
+    },
+    "new_catalog_has_pre_current_legacy_identity": false,
+    "pre_current_reference_closure_object_sha256_field": "OMITTED_FOR_NEW_R5_CATALOG"
+  },
+  "supplemental_operation_coverage_contract": {
+    "payload_field": "supplemental_operation_coverage",
+    "acceptance_identity_effect": "NONE",
+    "exact_step_count": 6,
+    "exact_step_ids": [
+      "OWN-COVERAGE-INITIALIZE-R5",
+      "OWN-COVERAGE-RESERVE-MOVE-R5",
+      "OWN-COVERAGE-CANCEL-RESERVATION-R5",
+      "OWN-COVERAGE-REPLACE-INOUT-P-R5",
+      "OWN-COVERAGE-REPLACE-INOUT-B-R5",
+      "OWN-COVERAGE-REPLACE-INOUT-N-R5"
+    ],
+    "exact_coverage_classes": {
+      "positive": 4,
+      "boundary": 1,
+      "negative": 1
+    },
+    "exact_results": {
+      "ADMIT": 5,
+      "REJECT": 1,
+      "INPUT_INVALID": 0
+    },
+    "replace_inout_profiles": {
+      "positive": "ADMIT",
+      "boundary": "ADMIT",
+      "negative": "REJECT"
+    },
+    "all_fully_materialized_step_inputs": 33,
+    "all_results": {
+      "ADMIT": 23,
+      "REJECT": 9,
+      "INPUT_INVALID": 1
+    },
+    "schema_law": "every supplemental step is a complete OwnershipDecisionInputR1 plus exact expected residue, has coverage_only true and acceptance_test_id_or_null null, and is excluded from the 19-row acceptance catalog identity set",
+    "evidence_boundary": "static operation-contract coverage only; production evaluator and product support remain NOT_RUN"
+  },
+  "input": {
+    "schema_identity": "deeplus.ownership-decision-input/r1",
+    "closed_top_level_fields": [
+      "schema",
+      "predicate_id",
+      "type_descriptors",
+      "place_graph",
+      "state_graph",
+      "loan_region_graph",
+      "cfg",
+      "operation",
+      "escape_context",
+      "isolation_context",
+      "cleanup_context"
+    ],
+    "predicate_ids": [
+      "BorrowEscapeAdmitted",
+      "BoxOwnershipAdmitted",
+      "OwnershipModeAdmitted"
+    ],
+    "identity_domains": [
+      "TypeId",
+      "PlaceId",
+      "MovePathId",
+      "OwnerId",
+      "LoanId",
+      "RegionId",
+      "CleanupPlanId",
+      "CleanupTokenId",
+      "CfgPointId",
+      "OwnershipStateId",
+      "AccessId",
+      "IsolationDomainId",
+      "ProofId",
+      "TraitWitnessId",
+      "ReservationId",
+      "JoinConflictId"
+    ],
+    "referenced_canonical_identity_domains": [
+      "StableSymbolKey",
+      "VariantId",
+      "FeatureId"
+    ],
+    "place_root_kinds": [
+      "Local",
+      "Parameter",
+      "Temporary",
+      "Self",
+      "StaticSlot",
+      "ContinuationSlot",
+      "ImportedSlot",
+      "FfiSlot"
+    ],
+    "projection_kinds": [
+      "Field",
+      "TupleIndex",
+      "EnumPayload",
+      "ConstantIndex",
+      "DynamicIndex",
+      "Deref",
+      "Opaque"
+    ],
+    "unknown_projection_rule": "normalize to Opaque; reject raw unknown spelling",
+    "initialization_states": [
+      "Uninitialized",
+      "Live",
+      "Moved",
+      "MaybeMoved"
+    ],
+    "loan_kinds": [
+      "Shared",
+      "Exclusive"
+    ],
+    "loan_statuses": [
+      "Active",
+      "Suspended",
+      "Ended"
+    ],
+    "region_kinds": [
+      "Lexical",
+      "Invocation",
+      "ProcessStaticImmutable"
+    ],
+    "operation_kinds": [
+      "Initialize",
+      "Read",
+      "Write",
+      "ReserveMove",
+      "CancelReservation",
+      "Move",
+      "BeginSharedLoan",
+      "BeginExclusiveLoan",
+      "BeginReborrow",
+      "EndLoan",
+      "ReplaceInout",
+      "Cleanup",
+      "Join"
+    ],
+    "proof_kinds": [
+      "FreshAffineRoots",
+      "NonUnionStaticFields",
+      "DistinctTupleSlots",
+      "ActiveVariantExclusion",
+      "RegisteredExternalNoAlias",
+      "ProcessStaticImmutable",
+      "Shareable",
+      "Transferable"
+    ],
+    "proof_kind_activation": {
+      "FreshAffineRoots": "R5_ACTIVE",
+      "NonUnionStaticFields": "R5_ACTIVE",
+      "DistinctTupleSlots": "R5_ACTIVE",
+      "ActiveVariantExclusion": "R5_ACTIVE",
+      "RegisteredExternalNoAlias": "R5_ACTIVE",
+      "ProcessStaticImmutable": "R5_ACTIVE_SHARED_SUSPENSION_EXCEPTION_ONLY",
+      "Shareable": "DEFERRED_NO_R5_CROSS_ISOLATION_SHARED_LOAN_CONSUMER",
+      "Transferable": "R5_ACTIVE_CROSS_ISOLATION_MOVE_ONLY"
+    },
+    "proof_kind_contracts": {
+      "FreshAffineRoots": {
+        "subjects": [
+          {
+            "role": "left_root",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "right_root",
+            "domain": "PlaceId"
+          }
+        ],
+        "cardinality": 2,
+        "recompute": "both are distinct root places, both derive Affine or Resource from their TypeDescriptorBinding, and no OwnerId, MovePath or external-alias fact connects them"
+      },
+      "NonUnionStaticFields": {
+        "subjects": [
+          {
+            "role": "aggregate",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "left_field",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "right_field",
+            "domain": "PlaceId"
+          }
+        ],
+        "cardinality": 3,
+        "recompute": "subject 1 is the aggregate; subjects 2 and 3 are distinct direct Field projections with distinct StableSymbolKeys and the bound type descriptor proves a non-union aggregate"
+      },
+      "DistinctTupleSlots": {
+        "subjects": [
+          {
+            "role": "aggregate",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "left_slot",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "right_slot",
+            "domain": "PlaceId"
+          }
+        ],
+        "cardinality": 3,
+        "recompute": "subject 1 is the tuple aggregate; subjects 2 and 3 are direct TupleIndex projections with distinct normalized indices"
+      },
+      "ActiveVariantExclusion": {
+        "subjects": [
+          {
+            "role": "enum_owner",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "left_payload",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "right_payload",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "left_variant",
+            "domain": "VariantId"
+          },
+          {
+            "role": "right_variant",
+            "domain": "VariantId"
+          }
+        ],
+        "cardinality": 5,
+        "recompute": "the two payload places belong to distinct variants of the same enum owner and a point-bound refinement fact proves exactly one active VariantId throughout scope_point_ids"
+      },
+      "RegisteredExternalNoAlias": {
+        "subjects": [
+          {
+            "role": "left_place",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "right_place",
+            "domain": "PlaceId"
+          }
+        ],
+        "cardinality": 2,
+        "required_binding": "registered_external_contract_id",
+        "recompute": "both places are covered by one canonical external contract whose exact no-alias clause and platform profile are active at every scope point"
+      },
+      "ProcessStaticImmutable": {
+        "subjects": [
+          {
+            "role": "place",
+            "domain": "PlaceId"
+          },
+          {
+            "role": "region",
+            "domain": "RegionId"
+          }
+        ],
+        "cardinality": 2,
+        "recompute": "the place root is StaticSlot, mutability is Immutable, the region kind is ProcessStaticImmutable, and the bound type has no mutable interior route"
+      },
+      "Shareable": {
+        "subjects": [
+          {
+            "role": "type",
+            "domain": "TypeId"
+          },
+          {
+            "role": "owner",
+            "domain": "OwnerId"
+          },
+          {
+            "role": "destination_domain",
+            "domain": "IsolationDomainId"
+          },
+          {
+            "role": "witness",
+            "domain": "TraitWitnessId"
+          }
+        ],
+        "cardinality": 4,
+        "required_binding": "normalized Shareable conformance and exact TraitWitnessId",
+        "recompute": "the witness resolves to the bound TypeId, the current conformance registry admits Shareable, and the OwnerId plus destination domain are exactly the transfer context"
+      },
+      "Transferable": {
+        "subjects": [
+          {
+            "role": "type",
+            "domain": "TypeId"
+          },
+          {
+            "role": "owner",
+            "domain": "OwnerId"
+          },
+          {
+            "role": "destination_domain",
+            "domain": "IsolationDomainId"
+          },
+          {
+            "role": "witness",
+            "domain": "TraitWitnessId"
+          }
+        ],
+        "cardinality": 4,
+        "required_binding": "normalized Transferable conformance and exact TraitWitnessId",
+        "recompute": "the witness resolves to the bound TypeId, the current conformance registry admits Transferable, and the OwnerId plus destination domain are exactly the transfer context"
+      }
+    },
+    "proof_verifier": {
+      "trust_model": "proof rows are recomputed from canonical typed facts; serialized success assertions are never trusted",
+      "steps": [
+        "validate exact kind-specific subject domains and cardinality",
+        "resolve every subject, binding identity and scope point exactly once",
+        "recompute the proof-kind predicate from TypeDescriptorBinding, PlaceGraph, LoanRegionGraph, CFG and canonical conformance registry facts",
+        "canonicalize the consumed typed facts and compare their SHA-256 with derivation_input_digest",
+        "reject missing, stale, out-of-scope, witness-mismatched or non-recomputable proof as INPUT_INVALID"
+      ],
+      "shareable_transferable_witness_rule": "TraitWitnessId must resolve to the exact normalized TypeId and active Shareable or Transferable conformance; name equality or issuer_feature_id alone is insufficient",
+      "external_no_alias_rule": "binding_identity_or_null must resolve to one registered external contract with an active platform profile and exact no-alias clause",
+      "forged_proof_admission_count": 0
+    },
+    "identity_law": "PlaceId is compiler-local semantic identity for one normalized root plus projection path; it is never source spelling, serialization tag, runtime discriminant, layout/ABI identity or artifact hash.",
+    "reference_law": "Every typed ID resolves exactly once and normalized PlaceId key to assigned PlaceId is bijective.",
+    "canonicalization": {
+      "object_member_rule": "canonical JSON object members use lexicographic key order only for byte identity",
+      "array_field_policy_registry": {
+        "SET": [
+          "OwnershipDecisionInputR1.type_descriptors",
+          "PlaceGraph.places",
+          "PlaceGraph.move_paths",
+          "PlaceGraph.proofs",
+          "MovePathDef.child_move_path_ids",
+          "ClosedProof.scope_point_ids",
+          "StateGraph.states",
+          "StateGraph.operation_prefix_point_ids",
+          "OwnershipState.places",
+          "OwnershipState.loans",
+          "OwnershipState.tokens",
+          "OwnershipState.reservations",
+          "OwnershipState.join_conflicts",
+          "JoinConflict.predecessor_state_ids",
+          "JoinConflict.mismatch_axes",
+          "JoinConflict.mismatching_places",
+          "JoinConflict.covered_places",
+          "JoinConflictCoveredPlace.predecessors",
+          "LoanRegionGraph.owners",
+          "LoanRegionGraph.regions",
+          "LoanRegionGraph.loans",
+          "LoanRegionGraph.isolation_domains",
+          "RegionDef.end_point_ids",
+          "LoanDef.view_alias_bindings",
+          "LoanDef.end_point_ids",
+          "Cfg.point_ids",
+          "Cfg.edges",
+          "Cfg.accesses",
+          "Cfg.predecessor_state_ids",
+          "Operation.Initialize.ownership_unit_bindings",
+          "Operation.Join.predecessor_state_ids",
+          "EscapeContext.proof_ids",
+          "IsolationContext.proof_ids",
+          "CleanupContext.plans",
+          "CleanupContext.tokens"
+        ],
+        "SEQUENCE": [
+          "PlaceDef.projections",
+          "ClosedProof.subjects",
+          "ViewAliasBinding.relative_projection_key",
+          "Operation.Cleanup.cleanup_token_ids",
+          "CleanupContext.acquisition_order",
+          "CleanupPlan.action_keys"
+        ],
+        "set_field_count": 35,
+        "sequence_field_count": 6,
+        "total_registered_array_field_count": 41,
+        "generic_array_sort_count": 0,
+        "unregistered_array_field_policy": "REJECT",
+        "set_rule": "validate the stored array is unique and already ordered by its registered typed identity key; permutation canonicalization may sort only through this field-specific policy",
+        "sequence_rule": "preserve semantically significant stored order exactly; generic sorting, set comparison and permutation normalization are forbidden",
+        "cfg_access_identity_key": "(point_id,sequence_ordinal,access_id)",
+        "r1_predecessor_disposition": "the 34 SET + 6 SEQUENCE registry omitted required StateGraph.operation_prefix_point_ids and is immutable incomplete canonical-shape evidence; R2 adds that field as SET with semantic and P1 delta both zero"
+      },
+      "input_hash_rule": "validate every stored array against its registered SET or SEQUENCE policy before canonical JSON object-key encoding; there is no generic array sort"
+    },
+    "forbidden_fields": [
+      "expected_result",
+      "expected_diagnostic",
+      "fixture_id",
+      "filename",
+      "descriptor",
+      "descriptor_v5_as_semantic_input"
+    ],
+    "record_shapes": {
+      "OwnershipDecisionInputR1": {
+        "required": [
+          "schema",
+          "predicate_id",
+          "type_descriptors",
+          "place_graph",
+          "state_graph",
+          "loan_region_graph",
+          "cfg",
+          "operation",
+          "escape_context",
+          "isolation_context",
+          "cleanup_context"
+        ],
+        "fields": {
+          "schema": "const deeplus.ownership-decision-input/r1",
+          "predicate_id": "BorrowEscapeAdmitted|BoxOwnershipAdmitted|OwnershipModeAdmitted",
+          "type_descriptors": "array<TypeDescriptorBinding>[1..]",
+          "place_graph": "PlaceGraph",
+          "state_graph": "StateGraph",
+          "loan_region_graph": "LoanRegionGraph",
+          "cfg": "Cfg",
+          "operation": "Operation",
+          "escape_context": "EscapeContext",
+          "isolation_context": "IsolationContext",
+          "cleanup_context": "CleanupContext"
+        },
+        "additional_properties": false
+      },
+      "TypeDescriptorBinding": {
+        "required": [
+          "type_id",
+          "descriptor_v5"
+        ],
+        "fields": {
+          "type_id": "TypeId",
+          "descriptor_v5": "$ref:schemas/language/rcts-v5-descriptor.schema.json"
+        },
+        "identity_key": "type_id",
+        "law": "descriptor_v5.semantic_type.type_id is the same normalized TypeId as type_id; alias spelling, fixture filename and descriptor row position are not identity"
+      },
+      "PlaceGraph": {
+        "required": [
+          "places",
+          "move_paths",
+          "proofs"
+        ],
+        "fields": {
+          "places": "array<PlaceDef>[1..]",
+          "move_paths": "array<MovePathDef>[1..]",
+          "proofs": "array<ClosedProof>[0..]"
+        },
+        "uniqueness": [
+          "PlaceDef.place_id",
+          "MovePathDef.move_path_id",
+          "ClosedProof.proof_id"
+        ]
+      },
+      "PlaceDef": {
+        "required": [
+          "place_id",
+          "root",
+          "projections",
+          "move_path_id",
+          "type_id",
+          "mutability",
+          "mutability_origin",
+          "value_class",
+          "cleanup_requirement",
+          "ownership_unit_move_path_id_or_null",
+          "storage_region_id"
+        ],
+        "fields": {
+          "place_id": "PlaceId",
+          "root": "PlaceRoot",
+          "projections": "array<PlaceProjection>[0..]",
+          "move_path_id": "MovePathId",
+          "type_id": "TypeId",
+          "mutability": "Immutable|Mutable",
+          "mutability_origin": "BindingSymbol(StableSymbolKey)|IntrinsicTemporary|StaticContract|ExternalContract",
+          "value_class": "Reusable|Affine|Resource",
+          "cleanup_requirement": "None|ViewRelease|DropExactlyOnce",
+          "ownership_unit_move_path_id_or_null": "MovePathId|null",
+          "storage_region_id": "RegionId"
+        },
+        "laws": [
+          "normalized root plus projection sequence is bijective with place_id",
+          "value_class and cleanup_requirement are recomputed from the bound TypeDescriptorBinding and mismatch is INPUT_INVALID",
+          "mutability is recomputed from the canonical binding or operation fact named by mutability_origin and mismatch is INPUT_INVALID",
+          "an Affine or Resource ownership-unit place names its own MovePathId; a projection may name exactly one nearest ancestor ownership unit; Reusable and nonowning-view places use null",
+          "storage_region_id is the region of this storage location; moving an OwnerId changes its current region by changing the unique state-local holder PlaceId, never by mutating OwnerDef"
+        ]
+      },
+      "PlaceRoot": {
+        "required": [
+          "kind",
+          "root_identity"
+        ],
+        "fields": {
+          "kind": "Local|Parameter|Temporary|Self|StaticSlot|ContinuationSlot|ImportedSlot|FfiSlot",
+          "root_identity": "canonical namespaced root key; not a source spelling or ABI identity"
+        }
+      },
+      "PlaceProjection": {
+        "closed_union": {
+          "Field": {
+            "field_symbol_key": "StableSymbolKey"
+          },
+          "TupleIndex": {
+            "index": "nonnegative integer"
+          },
+          "EnumPayload": {
+            "variant_id": "VariantId"
+          },
+          "ConstantIndex": {
+            "normalized_index": "signed decimal string"
+          },
+          "DynamicIndex": {
+            "access_id": "AccessId"
+          },
+          "Deref": {
+            "pointee_type_id": "TypeId"
+          },
+          "Opaque": {
+            "reason": "UnknownExternal|UnresolvedDynamic|UnsupportedProjection|ProofUnavailable"
+          }
+        },
+        "unknown_rule": "raw unknown values are rejected; represent conservative uncertainty only as Opaque"
+      },
+      "MovePathDef": {
+        "required": [
+          "move_path_id",
+          "place_id",
+          "parent_move_path_id_or_null",
+          "child_move_path_ids",
+          "required_for_whole_value",
+          "is_ownership_unit"
+        ],
+        "fields": {
+          "move_path_id": "MovePathId",
+          "place_id": "PlaceId",
+          "parent_move_path_id_or_null": "MovePathId|null",
+          "child_move_path_ids": "canonical-sorted unique array<MovePathId>",
+          "required_for_whole_value": "Bool",
+          "is_ownership_unit": "Bool"
+        },
+        "laws": [
+          "the parent relation is acyclic",
+          "parent and child references are bidirectionally exact",
+          "every PlaceDef references exactly one MovePathDef"
+        ]
+      },
+      "ClosedProof": {
+        "required": [
+          "proof_id",
+          "kind",
+          "subjects",
+          "scope_point_ids",
+          "issuer_feature_id",
+          "binding_identity_or_null",
+          "derivation_input_digest"
+        ],
+        "fields": {
+          "proof_id": "ProofId",
+          "kind": "one of the closed proof_kinds enum",
+          "subjects": "nonempty array<ProofSubject> in the exact role order declared by the selected proof-kind contract",
+          "scope_point_ids": "canonical-sorted nonempty array<CfgPointId>",
+          "issuer_feature_id": "FeatureId",
+          "binding_identity_or_null": "canonical registered contract or conformance identity|null",
+          "derivation_input_digest": "64 lowercase hexadecimal SHA-256 over the canonical typed facts consumed by the proof rule"
+        },
+        "laws": [
+          "proof_id is a reference to a recomputed derivation, not a trusted assertion token",
+          "subject roles are unique and equal the selected proof-kind contract in exact order; sorting by raw ID is forbidden"
+        ]
+      },
+      "ProofSubject": {
+        "required": [
+          "role",
+          "domain",
+          "id"
+        ],
+        "fields": {
+          "role": "proof-kind-specific closed role key",
+          "domain": "TypeId|PlaceId|MovePathId|OwnerId|LoanId|RegionId|IsolationDomainId|VariantId|TraitWitnessId",
+          "id": "identity matching the selected domain"
+        },
+        "additional_properties": false
+      },
+      "StateGraph": {
+        "required": [
+          "states",
+          "operation_prefix_point_ids",
+          "entry_state_id",
+          "query_state_id_or_null"
+        ],
+        "fields": {
+          "states": "array<OwnershipState>[1..]",
+          "operation_prefix_point_ids": "canonical-sorted unique array<CfgPointId>[1..] equal to the exact typed reachable operation-prefix points",
+          "entry_state_id": "OwnershipStateId",
+          "query_state_id_or_null": "OwnershipStateId|null"
+        },
+        "uniqueness": [
+          "OwnershipState.state_id"
+        ],
+        "laws": [
+          "operation_prefix_point_ids is the intersection of points reachable from cfg.entry_point_id and points that can reach cfg.current_point_id; it includes current_point_id for every non-Join operation and excludes the not-yet-produced Join target point for Join",
+          "states contain exactly one OwnershipState for every operation_prefix_point_id and no state for an unreachable, future strict-successor or omitted predecessor point; OwnershipState.point_id is a bijection with operation_prefix_point_ids",
+          "cfg.predecessor_state_ids are the bijective state image of the exact reachable incoming CfgEdge source points for cfg.current_point_id",
+          "an OwnerId, ReservationId or JoinConflictId that occurred anywhere in that closure is never fresh again even when its holder/group is retired",
+          "non-Join operations require query_state_id_or_null to resolve the exact pre-operation snapshot at cfg.current_point_id; Join requires it null and consumes exactly cfg.predecessor_state_ids"
+        ]
+      },
+      "OwnershipState": {
+        "required": [
+          "state_id",
+          "point_id",
+          "places",
+          "loans",
+          "tokens",
+          "reservations",
+          "join_conflicts"
+        ],
+        "fields": {
+          "state_id": "OwnershipStateId",
+          "point_id": "CfgPointId",
+          "places": "canonical-sorted array<PlaceState>; exactly one row per PlaceId",
+          "loans": "canonical-sorted array<LoanState>; at most one row per LoanId",
+          "tokens": "canonical-sorted array<CleanupTokenState>; at most one row per CleanupTokenId",
+          "reservations": "canonical-sorted array<MoveReservationState>; at most one row per ReservationId",
+          "join_conflicts": "zero or one JoinConflict row in the R5 minimum profile"
+        },
+        "law": "when join_conflicts is nonempty, every MaybeMoved place in this state references that one JoinConflictId and no ordinary Live place embeds predecessor-alternative owner or token identity"
+      },
+      "PlaceState": {
+        "required": [
+          "place_id",
+          "initialization",
+          "owner_id_or_null",
+          "reservation_id_or_null",
+          "cleanup_token_id_or_null",
+          "join_conflict_id_or_null"
+        ],
+        "fields": {
+          "place_id": "PlaceId",
+          "initialization": "Uninitialized|Live|Moved|MaybeMoved",
+          "owner_id_or_null": "OwnerId|null",
+          "reservation_id_or_null": "ReservationId|null",
+          "cleanup_token_id_or_null": "CleanupTokenId|null",
+          "join_conflict_id_or_null": "JoinConflictId|null"
+        },
+        "conditional_laws": [
+          "MaybeMoved requires join_conflict_id_or_null to resolve exactly once and owner/token/reservation fields to be null",
+          "non-MaybeMoved states require join_conflict_id_or_null to be null",
+          "Moved and Uninitialized have no owner and no available cleanup token",
+          "a Live Affine or Resource ownership-unit place has exactly one OwnerId and is its unique state-local holder; every projection has owner_id_or_null null and resolves ownership through ownership_unit_move_path_id_or_null",
+          "a Live Reusable or nonowning-view place has owner_id_or_null null",
+          "DropExactlyOnce requires exactly one available token at the ownership-unit place, owned by that OwnerId; its projections have null token",
+          "None and ViewRelease require cleanup_token_id_or_null null; ViewRelease is discharged only by the matching LoanDef end transition",
+          "an Unbound or Consumed cleanup token has holder_owner_id_or_null null",
+          "reservation_id_or_null is non-null iff one matching Active MoveReservationState names this exact place"
+        ]
+      },
+      "JoinConflict": {
+        "required": [
+          "join_conflict_id",
+          "predecessor_state_ids",
+          "mismatch_axes",
+          "join_point_id",
+          "mismatching_places",
+          "covered_places"
+        ],
+        "fields": {
+          "join_conflict_id": "JoinConflictId",
+          "predecessor_state_ids": "canonical-sorted unique array<OwnershipStateId>[2..]",
+          "mismatch_axes": "canonical-sorted nonempty subset of initialization|owner|reservation_id|cleanup_token|prior_join_conflict",
+          "mismatching_places": "canonical-sorted nonempty array<PlaceId> whose exact predecessor tuples differ",
+          "covered_places": "canonical-sorted nonempty rows keyed by PlaceId; includes every declared PlaceId whose owner-normalized place overlaps any mismatching place after ViewAliasBinding normalization, and each row contains every predecessor OwnershipStateId and its exact initialization, owner_id_or_null, reservation_id_or_null, cleanup_token_id_or_null and prior JoinConflictId",
+          "join_point_id": "CfgPointId"
+        },
+        "laws": [
+          "one n-ary Join operation creates at most one JoinConflictId and every covered place becomes MaybeMoved with null owner/token/reservation and references it",
+          "predecessor alternatives are mutually exclusive; OwnerId and CleanupTokenId uniqueness is checked independently inside each predecessor state slice, not across alternatives",
+          "no Live place remains whose normalized owner place overlaps a mismatching place; a proven-disjoint sibling remains outside coverage",
+          "a JoinConflict is diagnostic-only and admits no read, write, move, borrow, cleanup, suspension, escape or serialization residue"
+        ]
+      },
+      "LoanState": {
+        "required": [
+          "loan_id",
+          "status"
+        ],
+        "fields": {
+          "loan_id": "LoanId",
+          "status": "Active|Suspended|Ended"
+        },
+        "presence_rule": "absence is allowed only when the LoanDef start point is not in the typed reachable prefix of this state point",
+        "laws": [
+          "Active or Suspended requires every PlaceState in the LoanDef view_alias_bindings view subtree Live; Ended or not-yet-started absence requires that entire view subtree Uninitialized",
+          "R5 admits at most one non-Ended direct child per non-Ended parent; a parent is Suspended iff that child is Active or Suspended, an Active loan has no non-Ended child, and therefore each live reborrow chain has exactly one Active leaf. Ending the Active leaf returns only its immediate parent to Active while higher ancestors remain Suspended.",
+          "a status/view/parent-child mismatch is INPUT_INVALID before semantic evaluation"
+        ]
+      },
+      "CleanupTokenState": {
+        "required": [
+          "cleanup_token_id",
+          "status",
+          "holder_owner_id_or_null"
+        ],
+        "fields": {
+          "cleanup_token_id": "CleanupTokenId",
+          "status": "Unbound|Available|Consumed",
+          "holder_owner_id_or_null": "OwnerId|null"
+        },
+        "laws": [
+          "Unbound is a fresh predeclared token epoch not yet attached to an owner",
+          "Available has exactly one holder OwnerId",
+          "Consumed has null holder and never becomes Unbound or Available again",
+          "every reachable OwnershipState contains exactly one CleanupTokenState row for every CleanupTokenDef; omission or duplication is INPUT_INVALID"
+        ]
+      },
+      "MoveReservationState": {
+        "required": [
+          "reservation_id",
+          "place_id",
+          "status",
+          "created_point_id"
+        ],
+        "fields": {
+          "reservation_id": "ReservationId",
+          "place_id": "PlaceId",
+          "status": "Active|Consumed|Cancelled",
+          "created_point_id": "CfgPointId"
+        },
+        "laws": [
+          "ReservationId is unique across the typed reachable prefix and is supplied explicitly by ReserveMove",
+          "only the exact active ReservationId may be consumed by Move or cancelled by CancelReservation",
+          "Consumed and Cancelled reservations never become Active again"
+        ]
+      },
+      "LoanRegionGraph": {
+        "required": [
+          "owners",
+          "regions",
+          "loans",
+          "isolation_domains"
+        ],
+        "fields": {
+          "owners": "array<OwnerDef>[0..]",
+          "regions": "array<RegionDef>[1..]",
+          "loans": "array<LoanDef>[0..]",
+          "isolation_domains": "array<IsolationDomainDef>[1..]"
+        },
+        "uniqueness": [
+          "OwnerDef.owner_id",
+          "RegionDef.region_id",
+          "LoanDef.loan_id",
+          "IsolationDomainDef.isolation_domain_id"
+        ]
+      },
+      "OwnerDef": {
+        "required": [
+          "owner_id",
+          "origin_place_id",
+          "origin_region_id",
+          "cleanup_plan_id_or_null"
+        ],
+        "fields": {
+          "owner_id": "OwnerId",
+          "origin_place_id": "PlaceId",
+          "origin_region_id": "RegionId",
+          "cleanup_plan_id_or_null": "CleanupPlanId|null"
+        },
+        "law": "origin_place_id and origin_region_id are immutable provenance; at a queried state the derived binding is exactly one of Unissued, one unique Live ownership-unit PlaceState holder, one state-level conditional JoinConflict alternative group, or Retired. The monotone automaton is Unissued -> Live exactly once; Live -> Live is admitted only as one atomic holder transfer; Live -> Retired; Retired is terminal; an issued identity never returns to Unissued. Current region exists only for a unique Live holder and is that holder PlaceDef.storage_region_id."
+      },
+      "RegionDef": {
+        "required": [
+          "region_id",
+          "kind",
+          "isolation_domain_id",
+          "parent_region_id_or_null",
+          "entry_point_id",
+          "end_point_ids"
+        ],
+        "fields": {
+          "region_id": "RegionId",
+          "kind": "Lexical|Invocation|ProcessStaticImmutable",
+          "isolation_domain_id": "IsolationDomainId",
+          "parent_region_id_or_null": "RegionId|null",
+          "entry_point_id": "CfgPointId",
+          "end_point_ids": "canonical-sorted nonempty array<CfgPointId>"
+        },
+        "law": "parent relation is acyclic and containment is proven through this tree plus CFG reachability"
+      },
+      "LoanDef": {
+        "required": [
+          "loan_id",
+          "owner_place_id",
+          "view_place_id",
+          "view_descriptor_type_id",
+          "region_id",
+          "kind",
+          "parent_loan_id_or_null",
+          "call_instance_id_or_null",
+          "argument_ordinal_or_null",
+          "view_alias_bindings",
+          "start_point_id",
+          "end_point_ids",
+          "view_release_required"
+        ],
+        "fields": {
+          "loan_id": "LoanId",
+          "owner_place_id": "PlaceId",
+          "view_place_id": "PlaceId",
+          "view_descriptor_type_id": "TypeId",
+          "region_id": "RegionId",
+          "kind": "Shared|Exclusive",
+          "parent_loan_id_or_null": "LoanId|null",
+          "call_instance_id_or_null": "canonical call-instance key|null",
+          "argument_ordinal_or_null": "nonnegative integer|null",
+          "view_alias_bindings": "canonical-sorted nonempty array<ViewAliasBinding>",
+          "start_point_id": "CfgPointId",
+          "end_point_ids": "canonical-sorted nonempty array<CfgPointId>",
+          "view_release_required": "Bool"
+        },
+        "laws": [
+          "owner_place_id is the borrowed storage; view_place_id is a distinct nonowning PlaceDef whose RCTS projection is borrow/ViewRelease for Shared or inout/ViewRelease for Exclusive",
+          "view_descriptor_type_id resolves to the view PlaceDef TypeDescriptorBinding; its RCTS semantic_type.arguments[0] equals the owner PlaceDef.type_id",
+          "access through view_place_id identifies this LoanId and does not conflict with its own loan; every other overlapping access follows the ordinary conflict matrix",
+          "Borrow and inout descriptors projected as ViewRelease require exactly one matching LoanDef with view_release_required=true",
+          "BeginLoan makes the declared view place Live; matching EndLoan makes it Uninitialized and discharges ViewRelease exactly once without creating a CleanupTokenId",
+          "a callable borrow/inout parameter loan has both call_instance_id_or_null and argument_ordinal_or_null non-null; a non-call lexical loan has both null",
+          "a view access is admitted only when AccessFact.via_loan_id_or_null names this exact LoanDef and its queried LoanState is Active; Suspended, Ended or absent loan state authorizes zero view access",
+          "view_alias_bindings form a total bijection from the declared view subtree to the corresponding owner subtree by identical relative projection key; normalization follows the acyclic parent-loan/view-alias chain transitively to one ultimate non-view owner PlaceId before overlap, coverage, isolation-source or reservation checks"
+        ]
+      },
+      "ViewAliasBinding": {
+        "required": [
+          "view_place_id",
+          "owner_place_id",
+          "relative_projection_key"
+        ],
+        "fields": {
+          "view_place_id": "PlaceId in the LoanDef view subtree",
+          "owner_place_id": "PlaceId in the LoanDef owner subtree",
+          "relative_projection_key": "canonical relative projection sequence; empty for the root pair"
+        },
+        "law": "within each LoanDef the view and owner PlaceIds are each unique and form one bijection with equal relative projection keys; a ViewRelease PlaceId belongs to exactly one LoanDef, while one owner PlaceId may be the target of multiple distinct Shared LoanDefs whose coexistence is decided by the loan conflict rules. Mapped semantic types agree after stripping exactly one borrow/inout view descriptor."
+      },
+      "IsolationDomainDef": {
+        "required": [
+          "isolation_domain_id",
+          "kind"
+        ],
+        "fields": {
+          "isolation_domain_id": "IsolationDomainId",
+          "kind": "Local|Task|Actor|Global"
+        }
+      },
+      "Cfg": {
+        "required": [
+          "entry_point_id",
+          "point_ids",
+          "edges",
+          "accesses",
+          "current_point_id",
+          "predecessor_state_ids"
+        ],
+        "fields": {
+          "entry_point_id": "CfgPointId",
+          "point_ids": "canonical-sorted unique array<CfgPointId>[1..]",
+          "edges": "canonical-sorted unique array<CfgEdge>[0..]",
+          "accesses": "canonical-sorted unique array<AccessFact>[0..]",
+          "current_point_id": "CfgPointId",
+          "predecessor_state_ids": "canonical-sorted unique array<OwnershipStateId>[0..]"
+        },
+        "laws": [
+          "every edge endpoint and access point resolves in point_ids",
+          "predecessor_state_ids are exactly the reachable incoming snapshots for current_point_id",
+          "operation order is (CfgPointId canonical order, AccessFact.sequence_ordinal)",
+          "at the selected operation point, AccessFact rows are a bijection with the exact role/place/mode/via-loan rows derived from operation_loan_access_matrix; prior-point rows remain typed history, while an extra, missing, duplicate or stale current-point row is INPUT_INVALID"
+        ]
+      },
+      "CfgEdge": {
+        "required": [
+          "from_point_id",
+          "to_point_id",
+          "kind"
+        ],
+        "fields": {
+          "from_point_id": "CfgPointId",
+          "to_point_id": "CfgPointId",
+          "kind": "Normal|Branch|Backedge|Cleanup|Failure"
+        },
+        "identity_key": "(from_point_id,to_point_id,kind)"
+      },
+      "AccessFact": {
+        "required": [
+          "access_id",
+          "point_id",
+          "sequence_ordinal",
+          "place_id",
+          "mode",
+          "call_instance_id_or_null",
+          "argument_ordinal_or_null",
+          "via_loan_id_or_null"
+        ],
+        "fields": {
+          "access_id": "AccessId",
+          "point_id": "CfgPointId",
+          "sequence_ordinal": "nonnegative integer unique within point_id",
+          "place_id": "PlaceId",
+          "mode": "Read|Write|Move|SharedBorrow|ExclusiveBorrow|Cleanup|MutAcquire",
+          "call_instance_id_or_null": "canonical call-instance key|null",
+          "argument_ordinal_or_null": "nonnegative integer|null",
+          "via_loan_id_or_null": "LoanId|null"
+        },
+        "law": "access through a borrow/inout view names its exact Active LoanId; ordinary direct owner-place access uses null. The sole privileged owner-place exception is the ReplaceInout caller MutAcquire role, whose via_loan_id_or_null equals the exact Active Exclusive call LoanId and whose call_instance/argument fields match both operation and LoanDef. The selected operation's current-point AccessFacts are derived only from operation_loan_access_matrix, and their sequence_ordinal is canonical role order."
+      },
+      "Operation": {
+        "discriminator": "kind",
+        "required_common": [
+          "kind"
+        ],
+        "closed_union": {
+          "Initialize": [
+            "place_id",
+            "ownership_unit_bindings",
+            "at_point_id"
+          ],
+          "Read": [
+            "place_id",
+            "at_point_id"
+          ],
+          "Write": [
+            "place_id",
+            "at_point_id"
+          ],
+          "ReserveMove": [
+            "place_id",
+            "reservation_id",
+            "at_point_id"
+          ],
+          "CancelReservation": [
+            "place_id",
+            "reservation_id",
+            "at_point_id"
+          ],
+          "Move": [
+            "source_place_id",
+            "destination_place_id",
+            "reservation_id_or_null",
+            "source_destination_disjoint_proof_id_or_null",
+            "at_point_id"
+          ],
+          "BeginSharedLoan": [
+            "owner_place_id",
+            "view_place_id",
+            "loan_id",
+            "region_id",
+            "at_point_id"
+          ],
+          "BeginExclusiveLoan": [
+            "owner_place_id",
+            "view_place_id",
+            "loan_id",
+            "region_id",
+            "at_point_id"
+          ],
+          "BeginReborrow": [
+            "parent_loan_id",
+            "child_loan_id",
+            "child_owner_place_id",
+            "child_view_place_id",
+            "child_region_id",
+            "at_point_id"
+          ],
+          "EndLoan": [
+            "loan_id",
+            "at_point_id"
+          ],
+          "ReplaceInout": [
+            "place_id",
+            "loan_id",
+            "call_instance_id",
+            "argument_ordinal",
+            "replacement_place_id",
+            "old_value_staging_place_id",
+            "acquire_point_id",
+            "commit_point_id"
+          ],
+          "Cleanup": [
+            "place_id",
+            "cleanup_token_ids",
+            "at_point_id"
+          ],
+          "Join": [
+            "predecessor_state_ids",
+            "target_point_id",
+            "new_join_conflict_id_or_null"
+          ]
+        },
+        "law": "every field is required for its selected kind and fields from other variants are forbidden"
+      },
+      "InitializationBinding": {
+        "required": [
+          "place_id",
+          "new_owner_id_or_null",
+          "new_cleanup_token_id_or_null"
+        ],
+        "fields": {
+          "place_id": "PlaceId",
+          "new_owner_id_or_null": "OwnerId|null",
+          "new_cleanup_token_id_or_null": "CleanupTokenId|null"
+        },
+        "law": "Initialize.ownership_unit_bindings is canonical-sorted and contains exactly one row for every ownership unit in the selected initialization closure; non-ownership-unit places have no row"
+      },
+      "EscapeContext": {
+        "required": [
+          "decision_point_id",
+          "applicability",
+          "boundary",
+          "source_region_id_or_null",
+          "target_region_id_or_null",
+          "target_region_origin_or_null",
+          "proof_ids"
+        ],
+        "fields": {
+          "decision_point_id": "CfgPointId equal to Operation.at_point_id, ReplaceInout.acquire_point_id or Join.target_point_id",
+          "applicability": "Applicable|NotApplicable",
+          "boundary": "None|Return|Store|Capture|TaskEscape|ActorTransfer|Ffi|Suspension",
+          "source_region_id_or_null": "RegionId|null",
+          "target_region_id_or_null": "RegionId|null",
+          "target_region_origin_or_null": "null|RegionAncestor{source_region_id,required_ancestor_kind=Invocation}|PlaceStorage{place_id}|LoanRegion{loan_id}",
+          "proof_ids": "canonical-sorted unique array<ProofId>[0..]"
+        },
+        "law": "decision_point_id always equals cfg.current_point_id and binds this context to exactly the selected operation decision. Join uses NotApplicable with boundary None and all region/proof fields empty while retaining Join.target_point_id as decision_point_id. Every other operation uses Applicable and independently recomputes source_region_id_or_null from typed input facts: ordinary selected places normalize transitively through ViewAlias, loan operations use the exact owner, parent or ended LoanDef rule, Move uses the current OwnerId holder, with an exact selected/normalized PlaceDef storage-region fallback only for a local Moved or MaybeMoved rejection that has no holder; this fallback never restores authority, routes Moved to USE_AFTER_MOVE and MaybeMoved to PLACE_STATE_JOIN_MISMATCH, and treats Live ownerless, Uninitialized or reference mismatch as INPUT_INVALID. ReplaceInout uses the replacement current OwnerId holder. BeginSharedLoan and BeginExclusiveLoan are resolved before the ordinary existing-view path: source is Operation.loan_id -> exact LoanDef.owner_place_id -> ultimate non-view PlaceDef.storage_region_id; boundary None has null target/origin; Return, Capture and Suspension use LoanRegion{loan_id=Operation.loan_id} and exact LoanDef.region_id after exact operation start/owner/view/kind/region and view-storage-region binding; every other Begin boundary is INPUT_INVALID. A valid Begin context remains separate from BorrowEscape admission, so Exclusive Suspension can be context-valid and semantically rejected. Ordinary existing-view Return uses the nearest Invocation RegionAncestor from its exact active via-loan source; ordinary Capture/Suspension uses one exact current-point active LoanRegion. Actual-boundary Move uses Operation.destination_place_id PlaceStorage and Store is not admitted in R5. Boundary None otherwise requires both target_region_id_or_null and target_region_origin_or_null null. The validator derives expected source, origin and target without using their serialized values as an oracle and requires exact equality. Every unlisted combination is INPUT_INVALID."
+      },
+      "IsolationContext": {
+        "required": [
+          "applicability",
+          "source_domain_id_or_null",
+          "destination_domain_id_or_null",
+          "transfer",
+          "proof_ids"
+        ],
+        "fields": {
+          "applicability": "Applicable|NotApplicable",
+          "source_domain_id_or_null": "IsolationDomainId|null",
+          "destination_domain_id_or_null": "IsolationDomainId|null",
+          "transfer": "None|Borrow|Move|Copy",
+          "proof_ids": "canonical-sorted unique array<ProofId>[0..]"
+        },
+        "law": "Join uses NotApplicable with both domains null, transfer None and no proof. Applicable contexts bind source_domain_id_or_null to the actual source RegionDef and destination_domain_id_or_null to the actual destination RegionDef when a destination exists; operation-specific transfer/proof rules are closed by isolation_context_matrix and extra, stale, missing or mismatched proof is INPUT_INVALID."
+      },
+      "CleanupContext": {
+        "required": [
+          "plans",
+          "tokens",
+          "acquisition_order"
+        ],
+        "fields": {
+          "plans": "array<CleanupPlan>[0..]",
+          "tokens": "array<CleanupTokenDef>[0..]",
+          "acquisition_order": "array<CleanupTokenId>[0..]"
+        },
+        "laws": [
+          "plan and token identities are unique",
+          "acquisition_order contains each declared token exactly once"
+        ]
+      },
+      "CleanupPlan": {
+        "required": [
+          "cleanup_plan_id",
+          "owner_id",
+          "action_keys"
+        ],
+        "fields": {
+          "cleanup_plan_id": "CleanupPlanId",
+          "owner_id": "OwnerId",
+          "action_keys": "ordered nonempty array<canonical cleanup action key>"
+        }
+      },
+      "CleanupTokenDef": {
+        "required": [
+          "cleanup_token_id",
+          "cleanup_plan_id",
+          "owner_id"
+        ],
+        "fields": {
+          "cleanup_token_id": "CleanupTokenId",
+          "cleanup_plan_id": "CleanupPlanId",
+          "owner_id": "OwnerId"
+        }
+      }
+    },
+    "cross_record_invariants": [
+      "all assigned IDs are unique within their identity domain and every reference resolves exactly once",
+      "every PlaceDef type_id resolves to one TypeDescriptorBinding and every PlaceDef move_path_id resolves to one MovePathDef whose place_id points back",
+      "PlaceDef.value_class and cleanup_requirement equal the deterministic projection of its descriptor_v5 ownership and cleanup axes; mutability equals the canonical binding/operation fact identified by mutability_origin",
+      "every OwnershipState contains exactly one PlaceState for every declared PlaceId",
+      "every OwnerDef resolves one immutable origin PlaceId, origin RegionId and optional CleanupPlanId; its derived queried binding is Unissued, one Live ownership-unit holder, one state-level conditional predecessor-alternative group, or Retired, and current region exists only for the Live-holder case",
+      "every RegionDef resolves one IsolationDomainId; every PlaceDef storage_region_id resolves one RegionDef",
+      "every LoanDef resolves distinct owner/view PlaceIds, one view TypeDescriptorBinding, one RegionId and a total projection-preserving ViewAliasBinding bijection; an optional parent loan resolves once and forms an acyclic tree, and every LoanState status exactly agrees with its complete view subtree plus the R5 one-active-child parent/child law",
+      "every CleanupTokenDef resolves one CleanupPlan and one Owner and has exactly one state row in every reachable OwnershipState; CleanupTokenDef.owner_id equals CleanupPlan.owner_id, that OwnerDef.cleanup_plan_id_or_null equals the same plan, Available holder is that Owner while Unbound and Consumed have null holder",
+      "RCTS cleanup totality is exact: Reusable/None and Reusable/ViewRelease have zero owner plan/token; Affine/None OwnerDef has null cleanup plan and zero token; Resource/DropExactlyOnce OwnerDef has one nonnull plan and exactly one predeclared token epoch",
+      "within one OwnershipState an OwnerId occurs at exactly one Live ownership-unit PlaceState or only inside one state-level JoinConflict predecessor alternative set, never both; projections never repeat OwnerId and resolve through ownership_unit_move_path_id_or_null",
+      "an Available cleanup token is referenced by exactly one Live ownership-unit place or only inside the same state-level JoinConflict predecessor alternative set, never both; Unbound/Consumed tokens have no place reference and projections never duplicate token references",
+      "every MaybeMoved PlaceState references the one JoinConflictId in its state whose covered_places contains that PlaceId; one join never duplicates predecessor owner/token alternatives across per-place conflict objects",
+      "each non-null PlaceState reservation_id_or_null resolves to one Active MoveReservationState for that exact Live ownership-unit place and every Active reservation is referenced by exactly one such place; Moved, Uninitialized, MaybeMoved and non-ownership-unit places carry no reservation",
+      "entry_state_id always resolves; query_state_id_or_null resolves exactly once for non-Join and is null for Join; operation_prefix_point_ids is exactly the reachable-from-entry and can-reach-current intersection, includes current for non-Join, excludes the not-yet-produced Join target, and is in bijection with OwnershipState.point_id",
+      "cfg.predecessor_state_ids equals the complete canonical-sorted reachable incoming state set for current_point_id",
+      "the selected Operation references only declared IDs and its point is cfg.current_point_id except ReplaceInout and Join, whose closed fields state their exact points",
+      "a Move source_destination_disjoint_proof_id_or_null is the sole operation-bound overlap-proof reference: when non-null it resolves exactly one recomputed PlaceOverlapProof whose ordered left_root/right_root PlaceId subjects are root_representative(source_place_id) and root_representative(destination_place_id), whose proof kind is admitted for those roots/projections, and whose exact [at_point_id] scope plus derivation digest establish DISJOINT; no IsolationContext proof substitutes for it",
+      "every selected Operation resolves the exact unique current-point AccessFact role set prescribed by operation_loan_access_matrix; CancelReservation, EndLoan and Join resolve zero current-point facts, Move resolves source Move plus destination Write, ReplaceInout resolves caller MutAcquire plus replacement Move plus staging Write, and an extra/missing/stale role is INPUT_INVALID",
+      "every BeginSharedLoan, BeginExclusiveLoan, BeginReborrow and EndLoan operation exactly matches the referenced LoanDef kind, owner/view places, region, parent identity and start/end point before any state transition; BeginReborrow child_owner_place_id is in the exact Active parent LoanDef view subtree and normalizes through that parent alias before reaching the ultimate non-view owner",
+      "BeginSharedLoan and BeginExclusiveLoan require a null parent_loan_id and an owner place outside every ViewAlias view subtree; borrowing through a view is admitted only by BeginReborrow with the exact Active parent LoanId",
+      "EscapeContext.decision_point_id equals cfg.current_point_id and the selected Operation at/target/acquire decision point; applicability plus source/target regions and IsolationContext domains are recomputed from the selected operation's actual source and destination PlaceDefs, Owner binding and RegionDefs; serialized context copied from another point is INPUT_INVALID",
+      "ReplaceInout old_value_staging_place_id is a wholly Uninitialized transaction-local Temporary subtree with exact caller TypeId/shape in the same Invocation region, has no source-level binding, and is inaccessible outside the replacement operation; its caller MutAcquire AccessFact is the sole direct-owner via-loan exception and must bind the exact Active Exclusive call LoanId, call instance and argument ordinal",
+      "Initialize on a ViewRelease place is always REJECT; only BeginSharedLoan, BeginExclusiveLoan or BeginReborrow may make such a view Live",
+      "escape and isolation proofs resolve to ClosedProof rows whose kind, subjects and CFG scope exactly cover the requested boundary",
+      "expected outcomes, diagnostics, fixture names and filenames are absent from OwnershipDecisionInputR1"
+    ]
+  },
+  "rcts_place_projection": {
+    "identity_law": "TypeDescriptorBinding.type_id equals descriptor_v5.semantic_type.type_id after canonical normalization",
+    "admitted_total_rows": [
+      {
+        "rcts_ownership": "reusable",
+        "rcts_cleanup": "none",
+        "value_class": "Reusable",
+        "cleanup_requirement": "None",
+        "place_owner": "NONE",
+        "cleanup_discharge": "NONE"
+      },
+      {
+        "rcts_ownership": "borrow",
+        "rcts_cleanup": "view_release",
+        "value_class": "Reusable",
+        "cleanup_requirement": "ViewRelease",
+        "place_owner": "NONE",
+        "cleanup_discharge": "matching Shared LoanDef EndLoan exactly once"
+      },
+      {
+        "rcts_ownership": "inout",
+        "rcts_cleanup": "view_release",
+        "value_class": "Reusable",
+        "cleanup_requirement": "ViewRelease",
+        "place_owner": "NONE",
+        "cleanup_discharge": "matching Exclusive LoanDef EndLoan exactly once"
+      },
+      {
+        "rcts_ownership": "move",
+        "rcts_cleanup": "none",
+        "value_class": "Affine",
+        "cleanup_requirement": "None",
+        "place_owner": "EXACTLY_ONE_AT_OWNERSHIP_UNIT",
+        "cleanup_discharge": "NONE"
+      },
+      {
+        "rcts_ownership": "resource",
+        "rcts_cleanup": "drop_exactly_once",
+        "value_class": "Resource",
+        "cleanup_requirement": "DropExactlyOnce",
+        "place_owner": "EXACTLY_ONE_AT_OWNERSHIP_UNIT",
+        "cleanup_discharge": "one owner-bound CleanupToken exactly once"
+      }
+    ],
+    "all_other_ownership_cleanup_pairs": "INPUT_INVALID_BY_EXISTING_RCTS_V5_RESPONSIBILITY_RULES",
+    "projection_law": "the table is total over every admitted RCTS-V5 ownership/cleanup pair; PlaceDef may not override the derived value_class or cleanup_requirement",
+    "cleanup_owner_totality": {
+      "Reusable:None": "zero OwnerDef, zero CleanupPlan and zero CleanupTokenDef",
+      "Reusable:ViewRelease": "zero OwnerDef, zero CleanupPlan and zero CleanupTokenDef; discharge belongs only to the matching LoanDef",
+      "Affine:None": "exactly one OwnerDef at each Live ownership unit, cleanup_plan_id_or_null null and zero CleanupTokenDef",
+      "Resource:DropExactlyOnce": "exactly one OwnerDef with one nonnull CleanupPlanId and exactly one predeclared CleanupTokenDef epoch for that owner; token state is Unbound, Available or Consumed in every reachable state"
+    },
+    "borrow_inout_are_nonowning_views": true,
+    "view_release_uses_cleanup_token": false
+  },
+  "overlap": {
+    "view_normalization": "when AccessFact.via_loan_id_or_null is non-null, first require that exact loan Active, then follow its ViewAliasBinding and every acyclic parent_loan_id/view-alias link transitively to one ultimate non-view owner PlaceId. Active and Suspended loans both reserve/conflict their normalized owner subtree; Suspended removes only direct view authorization. An access through the Active leaf is exempt from that leaf and its exact Suspended ancestor chain, but every unrelated access is checked against both statuses. Use only the ultimate place for overlap, join coverage, isolation-source and reservation analysis.",
+    "same_or_prefix": "OVERLAP",
+    "static_field_or_tuple": "DISJOINT only with closed typed proof",
+    "variant_payloads": "DISJOINT only with point-bound ActiveVariantExclusion proof",
+    "fresh_affine_roots": "DISJOINT only with closed FreshAffineRoots proof",
+    "dynamic_index": "OVERLAP",
+    "deref": "OVERLAP",
+    "opaque": "OVERLAP",
+    "imported_or_ffi": "OVERLAP absent RegisteredExternalNoAlias proof",
+    "constant_index": "OVERLAP in R5 minimum profile",
+    "unknown": "OVERLAP",
+    "order_winner_count": 0
+  },
+  "move_path_propagation": {
+    "partial_move_scope": "one static Field or TupleIndex child of a direct-local cleanup-free Affine aggregate only; formal Reusable Plain and cleanup-bearing Resource partial moves reject",
+    "child_move": "the selected child MovePath becomes Moved; its ancestor PlaceState remains structurally Live but whole-value capability is derived false while any required child is not Live",
+    "whole_value_readable": "true iff the root PlaceState is Live and every descendant MovePath marked required_for_whole_value is Live",
+    "whole_value_movable": "whole_value_movable(place, authorized_reservation_id_or_null) is whole_value_readable plus no Active or Suspended overlapping loan and no overlapping Active reservation except the exact reservation on the selected source place named by authorized_reservation_id_or_null",
+    "unaffected_sibling_access": "admitted only when the sibling MovePath is Live and overlap analysis proves it disjoint from every active conflicting access",
+    "child_reinitialization": "Initialize may restore a Moved child subtree to Live only through its exact Mutable child PlaceId with no owner/loan/token/reservation; the complete initialization closure and exact ownership_unit_bindings are committed in canonical descendant-before-root order, then whole-value capability is recomputed",
+    "ownership_unit": "each independently movable Affine or Resource MovePath is an ownership unit; its root PlaceState is the sole state-local OwnerId/token holder and projections name the nearest unit while keeping owner/token fields null",
+    "state_rewrite_closure": "the selected MovePath PlaceId plus every required descendant PlaceId, including non-ownership-unit projections, in canonical normalized projection order",
+    "ownership_transfer_units": "exactly the PlaceIds in state_rewrite_closure whose MovePathDef.is_ownership_unit is true, in canonical MovePathId order",
+    "whole_move_state_rewrite_set": "root plus every required descendant PlaceId",
+    "partial_move_state_rewrite_set": "the selected direct Field/Tuple child plus every required descendant PlaceId; ancestors and disjoint siblings remain unchanged",
+    "destination_shape": "source and destination roots have equal normalized TypeId; map the empty relative suffix from selected source root to selected destination root, then require a bijection of every required descendant MovePath by its normalized projection suffix relative to those selected roots and exact TypeId",
+    "atomic_rewrite": "every source PlaceState in state_rewrite_closure becomes Moved and every corresponding destination PlaceState becomes Live; only ownership_transfer_units carry the bijectively transferred OwnerIds and owner-bound tokens, all other rows keep owner/token null; an omitted descendant, duplicate or stranded owner/token rejects before commit",
+    "parent_state_rewrite_count": 0,
+    "source_order_dependency_count": 0
+  },
+  "reservation_access_matrix": [
+    {
+      "operation": "Read",
+      "overlapping_active_reservation": "ADMIT_WITH_STATE_UNCHANGED"
+    },
+    {
+      "operation": "Move",
+      "overlapping_active_reservation": "ADMIT_ONLY_EXACT_AUTHORIZED_SOURCE_RESERVATION"
+    },
+    {
+      "operation": "CancelReservation",
+      "overlapping_active_reservation": "ADMIT_ONLY_EXACT_RESERVATION"
+    },
+    {
+      "operation": "Write|SharedBorrow|ExclusiveBorrow|Cleanup|ReplaceInout|ReserveMove|other Move",
+      "overlapping_active_reservation": "REJECT"
+    }
+  ],
+  "loan_access_conflict_matrix": {
+    "normalization": "transitively normalize every access and loan owner/view through ViewAliasBinding to the ultimate non-view owner before overlap",
+    "unrelated_overlapping_access": {
+      "Shared:Active": {
+        "Read": "ADMIT",
+        "SharedBorrow": "ADMIT",
+        "Write": "REJECT",
+        "Move": "REJECT",
+        "ExclusiveBorrow": "REJECT",
+        "Cleanup": "REJECT",
+        "MutAcquire": "REJECT"
+      },
+      "Shared:Suspended": {
+        "Read": "ADMIT",
+        "SharedBorrow": "ADMIT",
+        "Write": "REJECT",
+        "Move": "REJECT",
+        "ExclusiveBorrow": "REJECT",
+        "Cleanup": "REJECT",
+        "MutAcquire": "REJECT"
+      },
+      "Exclusive:Active": {
+        "Read": "REJECT",
+        "SharedBorrow": "REJECT",
+        "Write": "REJECT",
+        "Move": "REJECT",
+        "ExclusiveBorrow": "REJECT",
+        "Cleanup": "REJECT",
+        "MutAcquire": "REJECT"
+      },
+      "Exclusive:Suspended": {
+        "Read": "REJECT",
+        "SharedBorrow": "REJECT",
+        "Write": "REJECT",
+        "Move": "REJECT",
+        "ExclusiveBorrow": "REJECT",
+        "Cleanup": "REJECT",
+        "MutAcquire": "REJECT"
+      }
+    },
+    "authorized_active_leaf_access": {
+      "Shared": {
+        "Read": "ADMIT",
+        "SharedBorrow": "ADMIT_ONLY_BEGIN_REBORROW_SHARED_CHILD",
+        "Write": "REJECT",
+        "Move": "REJECT",
+        "ExclusiveBorrow": "REJECT",
+        "Cleanup": "REJECT",
+        "MutAcquire": "REJECT"
+      },
+      "Exclusive": {
+        "Read": "ADMIT",
+        "SharedBorrow": "ADMIT_ONLY_BEGIN_REBORROW_CHILD",
+        "Write": "ADMIT",
+        "Move": "REJECT_CURRENT_INOUT_VALUE_MOVE",
+        "ExclusiveBorrow": "ADMIT_ONLY_BEGIN_REBORROW_CHILD",
+        "Cleanup": "REJECT",
+        "MutAcquire": "ADMIT"
+      }
+    },
+    "ancestor_chain_exemption": "an access through the exact Active leaf ignores conflict only from that leaf and its exact Suspended ancestors; every unrelated Active or Suspended loan is still evaluated",
+    "ended_or_absent": "no conflict authority and no view-access authority"
+  },
+  "operation_loan_access_matrix": [
+    {
+      "operation": "Initialize",
+      "access_roles": [
+        {
+          "role": "target",
+          "place_binding": "Operation.place_id",
+          "mode": "Write",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "ordinary initialization is a mutation of the complete selected subtree and rejects every overlapping Active or Suspended loan before commit; its own Uninitialized/Moved admission rule remains independently required"
+    },
+    {
+      "operation": "Read",
+      "access_roles": [
+        {
+          "role": "target",
+          "place_binding": "Operation.place_id",
+          "mode": "Read",
+          "via_loan": "exact AccessFact.via_loan_id_or_null; null for owner access or exact Active leaf for view access"
+        }
+      ],
+      "rule": "ordinary owner access has no exemption; a view access receives only the exact Active leaf plus Suspended-ancestor exemption"
+    },
+    {
+      "operation": "Write",
+      "access_roles": [
+        {
+          "role": "target",
+          "place_binding": "Operation.place_id",
+          "mode": "Write",
+          "via_loan": "exact AccessFact.via_loan_id_or_null; null for owner access or exact Active Exclusive leaf for view access"
+        }
+      ],
+      "rule": "ordinary owner mutation has no exemption; a view mutation requires the exact Active Exclusive leaf plus Suspended-ancestor exemption"
+    },
+    {
+      "operation": "ReserveMove",
+      "access_roles": [
+        {
+          "role": "source",
+          "place_binding": "Operation.place_id",
+          "mode": "Move",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "reservation performs the same complete normalized loan-conflict check as its future move and creates no loan exemption"
+    },
+    {
+      "operation": "CancelReservation",
+      "access_roles": [],
+      "rule": "cancellation changes only the exact reservation row and does not access the reserved value"
+    },
+    {
+      "operation": "Move",
+      "access_roles": [
+        {
+          "role": "source",
+          "place_binding": "Operation.source_place_id",
+          "mode": "Move",
+          "via_loan": "null"
+        },
+        {
+          "role": "destination",
+          "place_binding": "Operation.destination_place_id",
+          "mode": "Write",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "the current inout value is not movable through a loan; both source and destination normalized subtrees reject every conflicting Active or Suspended loan before commit"
+    },
+    {
+      "operation": "BeginSharedLoan",
+      "access_roles": [
+        {
+          "role": "owner",
+          "place_binding": "Operation.owner_place_id",
+          "mode": "SharedBorrow",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "root borrowing is checked against every existing normalized Active or Suspended loan and may not borrow through a view"
+    },
+    {
+      "operation": "BeginExclusiveLoan",
+      "access_roles": [
+        {
+          "role": "owner",
+          "place_binding": "Operation.owner_place_id",
+          "mode": "ExclusiveBorrow",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "root borrowing is checked against every existing normalized Active or Suspended loan and may not borrow through a view"
+    },
+    {
+      "operation": "BeginReborrow",
+      "access_roles": [
+        {
+          "role": "child_owner",
+          "place_binding": "Operation.child_owner_place_id in the exact Active parent LoanDef view subtree",
+          "mode": "SharedBorrow iff child LoanDef.kind=Shared; ExclusiveBorrow iff child LoanDef.kind=Exclusive",
+          "via_loan": "Operation.parent_loan_id naming the exact Active parent leaf"
+        }
+      ],
+      "rule": "the declared child kind selects the mode; child_owner_place_id is the parent view root or one of its mapped subplaces and normalizes view-to-view-to-ultimate-owner through the exact Active parent; only that parent chain is exempt and every unrelated loan is checked normally"
+    },
+    {
+      "operation": "EndLoan",
+      "access_roles": [],
+      "rule": "ending a loan changes only its loan state and mapped ViewRelease subtree; it performs no owner-value access"
+    },
+    {
+      "operation": "ReplaceInout",
+      "access_roles": [
+        {
+          "role": "caller",
+          "place_binding": "Operation.place_id",
+          "mode": "MutAcquire",
+          "via_loan": "Operation.loan_id naming the exact Active Exclusive call loan"
+        },
+        {
+          "role": "replacement",
+          "place_binding": "Operation.replacement_place_id",
+          "mode": "Move",
+          "via_loan": "null"
+        },
+        {
+          "role": "staging",
+          "place_binding": "Operation.old_value_staging_place_id",
+          "mode": "Write",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "the call loan authorizes only the caller MutAcquire role as the sole direct-owner via-loan exception, with exact call_instance_id and argument_ordinal equality; every unrelated overlapping loan and all replacement/staging conflicts are checked before commit"
+    },
+    {
+      "operation": "Cleanup",
+      "access_roles": [
+        {
+          "role": "complete_owned_closure",
+          "place_binding": "every PlaceId in the computed full owned-descendant state_rewrite_closure rooted at Operation.place_id",
+          "mode": "Cleanup",
+          "via_loan": "null"
+        }
+      ],
+      "rule": "one current-point AccessFact is required for every unique place in the complete owned closure; cleanup rejects every overlapping Active or Suspended loan before the first token is consumed"
+    },
+    {
+      "operation": "Join",
+      "access_roles": [],
+      "rule": "join compares complete predecessor loan states and rejects divergence or covered live loans; it performs no direct value access"
+    }
+  ],
+  "escape_context_matrix": [
+    {
+      "operations": [
+        "Join"
+      ],
+      "decision_point": "Operation.target_point_id",
+      "applicability": "NotApplicable",
+      "source_region": null,
+      "boundary": "None",
+      "target_region": null,
+      "target_region_origin": null,
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "Initialize",
+        "Read",
+        "Write",
+        "ReserveMove",
+        "CancelReservation",
+        "Cleanup"
+      ],
+      "decision_point": "Operation.at_point_id",
+      "applicability": "Applicable",
+      "source_region": "selected PlaceDef after transitive ViewAlias normalization -> storage_region_id",
+      "boundary": "actual operation-bound escape boundary or None",
+      "target_region": "actual target storage/lifetime RegionId when boundary requires one, otherwise null",
+      "target_region_origin": "closed typed locator required exactly for an admitted actual boundary; BeginSharedLoan/BeginExclusiveLoan Return, Capture and Suspension use the exact Operation.loan_id LoanRegion after exact LoanDef binding; ordinary existing-view non-Move Return uses the nearest Invocation RegionAncestor and ordinary Capture/Suspension uses an exact current-point active LoanRegion; every other non-Move combination is INPUT_INVALID",
+      "proof_rule": "boundary None requires empty; otherwise require the exact closed boundary proof set"
+    },
+    {
+      "operations": [
+        "BeginSharedLoan",
+        "BeginExclusiveLoan"
+      ],
+      "decision_point": "Operation.at_point_id",
+      "applicability": "Applicable",
+      "source_region": "Operation.loan_id -> exact LoanDef.owner_place_id -> ultimate non-view PlaceDef.storage_region_id",
+      "boundary_profiles": {
+        "None": {
+          "origin": null,
+          "target_region": null,
+          "context_status": "VALID"
+        },
+        "Return": {
+          "origin": "LoanRegion{loan_id=Operation.loan_id}",
+          "target_region": "exact LoanDef.region_id",
+          "context_status": "VALID_BOUNDARY_POLICY_DECIDES"
+        },
+        "Capture": {
+          "origin": "LoanRegion{loan_id=Operation.loan_id}",
+          "target_region": "exact LoanDef.region_id",
+          "context_status": "VALID_BOUNDARY_POLICY_DECIDES"
+        },
+        "Suspension": {
+          "origin": "LoanRegion{loan_id=Operation.loan_id}",
+          "target_region": "exact LoanDef.region_id",
+          "context_status": "VALID_BOUNDARY_POLICY_DECIDES"
+        }
+      },
+      "unlisted_boundaries": {
+        "Store": "INPUT_INVALID",
+        "TaskEscape": "INPUT_INVALID",
+        "ActorTransfer": "INPUT_INVALID",
+        "Ffi": "INPUT_INVALID"
+      },
+      "cross_record_binding": "Operation.region_id == LoanDef.region_id; view PlaceDef.storage_region_id == LoanDef.region_id; exact operation start/owner/view/kind fields equal the LoanDef",
+      "proof_rule": "boundary None requires exactly_empty; admitted actual boundary requires the exact closed boundary proof set"
+    },
+    {
+      "operations": [
+        "BeginReborrow"
+      ],
+      "decision_point": "Operation.at_point_id",
+      "applicability": "Applicable",
+      "source_region": "parent LoanDef.region_id",
+      "boundary": "None",
+      "target_region": null,
+      "target_region_origin": null,
+      "proof_rule": "exactly_empty and child region strictly contained"
+    },
+    {
+      "operations": [
+        "EndLoan"
+      ],
+      "decision_point": "Operation.at_point_id",
+      "applicability": "Applicable",
+      "source_region": "ended LoanDef.region_id",
+      "boundary": "None",
+      "target_region": null,
+      "target_region_origin": null,
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "Move"
+      ],
+      "decision_point": "Operation.at_point_id",
+      "applicability": "Applicable",
+      "source_region": "actual source OwnerId holder PlaceDef.storage_region_id; only a local Moved/MaybeMoved rejection with no holder uses the exact selected/normalized source PlaceDef.storage_region_id fallback",
+      "boundary": "actual move boundary or None",
+      "target_region": "actual destination PlaceDef.storage_region_id only when the boundary requires a target; otherwise null",
+      "target_region_origin": "PlaceStorage bound to Operation.destination_place_id only for an admitted non-Store actual boundary; otherwise null",
+      "proof_rule": "boundary None requires empty; cross-boundary proof set must equal boundary policy"
+    },
+    {
+      "operations": [
+        "ReplaceInout"
+      ],
+      "decision_point": "Operation.acquire_point_id",
+      "applicability": "Applicable",
+      "source_region": "actual replacement OwnerId holder PlaceDef.storage_region_id",
+      "boundary": "None",
+      "target_region": null,
+      "target_region_origin": null,
+      "proof_rule": "exactly_empty and both regions belong to the same IsolationDomainId"
+    }
+  ],
+  "escape_target_origin_compatibility_matrix": {
+    "boundary_none": {
+      "operation_predicate": "every non-Join operation",
+      "origin": null,
+      "target_region": null
+    },
+    "not_applicable_join": {
+      "operation_predicate": "Join only",
+      "boundary": "None",
+      "origin": null,
+      "target_region": null
+    },
+    "admitted_actual_profiles": [
+      {
+        "origin_kind": "RegionAncestor",
+        "operation_predicate": "ordinary existing-view operation; explicitly excludes BeginSharedLoan, BeginExclusiveLoan, Move and Join",
+        "boundary_set": [
+          "Return"
+        ],
+        "exact_binding": "source_region_id equals the independently recomputed escape source; required_ancestor_kind is const Invocation; target is the nearest matching ancestor"
+      },
+      {
+        "origin_kind": "PlaceStorage",
+        "operation_predicate": "kind is exactly Move",
+        "boundary_set": [
+          "Return",
+          "Capture",
+          "TaskEscape",
+          "ActorTransfer",
+          "Ffi",
+          "Suspension"
+        ],
+        "exact_binding": "place_id equals Operation.destination_place_id; target is that PlaceDef.storage_region_id"
+      },
+      {
+        "origin_kind": "LoanRegion",
+        "operation_predicate": "BeginSharedLoan or BeginExclusiveLoan only",
+        "boundary_set": [
+          "Return",
+          "Capture",
+          "Suspension"
+        ],
+        "exact_binding": "loan_id equals Operation.loan_id; Operation and LoanDef start/owner/view/kind/region fields match; view storage region and target equal LoanDef.region_id",
+        "context_semantic_separation": "context may be VALID while BorrowEscape boundary policy rejects; Exclusive Suspension is not INPUT_INVALID"
+      },
+      {
+        "origin_kind": "LoanRegion",
+        "operation_predicate": "ordinary existing-view operation; explicitly excludes BeginSharedLoan, BeginExclusiveLoan, Move and Join; binds exactly one current-point active access LoanId",
+        "boundary_set": [
+          "Capture",
+          "Suspension"
+        ],
+        "exact_binding": "target is the exact LoanDef.region_id"
+      }
+    ],
+    "admitted_origin_kind_count": 3,
+    "admitted_actual_profile_count": 4,
+    "store_boundary_status": "NOT_ADMITTED_R5_NO_TYPED_STORE_DESTINATION_OPERATION",
+    "region_def_origin_status": "NOT_ADMITTED_R5",
+    "unlisted_combination": "INPUT_INVALID"
+  },
+  "isolation_context_matrix": [
+    {
+      "operations": [
+        "Join"
+      ],
+      "applicability": "NotApplicable",
+      "source_domain": null,
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "Initialize"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "selected PlaceDef.storage_region_id -> RegionDef.isolation_domain_id",
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "Read",
+        "Write",
+        "ReserveMove",
+        "CancelReservation",
+        "Cleanup"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "selected PlaceDef after ViewAlias normalization -> storage RegionDef.isolation_domain_id",
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "BeginSharedLoan",
+        "BeginExclusiveLoan"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "declared LoanDef.owner_place_id storage RegionDef.isolation_domain_id",
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty; LoanDef.region_id must remain inside the same domain"
+    },
+    {
+      "operations": [
+        "BeginReborrow"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "child LoanDef.owner_place_id storage RegionDef.isolation_domain_id",
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty; child and parent LoanDef regions must resolve the same domain"
+    },
+    {
+      "operations": [
+        "EndLoan"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "ended LoanDef.region_id -> RegionDef.isolation_domain_id",
+      "destination_domain": null,
+      "transfer": "None",
+      "proof_rule": "exactly_empty"
+    },
+    {
+      "operations": [
+        "Move"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "actual source-holder RegionDef domain",
+      "destination_domain": "actual destination PlaceDef RegionDef domain",
+      "transfer": "Move",
+      "proof_rule": "same-domain exactly_empty; cross-domain exactly one Transferable proof per ownership_transfer_unit"
+    },
+    {
+      "operations": [
+        "ReplaceInout"
+      ],
+      "applicability": "Applicable",
+      "source_domain": "actual replacement-holder RegionDef domain",
+      "destination_domain": "actual caller PlaceDef RegionDef domain",
+      "transfer": "Move",
+      "proof_rule": "domains must be equal and proof_ids exactly_empty in R5"
+    }
+  ],
+  "transition_rules": [
+    {
+      "operation": "Initialize",
+      "rule": "ViewRelease places reject ordinary Initialize. For an ordinary selected place, derive the complete required descendant state_rewrite_closure and require every row Uninitialized, or allow a Moved mutable child subtree only under the exact child-reinitialization law; no row may have an owner, available token or reservation, and the complete normalized subtree must have no overlapping Active or Suspended loan under the Write access-mode row. ownership_unit_bindings contains exactly one canonical row for every ownership unit in that closure. Reusable rows have no binding; each Affine/None unit names one predeclared OwnerId never held in any typed reachable-prefix state and null token; each Resource/DropExactlyOnce unit names one such OwnerId plus its exact Unbound CleanupTokenId. TokenDef.owner, TokenDef.plan, CleanupPlan.owner and OwnerDef.cleanup_plan are identical, and OwnerDef origin place/region match the unit. Commit descendants before their ownership-unit roots, then publish the whole closure atomically. Retired OwnerIds and Consumed tokens are never reused; no allocator, source order or hidden identity synthesis is consulted."
+    },
+    {
+      "operation": "Read",
+      "rule": "Require Live place and Live required child move paths with no overlapping Active or Suspended Exclusive loan, except the exact Active leaf plus Suspended ancestor chain authorizing this via-loan access; state is unchanged."
+    },
+    {
+      "operation": "Write",
+      "rule": "Ordinary Write is nonownership mutation and requires whole_value_readable(place_id), a Mutable place, no overlapping Active or Suspended loan except the exact Active Exclusive leaf plus Suspended ancestor chain authorizing this via-loan access, and the same admitted isolation domain; state is unchanged. Whole overwrite or replacement is expressed only by Initialize or ReplaceInout."
+    },
+    {
+      "operation": "ReserveMove",
+      "rule": "Require whole_value_movable(place_id, null) for a Live ownership-unit place with no Active or Suspended overlapping loan, then accept the exact never-issued ReservationId supplied by the operation, create one Active MoveReservationState for that place, and write that identity to reservation_id_or_null. Read remains admitted; every overlapping Write, borrow, cleanup, replacement, other reservation or other Move rejects until exact Move or CancelReservation consumes the reservation."
+    },
+    {
+      "operation": "CancelReservation",
+      "rule": "Only the exact Active ReservationId supplied by the operation may be cancelled; mark that reservation Cancelled and clear the matching place reservation_id_or_null without moving owner or token."
+    },
+    {
+      "operation": "Move",
+      "rule": "Require a Live Affine/Resource source with whole_value_movable(source, reservation_id_or_null), a wholly Uninitialized destination state_rewrite_closure with zero Active reservations, exact normalized source/destination TypeId and MovePath-shape equality, a live destination region at commit, and a DISJOINT source/destination result under the conservative overlap rule. source_destination_disjoint_proof_id_or_null is non-null exactly when that result depends on a proof: it resolves one recomputed PlaceOverlapProof whose ordered left_root/right_root PlaceId subjects are root_representative(source_place_id) and root_representative(destination_place_id), whose scope_points is exactly [at_point_id], whose proof kind is admitted for those roots/projections, and whose derivation digest is exact; IsolationContext proof_ids never substitute for this operation-bound overlap proof. If reservation_id_or_null is present it must name the exact Active reservation on source and is the sole reservation excluded from the conflict set; if absent source must have no reservation. Across isolation domains, IsolationContext must equal the actual source/destination RegionDef domains, transfer is exactly Move, and every ownership_transfer_unit has one exact recomputed TypeId/OwnerId/destination-domain Transferable proof with no extra or missing proof. Atomically mark every source state_rewrite_closure row Moved and every corresponding destination row Live, while bijectively transferring OwnerIds and owner-bound CleanupTokenIds only for ownership_transfer_units; consume the matching reservation when present. Cleanup-free units transfer zero tokens. A partial move is admitted only for one direct static Field/Tuple ownership unit of a direct-local cleanup-free Affine aggregate. Resource, Reusable, non-owning view, dynamic-index, deref, shared, actor, FFI and inout-current-value partial moves reject. No implicit conversion is admitted. Any precommit failure preserves both subtrees and reservation."
+    },
+    {
+      "operation": "BeginSharedLoan",
+      "rule": "Require the operation fields to equal one declared root Shared LoanDef with parent_loan_id_or_null null at its exact start point; owner_place_id is readable and is outside every ViewAlias view subtree. Require an Uninitialized distinct borrow/ViewRelease view subtree, a total projection-preserving view_alias_bindings map, a contained RegionId and admitted boundary; add one Active Shared loan and make the complete view subtree Live. Access through that view supplies via_loan_id_or_null equal to this Active loan, normalizes through the alias map before overlap, and does not conflict with itself."
+    },
+    {
+      "operation": "BeginExclusiveLoan",
+      "rule": "Require the operation fields to equal one declared root Exclusive LoanDef with parent_loan_id_or_null null at its exact start point; owner_place_id is writable and is outside every ViewAlias view subtree. Require an Uninitialized distinct inout/ViewRelease view subtree, a total projection-preserving view_alias_bindings map, no overlapping Active or Suspended loan, a contained RegionId and admitted boundary; add one Active Exclusive loan and make the complete view subtree Live. Access through that view supplies via_loan_id_or_null equal to this Active loan, normalizes through the alias map before overlap, and does not conflict with itself."
+    },
+    {
+      "operation": "BeginReborrow",
+      "rule": "Require the operation fields to exactly match the child LoanDef and its Active parent. child_owner_place_id is the parent LoanDef view root or an exact mapped subplace in that view subtree, never the ultimate direct owner; its AccessFact names the parent LoanId and normalization follows child view -> parent view -> ultimate non-view owner. Require an Uninitialized distinct child view subtree with total projection-preserving alias map and a contained child region at the exact child start point. Shared parent permits Shared only; Exclusive permits Shared or Exclusive. Suspend parent, make the complete child view subtree Live and activate the child loan."
+    },
+    {
+      "operation": "EndLoan",
+      "rule": "Require operation loan_id and at_point_id to equal one declared end point of an Active LoanDef. End only when it has no active child; make every mapped view subtree PlaceState Uninitialized, discharge ViewRelease exactly once, and resume its parent only after the final child ends."
+    },
+    {
+      "operation": "ReplaceInout",
+      "rule": "Require one exact Active Exclusive call LoanDef whose owner_place_id is the caller place, whose call_instance_id/argument_ordinal equal the operation, whose inout ViewRelease subtree is Live, and whose active child-loan count is zero. Caller, already-materialized Live replacement_place_id and old_value_staging_place_id have exact normalized TypeId and required MovePath-shape equality; the staging subtree is wholly Uninitialized, transaction-local, inaccessible and in the same Invocation region. acquire_point_id is cfg.current_point_id, strictly dominates commit_point_id through the declared normal CFG path, and every typed/shape/overlap/loan/reservation/isolation check completes before commit. IsolationContext binds actual RHS/caller domains, requires equality, transfer Move and no proof. Precommit rejection leaves caller, staging and RHS byte-identical; the existing RHS holder retains its ordinary cleanup responsibility and this operation performs no hidden acquisition or cleanup. Commit is one non-rollback transaction: atomically move the complete old caller subtree with all OwnerIds/tokens into staging, publish the complete RHS subtree at the fixed caller PlaceIds, and mark RHS Moved. Then irrevocably consume old staging tokens in reverse acquisition order and execute all old cleanup actions exactly once. After all cleanup attempts, always make the complete staging subtree Uninitialized and retire every old owner. If the aggregate failure is nonempty, keep the new caller value published, preserve canonical primary/suppressed failure order, and propagate only after final staging retirement; rollback and repeated cleanup are forbidden. The call loan remains Active and authorizes the same caller/view alias map until EndLoan."
+    },
+    {
+      "operation": "Cleanup",
+      "rule": "ViewRelease is never handled by Cleanup. For a Live Resource ownership-unit root, derive its full owned-descendant state_rewrite_closure and exact Available token set; require no Active or Suspended overlapping loan or Active reservation and require cleanup_token_ids to equal those tokens in reverse CleanupContext.acquisition_order. Irrevocably consume each token before invoking its owner-bound plan, execute every plan action exactly once, continue after a cleanup failure under the existing deterministic primary/suppressed law, then make the root and every owned cleanup-free or cleanup-bearing descendant Uninitialized, remove every OwnerId, and leave every token Consumed with null holder. Failure never rolls back state or permits double cleanup."
+    },
+    {
+      "operation": "Join",
+      "rule": "First require byte-identical global LoanState, CleanupTokenState, MoveReservationState and prior JoinConflict sets across all reachable predecessors; divergence rejects PLACE_STATE_JOIN_MISMATCH at the join and constructs no output. Compare every per-PlaceId tuple before constructing output. If all are exact, copy places and any one identical prior JoinConflict row. If a prior JoinConflict row exists and any tuple differs, reject at the join because R5 admits neither nesting nor flattening. Otherwise compute every declared PlaceId whose ViewAlias-normalized owner place overlaps a mismatch. If that coverage intersects any Active/Suspended loan owner or view subtree, or any Active reservation place, reject at the join to preserve loan/view/reservation coherence. Otherwise require the operation's exact fresh new_join_conflict_id_or_null, create exactly one state-level JoinConflict containing every mismatch and covered place, make every covered output row MaybeMoved with null owner/token/reservation, and point every covered row to that ID. A proven-disjoint sibling is not covered. A first ownership-sensitive use or required cleanup rejects PLACE_STATE_JOIN_MISMATCH. No widening or order winner is admitted."
+    }
+  ],
+  "join": {
+    "matrix": [
+      {
+        "left": "Uninitialized",
+        "right": "Uninitialized",
+        "when_full_tuple_equal": {
+          "result": "Uninitialized",
+          "join_conflict_id_requirement": null
+        },
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Uninitialized",
+        "right": "Live",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Uninitialized",
+        "right": "Moved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Uninitialized",
+        "right": "MaybeMoved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "Live",
+        "right": "Uninitialized",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Live",
+        "right": "Live",
+        "when_full_tuple_equal": {
+          "result": "Live",
+          "join_conflict_id_requirement": null
+        },
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Live",
+        "right": "Moved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Live",
+        "right": "MaybeMoved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "Moved",
+        "right": "Uninitialized",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Moved",
+        "right": "Live",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Moved",
+        "right": "Moved",
+        "when_full_tuple_equal": {
+          "result": "Moved",
+          "join_conflict_id_requirement": null
+        },
+        "when_full_tuple_not_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "required reference to the one state-level JoinConflict"
+        }
+      },
+      {
+        "left": "Moved",
+        "right": "MaybeMoved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "MaybeMoved",
+        "right": "Uninitialized",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "MaybeMoved",
+        "right": "Live",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "MaybeMoved",
+        "right": "Moved",
+        "when_full_tuple_equal": "IMPOSSIBLE",
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      },
+      {
+        "left": "MaybeMoved",
+        "right": "MaybeMoved",
+        "when_full_tuple_equal": {
+          "result": "MaybeMoved",
+          "join_conflict_id_requirement": "copy the identical non-null JoinConflictId"
+        },
+        "when_full_tuple_not_equal": {
+          "result": "TERMINAL_REJECT",
+          "diagnostic": "PLACE_STATE_JOIN_MISMATCH",
+          "output_state": "NONE",
+          "new_join_conflict_id_requirement": "MUST_BE_NULL",
+          "reason": "at least one predecessor carries a prior JoinConflict and the full tuple set is not byte-identical; R5 forbids nesting or flattening"
+        }
+      }
+    ],
+    "n_ary_algorithm": [
+      "resolve the exact canonical-sorted set of reachable predecessor OwnershipStateIds; never fold in source order",
+      "require the complete canonical LoanState, CleanupTokenState, MoveReservationState and prior JoinConflict sets to be byte-identical across every predecessor; any divergence rejects PLACE_STATE_JOIN_MISMATCH at the join and constructs no output state",
+      "copy the identical global sets into the output candidate; a copied prior JoinConflict remains the sole state-level row and every copied MaybeMoved place keeps that exact ID",
+      "construct every PlaceId predecessor tuple (initialization, owner_id_or_null, reservation_id_or_null, cleanup_token_id_or_null, join_conflict_id_or_null) and collect all mismatch axes before emitting any output place",
+      "if every tuple is exactly equal, copy every tuple and any identical prior conflict, and require new_join_conflict_id_or_null null",
+      "if any tuple differs while the identical prior JoinConflict set is nonempty, reject PLACE_STATE_JOIN_MISMATCH at the join and construct no output because nesting and flattening are both outside R5",
+      "otherwise compute every declared PlaceId whose ViewAlias-normalized owner place overlaps any mismatching place; if coverage intersects any Active/Suspended LoanDef owner/view subtree or Active reservation place, reject PLACE_STATE_JOIN_MISMATCH at the join and construct no output",
+      "if coverage is loan/reservation-free, require one exact fresh new_join_conflict_id_or_null, create one state-level JoinConflict with that complete covered-place set and full predecessor-state set, make every covered output row MaybeMoved with null owner/token/reservation, and point all covered rows to that same ID; proven-disjoint siblings remain ordinary copied rows",
+      "any ownership-sensitive operation or required cleanup on that marker rejects PLACE_STATE_JOIN_MISMATCH; a provably dead cleanup-free marker may leave scope without runtime residue",
+      "construct the output state by canonical PlaceId order and compute its digest only after all places are decided"
+    ],
+    "zero_predecessors": "at cfg.entry_point_id use the declared entry snapshot; at every other point mark the block unreachable and construct no ownership state",
+    "one_predecessor": "copy the predecessor snapshot",
+    "unreachable_edge_rule": "exclude only with typed reachability proof",
+    "loop_fixed_point": "exact equality of entry/header candidate with every reachable backedge",
+    "maybe_moved_role": "non-admitted internal join-conflict marker only",
+    "maybe_moved_admitted_operations": [],
+    "diagnostic_point": "first post-join ownership-sensitive use or required cleanup",
+    "primary_span": "the first rejected use or cleanup, with predecessor-state notes anchored at the join",
+    "proof_of_permutation_invariance": "the algorithm consumes a set, compares every predecessor tuple for exact equality, and never performs an order-sensitive binary fold",
+    "loan_state_join": "exact set-and-status equality required; divergence is terminal at the join",
+    "cleanup_token_state_join": "exact token/status/holder equality required; divergence is terminal at the join",
+    "move_reservation_state_join": "exact reservation/place/status equality required; divergence is terminal at the join",
+    "prior_join_conflict_join": "byte-identical zero-or-one set required; exact all-tuple copy preserves a prior row, while any tuple mismatch with a nonempty prior set is terminal at the join; only conflict-free predecessors may create the operation-supplied fresh state-level ID, and nested/flattened composition count is zero",
+    "dead_marker_exit": "admitted only when the state-level JoinConflict alternative group contains zero OwnerId and zero Available CleanupTokenId across every predecessor alternative",
+    "join_conflicts_per_output_state_max": 1,
+    "nested_or_flattened_conflict_count": 0,
+    "widening_count": 0,
+    "order_winner_count": 0,
+    "permutation_invariant": true
+  },
+  "boundary_isolation": {
+    "ordinary_loan_must_remain_within_owner_region": true,
+    "forbidden_crossings": [
+      "return",
+      "storage",
+      "capture",
+      "task_or_concur_escape",
+      "actor_transfer",
+      "ffi",
+      "suspension",
+      "unowned_storage"
+    ],
+    "process_static_immutable_shared_exception": "registered proof permits Shared loan across suspension only",
+    "exclusive_cross_suspension": "FORBIDDEN",
+    "context_binding": "derive source and destination RegionId from the actual operation source/current Owner holder and destination PlaceDef, then derive both IsolationDomainIds from those RegionDefs; serialized context must match exactly and destination region must be live at commit",
+    "move_cross_isolation": "IsolationContext.transfer is Move and for every ownership_transfer_unit require exactly one recomputed Transferable proof whose TypeId, OwnerId and destination IsolationDomainId equal that unit and actual destination RegionDef; extra or missing proofs reject before commit",
+    "shared_cross_isolation": "DEFERRED_OUTSIDE_R5 because current Shareable proof requires OwnerId while Reusable values have none; no cross-isolation Shared loan is admitted by R5",
+    "unknown_destination_or_proof": "REJECT",
+    "cleanup_order": "deterministic LIFO on normal, error and cancellation paths; preserve existing primary failure"
+  },
+  "failure_order": [
+    "schema_validation",
+    "normalization_and_reference_integrity",
+    "dependency_rejection",
+    "canonical_cfg_operation_order",
+    "predicate_local_reason_rank"
+  ],
+  "fail_closed_conditions": [
+    "missing_duplicate_or_cross_domain_id",
+    "unresolved_reference",
+    "cyclic_move_path_or_region_parent_graph",
+    "missing_TypeId_or_RCTS_row",
+    "incomplete_CFG_predecessor_snapshot",
+    "invalid_reachability_variant_or_disjoint_proof",
+    "unknown_projection_not_normalized_to_Opaque",
+    "state_loan_backreference_mismatch",
+    "unknown_region_containment",
+    "unknown_escape_isolation_or_boundary",
+    "missing_duplicate_or_wrong_holder_cleanup_token",
+    "forbidden_suspension",
+    "unsupported_operation",
+    "join_mismatch"
+  ],
+  "evaluator": {
+    "input_type": "OwnershipDecisionInputR1",
+    "results": [
+      "ADMIT",
+      "REJECT(semantic_oracle_key, primary_diagnostic_id)",
+      "INPUT_INVALID(internal_reason)"
+    ],
+    "fixture_metadata_semantic_read_count": 0,
+    "legacy_adapter_rule": "INPUT_INVALID unless every typed field is derivable without fabrication"
+  },
+  "diagnostic_decisions": [
+    {
+      "semantic_oracle_key": "USE_AFTER_MOVE",
+      "primary_diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "identity_action": "REUSE_ACTIVE_CURRENT"
+    },
+    {
+      "semantic_oracle_key": "INOUT_ALIAS_CONFLICT",
+      "primary_diagnostic_id": "INOUT_ALIAS_CONFLICT",
+      "identity_action": "PROMOTE_EXISTING_SEED_TO_ACTIVE_CURRENT"
+    },
+    {
+      "semantic_oracle_key": "BORROW_CONFLICT_MUTATION",
+      "primary_diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "identity_action": "REUSE_ACTIVE_CURRENT"
+    },
+    {
+      "semantic_oracle_key": "PLACE_STATE_JOIN_MISMATCH",
+      "primary_diagnostic_id": "PLACE_STATE_JOIN_MISMATCH",
+      "identity_action": "RATIFY_ONE_NEW_CURRENT_DIAGNOSTIC"
+    },
+    {
+      "semantic_oracle_key": "PLACE_OVERLAP_PROOF_INVALID",
+      "primary_diagnostic_id": null,
+      "identity_action": "INTERNAL_VALIDATOR_REASON_NOT_PUBLIC_DIAGNOSTIC"
+    }
+  ],
+  "diagnostic_binding": {
+    "OwnershipModeAdmitted": {
+      "default_primary": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "secondary_diagnostics": [
+        "INOUT_ALIAS_CONFLICT",
+        "PLACE_STATE_JOIN_MISMATCH"
+      ],
+      "relation_roles": {
+        "OWNERSHIP_MODE_ADMISSION_FAILED": "primary_default",
+        "INOUT_ALIAS_CONFLICT": "secondary_exact_reason",
+        "PLACE_STATE_JOIN_MISMATCH": "secondary_exact_reason"
+      },
+      "feature_trace": "inout_borrow_move_modes"
+    },
+    "cross_predicate_first_failure": [
+      "schema_and_input_integrity",
+      "BoxOwnershipAdmitted exact failure -> BOX_OWNERSHIP_VIOLATION",
+      "BorrowEscapeAdmitted exact failure -> BORROW_ESCAPE_OWNER_REGION",
+      "OwnershipModeAdmitted exact secondary reason",
+      "OwnershipModeAdmitted default -> OWNERSHIP_MODE_ADMISSION_FAILED"
+    ],
+    "specific_predicate_failure_is_never_overwritten_by_generic_default": true
+  }
+}

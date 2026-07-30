@@ -52,7 +52,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1433, "predicates": 277,
+    "features": 719, "diagnostics": 1434, "predicates": 277,
     "predicate_fixtures": 846, "no_go": 155,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -931,7 +931,8 @@ def r4_nrm_contract_results(
         for predicate_id in precedence_ids
     ]
     record(
-        observed_diagnostic_ids == expected_diagnostic_ids,
+        observed_diagnostic_ids
+        == expected_diagnostic_ids + ["PLACE_STATE_JOIN_MISMATCH"],
         "R4_NRM_DIAGNOSTIC_SET",
         f"observed={observed_diagnostic_ids}",
     )
@@ -965,7 +966,7 @@ def r4_nrm_contract_results(
     ]
     record(
         new_relations[:9] == expected_primary_relations
-        and len(new_relations) == 10,
+        and len(new_relations) == 12,
         "R4_NRM_PRIMARY_RELATIONS",
         f"rows={len(new_relations)} primary={len(new_relations[:9])}",
     )
@@ -976,11 +977,30 @@ def r4_nrm_contract_results(
         "relation": "historical",
         "replacement": "MEMBER_EXTENSION_COLLISION",
     }
+    expected_r8_ownership_secondary_relations = [
+        {
+            "violation_id": None,
+            "predicate_id": "OwnershipModeAdmitted",
+            "diagnostic_id": "INOUT_ALIAS_CONFLICT",
+            "relation": "secondary",
+        },
+        {
+            "violation_id": None,
+            "predicate_id": "OwnershipModeAdmitted",
+            "diagnostic_id": "PLACE_STATE_JOIN_MISMATCH",
+            "relation": "secondary",
+        },
+    ]
     record(
-        len(new_relations) == 10
-        and new_relations[-1] == expected_compat_relation,
+        len(new_relations) == 12
+        and new_relations[9] == expected_compat_relation
+        and new_relations[10:]
+        == expected_r8_ownership_secondary_relations,
         "R4_NRM_COLLISION_RELATIONS",
-        f"historical={new_relations[-1:] or []}",
+        (
+            f"historical={new_relations[9:10] or []} "
+            f"ownership_secondary={new_relations[10:]}"
+        ),
     )
 
     new_predicates = documents[
@@ -10528,6 +10548,139 @@ def r4_nrm_integrated_contract_results(
     return results
 
 
+
+R5_OWNERSHIP_CHECK_IDS = (
+    "R5_OWN_012_SURFACE_OWNER_PARTITION",
+    "R5_OWN_012_CONTEXT_ANCHOR_EXACT_7",
+    "R5_OWN_012_HIR_H1_BYTE_FENCE",
+    "R5_OWN_013_PREDICATE_UNION_EXACT_2",
+    "R5_OWN_013_PREDICATE_OVERRIDE_EXACT_3",
+    "R5_OWN_013_SCHEMA_CLOSED_INPUT",
+    "R5_OWN_013_FIXTURE_33_AND_CATALOG_19",
+    "R5_OWN_013_PROFILE_B_EXACT",
+    "R5_OWN_014_REASON_KEY_EXACT_4",
+    "R5_OWN_014_PRIMARY_ROUTE_EXACT_1",
+    "R5_OWN_014_BINDING_MUTATIONS_EXACT_7",
+    "R5_OWN_014_RESIDUAL_DEBT_EXACT_12",
+    "R5_OWN_GOVERNANCE_FENCE",
+)
+
+
+def _r5_strict_receipt_json(payload: str) -> dict[str, Any]:
+    def pairs_hook(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        keys = [key for key, _value in pairs]
+        if len(keys) != len(set(keys)) or len(keys) != len(
+            {key.casefold() for key in keys}
+        ):
+            raise ValueError("duplicate or case-fold duplicate receipt key")
+        return dict(pairs)
+
+    def reject_number(token: str) -> None:
+        raise ValueError(f"noninteger receipt number: {token}")
+
+    value = json.loads(
+        payload,
+        object_pairs_hook=pairs_hook,
+        parse_float=reject_number,
+        parse_constant=reject_number,
+    )
+    if not isinstance(value, dict):
+        raise ValueError("receipt root is not an object")
+    return value
+
+
+def r5_ownership_workspace_checks(root: Path) -> list[dict[str, Any]]:
+    """Return an exact ordered 13-row result or a fail-closed 13-row fallback."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R5_OWNERSHIP_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/run_r5_ownership_decision_mutation_tests.py"
+    try:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(runner),
+                "--root",
+                str(root),
+                "--workspace-checks-only",
+            ],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R5 ownership runner nonzero exit "
+                f"{completed.returncode}: {completed.stderr.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows("R5 ownership runner emitted unexpected stderr")
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R5_OWNERSHIP_CHECK_IDS)
+        expected_passed_ids = [
+            row["check_id"]
+            for row in rows
+            if isinstance(row, dict) and row.get("pass") is True
+        ] if isinstance(rows, list) else []
+        expected_result = (
+            "PASS"
+            if len(expected_passed_ids) == len(expected_ids)
+            else "FAIL"
+        )
+        expected_static_execution = (
+            "EXECUTED_PASS"
+            if expected_result == "PASS"
+            else "EXECUTED_FAIL"
+        )
+        if (
+            receipt.get("schema")
+            != "deeplus.r5-ownership-decision-workspace-validation/v1"
+            or receipt.get("result") != expected_result
+            or receipt.get("static_validation_execution")
+            != expected_static_execution
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("passed_check_id_scope")
+            != "R5_OWNERSHIP_EXACT_13"
+            or receipt.get("workspace_check_id_count") != len(expected_ids)
+            or not isinstance(rows, list)
+            or len(rows) != len(expected_ids)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass", "detail"}
+                or not isinstance(row.get("pass"), bool)
+                or not isinstance(row.get("detail"), str)
+                for row in rows
+            )
+            or receipt.get("passed_check_ids") != expected_passed_ids
+        ):
+            return failed_rows("R5 ownership runner receipt-contract drift")
+        if receipt.get("canonical_implementation_validation") is not True:
+            return failed_rows("R5 ownership canonical validation flag is not true")
+        for row in rows:
+            detail = _r5_strict_receipt_json(row["detail"])
+            if (
+                detail.get("canonical_implementation_validation") is not True
+                or not detail.get("installed_canonical_paths")
+                or "NONCANONICAL_ACCEPTANCE_ORACLE_ONLY" in row["detail"]
+            ):
+                return failed_rows(
+                    "R5 ownership check did not bind installed canonical inputs"
+                )
+        return rows
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(f"R5 ownership runner integration failure: {exc}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -10546,6 +10699,10 @@ def main() -> int:
         checks.append({"code": code, "pass": bool(condition), "detail": detail})
         if not condition:
             errors.append(f"{code}: {detail}")
+
+    r5_ownership_check_results = r5_ownership_workspace_checks(root)
+    for row in r5_ownership_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
 
     try:
         revision = tomllib.loads(
@@ -10614,6 +10771,7 @@ def main() -> int:
         "schemas/language/tutorial-coverage.schema.json",
         "tools/generators/generate_tutorial.py",
         "tools/validators/run_tutorial_generator_tests.py",
+        "tools/validators/run_r5_ownership_decision_mutation_tests.py",
         "tools/generators/generate_current_integrity.py",
         "tools/generators/current-integrity.contract.json",
         "tools/validators/run_current_integrity_generator_tests.py",
@@ -10982,7 +11140,7 @@ def main() -> int:
         )
     )
     check(set(chunk_files) == set(all_shards), "SHARD_CONTRACT_COVERAGE", f"actual={len(chunk_files)} declared={len(all_shards)}")
-    check(len(reconstructed) == 12, "CATALOG_COUNT", str(len(reconstructed)))
+    check(len(reconstructed) == 13, "CATALOG_COUNT", str(len(reconstructed)))
 
     def rows(name: str, key: str) -> list[dict[str, Any]]:
         return reconstructed.get(name, {}).get(key, [])
@@ -15375,6 +15533,17 @@ def main() -> int:
         "result": result, "evidence_level": "E2_STATIC_CLOSURE",
         "checks": len(checks), "passed": sum(row["pass"] for row in checks),
         "failed": sum(not row["pass"] for row in checks), "canonical_counts": actual,
+        "passed_check_ids": [
+            check_id
+            for check_id in R5_OWNERSHIP_CHECK_IDS
+            if any(
+                row["code"] == check_id and row["pass"]
+                for row in checks
+            )
+        ],
+        "r5_ownership_check_count": len(R5_OWNERSHIP_CHECK_IDS),
+        "passed_check_id_scope": "R5_OWNERSHIP_EXACT_13",
+        "r5_ownership_check_results": r5_ownership_check_results,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,

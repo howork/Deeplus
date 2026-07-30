@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -117,8 +118,14 @@ def parse_receipt(output: str) -> dict[str, object]:
     return value
 
 
-def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[str, object]]:
-    commands = [
+def run_parallel(
+    workspace: Path,
+    peer_roots: tuple[Path, Path],
+    *,
+    commands_override: list[tuple[str, str, list[str]]] | None = None,
+    timeout_seconds: float = 300.0,
+) -> list[dict[str, object]]:
+    commands = commands_override or [
         (
             "validator_a",
             "validator",
@@ -164,105 +171,186 @@ def run_parallel(workspace: Path, peer_roots: tuple[Path, Path]) -> list[dict[st
             ],
         ),
     ]
-    processes = [
-        (
-            name,
-            kind,
-            subprocess.Popen(
-                command,
-                cwd=workspace,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            ),
+    capture = external_temp_directory("deeplus-parallel-capture-")
+    capture_root = Path(capture.name).resolve()
+    if is_inside(capture_root, workspace):
+        capture.cleanup()
+        raise RuntimeError(
+            f"PARALLEL_TEST_TEMP_INSIDE_WORKSPACE: {capture_root.as_posix()}"
         )
-        for name, kind, command in commands
-    ]
-    observed_residue: set[str] = set()
-    deadline = time.monotonic() + 300
-    while any(process.poll() is None for _, _, process in processes):
-        observed_residue.update(f"root/{name}" for name in local_residue(ROOT))
-        observed_residue.update(f"workspace/{name}" for name in local_residue(workspace))
-        if time.monotonic() >= deadline:
-            for _, _, process in processes:
-                process.kill()
-            raise RuntimeError("PARALLEL_TEST_TIMEOUT")
-        time.sleep(0.02)
-
-    peer_spellings = {
-        spelling
-        for peer in peer_roots
-        for spelling in (str(peer.resolve()), peer.resolve().as_posix(), peer.name)
-    }
-    results: list[dict[str, object]] = []
-    for name, kind, process in processes:
-        stdout, stderr = process.communicate()
-        try:
-            receipt = parse_receipt(stdout)
-        except RuntimeError as exc:
-            detail = stderr.strip() or "<empty stderr>"
-            raise RuntimeError(
-                f"{exc}; process={name}; returncode={process.returncode}; "
-                f"stderr={detail}"
-            ) from exc
-        peer_absent = all(
-            spelling not in stdout and spelling not in stderr
-            for spelling in peer_spellings
-        )
-        if kind == "validator":
-            passed = (
-                process.returncode == 0
-                and receipt.get("result") == "PASS"
-                and receipt.get("errors") == []
-                and peer_absent
-            )
-        elif kind == "integrity_check":
-            passed = (
-                process.returncode == 0
-                and receipt.get("result") == "PASS"
-                and receipt.get("mode") == "CHECK"
-                and receipt.get("product_execution") == "NOT_RUN"
-                and peer_absent
-            )
-        else:
-            self_test_cases = receipt.get("cases", [])
-            observed_case_ids = {
-                row.get("case")
-                for row in self_test_cases
-                if isinstance(row, dict) and isinstance(row.get("case"), str)
-            }
-            passed = (
-                process.returncode == 0
-                and receipt.get("result") == "PASS"
-                and receipt.get("tests") == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
-                and receipt.get("passed") == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
-                and observed_case_ids == EXPECTED_INTEGRITY_SELF_TEST_CASES
-                and all(
-                    isinstance(row, dict) and row.get("pass") is True
-                    for row in self_test_cases
+    child_environment = os.environ.copy()
+    child_environment["PYTHONIOENCODING"] = "utf-8"
+    processes: list[tuple[str, str, subprocess.Popen[bytes]]] = []
+    captures: dict[str, tuple[Path, Path]] = {}
+    try:
+        for index, (name, kind, command) in enumerate(commands):
+            stdout_path = capture_root / f"{index:02d}-{name}.stdout"
+            stderr_path = capture_root / f"{index:02d}-{name}.stderr"
+            with stdout_path.open("wb") as stdout_handle, stderr_path.open(
+                "wb"
+            ) as stderr_handle:
+                process = subprocess.Popen(
+                    command,
+                    cwd=workspace,
+                    stdout=stdout_handle,
+                    stderr=stderr_handle,
+                    env=child_environment,
                 )
-                and receipt.get("product_execution") == "NOT_RUN"
-                and peer_absent
+            processes.append((name, kind, process))
+            captures[name] = (stdout_path, stderr_path)
+
+        observed_residue: set[str] = set()
+        deadline = time.monotonic() + timeout_seconds
+        while any(process.poll() is None for _, _, process in processes):
+            observed_residue.update(
+                f"root/{name}" for name in local_residue(ROOT)
             )
-        results.append({
-            "test": name,
-            "pass": passed,
-            "returncode": process.returncode,
-            "receipt_result": receipt.get("result"),
-            "tests": receipt.get("tests"),
-            "passed": receipt.get("passed"),
-            "errors": receipt.get("errors"),
-            "peer_paths_absent": peer_absent,
-            "stderr_tail": stderr[-500:],
-        })
-    results.append({
-        "test": "no_repository_local_harness_residue",
-        "pass": not observed_residue and not local_residue(ROOT) and not local_residue(workspace),
-        "observed": sorted(observed_residue),
-        "root_final": local_residue(ROOT),
-        "workspace_final": local_residue(workspace),
-    })
-    return results
+            observed_residue.update(
+                f"workspace/{name}" for name in local_residue(workspace)
+            )
+            if time.monotonic() >= deadline:
+                running = [
+                    name
+                    for name, _, process in processes
+                    if process.poll() is None
+                ]
+                for _, _, process in processes:
+                    if process.poll() is None:
+                        process.kill()
+                unreaped: list[str] = []
+                for name, _, process in processes:
+                    try:
+                        process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        unreaped.append(name)
+                returncodes = {
+                    name: process.returncode
+                    for name, _, process in processes
+                }
+                stderr_tails = {
+                    name: captures[name][1]
+                    .read_bytes()
+                    .decode("utf-8", "replace")[-500:]
+                    for name, _, _ in processes
+                }
+                raise RuntimeError(
+                    "PARALLEL_TEST_TIMEOUT: "
+                    f"running={running!r}; unreaped={unreaped!r}; "
+                    f"returncodes={returncodes!r}; "
+                    f"stderr_tails={stderr_tails!r}"
+                )
+            time.sleep(0.02)
+
+        peer_spellings = {
+            spelling
+            for peer in peer_roots
+            for spelling in (
+                str(peer.resolve()),
+                peer.resolve().as_posix(),
+                peer.name,
+            )
+        }
+        results: list[dict[str, object]] = []
+        for name, kind, process in processes:
+            stdout_bytes = captures[name][0].read_bytes()
+            stderr_bytes = captures[name][1].read_bytes()
+            stdout = stdout_bytes.decode("utf-8", "strict")
+            stderr = stderr_bytes.decode("utf-8", "replace")
+            try:
+                receipt = parse_receipt(stdout)
+            except RuntimeError as exc:
+                detail = stderr.strip() or "<empty stderr>"
+                raise RuntimeError(
+                    f"{exc}; process={name}; returncode={process.returncode}; "
+                    f"stderr={detail}"
+                ) from exc
+            peer_absent = all(
+                spelling not in stdout and spelling not in stderr
+                for spelling in peer_spellings
+            )
+            if kind == "validator":
+                passed = (
+                    process.returncode == 0
+                    and receipt.get("result") == "PASS"
+                    and receipt.get("errors") == []
+                    and peer_absent
+                )
+            elif kind == "integrity_check":
+                passed = (
+                    process.returncode == 0
+                    and receipt.get("result") == "PASS"
+                    and receipt.get("mode") == "CHECK"
+                    and receipt.get("product_execution") == "NOT_RUN"
+                    and peer_absent
+                )
+            elif kind == "synthetic_pass":
+                passed = (
+                    process.returncode == 0
+                    and receipt.get("result") == "PASS"
+                    and peer_absent
+                )
+            else:
+                self_test_cases = receipt.get("cases", [])
+                observed_case_ids = {
+                    row.get("case")
+                    for row in self_test_cases
+                    if isinstance(row, dict)
+                    and isinstance(row.get("case"), str)
+                }
+                passed = (
+                    process.returncode == 0
+                    and receipt.get("result") == "PASS"
+                    and receipt.get("tests")
+                    == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
+                    and receipt.get("passed")
+                    == len(EXPECTED_INTEGRITY_SELF_TEST_CASES)
+                    and observed_case_ids
+                    == EXPECTED_INTEGRITY_SELF_TEST_CASES
+                    and all(
+                        isinstance(row, dict) and row.get("pass") is True
+                        for row in self_test_cases
+                    )
+                    and receipt.get("product_execution") == "NOT_RUN"
+                    and peer_absent
+                )
+            results.append(
+                {
+                    "test": name,
+                    "pass": passed,
+                    "returncode": process.returncode,
+                    "receipt_result": receipt.get("result"),
+                    "tests": receipt.get("tests"),
+                    "passed": receipt.get("passed"),
+                    "errors": receipt.get("errors"),
+                    "peer_paths_absent": peer_absent,
+                    "stdout_bytes": len(stdout_bytes),
+                    "stderr_bytes": len(stderr_bytes),
+                    "stderr_tail": stderr[-500:],
+                }
+            )
+        results.append(
+            {
+                "test": "no_repository_local_harness_residue",
+                "pass": (
+                    not observed_residue
+                    and not local_residue(ROOT)
+                    and not local_residue(workspace)
+                ),
+                "observed": sorted(observed_residue),
+                "root_final": local_residue(ROOT),
+                "workspace_final": local_residue(workspace),
+            }
+        )
+        return results
+    finally:
+        for _, _, process in processes:
+            if process.poll() is None:
+                process.kill()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+        capture.cleanup()
 
 
 def main() -> int:

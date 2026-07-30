@@ -1,0 +1,1343 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/ownership-decision-fixtures-r1.schema.json",
+  "title": "OwnershipDecisionFixturesR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "repository",
+    "baseline_commit",
+    "execution_status",
+    "product_support",
+    "fixture_simulator_authority_boundary",
+    "semantic_input_schema",
+    "authoring_template_reference_count",
+    "runtime_patch_or_inheritance_read_count",
+    "fixture_metadata_semantic_read_count",
+    "operation_access_role_matrix",
+    "supplemental_operation_coverage",
+    "scenarios",
+    "counts",
+    "canonicalization"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.ownership-decision-fixtures/r1"
+    },
+    "repository": {
+      "const": "howork/Deeplus"
+    },
+    "baseline_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "execution_status": {
+      "const": "SPECIFIED_NOT_RUN"
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    },
+    "fixture_simulator_authority_boundary": {
+      "$ref": "#/$defs/simulatorAuthorityBoundary"
+    },
+    "semantic_input_schema": {
+      "const": "deeplus.ownership-decision-input/r1"
+    },
+    "authoring_template_reference_count": {
+      "const": 0
+    },
+    "runtime_patch_or_inheritance_read_count": {
+      "const": 0
+    },
+    "fixture_metadata_semantic_read_count": {
+      "const": 0
+    },
+    "operation_access_role_matrix": {
+      "$ref": "#/$defs/operationAccessRoleMatrix"
+    },
+    "supplemental_operation_coverage": {
+      "$ref": "#/$defs/supplementalOperationCoverage"
+    },
+    "scenarios": {
+      "$ref": "#/$defs/scenarios"
+    },
+    "counts": {
+      "$ref": "#/$defs/exactCounts"
+    },
+    "canonicalization": {
+      "$ref": "#/$defs/canonicalization"
+    }
+  },
+  "$defs": {
+    "identity": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableIdentity": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/identity"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableSha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "simulatorAuthorityBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "applies_to",
+        "general_r5_semantic_oracle",
+        "production_implementation_evidence",
+        "product_support_claim"
+      ],
+      "properties": {
+        "classification": {
+          "const": "FIXTURE_BOUNDED_NONPRODUCTION"
+        },
+        "applies_to": {
+          "const": "_simulated_admit_output_state and fixture expected-state digest evidence"
+        },
+        "general_r5_semantic_oracle": {
+          "const": false
+        },
+        "production_implementation_evidence": {
+          "const": false
+        },
+        "product_support_claim": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "operationAccessRoleMatrix": {
+      "const": [
+        {
+          "operation": "Initialize",
+          "roles": [
+            {
+              "role": "target",
+              "place_source": "operation.place_id",
+              "mode": "Write",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "Read",
+          "roles": [
+            {
+              "role": "target",
+              "place_source": "operation.place_id",
+              "mode": "Read",
+              "via_loan": "exact Active LoanId iff target is a view; otherwise null"
+            }
+          ]
+        },
+        {
+          "operation": "Write",
+          "roles": [
+            {
+              "role": "target",
+              "place_source": "operation.place_id",
+              "mode": "Write",
+              "via_loan": "exact Active LoanId iff target is a view; otherwise null"
+            }
+          ]
+        },
+        {
+          "operation": "ReserveMove",
+          "roles": [
+            {
+              "role": "source",
+              "place_source": "operation.place_id",
+              "mode": "Move",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "CancelReservation",
+          "roles": []
+        },
+        {
+          "operation": "Move",
+          "roles": [
+            {
+              "role": "source",
+              "place_source": "operation.source_place_id",
+              "mode": "Move",
+              "via_loan": null
+            },
+            {
+              "role": "destination",
+              "place_source": "operation.destination_place_id",
+              "mode": "Write",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "BeginSharedLoan",
+          "roles": [
+            {
+              "role": "owner",
+              "place_source": "operation.owner_place_id",
+              "mode": "SharedBorrow",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "BeginExclusiveLoan",
+          "roles": [
+            {
+              "role": "owner",
+              "place_source": "operation.owner_place_id",
+              "mode": "ExclusiveBorrow",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "BeginReborrow",
+          "roles": [
+            {
+              "role": "child_owner",
+              "place_source": "operation.child_owner_place_id",
+              "mode": "child LoanDef Shared -> SharedBorrow; Exclusive -> ExclusiveBorrow",
+              "via_loan": "operation.parent_loan_id, exact Active parent"
+            }
+          ]
+        },
+        {
+          "operation": "EndLoan",
+          "roles": []
+        },
+        {
+          "operation": "ReplaceInout",
+          "roles": [
+            {
+              "role": "caller",
+              "place_source": "operation.place_id",
+              "mode": "MutAcquire",
+              "via_loan": "operation.loan_id, exact Active Exclusive call loan"
+            },
+            {
+              "role": "replacement",
+              "place_source": "operation.replacement_place_id",
+              "mode": "Move",
+              "via_loan": null
+            },
+            {
+              "role": "staging",
+              "place_source": "operation.old_value_staging_place_id",
+              "mode": "Write",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "Cleanup",
+          "roles": [
+            {
+              "role": "complete_owned_closure",
+              "place_source": "full state_rewrite_closure(operation.place_id)",
+              "mode": "Cleanup",
+              "via_loan": null
+            }
+          ]
+        },
+        {
+          "operation": "Join",
+          "roles": []
+        }
+      ]
+    },
+    "scenarios": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "OWN-PLACE-P-009",
+        "OWN-PLACE-P-010",
+        "OWN-PLACE-P-011",
+        "OWN-PLACE-P-012",
+        "OWN-PLACE-B-013",
+        "OWN-PLACE-B-014",
+        "OWN-PLACE-B-015",
+        "OWN-PLACE-N-016",
+        "OWN-PLACE-N-017",
+        "OWN-PLACE-N-018",
+        "OWN-PLACE-N-019",
+        "OWN-PLACE-N-020",
+        "OWN-PLACE-M-022",
+        "OWN-GAP-P-013",
+        "OWN-GAP-B-013",
+        "OWN-GAP-N-013",
+        "OWN-FEAT-P-BOX",
+        "OWN-FEAT-B-BOX",
+        "OWN-FEAT-N-BOX"
+      ],
+      "properties": {
+        "OWN-PLACE-P-009": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-P-009"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-P-010": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-P-010"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 4,
+              "maxItems": 4
+            }
+          }
+        },
+        "OWN-PLACE-P-011": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-P-011"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-P-012": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-P-012"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "OWN-PLACE-B-013": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-B-013"
+            },
+            "class": {
+              "const": "boundary"
+            },
+            "steps": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "OWN-PLACE-B-014": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-B-014"
+            },
+            "class": {
+              "const": "boundary"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-B-015": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-B-015"
+            },
+            "class": {
+              "const": "boundary"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-N-016": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-N-016"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-N-017": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-N-017"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-N-018": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-N-018"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-N-019": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-N-019"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-PLACE-N-020": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-N-020"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "OWN-PLACE-M-022": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-PLACE-M-022"
+            },
+            "class": {
+              "const": "mutation"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-GAP-P-013": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-GAP-P-013"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-GAP-B-013": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-GAP-B-013"
+            },
+            "class": {
+              "const": "boundary"
+            },
+            "steps": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "OWN-GAP-N-013": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-GAP-N-013"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-FEAT-P-BOX": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-FEAT-P-BOX"
+            },
+            "class": {
+              "const": "positive"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        "OWN-FEAT-B-BOX": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-FEAT-B-BOX"
+            },
+            "class": {
+              "const": "boundary"
+            },
+            "steps": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        "OWN-FEAT-N-BOX": {
+          "$ref": "#/$defs/scenario",
+          "properties": {
+            "test_id": {
+              "const": "OWN-FEAT-N-BOX"
+            },
+            "class": {
+              "const": "negative"
+            },
+            "steps": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "class",
+        "steps",
+        "scenario_sha256"
+      ],
+      "properties": {
+        "test_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "class": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative",
+            "mutation"
+          ]
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/acceptanceStep"
+          }
+        },
+        "scenario_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "acceptanceStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "input_sha256",
+        "input",
+        "expected",
+        "predecessor_step_id_or_null"
+      ],
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "input_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "input": {
+          "$ref": "ownership-decision-input-r1.schema.json"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "predecessor_step_id_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        }
+      }
+    },
+    "supplementalOperationCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptance_identity_effect",
+        "exact_additional_step_count",
+        "minimum_missing_variant_step_count",
+        "required_replace_profile_additional_step_count",
+        "minimum_reason",
+        "steps"
+      ],
+      "properties": {
+        "acceptance_identity_effect": {
+          "const": "NONE"
+        },
+        "exact_additional_step_count": {
+          "const": 6
+        },
+        "minimum_missing_variant_step_count": {
+          "const": 4
+        },
+        "required_replace_profile_additional_step_count": {
+          "const": 2
+        },
+        "minimum_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-INITIALIZE-R5/step-01-initialize"
+                },
+                "coverage_class": {
+                  "const": "positive"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-RESERVE-MOVE-R5/step-01-reserve"
+                },
+                "coverage_class": {
+                  "const": "positive"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-CANCEL-RESERVATION-R5/step-01-cancel"
+                },
+                "coverage_class": {
+                  "const": "positive"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-REPLACE-INOUT-P-R5/step-01-replace"
+                },
+                "coverage_class": {
+                  "const": "positive"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-REPLACE-INOUT-B-R5/step-01-replace_resource_boundary"
+                },
+                "coverage_class": {
+                  "const": "boundary"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/supplementalStep",
+              "properties": {
+                "step_id": {
+                  "const": "OWN-COVERAGE-REPLACE-INOUT-N-R5/step-01-replace_overlap_rejected"
+                },
+                "coverage_class": {
+                  "const": "negative"
+                }
+              }
+            }
+          ],
+          "items": false
+        }
+      }
+    },
+    "supplementalStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "input_sha256",
+        "input",
+        "expected",
+        "coverage_only",
+        "coverage_class",
+        "acceptance_test_id_or_null",
+        "reason"
+      ],
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "input_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "input": {
+          "$ref": "ownership-decision-input-r1.schema.json"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "coverage_only": {
+          "const": true
+        },
+        "coverage_class": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative"
+          ]
+        },
+        "acceptance_test_id_or_null": {
+          "type": "null"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result",
+        "semantic_oracle_key_or_null",
+        "primary_diagnostic_id_or_null",
+        "internal_reason_or_null",
+        "postcondition_facts",
+        "evaluator_output_assertion",
+        "output_state_assertion",
+        "state_assertions",
+        "identity_conservation",
+        "metamorphic_assertions",
+        "canonical_output_state_digest_or_null",
+        "simulated_output_state_digest_or_null",
+        "next_input_state_binding_or_null"
+      ],
+      "properties": {
+        "result": {
+          "enum": [
+            "ADMIT",
+            "REJECT",
+            "INPUT_INVALID"
+          ]
+        },
+        "semantic_oracle_key_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "primary_diagnostic_id_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "internal_reason_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "postcondition_facts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evaluator_output_assertion": {
+          "$ref": "#/$defs/evaluatorOutputAssertion"
+        },
+        "output_state_assertion": {
+          "$ref": "#/$defs/outputStateAssertion"
+        },
+        "state_assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/stateAssertion"
+          }
+        },
+        "identity_conservation": {
+          "$ref": "#/$defs/identityConservation"
+        },
+        "metamorphic_assertions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/metamorphicAssertion"
+          }
+        },
+        "canonical_output_state_digest_domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consumed_input_state_representation": {
+          "const": "SEMANTIC_OWNERSHIP_STATE_FIELDS_ONLY"
+        },
+        "consumed_input_state_digest_domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "consumed_input_state_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "canonical_output_state_digest_or_null": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "simulated_output_state_digest_or_null": {
+          "$ref": "#/$defs/nullableSha256"
+        },
+        "next_input_state_binding_or_null": {
+          "$ref": "#/$defs/nullableNextInputStateBinding"
+        },
+        "machine_delta_complete": {
+          "const": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "ADMIT"
+              }
+            },
+            "required": [
+              "result"
+            ]
+          },
+          "then": {
+            "required": [
+              "canonical_output_state_digest_domain",
+              "machine_delta_complete"
+            ],
+            "properties": {
+              "canonical_output_state_digest_or_null": {
+                "$ref": "#/$defs/sha256"
+              },
+              "simulated_output_state_digest_or_null": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "consumed_input_state_representation",
+              "consumed_input_state_digest_domain",
+              "consumed_input_state_digest"
+            ],
+            "properties": {
+              "canonical_output_state_digest_or_null": {
+                "type": "null"
+              },
+              "simulated_output_state_digest_or_null": {
+                "type": "null"
+              },
+              "next_input_state_binding_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "evaluatorOutputAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant",
+        "semantic_oracle_key_or_null",
+        "primary_diagnostic_id_or_null",
+        "internal_reason_or_null",
+        "emitted_primary_count",
+        "later_candidate_status"
+      ],
+      "properties": {
+        "variant": {
+          "enum": [
+            "ADMIT",
+            "REJECT",
+            "INPUT_INVALID"
+          ]
+        },
+        "semantic_oracle_key_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "primary_diagnostic_id_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "internal_reason_or_null": {
+          "$ref": "#/$defs/nullableIdentity"
+        },
+        "emitted_primary_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "later_candidate_status": {
+          "enum": [
+            "NOT_APPLICABLE",
+            "NOT_EVALUATED"
+          ]
+        }
+      }
+    },
+    "outputStateAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "presence",
+        "input_state_relation"
+      ],
+      "properties": {
+        "presence": {
+          "enum": [
+            "PRESENT",
+            "ABSENT"
+          ]
+        },
+        "input_state_relation": {
+          "enum": [
+            "EXACT_ASSERTED_DELTA",
+            "SEMANTIC_OWNERSHIP_STATE_BYTE_IDENTICAL_UNCHANGED"
+          ]
+        }
+      }
+    },
+    "stateAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record",
+        "identity",
+        "field",
+        "operator",
+        "value"
+      ],
+      "properties": {
+        "record": {
+          "enum": [
+            "CleanupExecution",
+            "CleanupTokenState",
+            "Evaluator",
+            "JoinConflict",
+            "LoanState",
+            "MoveReservationState",
+            "OwnerBinding",
+            "OwnershipState",
+            "PlaceState"
+          ]
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "field": {
+          "$ref": "#/$defs/identity"
+        },
+        "operator": {
+          "enum": [
+            "EQUALS",
+            "EQUALS_CONSUMED_SEMANTIC_STATE_DIGEST",
+            "EQUALS_INPUT_DIGEST"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/assertionValue"
+        }
+      }
+    },
+    "assertionValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "identityConservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_identity_set_relation",
+        "loan_definition_identity_set_relation",
+        "cleanup_token_definition_identity_set_relation",
+        "reservation_identity_set_relation",
+        "join_conflict_identity_set_relation",
+        "owner_ids_created",
+        "owner_bindings_issued",
+        "owner_ids_retired",
+        "owner_bindings_transferred",
+        "cleanup_tokens_created",
+        "cleanup_tokens_consumed",
+        "cleanup_token_bindings_transferred",
+        "loans_activated",
+        "loans_ended",
+        "reservations_created",
+        "reservations_consumed",
+        "reservations_cancelled",
+        "join_conflicts_created",
+        "conditional_owner_alternative_group_count"
+      ],
+      "properties": {
+        "owner_identity_set_relation": {
+          "const": "UNCHANGED"
+        },
+        "loan_definition_identity_set_relation": {
+          "const": "UNCHANGED"
+        },
+        "cleanup_token_definition_identity_set_relation": {
+          "const": "UNCHANGED"
+        },
+        "reservation_identity_set_relation": {
+          "const": "UNCHANGED"
+        },
+        "join_conflict_identity_set_relation": {
+          "enum": [
+            "UNCHANGED",
+            "ADD_EXACT_OPERATION_ID"
+          ]
+        },
+        "owner_ids_created": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "owner_bindings_issued": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "owner_ids_retired": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "owner_bindings_transferred": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "cleanup_tokens_created": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "cleanup_tokens_consumed": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "cleanup_token_bindings_transferred": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "loans_activated": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "loans_ended": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "reservations_created": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "reservations_consumed": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "reservations_cancelled": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "join_conflicts_created": {
+          "$ref": "#/$defs/zeroOrOne"
+        },
+        "conditional_owner_alternative_group_count": {
+          "$ref": "#/$defs/zeroOrOne"
+        }
+      }
+    },
+    "zeroOrOne": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "metamorphicAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "input_permutations",
+        "compared_output_field",
+        "expected_unique_output_digest_count"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ALL_PREDECESSOR_PERMUTATIONS_EQUAL"
+        },
+        "input_permutations": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "$ref": "#/$defs/identity"
+            }
+          }
+        },
+        "compared_output_field": {
+          "const": "canonical_ownership_state_digest"
+        },
+        "expected_unique_output_digest_count": {
+          "const": 1
+        }
+      }
+    },
+    "nullableNextInputStateBinding": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nextInputStateBinding"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nextInputStateBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "next_step_id",
+        "next_predecessor_step_id",
+        "predecessor_state_id",
+        "predecessor_state_digest",
+        "query_state_id",
+        "query_state_digest",
+        "simulated_output_state_digest",
+        "exact_digest_equality",
+        "exact_semantic_payload_equality"
+      ],
+      "properties": {
+        "next_step_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "next_predecessor_step_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "predecessor_state_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "predecessor_state_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "query_state_id": {
+          "$ref": "#/$defs/identity"
+        },
+        "query_state_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "simulated_output_state_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "exact_digest_equality": {
+          "const": true
+        },
+        "exact_semantic_payload_equality": {
+          "const": true
+        }
+      }
+    },
+    "exactCounts": {
+      "const": {
+        "scenarios": 19,
+        "fully_materialized_step_inputs": 27,
+        "results": {
+          "ADMIT": 18,
+          "REJECT": 8,
+          "INPUT_INVALID": 1
+        },
+        "scenario_classes": {
+          "positive": 6,
+          "boundary": 5,
+          "negative": 7,
+          "mutation": 1
+        },
+        "supplemental_operation_coverage_steps": 6,
+        "supplemental_results": {
+          "ADMIT": 5,
+          "REJECT": 1,
+          "INPUT_INVALID": 0
+        },
+        "all_fully_materialized_step_inputs": 33,
+        "all_results": {
+          "ADMIT": 23,
+          "REJECT": 9,
+          "INPUT_INVALID": 1
+        },
+        "operation_counts_all_inputs": {
+          "BeginExclusiveLoan": 5,
+          "BeginReborrow": 1,
+          "BeginSharedLoan": 2,
+          "CancelReservation": 1,
+          "Cleanup": 1,
+          "EndLoan": 5,
+          "Initialize": 1,
+          "Join": 3,
+          "Move": 5,
+          "Read": 4,
+          "ReplaceInout": 3,
+          "ReserveMove": 1,
+          "Write": 1
+        }
+      }
+    },
+    "canonicalization": {
+      "const": {
+        "encoding": "UTF-8",
+        "json": "sort_keys=true,separators=(',',':'),ensure_ascii=false",
+        "input_hash_domain": "SHA-256 over the canonical JSON bytes of exactly one OwnershipDecisionInputR1 value",
+        "scenario_hash_domain": "SHA-256 over canonical JSON bytes of test_id, class and fully materialized steps, excluding scenario_sha256",
+        "locators": "RFC 6901 JSON Pointer rooted at this payload",
+        "array_field_policy_registry": {
+          "SET": [
+            "OwnershipDecisionInputR1.type_descriptors",
+            "PlaceGraph.places",
+            "PlaceGraph.move_paths",
+            "PlaceGraph.proofs",
+            "MovePathDef.child_move_path_ids",
+            "ClosedProof.scope_point_ids",
+            "StateGraph.states",
+            "StateGraph.operation_prefix_point_ids",
+            "OwnershipState.places",
+            "OwnershipState.loans",
+            "OwnershipState.tokens",
+            "OwnershipState.reservations",
+            "OwnershipState.join_conflicts",
+            "JoinConflict.predecessor_state_ids",
+            "JoinConflict.mismatch_axes",
+            "JoinConflict.mismatching_places",
+            "JoinConflict.covered_places",
+            "JoinConflictCoveredPlace.predecessors",
+            "LoanRegionGraph.owners",
+            "LoanRegionGraph.regions",
+            "LoanRegionGraph.loans",
+            "LoanRegionGraph.isolation_domains",
+            "RegionDef.end_point_ids",
+            "LoanDef.view_alias_bindings",
+            "LoanDef.end_point_ids",
+            "Cfg.point_ids",
+            "Cfg.edges",
+            "Cfg.accesses",
+            "Cfg.predecessor_state_ids",
+            "Operation.Initialize.ownership_unit_bindings",
+            "Operation.Join.predecessor_state_ids",
+            "EscapeContext.proof_ids",
+            "IsolationContext.proof_ids",
+            "CleanupContext.plans",
+            "CleanupContext.tokens"
+          ],
+          "SEQUENCE": [
+            "PlaceDef.projections",
+            "ClosedProof.subjects",
+            "ViewAliasBinding.relative_projection_key",
+            "Operation.Cleanup.cleanup_token_ids",
+            "CleanupContext.acquisition_order",
+            "CleanupPlan.action_keys"
+          ],
+          "generic_array_sort_count": 0,
+          "unregistered_array_field_policy": "REJECT"
+        }
+      }
+    }
+  }
+}

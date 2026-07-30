@@ -824,7 +824,7 @@
     "predicate_id": "OwnershipModeAdmitted",
     "source_name": "OwnershipModeAdmitted",
     "summary": "ordinary mut acquires one argument into a callee-owned mutable local with no caller alias/writeback and retains the caller owner on precommit failure; borrow is a nonescaping shared region; inout is one exclusive caller-place borrow whose successful writes are visible to the caller; move transfers ownership once; cleanup remains with the current owner",
-    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor": "OwnershipPredicateInputR1",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
@@ -846,7 +846,9 @@
       "typestate_resource_phase_a"
     ],
     "diagnostic_refs": [
-      "OWNERSHIP_MODE_ADMISSION_FAILED"
+      "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "INOUT_ALIAS_CONFLICT",
+      "PLACE_STATE_JOIN_MISMATCH"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
@@ -872,7 +874,7 @@
     ],
     "formal_judgment_id": "J-OwnershipModeAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/ownership-predicate-input-r1.schema.json",
     "preconditions": [
       "ordinary mut evaluates/acquires the argument once, commits one callee-owned mutable local, creates no caller alias/writeback edge, and retains the caller owner on precommit failure",
       "borrow is shared, bounded by borrow_region, and does not escape",
@@ -884,15 +886,19 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the closed RCTS-V5 descriptor",
-      "evaluate dependency predicates left-to-right in listed order",
-      "apply OwnershipModeAdmitted local rule: ordinary mut evaluates/acquires the argument once, commits one callee-owned mutable local, creates no caller alias/writeback edge, and retains the caller owner on precommit failure; borrow is shared, bounded by borrow_region, and does not escape; inout is exclusive for one dynamic call extent, overlaps no live borrow/inout region, and writes the same caller place; move transfers ownership exactly once and every later use of the source is rejected; a live borrow/inout does not cross suspension, concur-run escape, actor transfer, return, storage, or capture unless a separate admitted proof explicitly permits that boundary; cleanup responsibility remains attached to the current owner on every admitted path; replacement through an inout place is admitted by evaluating the replacement RHS, dropping the old place value, and installing the new value, but moving the current value out of an inout place is not current",
-      "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
+      "validate the schema-discriminated OwnershipPredicateInputR1",
+      "dispatch by top-level schema identity to the unchanged RCTSDescriptorV5 branch or to OwnershipDecisionInputR1; the typed branch requires predicate_id OwnershipModeAdmitted and reads zero fixture, legacy side-channel, or fabricated adapter fields",
+      "evaluate declared dependency predicates left-to-right in listed order",
+      "evaluate ordinary mut, borrow, inout, move, cleanup, suspension, isolation, and join rules from the selected branch only",
+      "select the first exact diagnostic-reason rank and emit exactly one primary diagnostic; secondary diagnostics are trace alternatives"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED",
-    "secondary_diagnostics": [],
+    "secondary_diagnostics": [
+      "INOUT_ALIAS_CONFLICT",
+      "PLACE_STATE_JOIN_MISMATCH"
+    ],
     "positive_fixture_ids": [
       "PF-OwnershipModeAdmitted-POS",
       "PF-OwnershipModeAdmitted-BOUNDARY"
@@ -911,7 +917,39 @@
       "baseline": "0.1.2-baseline.r50",
       "sha256": "571f30d3b6180a2f337fa15a7f5d68c5b0c52abee062e154e475bd258ecdb729",
       "disposition": "superseded_by_current_r51a1_row"
-    }
+    },
+    "diagnostic_reason_rank": [
+      {
+        "rank": 1,
+        "match_kind": "EXACT",
+        "semantic_oracle_key": "PLACE_STATE_JOIN_MISMATCH",
+        "primary_diagnostic_id": "PLACE_STATE_JOIN_MISMATCH"
+      },
+      {
+        "rank": 2,
+        "match_kind": "EXACT",
+        "semantic_oracle_key": "USE_AFTER_MOVE",
+        "primary_diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED"
+      },
+      {
+        "rank": 3,
+        "match_kind": "EXACT",
+        "semantic_oracle_key": "INOUT_ALIAS_CONFLICT",
+        "primary_diagnostic_id": "INOUT_ALIAS_CONFLICT"
+      },
+      {
+        "rank": 4,
+        "match_kind": "EXACT",
+        "semantic_oracle_key": "BORROW_CONFLICT_MUTATION",
+        "primary_diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED"
+      },
+      {
+        "rank": 5,
+        "match_kind": "CATCH_ALL",
+        "semantic_oracle_key": "*",
+        "primary_diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED"
+      }
+    ]
   },
   {
     "baseline": "0.1.2-baseline.r51f3",

@@ -220,7 +220,7 @@
 | `CONSTRUCTOR_REQUIRES_NAME` | `parser` | `error` | `active` | Constructor declarations require a name: write \`def! new(...)\` or \`def! name(...)\`. |
 | `CONSTRUCTOR_SPELLING_REMOVED_USE_DEF_BANG` | `parser` | `error` | `active` | Constructors use def! only; def#ctor, def#constructor, and $! are removed. |
 | `CONTEXTUAL_LAMBDA_EXPECTED_CALLABLE_REQUIRED` | `checker` | `error` | `active` | A contextual { expr } lambda requires one already-selected expected callable type; otherwise write { => expr }. |
-| `CONTEXT_ANCHOR_EFFECTFUL_CONTEXT_NOT_ENABLED` | `checker` | `error` | `active` | Effectful context anchors such as transaction/retry/tracing are not part of the NumericArray context-anchor MSP. |
+| `CONTEXT_ANCHOR_EFFECTFUL_CONTEXT_NOT_ENABLED` | `checker` | `error` | `active` | Effectful context anchors are outside the closed NumericArray and Measure context-provider roles. |
 | `CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED` | `checker` | `error` | `active` | Multiple context anchors in one operation are not supported in the MSP. |
 | `CONTEXT_ANCHOR_NOT_A_VALUE` | `checker` | `error` | `active` | \`&expr\` is not a standalone value in the context-anchor MSP. |
 | `CONTEXT_ANCHOR_REQUIRES_ELIGIBLE_OPERATION` | `checker` | `error` | `active` | Context anchors are only valid as operands of an eligible contextual operation. |
@@ -512,7 +512,7 @@
 | `INDEX_OUT_OF_LOGICAL_DOMAIN` | `checker` | `error` | `active` | The index is outside the receiver's declared logical domain. |
 | `INDEX_SUFFIX_REQUIRES_AXIS` | `parser` | `error` | `active` | An index suffix requires a scalar index, a bounded slice range whose bounds may use ^ or $, or an admitted NumericArray * axis. |
 | `INITIALIZED_LET_FIELD_CANNOT_BE_REASSIGNED_IN_POST_INIT_BODY` | `checker` | `error` | `active` | A post-init constructor body cannot reassign an already initialized \`let\` field. |
-| `INOUT_ALIAS_CONFLICT` | `checker` | `error` | `seed` | inout access conflicts with an existing alias or shared observation. |
+| `INOUT_ALIAS_CONFLICT` | `checker` | `error` | `active` | The inout access overlaps an active borrow, inout access, or another argument place. |
 | `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVE` | `lexer` | `error` | `seed` | Integer-magnitude imaginary literals such as 4i are a nonactivatable Preview design; current source uses 4.0i. |
 | `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` | `lexer` | `error` | `active` | A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode. |
 | `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` | `parser` | `error` | `active` | Complex interpolation expression requires ${...}. |
@@ -794,6 +794,7 @@
 | `PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE` | `checker` | `error` | `active` | The captured ListRestView would outlive, cross isolation from, or survive move/drop of its source owner. |
 | `PATTERN_SUFFIX_REST_MUST_BE_LAST` | `parser` | `error` | `active` | A \`..name\` List rest must be the last item; a bounded middle rest closes as \`..name..\`. |
 | `PLACE_REPLACE_NOT_ADMITTED` | `checker` | `error` | `active` | replace requires one stable place, exclusive access, and a transaction that preserves exactly one old and one new owner. |
+| `PLACE_STATE_JOIN_MISMATCH` | `checker` | `error` | `active` | Control-flow predecessors disagree on ownership place, loan, reservation, cleanup-token, or prior join-conflict state. |
 | `PLAIN_HETEROGENEOUS_TOP_FORBIDDEN` | `checker` | `error` | `active` | \`Plain\` is not a heterogeneous dynamic top. Use an explicit union, JsonValue, Dyn, or a typed boundary wrapper. |
 | `PLAIN_IS_NOT_DERIVED_BY_ANNOTATION` | `checker` | `error` | `active` | Annotation cannot create Plain admissibility. Use Plain boundary type or satisfies Plain candidate. |
 | `PLAIN_IS_NOT_DYNAMIC` | `checker` | `error` | `active` | Plain is not a dynamic invocation boundary; use Dyn for dynamic inspection. |
@@ -1278,7 +1279,7 @@
 | `BitwiseDomainAdmitted` | BitwiseDomainAdmitted | Historical predicate identity for the Stable built-in pointwise logical family. It preserves packed known-width integer and finite bitfield/#flags behavior and additionally admits exact same-shape NumericArray operands over one exact known-width integer element domain. Scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast or conversion, user-defined carriers, and result-as-control use reject deterministically. Binary operands evaluate left-to-right once with zero short circuit or flow narrowing. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalImportAdmitted` | BlockLocalImportAdmitted | Admits current block-prologue compile-time name visibility with no runtime load or extension activation. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalUseAdmitted` | BlockLocalUseAdmitted | Admits a block-prologue lexical use frame without name import, authority, evidence, or source-order priority. | `DESIGN_STATIC_NOT_RUN` |
-| `BorrowEscapeAdmitted` | borrow/view escape | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `BorrowEscapeAdmitted` | borrow/view escape | Closed borrow-escape decision with four exact local reason keys and one current public primary diagnostic; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `BoundedIndexDomainAdmitted` | BoundedIndexDomainAdmitted | Construct an exact bounded logical index domain from StaticInt bounds and expression-only elements. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BoundedLogicalIndexDomainAdmitted` | BoundedLogicalIndexDomainAdmitted | Admits StaticInt closed logical bounds whose cardinality equals the literal element count. | `DESIGN_STATIC_NOT_RUN` |
 | `BoxOwnershipAdmitted` | BoxOwnershipAdmitted | construct one unique owner under explicit allocation/failure responsibility; move invalidates source and forbids source_used_after_move; a completed owned lifecycle has payload_cleanup_count exactly one and every borrow has borrow_escapes=false while owner_alive | `DESIGN_STATIC_NOT_RUN` |
@@ -1310,7 +1311,7 @@
 | `ConstructionRowAdmitted` | ConstructionRowAdmitted | the target is a resolved type; a visible ConstructionRow exists; labels/defaults/ownership/invariants admit every supplied field exactly once | `DESIGN_STATIC_NOT_RUN` |
 | `ConstructorDelegationGraphAdmitted` | ConstructorDelegationGraphAdmitted | each constructor delegation list selects exactly one same-type or superclass target after pure guard selection; same-type delegation edges are acyclic and every path reaches a root constructor; each root selects exactly one superclass constructor, and a delegation guard cannot observe self; the first failed condition in this order emits CONSTRUCTOR_DELEGATION_GRAPH_NOT_ADMITTED | `DESIGN_STATIC_NOT_RUN` |
 | `ConstructorNamingAndEntrypointAdmitted` | ConstructorNamingAndEntrypointAdmitted | R51a1 closed design algorithm for ConstructorNamingAndEntrypointAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ContextAnchorOperandAdmitted` | context anchor operand checker | R51a1 closed design algorithm for ContextAnchorOperandAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ContextAnchorOperandAdmitted` | context anchor operand checker | Closed two-role context-anchor decision algorithm; expression \`&\` is operation-owned context evidence, never general ownership borrow. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ContextMarkerNotValue` | ContextMarkerNotValue | R51a1 closed design algorithm for ContextMarkerNotValue; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ContextParameterRoleAdmitted` | ContextParameterRoleAdmitted | R51a1 closed design algorithm for ContextParameterRoleAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ContextValueAdmitted` | ContextValueAdmitted | the argument is supplied through the explicit context channel and never inferred from an ordinary argument or ambient lookup; the context role remains in function type identity and override compatibility; the value is reusable and Shareable, has no drop responsibility, owns no resource, and carries no authority; context use does not relax capture, ownership, lifetime, isolation, or escape laws; the context marker itself is not a first-class storable or returnable value | `DESIGN_STATIC_NOT_RUN` |
@@ -1416,7 +1417,7 @@
 | `NormalizeSemanticType` | NormalizeSemanticType | Normalize source spelling into one closed RCTS-V5 semantic variant without dropping responsibility axes. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NormalizeUnion` | NormalizeUnion | Admit a closed Union only when every finite R0 alternative pair is proven disjoint. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NullaryLambdaExpectedContextAdmitted` | NullaryLambdaExpectedContextAdmitted | an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type; empty body is admitted only when the expected result is Unit; a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through; without expected callable context the surface is rejected or uses the separately gated nullary inference route | `DESIGN_STATIC_NOT_RUN` |
-| `NumericArrayContextAnchorAdmitted` | NumericArray context anchor | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NumericArrayContextAnchorAdmitted` | NumericArray context anchor | Closed NumericArray context-provider polarity and nearest-owner algorithm; product checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NumericArrayElementAdmitted` | NumericArrayElement | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayElementwiseSameShapeAdmitted` | NumericArrayElementwiseSameShapeAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayInfixPowerRequiresPreview` | NumericArrayInfixPowerRequiresPreview | NumericArray infix \`^\` requires Preview gate. | `DESIGN_STATIC_NOT_RUN` |

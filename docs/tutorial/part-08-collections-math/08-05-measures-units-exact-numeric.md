@@ -202,3 +202,13 @@ core exact-ratio conversion으로 숨기지 않는다.
 
 이제 실습에서 collection, view, NumericArray, Rational과 Measure를
 과학 데이터 pipeline으로 결합한다.
+
+
+<!-- IR-OWN-R8-TUTORIAL-08-05 -->
+### Measure 문맥과 `UnitWitnessId`
+
+예를 들어 `let metre = 1.0 m` 뒤에
+`let result = &metre + 25.0`을 평가할 수 있다.
+
+Measure 문맥 anchor는 단위 witness가 정적으로 알려진 경우에만
+허용된다. 단위가 불명확하면 추측하지 않고 진단한다.

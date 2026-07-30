@@ -1274,3 +1274,15 @@ source-root commitment를 위반한다.
 반대로 표를 채우면 562개 production을 복제하지 않고도 독자가 정확한
 권위 source로 이동하고, parse 가능성과 현행 언어 허용을 구별하며,
 부착·입력 공급·평가 순서의 빈틈을 찾을 수 있다.
+
+
+<!-- IR-OWN-R8-REF-16 -->
+### parse goal별 ampersand 소유자
+
+| parse goal | 표면 | CST | AST | 의미 소유자 |
+|---|---|---|---|---|
+| expression | `borrow x` | `BorrowExprCst` | `BorrowExpr` | shared ownership borrow |
+| expression | `&x` | `ContextAnchorOperandCst` | `ContextAnchorCandidateExpr` | nearest admitted operation |
+| type | `A & B` | `IntersectionTypeCst` | `IntersectionType` | closed contract intersection |
+
+자동 재해석, address-of 경로, ownership-borrow fallback은 모두 없다.

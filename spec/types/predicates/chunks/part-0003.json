@@ -1172,7 +1172,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ContextAnchorOperandAdmitted",
     "source_name": "context anchor operand checker",
-    "summary": "R51a1 closed design algorithm for ContextAnchorOperandAdmitted; product checker NOT_RUN.",
+    "summary": "Closed two-role context-anchor decision algorithm; expression `&` is operation-owned context evidence, never general ownership borrow.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1181,24 +1181,32 @@
       "shape",
       "rank",
       "orientation",
+      "witness_id",
       "element_types"
     ],
     "feature_refs": [
-      "numeric_array_context_anchor_msp"
+      "context_evidence_anchor_framework",
+      "numeric_array_context_anchor_msp",
+      "measure_context_anchor_msp"
     ],
     "diagnostic_refs": [
       "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
-      "CONTEXT_ANCHOR_NOT_A_VALUE"
+      "CONTEXT_ANCHOR_NOT_A_VALUE",
+      "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
     ],
     "design_seed_diagnostic_refs": [
       "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
-      "CONTEXT_ANCHOR_NOT_A_VALUE"
+      "CONTEXT_ANCHOR_NOT_A_VALUE",
+      "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "one anchor per operation",
-      "nearest operation only",
-      "no first-class value"
+      "one anchor per eligible operation",
+      "nearest operation only through transparent ParenExpr",
+      "exact closed role set NumericArray plus Measure",
+      "MEASURE_UNIT_CONTEXT_PROVIDER carries one statically known UnitWitnessId",
+      "no first-class anchor value",
+      "no runtime provider search or ownership-borrow fallback"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1210,38 +1218,47 @@
       "shape",
       "rank",
       "orientation",
+      "witness_id",
       "element_types"
     ],
     "formal_judgment_id": "J-ContextAnchorOperandAdmitted",
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "one anchor per operation",
-      "nearest operation only",
-      "no first-class value"
+      "one anchor per eligible operation",
+      "nearest operation only through transparent ParenExpr",
+      "exact closed role set NumericArray plus Measure",
+      "MEASURE_UNIT_CONTEXT_PROVIDER carries one statically known UnitWitnessId",
+      "no first-class anchor value",
+      "no runtime provider search or ownership-borrow fallback"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the closed RCTS-V5 input variant",
-      "normalize every declared descriptor axis",
-      "one anchor per operation",
-      "nearest operation only",
-      "no first-class value",
-      "evaluate finite candidates in canonical identity order",
-      "return admit or the active primary diagnostic"
+      "select exactly one of NUMERIC_ARRAY_CONTEXT_PROVIDER or MEASURE_UNIT_CONTEXT_PROVIDER from the nearest admitted operation",
+      "cross only transparent ParenExpr while searching for that owner",
+      "stop at call-argument, index, closure, or control-expression boundaries",
+      "require one anchor per operation and no standalone value",
+      "when the selected role is MEASURE_UNIT_CONTEXT_PROVIDER require one statically known witness_id after the multiple-anchor check; otherwise reject UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
+      "create no LoanId, borrow event, effect, error, cleanup, authority, new witness, runtime role lookup, or unresolved role",
+      "evaluate the provider and adapted operands once in source order",
+      "return admit or the first diagnostic in the canonical priority"
     ],
     "termination_metric": "finite descriptor size plus decreasing candidate count",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "CONTEXT_ANCHOR_MULTIPLE_ANCHORS_UNSUPPORTED",
     "secondary_diagnostics": [
-      "CONTEXT_ANCHOR_NOT_A_VALUE"
+      "CONTEXT_ANCHOR_NOT_A_VALUE",
+      "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
     ],
     "positive_fixture_ids": [
-      "PF-ContextAnchorOperandAdmitted-POS",
-      "PF-ContextAnchorOperandAdmitted-BOUNDARY"
+      "OWN-SURF-P-002",
+      "OWN-GAP-P-012"
     ],
     "negative_fixture_ids": [
-      "PF-ContextAnchorOperandAdmitted-NEG"
+      "OWN-SURF-N-005",
+      "OWN-SURF-M-007",
+      "OWN-GAP-N-012"
     ],
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],

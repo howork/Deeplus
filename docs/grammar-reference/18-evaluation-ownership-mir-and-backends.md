@@ -1966,3 +1966,12 @@ normative design을 설명하는 conceptual trace다.
 MIR 정적 법칙이 닫혔다는 사실과 target-bound 구현·제품 증거는
 서로 다른 층이다. 이 장의 예제나 설명만으로
 xVM·Cranelift·formatter·runtime 지원을 주장할 수 없다.
+
+
+<!-- IR-OWN-R8-REF-18 -->
+### HIR/MIR 투영과 zero-fabrication fence
+
+`borrow place`는 기존 HIR-H1 `PlaceAccess/BorrowShared` 계획을 재사용하고
+MIR에서 Shared `LoanId`를 만든다. 문맥 anchor는 enclosing operation의
+`HirContextAdaptationPlan`에 흡수되어 MIR에 독립 node를 남기지 않는다.
+두 경우 모두 source operand는 정확히 한 번, 소스 순서대로 평가된다.

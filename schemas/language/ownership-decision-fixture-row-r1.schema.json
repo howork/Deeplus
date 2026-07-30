@@ -1,0 +1,845 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/schemas/language/ownership-decision-fixture-row-r1.schema.json",
+  "title": "OwnershipDecisionFixtureRowR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "test_id",
+    "class",
+    "scenario_locator",
+    "scenario_sha256",
+    "step_count",
+    "step_input_sha256s",
+    "final_evaluator_result",
+    "semantic_oracle_key_or_null",
+    "primary_diagnostic_id_or_null",
+    "legacy_semantic_side_channel_read_count",
+    "execution_status",
+    "product_support"
+  ],
+  "properties": {
+    "test_id": {
+      "enum": [
+        "OWN-PLACE-P-009",
+        "OWN-PLACE-P-010",
+        "OWN-PLACE-P-011",
+        "OWN-PLACE-P-012",
+        "OWN-PLACE-B-013",
+        "OWN-PLACE-B-014",
+        "OWN-PLACE-B-015",
+        "OWN-PLACE-N-016",
+        "OWN-PLACE-N-017",
+        "OWN-PLACE-N-018",
+        "OWN-PLACE-N-019",
+        "OWN-PLACE-N-020",
+        "OWN-PLACE-M-022",
+        "OWN-GAP-P-013",
+        "OWN-GAP-B-013",
+        "OWN-GAP-N-013",
+        "OWN-FEAT-P-BOX",
+        "OWN-FEAT-B-BOX",
+        "OWN-FEAT-N-BOX"
+      ]
+    },
+    "class": {
+      "enum": [
+        "positive",
+        "boundary",
+        "negative",
+        "mutation"
+      ]
+    },
+    "scenario_locator": {
+      "type": "string",
+      "pattern": "^#/scenarios/OWN-[A-Z0-9-]+$"
+    },
+    "scenario_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "step_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "step_input_sha256s": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "final_evaluator_result": {
+      "enum": [
+        "ADMIT",
+        "REJECT",
+        "INPUT_INVALID"
+      ]
+    },
+    "semantic_oracle_key_or_null": {
+      "$ref": "#/$defs/nullableIdentity"
+    },
+    "primary_diagnostic_id_or_null": {
+      "$ref": "#/$defs/nullableIdentity"
+    },
+    "legacy_semantic_side_channel_read_count": {
+      "const": 0
+    },
+    "execution_status": {
+      "const": "SPECIFIED_NOT_RUN"
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/rowOwnPlaceP009"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceP010"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceP011"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceP012"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceB013"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceB014"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceB015"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceN016"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceN017"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceN018"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceN019"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceN020"
+    },
+    {
+      "$ref": "#/$defs/rowOwnPlaceM022"
+    },
+    {
+      "$ref": "#/$defs/rowOwnGapP013"
+    },
+    {
+      "$ref": "#/$defs/rowOwnGapB013"
+    },
+    {
+      "$ref": "#/$defs/rowOwnGapN013"
+    },
+    {
+      "$ref": "#/$defs/rowOwnFeatPBox"
+    },
+    {
+      "$ref": "#/$defs/rowOwnFeatBBox"
+    },
+    {
+      "$ref": "#/$defs/rowOwnFeatNBox"
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableIdentity": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "admitProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "class",
+        "scenario_locator",
+        "scenario_sha256",
+        "step_count",
+        "step_input_sha256s",
+        "final_evaluator_result",
+        "semantic_oracle_key_or_null",
+        "primary_diagnostic_id_or_null",
+        "legacy_semantic_side_channel_read_count",
+        "execution_status",
+        "product_support"
+      ],
+      "properties": {
+        "test_id": {
+          "$ref": "#/properties/test_id"
+        },
+        "class": {
+          "$ref": "#/properties/class"
+        },
+        "scenario_locator": {
+          "$ref": "#/properties/scenario_locator"
+        },
+        "scenario_sha256": {
+          "$ref": "#/properties/scenario_sha256"
+        },
+        "step_count": {
+          "$ref": "#/properties/step_count"
+        },
+        "step_input_sha256s": {
+          "$ref": "#/properties/step_input_sha256s"
+        },
+        "final_evaluator_result": {
+          "const": "ADMIT"
+        },
+        "semantic_oracle_key_or_null": {
+          "type": "null"
+        },
+        "primary_diagnostic_id_or_null": {
+          "type": "null"
+        },
+        "legacy_semantic_side_channel_read_count": {
+          "$ref": "#/properties/legacy_semantic_side_channel_read_count"
+        },
+        "execution_status": {
+          "$ref": "#/properties/execution_status"
+        },
+        "product_support": {
+          "$ref": "#/properties/product_support"
+        }
+      }
+    },
+    "rowOwnPlaceP009": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-P-009"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "class": {
+            "const": "positive"
+          },
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-P-009"
+          },
+          "step_count": {
+            "const": 1
+          },
+          "step_input_sha256s": {
+            "minItems": 1,
+            "maxItems": 1
+          },
+          "final_evaluator_result": {
+            "const": "ADMIT"
+          },
+          "semantic_oracle_key_or_null": {
+            "type": "null"
+          },
+          "primary_diagnostic_id_or_null": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceP010": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-P-010"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "class": {
+            "const": "positive"
+          },
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-P-010"
+          },
+          "step_count": {
+            "const": 4
+          },
+          "step_input_sha256s": {
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "final_evaluator_result": {
+            "const": "ADMIT"
+          },
+          "semantic_oracle_key_or_null": {
+            "type": "null"
+          },
+          "primary_diagnostic_id_or_null": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceP011": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-P-011"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitOnePositive",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-P-011"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceP012": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-P-012"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitTwoPositive",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-P-012"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceB013": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-B-013"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitTwoBoundary",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-B-013"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceB014": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-B-014"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitOneBoundary",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-B-014"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceB015": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-B-015"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitOneBoundary",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-B-015"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceN016": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-N-016"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-N-016"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "USE_AFTER_MOVE"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "OWNERSHIP_MODE_ADMISSION_FAILED"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceN017": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-N-017"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-N-017"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceN018": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-N-018"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-N-018"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "BORROW_CONFLICT_MUTATION"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "OWNERSHIP_MODE_ADMISSION_FAILED"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceN019": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-N-019"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-N-019"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceN020": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-N-020"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectTwoNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-N-020"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "PLACE_STATE_JOIN_MISMATCH"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "PLACE_STATE_JOIN_MISMATCH"
+          }
+        }
+      }
+    },
+    "rowOwnPlaceM022": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-PLACE-M-022"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "properties": {
+          "class": {
+            "const": "mutation"
+          },
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-PLACE-M-022"
+          },
+          "step_count": {
+            "const": 1
+          },
+          "step_input_sha256s": {
+            "minItems": 1,
+            "maxItems": 1
+          },
+          "final_evaluator_result": {
+            "const": "INPUT_INVALID"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "PLACE_OVERLAP_PROOF_INVALID"
+          },
+          "primary_diagnostic_id_or_null": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    "rowOwnGapP013": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-GAP-P-013"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitOnePositive",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-GAP-P-013"
+          }
+        }
+      }
+    },
+    "rowOwnGapB013": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-GAP-B-013"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectTwoBoundary",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-GAP-B-013"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "PLACE_STATE_JOIN_MISMATCH"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "PLACE_STATE_JOIN_MISMATCH"
+          }
+        }
+      }
+    },
+    "rowOwnGapN013": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-GAP-N-013"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-GAP-N-013"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "INOUT_ALIAS_CONFLICT"
+          }
+        }
+      }
+    },
+    "rowOwnFeatPBox": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-FEAT-P-BOX"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitOnePositive",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-FEAT-P-BOX"
+          }
+        }
+      }
+    },
+    "rowOwnFeatBBox": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-FEAT-B-BOX"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/admitTwoBoundary",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-FEAT-B-BOX"
+          }
+        }
+      }
+    },
+    "rowOwnFeatNBox": {
+      "if": {
+        "properties": {
+          "test_id": {
+            "const": "OWN-FEAT-N-BOX"
+          }
+        },
+        "required": [
+          "test_id"
+        ]
+      },
+      "then": {
+        "$ref": "#/$defs/rejectOneNegative",
+        "properties": {
+          "scenario_locator": {
+            "const": "#/scenarios/OWN-FEAT-N-BOX"
+          },
+          "semantic_oracle_key_or_null": {
+            "const": "BOX_OWNERSHIP_VIOLATION"
+          },
+          "primary_diagnostic_id_or_null": {
+            "const": "BOX_OWNERSHIP_VIOLATION"
+          }
+        }
+      }
+    },
+    "admitOnePositive": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/admitProfile"
+        },
+        {
+          "properties": {
+            "class": {
+              "const": "positive"
+            },
+            "step_count": {
+              "const": 1
+            },
+            "step_input_sha256s": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        }
+      ]
+    },
+    "admitTwoPositive": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/admitProfile"
+        },
+        {
+          "properties": {
+            "class": {
+              "const": "positive"
+            },
+            "step_count": {
+              "const": 2
+            },
+            "step_input_sha256s": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        }
+      ]
+    },
+    "admitOneBoundary": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/admitProfile"
+        },
+        {
+          "properties": {
+            "class": {
+              "const": "boundary"
+            },
+            "step_count": {
+              "const": 1
+            },
+            "step_input_sha256s": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        }
+      ]
+    },
+    "admitTwoBoundary": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/admitProfile"
+        },
+        {
+          "properties": {
+            "class": {
+              "const": "boundary"
+            },
+            "step_count": {
+              "const": 2
+            },
+            "step_input_sha256s": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        }
+      ]
+    },
+    "rejectOneNegative": {
+      "properties": {
+        "class": {
+          "const": "negative"
+        },
+        "step_count": {
+          "const": 1
+        },
+        "step_input_sha256s": {
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "final_evaluator_result": {
+          "const": "REJECT"
+        }
+      }
+    },
+    "rejectTwoNegative": {
+      "properties": {
+        "class": {
+          "const": "negative"
+        },
+        "step_count": {
+          "const": 2
+        },
+        "step_input_sha256s": {
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "final_evaluator_result": {
+          "const": "REJECT"
+        }
+      }
+    },
+    "rejectTwoBoundary": {
+      "properties": {
+        "class": {
+          "const": "boundary"
+        },
+        "step_count": {
+          "const": 2
+        },
+        "step_input_sha256s": {
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "final_evaluator_result": {
+          "const": "REJECT"
+        }
+      }
+    }
+  }
+}

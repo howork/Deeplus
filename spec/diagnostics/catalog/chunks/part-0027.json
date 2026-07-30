@@ -263,5 +263,34 @@
     "primary_source": "spec/language.md",
     "notes": "R4 primary reason set: MISSING_EXPORT_EDGE, INTERFACE_DIGEST_MISMATCH. Product execution remains NOT_RUN.",
     "product_support": "NOT_RUN"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "PLACE_STATE_JOIN_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "inout_borrow_move_modes"
+    ],
+    "fixit_hint": "make every reachable predecessor leave identical ownership state before the join",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "make every reachable predecessor leave identical ownership state before the join",
+    "message": "Control-flow predecessors disagree on ownership place, loan, reservation, cleanup-token, or prior join-conflict state.",
+    "notes": "Current-source diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "region_lifetime_model_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]
