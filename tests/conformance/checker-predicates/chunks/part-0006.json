@@ -983,64 +983,83 @@
     "fixture_id": "PF-EffectErrorRowPolymorphismAdmitted-BOUNDARY",
     "predicate_id": "EffectErrorRowPolymorphismAdmitted",
     "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
+    "canonical_case_id": "R9-POLY-BOUNDARY-001",
+    "decision_input": {
+      "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "quantified_row_parameters": [],
+      "row_constraints": [],
+      "declaration_visibility": "public",
+      "exported_parameter_ids": []
     },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectErrorRowPolymorphismAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+    "expected_decision": {
+      "variant": "ADMIT",
+      "reason_key_or_null": null,
+      "diagnostic_id_or_null": null,
+      "canonical_culprit_id_or_null": null,
+      "emitted_primary_count": 0,
+      "later_candidate_status": "NOT_APPLICABLE"
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 EffectErrorRowPolymorphismAdmitted boundary fixture; product checker NOT_RUN.",
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
     "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "admitted_condition": "minimum closed typed boundary of the R9 decision procedure"
   },
   {
     "fixture_id": "PF-EffectErrorRowPolymorphismAdmitted-NEG",
     "predicate_id": "EffectErrorRowPolymorphismAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "RESULT_THROWS_CHANNEL_OVERLAP",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "EffectErrorRowPolymorphismAdmitted"
+    "canonical_case_id": "R9-POLY-NEG-001",
+    "decision_input": {
+      "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "quantified_row_parameters": [
+        {
+          "parameter_id": "rho",
+          "row_kind": "effect",
+          "scope": "declared_generic",
+          "source_order_key": "001"
+        }
+      ],
+      "row_constraints": [
+        {
+          "constraint_id": "C-kind",
+          "left_row_expression": {
+            "row_kind": "error",
+            "atoms": [],
+            "variable_ids": [
+              "rho"
+            ]
+          },
+          "relation": "equal",
+          "right_row_expression": {
+            "row_kind": "error",
+            "atoms": [],
+            "variable_ids": []
+          },
+          "canonical_order_key": "C-kind"
+        }
+      ],
+      "declaration_visibility": "public",
+      "exported_parameter_ids": [
+        "rho"
+      ]
     },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectErrorRowPolymorphismAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+    "expected_decision": {
+      "variant": "REJECT",
+      "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+      "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "canonical_culprit_id_or_null": "rho",
+      "emitted_primary_count": 1,
+      "later_candidate_status": "NOT_EVALUATED"
     },
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+    "fixture_kind": "concrete_negative",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1048,68 +1067,90 @@
     "fixture_id": "PF-EffectErrorRowPolymorphismAdmitted-POS",
     "predicate_id": "EffectErrorRowPolymorphismAdmitted",
     "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+    "canonical_case_id": "R9-POLY-POS-001",
+    "decision_input": {
+      "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "quantified_row_parameters": [
+        {
+          "parameter_id": "E",
+          "row_kind": "error",
+          "scope": "declared_generic",
+          "source_order_key": "001"
+        },
+        {
+          "parameter_id": "rho",
+          "row_kind": "effect",
+          "scope": "declared_generic",
+          "source_order_key": "002"
+        }
+      ],
+      "row_constraints": [
+        {
+          "constraint_id": "C-E",
+          "left_row_expression": {
+            "row_kind": "error",
+            "atoms": [],
+            "variable_ids": [
+              "E"
+            ]
+          },
+          "relation": "equal",
+          "right_row_expression": {
+            "row_kind": "error",
+            "atoms": [
+              {
+                "identity": "Error.IO",
+                "normalized_parameter_ids": [],
+                "visibility": "public"
+              }
+            ],
+            "variable_ids": []
+          },
+          "canonical_order_key": "C-E"
+        },
+        {
+          "constraint_id": "C-rho",
+          "left_row_expression": {
+            "row_kind": "effect",
+            "atoms": [],
+            "variable_ids": [
+              "rho"
+            ]
+          },
+          "relation": "equal",
+          "right_row_expression": {
+            "row_kind": "effect",
+            "atoms": [
+              {
+                "identity": "io",
+                "normalized_parameter_ids": [],
+                "visibility": "public"
+              }
+            ],
+            "variable_ids": []
+          },
+          "canonical_order_key": "C-rho"
+        }
+      ],
+      "declaration_visibility": "public",
+      "exported_parameter_ids": [
+        "E",
+        "rho"
+      ]
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "expected_decision": {
+      "variant": "ADMIT",
+      "reason_key_or_null": null,
+      "diagnostic_id_or_null": null,
+      "canonical_culprit_id_or_null": null,
+      "emitted_primary_count": 0,
+      "later_candidate_status": "NOT_APPLICABLE"
+    },
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectErrorRowPolymorphismAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1329,64 +1370,72 @@
     "fixture_id": "PF-EffectRowSubsumes-BOUNDARY",
     "predicate_id": "EffectRowSubsumes",
     "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectRowSubsumes-BOUNDARY"
+    "canonical_case_id": "R9-SUB-BOUNDARY-001",
+    "decision_input": {
+      "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+      "predicate_id": "EffectRowSubsumes",
+      "context_kind": "class_override",
+      "required_row": {
+        "atoms": [],
+        "variable_ids": []
       },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+      "implementation_row": {
+        "atoms": [],
+        "variable_ids": []
+      },
+      "row_environment": [],
+      "parameter_environment": []
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 EffectRowSubsumes boundary fixture; product checker NOT_RUN.",
+    "expected_decision": {
+      "variant": "ADMIT",
+      "reason_key_or_null": null,
+      "diagnostic_id_or_null": null,
+      "canonical_culprit_id_or_null": null,
+      "emitted_primary_count": 0,
+      "later_candidate_status": "NOT_APPLICABLE"
+    },
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
     "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "admitted_condition": "minimum closed typed boundary of the R9 decision procedure"
   },
   {
     "fixture_id": "PF-EffectRowSubsumes-NEG",
     "predicate_id": "EffectRowSubsumes",
     "expected": "rejected",
-    "expected_primary_diagnostic": "EFFECT_ROW_VARIABLE_UNBOUND",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "EffectRowSubsumes"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectRowSubsumes-NEG"
+    "canonical_case_id": "R9-SUB-NEG-001",
+    "decision_input": {
+      "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+      "predicate_id": "EffectRowSubsumes",
+      "context_kind": "trait_witness",
+      "required_row": {
+        "atoms": [],
+        "variable_ids": [
+          "rho"
+        ]
       },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+      "implementation_row": {
+        "atoms": [],
+        "variable_ids": []
+      },
+      "row_environment": [],
+      "parameter_environment": []
     },
+    "expected_decision": {
+      "variant": "REJECT",
+      "reason_key_or_null": "1_required_row_variable_unbound",
+      "diagnostic_id_or_null": "EFFECT_ROW_VARIABLE_UNBOUND",
+      "canonical_culprit_id_or_null": "rho",
+      "emitted_primary_count": 1,
+      "later_candidate_status": "NOT_EVALUATED"
+    },
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "EFFECT_ROW_VARIABLE_UNBOUND",
+    "fixture_kind": "concrete_negative",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1394,68 +1443,48 @@
     "fixture_id": "PF-EffectRowSubsumes-POS",
     "predicate_id": "EffectRowSubsumes",
     "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
+    "canonical_case_id": "R9-SUB-POS-001",
+    "decision_input": {
+      "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+      "predicate_id": "EffectRowSubsumes",
+      "context_kind": "trait_witness",
+      "required_row": {
+        "atoms": [
+          {
+            "effect_id": "io",
+            "parameter_arguments": []
+          },
+          {
+            "effect_id": "state",
+            "parameter_arguments": []
+          }
+        ],
+        "variable_ids": []
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "implementation_row": {
+        "atoms": [
+          {
+            "effect_id": "io",
+            "parameter_arguments": []
+          }
+        ],
+        "variable_ids": []
+      },
+      "row_environment": [],
+      "parameter_environment": []
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
+    "expected_decision": {
+      "variant": "ADMIT",
+      "reason_key_or_null": null,
+      "diagnostic_id_or_null": null,
+      "canonical_culprit_id_or_null": null,
+      "emitted_primary_count": 0,
+      "later_candidate_status": "NOT_APPLICABLE"
+    },
+    "rule_seed": "R9 closed typed diagnostic-dispatch decision fixture; integrated product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-EffectRowSubsumes-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },

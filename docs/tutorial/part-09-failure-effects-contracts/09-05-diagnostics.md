@@ -73,6 +73,43 @@ exhaustiveness, unreachable arm, binding 타입은 모두 match owner가
 정식 code가 아직 승인되지 않은 Preview Design은 임의 번호를 만들지
 않고 logical family와 필드 schema만 설명한다.
 
+### 5.1 effect row의 “해석 실패”와 “관계 실패”
+
+effect/error row 진단은 두 문제를 분리한다. 먼저 row variable과 alias를
+canonical identity로 해석할 수 있는지 검사한다. 그 다음에야 호출
+문맥이 요구한 부분집합 또는 동등 관계를 검사한다.
+
+- required row variable을 찾지 못한 경우는
+  `EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED`가 primary이고,
+  `EFFECT_ROW_VARIABLE_UNBOUND`가 required 쪽을 설명하는 secondary다.
+- implementation row variable을 찾지 못한 경우도 같은 primary를
+  사용하되 secondary가 implementation 쪽을 가리킨다.
+- alias가 missing, wrong-kind, ambiguous 또는 cyclic이면 row를
+  비교할 수 없으므로 normalization 실패다.
+- 두 row가 정상적으로 해석됐지만 trait witness 또는 function value의
+  부분집합 조건, 혹은 class override의 동등 조건을 만족하지 않으면
+  relation 실패다.
+
+이 구분 덕분에 “이름을 해석할 수 없음”을 “effect가 너무 큼”으로
+오진하지 않는다. 여기서 설명하는 registry route는 정본 설계 계약이며
+실제 checker emission과 formatter/LSP 지원은 여전히 `NOT_RUN`이다.
+
+### 5.2 quantified effect/error row
+
+`EffectErrorRowPolymorphismAdmitted`는 선언된 generic row parameter의
+finite constraint가 모델을 가지며 principal closed substitution 하나를
+정하는지 검사한다. constraint가 모순이면
+`EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED`를 보고한다. 모델은 있지만
+어떤 variable의 membership이 참과 거짓 모두 가능하면 역시
+nonprincipal로 거부한다.
+
+scope 검사는 equality의 작성 방향에 영향을 받지 않는다. 예를 들어
+`E == Local`과 `Local == E`는 같은 scope reachability를 만든다.
+선언된 export root가 solver-local parameter에 닿으면 private row가
+공개 signature로 새는 것이므로 같은 primary diagnostic으로 거부한다.
+비슷한 이름을 가진 `RESULT_THROWS_CHANNEL_OVERLAP`은 throws/result
+channel owner의 진단이므로 이 판정에 대신 사용하지 않는다.
+
 ## 6. fix 제안의 경계
 
 fix는 사용자의 의도를 바꾸지 않는 경우에만 제시한다. 여러 의미 선택지가
@@ -101,6 +138,10 @@ registry code나 실행 PASS를 주장하지 않는다.
 - Preview Design의 logical family와 정식 registry code를 혼동하지 않는다.
 - formatter/LSP fix는 의미 보존을 증명할 수 있을 때만 허용한다.
 - static validation을 제품 conformance PASS로 표현하지 않는다.
+- effect row에서 unbound/normalization/relation 실패를 서로 바꾸어
+  설명하지 않는다.
+- typed dispatch fixture가 PASS해도 checker 제품 실행을 PASS라고 쓰지
+  않는다.
 
 ## 10. 연습 문제
 
@@ -117,9 +158,11 @@ registry code나 실행 PASS를 주장하지 않는다.
 - 문법 실패는 가상의 의미 node로 보완하지 않는다.
 - fix는 의미를 대신 선택하지 않는다.
 - Preview 진단과 Current registry code의 권위를 구분한다.
+- effect row의 normalization failure와 relation failure를 구분한다.
 
 ## 12. 정본 근거
 
 - [제어 흐름, 오류, effect 및 정리](../../grammar-reference/11-control-flow-errors-effects-and-cleanup.md)
 - [Preview 표면](../../grammar-reference/15-preview-surfaces.md)
+- [R9 typed diagnostic-dispatch 계약](../../../spec/contracts/diagnostic-dispatch-closure-r1.json)
 - [진단 catalog 메타데이터](../../../spec/diagnostics/catalog/catalog-metadata.json)

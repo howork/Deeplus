@@ -53,7 +53,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1434, "predicates": 277,
+    "features": 719, "diagnostics": 1436, "predicates": 277,
     "predicate_fixtures": 846, "no_go": 155,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -954,7 +954,12 @@ def r4_nrm_contract_results(
     ]
     record(
         observed_diagnostic_ids
-        == expected_diagnostic_ids + ["PLACE_STATE_JOIN_MISMATCH"],
+        == expected_diagnostic_ids
+        + [
+            "PLACE_STATE_JOIN_MISMATCH",
+            "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+            "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        ],
         "R4_NRM_DIAGNOSTIC_SET",
         f"observed={observed_diagnostic_ids}",
     )
@@ -10587,6 +10592,18 @@ R5_OWNERSHIP_CHECK_IDS = (
     "R5_OWN_GOVERNANCE_FENCE",
 )
 
+R9_DIAGNOSTIC_DISPATCH_CHECK_IDS = (
+    "R9_DD_SCHEMA_CLOSED_UNION",
+    "R9_DD_CONTRACT_EXACT",
+    "R9_DD_BASE_CASES_18",
+    "R9_DD_ADVERSARIAL_13",
+    "R9_DD_MUTATIONS_12",
+    "R9_DD_REASON_KEYS_12",
+    "R9_DD_SCOPE_ORIENTATION_INVARIANT",
+    "R9_DD_REGISTRY_DISPATCH_EXACT",
+    "R9_DD_GOVERNANCE_FENCE",
+)
+
 
 def _r5_strict_receipt_json(payload: str) -> dict[str, Any]:
     def pairs_hook(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -10703,6 +10720,103 @@ def r5_ownership_workspace_checks(root: Path) -> list[dict[str, Any]]:
         return failed_rows(f"R5 ownership runner integration failure: {exc}")
 
 
+def r9_diagnostic_dispatch_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact R9 static runner receipt without claiming product support."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R9_DIAGNOSTIC_DISPATCH_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/run_diagnostic_dispatch_closure_tests.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R9 diagnostic-dispatch runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R9 diagnostic-dispatch runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R9_DIAGNOSTIC_DISPATCH_CHECK_IDS)
+        if not isinstance(rows, list):
+            return failed_rows(
+                "R9 diagnostic-dispatch runner checks are not an array"
+            )
+        passed_ids = [
+            row.get("check_id")
+            for row in rows
+            if isinstance(row, dict) and row.get("status") == "PASS"
+        ]
+        expected_result = (
+            "PASS" if len(passed_ids) == len(expected_ids) else "FAIL"
+        )
+        if (
+            receipt.get("schema")
+            != "deeplus.r9-diagnostic-dispatch-closure-test-receipt/v1"
+            or receipt.get("result") != expected_result
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("check_scope")
+            != "R9_DIAGNOSTIC_DISPATCH_CLOSURE_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(passed_ids)
+            or receipt.get("base_case_count") != 18
+            or receipt.get("adversarial_case_count") != 13
+            or receipt.get("mutation_count") != 12
+            or receipt.get("reason_key_count") != 12
+            or len(rows) != len(expected_ids)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "status", "detail"}
+                or row.get("status") not in {"PASS", "FAIL"}
+                for row in rows
+            )
+            or not isinstance(receipt.get("errors"), list)
+            or (expected_result == "PASS" and receipt.get("errors") != [])
+        ):
+            return failed_rows(
+                "R9 diagnostic-dispatch runner receipt-contract drift"
+            )
+        return [
+            {
+                "check_id": row["check_id"],
+                "pass": row["status"] == "PASS",
+                "detail": (
+                    row["detail"]
+                    if isinstance(row["detail"], str)
+                    else json.dumps(
+                        row["detail"],
+                        ensure_ascii=False,
+                        sort_keys=True,
+                    )
+                ),
+            }
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R9 diagnostic-dispatch runner integration failure: {exc}"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -10724,6 +10838,11 @@ def main() -> int:
 
     r5_ownership_check_results = r5_ownership_workspace_checks(root)
     for row in r5_ownership_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
+    r9_diagnostic_dispatch_check_results = (
+        r9_diagnostic_dispatch_workspace_checks(root)
+    )
+    for row in r9_diagnostic_dispatch_check_results:
         check(row["pass"], row["check_id"], row["detail"])
 
     try:
@@ -10794,6 +10913,13 @@ def main() -> int:
         "tools/generators/generate_tutorial.py",
         "tools/validators/run_tutorial_generator_tests.py",
         "tools/validators/run_r5_ownership_decision_mutation_tests.py",
+        "schemas/language/diagnostic-dispatch-closure-input-r1.schema.json",
+        "schemas/language/diagnostic-dispatch-closure-fixtures-r1.schema.json",
+        "spec/contracts/diagnostic-dispatch-closure-r1.json",
+        "tests/fixtures/current/diagnostic-dispatch-closure-r1.json",
+        "tests/conformance/diagnostic-dispatch-closure/catalog-metadata.json",
+        "tests/conformance/diagnostic-dispatch-closure/chunks/part-0001.json",
+        "tools/validators/run_diagnostic_dispatch_closure_tests.py",
         "tools/generators/generate_current_integrity.py",
         "tools/generators/current-integrity.contract.json",
         "tools/validators/run_current_integrity_generator_tests.py",
@@ -11162,7 +11288,7 @@ def main() -> int:
         )
     )
     check(set(chunk_files) == set(all_shards), "SHARD_CONTRACT_COVERAGE", f"actual={len(chunk_files)} declared={len(all_shards)}")
-    check(len(reconstructed) == 13, "CATALOG_COUNT", str(len(reconstructed)))
+    check(len(reconstructed) == 14, "CATALOG_COUNT", str(len(reconstructed)))
 
     def rows(name: str, key: str) -> list[dict[str, Any]]:
         return reconstructed.get(name, {}).get(key, [])
@@ -16022,6 +16148,17 @@ def main() -> int:
         "r5_ownership_check_count": len(R5_OWNERSHIP_CHECK_IDS),
         "passed_check_id_scope": "R5_OWNERSHIP_EXACT_13",
         "r5_ownership_check_results": r5_ownership_check_results,
+        "r9_diagnostic_dispatch_check_scope":
+            "R9_DIAGNOSTIC_DISPATCH_CLOSURE_EXACT",
+        "r9_diagnostic_dispatch_check_count":
+            len(R9_DIAGNOSTIC_DISPATCH_CHECK_IDS),
+        "r9_diagnostic_dispatch_passed_check_ids": [
+            row["check_id"]
+            for row in r9_diagnostic_dispatch_check_results
+            if row["pass"]
+        ],
+        "r9_diagnostic_dispatch_check_results":
+            r9_diagnostic_dispatch_check_results,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,

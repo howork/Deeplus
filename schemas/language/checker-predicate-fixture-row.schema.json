@@ -146,6 +146,74 @@
           "const": "deeplus.checker-predicate-fixture/r51f3"
         }
       }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "canonical_case_id",
+        "decision_input",
+        "expected_decision",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "admitted_condition": {
+          "type": "string"
+        },
+        "diagnostic_disposition": {
+          "type": "string"
+        },
+        "execution_status": {
+          "const": "STATIC_REFERENCE_VALIDATOR_PASS"
+        },
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fixture_kind": {
+          "enum": [
+            "concrete_positive",
+            "concrete_negative"
+          ]
+        },
+        "predicate_id": {
+          "enum": [
+            "AssociatedRequirementAdmitted",
+            "EffectErrorRowPolymorphismAdmitted",
+            "EffectRowSubsumes"
+          ]
+        },
+        "canonical_case_id": {
+          "type": "string",
+          "pattern": "^R9-"
+        },
+        "decision_input": {
+          "$ref": "./diagnostic-dispatch-closure-input-r1.schema.json"
+        },
+        "expected_decision": {
+          "$ref": "./diagnostic-dispatch-closure-fixtures-r1.schema.json#/$defs/expected"
+        },
+        "rule_seed": {
+          "type": "string"
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
     }
   ]
 }

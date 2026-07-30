@@ -5786,3 +5786,29 @@ the single public primary diagnostic `BORROW_ESCAPE_OWNER_REGION`.
 `PLACE_STATE_JOIN_MISMATCH` only for their exact reason keys before its generic
 default.  These are Stable-design contracts; production parser, checker, MIR,
 xVM, Cranelift, formatter, LSP, and conformance execution remain `NOT_RUN`.
+
+## Closed diagnostic-dispatch predicates
+
+`AssociatedRequirementAdmitted`, `EffectErrorRowPolymorphismAdmitted`, and
+`EffectRowSubsumes` consume only the closed
+`DiagnosticDispatchClosureInputR1` union. An RCTS descriptor is not a fallback
+input for these predicates.
+
+Each predicate normalizes its typed input, evaluates local rejection reasons in
+numeric rank order, and selects the canonical semantic identity within the
+first detected rank. Exactly one primary diagnostic is emitted for a rejection;
+later candidates are not evaluated for emission.
+
+- `AssociatedRequirementAdmitted` supports type, value, and function
+  requirements. A present default remains rejected under TC-R010. Obligation
+  edges are derived only from normalized requirement dependencies.
+- `EffectErrorRowPolymorphismAdmitted` solves finite membership constraints
+  symbolically. Equality supplies symmetric scope reachability but oriented
+  substitution-cycle edges; tautological self-equality supplies no cycle edge.
+- `EffectRowSubsumes` recursively expands row variables and typed parameter
+  aliases. Trait-witness and function-value contexts require implementation
+  subset-of required; class override requires equality.
+
+The static reference validator establishes the design contract and fixtures.
+Production parser, checker, MIR/xVM, runtime, backend, formatter, LSP, and
+tooling execution remain `NOT_RUN`.

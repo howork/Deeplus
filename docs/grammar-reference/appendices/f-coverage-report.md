@@ -12,7 +12,7 @@
 |---|---:|---:|---|
 | `grammar_productions` | 638 | 638 | `통과` |
 | `features` | 719 | 719 | `통과` |
-| `diagnostics` | 1434 | 1434 | `통과` |
+| `diagnostics` | 1436 | 1436 | `통과` |
 | `predicates` | 277 | 277 | `통과` |
 | `prelude_entries` | 72 | 72 | `통과` |
 | `examples` | 738 | 738 | `통과` |
@@ -31,7 +31,7 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `478f2962536f49a8e18dd0ed453cc35885adfbf6c878613ac0b7d1d30ebaa4a0` |
+| `human_language` | `spec/language.md` | `1ed1ded8343a670af70af075d58403aa8d399e39ef8276a52ca58922deddeb98` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
 | `frontend_admission` | `spec/frontend/frontend-model.json` | `0963343feec43810b7acef80a73e1c4c25c2330287740a43733b455a4708d199` |
@@ -47,4 +47,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `4327168a3dc9d79391237b20af8d8ac48d4c11b50803a129a8b6534187026366` |
 | `prelude` | `library/prelude/prelude.md` | `699f06e8ce8a367b108f08d51060d01b41e69318a867f2eb15ce655735ce9c41` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `756b90c69cb44d13abcd82558f4bdd9fbfd1128330797f602d1a5b33fd681c1a` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `305c5aa3da934c1a5505c216c7f8e6b55fec676cc6f3b425c6dfc986f11ebfc6` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `a096df295df2dcaaf0424229ef0f4e257558a11854aa601c99d83b50d2632aa4` |

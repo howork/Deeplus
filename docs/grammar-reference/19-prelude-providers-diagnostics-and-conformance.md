@@ -1256,6 +1256,61 @@ local rule가 실패했더라도
 termination은 finite descriptor와
 strictly decreasing dependency DAG rank로 설명된다.
 
+### 15.6 R9 typed diagnostic-dispatch closure
+
+`AssociatedRequirementAdmitted`,
+`EffectErrorRowPolymorphismAdmitted`,
+`EffectRowSubsumes`는 RCTS-V5 같은 범용 descriptor로 판정하지 않는다.
+세 predicate는 `DiagnosticDispatchClosureInputR1`의 서로 다른 closed
+variant를 받고, 입력 variant가 predicate와 맞지 않으면 normalization
+전에 거부한다. serialized decision result와 호출자가 제공한 dependency
+edge는 판정 근거가 아니다.
+
+`AssociatedRequirementAdmitted`는 associated requirement의 kind를
+`type`, `value`, `function`으로 구분한다.
+
+- type binding은 요구된 normalized bound 집합이 구현 bound 집합의
+  부분집합이어야 한다.
+- value binding은 normalized value type이 정확히 같아야 한다.
+- function binding은 normalized callable signature가 정확히 같아야 한다.
+- default가 있는 requirement는 현재 minimum인 TC-R010에서 허용하지
+  않으며 rank 2로 거부한다.
+- obligation graph는 normalized dependency requirement ID에서만
+  유도한다.
+
+`EffectErrorRowPolymorphismAdmitted`는 row kind별 concrete atom과 fresh
+sentinel에 대해 finite membership constraint를 CNF로 낮춘다. subset은
+`membership(left, atom)`이 `membership(right, atom)`을 함의한다는
+제약이고, equality는 두 membership의 동치 제약이다. deterministic
+total symbolic solver가 다음을 판정한다.
+
+- model이 없으면 처음으로 unsatisfiable해지는 canonical constraint
+  prefix가 culprit다.
+- membership 값이 참과 거짓 모두 가능한 첫 canonical variable은
+  nonprincipal culprit다.
+- substitution cycle edge는 normalized variable-defining equality에서만
+  유도하며 tautological self-equality는 edge를 만들지 않는다.
+- scope reachability는 equality의 서로 다른 두 variable 사이에 대칭으로
+  유도한다. equality를 좌우 반전해도 결과가 달라지지 않는다.
+- exported parameter 집합은 선언된 canonical generic root 집합과
+  정확히 같아야 하며, 그 root에서 solver-local parameter로 reach할 수
+  없다.
+
+`EffectRowSubsumes`는 context에 따라 관계를 달리한다. trait witness와
+function value에서는 implementation row가 required row의 부분집합이어야
+하고, class override에서는 두 row가 정확히 같아야 한다. 양쪽
+row environment를 재귀적으로 펼치며, required 쪽 unbound와
+implementation 쪽 unbound는 서로 다른 rank를 가진다. typed alias는
+terminal canonical identity 하나까지 재귀적으로 해소한다. missing,
+wrong-kind, ambiguous, cyclic binding은 모두 normalization 실패다.
+
+세 predicate는 모두 closed schema validation, canonical normalization,
+dependency rejection propagation, numeric local reason rank 1..4,
+canonical semantic identity tie-break 순서로 판정한다. 첫 reject 뒤의
+후보는 `NOT_EVALUATED`이며 source/registry 열거 순서는 winner가 아니다.
+이 정적 계약과 fixture 검증은 compiler/checker 제품 실행 영수증이
+아니므로 product support는 `NOT_RUN`이다.
+
 ## 16. diagnostic dispatch
 
 ### 16.1 primary diagnostic
@@ -1307,6 +1362,22 @@ AsyncCollector에서는
 
 실패는
 `ASYNC_COLLECTOR_POLICY_NOT_ADMITTED`로 귀결된다.
+
+R9의 세 typed predicate는 다음 primary route를 사용한다.
+
+| predicate | primary diagnostic | secondary |
+|---|---|---|
+| `AssociatedRequirementAdmitted` | `ASSOCIATED_REQUIREMENT_UNRESOLVED` | 없음 |
+| `EffectErrorRowPolymorphismAdmitted` | `EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED` | 없음 |
+| `EffectRowSubsumes` | `EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED` | rank 1·2에서 `EFFECT_ROW_VARIABLE_UNBOUND` |
+
+`ASSOCIATED_REQUIREMENT_UNRESOLVED`는 associated type뿐 아니라 value와
+function requirement도 포함한다. polymorphism의 principal substitution
+판정에는 `RESULT_THROWS_CHANNEL_OVERLAP`을 재사용하지 않는다.
+`EffectRowSubsumes`의 rank 1·2는 unbound side를 설명하는 secondary를
+추가할 수 있지만 primary는 항상
+`EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED` 하나다. rank 3은 term 또는 parameter
+normalization 실패, rank 4는 context가 요구한 row relation 실패다.
 
 ### 16.3 parse와 checker diagnostic
 
@@ -1402,6 +1473,12 @@ associated requirement는
 
 same-name nested item이
 associated binding을 자동 합성하지 않는다.
+
+현재 minimum은 associated type, immutable value, function을 모두
+검사한다. type은 required normalized bounds의 부분집합 관계, value는
+exact normalized value type, function은 exact normalized callable
+signature로 compatibility를 판정한다. default requirement는 TC-R010
+범위 밖이므로 존재하는 경우 admission 전에 거부한다.
 
 #### 18.3.1 direct associated static selection
 
@@ -2170,6 +2247,8 @@ generic/ordinary-overload cluster와 Trait witness materialization은 이
   - obligation/certificate/provider contract
 - [`spec/types/predicates`](../../spec/types/predicates)
   - predicate maturity, algorithm, diagnostic dispatch
+- [`spec/contracts/diagnostic-dispatch-closure-r1.json`](../../spec/contracts/diagnostic-dispatch-closure-r1.json)
+  - R9 closed typed input, exact reason rank와 deterministic dispatch 계약
 - [`spec/diagnostics`](../../spec/diagnostics)
   - diagnostic registry와 predicate relation
 - [`spec/language.md`](../../spec/language.md)

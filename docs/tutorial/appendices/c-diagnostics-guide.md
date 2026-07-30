@@ -106,9 +106,31 @@ precedence, admission, fix-it, example fixture와 catalog row를 하나의 변�
 집합으로 검토해야 한다. 비슷한 이름의 기존 진단을 단지 문구가
 가깝다는 이유로 재사용하지 않는다.
 
+### 7.1 R9 typed dispatch exact ID
+
+다음 세 family는 현재 diagnostic catalog의 exact ID다.
+
+| 판정 | exact primary | 읽는 법 |
+|---|---|---|
+| associated type/value/function requirement admission | `ASSOCIATED_REQUIREMENT_UNRESOLVED` | requirement kind·bounds/default·binding·dependency cycle 중 첫 rank를 확인한다. |
+| quantified effect/error row admission | `EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED` | unbound/wrong-kind, unsat/nonprincipal, scope leak, substitution cycle 순으로 확인한다. |
+| context별 effect row 관계 | `EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED` | row normalization 뒤 trait/function subset 또는 override equality가 성립하는지 확인한다. |
+
+`EffectRowSubsumes`의 required 또는 implementation row variable이
+unbound이면 `EFFECT_ROW_VARIABLE_UNBOUND`가 secondary로 붙을 수 있다.
+secondary는 primary를 대체하지 않는다. associated family는 type에만
+한정되지 않고 immutable value와 function requirement까지 포함한다.
+`EffectErrorRowPolymorphismAdmitted`는
+`RESULT_THROWS_CHANNEL_OVERLAP`을 사용하지 않는다.
+
+이 표는 static registry/dispatch 계약을 설명한다. 실제 frontend,
+checker, formatter/LSP가 이 ID를 출력했다는 target-bound receipt는
+없으므로 product 상태는 `NOT_RUN`이다.
+
 ## 8. 정본 근거
 
 - `spec/diagnostics/catalog/**`
 - `spec/diagnostics/relations/**`
 - `spec/types/predicates/**`
+- `spec/contracts/diagnostic-dispatch-closure-r1.json`
 - [진단·predicate 색인](../../grammar-reference/appendices/d-diagnostic-predicate-index.md)

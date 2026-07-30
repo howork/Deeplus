@@ -1,0 +1,330 @@
+{
+  "schema": "deeplus.codex-design.r9-diagnostic-dispatch-semantic-contract/r4",
+  "verdict": "R4_BOUNDED_SUCCESSOR_READY_FOR_FINAL_REVIEW",
+  "candidate_status": "NONCANONICAL_NONACTIVATABLE",
+  "repository": "howork/Deeplus",
+  "baseline": {
+    "branch": "main",
+    "commit": "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+    "tree": "6a188dacca25899a8b360cbf0dde90563d3bdc01"
+  },
+  "predecessor": {
+    "revision": "R3",
+    "bytes": 486162,
+    "sha256": "8100aae2c0615fe026344947f22d1a01a0d91f78d1f59144b4c975401bf30f70",
+    "disposition": "IMMUTABLE_HOLD_SCOPE_EQUALITY_ORIENTATION_DEPENDENT"
+  },
+  "intermediate_predecessor": {
+    "revision": "R2",
+    "bytes": 332334,
+    "sha256": "ca3f14140844dc60b5417428ff6e8c6e2b2c3fbc8d5f949de5a5ea6c9ff42aa6",
+    "disposition": "IMMUTABLE_HOLD_BOUNDED_SEMANTIC_AND_CANONICAL_DELTA_REPAIR_REQUIRED"
+  },
+  "root_predecessor": {
+    "revision": "R1",
+    "bytes": 177024,
+    "sha256": "1728658f52a88c394af3bf5dd9f686488fffda9d9a775dca341a5038897fda06",
+    "disposition": "IMMUTABLE_HOLD_SEMANTIC_FALSE_PASS_AND_INCOMPLETE_HANDOFF"
+  },
+  "gap": {
+    "id": "IR-DIAG-P0-052",
+    "severity": "P0",
+    "candidate_transition": "R3_ORIENTATION_HOLD_TO_R4_REPAIRED_CANDIDATE",
+    "tight_dependency": {
+      "id": "IR-DIAG-P0-052/TD-01",
+      "separate_gap": false,
+      "problem": "RCTSDescriptorV5 cannot encode the three predicate decision domains; target-only repair is unsound."
+    }
+  },
+  "closed_input_union": {
+    "name": "DiagnosticDispatchClosureInputR1",
+    "rcts_fallback": "PROHIBITED",
+    "variants": [
+      "AssociatedRequirementDecisionInputR1",
+      "EffectErrorRowPolymorphismDecisionInputR1",
+      "EffectRowSubsumptionDecisionInputR1"
+    ],
+    "fixture_input_external_ref_required": true
+  },
+  "result_union": {
+    "admit": "admit(proof_record)",
+    "reject": "reject(reason_key, diagnostic_id, canonical_culprit_id)",
+    "serialized_result_trust": "PROHIBITED",
+    "emitted_primary_count_on_reject": 1,
+    "later_candidates": "NOT_EVALUATED"
+  },
+  "ordering": [
+    "closed schema validation",
+    "canonical normalization",
+    "dependency rejection propagation",
+    "numeric local reason rank 1 through 4",
+    "canonical semantic identity"
+  ],
+  "source_order_policy": "locator only; never a semantic winner",
+  "algorithms": {
+    "AssociatedRequirementAdmitted": {
+      "requirement_kinds": [
+        "type",
+        "value",
+        "function"
+      ],
+      "visibility_domain": "not_applicable",
+      "default_policy": "present is rank-2 rejection under TC-R010; defaults remain outside the current minimum",
+      "binding_compatibility": {
+        "type": "required normalized bounds subset satisfied bounds",
+        "value": "exact normalized value type",
+        "function": "exact normalized callable signature"
+      },
+      "obligation_graph": "derived only from normalized_dependency_requirement_ids; caller-supplied edges do not exist"
+    },
+    "EffectErrorRowPolymorphismAdmitted": {
+      "visibility_domain": [
+        "private",
+        "common",
+        "public"
+      ],
+      "solver": "For each row kind and each concrete atom plus a fresh sentinel, lower finite Boolean membership constraints to CNF and solve them with a deterministic total symbolic procedure; unsatisfiable CNF is rejected and a variable whose membership admits both truth values is nonprincipal.",
+      "constraint_semantics": {
+        "subset": "membership(left,a) implies membership(right,a)",
+        "equal": "membership(left,a) iff membership(right,a)"
+      },
+      "unsat_culprit": "first canonical constraint prefix that has no model",
+      "principal_culprit": "first canonical variable whose membership is not forced",
+      "substitution_edges": "derived from normalized variable-defining equalities; not caller-authoritative; tautological self-equalities do not create graph edges; this oriented graph is used only for substitution-cycle detection",
+      "scope_edges": "derived symmetrically across distinct variables on the two sides of each normalized equality; equation orientation cannot change scope reachability",
+      "scope_escape": "exported_parameter_ids must equal the exact canonical declared-generic root set, and no such root may reach a solver-local parameter through the orientation-independent equality dependency graph"
+    },
+    "EffectRowSubsumes": {
+      "contexts": {
+        "trait_witness": "implementation subset required",
+        "function_value": "implementation subset required",
+        "class_override": "implementation equals required"
+      },
+      "row_expansion": "recursively expand row_environment with side-specific unbound ranks and cycle detection",
+      "parameter_expansion": "recursively resolve typed aliases to one terminal canonical identity; missing, wrong-kind, ambiguous, or cyclic bindings are rank 3"
+    }
+  },
+  "predicate_contracts": {
+    "AssociatedRequirementAdmitted": {
+      "reasons": [
+        {
+          "rank": 1,
+          "reason_key": "1_requirement_identity_or_kind_conflict",
+          "diagnostic_id": "ASSOCIATED_REQUIREMENT_UNRESOLVED"
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_requirement_bounds_or_default_not_admitted",
+          "diagnostic_id": "ASSOCIATED_REQUIREMENT_UNRESOLVED"
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_implementation_binding_unresolved_or_ambiguous",
+          "diagnostic_id": "ASSOCIATED_REQUIREMENT_UNRESOLVED"
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_recursive_requirement_obligation_cycle",
+          "diagnostic_id": "ASSOCIATED_REQUIREMENT_UNRESOLVED"
+        }
+      ],
+      "active_primary_diagnostic": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "secondary_diagnostics": []
+    },
+    "EffectErrorRowPolymorphismAdmitted": {
+      "reasons": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "diagnostic_id": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "diagnostic_id": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "diagnostic_id": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "diagnostic_id": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
+        }
+      ],
+      "active_primary_diagnostic": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "secondary_diagnostics": []
+    },
+    "EffectRowSubsumes": {
+      "reasons": [
+        {
+          "rank": 1,
+          "reason_key": "1_required_row_variable_unbound",
+          "diagnostic_id": "EFFECT_ROW_VARIABLE_UNBOUND"
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_implementation_row_variable_unbound",
+          "diagnostic_id": "EFFECT_ROW_VARIABLE_UNBOUND"
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_effect_term_or_parameter_not_normalizable",
+          "diagnostic_id": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED"
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_context_row_relation_not_satisfied",
+          "diagnostic_id": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED"
+        }
+      ],
+      "active_primary_diagnostic": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+      "secondary_diagnostics": [
+        "EFFECT_ROW_VARIABLE_UNBOUND"
+      ]
+    }
+  },
+  "diagnostic_updates": [
+    {
+      "authority": "LANGUAGE / OFFICIAL_TOOLING",
+      "authority_set": [
+        "LANGUAGE",
+        "OFFICIAL_TOOLING"
+      ],
+      "baseline": "0.1.2-baseline.r51f3",
+      "diagnostic_id": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "diagnostic_maturity": "active",
+      "diagnostic_status": "active",
+      "feature_refs": [
+        "associated_requirement_phase_a"
+      ],
+      "fixit_hint": "none",
+      "fixit_kind": "none",
+      "fixit_policy": "none",
+      "message": "Associated type/value/function requirement cannot be admitted or resolved in this witness or constraint environment.",
+      "notes": "Current diagnostic contract broadened by R9; product execution remains NOT_RUN.",
+      "primary_source": "spec/language.md",
+      "product_support": "NOT_RUN",
+      "related_feature_refs": [],
+      "row_schema_version": "deeplus.diagnostic-row/r51f3",
+      "severity": "error",
+      "stage": "checker",
+      "diagnostic_class": "current_source",
+      "emission_domain": "source"
+    }
+  ],
+  "diagnostic_additions": [
+    {
+      "authority": "LANGUAGE / CHECKER",
+      "authority_set": [
+        "LANGUAGE",
+        "CHECKER"
+      ],
+      "baseline": "0.1.2-baseline.r51f3",
+      "diagnostic_id": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "diagnostic_maturity": "active",
+      "diagnostic_status": "active",
+      "feature_refs": [
+        "effect_error_row_polymorphism_phase_a"
+      ],
+      "fixit_hint": "none",
+      "fixit_kind": "none",
+      "fixit_policy": "none",
+      "message": "The quantified effect/error row constraints do not produce one principal closed substitution within the declared scope.",
+      "notes": "R9 current diagnostic contract; product execution remains NOT_RUN.",
+      "primary_source": "spec/language.md",
+      "product_support": "NOT_RUN",
+      "related_feature_refs": [],
+      "row_schema_version": "deeplus.diagnostic-row/r51f3",
+      "severity": "error",
+      "stage": "checker",
+      "diagnostic_class": "current_source",
+      "emission_domain": "source"
+    },
+    {
+      "authority": "LANGUAGE / CHECKER",
+      "authority_set": [
+        "LANGUAGE",
+        "CHECKER"
+      ],
+      "baseline": "0.1.2-baseline.r51f3",
+      "diagnostic_id": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+      "diagnostic_maturity": "active",
+      "diagnostic_status": "active",
+      "feature_refs": [
+        "effect_error_row_polymorphism_phase_a"
+      ],
+      "fixit_hint": "none",
+      "fixit_kind": "none",
+      "fixit_policy": "none",
+      "message": "The implementation and required effect rows cannot be normalized or do not satisfy the relation required by this trait witness, class override, or function value.",
+      "notes": "R9 current diagnostic contract; product execution remains NOT_RUN.",
+      "primary_source": "spec/language.md",
+      "product_support": "NOT_RUN",
+      "related_feature_refs": [],
+      "row_schema_version": "deeplus.diagnostic-row/r51f3",
+      "severity": "error",
+      "stage": "checker",
+      "diagnostic_class": "current_source",
+      "emission_domain": "source"
+    }
+  ],
+  "relation_topology": [
+    {
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "primary": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "secondary": []
+    },
+    {
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "primary": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "secondary": [],
+      "removed_wrong_owner_target": "RESULT_THROWS_CHANNEL_OVERLAP"
+    },
+    {
+      "predicate_id": "EffectRowSubsumes",
+      "primary": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+      "secondary": [
+        "EFFECT_ROW_VARIABLE_UNBOUND"
+      ]
+    }
+  ],
+  "expected_registry_counts": {
+    "predicates": 277,
+    "diagnostics": 1436,
+    "relations": 559,
+    "dispatch_rows": 226,
+    "undefined_or_unlisted_dispatch": 0
+  },
+  "governance": {
+    "semantic_p0_after_candidate": 0,
+    "canonical_gap_p0_before_integration": 1,
+    "canonical_feature_p1_open": 22,
+    "separate_m13_actions_open": 4,
+    "product_lanes": {
+      "count": 15,
+      "status": "NOT_RUN",
+      "ids": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "cranelift_object_aot_backend",
+        "cranelift_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ]
+    },
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

@@ -1,0 +1,2769 @@
+{
+  "schema": "deeplus.diagnostic-dispatch-closure-fixtures/r1",
+  "baseline": "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b",
+  "product_execution": "NOT_RUN",
+  "cases": [
+    {
+      "test_id": "R9-AR-POS-001",
+      "class": "positive",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "type",
+            "normalized_bounds": [
+              "Display"
+            ],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": [
+          {
+            "binding_id": "BIND-Output",
+            "requirement_id": "REQ-Output",
+            "kind": "type",
+            "origin": "explicit",
+            "witness_id_or_null": "WIT-Display",
+            "implementation_id_or_null": "IMPL-UserDisplay",
+            "normalized_binding_id": "NORM-BIND-Output",
+            "satisfied_bounds": [
+              "Display"
+            ],
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null
+          }
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-AR-BOUNDARY-001",
+      "class": "boundary",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "function",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": "def() -> String throws {} effects {}",
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": [
+          {
+            "binding_id": "BIND-Output",
+            "requirement_id": "REQ-Output",
+            "kind": "function",
+            "origin": "canonical_inherited",
+            "witness_id_or_null": "WIT-Display",
+            "implementation_id_or_null": "IMPL-UserDisplay",
+            "normalized_binding_id": "NORM-BIND-Output",
+            "satisfied_bounds": [],
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": "def() -> String throws {} effects {}"
+          }
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-AR-NEG-001",
+      "class": "negative",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Item-T",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Item-T",
+            "name": "Item",
+            "kind": "type",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          },
+          {
+            "requirement_id": "REQ-Item-V",
+            "name": "Item",
+            "kind": "value",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "002",
+            "normalized_value_type_or_null": "Type.Int",
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_requirement_identity_or_kind_conflict",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Item-V",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-AR-NEG-002",
+      "class": "negative",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "type",
+            "normalized_bounds": [
+              "Display"
+            ],
+            "default_state": "present",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": [
+          {
+            "binding_id": "BIND-Output",
+            "requirement_id": "REQ-Output",
+            "kind": "type",
+            "origin": "explicit",
+            "witness_id_or_null": "WIT-Display",
+            "implementation_id_or_null": "IMPL-UserDisplay",
+            "normalized_binding_id": "NORM-BIND-Output",
+            "satisfied_bounds": [],
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null
+          }
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_requirement_bounds_or_default_not_admitted",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-AR-NEG-003",
+      "class": "negative",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "type",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_implementation_binding_unresolved_or_ambiguous",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-AR-NEG-004",
+      "class": "negative",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "type",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": [
+              "REQ-Output"
+            ]
+          }
+        ],
+        "bindings": [
+          {
+            "binding_id": "BIND-Output",
+            "requirement_id": "REQ-Output",
+            "kind": "type",
+            "origin": "explicit",
+            "witness_id_or_null": "WIT-Display",
+            "implementation_id_or_null": "IMPL-UserDisplay",
+            "normalized_binding_id": "NORM-BIND-Output",
+            "satisfied_bounds": [],
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null
+          }
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_recursive_requirement_obligation_cycle",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-POLY-POS-001",
+      "class": "positive",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "E",
+            "row_kind": "error",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-E",
+            "left_row_expression": {
+              "row_kind": "error",
+              "atoms": [],
+              "variable_ids": [
+                "E"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "error",
+              "atoms": [
+                {
+                  "identity": "Error.IO",
+                  "normalized_parameter_ids": [],
+                  "visibility": "public"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-E"
+          },
+          {
+            "constraint_id": "C-rho",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [
+                {
+                  "identity": "io",
+                  "normalized_parameter_ids": [],
+                  "visibility": "public"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "E",
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-POLY-BOUNDARY-001",
+      "class": "boundary",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [],
+        "row_constraints": [],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": []
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-POLY-NEG-001",
+      "class": "negative",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-kind",
+            "left_row_expression": {
+              "row_kind": "error",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "error",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-kind"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-POLY-NEG-002",
+      "class": "negative",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-nonprincipal",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "subset",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [
+                {
+                  "identity": "io",
+                  "normalized_parameter_ids": [],
+                  "visibility": "public"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-nonprincipal"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_finite_constraints_unsatisfied_or_nonprincipal",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-POLY-NEG-003",
+      "class": "negative",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [],
+        "row_constraints": [
+          {
+            "constraint_id": "C-private",
+            "left_row_expression": {
+              "row_kind": "error",
+              "atoms": [
+                {
+                  "identity": "Error.Secret",
+                  "normalized_parameter_ids": [],
+                  "visibility": "common"
+                }
+              ],
+              "variable_ids": []
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "error",
+              "atoms": [
+                {
+                  "identity": "Error.Secret",
+                  "normalized_parameter_ids": [],
+                  "visibility": "common"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-private"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_substitution_escapes_or_leaks_private_error",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "Error.Secret",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-POLY-NEG-004",
+      "class": "negative",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "sigma",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-1-rho-sigma",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "canonical_order_key": "C-1-rho-sigma"
+          },
+          {
+            "constraint_id": "C-2-sigma-rho",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "canonical_order_key": "C-2-sigma-rho"
+          },
+          {
+            "constraint_id": "C-3-rho-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-3-rho-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho",
+          "sigma"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_substitution_cycle",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-SUB-POS-001",
+      "class": "positive",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            },
+            {
+              "effect_id": "state",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-SUB-BOUNDARY-001",
+      "class": "boundary",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "class_override",
+        "required_row": {
+          "atoms": [],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "test_id": "R9-SUB-NEG-001",
+      "class": "negative",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [],
+          "variable_ids": [
+            "rho"
+          ]
+        },
+        "implementation_row": {
+          "atoms": [],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_required_row_variable_unbound",
+        "diagnostic_id_or_null": "EFFECT_ROW_VARIABLE_UNBOUND",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-SUB-NEG-002",
+      "class": "negative",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [],
+          "variable_ids": [
+            "sigma"
+          ]
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_implementation_row_variable_unbound",
+        "diagnostic_id_or_null": "EFFECT_ROW_VARIABLE_UNBOUND",
+        "canonical_culprit_id_or_null": "sigma",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-SUB-NEG-003",
+      "class": "negative",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": [
+                {
+                  "parameter_id": "T",
+                  "expected_kind": "type_argument"
+                }
+              ]
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": [
+                {
+                  "parameter_id": "UnknownP",
+                  "expected_kind": "type_argument"
+                }
+              ]
+            }
+          ],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": [
+          {
+            "parameter_id": "T",
+            "parameter_kind": "type_argument",
+            "canonical_identity_or_null": "Type.Int",
+            "alias_parameter_id_or_null": null
+          }
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_effect_term_or_parameter_not_normalizable",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "UnknownP",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "test_id": "R9-SUB-NEG-004",
+      "class": "negative",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            },
+            {
+              "effect_id": "state",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_context_row_relation_not_satisfied",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "state",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    }
+  ],
+  "adversarial_cases": [
+    {
+      "test_id": "R9-ADV-AR-VALUE-ADMIT",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Output",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Output",
+            "name": "Output",
+            "kind": "value",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": "Type.Int",
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": [
+          {
+            "binding_id": "BIND-Output",
+            "requirement_id": "REQ-Output",
+            "kind": "value",
+            "origin": "explicit",
+            "witness_id_or_null": "WIT-Display",
+            "implementation_id_or_null": "IMPL-UserDisplay",
+            "normalized_binding_id": "NORM-BIND-Output",
+            "satisfied_bounds": [],
+            "source_order_key": "001",
+            "normalized_value_type_or_null": "Type.Int",
+            "normalized_callable_signature_or_null": null
+          }
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "observed": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "input_sha256": "69a3da967f6525668d4a7952e8da4e66a10b2affc44fb61ec0af30e339b2e15d",
+      "semantic_digest": "d1bae805a88e27925c86a1e5c1becf2e0824ffbbd43bcef03fecb613e0c54466",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_requirement_identity_or_kind_conflict",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_requirement_bounds_or_default_not_admitted",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_implementation_binding_unresolved_or_ambiguous",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_recursive_requirement_obligation_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-CONTRADICTORY-EQUATIONS",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-rho-io",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [
+                {
+                  "identity": "io",
+                  "normalized_parameter_ids": [],
+                  "visibility": "public"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho-io"
+          },
+          {
+            "constraint_id": "C-rho-network",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [
+                {
+                  "identity": "network",
+                  "normalized_parameter_ids": [],
+                  "visibility": "public"
+                }
+              ],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho-network"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_finite_constraints_unsatisfied_or_nonprincipal",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "C-rho-network",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_finite_constraints_unsatisfied_or_nonprincipal",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "C-rho-network",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "7985df9c6df2401241542fd11365a033364da8b93acd0dd1eea097be6345295b",
+      "semantic_digest": "3d1f3935e0e73bac85f3dd83318283eceacd5c2d186cf7311659fdb56f86d35e",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "C-rho-network"
+          ]
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-SUB-ROW-ENVIRONMENT-RESIDUAL",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [],
+          "variable_ids": [
+            "sigma"
+          ]
+        },
+        "row_environment": [
+          {
+            "variable_id": "sigma",
+            "bound_row": {
+              "atoms": [
+                {
+                  "effect_id": "network",
+                  "parameter_arguments": []
+                }
+              ],
+              "variable_ids": []
+            }
+          }
+        ],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_context_row_relation_not_satisfied",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "network",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_context_row_relation_not_satisfied",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "network",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "da89921849ab6043eeb410e54e41ef396c04c0a54bd45e273049eeacb8cd99fd",
+      "semantic_digest": "4b917b2cc90d5db3ed8445bed73cdaef957b85c3072f65a03115f278ea414b30",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_required_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_implementation_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_effect_term_or_parameter_not_normalizable",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_context_row_relation_not_satisfied",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "network:implementation_only"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-SUB-CLASS-OVERRIDE-EXACT",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "class_override",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            },
+            {
+              "effect_id": "state",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_context_row_relation_not_satisfied",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "state",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_context_row_relation_not_satisfied",
+        "diagnostic_id_or_null": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "state",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "13fa8d7136aa85002a3b361257656e9b80f67ec582268fd92483c72e07883a35",
+      "semantic_digest": "acbda076de223d09f78413996293070e30b1cf1c7c5997dae82bff76931d7fbc",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_required_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_implementation_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_effect_term_or_parameter_not_normalizable",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_context_row_relation_not_satisfied",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "state:required_only"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-SUB-PARAMETER-ALIAS-ADMIT",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": [
+                {
+                  "parameter_id": "P",
+                  "expected_kind": "type_argument"
+                }
+              ]
+            }
+          ],
+          "variable_ids": []
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": [
+                {
+                  "parameter_id": "Q",
+                  "expected_kind": "type_argument"
+                }
+              ]
+            }
+          ],
+          "variable_ids": []
+        },
+        "row_environment": [],
+        "parameter_environment": [
+          {
+            "parameter_id": "P",
+            "parameter_kind": "type_argument",
+            "canonical_identity_or_null": "Type.Int",
+            "alias_parameter_id_or_null": null
+          },
+          {
+            "parameter_id": "Q",
+            "parameter_kind": "type_argument",
+            "canonical_identity_or_null": null,
+            "alias_parameter_id_or_null": "P"
+          }
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "observed": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "input_sha256": "dedf2e6ebf055b40e6a7178047352c4de9fb2b268e7ad061cfa8a0b7ccd9a7ef",
+      "semantic_digest": "d1bae805a88e27925c86a1e5c1becf2e0824ffbbd43bcef03fecb613e0c54466",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_required_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_implementation_row_variable_unbound",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_effect_term_or_parameter_not_normalizable",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_context_row_relation_not_satisfied",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-MULTI-ASSOCIATED",
+      "predicate_id": "AssociatedRequirementAdmitted",
+      "input": {
+        "schema": "deeplus.associated-requirement-decision-input/r1",
+        "predicate_id": "AssociatedRequirementAdmitted",
+        "evaluation_context": "binding",
+        "trait_id": "TRAIT-Display",
+        "owner_type_id_or_null": "TYPE-User",
+        "conformance_id_or_null": "CONF-User-Display",
+        "selected_requirement_id": "REQ-Item-T",
+        "requirements": [
+          {
+            "requirement_id": "REQ-Item-T",
+            "name": "Item",
+            "kind": "type",
+            "normalized_bounds": [],
+            "default_state": "present",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": null,
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": [
+              "REQ-Item-T"
+            ]
+          },
+          {
+            "requirement_id": "REQ-Item-V",
+            "name": "Item",
+            "kind": "value",
+            "normalized_bounds": [],
+            "default_state": "absent",
+            "source_order_key": "001",
+            "normalized_value_type_or_null": "Type.Int",
+            "normalized_callable_signature_or_null": null,
+            "normalized_dependency_requirement_ids": []
+          }
+        ],
+        "bindings": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_requirement_identity_or_kind_conflict",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Item-V",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_requirement_identity_or_kind_conflict",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Item-V",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "490a65c41c742e3a25a890815c03b940cdfb37864856e436f146d6681738e532",
+      "semantic_digest": "1988700fc4625dc32a69693ef5504b69884e3638b1a7dd5219e756fa2da794fe",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_requirement_identity_or_kind_conflict",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "REQ-Item-V"
+          ]
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_requirement_bounds_or_default_not_admitted",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "REQ-Item-T"
+          ]
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_implementation_binding_unresolved_or_ambiguous",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "REQ-Item-T"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_recursive_requirement_obligation_cycle",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "REQ-Item-T"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-MULTI-POLY",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "sigma",
+            "row_kind": "effect",
+            "scope": "solver_local",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-1-kind",
+            "left_row_expression": {
+              "row_kind": "error",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "error",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-1-kind"
+          },
+          {
+            "constraint_id": "C-2-rho-sigma",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [
+                {
+                  "identity": "secret",
+                  "normalized_parameter_ids": [],
+                  "visibility": "common"
+                }
+              ],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "canonical_order_key": "C-2-rho-sigma"
+          },
+          {
+            "constraint_id": "C-3-sigma-rho",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "canonical_order_key": "C-3-sigma-rho"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "afac9ecc72ab1199cd721ea3ab187d7325fa10ab322bc93fb1c5e1162248a579",
+      "semantic_digest": "1b509ee750f341067aecb1bba98430da4e0d95c10a81f32c219689a3b0660ca1",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "rho"
+          ]
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "rho"
+          ]
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "secret",
+            "sigma"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "rho"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-MULTI-SUBSUMPTION",
+      "predicate_id": "EffectRowSubsumes",
+      "input": {
+        "schema": "deeplus.effect-row-subsumption-decision-input/r1",
+        "predicate_id": "EffectRowSubsumes",
+        "context_kind": "trait_witness",
+        "required_row": {
+          "atoms": [
+            {
+              "effect_id": "io",
+              "parameter_arguments": [
+                {
+                  "parameter_id": "UnknownP",
+                  "expected_kind": "type_argument"
+                }
+              ]
+            }
+          ],
+          "variable_ids": [
+            "rho"
+          ]
+        },
+        "implementation_row": {
+          "atoms": [
+            {
+              "effect_id": "network",
+              "parameter_arguments": []
+            }
+          ],
+          "variable_ids": [
+            "sigma"
+          ]
+        },
+        "row_environment": [],
+        "parameter_environment": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_required_row_variable_unbound",
+        "diagnostic_id_or_null": "EFFECT_ROW_VARIABLE_UNBOUND",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_required_row_variable_unbound",
+        "diagnostic_id_or_null": "EFFECT_ROW_VARIABLE_UNBOUND",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "59de0db4b946f5c15dd49ca6aed7bda0a249c121943a96d053e73380fb0a7d16",
+      "semantic_digest": "5bfeb3570d4b55bf2041296e1b9ad094e408cdeef025c63dca0ba4b6b0e24c41",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_required_row_variable_unbound",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "rho"
+          ]
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_implementation_row_variable_unbound",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "sigma"
+          ]
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_effect_term_or_parameter_not_normalizable",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "UnknownP"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_context_row_relation_not_satisfied",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "network:implementation_only"
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-TOTAL-SEVENTEEN-VARIABLES",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho01",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "rho02",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "002"
+          },
+          {
+            "parameter_id": "rho03",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "003"
+          },
+          {
+            "parameter_id": "rho04",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "004"
+          },
+          {
+            "parameter_id": "rho05",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "005"
+          },
+          {
+            "parameter_id": "rho06",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "006"
+          },
+          {
+            "parameter_id": "rho07",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "007"
+          },
+          {
+            "parameter_id": "rho08",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "008"
+          },
+          {
+            "parameter_id": "rho09",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "009"
+          },
+          {
+            "parameter_id": "rho10",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "010"
+          },
+          {
+            "parameter_id": "rho11",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "011"
+          },
+          {
+            "parameter_id": "rho12",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "012"
+          },
+          {
+            "parameter_id": "rho13",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "013"
+          },
+          {
+            "parameter_id": "rho14",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "014"
+          },
+          {
+            "parameter_id": "rho15",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "015"
+          },
+          {
+            "parameter_id": "rho16",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "016"
+          },
+          {
+            "parameter_id": "rho17",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "017"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-rho01-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho01"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho01-empty"
+          },
+          {
+            "constraint_id": "C-rho02-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho02"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho02-empty"
+          },
+          {
+            "constraint_id": "C-rho03-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho03"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho03-empty"
+          },
+          {
+            "constraint_id": "C-rho04-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho04"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho04-empty"
+          },
+          {
+            "constraint_id": "C-rho05-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho05"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho05-empty"
+          },
+          {
+            "constraint_id": "C-rho06-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho06"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho06-empty"
+          },
+          {
+            "constraint_id": "C-rho07-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho07"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho07-empty"
+          },
+          {
+            "constraint_id": "C-rho08-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho08"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho08-empty"
+          },
+          {
+            "constraint_id": "C-rho09-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho09"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho09-empty"
+          },
+          {
+            "constraint_id": "C-rho10-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho10"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho10-empty"
+          },
+          {
+            "constraint_id": "C-rho11-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho11"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho11-empty"
+          },
+          {
+            "constraint_id": "C-rho12-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho12"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho12-empty"
+          },
+          {
+            "constraint_id": "C-rho13-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho13"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho13-empty"
+          },
+          {
+            "constraint_id": "C-rho14-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho14"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho14-empty"
+          },
+          {
+            "constraint_id": "C-rho15-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho15"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho15-empty"
+          },
+          {
+            "constraint_id": "C-rho16-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho16"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho16-empty"
+          },
+          {
+            "constraint_id": "C-rho17-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho17"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho17-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho01",
+          "rho02",
+          "rho03",
+          "rho04",
+          "rho05",
+          "rho06",
+          "rho07",
+          "rho08",
+          "rho09",
+          "rho10",
+          "rho11",
+          "rho12",
+          "rho13",
+          "rho14",
+          "rho15",
+          "rho16",
+          "rho17"
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "observed": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "input_sha256": "0e54e30ba57a693cc377cb55eb95a022896e00639105e46f53b35f128081357d",
+      "semantic_digest": "d1bae805a88e27925c86a1e5c1becf2e0824ffbbd43bcef03fecb613e0c54466",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-EXPORTED-ROOT-CANNOT-BE-HIDDEN",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "sigma",
+            "row_kind": "effect",
+            "scope": "solver_local",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-rho-sigma",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "canonical_order_key": "C-rho-sigma"
+          },
+          {
+            "constraint_id": "C-sigma-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-sigma-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": []
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_row_parameter_unbound_or_wrong_kind",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "rho",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "821b711d4643261f35b3ae9c3999b1a9c98675ca30dee0b1f9111e764c25456a",
+      "semantic_digest": "1b509ee750f341067aecb1bba98430da4e0d95c10a81f32c219689a3b0660ca1",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "rho"
+          ]
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": true,
+          "selected": false,
+          "culprits": [
+            "sigma"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-DERIVED-SCOPE-ESCAPE",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "sigma",
+            "row_kind": "effect",
+            "scope": "solver_local",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-rho-sigma",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "canonical_order_key": "C-rho-sigma"
+          },
+          {
+            "constraint_id": "C-sigma-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-sigma-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_substitution_escapes_or_leaks_private_error",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "sigma",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_substitution_escapes_or_leaks_private_error",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "sigma",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "e0cda30f1ae35a0c215230dad03bbd415bf6bc92a144ef274dc557d1fde2ac34",
+      "semantic_digest": "c9d32212a4a667998780853067024833fa47bf5a7e609d8a57d64527be7e331d",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "sigma"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-DERIVED-SCOPE-ESCAPE-REVERSED",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          },
+          {
+            "parameter_id": "sigma",
+            "row_kind": "effect",
+            "scope": "solver_local",
+            "source_order_key": "002"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-sigma-rho",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "canonical_order_key": "C-sigma-rho"
+          },
+          {
+            "constraint_id": "C-sigma-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "sigma"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-sigma-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_substitution_escapes_or_leaks_private_error",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "sigma",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "observed": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_substitution_escapes_or_leaks_private_error",
+        "diagnostic_id_or_null": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+        "canonical_culprit_id_or_null": "sigma",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "input_sha256": "76d66dca5cd899a540ec70a11fe921459e7a38c376b94f555863641a77902dc0",
+      "semantic_digest": "c9d32212a4a667998780853067024833fa47bf5a7e609d8a57d64527be7e331d",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": true,
+          "selected": true,
+          "culprits": [
+            "sigma"
+          ]
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    },
+    {
+      "test_id": "R9-ADV-POLY-TAUTOLOGICAL-EQUALITY-ADMIT",
+      "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+      "input": {
+        "schema": "deeplus.effect-error-row-polymorphism-decision-input/r1",
+        "predicate_id": "EffectErrorRowPolymorphismAdmitted",
+        "quantified_row_parameters": [
+          {
+            "parameter_id": "rho",
+            "row_kind": "effect",
+            "scope": "declared_generic",
+            "source_order_key": "001"
+          }
+        ],
+        "row_constraints": [
+          {
+            "constraint_id": "C-rho-self",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "canonical_order_key": "C-rho-self"
+          },
+          {
+            "constraint_id": "C-rho-empty",
+            "left_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": [
+                "rho"
+              ]
+            },
+            "relation": "equal",
+            "right_row_expression": {
+              "row_kind": "effect",
+              "atoms": [],
+              "variable_ids": []
+            },
+            "canonical_order_key": "C-rho-empty"
+          }
+        ],
+        "declaration_visibility": "public",
+        "exported_parameter_ids": [
+          "rho"
+        ]
+      },
+      "expected": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "observed": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "input_sha256": "4ee0f09b36c7d8219b0c824869585fb0dc754530c2ae9f43dbcd0323fa9e120b",
+      "semantic_digest": "d1bae805a88e27925c86a1e5c1becf2e0824ffbbd43bcef03fecb613e0c54466",
+      "rank_trace": [
+        {
+          "rank": 1,
+          "reason_key": "1_row_parameter_unbound_or_wrong_kind",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 2,
+          "reason_key": "2_finite_constraints_unsatisfied_or_nonprincipal",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 3,
+          "reason_key": "3_substitution_escapes_or_leaks_private_error",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        },
+        {
+          "rank": 4,
+          "reason_key": "4_substitution_cycle",
+          "detected": false,
+          "selected": false,
+          "culprits": []
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "mutation_matrix": [
+    {
+      "mutation_id": "R9-MUT-001",
+      "axis": "dispatch_target_missing_from_catalog",
+      "source_id": "registry_projection",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_DISPATCH_TARGET_NOT_EXACT_ONE_ACTIVE_CURRENT_SOURCE",
+      "mutated_payload_sha256": "cb774b579292ec37bee813e2222e636bc089887e219707509815a42d21f96f54",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-002",
+      "axis": "dispatch_target_removed_from_predicate_refs",
+      "source_id": "registry_projection",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_DISPATCH_TARGET_NOT_DECLARED_BY_PREDICATE",
+      "mutated_payload_sha256": "fcbe971e32121d9ceab3346fb5cda98b0c8a9c6b9e791b75b107d426ad22fcf5",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-003",
+      "axis": "primary_secondary_relation_role_swapped",
+      "source_id": "registry_projection",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_DISPATCH_RELATION_ROLE_OR_CARDINALITY_MISMATCH",
+      "mutated_payload_sha256": "a9a9aae71c2e046211c62168c1ad1beeea49d1c3661dab1a3c1a863a0c071010",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-004",
+      "axis": "relation_predicate_owner_changed",
+      "source_id": "registry_projection",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_DISPATCH_RELATION_PREDICATE_MISMATCH",
+      "mutated_payload_sha256": "359d3120502d3022422bd1c13115a1a6ee18987530c079da7da4f547e7ee0ca9",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-005",
+      "axis": "registry_enumeration_reversed",
+      "source_id": "registry_projection",
+      "expected_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_code_or_null": null,
+      "mutated_payload_sha256": "655e367212a4786d16d45cce37865a1b110c093327d518c54b30a02a33dfb658",
+      "base_digest_or_null": "e123c498a063d8d679af3679bce190f4d76ea04ca5a8d862b8887f1cc3b31a80",
+      "mutated_digest_or_null": "e123c498a063d8d679af3679bce190f4d76ea04ca5a8d862b8887f1cc3b31a80",
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-006",
+      "axis": "semantic_unordered_input_reversed",
+      "source_id": "R9-ADV-MULTI-ASSOCIATED",
+      "expected_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_code_or_null": null,
+      "mutated_payload_sha256": "73347cdf36a27b4f498fae986a980b77037918caea9b487b163472f64f3e6a1e",
+      "base_digest_or_null": "1988700fc4625dc32a69693ef5504b69884e3638b1a7dd5219e756fa2da794fe",
+      "mutated_digest_or_null": "1988700fc4625dc32a69693ef5504b69884e3638b1a7dd5219e756fa2da794fe",
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-007",
+      "axis": "semantic_unordered_input_reversed",
+      "source_id": "R9-ADV-MULTI-POLY",
+      "expected_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_code_or_null": null,
+      "mutated_payload_sha256": "a91f8ef23fe6ff7889f3ab29e70b4f4080837438419edae69ab7d7dd9d6265b7",
+      "base_digest_or_null": "1b509ee750f341067aecb1bba98430da4e0d95c10a81f32c219689a3b0660ca1",
+      "mutated_digest_or_null": "1b509ee750f341067aecb1bba98430da4e0d95c10a81f32c219689a3b0660ca1",
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-008",
+      "axis": "semantic_unordered_input_reversed",
+      "source_id": "R9-ADV-MULTI-SUBSUMPTION",
+      "expected_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_outcome": "SAME_RESULT_AND_DIGEST",
+      "observed_code_or_null": null,
+      "mutated_payload_sha256": "59de0db4b946f5c15dd49ca6aed7bda0a249c121943a96d053e73380fb0a7d16",
+      "base_digest_or_null": "5bfeb3570d4b55bf2041296e1b9ad094e408cdeef025c63dca0ba4b6b0e24c41",
+      "mutated_digest_or_null": "5bfeb3570d4b55bf2041296e1b9ad094e408cdeef025c63dca0ba4b6b0e24c41",
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-009",
+      "axis": "spoofed_serialized_result_field",
+      "source_id": "R9-ADV-POLY-CONTRADICTORY-EQUATIONS",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_SERIALIZED_RESULT_FIELD_PROHIBITED",
+      "mutated_payload_sha256": "a3ca80b971610c09d905375328e8ef3e75d218ce7ce675e1fced7869917d6a4a",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-010",
+      "axis": "semantic_false_pass_regression_probe",
+      "source_id": "R9-ADV-POLY-CONTRADICTORY-EQUATIONS",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_SEMANTIC_REJECT:2_finite_constraints_unsatisfied_or_nonprincipal",
+      "mutated_payload_sha256": "7985df9c6df2401241542fd11365a033364da8b93acd0dd1eea097be6345295b",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-011",
+      "axis": "semantic_false_pass_regression_probe",
+      "source_id": "R9-ADV-SUB-ROW-ENVIRONMENT-RESIDUAL",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_SEMANTIC_REJECT:4_context_row_relation_not_satisfied",
+      "mutated_payload_sha256": "da89921849ab6043eeb410e54e41ef396c04c0a54bd45e273049eeacb8cd99fd",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    },
+    {
+      "mutation_id": "R9-MUT-012",
+      "axis": "semantic_false_pass_regression_probe",
+      "source_id": "R9-ADV-SUB-CLASS-OVERRIDE-EXACT",
+      "expected_outcome": "REJECT",
+      "observed_outcome": "REJECTED_AS_EXPECTED",
+      "observed_code_or_null": "R9_SEMANTIC_REJECT:4_context_row_relation_not_satisfied",
+      "mutated_payload_sha256": "13fa8d7136aa85002a3b361257656e9b80f67ec582268fd92483c72e07883a35",
+      "base_digest_or_null": null,
+      "mutated_digest_or_null": null,
+      "passed": true
+    }
+  ]
+}
