@@ -43,6 +43,8 @@ jobs:
           python3 tools/validators/run_legacy_current_integrity_compatibility_tests.py
           python3 tools/generators/generate_language_coherence_current_integrity.py --root . --check
           python3 tools/generators/generate_language_coherence_current_integrity.py --root . --self-test
+      - name: Validate R9 diagnostic dispatch closure
+        run: python3 tools/validators/run_diagnostic_dispatch_closure_tests.py --root .
       - name: Validate current or candidate workspace
         run: python3 tools/validators/validate_workspace.py
       - name: Validate parallel tooling isolation

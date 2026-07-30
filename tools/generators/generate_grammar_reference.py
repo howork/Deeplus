@@ -61,7 +61,7 @@ PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
     "grammar_productions": 638,
     "features": 719,
-    "diagnostics": 1434,
+    "diagnostics": 1436,
     "predicates": 277,
     "prelude_entries": 72,
     "examples": 738,
@@ -2178,16 +2178,41 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--only",
+        action="append",
+        metavar="RELATIVE_PATH",
+        help=(
+            "write or check only the named generated output; repeat for "
+            "multiple outputs (all outputs remain rendered and validated)"
+        ),
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     try:
         outputs, receipt = render_outputs(root)
+        selected_outputs = outputs
+        if args.only:
+            requested = set(args.only)
+            unknown = requested - set(outputs)
+            if unknown:
+                raise GeneratorError(
+                    "GRAMMAR_REFERENCE_UNKNOWN_OUTPUT",
+                    ", ".join(sorted(unknown)),
+                )
+            selected_outputs = {
+                relative: data
+                for relative, data in outputs.items()
+                if relative in requested
+            }
         if args.write:
-            write_outputs(root, outputs)
+            write_outputs(root, selected_outputs)
             receipt["mode"] = "write"
         else:
-            check_outputs(root, outputs)
+            check_outputs(root, selected_outputs)
             receipt["mode"] = "check"
+        if args.only:
+            receipt["selected_outputs"] = sorted(selected_outputs)
         print(json.dumps(receipt, ensure_ascii=False, sort_keys=True))
         return 0
     except GeneratorError as exc:

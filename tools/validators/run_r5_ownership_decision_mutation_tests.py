@@ -186,11 +186,23 @@ UNION_REFS = [
     {"$ref": "rcts-v5-descriptor.schema.json"},
     {"$ref": "ownership-decision-input-r1.schema.json"},
 ]
-OVERRIDE_IDS = [
+OWNERSHIP_OVERRIDE_IDS = [
     "BorrowEscapeAdmitted",
     "BoxOwnershipAdmitted",
     "OwnershipModeAdmitted",
 ]
+R9_DIAGNOSTIC_OVERRIDE_IDS = [
+    "AssociatedRequirementAdmitted",
+    "EffectErrorRowPolymorphismAdmitted",
+    "EffectRowSubsumes",
+]
+INSTALLED_OVERRIDE_IDS = [
+    *OWNERSHIP_OVERRIDE_IDS,
+    *R9_DIAGNOSTIC_OVERRIDE_IDS,
+]
+# Historical authoring-bundle checks still bind the original three ownership
+# overrides. Installed-current checks below bind all six exact overrides.
+OVERRIDE_IDS = OWNERSHIP_OVERRIDE_IDS
 INPUT_FIELDS = [
     "schema",
     "predicate_id",
@@ -357,7 +369,7 @@ BORROW_RELATION = {
     "relation": "primary",
 }
 
-RESIDUAL_DEBT_ROWS = [
+HISTORICAL_R8_RESIDUAL_DEBT_ROWS = [
     {
         "predicate_id": predicate_id,
         "branch": f"branch_{branch:02d}",
@@ -376,6 +388,16 @@ RESIDUAL_DEBT_ROWS = [
     )
     for branch in range(1, 5)
 ]
+INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS: list[dict[str, str]] = []
+INSTALLED_CURRENT_RESIDUAL_EXACT_ROWS = {
+    "AssociatedRequirementAdmitted": 0,
+    "EffectErrorRowPolymorphismAdmitted": 0,
+    "EffectRowSubsumes": 0,
+}
+# Compatibility alias for the immutable R8 authoring/candidate checks in the
+# first half of this validator. Current canonical scanning uses the explicit
+# installed-current constants above.
+RESIDUAL_DEBT_ROWS = HISTORICAL_R8_RESIDUAL_DEBT_ROWS
 
 FEATURE_P1_IDS = {
     "CE-C-P1-001",
@@ -2327,8 +2349,8 @@ R8_CHECKER_ROW_SCHEMA_SHA256 = (
 )
 R8_014_BYTE_FENCE = {
     "schemas/language/checker-predicate-fixture-row.schema.json": (
-        4307,
-        "656239d5246e3845a2158d70ea29104a82aa02e7d2a9ecd3a73bacaf58134d42",
+        6010,
+        "13fd8cd1ae06b06d2d490258368244ef13871b1f8c66f1aec7e65e4dd184df8b",
     ),
     "schemas/language/rcts-v5-descriptor.schema.json": (
         23266,
@@ -2339,8 +2361,8 @@ R8_014_BYTE_FENCE = {
         "c3142bd09a936a0d1f65015e6632789043a2ed30a38b2767d85cadb7a89907b9",
     ),
     "spec/diagnostics/relations/chunks/part-0001.json": (
-        61323,
-        "9a59353672f7c20b3770d33c47842dcb26b007f64fd3f45ac062bfc9333919ba",
+        61344,
+        "3e82a0dcc3cce9b447cd0caa31bb7655c6086bb647ed82c9c6157e0f49411d1a",
     ),
     "tests/conformance/checker-predicates/chunks/part-0003.json": (
         58715,
@@ -2454,12 +2476,12 @@ R8_CONTEXT_CANONICAL_FENCE = {
 }
 R8_ESCAPE_CANONICAL_FENCE = {
     R8_ESCAPE_SCHEMA: (
-        8784,
-        "7fa8801af6c4a52b6b152063023ff90d64a906a14664fdc3f156d693dd6c9971",
+        6576,
+        "9c1ccd5472547a0dfc282c3670430bdfa8143658c29c91b1136bdf2a76e5adc9",
     ),
     R8_ESCAPE_FIXTURE: (
-        6981,
-        "6672ce225ae40d5942f0c036139effaba5e1d7a260bcf32b3812377a29bb5cbd",
+        5017,
+        "a23b6670816b7ed7bcaa1f475ebd71eba3621e93140a20e9ce6ca297c2d7b41b",
     ),
 }
 R8_PREDICATE_PROCEDURES = {
@@ -3362,11 +3384,28 @@ def _check_overrides_exact_3(
         environment, "spec/diagnostics/relations/catalog-metadata.json"
     )
     metadata = metadata_doc.value
-    expected_row = {
+    ownership_expected_row = {
         "input_descriptor": "OwnershipPredicateInputR1",
         "input_descriptor_schema": (
             "schemas/language/ownership-predicate-input-r1.schema.json"
         ),
+    }
+    diagnostic_expected_row = {
+        "input_descriptor": "DiagnosticDispatchClosureInputR1",
+        "input_descriptor_schema": (
+            "schemas/language/"
+            "diagnostic-dispatch-closure-input-r1.schema.json"
+        ),
+    }
+    expected_rows = {
+        **{
+            predicate_id: ownership_expected_row
+            for predicate_id in OWNERSHIP_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: diagnostic_expected_row
+            for predicate_id in R9_DIAGNOSTIC_OVERRIDE_IDS
+        },
     }
     overrides = metadata.get("input_descriptor_overrides")
     actual_rows = {
@@ -3376,7 +3415,7 @@ def _check_overrides_exact_3(
             predicate_id,
             "predicate catalog",
         )
-        for predicate_id in OVERRIDE_IDS
+        for predicate_id in INSTALLED_OVERRIDE_IDS
     }
     checker_schema = (
         environment.root
@@ -3434,9 +3473,10 @@ def _check_overrides_exact_3(
         ),
         (
             isinstance(overrides, dict)
-            and list(overrides) == OVERRIDE_IDS
-            and all(row == expected_row for row in overrides.values()),
-            "installed predicate metadata override set is not exact three",
+            and list(overrides) == INSTALLED_OVERRIDE_IDS
+            and overrides == expected_rows
+            and metadata.get("override_count") == 6,
+            "installed predicate metadata override set is not exact six",
         ),
         (
             all(
@@ -3446,8 +3486,8 @@ def _check_overrides_exact_3(
                         "input_descriptor_schema"
                     ),
                 }
-                == expected_row
-                for row in actual_rows.values()
+                == expected_rows[predicate_id]
+                for predicate_id, row in actual_rows.items()
             ),
             "one or more installed predicate rows lack the exact override",
         ),
@@ -3456,6 +3496,7 @@ def _check_overrides_exact_3(
                 row.get("decision_procedure")
                 == R8_PREDICATE_PROCEDURES[predicate_id]
                 for predicate_id, row in actual_rows.items()
+                if predicate_id in OWNERSHIP_OVERRIDE_IDS
             ),
             "ownership predicate decision procedures are not branch-aware",
         ),
@@ -3521,8 +3562,8 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1434
-            and relation_metadata_doc.value.get("relation_count") == 558,
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1436
+            and relation_metadata_doc.value.get("relation_count") == 559,
             "diagnostic/relation canonical counts changed",
         ),
         (
@@ -3599,7 +3640,7 @@ def _check_overrides_exact_3(
             reassembly_doc.locator,
         ],
         "canonical_implementation_validation": True,
-        "expected_override_ids": OVERRIDE_IDS,
+        "expected_override_ids": INSTALLED_OVERRIDE_IDS,
         "observed_override_ids": (
             list(overrides) if isinstance(overrides, dict) else None
         ),
@@ -3877,7 +3918,7 @@ def _check_reason_routes(
                 "reason_rows": 4,
                 "primary_relations": 1,
                 "mutation_probes": 7,
-                "residual_rows": 12,
+                "residual_rows": 0,
                 "product_executed": 0,
             },
             "borrow-escape fixture exact counts changed",
@@ -4117,16 +4158,18 @@ def _check_residual_debt(
         ),
         (
             debt.get("outside_r5_gap_id") == "IR-DIAG-P0-052"
-            and debt.get("outside_r5_total") == 12
+            and debt.get("outside_r5_exact_rows")
+            == INSTALLED_CURRENT_RESIDUAL_EXACT_ROWS
+            and debt.get("outside_r5_total") == 0
             and debt.get("global_zero_totality")
-            == "BLOCKED_BY_IR-DIAG-P0-052"
+            == "CLOSED_BY_IR-DIAG-P0-052_R9"
             and debt.get("new_or_missing_residual") == "VALIDATOR_FAIL",
-            "R8 residual-debt envelope changed",
+            "installed current residual-debt envelope is not exact zero",
         ),
         (
-            expected == RESIDUAL_DEBT_ROWS
-            and scanned == RESIDUAL_DEBT_ROWS,
-            "installed undefined-dispatch scan is not the exact ordered 12",
+            expected == INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS
+            and scanned == INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS,
+            "installed undefined-dispatch scan is not exact zero",
         ),
     )
     return not errors, {
@@ -4141,7 +4184,8 @@ def _check_residual_debt(
         "installed_canonical_path_or_null": fixture_doc.locator,
         "acceptance_oracle_label": "INSTALLED_CANONICAL_STATIC_CONTRACT",
         "canonical_implementation_validation": True,
-        "expected_rows": RESIDUAL_DEBT_ROWS,
+        "historical_r8_candidate_rows": HISTORICAL_R8_RESIDUAL_DEBT_ROWS,
+        "expected_rows": INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS,
         "observed_rows": scanned,
         "observed_residual_count": len(scanned),
         "errors": errors,

@@ -518,15 +518,16 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "AssociatedRequirementAdmitted",
     "source_name": "AssociatedRequirementAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R9 typed algorithm; product NOT_RUN.",
+    "input_descriptor": "DiagnosticDispatchClosureInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "witness_id",
-      "implementation_id",
-      "source_role",
-      "element_types"
+      "evaluation_context",
+      "trait_id",
+      "owner_type_id_or_null",
+      "conformance_id_or_null",
+      "selected_requirement_id",
+      "requirements",
+      "bindings"
     ],
     "feature_refs": [
       "associated_requirement_phase_a"
@@ -535,41 +536,43 @@
       "ASSOCIATED_REQUIREMENT_UNRESOLVED"
     ],
     "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
+    "output": "admit | reject(reason,diagnostic,culprit)",
     "requires": [
-      "associated requirement origin is coherent",
-      "witness/conformance environment is deterministic"
+      "kind in {type,value,function}",
+      "default_state=absent under TC-R010",
+      "canonical binding/obligation identities"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "witness_id",
-      "implementation_id",
-      "source_role",
-      "element_types"
+      "evaluation_context",
+      "trait_id",
+      "owner_type_id_or_null",
+      "conformance_id_or_null",
+      "selected_requirement_id",
+      "requirements",
+      "bindings"
     ],
     "formal_judgment_id": "J-AssociatedRequirementAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/diagnostic-dispatch-closure-input-r1.schema.json",
     "preconditions": [
-      "associated requirement origin is coherent",
-      "witness/conformance environment is deterministic"
+      "kind in {type,value,function}",
+      "default_state=absent under TC-R010",
+      "canonical binding/obligation identities"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "canonical key+identity order; edges only from normalized_dependency_requirement_ids",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
-      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
-      "enumerate associated declarations in source order only for diagnostics",
-      "check unique name/kind/bounds/default",
-      "validate implementation binding and recursive obligations",
-      "return one closed requirement row",
-      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+      "validate closed AssociatedRequirementDecisionInputR1",
+      "rank 1: selected identity missing, duplicate, or kind-conflicting",
+      "rank 2: bounds not admitted or default present under TC-R010",
+      "rank 3: binding missing/ambiguous/wrong-kind; type=bounds subset, value=exact type, function=exact signature",
+      "rank 4: cycle derived from normalized_dependency_requirement_ids",
+      "select lowest rank then canonical culprit; otherwise admit"
     ],
-    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
-    "success_result": "admit | reject(diagnostic_id)",
+    "termination_metric": "finite sets; visited-key graph traversal",
+    "success_result": "admit | reject(ASSOCIATED_REQUIREMENT_UNRESOLVED)",
     "active_primary_diagnostic": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
@@ -579,7 +582,7 @@
     "negative_fixture_ids": [
       "PF-AssociatedRequirementAdmitted-NEG"
     ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "evaluation_order": "schema -> normalization -> rank 1..4 -> canonical identity",
     "dependency_predicates": [],
     "execution_receipt": null,
     "diagnostic_disposition": "active_primary",
@@ -591,10 +594,10 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED",
-      "branch_02": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED",
-      "branch_03": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED",
-      "branch_04": "ASSOCIATEDREQUIREMENTADMITTED_NOT_ADMITTED"
+      "1_requirement_identity_or_kind_conflict": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "2_requirement_bounds_or_default_not_admitted": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "3_implementation_binding_unresolved_or_ambiguous": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+      "4_recursive_requirement_obligation_cycle": "ASSOCIATED_REQUIREMENT_UNRESOLVED"
     }
   },
   {

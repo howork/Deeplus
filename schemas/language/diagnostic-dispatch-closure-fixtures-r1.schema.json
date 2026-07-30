@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/diagnostic-dispatch-closure-fixtures-r1.schema.json",
+  "title": "DiagnosticDispatchClosureFixturesR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline",
+    "product_execution",
+    "cases",
+    "mutation_matrix",
+    "adversarial_cases"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.diagnostic-dispatch-closure-fixtures/r1"
+    },
+    "baseline": {
+      "const": "336e7b9919dbd6bdcccca71a7be32d3ed7a88b5b"
+    },
+    "product_execution": {
+      "const": "NOT_RUN"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 18,
+      "maxItems": 18,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "mutation_matrix": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "$ref": "#/$defs/mutation"
+      },
+      "maxItems": 12
+    },
+    "adversarial_cases": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "$ref": "#/$defs/adversarial"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "class",
+        "predicate_id",
+        "input",
+        "expected"
+      ],
+      "properties": {
+        "test_id": {
+          "$ref": "#/$defs/id"
+        },
+        "class": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative"
+          ]
+        },
+        "predicate_id": {
+          "enum": [
+            "AssociatedRequirementAdmitted",
+            "EffectErrorRowPolymorphismAdmitted",
+            "EffectRowSubsumes"
+          ]
+        },
+        "input": {
+          "$ref": "https://deeplus-lang.org/schema/r51f3/diagnostic-dispatch-closure-input-r1.schema.json"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant",
+        "reason_key_or_null",
+        "diagnostic_id_or_null",
+        "canonical_culprit_id_or_null",
+        "emitted_primary_count",
+        "later_candidate_status"
+      ],
+      "properties": {
+        "variant": {
+          "enum": [
+            "ADMIT",
+            "REJECT"
+          ]
+        },
+        "reason_key_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostic_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canonical_culprit_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emitted_primary_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "later_candidate_status": {
+          "enum": [
+            "NOT_APPLICABLE",
+            "NOT_EVALUATED"
+          ]
+        }
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mutation_id",
+        "axis",
+        "source_id",
+        "expected_outcome",
+        "observed_outcome",
+        "observed_code_or_null",
+        "mutated_payload_sha256",
+        "base_digest_or_null",
+        "mutated_digest_or_null",
+        "passed"
+      ],
+      "properties": {
+        "mutation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "axis": {
+          "$ref": "#/$defs/id"
+        },
+        "source_id": {
+          "$ref": "#/$defs/id"
+        },
+        "expected_outcome": {
+          "enum": [
+            "REJECT",
+            "SAME_RESULT_AND_DIGEST"
+          ]
+        },
+        "observed_outcome": {
+          "enum": [
+            "REJECTED_AS_EXPECTED",
+            "SAME_RESULT_AND_DIGEST"
+          ]
+        },
+        "observed_code_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mutated_payload_sha256": {
+          "$ref": "#/$defs/id"
+        },
+        "base_digest_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mutated_digest_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "adversarial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "test_id",
+        "predicate_id",
+        "input",
+        "expected",
+        "observed",
+        "input_sha256",
+        "semantic_digest",
+        "rank_trace",
+        "passed"
+      ],
+      "properties": {
+        "test_id": {
+          "$ref": "#/$defs/id"
+        },
+        "predicate_id": {
+          "enum": [
+            "AssociatedRequirementAdmitted",
+            "EffectErrorRowPolymorphismAdmitted",
+            "EffectRowSubsumes"
+          ]
+        },
+        "input": {
+          "$ref": "https://deeplus-lang.org/schema/r51f3/diagnostic-dispatch-closure-input-r1.schema.json"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        },
+        "observed": {
+          "$ref": "#/$defs/expected"
+        },
+        "input_sha256": {
+          "$ref": "#/$defs/id"
+        },
+        "semantic_digest": {
+          "$ref": "#/$defs/id"
+        },
+        "rank_trace": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "rank",
+              "reason_key",
+              "detected",
+              "selected",
+              "culprits"
+            ],
+            "properties": {
+              "rank": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 4
+              },
+              "reason_key": {
+                "$ref": "#/$defs/id"
+              },
+              "detected": {
+                "enum": [
+                  true,
+                  false
+                ]
+              },
+              "selected": {
+                "enum": [
+                  true,
+                  false
+                ]
+              },
+              "culprits": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            }
+          }
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    }
+  }
+}

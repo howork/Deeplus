@@ -642,70 +642,56 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "EffectErrorRowPolymorphismAdmitted",
     "source_name": "EffectErrorRowPolymorphismAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R9 closed typed decision procedure; static reference validator PASS; integrated product checker NOT_RUN.",
+    "input_descriptor": "DiagnosticDispatchClosureInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "error_set",
-      "effect_row",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "quantified_row_parameters",
+      "row_constraints",
+      "declaration_visibility",
+      "exported_parameter_ids"
     ],
     "feature_refs": [
       "effect_error_row_polymorphism_phase_a"
     ],
     "diagnostic_refs": [
-      "RCTS_V5_VARIANT_MISMATCH",
-      "RESULT_THROWS_CHANNEL_OVERLAP"
+      "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
     ],
     "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
+    "output": "admit | reject(reason_key, diagnostic_id, canonical_culprit_id)",
     "requires": [
-      "Region remains checker descriptor unless explicitly surfaced by a stable grammar production",
-      "row kinds are source-stable under the generic responsibility model"
+      "quantified parameters have exactly effect-row or error-row kind",
+      "exported_parameter_ids equal the exact declared-generic root set",
+      "row constraints are finite and canonically ordered"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "error_set",
-      "effect_row",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "quantified_row_parameters",
+      "row_constraints",
+      "declaration_visibility",
+      "exported_parameter_ids"
     ],
     "formal_judgment_id": "J-EffectErrorRowPolymorphismAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/diagnostic-dispatch-closure-input-r1.schema.json",
     "preconditions": [
-      "Region remains checker descriptor unless explicitly surfaced by a stable grammar production",
-      "row kinds are source-stable under the generic responsibility model"
+      "quantified parameters have exactly effect-row or error-row kind",
+      "exported_parameter_ids equal the exact declared-generic root set",
+      "row constraints are finite and canonically ordered"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "canonicalize row atoms, parameter identities, constraints, substitution edges, and orientation-independent scope edges before solving",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
-      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
-      "normalize quantified effect/error variables",
-      "solve finite row constraints without source-order tie breaking",
-      "reject escaping/private or cyclic substitutions",
-      "return principal closed substitutions",
-      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+      "validate the closed EffectErrorRowPolymorphismDecisionInputR1",
+      "rank 1: reject an unbound or wrong-kind row parameter",
+      "rank 2: lower finite subset/equality membership constraints to CNF and reject the first unsatisfiable prefix or first nonprincipal canonical variable",
+      "rank 3: reject exported-root mismatch, private-error leakage, or an exported root reaching a solver-local parameter through the symmetric equality scope graph",
+      "rank 4: reject a cycle in the oriented substitution graph derived from variable-defining equalities; tautological self-equality contributes no edge",
+      "select exactly the lowest detected rank and then the first canonical culprit; otherwise admit"
     ],
-    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "RESULT_THROWS_CHANNEL_OVERLAP",
+    "termination_metric": "finite atom/variable domains plus a deterministic total CNF search and finite graph traversals",
+    "success_result": "admit with a principal closed substitution | reject with EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+    "active_primary_diagnostic": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
       "PF-EffectErrorRowPolymorphismAdmitted-POS",
@@ -714,7 +700,7 @@
     "negative_fixture_ids": [
       "PF-EffectErrorRowPolymorphismAdmitted-NEG"
     ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "evaluation_order": "closed schema -> canonical normalization -> dependency rejection propagation -> numeric local reason rank 1..4 -> canonical semantic identity",
     "dependency_predicates": [],
     "execution_receipt": null,
     "diagnostic_disposition": "active_primary",
@@ -726,10 +712,10 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED",
-      "branch_02": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED",
-      "branch_03": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED",
-      "branch_04": "EFFECTERRORROWPOLYMORPHISMADMITTED_NOT_ADMITTED"
+      "1_row_parameter_unbound_or_wrong_kind": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "2_finite_constraints_unsatisfied_or_nonprincipal": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "3_substitution_escapes_or_leaks_private_error": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED",
+      "4_substitution_cycle": "EFFECT_ERROR_ROW_POLYMORPHISM_NOT_ADMITTED"
     }
   },
   {
@@ -896,58 +882,60 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "EffectRowSubsumes",
     "source_name": "EffectRowSubsumes",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R9 closed typed decision procedure; static reference validator PASS; integrated product checker NOT_RUN.",
+    "input_descriptor": "DiagnosticDispatchClosureInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "effect_row",
-      "source_role",
-      "element_types"
+      "context_kind",
+      "required_row",
+      "implementation_row",
+      "row_environment",
+      "parameter_environment"
     ],
     "feature_refs": [
       "effect_error_row_polymorphism_phase_a"
     ],
     "diagnostic_refs": [
+      "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
       "EFFECT_ROW_VARIABLE_UNBOUND"
     ],
     "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
+    "output": "admit | reject(reason_key, diagnostic_id, canonical_culprit_id)",
     "requires": [
-      "Region remains checker descriptor unless explicitly surfaced by a stable grammar production",
-      "row kinds are source-stable under the generic responsibility model"
+      "context_kind is trait_witness, function_value, or class_override",
+      "row and parameter environments are finite and closed"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "effect_row",
-      "source_role",
-      "element_types"
+      "context_kind",
+      "required_row",
+      "implementation_row",
+      "row_environment",
+      "parameter_environment"
     ],
     "formal_judgment_id": "J-EffectRowSubsumes",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/diagnostic-dispatch-closure-input-r1.schema.json",
     "preconditions": [
-      "Region remains checker descriptor unless explicitly surfaced by a stable grammar production",
-      "row kinds are source-stable under the generic responsibility model"
+      "context_kind is trait_witness, function_value, or class_override",
+      "row and parameter environments are finite and closed"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "recursively expand row variables and typed parameter aliases to terminal canonical identities with deterministic cycle and ambiguity detection",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
-      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
-      "normalize effect labels and parameters",
-      "subtract the required row from the implementation row",
-      "reject the lexicographically first residual effect",
-      "return the normalized subsumption proof",
-      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+      "validate the closed EffectRowSubsumptionDecisionInputR1",
+      "rank 1: reject the first required-row variable that is unbound",
+      "rank 2: reject the first implementation-row variable that is unbound",
+      "rank 3: reject a missing, wrong-kind, ambiguous, or cyclic effect parameter alias or non-normalizable effect term",
+      "rank 4: require implementation subset required for trait_witness/function_value and exact equality for class_override",
+      "select exactly the lowest detected rank and then the first canonical culprit; otherwise admit"
     ],
-    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "EFFECT_ROW_VARIABLE_UNBOUND",
-    "secondary_diagnostics": [],
+    "termination_metric": "finite recursive row/parameter environments traversed with visited-key sets",
+    "success_result": "admit with a normalized row relation | reject with EFFECT_ROW_VARIABLE_UNBOUND or EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+    "active_primary_diagnostic": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "EFFECT_ROW_VARIABLE_UNBOUND"
+    ],
     "positive_fixture_ids": [
       "PF-EffectRowSubsumes-POS",
       "PF-EffectRowSubsumes-BOUNDARY"
@@ -955,7 +943,7 @@
     "negative_fixture_ids": [
       "PF-EffectRowSubsumes-NEG"
     ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "evaluation_order": "closed schema -> canonical normalization -> dependency rejection propagation -> numeric local reason rank 1..4 -> canonical semantic identity",
     "dependency_predicates": [],
     "execution_receipt": null,
     "diagnostic_disposition": "active_primary",
@@ -967,10 +955,10 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "EFFECTROWSUBSUMES_NOT_ADMITTED",
-      "branch_02": "EFFECTROWSUBSUMES_NOT_ADMITTED",
-      "branch_03": "EFFECTROWSUBSUMES_NOT_ADMITTED",
-      "branch_04": "EFFECTROWSUBSUMES_NOT_ADMITTED"
+      "1_required_row_variable_unbound": "EFFECT_ROW_VARIABLE_UNBOUND",
+      "2_implementation_row_variable_unbound": "EFFECT_ROW_VARIABLE_UNBOUND",
+      "3_effect_term_or_parameter_not_normalizable": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED",
+      "4_context_row_relation_not_satisfied": "EFFECT_ROW_SUBSUMPTION_NOT_ADMITTED"
     }
   },
   {
