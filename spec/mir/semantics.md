@@ -318,7 +318,7 @@ A dynamic unit conversion MIR event exists only after stdlib profile, provider a
 ## 9.1 HIR-H1 verification boundary
 
 The only admitted high-level input is
-`ExecutableHirH1(Verified<CanonicalHirH1>, CapabilityReceipt)`.
+`ExecutableHirH1(Verified<CanonicalHirH1>, MirCapabilityReceiptR1)`.
 `HirSkeleton`, `CheckSession`, and `TypedHirDraft` are analysis states and
 cannot lower. Canonical HIR contains no recovery node, unresolved type/name,
 candidate set, generic operator, deferred witness, or missing responsibility.
@@ -753,3 +753,33 @@ Moves preserve immutable origin provenance, reservations use exact
 divergent global loan/token/reservation/conflict state is terminal without an
 output state.  Static execution of the contract does not claim a production
 MIR, xVM, runtime, or Cranelift implementation.
+
+## 15. Current HIR-H1/MIR R1 machine contract
+
+<!-- R10-HIR-MIR-MACHINE-CONTRACT -->
+
+The current Stable-design machine schema is `deeplus.mir/r1`, and deterministic
+lowering produces `Verified<DeeplusMirR1>`. The closed machine registry is
+`deeplus.mir-machine-registry/r1`: exactly 29 semantic operations, 17
+terminators, 12 linear token kinds, 11 responsibility axes in their canonical
+order, and 26 design capabilities. These are backend-neutral identities; XBC,
+CLIF, registers, addresses, object layout, calling convention, and ABI remain
+target-projection concerns.
+
+`MirCapabilityReceiptR1` is validated against
+`deeplus.mir-capability-receipt/r1`. Required capabilities are recomputed from
+the exact reachable HIR lowering keys and then closed over the acyclic
+capability dependency graph. Provider evidence is resolved independently.
+Receipt claims never prove themselves. A mismatch preserves the exact
+`Verified<CanonicalHirH1>` and prevents only `ExecutableHirH1`.
+
+The lowering registry contains exactly 102 Current rows and 111 rows at the
+explicit-Preview maximum. A row disposition is only `LOWER` or
+`NO_RUNTIME_EMISSION`; capability rejection is not a lowering disposition.
+HIR/MIR semantic and pair projections use RFC 8949 deterministic CBOR and pair
+verification deterministically relowers before comparing semantic bytes and
+ordered provenance.
+
+`ProposedMirX1` remains a noncanonical, nonactivatable compatibility target.
+This machine-schema adoption creates no implementation or product execution;
+all 15 product lanes remain `NOT_RUN`.

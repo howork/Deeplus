@@ -1,0 +1,137 @@
+[
+  {
+    "authority": "LANGUAGE / CHECKER / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No release-verifier fix-it; repair the originating frontend defect and preserve its original source diagnostic.",
+    "message": "A recovery or analysis-only node reached CanonicalHirH1 sealing.",
+    "notes": "Internal canonical-seal invariant. It does not replace or duplicate the originating lexer/parser/checker diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "HIR_VARIANT_UNMAPPED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore exact canonical-identity and lowering-registry closure.",
+    "message": "A canonical HIR identity has no unique lowering-registry mapping.",
+    "notes": "Internal release-verifier diagnostic; repository missing/duplicate/extra row defects retain separate validator failure IDs; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; recompute and bind the exact HIR/MIR schema, lowering registry, reachability, and capability sets.",
+    "message": "The MIR capability receipt does not exactly cover the reachable canonical HIR lowering keys.",
+    "notes": "Verified canonical HIR remains valid and inert; only ExecutableHirH1 construction fails. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore the exact ordered HIR responsibility value and MIR residue.",
+    "message": "A retained HIR responsibility axis changed during MIR projection.",
+    "notes": "Use RCTS_RESPONSIBILITY_AXIS_DROPPED when the entire axis is absent. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "HIR_MIR_PAIR_RELOWERING_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; deterministically relower and replace the nonmatching MIR artifact.",
+    "message": "Deterministic relowering did not reproduce the supplied canonical MIR semantic bytes and ordered projection.",
+    "notes": "Independent matching digest strings are insufficient. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  }
+]

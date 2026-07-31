@@ -119,7 +119,7 @@ LosslessCST
   -> TypedHirDraft
   -> Verified<CanonicalHirH1>
   -> ExecutableHirH1
-  -- DP-RFC-0002 draft only --> Verified<ProposedMirX1>
+  -> Verified<DeeplusMirR1>
 ```
 
 각 이름은 동일한 struct의 phase flag가 아니다. 역할이 다른 값을 서로
@@ -135,7 +135,8 @@ LosslessCST
 | `TypedHirDraft` | 모든 결정을 담되 verifier 전 상태로 유지 | canonical seal |
 | `Verified<CanonicalHirH1>` | 닫힌 의미와 identity의 검증된 표현 | target 실행 가능성 |
 | `ExecutableHirH1` | exact target capability receipt를 결합 | 의미 재선택이나 backend 전환 |
-| `Verified<ProposedMirX1>` | DP-RFC-0002가 제안한 비정규 MIR-X1 결과 | current MIR authority·activation |
+| `Verified<DeeplusMirR1>` | current backend-neutral MIR machine schema 결과 | product implementation·execution |
+| `Verified<ProposedMirX1>` | 비정본 compatibility target | current MIR authority·activation |
 
 `CanonicalHirH1`은 모든 expression, binder, capture, payload에 normalized
 type이 있고, 이름과 선택이 resolved되며, responsibility가 닫혀 있어야
@@ -179,7 +180,7 @@ lookup key가 아니다.
 
 `Verified<CanonicalHirH1>`이 의미적으로 완전하다는 사실만으로 특정 MIR
 schema가 모든 reachable variant를 내릴 수 있다고 결론 내리지 않는다.
-`ExecutableHirH1`을 만들려면 `MirCapabilityReceipt`가 적어도 다음을
+`ExecutableHirH1`을 만들려면 `MirCapabilityReceiptR1`이 다음을
 결합해야 한다.
 
 ```text
@@ -1975,3 +1976,20 @@ xVM·Cranelift·formatter·runtime 지원을 주장할 수 없다.
 MIR에서 Shared `LoanId`를 만든다. 문맥 anchor는 enclosing operation의
 `HirContextAdaptationPlan`에 흡수되어 MIR에 독립 node를 남기지 않는다.
 두 경우 모두 source operand는 정확히 한 번, 소스 순서대로 평가된다.
+
+### 2.3.5 Current R10 machine-schema binding
+
+<!-- R10-HIR-MIR-MACHINE-CONTRACT -->
+
+The Stable-design pipeline now binds
+`Verified<CanonicalHirH1> -> ExecutableHirH1 ->
+Verified<DeeplusMirR1>`. `MirCapabilityReceiptR1` is recomputed from the exact
+reachable lowering keys and capability dependency closure; a failure retains
+the verified HIR and constructs no executable HIR.
+
+The HIR catalog contains 128 identities. The lowering registry has 102 Current
+rows and 111 at the explicit-Preview maximum. Deeplus MIR R1 has 29 operations,
+17 terminators, 12 linear token kinds, 11 responsibility axes, and 26 design
+capabilities. These design-machine counts are not production or target
+execution evidence. `ProposedMirX1` remains a noncanonical compatibility
+target, and all 15 product lanes remain `NOT_RUN`.

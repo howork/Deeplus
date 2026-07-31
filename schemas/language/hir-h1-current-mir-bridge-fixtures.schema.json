@@ -27,7 +27,7 @@
       "const": "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json"
     },
     "revision": {
-      "const": "r51f3-current-trait-operator-refinement-r1"
+      "const": "r51f3-current-hir-mir-machine-contract-r1"
     },
     "contract": {
       "const": "spec/contracts/hir-h1-current-mir-bridge.json"
@@ -350,7 +350,7 @@
         "canonical_hir_outcome",
         "executable_hir_outcome",
         "zero_counts",
-        "current_source_activation",
+        "source_activation_created_by_bridge",
         "execution_state"
       ],
       "properties": {
@@ -439,11 +439,12 @@
         "zero_counts": {
           "$ref": "#/$defs/zeroCounts"
         },
-        "current_source_activation": {
-          "const": false
-        },
         "execution_state": {
           "const": "DESIGN_STATIC_NOT_RUN"
+        },
+        "source_activation_created_by_bridge": {
+          "const": false,
+          "description": "The bridge creates no source syntax or source-profile activation; this field does not claim that the underlying source feature is noncurrent."
         }
       },
       "allOf": [
@@ -474,13 +475,29 @@
         },
         {
           "if": {
-            "properties": {
-              "fixture_class": {
-                "const": "negative"
+            "allOf": [
+              {
+                "properties": {
+                  "fixture_class": {
+                    "const": "negative"
+                  }
+                },
+                "required": [
+                  "fixture_class"
+                ]
+              },
+              {
+                "not": {
+                  "properties": {
+                    "facet": {
+                      "const": "CAPABILITY"
+                    }
+                  },
+                  "required": [
+                    "facet"
+                  ]
+                }
               }
-            },
-            "required": [
-              "fixture_class"
             ]
           },
           "then": {
@@ -499,13 +516,29 @@
         },
         {
           "if": {
-            "properties": {
-              "fixture_class": {
-                "const": "boundary"
+            "allOf": [
+              {
+                "properties": {
+                  "fixture_class": {
+                    "const": "boundary"
+                  }
+                },
+                "required": [
+                  "fixture_class"
+                ]
+              },
+              {
+                "not": {
+                  "properties": {
+                    "facet": {
+                      "const": "CAPABILITY"
+                    }
+                  },
+                  "required": [
+                    "facet"
+                  ]
+                }
               }
-            },
-            "required": [
-              "fixture_class"
             ]
           },
           "then": {
@@ -543,6 +576,45 @@
               },
               "executable_hir_outcome": {
                 "const": "MUTANT_REJECTED"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "fixture_class": {
+                    "enum": [
+                      "negative",
+                      "boundary"
+                    ]
+                  }
+                },
+                "required": [
+                  "fixture_class"
+                ]
+              },
+              {
+                "properties": {
+                  "facet": {
+                    "const": "CAPABILITY"
+                  }
+                },
+                "required": [
+                  "facet"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "properties": {
+              "canonical_hir_outcome": {
+                "const": "SEALED"
+              },
+              "executable_hir_outcome": {
+                "const": "NOT_CONSTRUCTED"
               }
             }
           }

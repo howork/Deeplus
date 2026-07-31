@@ -233,3 +233,28 @@ execution PASS로 표현하지 않는다.
 - [DP-RFC-0002](../../../rfcs/DP-RFC-0002-current-hir-h1.md)
 
 이제 Module/API/adapter를 한 library package 설계로 묶는다.
+
+## 13. Current machine-contract checkpoint
+
+<!-- R10-HIR-MIR-MACHINE-CONTRACT -->
+
+The current Stable-design handoff is:
+
+```text
+Verified<CanonicalHirH1>
+  -> recompute MirCapabilityReceiptR1
+  -> ExecutableHirH1
+  -> deterministic lowering
+  -> Verified<DeeplusMirR1>
+```
+
+Remember the failure boundary: missing capability evidence does not make the
+verified HIR invalid. It preserves `Verified<CanonicalHirH1>` and prevents only
+`ExecutableHirH1`. The machine registries are design authorities, not proof
+that a compiler or backend implements them.
+
+The useful audit numbers are 128 HIR identities, 102 Current lowering rows,
+111 at the explicit-Preview maximum, 29 MIR operations, 17 terminators, 12
+linear token kinds, 11 responsibility axes, and 26 design capabilities.
+`ProposedMirX1` is still compatibility-only, and all 15 product lanes remain
+`NOT_RUN`.

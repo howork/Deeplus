@@ -289,7 +289,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The verified fully typed/resolved/responsibility-closed HIR boundary is the current design handoff, while implementation and MIR-X1 activation remain unauthorized. Current xVM plus Cranelift ObjectModule AOT/JITModule authority is observed without adding backend-specific HIR fields.",
+    "notes": "The current Stable-design bridge is now bound to deeplus.canonical-hir-h1/r1, deeplus.mir/r1, the exact 128-identity catalog, 102 Current/111 explicit-Preview lowering rows, and MirCapabilityReceiptR1. Capability failure preserves verified HIR and blocks only ExecutableHirH1. ProposedMirX1 remains a noncanonical compatibility target; no source activation, production implementation, or product execution is claimed.",
     "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -303,7 +303,12 @@
     "normative_trace_refs": {
       "diagnostics": [
         "HIR_POWER_OPERATION_UNRESOLVED",
-        "HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH"
+        "HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH",
+        "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+        "HIR_VARIANT_UNMAPPED",
+        "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+        "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+        "HIR_MIR_PAIR_RELOWERING_MISMATCH"
       ],
       "predicates": [],
       "examples": [
@@ -315,7 +320,15 @@
     "artifact_trace_refs": [
       "rfcs/DP-RFC-0002-current-hir-h1.md",
       "spec/contracts/hir-h1-current-mir-bridge.json",
-      "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json"
+      "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json",
+      "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
+      "schemas/language/canonical-hir-h1.schema.json",
+      "schemas/language/deeplus-mir.schema.json",
+      "spec/contracts/hir-h1-identity-catalog.json",
+      "spec/contracts/hir-mir-lowering-registry.json",
+      "spec/contracts/hir-mir-machine-diagnostic-contract.json",
+      "spec/contracts/mir-machine-registry.json",
+      "tests/fixtures/current/hir-mir-machine-contract-r1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

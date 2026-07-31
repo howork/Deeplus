@@ -1,0 +1,615 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/hir-mir-machine-contract-fixtures.schema.json",
+  "title": "Deeplus Canonical HIR H1 to Deeplus MIR R1 machine-contract fixtures",
+  "description": "Draft postimage for static design fixtures. These fixtures exercise verifier and repository-oracle contracts only and do not constitute parser, checker, lowerer, runtime, backend, tooling, or product execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "lowering_row_schema",
+    "revision",
+    "status",
+    "repository",
+    "branch",
+    "baseline_commit",
+    "baseline_tree",
+    "gap_id",
+    "coverage_model",
+    "deterministic_diagnostic_priority",
+    "capability_mismatch_subpriority",
+    "responsibility_axis_priority",
+    "repository_preflight_priority",
+    "cases",
+    "expected_counts",
+    "status_fence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.hir-mir-machine-contract-fixtures/r1"
+    },
+    "fixture_schema": {
+      "const": "schemas/language/hir-mir-machine-contract-fixtures.schema.json"
+    },
+    "lowering_row_schema": {
+      "const": "schemas/language/hir-mir-lowering-row.schema.json"
+    },
+    "revision": {
+      "const": "r10-hir-mir-machine-contract-r1"
+    },
+    "status": {
+      "const": "DESIGN_STATIC_NOT_RUN"
+    },
+    "repository": {
+      "const": "https://github.com/howork/Deeplus.git"
+    },
+    "branch": {
+      "const": "main"
+    },
+    "baseline_commit": {
+      "const": "7632a2943e3e70dd4c6adffd53977671aec0f6c5"
+    },
+    "baseline_tree": {
+      "const": "e850e042259b4dd355d937cd1fdd50ea79a03a11"
+    },
+    "gap_id": {
+      "const": "IR-OWN-P0-015"
+    },
+    "coverage_model": {
+      "$ref": "#/$defs/coverageModel"
+    },
+    "deterministic_diagnostic_priority": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        {
+          "const": "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN"
+        },
+        {
+          "const": "HIR_VARIANT_UNMAPPED"
+        },
+        {
+          "const": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"
+        },
+        {
+          "const": "RCTS_RESPONSIBILITY_AXIS_DROPPED"
+        },
+        {
+          "const": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH"
+        },
+        {
+          "const": "HIR_MIR_PAIR_RELOWERING_MISMATCH"
+        }
+      ],
+      "items": false
+    },
+    "capability_mismatch_subpriority": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "prefixItems": [
+        {
+          "const": "HIR_SCHEMA_DIGEST"
+        },
+        {
+          "const": "MIR_SCHEMA_DIGEST"
+        },
+        {
+          "const": "LOWERING_REGISTRY_DIGEST"
+        },
+        {
+          "const": "REQUIRED_REACHABILITY_SET"
+        },
+        {
+          "const": "PROVIDED_CAPABILITY_SET"
+        },
+        {
+          "const": "UNSUPPORTED_REACHABLE_KEY_COUNT"
+        }
+      ],
+      "items": false
+    },
+    "responsibility_axis_priority": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "prefixItems": [
+        {
+          "const": "value_mode"
+        },
+        {
+          "const": "resource"
+        },
+        {
+          "const": "place_access"
+        },
+        {
+          "const": "effects"
+        },
+        {
+          "const": "recoverable_errors"
+        },
+        {
+          "const": "defects"
+        },
+        {
+          "const": "cancellation"
+        },
+        {
+          "const": "suspension"
+        },
+        {
+          "const": "isolation"
+        },
+        {
+          "const": "authority"
+        },
+        {
+          "const": "cleanup"
+        }
+      ],
+      "items": false
+    },
+    "repository_preflight_priority": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+        {
+          "const": "SCHEMA_PARSE_VERSION_DIGEST"
+        },
+        {
+          "const": "VARIANT_UNIQUENESS_CLOSURE"
+        },
+        {
+          "const": "DUPLICATE_LOWERING_ROW"
+        },
+        {
+          "const": "MISSING_LOWERING_ROW"
+        },
+        {
+          "const": "UNKNOWN_MIR_OR_CAPABILITY_REFERENCE"
+        },
+        {
+          "const": "DIAGNOSTIC_RELATION_BINDING"
+        },
+        {
+          "const": "PRODUCT_STATUS_FENCE"
+        }
+      ],
+      "items": false
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 43,
+      "maxItems": 43,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/fixtureCase"
+      }
+    },
+    "expected_counts": {
+      "$ref": "#/$defs/expectedCounts"
+    },
+    "status_fence": {
+      "$ref": "#/$defs/statusFence"
+    }
+  },
+  "$defs": {
+    "coverageModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_catalog_count",
+        "current_exact_row_count",
+        "preview_max_exact_row_count",
+        "row_family_counts",
+        "valid_call_pair_count",
+        "structural_schema_independent_row_count",
+        "excluded_pre_hir_pattern_count"
+      ],
+      "properties": {
+        "identity_catalog_count": {
+          "const": 128
+        },
+        "current_exact_row_count": {
+          "const": 102
+        },
+        "preview_max_exact_row_count": {
+          "const": 111
+        },
+        "row_family_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "top_level_expression_and_statement",
+            "resolved_ref",
+            "valid_call_mode_target_pair",
+            "call_argument",
+            "fixed_operator_and_power",
+            "current_pattern",
+            "additional_preview_pattern"
+          ],
+          "properties": {
+            "top_level_expression_and_statement": {
+              "const": 35
+            },
+            "resolved_ref": {
+              "const": 2
+            },
+            "valid_call_mode_target_pair": {
+              "const": 10
+            },
+            "call_argument": {
+              "const": 7
+            },
+            "fixed_operator_and_power": {
+              "const": 19
+            },
+            "current_pattern": {
+              "const": 29
+            },
+            "additional_preview_pattern": {
+              "const": 9
+            }
+          }
+        },
+        "valid_call_pair_count": {
+          "const": 10
+        },
+        "structural_schema_independent_row_count": {
+          "const": 0
+        },
+        "excluded_pre_hir_pattern_count": {
+          "const": 2
+        }
+      }
+    },
+    "fixtureCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "case_class",
+        "facet",
+        "scenario",
+        "input_profile",
+        "oracle_layer",
+        "expected_result",
+        "expected_internal_diagnostic_or_null",
+        "expected_repository_failure_or_null",
+        "expected_process_failure_or_null",
+        "expected_source_diagnostic_or_null",
+        "source_diagnostic_disposition",
+        "diagnostic_priority_rank_or_null",
+        "capability_subpriority_rank_or_null",
+        "responsibility_axis_or_null",
+        "repository_preflight_rank_or_null",
+        "assertions",
+        "execution_state",
+        "product_support"
+      ],
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "pattern": "^R10-HM-(POS|BOUND|NEG|MUT)-[0-9]{3}$"
+        },
+        "case_class": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative",
+            "mutation"
+          ]
+        },
+        "facet": {
+          "enum": [
+            "COVERAGE",
+            "CALL_MATRIX",
+            "CAPABILITY",
+            "RESPONSIBILITY",
+            "PAIR_VERIFICATION",
+            "SERIALIZATION",
+            "CANONICAL_SEAL",
+            "LOWERING_REGISTRY",
+            "TARGET_REFERENCE",
+            "DIAGNOSTIC_BINDING",
+            "PRODUCT_FENCE",
+            "PROFILE_BOUNDARY",
+            "PROVENANCE"
+          ]
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_profile": {
+          "enum": [
+            "ANALYSIS",
+            "CURRENT",
+            "EXPLICIT_PREVIEW"
+          ]
+        },
+        "oracle_layer": {
+          "enum": [
+            "CANONICAL_HIR_SEAL",
+            "EXECUTABLE_HIR_GATE",
+            "LOWERING_REGISTRY_VALIDATOR",
+            "RESPONSIBILITY_VERIFIER",
+            "PAIR_VERIFIER",
+            "SERIALIZATION_VERIFIER",
+            "PRODUCT_FENCE"
+          ]
+        },
+        "expected_result": {
+          "enum": [
+            "PASS",
+            "BOUNDARY",
+            "REJECT",
+            "MUTANT_KILLED"
+          ]
+        },
+        "expected_internal_diagnostic_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+                "HIR_VARIANT_UNMAPPED",
+                "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+                "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+                "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+                "HIR_MIR_PAIR_RELOWERING_MISMATCH"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_repository_failure_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "R10_HM_LOWERING_ROW_MISSING",
+                "R10_HM_LOWERING_ROW_DUPLICATE",
+                "R10_HM_VARIANT_REGISTRY_MISMATCH",
+                "R10_HM_LOWERING_TARGET_UNKNOWN",
+                "R10_HM_DIAGNOSTIC_BINDING_INVALID",
+                "R10_HM_PRODUCT_STATUS_OVERCLAIM"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_process_failure_or_null": {
+          "oneOf": [
+            {
+              "const": "JSON_SCHEMA_VALIDATION_FAILURE"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_diagnostic_disposition": {
+          "enum": [
+            "NONE",
+            "ORIGINAL_SOURCE_DIAGNOSTIC_PRESERVED",
+            "EXISTING_SOURCE_CHECKER_DIAGNOSTIC_REQUIRED"
+          ]
+        },
+        "diagnostic_priority_rank_or_null": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capability_subpriority_rank_or_null": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsibility_axis_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "value_mode",
+                "resource",
+                "place_access",
+                "effects",
+                "recoverable_errors",
+                "defects",
+                "cancellation",
+                "suspension",
+                "isolation",
+                "authority",
+                "cleanup"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "repository_preflight_rank_or_null": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 7
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_state": {
+          "const": "DESIGN_STATIC_NOT_RUN"
+        },
+        "product_support": {
+          "const": "NOT_RUN"
+        },
+        "expected_source_diagnostic_or_null": {
+          "oneOf": [
+            {
+              "const": "RECEIVER_MODE_MISMATCH"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "source_diagnostic_disposition": {
+                "const": "EXISTING_SOURCE_CHECKER_DIAGNOSTIC_REQUIRED"
+              }
+            },
+            "required": [
+              "source_diagnostic_disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expected_source_diagnostic_or_null": {
+                "const": "RECEIVER_MODE_MISMATCH"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "expected_source_diagnostic_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "expectedCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cases",
+        "positive",
+        "boundary",
+        "negative",
+        "mutation",
+        "internal_diagnostic_ids",
+        "reused_internal_diagnostic_ids",
+        "repository_only_failure_ids",
+        "source_level_new_diagnostic_ids",
+        "identity_catalog",
+        "current_rows",
+        "preview_max_rows",
+        "product_lanes",
+        "product_executed"
+      ],
+      "properties": {
+        "cases": {
+          "const": 43
+        },
+        "positive": {
+          "const": 8
+        },
+        "boundary": {
+          "const": 8
+        },
+        "negative": {
+          "const": 19
+        },
+        "mutation": {
+          "const": 8
+        },
+        "internal_diagnostic_ids": {
+          "const": 5
+        },
+        "reused_internal_diagnostic_ids": {
+          "const": 2
+        },
+        "repository_only_failure_ids": {
+          "const": 6
+        },
+        "source_level_new_diagnostic_ids": {
+          "const": 0
+        },
+        "identity_catalog": {
+          "const": 128
+        },
+        "current_rows": {
+          "const": 102
+        },
+        "preview_max_rows": {
+          "const": 111
+        },
+        "product_lanes": {
+          "const": 15
+        },
+        "product_executed": {
+          "const": 0
+        }
+      }
+    },
+    "statusFence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semantic_p0",
+        "feature_p1",
+        "m13_actions",
+        "product_lanes",
+        "canonical_source_mutation",
+        "github_mutation"
+      ],
+      "properties": {
+        "semantic_p0": {
+          "const": 0
+        },
+        "feature_p1": {
+          "const": "22_OPEN_UNCHANGED"
+        },
+        "m13_actions": {
+          "const": "4_OPEN_UNCHANGED"
+        },
+        "product_lanes": {
+          "const": "15_OF_15_NOT_RUN"
+        },
+        "canonical_source_mutation": {
+          "const": 0
+        },
+        "github_mutation": {
+          "const": 0
+        }
+      }
+    }
+  }
+}

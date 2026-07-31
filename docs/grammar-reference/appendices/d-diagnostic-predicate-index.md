@@ -492,8 +492,13 @@
 | `GUARD_REFINEMENT_SUMMARY_REQUIRED` | `checker` | `error` | `active` | An admitted def#guard must export one verified finite-R0 GuardSummaryV1. |
 | `HARD_KEYWORD_MEMBER_REQUIRES_ESCAPE` | `lexer` | `error` | `active` | A hard keyword used as a data member name must use the member-only escape, for example obj.\\\\class. |
 | `HASH_ROLE_PHYSICAL_LINE_BREAK_FORBIDDEN` | `parser` | `error` | `active` | A role marker may contain horizontal trivia but cannot cross a physical line break between \`#\` and its role word. |
+| `HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN` | `checker` | `error` | `active` | A recovery or analysis-only node reached CanonicalHirH1 sealing. |
+| `HIR_MIR_CAPABILITY_RECEIPT_MISMATCH` | `checker` | `error` | `active` | The MIR capability receipt does not exactly cover the reachable canonical HIR lowering keys. |
+| `HIR_MIR_PAIR_RELOWERING_MISMATCH` | `checker` | `error` | `active` | Deterministic relowering did not reproduce the supplied canonical MIR semantic bytes and ordered projection. |
+| `HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH` | `checker` | `error` | `active` | A retained HIR responsibility axis changed during MIR projection. |
 | `HIR_POWER_OPERATION_UNRESOLVED` | `verifier` | `error` | `active` | Canonical HIR-H1 cannot contain an unresolved or generic power operation. |
 | `HIR_POWER_RESULT_OR_ADAPTATION_MISMATCH` | `verifier` | `error` | `active` | The HIR-H1 power result or operand adaptation does not match the closed static-domain matrix. |
+| `HIR_VARIANT_UNMAPPED` | `checker` | `error` | `active` | A canonical HIR identity has no unique lowering-registry mapping. |
 | `IDENTITY_OPERATION_REQUIRES_IDENTITY_BEARING` | `checker` | `error` | `active` | The operation requires an identity-bearing descriptor. |
 | `IF_EXPR_REQUIRES_ELSE` | `checker` | `error` | `active` | A value-producing \`@if\` requires an \`else\` branch. |
 | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` | `lexer` | `error` | `active` | An imaginary literal requires an attached decimal floating form such as 4.0i or 4.0f32i. |

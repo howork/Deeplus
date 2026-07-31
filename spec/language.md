@@ -5812,3 +5812,33 @@ later candidates are not evaluated for emission.
 The static reference validator establishes the design contract and fixtures.
 Production parser, checker, MIR/xVM, runtime, backend, formatter, LSP, and
 tooling execution remain `NOT_RUN`.
+
+## Current canonical HIR-H1 and Deeplus MIR R1 machine boundary
+
+<!-- R10-HIR-MIR-MACHINE-CONTRACT -->
+
+`deeplus.canonical-hir-h1/r1` is the Current Stable-design canonical HIR
+machine schema. Its closed identity catalog
+`deeplus.hir-h1-identity-catalog/r1` has exactly 128 identities. Recovery,
+missing, unresolved, candidate-set, and analysis-only nodes cannot be sealed
+as canonical HIR. Current source programs reach exactly 102 lowering rows; an
+explicit-Preview module can reach at most 111.
+
+Calls preserve the existing source AST: six ordinary argument kinds plus the
+separate trailing-closure group. Canonical HIR projects all seven kinds into
+one ordered `HirCallPlan.arguments` array, with trailing closures represented
+as `TRAILING_CLOSURE` entries and no second HIR trailing-closure array. The
+current mode/target matrix has exactly ten pairs.
+
+`deeplus.mir/r1` and `deeplus.mir-machine-registry/r1` define the current
+backend-neutral machine output `Verified<DeeplusMirR1>`.
+`MirCapabilityReceiptR1` is recomputed from exact reachable lowering keys,
+registry rows, transitive capability dependencies, and independently resolved
+provider evidence. Failure preserves `Verified<CanonicalHirH1>` and blocks only
+`ExecutableHirH1`.
+
+This design adds exactly five release-verifier diagnostics and no source
+diagnostic. It adds no RCTS predicate, relation, or generic checker fixture,
+no source syntax or source-profile activation, and no production or product
+support. `ProposedMirX1` remains compatibility-only and nonactivatable; all 15
+product lanes remain `NOT_RUN`.
