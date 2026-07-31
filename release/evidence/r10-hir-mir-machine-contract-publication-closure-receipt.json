@@ -1,0 +1,184 @@
+{
+  "schema": "deeplus.r10-hir-mir-machine-contract-publication-closure-receipt/v1",
+  "recorded_at": "2026-07-31T18:49:43+09:00",
+  "candidate_verdict": "READY_FOR_PUBLICATION_CLOSURE_MERGE",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_publication": {
+    "pull_request": 52,
+    "url": "https://github.com/howork/Deeplus/pull/52",
+    "branch": "codex/r10-hir-mir-machine-contract",
+    "source_commit": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+    "source_tree": "76189fb47e75d4faeb3f2f975f51df265dc42146",
+    "merge_commit": "7d609678bdb8c94f2a365e89be578e595bb394b6",
+    "tree": "76189fb47e75d4faeb3f2f975f51df265dc42146",
+    "parents": [
+      "7632a2943e3e70dd4c6adffd53977671aec0f6c5",
+      "6460e8127620d495e055cd0b800198fb6f7e1a06"
+    ],
+    "merged_at": "2026-07-31T18:45:19+09:00",
+    "post_merge_readback": "PASS"
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30620572323,
+      "job": "validate",
+      "job_id": 91123899542,
+      "head_sha": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30620572323/job/91123899542",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30620572327,
+      "job": "scaffold",
+      "job_id": 91123899548,
+      "head_sha": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30620572327/job/91123899548",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "semantic_validation": {
+    "change_scope": {
+      "changed_file_count": 50,
+      "production_crate_change_count": 0,
+      "grammar_change_count": 0,
+      "source_syntax_activation_count": 0
+    },
+    "focused": {
+      "command": "py -3 tools/validators/validate_hir_mir_machine_contract.py --root .",
+      "result": "PASS",
+      "hir_identities": 128,
+      "structural_plan_contracts": 12,
+      "lowering_rows_current": 102,
+      "lowering_rows_explicit_preview_maximum": 111,
+      "mir_operations": 29,
+      "mir_terminators": 17,
+      "mir_linear_tokens": 12,
+      "mir_capabilities": 26,
+      "call_mode_target_pairs": 10,
+      "argument_kinds": 7,
+      "fixture_bindings": 43,
+      "new_release_verifier_diagnostics": 5,
+      "new_source_diagnostics": 0
+    },
+    "workspace": {
+      "command": "py -3 tools/validators/validate_workspace.py --root .",
+      "result": "PASS",
+      "checks": "5729_OF_5729_PASS",
+      "json_files_parsed": 354,
+      "catalogs_reassembled": 14,
+      "rust_scaffold_crates": 15
+    },
+    "source_manifest": {
+      "path": "release/source-tree-manifest.json",
+      "bytes": 126380,
+      "sha256": "eaa76380331f89e7c4d8fc054d8bae5638d876ac8c6a6c4f9171f2dd15dd7376",
+      "file_count_excluding_manifest": 663,
+      "total_bytes_excluding_manifest": 22014997,
+      "tree_sha256": "6df5ab342deed3a37ed5e9d5c73dc69254a7586345c0be57a0fab6d884e8118e",
+      "binding": "WORKTREE_AND_INDEX_BOUND"
+    },
+    "evidence_level": "E2_DESIGN_STATIC",
+    "production_execution": "NOT_RUN"
+  },
+  "validation_efficiency": {
+    "intermediate_archive_count": 0,
+    "intermediate_crc_or_pack_checksum_count": 0,
+    "repeated_unchanged_gate_count": 0,
+    "semantic_pr_focused_gate_count": 1,
+    "semantic_pr_full_workspace_gate_count": 1,
+    "closure_rule": "Run only the closure-specific checks and one final workspace gate after all closure bytes are bound."
+  },
+  "closure_pr_evidence": {
+    "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+    "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT"
+  },
+  "gap_transition": {
+    "persistent_pre_state": "DECISION_PENDING",
+    "candidate_freeze_state": "APPROVED_NOT_INTEGRATED",
+    "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+    "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+    "transition_candidate_count": 1,
+    "closed_count_before_closure_readback": 0,
+    "eligible_closed_count_after_readback": 1,
+    "rows": [
+      {
+        "id": "IR-OWN-P0-015",
+        "severity": "P0",
+        "persistent_pre_state": "DECISION_PENDING",
+        "at_candidate_freeze": "APPROVED_NOT_INTEGRATED",
+        "at_semantic_merge": "INTEGRATED_UNVERIFIED",
+        "after_closure_readback": "VERIFIED_CLOSED"
+      }
+    ]
+  },
+  "action_ledger": {
+    "source": "current/current-pointer.json#/open_actions",
+    "total_open_actions": 26,
+    "separate_m13_actions": [
+      "M13-A002",
+      "M13-A003",
+      "M13-A004",
+      "M13-A005"
+    ],
+    "canonical_feature_p1_open": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006",
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008",
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008",
+      "SFD-P1-009"
+    ],
+    "canonical_id_array_sha256": "582fa3d9649c380a7a9bf4532fc303626eb9837aeb7f4ed68ce46f2bc02fc296",
+    "closed_by_candidate": 0,
+    "new_feature_p1": 0
+  },
+  "independent_test_verification": {
+    "path": "release/evidence/r10-hir-mir-machine-contract-independent-verification.json",
+    "bytes": 4324,
+    "sha256": "0a5bec964f1cc622292b2d14645a17d747074238dfd779e1ed38d355395eb7d8",
+    "required_verdict": "CONDITIONAL_PASS_READY_FOR_PUBLICATION_CLOSURE",
+    "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "candidate_binding": false,
+    "source_snapshot": null,
+    "canonical_source_mutation_during_closure": 0,
+    "github_mutation_during_closure": 0
+  },
+  "pointer_target": {
+    "role": "publication_authority_source",
+    "semantic_merge_commit": "7d609678bdb8c94f2a365e89be578e595bb394b6",
+    "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "self_binding_forbidden": true
+  },
+  "next_checkpoint": {
+    "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+    "candidate_cluster": "DEPENDENCY_ORDERED_R11_SELECTION",
+    "gap_scope": [],
+    "activation": "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_BASELINE_OBSERVATION"
+  }
+}
