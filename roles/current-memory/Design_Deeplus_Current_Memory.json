@@ -4,7 +4,7 @@
     "id": "design_release_steward",
     "prefix": "Design_"
   },
-  "updated_at": "2026-07-31T06:51:51+09:00",
+  "updated_at": "2026-07-31T18:49:43+09:00",
   "source_revision": "r51f3-current-trait-operator-refinement-r1",
   "current_facts": [
     {
@@ -40,6 +40,15 @@
       "authority": "current publication pointer",
       "source": "governance/reports/Design_Deeplus_R9_Diagnostic_Dispatch_Publication_Closure_R1.md",
       "introduced": "r51f3-current-trait-operator-refinement-r1",
+      "review_after": "publication-closure merge and external post-merge readback receipt",
+      "status": "current"
+    },
+    {
+      "id": "PUB-003",
+      "statement": "Semantic PR #52 integrated the R10 HIR/MIR Machine Contract for IR-OWN-P0-015 from source commit 6460e8127620d495e055cd0b800198fb6f7e1a06 at merge commit 7d609678bdb8c94f2a365e89be578e595bb394b6 with exact tree 76189fb47e75d4faeb3f2f975f51df265dc42146. The gap is INTEGRATED_UNVERIFIED until the separate publication-closure PR is merged and live main is read back, then becomes VERIFIED_CLOSED at design/static evidence level E2 through the canonical closure evidence plus an external post-merge receipt that records the actual closure commit. No future closure SHA is asserted here. Production and product execution remain NOT_RUN; semantic P0 remains 0, the exact feature P1 set remains 22 OPEN, the four M13 actions remain separate and OPEN, and all 15 product lanes remain NOT_RUN.",
+      "authority": "current publication pointer",
+      "source": "governance/reports/Design_Deeplus_R10_HIR_MIR_Machine_Contract_Publication_Closure_R1.md",
+      "introduced": "r51f3-current-hir-mir-machine-contract-r1",
       "review_after": "publication-closure merge and external post-merge readback receipt",
       "status": "current"
     },
@@ -121,6 +130,11 @@
     }
   ],
   "recent_releases": [
+    {
+      "release": "github-pr-52-r10-hir-mir-machine-contract-semantic-publication",
+      "verdict": "source 6460e8127620d495e055cd0b800198fb6f7e1a06 merged at 7d609678bdb8c94f2a365e89be578e595bb394b6 with exact tree 76189fb47e75d4faeb3f2f975f51df265dc42146; IR-OWN-P0-015 is INTEGRATED_UNVERIFIED pending publication-closure merge and external post-merge readback, then closes only at design/static E2; production and product execution NOT_RUN; semantic P0 0; exact feature P1 22 OPEN; four M13 actions separate and OPEN; product lanes 15/15 NOT_RUN",
+      "report": "governance/reports/Design_Deeplus_R10_HIR_MIR_Machine_Contract_Publication_Closure_R1.md"
+    },
     {
       "release": "github-pr-50-r9-diagnostic-dispatch-semantic-publication",
       "verdict": "source 94b4d369213ec3ce829c70b66f15301cf3c7039c merged at fd752f560d30a9cbe61f04b24b0e58abdbc150a3 with exact tree 3afc92cae7f8cf7232e30944d6516aec811e6981; IR-DIAG-P0-052 is INTEGRATED_UNVERIFIED pending publication-closure merge and external post-merge readback, then closes only at design/static E2; production and product execution NOT_RUN; semantic P0 0; exact feature P1 22 OPEN; four M13 actions separate and OPEN; product lanes 15/15 NOT_RUN",

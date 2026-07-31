@@ -1,0 +1,110 @@
+{
+  "schema": "deeplus.r10-hir-mir-machine-contract-independent-verification/v1",
+  "recorded_at": "2026-07-31T18:49:43+09:00",
+  "role": "Test_",
+  "reviewer_identity": "Codex Test_ independent R10 publication-closure audit",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "repository_write": false,
+  "verdict": "CONDITIONAL_PASS_READY_FOR_PUBLICATION_CLOSURE",
+  "static_gate": "PASS_INDEPENDENT_PRE_MERGE_CLOSURE_GATE",
+  "merge_readiness": "HOLD_PENDING_PUBLICATION_CLOSURE_MERGE_AND_READBACK",
+  "semantic_pull_request": 52,
+  "semantic_source_commit": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+  "semantic_source_tree": "76189fb47e75d4faeb3f2f975f51df265dc42146",
+  "semantic_merge_commit": "7d609678bdb8c94f2a365e89be578e595bb394b6",
+  "semantic_merge_tree": "76189fb47e75d4faeb3f2f975f51df265dc42146",
+  "semantic_merge_parents": [
+    "7632a2943e3e70dd4c6adffd53977671aec0f6c5",
+    "6460e8127620d495e055cd0b800198fb6f7e1a06"
+  ],
+  "post_semantic_merge_readback": "PASS",
+  "reviewed_gap_ids": [
+    "IR-OWN-P0-015"
+  ],
+  "verified_change_scope": {
+    "changed_file_count": 50,
+    "source_and_merge_tree_equal": true,
+    "production_crate_change_count": 0,
+    "grammar_change_count": 0,
+    "source_syntax_activation_count": 0
+  },
+  "verified_semantic_contract": {
+    "hir_identity_count": 128,
+    "structural_plan_contract_count": 12,
+    "lowering_rows_current": 102,
+    "lowering_rows_explicit_preview_maximum": 111,
+    "mir_operation_count": 29,
+    "mir_terminator_count": 17,
+    "mir_linear_token_kind_count": 12,
+    "mir_capability_count": 26,
+    "capability_graph": "ACYCLIC",
+    "responsibility_axis_count": 11,
+    "call_mode_target_pair_count": 10,
+    "argument_kind_count": 7,
+    "fixture_binding_count": 43,
+    "new_release_verifier_diagnostic_count": 5,
+    "new_source_diagnostic_count": 0
+  },
+  "executed_static_validation": {
+    "focused": {
+      "command": "py -3 tools/validators/validate_hir_mir_machine_contract.py --root .",
+      "result": "PASS"
+    },
+    "workspace": {
+      "command": "py -3 tools/validators/validate_workspace.py --root .",
+      "result": "PASS",
+      "passed": 5729,
+      "total": 5729,
+      "failed": 0,
+      "json_files_parsed": 354,
+      "catalogs_reassembled": 14,
+      "rust_scaffold_crates": 15
+    },
+    "evidence_level": "E2_DESIGN_STATIC"
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30620572323,
+      "job": "validate",
+      "job_id": 91123899542,
+      "head_sha": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30620572323/job/91123899542",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30620572327,
+      "job": "scaffold",
+      "job_id": 91123899548,
+      "head_sha": "6460e8127620d495e055cd0b800198fb6f7e1a06",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30620572327/job/91123899548",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "verified_ledger": {
+    "persistent_pre_state": "DECISION_PENDING",
+    "candidate_freeze_state": "APPROVED_NOT_INTEGRATED",
+    "gap_state_at_semantic_merge": "INTEGRATED_UNVERIFIED",
+    "closed_before_closure_readback": 0,
+    "eligible_after_closure_readback": 1,
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN",
+    "separate_m13_actions": "4_OPEN",
+    "closed_feature_p1": 0,
+    "new_feature_p1": 0
+  },
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "current_binding": false,
+  "canonical_source_mutation_during_closure_verification": 0,
+  "github_mutation_during_closure_verification": 0,
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+  "future_closure_commit": "NOT_RECORDED_BEFORE_MERGE",
+  "known_limitations": [
+    "PRODUCTION_PARSER_CHECKER_HIR_MIR_XVM_RUNTIME_CRANELIFT_TOOLING_NOT_RUN",
+    "PRODUCT_LANES_15_OF_15_NOT_RUN",
+    "GAP_CLOSURE_CONDITIONAL_ON_PUBLICATION_CLOSURE_MERGE_READBACK"
+  ],
+  "evidence_honesty": "This independent verification proves the static HIR/MIR machine contract, exact semantic merge identity, repository validation, and semantic-PR CI evidence. It does not establish production parser, checker, HIR, MIR, xVM, Cranelift, runtime, formatter, LSP, conformance, or product support."
+}

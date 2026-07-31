@@ -535,6 +535,109 @@ def r9_closure_memory_reverted(root: Path) -> None:
     write_json(path, value)
 
 
+def current_decision_index_r10_closure_report_missing(root: Path) -> None:
+    path = root / "current/decision-index.yaml"
+    value = path.read_text(encoding="utf-8")
+    entry = (
+        "  - governance/reports/"
+        "Design_Deeplus_R10_HIR_MIR_Machine_Contract_"
+        "Publication_Closure_R1.md\n"
+    )
+    if value.count(entry) != 1:
+        raise RuntimeError("R10 closure report entry unavailable")
+    path.write_text(value.replace(entry, "", 1), encoding="utf-8")
+
+
+def r10_closure_report_content_drift(root: Path) -> None:
+    path = (
+        root
+        / "governance/reports/"
+        "Design_Deeplus_R10_HIR_MIR_Machine_Contract_"
+        "Publication_Closure_R1.md"
+    )
+    path.write_text(
+        path.read_text(encoding="utf-8") + "\nmutation\n",
+        encoding="utf-8",
+    )
+
+
+def r10_closure_receipt_semantic_identity_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r10-hir-mir-machine-contract-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["semantic_publication"]["merge_commit"] = "0" * 40
+    write_json(path, value)
+
+
+def r10_closure_receipt_premature_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r10-hir-mir-machine-contract-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["gap_transition"]["closed_count_before_closure_readback"] = 1
+    write_json(path, value)
+
+
+def r10_closure_receipt_feature_p1_closed(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r10-hir-mir-machine-contract-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["action_ledger"]["closed_by_candidate"] = 1
+    write_json(path, value)
+
+
+def r10_closure_receipt_future_sha_invented(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r10-hir-mir-machine-contract-publication-closure-receipt.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["closure_pr_evidence"]["merge_commit"] = "f" * 40
+    write_json(path, value)
+
+
+def r10_independent_test_verdict_drift(root: Path) -> None:
+    path = (
+        root
+        / "release/evidence/"
+        "r10-hir-mir-machine-contract-independent-verification.json"
+    )
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["verdict"] = "NOT_AUDITABLE"
+    write_json(path, value)
+
+
+def r10_closure_decision_removed(root: Path) -> None:
+    path = root / "decisions/language/current-decisions.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    decision_id = (
+        "DSGN-CURRENT-R10-HIR-MIR-MACHINE-CONTRACT-PUBLICATION-CLOSURE"
+    )
+    value["laws"] = [
+        row for row in value["laws"] if row.get("id") != decision_id
+    ]
+    value["law_count"] = len(value["laws"])
+    write_json(path, value)
+
+
+def r10_closure_memory_reverted(root: Path) -> None:
+    path = root / "roles/current-memory/Design_Deeplus_Current_Memory.json"
+    value = json.loads(path.read_text(encoding="utf-8"))
+    value["current_facts"] = [
+        row for row in value["current_facts"] if row.get("id") != "PUB-003"
+    ]
+    write_json(path, value)
+
+
 def authority_transition_report_content_drift(root: Path) -> None:
     path = (
         root
@@ -788,6 +891,51 @@ def run(write_receipt: bool) -> int:
             "r9_closure_memory_reverted",
             r9_closure_memory_reverted,
             "R9_PUBLICATION_CLOSURE_MEMORY",
+        ),
+        (
+            "current_decision_index_r10_closure_report_missing",
+            current_decision_index_r10_closure_report_missing,
+            "CURRENT_DECISION_INDEX_BINDING",
+        ),
+        (
+            "r10_closure_report_content_drift",
+            r10_closure_report_content_drift,
+            "R10_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r10_closure_receipt_semantic_identity_drift",
+            r10_closure_receipt_semantic_identity_drift,
+            "R10_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r10_closure_receipt_premature_closed",
+            r10_closure_receipt_premature_closed,
+            "R10_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r10_closure_receipt_feature_p1_closed",
+            r10_closure_receipt_feature_p1_closed,
+            "R10_PUBLICATION_CLOSURE_GOVERNANCE",
+        ),
+        (
+            "r10_closure_receipt_future_sha_invented",
+            r10_closure_receipt_future_sha_invented,
+            "R10_PUBLICATION_CLOSURE_IDENTITY",
+        ),
+        (
+            "r10_independent_test_verdict_drift",
+            r10_independent_test_verdict_drift,
+            "R10_INDEPENDENT_TEST_VERIFICATION",
+        ),
+        (
+            "r10_closure_decision_removed",
+            r10_closure_decision_removed,
+            "R10_PUBLICATION_CLOSURE_DECISION",
+        ),
+        (
+            "r10_closure_memory_reverted",
+            r10_closure_memory_reverted,
+            "R10_PUBLICATION_CLOSURE_MEMORY",
         ),
         (
             "authority_transition_report_content_drift",

@@ -46,5 +46,5 @@
 | `enum_derived_capabilities` | `spec/contracts/enum-derived-capabilities.json` | `3cd9f28d0483090d6558e24ce7f50fc0d0dbdb2299ad4d0b3ff51d0a035cfe39` |
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `4327168a3dc9d79391237b20af8d8ac48d4c11b50803a129a8b6534187026366` |
 | `prelude` | `library/prelude/prelude.md` | `699f06e8ce8a367b108f08d51060d01b41e69318a867f2eb15ce655735ce9c41` |
-| `current_decisions` | `decisions/language/current-decisions.json` | `f6e9ff6b04976a1ff74c3dbfd0294ba6baf87ec7f9c45dd4584483904245c921` |
+| `current_decisions` | `decisions/language/current-decisions.json` | `242f15abc027ca1f6eb6f840eeb400b7f21ecd747b6ba35eda0363cebac43682` |
 | `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `9bd0878e2118ec78ac26a6655e1667907c8789b4cd3304662b9c413f1b017482` |
