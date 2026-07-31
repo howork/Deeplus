@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.unified-call-actor-transport-contract/r1",
-  "revision": "r51f3-current-concur-role-coherence-r1",
+  "revision": "r51f3-current-hir-mir-machine-contract-r1",
   "language_version": "0.1.2-internal",
   "status": "CURRENT_NORMATIVE_STABLE_DESIGN_CONTRACT",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -104,6 +104,39 @@
     "fallback_count": 0,
     "product_execution_receipt_count": 0,
     "closed_feature_p1_count": 0,
-    "new_feature_p1_count": 0
+    "new_feature_p1_count": 0,
+    "canonical_hir_call_identity_count": 1,
+    "canonical_hir_argument_family_count": 7,
+    "canonical_hir_trailing_closure_array_count": 0,
+    "current_mode_target_pair_count": 10
+  },
+  "canonical_hir_projection": {
+    "schema": "deeplus.canonical-hir-h1/r1",
+    "identity_id": "HIR-H1/EXPR/CALL",
+    "plan": "HirCallPlan",
+    "arguments": "one ordered arguments array; AST trailing closures project into TRAILING_CLOSURE entries in source evaluation order",
+    "argument_kinds": [
+      "POSITIONAL",
+      "NAMED",
+      "POSITIONAL_UNFOLD",
+      "NAMED_UNFOLD",
+      "CONTEXT",
+      "WITNESS",
+      "TRAILING_CLOSURE"
+    ],
+    "second_trailing_closure_array_count": 0,
+    "valid_mode_target_pairs": [
+      "ORDINARY::DIRECT_IMPLEMENTATION",
+      "ORDINARY::VIRTUAL_SLOT",
+      "ORDINARY::TRAIT_WITNESS",
+      "ORDINARY::EXTENSION_STATIC",
+      "MESSAGE::DIRECT_IMPLEMENTATION",
+      "MESSAGE::VIRTUAL_SLOT",
+      "MESSAGE::TRAIT_WITNESS",
+      "MESSAGE::EXTENSION_STATIC",
+      "MESSAGE::RESERVED_OPERATION",
+      "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+    ],
+    "valid_mode_target_pair_count": 10
   }
 }

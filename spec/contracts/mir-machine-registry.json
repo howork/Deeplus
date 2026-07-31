@@ -1,0 +1,1114 @@
+{
+  "schema": "deeplus.mir-machine-registry/r1",
+  "draft_revision": "R2_INTEGRATED",
+  "status": "DESIGN_REGISTRY_NOT_IMPLEMENTATION_OR_EXECUTION_EVIDENCE",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "branch": "main",
+  "gap_id": "IR-OWN-P0-015",
+  "mir_schema_id": "deeplus.mir/r1",
+  "capability_receipt_schema_id": "deeplus.mir-capability-receipt/r1",
+  "semantic_serialization": {
+    "encoding": "RFC8949_DETERMINISTIC_CBOR",
+    "definite_lengths": true,
+    "shortest_encodings": true,
+    "canonical_map_key_order": true,
+    "semantic_array_order_preserved": true,
+    "decode_reencode_byte_equality": true,
+    "digest_algorithm": "SHA-256",
+    "semantic_projection_excludes": [
+      "draft_revision",
+      "status",
+      "repository",
+      "branch",
+      "gap_id",
+      "product_execution",
+      "status_fence",
+      "x-deeplus-status-fence"
+    ],
+    "semantic_projection_exclusion_scope": "RECURSIVE_EXACT_FIELD_NAME",
+    "registry_digest_rule": "SHA256_OF_RFC8949_DETERMINISTIC_CBOR_SEMANTIC_PROJECTION_AFTER_EXCLUDING_EXACT_ANNOTATION_FIELDS"
+  },
+  "closed_type_contract": {
+    "canonical_type_kind_count": 39,
+    "canonical_type_kinds": [
+      "UNIT",
+      "BOOL",
+      "INTEGER",
+      "FLOAT32",
+      "FLOAT64",
+      "CHAR",
+      "STRING",
+      "BYTES",
+      "RATIONAL",
+      "COMPLEX",
+      "NEVER",
+      "TUPLE",
+      "RECORD",
+      "ENUM",
+      "LIST",
+      "MAP",
+      "OPTION",
+      "RESULT",
+      "FUNCTION",
+      "CLOSURE",
+      "REFERENCE",
+      "BORROWED_REFERENCE",
+      "INOUT_REFERENCE",
+      "ACTOR",
+      "PROVIDER",
+      "AUTHORITY",
+      "WITNESS",
+      "NOMINAL",
+      "GENERIC_PARAM",
+      "TYPE_APPLICATION",
+      "UNION",
+      "INTERSECTION",
+      "ARRAY",
+      "NUMERIC_ARRAY",
+      "SET",
+      "FACET",
+      "DYNAMIC",
+      "MEASURE",
+      "FOREIGN"
+    ],
+    "type_entry_payload_contracts": [
+      {
+        "type_kinds": ["UNIT", "BOOL", "INTEGER", "FLOAT32", "FLOAT64", "CHAR", "STRING", "BYTES", "RATIONAL", "COMPLEX", "NEVER", "DYNAMIC"],
+        "required_fields": [],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["TUPLE"],
+        "required_fields": ["element_type_ids"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["RECORD"],
+        "required_fields": ["ordered_fields"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["ENUM"],
+        "required_fields": ["enum_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["LIST", "SET", "OPTION"],
+        "required_fields": ["element_type_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["MAP"],
+        "required_fields": ["key_type_id", "value_type_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["RESULT"],
+        "required_fields": ["success_type_id", "error_type_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["FUNCTION"],
+        "required_fields": ["parameter_type_ids", "result_type_id", "responsibility_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["CLOSURE"],
+        "required_fields": ["signature_type_id", "capture_environment_type_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["REFERENCE"],
+        "required_fields": ["referent_type_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["BORROWED_REFERENCE", "INOUT_REFERENCE"],
+        "required_fields": ["referent_type_id", "region_profile_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["ACTOR"],
+        "required_fields": ["actor_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["PROVIDER"],
+        "required_fields": ["provider_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["AUTHORITY"],
+        "required_fields": ["authority_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["WITNESS"],
+        "required_fields": ["witness_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["NOMINAL"],
+        "required_fields": ["declaration_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["GENERIC_PARAM"],
+        "required_fields": ["binder_identity_id", "parameter_index"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["TYPE_APPLICATION"],
+        "required_fields": ["constructor_type_id", "argument_type_ids"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["UNION", "INTERSECTION"],
+        "required_fields": ["member_type_ids"],
+        "additional_fields": false,
+        "member_rule": "SORTED_UNIQUE_MINIMUM_TWO"
+      },
+      {
+        "type_kinds": ["ARRAY"],
+        "required_fields": ["element_type_id", "extent_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["NUMERIC_ARRAY"],
+        "required_fields": ["element_type_id", "shape_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["FACET"],
+        "required_fields": ["base_type_id", "facet_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["MEASURE"],
+        "required_fields": ["numeric_type_id", "measure_identity_id"],
+        "additional_fields": false
+      },
+      {
+        "type_kinds": ["FOREIGN"],
+        "required_fields": ["foreign_type_identity_id", "foreign_contract_identity_id"],
+        "additional_fields": false,
+        "native_symbol_layout_or_abi_fields": false
+      }
+    ],
+    "target_layout_is_semantic_type_identity": false,
+    "opaque_catch_all_type_kind_admitted": false,
+    "unknown_type_kind_rejected": true
+  },
+  "closed_static_identity_contract": {
+    "static_identity_domain_count": 27,
+    "static_identity_domains": [
+      "DECLARATION",
+      "TYPE",
+      "CALLABLE",
+      "MEMBER",
+      "VIRTUAL_SLOT",
+      "TRAIT_WITNESS",
+      "EXTENSION",
+      "RESERVED_OPERATION",
+      "CONSTRUCTOR",
+      "VARIANT",
+      "FIELD",
+      "PROJECTION",
+      "INTRINSIC",
+      "PROVIDER_OPERATION",
+      "AUTHORITY",
+      "CLEANUP_ACTION",
+      "PATTERN",
+      "NUMERIC_PROFILE",
+      "SPECIAL_VALUE_PROFILE",
+      "MODULE",
+      "MODULE_INTERFACE",
+      "FOREIGN_CONTRACT",
+      "FOREIGN_TYPE",
+      "FOREIGN_FUNCTION",
+      "FOREIGN_CONSTANT",
+      "PROVIDER_VERSION",
+      "REPLAY_PROFILE"
+    ],
+    "foreign_identity_rule": "LOGICAL_SOURCE_OR_MODULE_INTERFACE_IDENTITY_ONLY_NO_NATIVE_SYMBOL_ADDRESS_REGISTER_LAYOUT_OR_ABI",
+    "module_interface_rule": "CANONICAL_MODULE_AND_EXPORTED_INTERFACE_IDENTITY_WITHOUT_OBJECT_FORMAT_IDENTITY",
+    "provider_identity_rule": "PROVIDER_OPERATION_VERSION_AUTHORITY_AND_REPLAY_IDENTITIES_CANNOT_DEFAULT",
+    "opaque_catch_all_static_domain_admitted": false,
+    "unknown_static_identity_domain_rejected": true
+  },
+  "identity_reference_domain_rules": {
+    "field_identity_id": "FIELD",
+    "enum_identity_id": "TYPE",
+    "actor_identity_id": "DECLARATION",
+    "provider_identity_id": "DECLARATION",
+    "authority_identity_id": "AUTHORITY",
+    "witness_identity_id": "TRAIT_WITNESS",
+    "declaration_identity_id": "DECLARATION",
+    "binder_identity_id": "DECLARATION",
+    "extent_identity_id": "TYPE",
+    "shape_identity_id": "TYPE",
+    "facet_identity_id": "TYPE",
+    "measure_identity_id": "TYPE",
+    "foreign_type_identity_id": "FOREIGN_TYPE",
+    "foreign_contract_identity_id": "FOREIGN_CONTRACT",
+    "numeric_profile_id": "NUMERIC_PROFILE",
+    "special_value_profile_id": "SPECIAL_VALUE_PROFILE",
+    "static_identity_id": "ANY_CLOSED_STATIC_IDENTITY_DOMAIN_ALLOWED_BY_OPERATION_ROW",
+    "intrinsic_identity_id": "INTRINSIC",
+    "projection_identity_id": "PROJECTION",
+    "variant_identity_id": "VARIANT",
+    "provider_operation_identity_id": "PROVIDER_OPERATION",
+    "verifier_rule": "RESOLVE_EVERY_ID_TO_EXACT_STATIC_IDENTITY_TABLE_ENTRY_AND_REJECT_DOMAIN_MISMATCH_UNKNOWN_ID_OR_TARGET_BOUND_IDENTITY"
+  },
+  "target_identity_fence": {
+    "backend_neutral": true,
+    "forbidden_domain_ids": [
+      "XBC_SLOT",
+      "CLIF_VALUE",
+      "NATIVE_REGISTER",
+      "ADDRESS",
+      "ABI_LAYOUT",
+      "OBJECT_LAYOUT",
+      "OBJECT_MODULE",
+      "JIT_MODULE",
+      "MANAGED_REFERENCE_PROJECTION"
+    ],
+    "forbidden_namespace_prefixes": [
+      "XBC",
+      "CLIF",
+      "CRANELIFT",
+      "LLVM",
+      "WASM",
+      "NATIVE",
+      "ABI",
+      "TARGET"
+    ],
+    "forbidden_semantic_payload_concepts": [
+      "instruction_slot",
+      "native_register",
+      "machine_address",
+      "abi_layout",
+      "object_layout",
+      "object_module",
+      "jit_module",
+      "target_opcode"
+    ],
+    "verifier_rule": "REJECT_UNKNOWN_OR_TARGET_BOUND_TYPE_KIND_STATIC_DOMAIN_SEMANTIC_OPERATION_PAYLOAD_OR_PROOF"
+  },
+  "constant_contract": {
+    "constant_kind_count": 9,
+    "constant_kinds": [
+      "UNIT",
+      "BOOL",
+      "INTEGER",
+      "FLOAT",
+      "CHAR",
+      "STRING",
+      "BYTES",
+      "RATIONAL",
+      "COMPLEX"
+    ],
+    "integer_magnitude_encoding": "SHORTEST_BIG_ENDIAN_NONZERO_BYTE_MAGNITUDE_LOWERCASE_HEX_WITH_SEPARATE_SIGN",
+    "zero_integer_encoding": "SIGN_ZERO_AND_EMPTY_MAGNITUDE",
+    "rational_contract": "REDUCED_SIGNED_ARBITRARY_PRECISION_NUMERATOR_AND_STRICTLY_POSITIVE_DENOMINATOR_WITH_ZERO_AS_0_OVER_1",
+    "complex_contract": "COMPLEX_TYPE_AND_FLOAT32_OR_FLOAT64_REP_TYPE_WITH_EXACT_COMPONENT_BITS_NUMERIC_PROFILE_AND_SPECIAL_VALUE_PROFILE",
+    "verifier_rule": "RECOMPUTE_KIND_DISCRIMINATED_CANONICAL_PAYLOAD_AND_REJECT_NONCANONICAL_EQUIVALENTS"
+  },
+  "semantic_operation_contract": {
+    "operation_kind_count": 29,
+    "semantic_operation_id_rule": "DM-SEMOP-<EXACT_OPERATION_KIND_WITH_UNDERSCORES_RENDERED_AS_HYPHENS>-R1",
+    "closed_set": true,
+    "unknown_operation_or_semantic_operation_id_rejected": true
+  },
+  "semantic_operations": [
+    {
+      "operation_kind": "CONST",
+      "semantic_operation_id": "DM-SEMOP-CONST-R1",
+      "payload_contract": {
+        "required_fields": ["constant_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "STATIC_REF",
+      "semantic_operation_id": "DM-SEMOP-STATIC-REF-R1",
+      "payload_contract": {
+        "required_fields": ["static_identity_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "PURE_INTRINSIC",
+      "semantic_operation_id": "DM-SEMOP-PURE-INTRINSIC-R1",
+      "payload_contract": {
+        "required_fields": ["intrinsic_identity_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "TOTAL_PROJECTION",
+      "semantic_operation_id": "DM-SEMOP-TOTAL-PROJECTION-R1",
+      "payload_contract": {
+        "required_fields": ["projection_identity_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CONTEXT_ADAPT",
+      "semantic_operation_id": "DM-SEMOP-CONTEXT-ADAPT-R1",
+      "payload_contract": {
+        "required_fields": ["context_adaptation_plan_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "AGGREGATE_INJECT",
+      "semantic_operation_id": "DM-SEMOP-AGGREGATE-INJECT-R1",
+      "payload_contract": {
+        "required_fields": ["aggregate_kind_id", "variant_identity_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "AGGREGATE_ASSEMBLE",
+      "semantic_operation_id": "DM-SEMOP-AGGREGATE-ASSEMBLE-R1",
+      "payload_contract": {
+        "required_fields": ["aggregate_kind_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "PLACE_LOAD",
+      "semantic_operation_id": "DM-SEMOP-PLACE-LOAD-R1",
+      "payload_contract": {
+        "required_fields": ["place_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "PLACE_STORE_INIT",
+      "semantic_operation_id": "DM-SEMOP-PLACE-STORE-INIT-R1",
+      "payload_contract": {
+        "required_fields": ["place_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "PLACE_MOVE",
+      "semantic_operation_id": "DM-SEMOP-PLACE-MOVE-R1",
+      "payload_contract": {
+        "required_fields": ["place_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "MOVE_RESERVE",
+      "semantic_operation_id": "DM-SEMOP-MOVE-RESERVE-R1",
+      "payload_contract": {
+        "required_fields": ["reservation_id", "place_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "MOVE_CANCEL",
+      "semantic_operation_id": "DM-SEMOP-MOVE-CANCEL-R1",
+      "payload_contract": {
+        "required_fields": ["reservation_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "LOAN_BEGIN_SHARED",
+      "semantic_operation_id": "DM-SEMOP-LOAN-BEGIN-SHARED-R1",
+      "payload_contract": {
+        "required_fields": ["loan_id", "base_kind", "base_id", "region_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "LOAN_BEGIN_EXCLUSIVE",
+      "semantic_operation_id": "DM-SEMOP-LOAN-BEGIN-EXCLUSIVE-R1",
+      "payload_contract": {
+        "required_fields": ["loan_id", "base_kind", "base_id", "region_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "LOAN_BEGIN_REBORROW",
+      "semantic_operation_id": "DM-SEMOP-LOAN-BEGIN-REBORROW-R1",
+      "payload_contract": {
+        "required_fields": ["loan_id", "parent_loan_id", "region_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "LOAN_END",
+      "semantic_operation_id": "DM-SEMOP-LOAN-END-R1",
+      "payload_contract": {
+        "required_fields": ["loan_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLEANUP_REGION_ENTER",
+      "semantic_operation_id": "DM-SEMOP-CLEANUP-REGION-ENTER-R1",
+      "payload_contract": {
+        "required_fields": ["cleanup_region_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLEANUP_REGISTER",
+      "semantic_operation_id": "DM-SEMOP-CLEANUP-REGISTER-R1",
+      "payload_contract": {
+        "required_fields": ["cleanup_registration_id", "cleanup_region_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLEANUP_PIN",
+      "semantic_operation_id": "DM-SEMOP-CLEANUP-PIN-R1",
+      "payload_contract": {
+        "required_fields": ["cleanup_registration_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLEANUP_SEAL",
+      "semantic_operation_id": "DM-SEMOP-CLEANUP-SEAL-R1",
+      "payload_contract": {
+        "required_fields": ["cleanup_registration_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLEANUP_DISARM",
+      "semantic_operation_id": "DM-SEMOP-CLEANUP-DISARM-R1",
+      "payload_contract": {
+        "required_fields": ["cleanup_registration_id", "discharge_kind"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BUILDER_BEGIN",
+      "semantic_operation_id": "DM-SEMOP-BUILDER-BEGIN-R1",
+      "payload_contract": {
+        "required_fields": ["construction_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BUILDER_STAGE",
+      "semantic_operation_id": "DM-SEMOP-BUILDER-STAGE-R1",
+      "payload_contract": {
+        "required_fields": ["construction_id", "stage_index"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BUILDER_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-BUILDER-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["construction_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "PATTERN_PROBE",
+      "semantic_operation_id": "DM-SEMOP-PATTERN-PROBE-R1",
+      "payload_contract": {
+        "required_fields": ["pattern_attempt_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BINDING_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["pattern_attempt_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CLOSURE_MAKE",
+      "semantic_operation_id": "DM-SEMOP-CLOSURE-MAKE-R1",
+      "payload_contract": {
+        "required_fields": ["closure_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CONCUR_ENTER",
+      "semantic_operation_id": "DM-SEMOP-CONCUR-ENTER-R1",
+      "payload_contract": {
+        "required_fields": ["concur_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "ACTOR_ENVELOPE_PREPARE",
+      "semantic_operation_id": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1",
+      "payload_contract": {
+        "required_fields": ["actor_envelope_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    }
+  ],
+  "terminator_contract": {
+    "terminator_kind_count": 17,
+    "closed_set": true,
+    "unknown_terminator_or_payload_field_rejected": true,
+    "successor_roles_are_ordered_semantic_arrays": true
+  },
+  "terminators": [
+    {
+      "terminator_kind": "BR",
+      "payload_contract": {"required_fields": [], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 1, "ordered_roles": ["BRANCH"]}
+    },
+    {
+      "terminator_kind": "COND_BR",
+      "payload_contract": {"required_fields": ["condition_value_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 2, "maximum": 2, "ordered_roles": ["TRUE", "FALSE"]}
+    },
+    {
+      "terminator_kind": "SWITCH_ENUM",
+      "payload_contract": {"required_fields": ["discriminant_value_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": null, "allowed_roles": ["ENUM_CASE", "DEFAULT"], "default_maximum": 1}
+    },
+    {
+      "terminator_kind": "SWITCH_INT",
+      "payload_contract": {"required_fields": ["discriminant_value_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": null, "allowed_roles": ["INT_CASE", "DEFAULT"], "default_maximum": 1}
+    },
+    {
+      "terminator_kind": "INVOKE",
+      "payload_contract": {"required_fields": ["call_plan_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "CHECKED",
+      "payload_contract": {"required_fields": ["checked_semantic_operation_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 2, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "PLACE_REPLACE",
+      "payload_contract": {"required_fields": ["destination_place_id", "reservation_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 2, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "LEAVE",
+      "payload_contract": {"required_fields": ["leave_plan_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "SUSPEND",
+      "payload_contract": {"required_fields": ["suspend_site_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 2, "allowed_roles": ["RESUME", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "CANCEL_CHECK",
+      "payload_contract": {"required_fields": ["cancellation_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 2, "maximum": 2, "ordered_roles": ["SUCCESS", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "RUN_OP",
+      "payload_contract": {"required_fields": ["run_operation", "run_plan_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL", "JOIN"]}
+    },
+    {
+      "terminator_kind": "ACTOR_OP",
+      "payload_contract": {"required_fields": ["actor_operation", "actor_plan_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL", "REJECTED"]}
+    },
+    {
+      "terminator_kind": "PROVIDER_OP",
+      "payload_contract": {"required_fields": ["provider_operation_identity_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "ONCE_OP",
+      "payload_contract": {"required_fields": ["once_operation", "once_identity_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "SYNC_OP",
+      "payload_contract": {"required_fields": ["sync_operation", "sync_plan_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 1, "maximum": 4, "allowed_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"]}
+    },
+    {
+      "terminator_kind": "COMPLETE",
+      "payload_contract": {"required_fields": ["completion_kind"], "additional_fields": false},
+      "successor_contract": {"minimum": 0, "maximum": 0, "ordered_roles": []}
+    },
+    {
+      "terminator_kind": "UNREACHABLE_PROVEN",
+      "payload_contract": {"required_fields": ["proof_id"], "additional_fields": false},
+      "successor_contract": {"minimum": 0, "maximum": 0, "ordered_roles": []}
+    }
+  ],
+  "linear_token_contract": {
+    "linear_token_kind_count": 12,
+    "closed_set": true,
+    "binding_is_exactly_kind_discriminated": true,
+    "unrelated_binding_fields_rejected": true,
+    "path_sensitive_balance_rule": "EVERY_TOKEN_IS_CONSUMED_FORWARDED_OR_DISCHARGED_EXACTLY_ONCE_ON_EVERY_REACHABLE_PATH"
+  },
+  "linear_tokens": [
+    {"token_kind": "ACCESS", "binding_fields": ["loan_id"]},
+    {"token_kind": "MOVE_RESERVATION", "binding_fields": ["reservation_id"]},
+    {"token_kind": "CLEANUP", "binding_fields": ["cleanup_registration_id"]},
+    {"token_kind": "BUILDER", "binding_fields": ["construction_id"]},
+    {"token_kind": "CALL_RIGHT", "binding_fields": ["callable_id"]},
+    {"token_kind": "CONCUR", "binding_fields": ["concur_id"]},
+    {"token_kind": "RUN", "binding_fields": ["concur_run_id"]},
+    {"token_kind": "REPLY", "binding_fields": ["reply_id", "correlation_id"]},
+    {"token_kind": "SUSPENSION", "binding_fields": ["suspend_site_id"]},
+    {"token_kind": "CANCELLATION", "binding_fields": ["cancellation_id"]},
+    {"token_kind": "ACTOR_TURN", "binding_fields": ["actor_turn_id", "state_region_id"]},
+    {"token_kind": "AUTHORITY", "binding_fields": ["authority_id"]}
+  ],
+  "proof_contract": {
+    "proof_kind_count": 2,
+    "closed_set": true,
+    "proof_kinds": [
+      "NEVER_TYPE",
+      "EXHAUSTIVE_PARTITION"
+    ],
+    "proof_records": [
+      {
+        "proof_kind": "NEVER_TYPE",
+        "required_fields": ["proof_id", "kind", "value_id", "never_type_id"],
+        "verifier_rule": "VALUE_TYPE_RESOLVES_TO_CANONICAL_NEVER"
+      },
+      {
+        "proof_kind": "EXHAUSTIVE_PARTITION",
+        "required_fields": ["proof_id", "kind", "discriminant_value_id", "partition_identity_ids", "exhaustiveness_digest"],
+        "verifier_rule": "PARTITION_IDENTITIES_ARE_SORTED_UNIQUE_EXACT_AND_EXHAUSTIVE_FOR_DISCRIMINANT_TYPE"
+      }
+    ],
+    "arbitrary_trap_or_runtime_fallback_is_proof": false
+  },
+  "responsibility_projection_contract": {
+    "axis_count": 11,
+    "ordered_axis_ids": [
+      "value_mode",
+      "resource",
+      "place_access",
+      "effects",
+      "recoverable_errors",
+      "defects",
+      "cancellation",
+      "suspension",
+      "isolation",
+      "authority",
+      "cleanup"
+    ],
+    "axis_property_mapping": {
+      "value_mode": "value_mode",
+      "resource": "resource_profile_id_or_null",
+      "place_access": "place_access",
+      "effects": "effect_ids",
+      "recoverable_errors": "recoverable_error_ids",
+      "defects": "defect_ids",
+      "cancellation": "cancellation_profile_id",
+      "suspension": "suspension_profile_id",
+      "isolation": "isolation_profile_id",
+      "authority": "authority_ids",
+      "cleanup": "cleanup_obligation_ids"
+    },
+    "verifier_rule": "RECOMPUTE_AND_COMPARE_ALL_11_AXES_IN_EXACT_ORDER"
+  },
+  "capability_evidence_receipt_contract": {
+    "schema_id": "deeplus.mir-capability-evidence/r1",
+    "closed_schema_embedded_in_registry": true,
+    "type": "object",
+    "additional_fields": false,
+    "scalar_definitions": {
+      "semantic_id": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9_.:/-]*$"
+      },
+      "nonempty_string": {
+        "type": "string",
+        "minimum_length": 1
+      },
+      "sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "required_fields": [
+      "schema",
+      "evidence_receipt_id",
+      "status",
+      "capability_id",
+      "provider_component_id",
+      "provider_revision",
+      "provider_artifact_semantic_digest",
+      "verification_contract_id",
+      "verification_contract_digest",
+      "verification_result_digest",
+      "mir_schema_id",
+      "mir_schema_digest",
+      "mir_machine_registry_id",
+      "mir_machine_registry_digest",
+      "canonicalization",
+      "evidence_semantic_digest"
+    ],
+    "field_contracts": {
+      "schema": {
+        "const": "deeplus.mir-capability-evidence/r1"
+      },
+      "evidence_receipt_id": {
+        "type": "string",
+        "pattern": "^MIR-CAP-EVIDENCE-[A-Z0-9][A-Z0-9._-]*$"
+      },
+      "status": {
+        "const": "VERIFIED_PROVIDED"
+      },
+      "capability_id": {
+        "enum_source": "capability_ids"
+      },
+      "provider_component_id": {
+        "type": "semantic_id"
+      },
+      "provider_revision": {
+        "type": "nonempty_string"
+      },
+      "provider_artifact_semantic_digest": {
+        "type": "sha256"
+      },
+      "verification_contract_id": {
+        "type": "semantic_id"
+      },
+      "verification_contract_digest": {
+        "type": "sha256"
+      },
+      "verification_result_digest": {
+        "type": "sha256"
+      },
+      "mir_schema_id": {
+        "const": "deeplus.mir/r1"
+      },
+      "mir_schema_digest": {
+        "type": "sha256"
+      },
+      "mir_machine_registry_id": {
+        "const": "deeplus.mir-machine-registry/r1"
+      },
+      "mir_machine_registry_digest": {
+        "type": "sha256"
+      },
+      "canonicalization": {
+        "const_contract": "RFC8949_DETERMINISTIC_CBOR"
+      },
+      "evidence_semantic_digest": {
+        "type": "sha256"
+      }
+    },
+    "canonicalization_contract": {
+      "encoding": "RFC8949_DETERMINISTIC_CBOR",
+      "definite_lengths": true,
+      "shortest_encodings": true,
+      "canonical_map_key_order": true,
+      "semantic_array_order_preserved": true,
+      "decode_reencode_byte_equality": true,
+      "evidence_semantic_digest_rule": "SHA256_OF_RFC8949_DETERMINISTIC_CBOR_WITH_ONLY_EVIDENCE_SEMANTIC_DIGEST_OMITTED"
+    },
+    "resolve_and_verify_rule": "RESOLVE_BYTES_BY_EVIDENCE_RECEIPT_ID_AND_DIGEST_VALIDATE_THIS_EMBEDDED_SCHEMA_RECOMPUTE_DIGEST_RESOLVE_VERIFICATION_RESULT_AND_REQUIRE_EXACT_CAPABILITY_PROVIDER_REVISION_MIR_SCHEMA_AND_CURRENT_MACHINE_REGISTRY_BINDINGS",
+    "status_fence": {
+      "schema_defined": true,
+      "evidence_instance_emitted": false,
+      "provided_capability_claimed": false,
+      "product_execution": "NOT_RUN"
+    }
+  },
+  "capability_contract": {
+    "capability_count": 26,
+    "closed_set": true,
+    "dependency_rule": "REQUIRED_SET_IS_TRANSITIVE_CLOSURE_OF_EXACT_REACHABLE_ROW_REQUIREMENTS",
+    "unknown_dependency_rejected": true,
+    "dependency_cycle_rejected": true,
+    "design_catalog_implies_implementation": false,
+    "design_catalog_implies_product_support": false
+  },
+  "capability_ids": [
+    "DM-CAP-CORE-CFG-R1",
+    "DM-CAP-CONST-IDENTITY-R1",
+    "DM-CAP-STATIC-IDENTITY-R1",
+    "DM-CAP-CALL-CHANNELS-R1",
+    "DM-CAP-CALL-DIRECT-R1",
+    "DM-CAP-CALL-VIRTUAL-R1",
+    "DM-CAP-CALL-TRAIT-WITNESS-R1",
+    "DM-CAP-CALL-EXTENSION-STATIC-R1",
+    "DM-CAP-MESSAGE-MODE-R1",
+    "DM-CAP-RESERVED-OPERATION-R1",
+    "DM-CAP-FIXED-OPERATOR-R1",
+    "DM-CAP-POWER-R1",
+    "DM-CAP-PLACE-OWNERSHIP-R1",
+    "DM-CAP-ATOMIC-REPLACE-R1",
+    "DM-CAP-PATTERN-COMMIT-R1",
+    "DM-CAP-BUILDER-TRANSACTION-R1",
+    "DM-CAP-CLEANUP-OUTCOME-R1",
+    "DM-CAP-CLOSURE-R1",
+    "DM-CAP-SUSPEND-CANCEL-R1",
+    "DM-CAP-CONCUR-RUN-R1",
+    "DM-CAP-ACTOR-TRANSPORT-R1",
+    "DM-CAP-PROVIDER-AUTHORITY-R1",
+    "DM-CAP-ONCE-CELL-R1",
+    "DM-CAP-SYNCHRONIZATION-R1",
+    "DM-CAP-SAFEPOINT-ROOTMAP-R1",
+    "DM-CAP-PROVENANCE-PAIR-R1"
+  ],
+  "capabilities": [
+    {
+      "capability_id": "DM-CAP-CORE-CFG-R1",
+      "requires": [],
+      "operation_kinds": [],
+      "terminator_kinds": ["BR", "COND_BR", "SWITCH_ENUM", "SWITCH_INT", "COMPLETE", "UNREACHABLE_PROVEN"],
+      "token_kinds": []
+    },
+    {
+      "capability_id": "DM-CAP-CONST-IDENTITY-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1"],
+      "operation_kinds": ["CONST", "AGGREGATE_INJECT", "AGGREGATE_ASSEMBLE"],
+      "terminator_kinds": [],
+      "token_kinds": []
+    },
+    {
+      "capability_id": "DM-CAP-STATIC-IDENTITY-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1"],
+      "operation_kinds": ["STATIC_REF", "TOTAL_PROJECTION", "CONTEXT_ADAPT"],
+      "terminator_kinds": [],
+      "token_kinds": []
+    },
+    {
+      "capability_id": "DM-CAP-CALL-CHANNELS-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1", "DM-CAP-STATIC-IDENTITY-R1"],
+      "operation_kinds": ["CONTEXT_ADAPT"],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-CALL-DIRECT-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-CALL-VIRTUAL-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-CALL-TRAIT-WITNESS-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-CALL-EXTENSION-STATIC-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1"],
+      "operation_kinds": ["CONTEXT_ADAPT"],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-MESSAGE-MODE-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE", "ACTOR_OP"],
+      "token_kinds": ["CALL_RIGHT", "REPLY", "ACTOR_TURN"]
+    },
+    {
+      "capability_id": "DM-CAP-RESERVED-OPERATION-R1",
+      "requires": ["DM-CAP-MESSAGE-MODE-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-FIXED-OPERATOR-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": ["PURE_INTRINSIC"],
+      "terminator_kinds": ["INVOKE", "CHECKED"],
+      "token_kinds": ["CALL_RIGHT", "ACCESS"]
+    },
+    {
+      "capability_id": "DM-CAP-POWER-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1", "DM-CAP-CONST-IDENTITY-R1"],
+      "operation_kinds": ["PURE_INTRINSIC"],
+      "terminator_kinds": ["INVOKE", "CHECKED"],
+      "token_kinds": ["CALL_RIGHT"]
+    },
+    {
+      "capability_id": "DM-CAP-PLACE-OWNERSHIP-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1"],
+      "operation_kinds": ["PLACE_LOAD", "PLACE_STORE_INIT", "PLACE_MOVE", "MOVE_RESERVE", "MOVE_CANCEL", "LOAN_BEGIN_SHARED", "LOAN_BEGIN_EXCLUSIVE", "LOAN_BEGIN_REBORROW", "LOAN_END"],
+      "terminator_kinds": [],
+      "token_kinds": ["ACCESS", "MOVE_RESERVATION"]
+    },
+    {
+      "capability_id": "DM-CAP-ATOMIC-REPLACE-R1",
+      "requires": ["DM-CAP-PLACE-OWNERSHIP-R1", "DM-CAP-CLEANUP-OUTCOME-R1"],
+      "operation_kinds": ["MOVE_RESERVE", "MOVE_CANCEL"],
+      "terminator_kinds": ["PLACE_REPLACE"],
+      "token_kinds": ["ACCESS", "MOVE_RESERVATION", "CLEANUP"]
+    },
+    {
+      "capability_id": "DM-CAP-PATTERN-COMMIT-R1",
+      "requires": ["DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": ["PATTERN_PROBE", "BINDING_COMMIT"],
+      "terminator_kinds": ["COND_BR", "SWITCH_ENUM", "SWITCH_INT"],
+      "token_kinds": ["ACCESS", "MOVE_RESERVATION"]
+    },
+    {
+      "capability_id": "DM-CAP-BUILDER-TRANSACTION-R1",
+      "requires": ["DM-CAP-CLEANUP-OUTCOME-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": ["BUILDER_BEGIN", "BUILDER_STAGE", "BUILDER_COMMIT", "AGGREGATE_ASSEMBLE"],
+      "terminator_kinds": ["CHECKED", "LEAVE"],
+      "token_kinds": ["BUILDER", "CLEANUP", "ACCESS"]
+    },
+    {
+      "capability_id": "DM-CAP-CLEANUP-OUTCOME-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1"],
+      "operation_kinds": ["CLEANUP_REGION_ENTER", "CLEANUP_REGISTER", "CLEANUP_PIN", "CLEANUP_SEAL", "CLEANUP_DISARM"],
+      "terminator_kinds": ["INVOKE", "CHECKED", "LEAVE", "COMPLETE"],
+      "token_kinds": ["CLEANUP", "CANCELLATION"]
+    },
+    {
+      "capability_id": "DM-CAP-CLOSURE-R1",
+      "requires": ["DM-CAP-CALL-CHANNELS-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": ["CLOSURE_MAKE"],
+      "terminator_kinds": ["INVOKE"],
+      "token_kinds": ["CALL_RIGHT", "ACCESS"]
+    },
+    {
+      "capability_id": "DM-CAP-SUSPEND-CANCEL-R1",
+      "requires": ["DM-CAP-CLEANUP-OUTCOME-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["SUSPEND", "CANCEL_CHECK", "LEAVE"],
+      "token_kinds": ["SUSPENSION", "CANCELLATION", "ACCESS", "CLEANUP", "ACTOR_TURN"]
+    },
+    {
+      "capability_id": "DM-CAP-CONCUR-RUN-R1",
+      "requires": ["DM-CAP-SUSPEND-CANCEL-R1", "DM-CAP-CLOSURE-R1"],
+      "operation_kinds": ["CONCUR_ENTER"],
+      "terminator_kinds": ["RUN_OP", "SUSPEND", "CANCEL_CHECK", "LEAVE"],
+      "token_kinds": ["CONCUR", "RUN", "CANCELLATION", "CLEANUP"]
+    },
+    {
+      "capability_id": "DM-CAP-ACTOR-TRANSPORT-R1",
+      "requires": ["DM-CAP-MESSAGE-MODE-R1", "DM-CAP-SUSPEND-CANCEL-R1"],
+      "operation_kinds": ["ACTOR_ENVELOPE_PREPARE"],
+      "terminator_kinds": ["ACTOR_OP", "SUSPEND", "CANCEL_CHECK"],
+      "token_kinds": ["REPLY", "ACTOR_TURN", "AUTHORITY", "SUSPENSION", "CANCELLATION"]
+    },
+    {
+      "capability_id": "DM-CAP-PROVIDER-AUTHORITY-R1",
+      "requires": ["DM-CAP-CLEANUP-OUTCOME-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["PROVIDER_OP"],
+      "token_kinds": ["AUTHORITY", "CLEANUP", "CANCELLATION"]
+    },
+    {
+      "capability_id": "DM-CAP-ONCE-CELL-R1",
+      "requires": ["DM-CAP-CLEANUP-OUTCOME-R1", "DM-CAP-SYNCHRONIZATION-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["ONCE_OP"],
+      "token_kinds": ["ACCESS", "CLEANUP"]
+    },
+    {
+      "capability_id": "DM-CAP-SYNCHRONIZATION-R1",
+      "requires": ["DM-CAP-CLEANUP-OUTCOME-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["SYNC_OP", "SUSPEND", "CANCEL_CHECK"],
+      "token_kinds": ["ACCESS", "AUTHORITY", "CLEANUP", "CANCELLATION", "SUSPENSION"]
+    },
+    {
+      "capability_id": "DM-CAP-SAFEPOINT-ROOTMAP-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": ["INVOKE", "CHECKED", "SUSPEND", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP"],
+      "token_kinds": ["ACCESS", "SUSPENSION", "ACTOR_TURN", "AUTHORITY"]
+    },
+    {
+      "capability_id": "DM-CAP-PROVENANCE-PAIR-R1",
+      "requires": ["DM-CAP-CORE-CFG-R1"],
+      "operation_kinds": [],
+      "terminator_kinds": [],
+      "token_kinds": []
+    }
+  ],
+  "projection_capability_fence": {
+    "included_in_mir_capability_receipt": false,
+    "receipt_type": "TargetProjectionCapabilityReceiptR1",
+    "projection_capability_count": 5,
+    "projection_capability_ids": [
+      "PROJ-CAP-XVM-CANONICAL-XBC-R1",
+      "PROJ-CAP-CLIF-COMMON-R1",
+      "PROJ-CAP-CRANELIFT-OBJECT-R1",
+      "PROJ-CAP-CRANELIFT-JIT-R1",
+      "PROJ-CAP-MANAGED-REFERENCE-R1"
+    ],
+    "status": "SEPARATE_TARGET_BOUND_RECEIPT_REQUIRED",
+    "product_execution": "NOT_RUN"
+  },
+  "verifier_contract": {
+    "semantic_operation_kind_and_id_bijection": "RECOMPUTE",
+    "operation_payload_exact_shape": "RECOMPUTE",
+    "terminator_payload_and_successor_shape": "RECOMPUTE",
+    "token_kind_and_binding_exact_shape": "RECOMPUTE",
+    "type_and_static_identity_domains": "RECOMPUTE_CLOSED_SET",
+    "type_entry_payload_shape": "RECOMPUTE_EXACT_KIND_DISCRIMINATED_LOGICAL_TYPE_REPRESENTATION",
+    "target_identity_fence": "RECOMPUTE_AND_REJECT",
+    "constant_payload_canonicality": "RECOMPUTE",
+    "unreachable_proof_validity": "RECOMPUTE",
+    "capability_dependency_graph": "REJECT_UNKNOWN_OR_CYCLIC",
+    "responsibility_projection": "RECOMPUTE_ALL_11_AXES_IN_EXACT_ORDER",
+    "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY"
+  },
+  "status_fence": {
+    "schema_materialization": "R2_INTEGRATED_DRAFT",
+    "design_registry_only": true,
+    "provided_capability_receipt_emitted": false,
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

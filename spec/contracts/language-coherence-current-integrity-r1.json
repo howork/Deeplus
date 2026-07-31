@@ -1,8 +1,8 @@
 {
   "schema": "deeplus.language-coherence-current-integrity-contract/r1",
-  "revision": "r51f3-current-trait-operator-refinement-r1",
-  "previous_revision": "r51f3-current-pattern-sequence-multivalue-r1",
-  "materialization_timestamp": "2026-07-31T06:51:12+09:00",
+  "revision": "r51f3-current-hir-mir-machine-contract-r1",
+  "previous_revision": "r51f3-current-trait-operator-refinement-r1",
+  "materialization_timestamp": "2026-07-31T10:23:34+09:00",
   "evidence_boundary": "Repository-static canonical closure only; no product lane execution or current Git binding is claimed.",
   "semantic_p0": 0,
   "current_binding": false,
@@ -101,7 +101,7 @@
   ],
   "canonical_counts": {
     "features": 719,
-    "diagnostics": 1436,
+    "diagnostics": 1441,
     "predicates": 277,
     "predicate_fixtures": 846,
     "no_go": 155,
@@ -114,7 +114,7 @@
       "domain": "human_language",
       "path": "spec/language.md",
       "owner": "Spec_",
-      "sha256": "1ed1ded8343a670af70af075d58403aa8d399e39ef8276a52ca58922deddeb98"
+      "sha256": "7997706431ca6f96d0e68660332e8dfbdebbc29d9f9391e35f5c4917146e9449"
     },
     {
       "domain": "exact_grammar",
@@ -126,7 +126,7 @@
       "domain": "frontend_admission",
       "path": "spec/frontend/frontend-model.json",
       "owner": "Spec_ + Impl_",
-      "sha256": "0963343feec43810b7acef80a73e1c4c25c2330287740a43733b455a4708d199"
+      "sha256": "943f941c93b95d2bc41682740ad5a4143a719fa178e8ea53f9311503c1e2dd65"
     },
     {
       "domain": "type_system",
@@ -138,7 +138,7 @@
       "domain": "mir_observable_semantics",
       "path": "spec/mir/semantics.md",
       "owner": "Spec_ + Impl_",
-      "sha256": "16e69878eedba7dd9c5361e0dd9429a0f66e0aad6af2b4f043cc8e29977e5de0"
+      "sha256": "95199faee37482c25896a6bedb3eb1285087d6c9c522164d9f027c58b5da6559"
     },
     {
       "domain": "prelude",
@@ -156,19 +156,19 @@
       "domain": "current_decisions",
       "path": "decisions/language/current-decisions.json",
       "owner": "Design_ + Spec_",
-      "sha256": "8534f13e192273d8d1d8a17c45625a0cf39fa9d8604af7f1f59a0a01ba0586bf"
+      "sha256": "f6e9ff6b04976a1ff74c3dbfd0294ba6baf87ec7f9c45dd4584483904245c921"
     },
     {
       "domain": "features",
       "path": "spec/features/catalog",
       "owner": "Spec_",
-      "sha256": "0f8753d50781e34a41c4b76c487575028196b9685f4e2bf8aa381143efdeecb1"
+      "sha256": "fea4db275b766409b8bd06a470d799e061fd1866467e118eae62ef58533de945"
     },
     {
       "domain": "diagnostics",
       "path": "spec/diagnostics/catalog",
       "owner": "Test_ + Spec_",
-      "sha256": "8acfe11a32c78eae66f38aa578ca6800ddc82807bed8b2ee3bf44205a34cdeb3"
+      "sha256": "70a61b846ed57c73d997d52e48b87c9bd15af7f49d5f010ecb8c4cc22eda191c"
     },
     {
       "domain": "checker_predicates",
@@ -178,7 +178,7 @@
     }
   ],
   "authority_non_owned_sha256": "84d22bd432bf8ec250c3d69e625258122a69b38753e2c6b9bfdf59cf3687301b",
-  "pointer_non_owned_canonical_sha256": "222471bc28e1e87dc0736e503c6958ff6d8ee532e84ea89deb4a7ed0f512d823",
+  "pointer_non_owned_canonical_sha256": "2f7c7b961b17b3207f42e25614e2d343828300fcb2f88d7f44e4f07b4d24ae5f",
   "decision_law_ids": [
     "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
     "DSGN-CURRENT-ENUM-DERIVED-CAPABILITIES-STABLE",
@@ -223,7 +223,8 @@
     "DSGN-CURRENT-NOMINAL-CONFORM-CALLABLE-RESPONSIBILITY-CLAUSES",
     "DSGN-CURRENT-R4-NAME-RESOLUTION-MODULES-PUBLICATION-CLOSURE",
     "DSGN-CURRENT-R8-OWNERSHIP-CANONICAL-PROMOTION-PUBLICATION-CLOSURE",
-    "DSGN-CURRENT-R9-DIAGNOSTIC-DISPATCH-PUBLICATION-CLOSURE"
+    "DSGN-CURRENT-R9-DIAGNOSTIC-DISPATCH-PUBLICATION-CLOSURE",
+    "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
   ],
   "semantic_authority_files": [
     {
@@ -232,7 +233,7 @@
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "0963343feec43810b7acef80a73e1c4c25c2330287740a43733b455a4708d199"
+      "sha256": "943f941c93b95d2bc41682740ad5a4143a719fa178e8ea53f9311503c1e2dd65"
     },
     {
       "path": "spec/types/type-system.md",
@@ -250,7 +251,7 @@
     },
     {
       "path": "decisions/language/current-decisions.json",
-      "sha256": "8534f13e192273d8d1d8a17c45625a0cf39fa9d8604af7f1f59a0a01ba0586bf"
+      "sha256": "f6e9ff6b04976a1ff74c3dbfd0294ba6baf87ec7f9c45dd4584483904245c921"
     },
     {
       "path": "docs/guide/design-gallery.md",
@@ -390,7 +391,7 @@
     },
     {
       "path": "spec/diagnostics/catalog/catalog-metadata.json",
-      "sha256": "9c44e0d99d5364ef6bedd196e4e7f165dd68f96d4761106188a4f84c64f4007f"
+      "sha256": "ca4ca13a3a4a288ba26e43ed6b55d0954a4c23a33a6a4633ee5c642ffdc3d5ee"
     },
     {
       "path": "spec/diagnostics/catalog/chunks/part-0001.json",
@@ -554,7 +555,7 @@
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "0963343feec43810b7acef80a73e1c4c25c2330287740a43733b455a4708d199"
+      "sha256": "943f941c93b95d2bc41682740ad5a4143a719fa178e8ea53f9311503c1e2dd65"
     },
     {
       "path": "spec/grammar/deeplus.ebnf",
@@ -566,11 +567,11 @@
     },
     {
       "path": "spec/language.md",
-      "sha256": "1ed1ded8343a670af70af075d58403aa8d399e39ef8276a52ca58922deddeb98"
+      "sha256": "7997706431ca6f96d0e68660332e8dfbdebbc29d9f9391e35f5c4917146e9449"
     },
     {
       "path": "spec/mir/semantics.md",
-      "sha256": "16e69878eedba7dd9c5361e0dd9429a0f66e0aad6af2b4f043cc8e29977e5de0"
+      "sha256": "95199faee37482c25896a6bedb3eb1285087d6c9c522164d9f027c58b5da6559"
     },
     {
       "path": "spec/types/predicates/catalog-metadata.json",
@@ -678,15 +679,15 @@
       "path": "current/language-version.toml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 361,
-      "sha256": "4b56468bc940b11f435cd17af47c70cf950a55864ac72623e660fe4881c57b6a"
+      "bytes": 396,
+      "sha256": "3f604b56fded38502366f75017b649a7d84058e9875f9212607b263d435c38af"
     },
     {
       "path": "current/decision-index.yaml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 1492,
-      "sha256": "cf4cdbcd714faef746514bc3a80e821bac4007d724e8b605170460b58bf18da8"
+      "bytes": 1620,
+      "sha256": "5fe95def59957f43aa9449bfacaa38123ead83922ca5feca18bac36475cd7031"
     },
     {
       "path": "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md",
@@ -775,9 +776,9 @@
     {
       "path": "decisions/language",
       "kind": "directory",
-      "file_count": 7,
-      "bytes": 81632,
-      "sha256": "5e55df86e60701a9fc8a93388491ea95bf31546971851aaa3ab090d3a4360931"
+      "file_count": 8,
+      "bytes": 86222,
+      "sha256": "0d130d03a138339bf9bb3a0745858a62bc8e0accf4554e89b1c73dc689d52cee"
     },
     {
       "path": "examples",
@@ -797,8 +798,8 @@
       "path": "migration/catalog-reassembly.json",
       "kind": "file",
       "file_count": 1,
-      "bytes": 17901,
-      "sha256": "9ff8b74ecfc06bfd16c32d1c6f5d65a3071cc7e02397e34fd8131d04163fb829"
+      "bytes": 17959,
+      "sha256": "dedd27cb19f132cd8c532857e7c6f79a97a02a210d626322f1c8778c7ebf9455"
     },
     {
       "path": "roles/current-memory",
@@ -810,9 +811,9 @@
     {
       "path": "schemas/language",
       "kind": "directory",
-      "file_count": 59,
-      "bytes": 619303,
-      "sha256": "ac37172b4c20494774900613501886a3a65c43de6c37abdf5a23ad7e9359cdec"
+      "file_count": 64,
+      "bytes": 884160,
+      "sha256": "49ee09b7289d911fde5d014dae28ca7a0b67065a249782624a211d4b8a039bf5"
     },
     {
       "path": "spec/compatibility/no-go",
@@ -824,30 +825,30 @@
     {
       "path": "spec/contracts",
       "kind": "directory",
-      "file_count": 35,
-      "bytes": 558997,
-      "sha256": "45b705b9c86fa16e1943959d122546347d6b9f10686f3a4a4e3f30593a2a3253"
+      "file_count": 39,
+      "bytes": 1402647,
+      "sha256": "dee63968e48ac58feb9fc02a9284dd36a4bbb945bc6ebee6e89a0d52616b40dc"
     },
     {
       "path": "spec/diagnostics",
       "kind": "directory",
-      "file_count": 37,
-      "bytes": 1465583,
-      "sha256": "1396d5b2974c90583f7f07466137873a94f8788bb8ab97fd8da6e3a9ce971e39"
+      "file_count": 38,
+      "bytes": 1471031,
+      "sha256": "698f0e493ab3a614a44096c1926ba140c3872bc41c28115e057f7bf9573300ae"
     },
     {
       "path": "spec/features",
       "kind": "directory",
       "file_count": 29,
-      "bytes": 1266553,
-      "sha256": "f738afd84634cae4c0c2b341d9fff92283c4cb08d79360873a7744cfc6415649"
+      "bytes": 1267380,
+      "sha256": "c307e661272616d1290ca854d521ec5c7d703bf705b2de73a761d9353e0783d1"
     },
     {
       "path": "spec/frontend",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 130257,
-      "sha256": "d84636f042b15f7245b73b6de1a3866ccbc668dd35f9d7e7de638dc3dcf66075"
+      "bytes": 131571,
+      "sha256": "bbd7486b19925f8eab3096a3008bd446063512929e69a93e2d486d324f999815"
     },
     {
       "path": "spec/grammar",
@@ -860,22 +861,22 @@
       "path": "spec/language.md",
       "kind": "file",
       "file_count": 1,
-      "bytes": 471211,
-      "sha256": "1ed1ded8343a670af70af075d58403aa8d399e39ef8276a52ca58922deddeb98"
+      "bytes": 472791,
+      "sha256": "7997706431ca6f96d0e68660332e8dfbdebbc29d9f9391e35f5c4917146e9449"
     },
     {
       "path": "spec/mir",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 55847,
-      "sha256": "04c876e58289cd9627f852f87a5fe6f5503f96d8c4316c62639dfd56380223df"
+      "bytes": 57415,
+      "sha256": "6a3c4dd74b3e24b1cdc0910ab4281b02f114f0ec9dc9187920a4bc10439ea878"
     },
     {
       "path": "spec/patterns",
       "kind": "directory",
       "file_count": 4,
-      "bytes": 135276,
-      "sha256": "5c714ec0117188c0361fb68491aacfa9292180d0abf3199c74181235a36e1f27"
+      "bytes": 135439,
+      "sha256": "bb50cda4e176debb40de71c4cb4094d670d9d8a240b65b5b81680f60df793635"
     },
     {
       "path": "spec/types",
@@ -894,9 +895,9 @@
     {
       "path": "tests/fixtures/current",
       "kind": "directory",
-      "file_count": 23,
-      "bytes": 1651759,
-      "sha256": "35ee075839870a873c72dd3079766e2c7fab40d42b227577990ed52c2b0ffcb6"
+      "file_count": 24,
+      "bytes": 1707157,
+      "sha256": "44c136fb4364ffe2622ecf64ac24a7b2e7eacb468c022d7079954161afb06c30"
     },
     {
       "path": "tests/fixtures/imported",
@@ -908,30 +909,30 @@
     {
       "path": "tools/generators",
       "kind": "directory",
-      "file_count": 15,
-      "bytes": 335260,
-      "sha256": "0ce589588a50d944133a691459a51d5d3327edce4cdf1bbf441888407ffcef5a"
+      "file_count": 16,
+      "bytes": 349438,
+      "sha256": "8476d78654271951ad950486c703e7edae8924c8d1063a8f115849c19c9ea4e0"
     },
     {
       "path": "tools/validators/validate_workspace.py",
       "kind": "file",
       "file_count": 1,
-      "bytes": 662194,
-      "sha256": "de7555e27ba03353df22abe8c15343fe257a4ea6bfe5370e283c9ceb10f6ef9e"
+      "bytes": 668718,
+      "sha256": "ee7ecd94b0797ab1c325da1993b1c40a84791fbfbec8fa1cc1d9c4e8717a4ddc"
     },
     {
       "path": "docs/grammar-reference",
       "kind": "directory",
       "file_count": 34,
-      "bytes": 1995877,
-      "sha256": "9509c4cab51b842b6c38316f59a76c187028154bd12f7062cb70821112f3b75a"
+      "bytes": 1997843,
+      "sha256": "956c38f8011b7ffc55c5252d5be3475da4c645f6e1df18e907ed846eebd31ced"
     },
     {
       "path": "docs/tutorial",
       "kind": "directory",
       "file_count": 101,
-      "bytes": 764685,
-      "sha256": "78242b66b95d0484aa328bf459cf67fe6c237bacc241f04798d0bb07b873ab13"
+      "bytes": 765548,
+      "sha256": "c6b015c985204fc97b0ea5b35ad098ae54717a1d3672229e48e0b40c4e653e85"
     }
   ],
   "reassembly_non_owned_canonical_sha256": "c6b7423788a4be1a1c6fd748985eddb3edb1bc92ba8587c2fd824fad50a88d02"

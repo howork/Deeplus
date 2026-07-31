@@ -1,10 +1,10 @@
 {
   "schema": "deeplus.hir-h1-current-mir-bridge-contract/r1",
-  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "revision": "r51f3-current-hir-mir-machine-contract-r1",
   "language_version": "0.1.2-internal",
-  "feature_id": "hir_h1_current_mir_bridge",
+  "feature_id": "hir_h1_current_mir_bridge_design",
   "status": "STABLE_DESIGN",
-  "design_verdict": "HIR_H1_VERIFIER_BOUNDARY_STABLE_DESIGN",
+  "design_verdict": "CURRENT_HIR_H1_MIR_R1_MACHINE_SCHEMA_STABLE_DESIGN",
   "source_activation": "none",
   "evidence_status": "DESIGN_STATIC_NOT_RUN",
   "current_binding": false,
@@ -12,7 +12,7 @@
   "product_lanes": "15/15_NOT_RUN",
   "authority_fence": {
     "current_semantic_authority": "spec/mir/semantics.md",
-    "hir_h1_schema_authority_created": false,
+    "hir_h1_schema_authority_created": true,
     "mir_x1_current_authority": false,
     "implementation_authority": false,
     "execution_authority": false,
@@ -20,7 +20,9 @@
     "publication_or_promotion_authority": false,
     "source_or_grammar_activation": false,
     "feature_p1_closed": 0,
-    "feature_p1_created": 0
+    "feature_p1_created": 0,
+    "current_hir_machine_schema": "deeplus.canonical-hir-h1/r1",
+    "current_mir_machine_schema": "deeplus.mir/r1"
   },
   "open_feature_p1": {
     "class": [
@@ -104,14 +106,14 @@
       "stage": "Verified<CanonicalHirH1>",
       "authority": "canonical_design_semantics_only",
       "output": "ExecutableHirH1",
-      "invariant": "a valid MirCapabilityReceipt for exact MIR schema and lowering-rules digests is mandatory"
+      "invariant": "a recomputed MirCapabilityReceiptR1 bound to the exact HIR schema, identity catalog, lowering registry, MIR schema, machine registry, reachable lowering keys, and provider evidence is mandatory; failure preserves Verified<CanonicalHirH1>"
     },
     {
       "ordinal": 7,
       "stage": "ExecutableHirH1",
       "authority": "bounded_lowering_input_only",
-      "output": "Verified<ProposedMirX1>",
-      "invariant": "lowering expands fixed HIR decisions into control, value, place, token, cleanup, outcome, and suspension structure without semantic re-selection"
+      "output": "Verified<DeeplusMirR1>",
+      "invariant": "lowering uses only LOWER or NO_RUNTIME_EMISSION rows and expands fixed HIR decisions into backend-neutral MIR without semantic re-selection"
     }
   ],
   "phase_type_contract": {
@@ -122,11 +124,13 @@
     ],
     "canonical_type": "Verified<CanonicalHirH1>",
     "executable_type": "ExecutableHirH1",
-    "mir_candidate_type": "Verified<ProposedMirX1>",
+    "mir_candidate_type": "Verified<DeeplusMirR1>",
     "phase_flag_in_one_shared_node_type": false,
     "analysis_value_serializable_as_canonical": false,
     "canonical_value_executable_without_capability_receipt": false,
-    "mir_candidate_is_current_authority": false
+    "mir_candidate_is_current_authority": true,
+    "compatibility_candidate_type": "Verified<ProposedMirX1>",
+    "compatibility_candidate_is_current_authority": false
   },
   "canonical_hir_contract": {
     "fully_typed": true,
@@ -235,7 +239,22 @@
       "request_responsibility_or_null"
     ],
     "source_evaluation_law": "evaluate receiver and CallArgument nodes left-to-right exactly once, validate all static and transfer obligations, then commit one envelope and one ownership transition failure-atomically",
-    "defer_actor_transport_admitted": false
+    "defer_actor_transport_admitted": false,
+    "canonical_identity": "HIR-H1/EXPR/CALL",
+    "canonical_arguments": "one ordered HirCallPlan.arguments array containing all seven argument kinds, including TrailingClosure",
+    "canonical_trailing_closure_array_count": 0,
+    "valid_mode_target_pairs": [
+      "ORDINARY::DIRECT_IMPLEMENTATION",
+      "ORDINARY::VIRTUAL_SLOT",
+      "ORDINARY::TRAIT_WITNESS",
+      "ORDINARY::EXTENSION_STATIC",
+      "MESSAGE::DIRECT_IMPLEMENTATION",
+      "MESSAGE::VIRTUAL_SLOT",
+      "MESSAGE::TRAIT_WITNESS",
+      "MESSAGE::EXTENSION_STATIC",
+      "MESSAGE::RESERVED_OPERATION",
+      "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+    ]
   },
   "power_plan_contract": {
     "node": "HirPowerPlan",
@@ -337,29 +356,37 @@
       "ComplexLiteral"
     ],
     "RationalConst": {
-      "payload_type": "ConstRational",
+      "payload_type": "RationalPayload",
       "semantic_status": "canonical HIR representation only; no Rational power route or source activation is created",
       "required_payload_fields": [
-        "sign",
-        "numerator_magnitude_be",
-        "denominator_magnitude_be"
+        "numerator.sign",
+        "numerator.magnitude_be",
+        "denominator_magnitude_be",
+        "normalization_verified"
       ],
       "normalization": [
-        "denominator is strictly positive",
-        "gcd(numerator, denominator) equals one",
-        "zero is exactly positive 0/1",
-        "integer encodings are shortest unsigned big-endian magnitudes",
+        "denominator magnitude is strictly positive",
+        "gcd(numerator magnitude, denominator magnitude) equals one",
+        "zero is exactly POSITIVE 00 over 01",
+        "integer magnitudes use shortest lowercase unsigned big-endian bytes",
         "negative zero is forbidden"
       ],
       "rational_power_adaptation_count": 0
     },
     "ComplexLiteral": {
-      "payload_type": "ConstComplex64",
-      "semantic_components": [
-        "real_f64_bits",
-        "imaginary_f64_bits"
+      "payload_type": "ComplexPayload",
+      "required_payload_fields": [
+        "complex_type_id",
+        "rep_type_id",
+        "real_bits",
+        "imaginary_bits",
+        "numeric_profile_id",
+        "special_value_profile_id"
       ],
-      "component_encoding": "exact lowercase sixteen-hex-digit IEEE-754 binary64 bit pattern",
+      "rep_contract": {
+        "Float32": "real_bits and imaginary_bits are exact lowercase eight-hex-digit IEEE-754 binary32 payloads",
+        "Float64": "real_bits and imaginary_bits are exact lowercase sixteen-hex-digit IEEE-754 binary64 payloads"
+      },
       "signed_zero_preserved": true,
       "nan_payload_preserved_in_literal_payload": true,
       "component_order": [
@@ -371,23 +398,54 @@
     }
   },
   "capability_receipt_contract": {
-    "type": "MirCapabilityReceipt",
+    "type": "MirCapabilityReceiptR1",
     "required_fields": [
+      "schema",
+      "hir_schema_id",
+      "hir_schema_digest",
       "hir_semantic_digest",
+      "hir_verification_receipt_schema_id",
+      "hir_verification_receipt_id",
+      "hir_verification_receipt_digest",
+      "mir_schema_id",
       "mir_schema_digest",
-      "lowering_rules_digest",
-      "required_capabilities",
-      "provided_capabilities",
-      "unsupported_reachable_variant_count"
+      "mir_machine_registry_id",
+      "mir_machine_registry_digest",
+      "identity_catalog_id",
+      "identity_catalog_digest",
+      "lowering_registry_id",
+      "lowering_registry_digest",
+      "lowering_rules_revision",
+      "source_profile_id",
+      "feature_set_digest",
+      "reachable_lowering_keys",
+      "reachable_lowering_key_count",
+      "reachable_lowering_key_set_digest",
+      "direct_required_capability_ids",
+      "required_capability_ids",
+      "provided_capability_ids",
+      "capability_evidence",
+      "unsupported_reachable_keys",
+      "unsupported_reachable_key_count",
+      "projection_capability_ids",
+      "recomputation",
+      "failure_contract",
+      "target_identity_fence",
+      "canonicalization",
+      "receipt_semantic_digest"
     ],
     "required_capabilities_equal_provided_capabilities": true,
-    "unsupported_reachable_variant_count": 0,
     "receipt_self_authorizes_execution": false,
     "receipt_self_promotes_mir_x1": false,
     "receipt_self_changes_backend_authority": false,
     "silent_omission_count": 0,
     "todo_pseudo_operation_count": 0,
-    "opaque_runtime_callback_count": 0
+    "opaque_runtime_callback_count": 0,
+    "schema_id": "deeplus.mir-capability-receipt/r1",
+    "unsupported_reachable_key_count": 0,
+    "recomputed_from_bound_authorities": true,
+    "canonical_hir_preserved_on_failure": true,
+    "capability_failure_blocks_only": "ExecutableHirH1"
   },
   "callable_lexical_dependency_contract": {
     "status": "STABLE_DESIGN",
@@ -473,7 +531,9 @@
     ],
     "pair_verification": "deterministically relower canonical HIR, canonicalize and verify MIR, then compare semantic bytes and provenance projection",
     "digest_only_pair_acceptance": false,
-    "executable_mir_without_verified_pair": false
+    "executable_mir_without_verified_pair": false,
+    "current_machine_schema": "deeplus.mir/r1",
+    "current_output_type": "Verified<DeeplusMirR1>"
   },
   "backend_authority": {
     "current": [
@@ -491,7 +551,7 @@
     "product_execution_receipt_count": 0
   },
   "native_projection_contract": {
-    "input": "Verified<DeeplusMir>",
+    "input": "Verified<DeeplusMirR1>",
     "common_lowering": "deterministic verified MIR to backend-private CLIF",
     "module_kinds": [
       "ObjectAot",
@@ -562,13 +622,13 @@
   "rules": [
     {
       "rule_id": "H1MB-R001",
-      "title": "the bridge is preview design only",
-      "contract": "This contract creates no current HIR schema, MIR-X1 authority, implementation, execution, backend switch, source activation, publication, promotion, P1 closure, or product support."
+      "title": "machine schemas are current Stable design without product activation",
+      "contract": "The eight R10 HIR/MIR machine schemas and registries are current Stable-design authorities. They create no source activation, canonical instance, implementation, execution, backend switch, P1 closure, or product support."
     },
     {
       "rule_id": "H1MB-R002",
       "title": "phase authority is represented by distinct types",
-      "contract": "HirSkeleton, AnalysisHir, TypedHirDraft, Verified<CanonicalHirH1>, ExecutableHirH1, and Verified<ProposedMirX1> are distinct authority-bearing types rather than one node graph with a phase flag."
+      "contract": "HirSkeleton, AnalysisHir, TypedHirDraft, Verified<CanonicalHirH1>, ExecutableHirH1, and Verified<DeeplusMirR1> are distinct authority-bearing types rather than one node graph with a phase flag."
     },
     {
       "rule_id": "H1MB-R003",
@@ -623,12 +683,12 @@
     {
       "rule_id": "H1MB-R013",
       "title": "Complex constant bits preserve signed zero",
-      "contract": "ConstComplex64 stores ordered exact binary64 real and imaginary component bits, preserves signed zero and NaN payload bits, and selects no public layout or ABI."
+      "contract": "ComplexPayload binds Float32 to exact eight-hex-digit component bits and Float64 to exact sixteen-hex-digit component bits, preserving component order, signed zero, and NaN payloads without selecting layout or ABI."
     },
     {
       "rule_id": "H1MB-R014",
       "title": "capability receipt gates executable HIR",
-      "contract": "Verified canonical HIR becomes ExecutableHirH1 only when exact MIR schema and lowering-rules digests cover every reachable variant with zero unsupported cases."
+      "contract": "Verified canonical HIR becomes ExecutableHirH1 only when a recomputed MirCapabilityReceiptR1 covers every reachable lowering key and exact transitive capability dependency; failure preserves the verified HIR."
     },
     {
       "rule_id": "H1MB-R015",
@@ -648,7 +708,7 @@
     {
       "rule_id": "H1MB-R018",
       "title": "MIR-X1 remains noncanonical",
-      "contract": "ProposedMirX1 remains a noncanonical nonactivatable compatibility target and cannot displace the current MIR semantic authority through this bridge."
+      "contract": "ProposedMirX1 remains a noncanonical nonactivatable compatibility target. The current machine output is Verified<DeeplusMirR1>."
     },
     {
       "rule_id": "H1MB-R019",
@@ -687,6 +747,32 @@
     "closed_feature_p1_count": 0,
     "new_feature_p1_count": 0,
     "product_execution_receipt_count": 0,
-    "product_lanes": "15/15_NOT_RUN"
+    "product_lanes": "15/15_NOT_RUN",
+    "hir_identity_count": 128,
+    "current_lowering_row_count": 102,
+    "explicit_preview_max_lowering_row_count": 111,
+    "mir_operation_count": 29,
+    "mir_terminator_count": 17,
+    "mir_linear_token_kind_count": 12,
+    "responsibility_axis_count": 11,
+    "design_capability_count": 26,
+    "valid_call_mode_target_pair_count": 10,
+    "fixed_operator_role_count": 13,
+    "fixed_operator_trait_root_count": 9,
+    "new_release_verifier_diagnostic_count": 5,
+    "new_source_diagnostic_count": 0
+  },
+  "machine_schema_authorities": {
+    "canonical_hir": "deeplus.canonical-hir-h1/r1",
+    "hir_identity_catalog": "deeplus.hir-h1-identity-catalog/r1",
+    "mir": "deeplus.mir/r1",
+    "mir_machine_registry": "deeplus.mir-machine-registry/r1",
+    "lowering_row": "deeplus.hir-mir-lowering-row/r1",
+    "lowering_registry": "deeplus.hir-mir-lowering-registry/r1",
+    "capability_receipt": "deeplus.mir-capability-receipt/r1",
+    "fixture_contract": "deeplus.hir-mir-machine-contract-fixtures/r1",
+    "diagnostic_contract": "deeplus.hir-mir-machine-diagnostic-contract/r1",
+    "authority_level": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA",
+    "instance_or_product_receipt_created": false
   }
 }

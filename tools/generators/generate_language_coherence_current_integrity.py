@@ -26,8 +26,9 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-trait-operator-refinement-r1"
-PREVIOUS_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
+REVISION = "r51f3-current-hir-mir-machine-contract-r1"
+PREVIOUS_REVISION = "r51f3-current-trait-operator-refinement-r1"
+INHERITED_COMPONENT_REVISION = PREVIOUS_REVISION
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
@@ -413,7 +414,7 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
         or pointer.get("spec_revision") != REVISION
         or pointer.get("previous_pointer") != PREVIOUS_REVISION
         or not implementation_revision
-        or implementation_revision.group(1) != REVISION
+        or implementation_revision.group(1) != INHERITED_COMPONENT_REVISION
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_REVISION_PARITY", REVISION)
     if pointer.get("candidate_binding", {}).get("current_binding") is not False:
@@ -463,7 +464,7 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
         )
     for path in memory_paths:
         capsule = read_json(path, "LANGUAGE_COHERENCE_ROLE_MEMORY")
-        if capsule.get("source_revision") != REVISION:
+        if capsule.get("source_revision") != INHERITED_COMPONENT_REVISION:
             raise GeneratorError("LANGUAGE_COHERENCE_ROLE_MEMORY", path.name)
 
     if collect_counts(root) != contract["canonical_counts"]:

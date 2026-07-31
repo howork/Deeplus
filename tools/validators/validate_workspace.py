@@ -22,6 +22,7 @@ from typing import Any
 LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
 LANGUAGE_COHERENCE_REVISION = "r51f3-current-trait-operator-refinement-r1"
+R10_HIR_MIR_REVISION = "r51f3-current-hir-mir-machine-contract-r1"
 TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
@@ -137,6 +138,8 @@ CURRENT_DECISION_INDEX_PATHS = [
     "decisions/language/Design_Deeplus_Nominal_Conform_And_Callable_Responsibility_Clauses_R1.md",
     "decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
 ]
+R10_DECISION_PATH = "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md"
+R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
     "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
 )
@@ -417,6 +420,62 @@ POST_PR16_CANONICAL_DELTA_PATHS = {
     "spec/features/catalog/chunks/part-0004.json",
     "spec/features/catalog/chunks/part-0018.json",
     "spec/types/predicates/chunks/part-0004.json",
+}
+R10_SEMANTIC_DELTA_PATHS = {
+    "current/authority-map.yaml",
+    "current/current-pointer.json",
+    "current/decision-index.yaml",
+    "current/language-version.toml",
+    "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
+    "decisions/language/current-decisions.json",
+    "docs/grammar-reference/18-evaluation-ownership-mir-and-backends.md",
+    "docs/grammar-reference/SUMMARY.md",
+    "docs/grammar-reference/appendices/a-production-index.md",
+    "docs/grammar-reference/appendices/b-token-keyword-operator-index.md",
+    "docs/grammar-reference/appendices/c-feature-status-index.md",
+    "docs/grammar-reference/appendices/d-diagnostic-predicate-index.md",
+    "docs/grammar-reference/appendices/e-prelude-example-index.md",
+    "docs/grammar-reference/appendices/f-coverage-report.md",
+    "docs/grammar-reference/coverage-manifest.json",
+    "docs/tutorial/part-11-modules-system/11-05-hir-mir-backends-tooling.md",
+    "docs/tutorial/coverage-manifest.json",
+    "docs/tutorial/coverage-report.md",
+    "migration/catalog-reassembly.json",
+    "release/source-tree-manifest.json",
+    "rfcs/DP-RFC-0002-current-hir-h1.md",
+    "schemas/language/canonical-hir-h1.schema.json",
+    "schemas/language/deeplus-mir.schema.json",
+    "schemas/language/grammar-reference-coverage.schema.json",
+    "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json",
+    "schemas/language/hir-mir-lowering-row.schema.json",
+    "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
+    "schemas/language/mir-capability-receipt.schema.json",
+    "schemas/language/tutorial-coverage.schema.json",
+    "spec/contracts/grammar-reference-r1.json",
+    "spec/contracts/hir-h1-current-mir-bridge.json",
+    "spec/contracts/hir-h1-identity-catalog.json",
+    "spec/contracts/hir-mir-lowering-registry.json",
+    "spec/contracts/hir-mir-machine-diagnostic-contract.json",
+    "spec/contracts/language-coherence-current-integrity-r1.json",
+    "spec/contracts/mir-machine-registry.json",
+    "spec/contracts/tutorial-r1.json",
+    "spec/contracts/unified-call-actor-transport.json",
+    "spec/diagnostics/catalog/catalog-metadata.json",
+    "spec/diagnostics/catalog/chunks/part-0028.json",
+    "spec/features/catalog/chunks/part-0021.json",
+    "spec/frontend/frontend-model.json",
+    "spec/language.md",
+    "spec/mir/semantics.md",
+    "spec/patterns/pattern-lowering.json",
+    "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json",
+    "tests/fixtures/current/hir-mir-machine-contract-r1.json",
+    "tools/generators/generate_grammar_reference.py",
+    "tools/generators/generate_language_coherence_current_integrity.py",
+    "tools/generators/generate_tutorial.py",
+    "tools/generators/refresh_source_tree_manifest.py",
+    "tools/validators/run_r5_ownership_decision_mutation_tests.py",
+    "tools/validators/validate_hir_mir_machine_contract.py",
+    "tools/validators/validate_workspace.py",
 }
 EXPR_AUTHORITY = "governance/policies/management-policy.yaml#EXPR-001"
 EXPR_DIGEST = "42250c554d2d5f9cfb29bbd3668bed40ec1390fce658ac1804f7c6de29b1ac39"
@@ -10885,13 +10944,20 @@ def main() -> int:
         check(False, "REVISION_PARITY", str(exc))
     check(
         revision
-        in {LEGACY_REVISION, POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION},
+        in {LEGACY_REVISION, POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION},
         "REVISION_PARITY",
         revision,
     )
+    inherited_component_revision = (
+        LANGUAGE_COHERENCE_REVISION
+        if revision == R10_HIR_MIR_REVISION
+        else revision
+    )
 
     language_coherence_contract: dict[str, Any] = {}
-    if revision == LANGUAGE_COHERENCE_REVISION:
+    if revision in {
+        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+    }:
         try:
             language_coherence_contract = json.loads(
                 (root / LANGUAGE_COHERENCE_CONTRACT_REL).read_text(
@@ -10967,16 +11033,57 @@ def main() -> int:
             "tools/generators/post-pr16-current-integrity.contract.json",
             "tools/validators/run_post_pr16_current_integrity_tests.py",
         ])
-    elif revision == LANGUAGE_COHERENCE_REVISION:
+    elif revision in {
+        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+    }:
         required.extend([
             "tools/generators/generate_language_coherence_current_integrity.py",
             LANGUAGE_COHERENCE_CONTRACT_REL,
+        ])
+    if revision == R10_HIR_MIR_REVISION:
+        required.extend([
+            "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
+            "schemas/language/canonical-hir-h1.schema.json",
+            "schemas/language/deeplus-mir.schema.json",
+            "schemas/language/hir-mir-lowering-row.schema.json",
+            "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
+            "schemas/language/mir-capability-receipt.schema.json",
+            "spec/contracts/hir-h1-current-mir-bridge.json",
+            "spec/contracts/hir-h1-identity-catalog.json",
+            "spec/contracts/hir-mir-lowering-registry.json",
+            "spec/contracts/hir-mir-machine-diagnostic-contract.json",
+            "spec/contracts/mir-machine-registry.json",
+            "spec/diagnostics/catalog/catalog-metadata.json",
+            "spec/diagnostics/catalog/chunks/part-0028.json",
+            "tests/fixtures/current/hir-mir-machine-contract-r1.json",
+            "tools/generators/refresh_source_tree_manifest.py",
+            "tools/validators/validate_hir_mir_machine_contract.py",
         ])
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
         check((root / rel).is_file(), "REQUIRED_PATH", rel)
     check(not (root / ("current/current-pointer.json" if args.candidate else "release/candidate-state.json")).exists(),
           "RELEASE_STATE_EXCLUSIVE", "candidate and published current states are mutually exclusive")
+
+    if revision == R10_HIR_MIR_REVISION:
+        r10_validator = (
+            root / "tools/validators/validate_hir_mir_machine_contract.py"
+        )
+        process = subprocess.run(
+            [sys.executable, str(r10_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R10_HIR_MIR_MACHINE_CONTRACT",
+            detail[-4000:],
+        )
 
     generator = root / "tools/generators/generate_example_projections.py"
     if generator.is_file():
@@ -11044,7 +11151,9 @@ def main() -> int:
             detail[-4000:],
         )
 
-    if revision == LANGUAGE_COHERENCE_REVISION:
+    if revision in {
+        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+    }:
         current_integrity_generator_rel = (
             "tools/generators/generate_language_coherence_current_integrity.py"
         )
@@ -11056,8 +11165,11 @@ def main() -> int:
         current_integrity_generator_rel = (
             "tools/generators/generate_current_integrity.py"
         )
-    current_integrity_generator = root / current_integrity_generator_rel
-    if current_integrity_generator.is_file():
+    current_integrity_generator = (
+        root / current_integrity_generator_rel
+        if current_integrity_generator_rel is not None else None
+    )
+    if current_integrity_generator is not None and current_integrity_generator.is_file():
         process = subprocess.run(
             [
                 sys.executable,
@@ -11218,6 +11330,10 @@ def main() -> int:
     def revision_identity_exempt(relative: str, current_sha256: str) -> bool:
         if revision == POST_PR16_REVISION:
             return relative in POST_PR16_CANONICAL_DELTA_PATHS
+        if revision == R10_HIR_MIR_REVISION:
+            return relative in R10_SEMANTIC_DELTA_PATHS or (
+                language_identity_exemptions.get(relative) == current_sha256
+            )
         if revision == LANGUAGE_COHERENCE_REVISION:
             return language_identity_exemptions.get(relative) == current_sha256
         return False
@@ -11368,7 +11484,9 @@ def main() -> int:
             ).items()
             if key != "prelude_entries"
         }
-        if revision == LANGUAGE_COHERENCE_REVISION
+        if revision in {
+            LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+        }
         else EXPECTED
     )
     for key, expected in expected_counts.items():
@@ -11765,7 +11883,11 @@ def main() -> int:
         if isinstance(row, dict) and set(row) == {"path", "sha256"}
     }
     for rel, expected_sha in FROZEN_UNCHANGED_SEMANTIC_HASHES.items():
-        if revision == LANGUAGE_COHERENCE_REVISION:
+        if revision == R10_HIR_MIR_REVISION and rel == "spec/frontend/frontend-model.json":
+            continue
+        if revision in {
+            LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+        }:
             check(
                 successor_semantic_files.get(rel) == file_sha(root / rel),
                 "SUCCESSOR_SEMANTIC_FILE_IDENTITY",
@@ -11838,8 +11960,8 @@ def main() -> int:
         if isinstance(row, dict)
     }
     check(
-        numeric_contract.get("revision") == revision
-        and numeric_fixture.get("revision") == revision
+        numeric_contract.get("revision") == inherited_component_revision
+        and numeric_fixture.get("revision") == inherited_component_revision
         and numeric_contract.get("semantic_p0") == 0
         and numeric_fixture.get("semantic_p0") == 0
         and numeric_machine.get("fixture_case_count") == len(numeric_cases) == 64
@@ -11951,8 +12073,8 @@ def main() -> int:
     companion_machine = companion_contract.get("machine_acceptance", {})
     companion_counts = companion_fixture.get("expected_counts", {})
     check(
-        companion_contract.get("revision") == revision
-        and companion_fixture.get("revision") == revision
+        companion_contract.get("revision") == inherited_component_revision
+        and companion_fixture.get("revision") == inherited_component_revision
         and companion_contract.get("semantic_p0") == 0
         and companion_machine.get("rule_count") == 18
         and companion_machine.get("lookup_domain_count") == 4
@@ -12061,8 +12183,8 @@ def main() -> int:
     ]
     cranelift_counts = cranelift_fixture.get("expected_counts", {})
     check(
-        cranelift_contract.get("revision") == revision
-        and cranelift_fixture.get("revision") == revision
+        cranelift_contract.get("revision") == inherited_component_revision
+        and cranelift_fixture.get("revision") == inherited_component_revision
         and cranelift_contract.get("status")
         == "CURRENT_BACKEND_ARCHITECTURE"
         and cranelift_contract.get("semantic_authority") == "Deeplus MIR"
@@ -13060,7 +13182,7 @@ def main() -> int:
         "BITWISE_OPERATOR_MIXED_DOMAIN_REQUIRES_EXPLICIT_CONVERSION",
     ]
     check(
-        voi_contract.get("revision") == revision
+        voi_contract.get("revision") == inherited_component_revision
         and voi_contract.get("semantic_p0") == 0
         and voi_contract.get("current_binding") is False
         and voi_contract.get("product_lanes") == "15/15_NOT_RUN"
@@ -13182,8 +13304,8 @@ def main() -> int:
     trn_admit = sum(row.get("expected") == "ADMIT" for row in trn_rows)
     trn_reject = sum(row.get("expected") == "REJECT" for row in trn_rows)
     check(
-        trn.get("revision") == revision
-        and trn_contract.get("revision") == revision
+        trn.get("revision") == inherited_component_revision
+        and trn_contract.get("revision") == inherited_component_revision
         and trn_contract.get("semantic_p0") == 0
         and trn_contract.get("current_binding") is False
         and trn_contract.get("product_lanes") == "15/15_NOT_RUN"
@@ -13258,8 +13380,8 @@ def main() -> int:
     edc_serialized = json.dumps(edc_contract, ensure_ascii=False)
     grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
     check(
-        edc.get("revision") == revision
-        and edc_contract.get("revision") == revision
+        edc.get("revision") == inherited_component_revision
+        and edc_contract.get("revision") == inherited_component_revision
         and edc_contract.get("semantic_p0") == 0
         and edc_contract.get("current_binding") is True
         and edc_contract.get("source_activation") == "none"
@@ -13434,8 +13556,8 @@ def main() -> int:
     }
     lstc_serialized = json.dumps(lstc_contract, ensure_ascii=False)
     check(
-        lstc.get("revision") == revision
-        and lstc_contract.get("revision") == revision
+        lstc.get("revision") == inherited_component_revision
+        and lstc_contract.get("revision") == inherited_component_revision
         and lstc_contract.get("semantic_p0") == 0
         and lstc_contract.get("current_binding") is False
         and lstc_contract.get("source_activation") == "nonactivatable"
@@ -14517,6 +14639,7 @@ def main() -> int:
             ),
         )
         for relative in CURRENT_DECISION_INDEX_PATHS
+        + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -14525,8 +14648,10 @@ def main() -> int:
     )
     check(
         indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
+        + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else [])
         and indexed_decision_rows == expected_decision_rows
-        and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS)
+        and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
+                + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else []))
         and indexed_governance_paths
         == [
             "governance/policies/management-policy.yaml",
@@ -15299,7 +15424,7 @@ def main() -> int:
         if row.get("id") == R4_PUBLICATION_CLOSURE_DECISION_ID
     ]
     check(
-        current_decisions.get("law_count") == len(current_laws) == 44
+        current_decisions.get("law_count") == len(current_laws) == (45 if revision == R10_HIR_MIR_REVISION else 44)
         and r4_closure_laws
         == [
             {
@@ -15825,9 +15950,16 @@ def main() -> int:
             str(git_receipt),
         )
         if (root / ".git").exists():
+            git_base = [
+                "git",
+                "-c",
+                f"safe.directory={root.as_posix()}",
+                "-C",
+                str(root),
+            ]
             publication_object_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "cat-file", "-e",
+                    *git_base, "cat-file", "-e",
                     f"{CURRENT_PUBLICATION_TARGET_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
@@ -15835,7 +15967,7 @@ def main() -> int:
             )
             publication_ancestor_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    *git_base, "merge-base", "--is-ancestor",
                     CURRENT_PUBLICATION_TARGET_COMMIT, "HEAD",
                 ],
                 capture_output=True,
@@ -15843,7 +15975,7 @@ def main() -> int:
             )
             authority_transition_object_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "cat-file", "-e",
+                    *git_base, "cat-file", "-e",
                     f"{AUTHORITY_TRANSITION_BASE_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
@@ -15851,7 +15983,7 @@ def main() -> int:
             )
             r4_semantic_object_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "cat-file", "-e",
+                    *git_base, "cat-file", "-e",
                     f"{R4_SEMANTIC_PUBLICATION_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
@@ -15859,7 +15991,7 @@ def main() -> int:
             )
             audited_object_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "cat-file", "-e",
+                    *git_base, "cat-file", "-e",
                     f"{HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT}^{{commit}}",
                 ],
                 capture_output=True,
@@ -15867,7 +15999,7 @@ def main() -> int:
             )
             audited_to_authority_transition_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    *git_base, "merge-base", "--is-ancestor",
                     HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
                     AUTHORITY_TRANSITION_BASE_COMMIT,
                 ],
@@ -15876,7 +16008,7 @@ def main() -> int:
             )
             authority_transition_to_publication_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    *git_base, "merge-base", "--is-ancestor",
                     AUTHORITY_TRANSITION_BASE_COMMIT,
                     CURRENT_PUBLICATION_TARGET_COMMIT,
                 ],
@@ -15885,7 +16017,7 @@ def main() -> int:
             )
             r4_semantic_to_publication_check = subprocess.run(
                 [
-                    "git", "-C", str(root), "merge-base", "--is-ancestor",
+                    *git_base, "merge-base", "--is-ancestor",
                     R4_SEMANTIC_PUBLICATION_COMMIT,
                     CURRENT_PUBLICATION_TARGET_COMMIT,
                 ],
@@ -15942,7 +16074,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == LANGUAGE_COHERENCE_REVISION:
+        if revision == R10_HIR_MIR_REVISION:
+            expected_predecessor = LANGUAGE_COHERENCE_REVISION
+        elif revision == LANGUAGE_COHERENCE_REVISION:
             expected_predecessor = PREVIOUS_LANGUAGE_COHERENCE_REVISION
         elif revision == POST_PR16_REVISION:
             expected_predecessor = "r51f3-post-pr16-preview-design-r4"
@@ -15964,7 +16098,7 @@ def main() -> int:
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         expected_action_ids = (
             SUCCESSOR_ACTION_IDS
-            if revision in {POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION}
+            if revision in {POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
             else EXPECTED_ACTION_IDS
         )
         check(
@@ -16043,7 +16177,7 @@ def main() -> int:
     ]
     trait_cases = trait_surface_fixtures.get("cases", [])
     check(
-        frontend.get("revision") == TRAIT_OPERATOR_REFINEMENT_REVISION
+        frontend.get("revision") == revision
         and trait_surface.get("revision") == TRAIT_OPERATOR_REFINEMENT_REVISION
         and trait_surface_fixtures.get("revision")
         == TRAIT_OPERATOR_REFINEMENT_REVISION
@@ -16218,7 +16352,7 @@ def main() -> int:
         language_coherence_contract.get("canonical_counts", {}).get(
             "prelude_entries"
         )
-        if revision == LANGUAGE_COHERENCE_REVISION
+        if revision in {LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
         else 49
     )
     check(
@@ -16393,7 +16527,7 @@ def main() -> int:
     for path in memories:
         capsule = parsed.get(path, {})
         check(len(capsule.get("current_facts", [])) <= 50 and len(capsule.get("open_actions", [])) <= 30 and len(capsule.get("watch_items", [])) <= 20 and path.stat().st_size <= 102400, "ROLE_MEMORY_CAP", path.name)
-        check(capsule.get("source_revision") == revision and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
+        check(capsule.get("source_revision") == inherited_component_revision and all(not row.get("id", "").startswith("MIG-M1-") for row in capsule.get("open_actions", [])), "ROLE_MEMORY_CURRENT", path.name)
         facts_by_id = {
             row.get("id"): row
             for row in capsule.get("current_facts", [])
@@ -16422,7 +16556,7 @@ def main() -> int:
             and facts_by_id.get("CMA-001", {}).get("introduced")
             == (
                 POST_PR16_REVISION
-                if revision == LANGUAGE_COHERENCE_REVISION
+                if revision in {LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
                 else revision
             )
             and "Issue #24 remains open" in facts_by_id.get("MIRX1-001", {}).get("statement", "")

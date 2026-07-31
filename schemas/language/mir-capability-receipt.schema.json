@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r10/integrated/mir-capability-receipt-r1.schema.json",
+  "title": "Deeplus MIR Capability Receipt R1 integrated recomputation contract",
+  "description": "R2 integrated schema for a closed, independently recomputable binding from one Verified<CanonicalHirH1> to ExecutableHirH1. Claimed row requirements and status strings are never evidence. Target projection and product support remain outside this receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "hir_schema_id",
+    "hir_schema_digest",
+    "hir_semantic_digest",
+    "hir_verification_receipt_schema_id",
+    "hir_verification_receipt_id",
+    "hir_verification_receipt_digest",
+    "mir_schema_id",
+    "mir_schema_digest",
+    "mir_machine_registry_id",
+    "mir_machine_registry_digest",
+    "identity_catalog_id",
+    "identity_catalog_digest",
+    "lowering_registry_id",
+    "lowering_registry_digest",
+    "lowering_rules_revision",
+    "source_profile_id",
+    "feature_set_digest",
+    "reachable_lowering_keys",
+    "reachable_lowering_key_count",
+    "reachable_lowering_key_set_digest",
+    "direct_required_capability_ids",
+    "required_capability_ids",
+    "provided_capability_ids",
+    "capability_evidence",
+    "unsupported_reachable_keys",
+    "unsupported_reachable_key_count",
+    "projection_capability_ids",
+    "recomputation",
+    "failure_contract",
+    "target_identity_fence",
+    "canonicalization",
+    "receipt_semantic_digest"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.mir-capability-receipt/r1"
+    },
+    "hir_schema_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hir_schema_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "hir_semantic_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "hir_verification_receipt_schema_id": {
+      "const": "deeplus.canonical-hir-h1-verification-receipt/r1"
+    },
+    "hir_verification_receipt_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hir_verification_receipt_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mir_schema_id": {
+      "const": "deeplus.mir/r1"
+    },
+    "mir_schema_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mir_machine_registry_id": {
+      "const": "deeplus.mir-machine-registry/r1"
+    },
+    "mir_machine_registry_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "identity_catalog_id": {
+      "const": "deeplus.hir-h1-identity-catalog/r1"
+    },
+    "identity_catalog_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "lowering_registry_id": {
+      "const": "deeplus.hir-mir-lowering-registry/r1"
+    },
+    "lowering_registry_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "lowering_rules_revision": {
+      "type": "string",
+      "pattern": "^R[0-9]+(?:[._-][A-Z0-9]+)*$"
+    },
+    "source_profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "feature_set_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "reachable_lowering_keys": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/resolvedLoweringRow"
+      }
+    },
+    "reachable_lowering_key_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reachable_lowering_key_set_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "direct_required_capability_ids": {
+      "$ref": "#/$defs/capabilitySet"
+    },
+    "required_capability_ids": {
+      "$ref": "#/$defs/capabilitySet"
+    },
+    "provided_capability_ids": {
+      "$ref": "#/$defs/capabilitySet"
+    },
+    "capability_evidence": {
+      "type": "array",
+      "maxItems": 26,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/capabilityEvidenceReference"
+      }
+    },
+    "unsupported_reachable_keys": {
+      "type": "array",
+      "maxItems": 0,
+      "items": {
+        "$ref": "#/$defs/unsupportedReachableKey"
+      }
+    },
+    "unsupported_reachable_key_count": {
+      "const": 0
+    },
+    "projection_capability_ids": {
+      "description": "Target-bound projection capabilities are deliberately outside MirCapabilityReceiptR1.",
+      "type": "array",
+      "maxItems": 0,
+      "items": {
+        "$ref": "#/$defs/projectionCapabilityId"
+      }
+    },
+    "recomputation": {
+      "$ref": "#/$defs/recomputation"
+    },
+    "failure_contract": {
+      "$ref": "#/$defs/failureContract"
+    },
+    "target_identity_fence": {
+      "$ref": "#/$defs/targetIdentityFence"
+    },
+    "canonicalization": {
+      "$ref": "#/$defs/canonicalization"
+    },
+    "receipt_semantic_digest": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "capabilityId": {
+      "type": "string",
+      "enum": [
+        "DM-CAP-CORE-CFG-R1",
+        "DM-CAP-CONST-IDENTITY-R1",
+        "DM-CAP-STATIC-IDENTITY-R1",
+        "DM-CAP-CALL-CHANNELS-R1",
+        "DM-CAP-CALL-DIRECT-R1",
+        "DM-CAP-CALL-VIRTUAL-R1",
+        "DM-CAP-CALL-TRAIT-WITNESS-R1",
+        "DM-CAP-CALL-EXTENSION-STATIC-R1",
+        "DM-CAP-MESSAGE-MODE-R1",
+        "DM-CAP-RESERVED-OPERATION-R1",
+        "DM-CAP-FIXED-OPERATOR-R1",
+        "DM-CAP-POWER-R1",
+        "DM-CAP-PLACE-OWNERSHIP-R1",
+        "DM-CAP-ATOMIC-REPLACE-R1",
+        "DM-CAP-PATTERN-COMMIT-R1",
+        "DM-CAP-BUILDER-TRANSACTION-R1",
+        "DM-CAP-CLEANUP-OUTCOME-R1",
+        "DM-CAP-CLOSURE-R1",
+        "DM-CAP-SUSPEND-CANCEL-R1",
+        "DM-CAP-CONCUR-RUN-R1",
+        "DM-CAP-ACTOR-TRANSPORT-R1",
+        "DM-CAP-PROVIDER-AUTHORITY-R1",
+        "DM-CAP-ONCE-CELL-R1",
+        "DM-CAP-SYNCHRONIZATION-R1",
+        "DM-CAP-SAFEPOINT-ROOTMAP-R1",
+        "DM-CAP-PROVENANCE-PAIR-R1"
+      ]
+    },
+    "capabilitySet": {
+      "type": "array",
+      "maxItems": 26,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/capabilityId"
+      }
+    },
+    "projectionCapabilityId": {
+      "type": "string",
+      "enum": [
+        "PROJ-CAP-XVM-CANONICAL-XBC-R1",
+        "PROJ-CAP-CLIF-COMMON-R1",
+        "PROJ-CAP-CRANELIFT-OBJECT-R1",
+        "PROJ-CAP-CRANELIFT-JIT-R1",
+        "PROJ-CAP-MANAGED-REFERENCE-R1"
+      ]
+    },
+    "resolvedLoweringRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hir_schema_digest",
+        "mir_schema_digest",
+        "lowering_rules_revision",
+        "lowering_dispatch_key",
+        "lowering_rule_id",
+        "lowering_row_semantic_digest"
+      ],
+      "properties": {
+        "hir_schema_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "mir_schema_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "lowering_rules_revision": {
+          "type": "string",
+          "pattern": "^R[0-9]+(?:[._-][A-Z0-9]+)*$"
+        },
+        "lowering_dispatch_key": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_:.+-]*$"
+        },
+        "lowering_rule_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lowering_row_semantic_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "capabilityEvidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability_id",
+        "provider_component_id",
+        "provider_revision",
+        "evidence_receipt_schema_id",
+        "evidence_receipt_id",
+        "evidence_receipt_digest",
+        "evidence_status",
+        "mir_machine_registry_id",
+        "mir_machine_registry_digest"
+      ],
+      "properties": {
+        "capability_id": {
+          "$ref": "#/$defs/capabilityId"
+        },
+        "provider_component_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_receipt_schema_id": {
+          "const": "deeplus.mir-capability-evidence/r1"
+        },
+        "evidence_receipt_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_receipt_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evidence_status": {
+          "const": "VERIFIED_PROVIDED"
+        },
+        "mir_machine_registry_id": {
+          "const": "deeplus.mir-machine-registry/r1"
+        },
+        "mir_machine_registry_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "unsupportedReachableKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lowering_dispatch_key",
+        "missing_capability_ids"
+      ],
+      "properties": {
+        "lowering_dispatch_key": {
+          "type": "string",
+          "pattern": "^[A-Z0-9][A-Z0-9_:.+-]*$"
+        },
+        "missing_capability_ids": {
+          "$ref": "#/$defs/capabilitySet"
+        }
+      }
+    },
+    "recomputation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm_id",
+        "canonical_encoding",
+        "ordered_steps",
+        "join_key_fields",
+        "hir_verification_receipt_schema_verified",
+        "identity_catalog_resolved_and_verified",
+        "hir_dispatch_keys_recomputed",
+        "reachable_key_count_and_digest_recomputed",
+        "exact_four_field_row_lookup",
+        "claimed_row_requirements_are_authoritative",
+        "row_requirements_loaded_from_bound_registry",
+        "direct_required_set_recomputed_sorted_unique",
+        "unknown_capability_dependency_rejected",
+        "capability_dependency_cycle_rejected",
+        "transitive_dependency_closure_recomputed",
+        "evidence_receipts_resolved_by_id_and_digest",
+        "evidence_schema_status_capability_provider_and_registry_binding_verified",
+        "capability_evidence_exactly_once_per_provided_capability",
+        "required_set_is_sorted_unique",
+        "provided_set_is_sorted_unique",
+        "required_equals_provided",
+        "unsupported_reachable_key_count_is_zero",
+        "root_bindings_match_every_row",
+        "receipt_semantic_digest_recomputed",
+        "digest_only_acceptance"
+      ],
+      "properties": {
+        "algorithm_id": {
+          "const": "DEEPLUS_MIR_CAPABILITY_RECOMPUTE_R2_INTEGRATED"
+        },
+        "canonical_encoding": {
+          "const": "RFC8949_DETERMINISTIC_CBOR"
+        },
+        "ordered_steps": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "RESOLVE_AND_VERIFY_CANONICAL_HIR_AND_HIR_VERIFICATION_RECEIPT_BY_EXACT_SCHEMA_ID_RECEIPT_ID_AND_DIGEST"},
+            {"const": "RESOLVE_EXACT_HIR_IDENTITY_CATALOG_BYTES_BY_ID_AND_DIGEST_AND_VERIFY_EVERY_SEALED_HIR_IDENTITY"},
+            {"const": "TRAVERSE_CANONICAL_HIR_IN_SCHEMA_FIXED_ORDER_AND_RECOMPUTE_SORTED_UNIQUE_DISPATCH_KEY_SET"},
+            {"const": "RESOLVE_BOUND_LOWERING_REGISTRY_BYTES_BY_ID_AND_DIGEST"},
+            {"const": "LOOK_UP_EACH_DISPATCH_KEY_BY_EXACT_HIR_SCHEMA_DIGEST_MIR_SCHEMA_DIGEST_LOWERING_REVISION_AND_DISPATCH_KEY"},
+            {"const": "REJECT_MISSING_DUPLICATE_EXTRA_OR_ROOT_MISMATCHED_LOWERING_ROW"},
+            {"const": "LOAD_DIRECT_REQUIRED_CAPABILITY_IDS_ONLY_FROM_RESOLVED_REGISTRY_ROWS"},
+            {"const": "RESOLVE_BOUND_MIR_MACHINE_REGISTRY_BYTES_BY_ID_AND_DIGEST"},
+            {"const": "REJECT_UNKNOWN_CAPABILITY_DEPENDENCY_AND_DEPENDENCY_CYCLE"},
+            {"const": "COMPUTE_SORTED_UNIQUE_TRANSITIVE_DEPENDENCY_CLOSURE"},
+            {"const": "RESOLVE_EACH_EVIDENCE_RECEIPT_BY_ID_AND_DIGEST_AND_VERIFY_SCHEMA_STATUS_CAPABILITY_PROVIDER_REVISION_AND_CURRENT_MACHINE_REGISTRY_BINDING"},
+            {"const": "COMPUTE_SORTED_UNIQUE_PROVIDED_SET_FROM_SUCCESSFULLY_VERIFIED_EVIDENCE_ONLY"},
+            {"const": "REQUIRE_EXACT_EQUALITY_OF_REQUIRED_AND_PROVIDED_SETS_AND_ZERO_UNSUPPORTED_REACHABLE_KEYS"},
+            {"const": "RECOMPUTE_RECEIPT_SEMANTIC_DIGEST_FROM_RFC8949_DETERMINISTIC_CBOR_WITH_ONLY_RECEIPT_SEMANTIC_DIGEST_OMITTED"}
+          ],
+          "items": false,
+          "minItems": 14,
+          "maxItems": 14
+        },
+        "join_key_fields": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "hir_schema_digest"},
+            {"const": "mir_schema_digest"},
+            {"const": "lowering_rules_revision"},
+            {"const": "lowering_dispatch_key"}
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "hir_verification_receipt_schema_verified": {"const": true},
+        "identity_catalog_resolved_and_verified": {"const": true},
+        "hir_dispatch_keys_recomputed": {"const": true},
+        "reachable_key_count_and_digest_recomputed": {"const": true},
+        "exact_four_field_row_lookup": {"const": true},
+        "claimed_row_requirements_are_authoritative": {"const": false},
+        "row_requirements_loaded_from_bound_registry": {"const": true},
+        "direct_required_set_recomputed_sorted_unique": {"const": true},
+        "unknown_capability_dependency_rejected": {"const": true},
+        "capability_dependency_cycle_rejected": {"const": true},
+        "transitive_dependency_closure_recomputed": {"const": true},
+        "evidence_receipts_resolved_by_id_and_digest": {"const": true},
+        "evidence_schema_status_capability_provider_and_registry_binding_verified": {"const": true},
+        "capability_evidence_exactly_once_per_provided_capability": {"const": true},
+        "required_set_is_sorted_unique": {"const": true},
+        "provided_set_is_sorted_unique": {"const": true},
+        "required_equals_provided": {"const": true},
+        "unsupported_reachable_key_count_is_zero": {"const": true},
+        "root_bindings_match_every_row": {"const": true},
+        "receipt_semantic_digest_recomputed": {"const": true},
+        "digest_only_acceptance": {"const": false}
+      }
+    },
+    "failureContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_state",
+        "success_state",
+        "lowering_output_state",
+        "failure_state",
+        "canonical_hir_preserved_on_failure",
+        "capability_failure_blocks",
+        "capability_failure_does_not_claim"
+      ],
+      "properties": {
+        "input_state": {"const": "Verified<CanonicalHirH1>"},
+        "success_state": {"const": "ExecutableHirH1"},
+        "lowering_output_state": {"const": "Verified<DeeplusMirR1>"},
+        "failure_state": {"const": "Verified<CanonicalHirH1>"},
+        "canonical_hir_preserved_on_failure": {"const": true},
+        "capability_failure_blocks": {"const": "ExecutableHirH1"},
+        "capability_failure_does_not_claim": {"const": "HIR_INVALIDITY"}
+      }
+    },
+    "targetIdentityFence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend_neutral",
+        "projection_capability_count",
+        "target_specific_identity_count"
+      ],
+      "properties": {
+        "backend_neutral": {"const": true},
+        "projection_capability_count": {"const": 0},
+        "target_specific_identity_count": {"const": 0}
+      }
+    },
+    "canonicalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "definite_lengths",
+        "shortest_encodings",
+        "canonical_map_key_order",
+        "semantic_array_order_preserved",
+        "decode_reencode_byte_equality",
+        "receipt_semantic_digest_rule"
+      ],
+      "properties": {
+        "encoding": {"const": "RFC8949_DETERMINISTIC_CBOR"},
+        "definite_lengths": {"const": true},
+        "shortest_encodings": {"const": true},
+        "canonical_map_key_order": {"const": true},
+        "semantic_array_order_preserved": {"const": true},
+        "decode_reencode_byte_equality": {"const": true},
+        "receipt_semantic_digest_rule": {"const": "SHA256_OF_RFC8949_DETERMINISTIC_CBOR_WITH_ONLY_RECEIPT_SEMANTIC_DIGEST_OMITTED"}
+      }
+    }
+  },
+  "x-deeplus-recomputation-contract": {
+    "standard_json_schema_limit": "Cross-record equality, sorted-set order, exact HIR reachability, four-field row joins, graph closure, evidence resolution, referential integrity, and RFC 8949 digest recomputation require the Deeplus receipt verifier.",
+    "authoritative_inputs": [
+      "Verified canonical HIR bytes and verification receipt bound by HIR schema and semantic digests.",
+      "Exact HIR identity catalog bytes bound by identity_catalog_id and identity_catalog_digest.",
+      "Exact lowering registry bytes bound by lowering_registry_id and lowering_registry_digest.",
+      "Exact MIR machine registry bytes bound by mir_machine_registry_id and mir_machine_registry_digest.",
+      "Capability evidence receipt bytes resolved by evidence_receipt_id and evidence_receipt_digest."
+    ],
+    "verifier_must_reject": [
+      "A dispatch key copied from the receipt instead of recomputed from canonical HIR.",
+      "A HIR verification receipt with a mismatched schema identity or a HIR identity absent from the exact bound identity catalog.",
+      "A missing, duplicate, extra, unreachable, or four-field-root-mismatched lowering row.",
+      "A receipt-claimed row requirement that differs from the bound lowering registry row.",
+      "An unknown capability, unknown dependency, or cyclic capability dependency graph.",
+      "A required set that differs from the transitive dependency closure of exact reachable row requirements.",
+      "An unresolved evidence receipt or evidence with mismatched schema, status, capability, provider component, provider revision, or current machine registry binding.",
+      "Duplicate resolved evidence receipts for one provided capability ID.",
+      "A missing, extra, duplicate, unsorted, or unverified provided capability.",
+      "Any target projection capability or target-bound identity in MirCapabilityReceiptR1.",
+      "Any digest-only assertion that cannot be independently recomputed.",
+      "Any attempt to consume or mutate Verified<CanonicalHirH1> on capability failure.",
+      "Any interpretation of the receipt as product implementation, activation, or support evidence."
+    ]
+  },
+  "x-deeplus-closed-universe": {
+    "design_capability_count": 26,
+    "projection_capability_count": 5,
+    "projection_capabilities_admitted_in_receipt": 0,
+    "unsupported_reachable_key_count": 0
+  },
+  "x-deeplus-status-fence": {
+    "schema_materialization": "R2_INTEGRATED_DRAFT",
+    "receipt_instance_emitted": false,
+    "design_contract_only": true,
+    "audit_git_and_product_adoption_metadata_location": "EXTERNAL_ADOPTION_RECEIPT_NOT_MACHINE_SEMANTIC_PAYLOAD",
+    "machine_semantic_payload_excludes": [
+      "draft_revision",
+      "receipt_id",
+      "verification_status_label",
+      "repository",
+      "baseline_commit",
+      "baseline_tree",
+      "gap_id",
+      "product_support_claim",
+      "product_lanes"
+    ],
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

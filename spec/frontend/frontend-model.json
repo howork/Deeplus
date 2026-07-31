@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
-  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "revision": "r51f3-current-hir-mir-machine-contract-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
   "date": "2026-07-28",
   "authority_bundle": {
@@ -2039,8 +2039,8 @@
     "grammar": "structure only",
     "cst": "all tokens/trivia, missing/unexpected tokens, source form, supply-policy IDs",
     "ast": "normalized syntax meaning and stage-specific semantic enums",
-    "hir": "generated declarations; property/forwarding/comprehension/loop normalization; actor/protocol ownership; structured concur ownership; and reserved `~ spawn` message recognition",
-    "mir": "canonical Deeplus semantic authority: evaluation order, control targets, cleanup, ownership, effects, cancellation, failure, actor/concur execution state, evidence, xVM/Cranelift lowering",
+    "hir": "generated declarations; closed owner/body structure; exact canonical HIR identities, normalized types, static selections, ordered responsibility, and structured execution plans under deeplus.canonical-hir-h1/r1",
+    "mir": "deeplus.mir/r1 backend-neutral machine authority: exact evaluation order, control targets, cleanup, ownership, effects, cancellation, failure, actor/concur state, evidence, and responsibility residue; target projection remains downstream",
     "checker": "owner admission, type/effect/ownership/coherence/exhaustiveness/layout checks",
     "formatter": "canonical spacing and comments; # role compacting is convention",
     "rightward_local_binding": {
@@ -2914,7 +2914,33 @@
       "actor_result_shapes": "one-way Result<Unit,error ActorMessageError>; request Result<Reply<T>,error ActorMessageError>",
       "actor_request_await": "extract Reply<T> from Result before explicit await",
       "surface_sugar_erased_before_mir": true,
-      "dispatch_identity_erased": false
+      "dispatch_identity_erased": false,
+      "canonical_schema": "deeplus.canonical-hir-h1/r1",
+      "canonical_identity": "HIR-H1/EXPR/CALL",
+      "canonical_plan": "HirCallPlan",
+      "canonical_argument_kinds": [
+        "POSITIONAL",
+        "NAMED",
+        "POSITIONAL_UNFOLD",
+        "NAMED_UNFOLD",
+        "CONTEXT",
+        "WITNESS",
+        "TRAILING_CLOSURE"
+      ],
+      "canonical_arguments_array_count": 1,
+      "canonical_trailing_closure_array_count": 0,
+      "valid_mode_target_pairs": [
+        "ORDINARY::DIRECT_IMPLEMENTATION",
+        "ORDINARY::VIRTUAL_SLOT",
+        "ORDINARY::TRAIT_WITNESS",
+        "ORDINARY::EXTENSION_STATIC",
+        "MESSAGE::DIRECT_IMPLEMENTATION",
+        "MESSAGE::VIRTUAL_SLOT",
+        "MESSAGE::TRAIT_WITNESS",
+        "MESSAGE::EXTENSION_STATIC",
+        "MESSAGE::RESERVED_OPERATION",
+        "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+      ]
     },
     "formatter": {
       "single_unlabeled_trailing_closure": "same line when short, otherwise indented",
@@ -4193,6 +4219,15 @@
       "context_anchor_ownership_borrow_events": 0,
       "automatic_borrow_ampersand_rewrite": 0
     },
+    "product_support": "NOT_RUN"
+  },
+  "hir_mir_machine_contract": {
+    "revision": "r51f3-current-hir-mir-machine-contract-r1",
+    "canonical_hir_schema": "deeplus.canonical-hir-h1/r1",
+    "mir_schema": "deeplus.mir/r1",
+    "capability_receipt_schema": "deeplus.mir-capability-receipt/r1",
+    "source_syntax_added": false,
+    "source_profile_activated": false,
     "product_support": "NOT_RUN"
   }
 }

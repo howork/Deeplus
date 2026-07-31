@@ -10,9 +10,9 @@
 | Scope | CST/AST와 MIR 사이의 Deeplus HIR 자료구조, 단계 경계, 불변식, 검증 및 결정적 직렬화 |
 | Current authority | [`spec/language.md`](../spec/language.md), [`spec/frontend/frontend-model.json`](../spec/frontend/frontend-model.json), [`spec/types/type-system.md`](../spec/types/type-system.md), [`spec/mir/semantics.md`](../spec/mir/semantics.md) |
 | Compatibility target | 현행 Deeplus 의미 계약과 비정본 [`DP-RFC-0001 ProposedMirX1`](./DP-RFC-0001-xvm-only-mir.md) |
-| Proposed schema | `deeplus.hir/h1` |
+| Current machine schema | `deeplus.canonical-hir-h1/r1` |
 | Target language version | `0.1.2-internal` |
-| Target spec revision | `r51f3-current-numeric-guard-call-enum-coherence-r1` |
+| Target spec revision | `r51f3-current-hir-mir-machine-contract-r1` |
 | R4 supplement baseline | `howork/Deeplus@53464e47bc280d4f431440eb7538d9d97c0a7aa7` |
 | R4 supplement profile | `R4_NAME_RESOLUTION_MODULES` |
 | R4 supplement date | 2026-07-30 |
@@ -24,7 +24,7 @@
 
 - 이 문서는 **설계 제안**이다. 현재 언어 정본, 구현 상태, 제품 lane, backend 권위를 변경하거나 활성화하지 않는다.
 - 현재 [`implementation-status.yaml`](../current/implementation-status.yaml)의 `rust_hir_lowering`, `rust_integrated_checker`, `deeplus_mir_lowering`은 모두 `NOT_RUN`이다. 이 문서는 그 상태를 구현 완료로 승격하지 않는다.
-- 현재 [`language-version.toml`](../current/language-version.toml)에는 HIR schema authority가 없다. `deeplus.hir/h1`은 제안 이름일 뿐 배정된 정본 schema가 아니다.
+- 현재 [`language-version.toml`](../current/language-version.toml)은 `deeplus.canonical-hir-h1/r1`을 Stable-design machine schema로 배정한다. 이 배정은 구현 또는 product 실행 receipt가 아니다.
 - 이 설계는 조직 역할, 담당자, 일정, 승인 절차를 배정하지 않는다. 오직 HIR의 의미·자료구조·검증 경계만 다룬다.
 - 이 문서를 작성하면서 기존 정본 및 현재 미커밋 변경 파일은 수정하지 않는다.
 - 본 설계는 Cranelift 또는 다른 특정 native backend의 자료구조를 HIR에 도입하지 않는다. HIR-H1은 backend-neutral한 고수준 의미 계약이며, 실행 권위는 검증된 MIR 이후에만 생긴다.
@@ -51,7 +51,7 @@ Lossless CST
   -> ExecutableHirH1
   -> MirDraft
   -> canonicalize + verify
-  -> Verified<ProposedMirX1>
+  -> Verified<DeeplusMirR1>
 ```
 
 IDE 복구용 `AnalysisHir`에는 missing node, error type, unresolved candidate가 있을 수 있다. 그러나 `CanonicalHirH1`, `ExecutableHirH1`, serializer와 MIR lowerer에는 그런 variant가 **자료형 자체에 존재하지 않아야 한다**.
@@ -63,7 +63,7 @@ IDE 복구용 `AnalysisHir`에는 missing node, error type, unresolved candidate
 | CST | token, trivia, recovery, 원래 spelling | 의미 identity, type |
 | AST | 정규화된 구문 의미와 문법 단계 enum | overload 선택, ownership plan |
 | HIR-H1 | generated declaration, 정적 identity, 완결 타입·책임, 구조화된 실행 계획 | CFG, SSA, frame slot, root map |
-| MIR-X1 | 평가 순서의 실행 형식, CFG, Value/Place, loan/token, cleanup/outcome/suspend | 이름·overload·witness·extension 재탐색 |
+| Deeplus MIR R1 | 평가 순서의 실행 형식, CFG, Value/Place, loan/token, cleanup/outcome/suspend | 이름·overload·witness·extension 재탐색 |
 | xVM | 검증된 MIR의 frame/instruction 투영 | 언어 의미 재결정 |
 
 ## 2. 현행 저장소에서 확인한 출발점
@@ -1567,11 +1567,11 @@ direct `let`과 동치인 rightward binding은 같은 semantic digest를 가질 
 - shared ordered arguments와 구분되는 `CallMode`/selector/actor-transport domain
 - trailing closure의 selected `FormalId`
 
-## 21. HIR에서 MIR-X1로의 계약
+## 21. HIR에서 Deeplus MIR R1로의 계약
 
 ### 21.1 lowering은 의미 결정이 아니라 구조 확장이다
 
-| HIR-H1 | MIR-X1 |
+| HIR-H1 | Deeplus MIR R1 |
 |---|---|
 | exact normalized type/identity | `MirTypeId`, `StaticIdentity`, exact callee |
 | structured `HirCallPlan` | ordered ops + `CallShape` + invoke outcome edges |
@@ -2265,3 +2265,24 @@ HIR-H1 제안은 최소한 다음을 모두 만족할 때만 정본 채택 후�
 > MIR는 “실행에 가까운 첫 현행 의미 handoff”다. HIR에서 모든 정적
 > 결정을 닫고, MIR에서는 그 결정을 CFG·Place·token·outcome으로만
 > 전개한다. MIR-X1은 선택적 비권위 compatibility projection이다.**
+
+## 31. R10 canonical machine-schema adoption addendum
+
+<!-- R10-HIR-MIR-MACHINE-CONTRACT -->
+
+For revision `r51f3-current-hir-mir-machine-contract-r1`, the schema and
+verifier portions of this RFC are adopted as Current Stable design under
+`deeplus.canonical-hir-h1/r1`. The concrete compiler implementation proposal
+remains noncanonical and `NOT_RUN`.
+
+The current machine output is `Verified<DeeplusMirR1>` under
+`deeplus.mir/r1`; `Verified<ProposedMirX1>` remains only a noncanonical,
+nonactivatable compatibility target. `MirCapabilityReceiptR1` is recomputed
+from exact reachable lowering keys, the 102 Current/111 explicit-Preview row
+registry, the acyclic 26-capability dependency graph, and independently
+resolved provider evidence. Failure preserves verified canonical HIR and
+blocks only executable-HIR construction.
+
+This addendum changes no source syntax or profile, adds no production
+implementation or product support, closes no feature P1 or M13 action, and
+leaves all 15 product lanes `NOT_RUN`.

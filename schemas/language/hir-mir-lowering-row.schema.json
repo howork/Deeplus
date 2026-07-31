@@ -1,0 +1,1373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/hir-mir-lowering-row.schema.json",
+  "title": "Deeplus Canonical HIR H1 to Deeplus MIR R1 compositional lowering row",
+  "description": "Draft postimage for one deterministic lowering-dispatch row. Registry-wide validation must prove exactly 102 CURRENT rows and exactly 111 rows in the explicit PREVIEW maximum; this row schema does not itself issue a capability or product receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "row_schema_version",
+    "row_id",
+    "row_family",
+    "composition_rank",
+    "profile_gate",
+    "counts_toward_current_102",
+    "counts_toward_preview_111",
+    "hir_schema_digest",
+    "mir_schema_digest",
+    "lowering_rules_revision",
+    "lowering_dispatch_key",
+    "lowering_rule_id",
+    "dispatch_role",
+    "hir_identity_ids",
+    "disposition",
+    "required_capability_ids",
+    "operation_plan",
+    "terminator_plan",
+    "successor_roles",
+    "token_inputs",
+    "token_outputs",
+    "token_discharges",
+    "outcome_families",
+    "cleanup_effect",
+    "suspension_effect",
+    "ownership_effect",
+    "responsibility_projection",
+    "provenance_projection",
+    "product_support"
+  ],
+  "properties": {
+    "row_schema_version": {
+      "const": "deeplus.hir-mir-lowering-row/r1"
+    },
+    "row_id": {
+      "type": "string",
+      "pattern": "^HM-LR-(TOP|REF|CALL|ARG|OP|PAT)-[0-9]{3}$"
+    },
+    "row_family": {
+      "enum": [
+        "TOP_LEVEL_EXPRESSION_OR_STATEMENT",
+        "RESOLVED_REF",
+        "VALID_CALL_MODE_TARGET_PAIR",
+        "CALL_ARGUMENT",
+        "FIXED_OPERATOR_OR_POWER",
+        "PATTERN"
+      ]
+    },
+    "composition_rank": {
+      "enum": [
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ]
+    },
+    "profile_gate": {
+      "enum": [
+        "CURRENT",
+        "EXPLICIT_PREVIEW"
+      ]
+    },
+    "counts_toward_current_102": {
+      "type": "boolean"
+    },
+    "counts_toward_preview_111": {
+      "const": true
+    },
+    "hir_schema_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mir_schema_digest": {
+      "$ref": "#/$defs/sha256"
+    },
+    "lowering_rules_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lowering_dispatch_key": {
+      "$ref": "#/$defs/loweringDispatchKey"
+    },
+    "lowering_rule_id": {
+      "type": "string",
+      "pattern": "^DM-LR-[A-Z0-9]+(?:-[A-Z0-9]+)*-R1$"
+    },
+    "dispatch_role": {
+      "enum": [
+        "TOP_LEVEL_KIND",
+        "RESOLVED_REFERENCE_KIND",
+        "CALL_MODE_TARGET_PAIR",
+        "CALL_ARGUMENT_KIND",
+        "INTRINSIC_OPERATION_KIND",
+        "PATTERN_KIND"
+      ]
+    },
+    "hir_identity_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Every identity must resolve in the exact 128-row deeplus.hir-h1-identity-catalog/r1 and must be the exact identity tuple owned by lowering_dispatch_key."
+    },
+    "disposition": {
+      "enum": [
+        "LOWER",
+        "NO_RUNTIME_EMISSION"
+      ]
+    },
+    "required_capability_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/capabilityId"
+      }
+    },
+    "operation_plan": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/operationPlanStep"
+      }
+    },
+    "terminator_plan": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/terminatorPlanStep"
+      }
+    },
+    "successor_roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "NORMAL",
+          "ERROR",
+          "DEFECT",
+          "CANCELLATION",
+          "SUSPEND",
+          "CLEANUP",
+          "COMPLETE"
+        ]
+      }
+    },
+    "token_inputs": {
+      "$ref": "#/$defs/tokenPlan"
+    },
+    "token_outputs": {
+      "$ref": "#/$defs/tokenPlan"
+    },
+    "token_discharges": {
+      "$ref": "#/$defs/tokenPlan"
+    },
+    "outcome_families": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "NORMAL",
+          "ERROR",
+          "DEFECT",
+          "CANCELLATION"
+        ]
+      }
+    },
+    "cleanup_effect": {
+      "enum": [
+        "NONE",
+        "REGISTER",
+        "PIN",
+        "SEAL",
+        "DISARM",
+        "RUN_LIFO"
+      ]
+    },
+    "suspension_effect": {
+      "enum": [
+        "NONE",
+        "MAY_SUSPEND",
+        "SUSPENDS"
+      ]
+    },
+    "ownership_effect": {
+      "enum": [
+        "PURE_VALUE",
+        "READ_PLACE",
+        "INITIALIZE_PLACE",
+        "MOVE_PLACE",
+        "RESERVE_MOVE",
+        "ATOMIC_REPLACE",
+        "LOAN",
+        "TRANSACTIONAL_COMMIT",
+        "FORWARD"
+      ]
+    },
+    "responsibility_projection": {
+      "$ref": "#/$defs/responsibilityProjection"
+    },
+    "provenance_projection": {
+      "$ref": "#/$defs/provenanceProjection"
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "profile_gate": {
+            "const": "CURRENT"
+          }
+        },
+        "required": [
+          "profile_gate"
+        ]
+      },
+      "then": {
+        "properties": {
+          "counts_toward_current_102": {
+            "const": true
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "row_family": {
+            "const": "PATTERN"
+          },
+          "composition_rank": {
+            "const": 60
+          },
+          "counts_toward_current_102": {
+            "const": false
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/previewPatternDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "TOP_LEVEL_EXPRESSION_OR_STATEMENT"
+          }
+        },
+        "required": [
+          "row_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 10
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          },
+          "dispatch_role": {
+            "const": "TOP_LEVEL_KIND"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/topLevelDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "RESOLVED_REF"
+          }
+        },
+        "required": [
+          "row_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 20
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          },
+          "dispatch_role": {
+            "const": "RESOLVED_REFERENCE_KIND"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/resolvedRefDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "VALID_CALL_MODE_TARGET_PAIR"
+          }
+        },
+        "required": [
+          "row_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 30
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          },
+          "dispatch_role": {
+            "const": "CALL_MODE_TARGET_PAIR"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/callPairDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "CALL_ARGUMENT"
+          }
+        },
+        "required": [
+          "row_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 40
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          },
+          "dispatch_role": {
+            "const": "CALL_ARGUMENT_KIND"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/callArgumentDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "FIXED_OPERATOR_OR_POWER"
+          }
+        },
+        "required": [
+          "row_family"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 50
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          },
+          "dispatch_role": {
+            "const": "INTRINSIC_OPERATION_KIND"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/intrinsicDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_family": {
+            "const": "PATTERN"
+          },
+          "profile_gate": {
+            "const": "CURRENT"
+          }
+        },
+        "required": [
+          "row_family",
+          "profile_gate"
+        ]
+      },
+      "then": {
+        "properties": {
+          "composition_rank": {
+            "const": 60
+          },
+          "dispatch_role": {
+            "const": "PATTERN_KIND"
+          },
+          "lowering_dispatch_key": {
+            "$ref": "#/$defs/currentPatternDispatchKey"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "const": "NO_RUNTIME_EMISSION"
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "properties": {
+          "required_capability_ids": {
+            "maxItems": 0
+          },
+          "operation_plan": {
+            "maxItems": 0
+          },
+          "terminator_plan": {
+            "maxItems": 0
+          },
+          "token_inputs": {
+            "maxItems": 0
+          },
+          "token_outputs": {
+            "maxItems": 0
+          },
+          "token_discharges": {
+            "maxItems": 0
+          },
+          "cleanup_effect": {
+            "const": "NONE"
+          },
+          "suspension_effect": {
+            "const": "NONE"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "topLevelDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "node_category",
+        "identity_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "TOP_LEVEL"
+        },
+        "node_category": {
+          "enum": [
+            "EXPRESSION",
+            "STATEMENT"
+          ]
+        },
+        "identity_id": {
+          "enum": [
+            "LITERAL",
+            "RESOLVED_REF",
+            "BLOCK",
+            "CALL",
+            "INTRINSIC",
+            "PLACE_ACCESS",
+            "REPLACE",
+            "IF",
+            "TERNARY",
+            "MATCH",
+            "LOOP",
+            "TRY",
+            "STRICT_BOOL",
+            "SEQUENTIAL_BOOL",
+            "OPTION_COALESCE",
+            "PATTERN_ATTEMPT",
+            "CONSTRUCTION",
+            "MAP_LITERAL",
+            "INTERPOLATION",
+            "CLOSURE",
+            "CLEANUP_SCOPE",
+            "AWAIT",
+            "YIELD",
+            "CONCUR",
+            "PROVIDER_OPERATION",
+            "RETURN_TO",
+            "RET_TO",
+            "BREAK_TO",
+            "CONTINUE_TO",
+            "THROW",
+            "CANCEL_PROPAGATE",
+            "EVALUATE",
+            "LOCAL_INIT",
+            "REGISTER_CLEANUP",
+            "NESTED_ITEM"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "identity_id": {
+                "enum": [
+                  "EVALUATE",
+                  "LOCAL_INIT",
+                  "REGISTER_CLEANUP",
+                  "NESTED_ITEM"
+                ]
+              }
+            },
+            "required": [
+              "identity_id"
+            ]
+          },
+          "then": {
+            "properties": {
+              "node_category": {
+                "const": "STATEMENT"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "node_category": {
+                "const": "EXPRESSION"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resolvedRefDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identity_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "RESOLVED_REF"
+        },
+        "identity_id": {
+          "enum": [
+            "LOCAL",
+            "DIRECT_DECL"
+          ]
+        }
+      }
+    },
+    "callPairDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pair_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CALL_MODE_TARGET_PAIR"
+        },
+        "pair_id": {
+          "enum": [
+            "ORDINARY::DIRECT_IMPLEMENTATION",
+            "ORDINARY::VIRTUAL_SLOT",
+            "ORDINARY::TRAIT_WITNESS",
+            "ORDINARY::EXTENSION_STATIC",
+            "MESSAGE::DIRECT_IMPLEMENTATION",
+            "MESSAGE::VIRTUAL_SLOT",
+            "MESSAGE::TRAIT_WITNESS",
+            "MESSAGE::EXTENSION_STATIC",
+            "MESSAGE::RESERVED_OPERATION",
+            "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+          ]
+        }
+      }
+    },
+    "callArgumentDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identity_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "CALL_ARGUMENT"
+        },
+        "identity_id": {
+          "enum": [
+            "POSITIONAL",
+            "NAMED",
+            "POSITIONAL_UNFOLD",
+            "NAMED_UNFOLD",
+            "CONTEXT",
+            "WITNESS",
+            "TRAILING_CLOSURE"
+          ]
+        }
+      }
+    },
+    "intrinsicDispatchKey": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "intrinsic_family",
+            "identity_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "INTRINSIC_OPERATION"
+            },
+            "intrinsic_family": {
+              "const": "FIXED_OPERATOR_CONFORMANCE"
+            },
+            "identity_id": {
+              "enum": [
+                "UNARY_PLUS",
+                "UNARY_MINUS",
+                "ADD",
+                "SUBTRACT",
+                "MULTIPLY",
+                "DIVIDE",
+                "REMAINDER",
+                "EQUAL",
+                "NOT_EQUAL",
+                "LESS",
+                "LESS_EQUAL",
+                "GREATER",
+                "GREATER_EQUAL"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "intrinsic_family",
+            "identity_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "INTRINSIC_OPERATION"
+            },
+            "intrinsic_family": {
+              "const": "POWER"
+            },
+            "identity_id": {
+              "enum": [
+                "CHECKED_INT_POW",
+                "FLOAT_POW_INT",
+                "FLOAT_POW",
+                "COMPLEX_POW_INT",
+                "COMPLEX_POW_PRINCIPAL",
+                "MEASURE_POW_STATIC"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "currentPatternDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pattern_profile",
+        "identity_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "PATTERN"
+        },
+        "pattern_profile": {
+          "const": "CURRENT"
+        },
+        "identity_id": {
+          "enum": [
+            "PK-BINDER",
+            "PK-UNION-ALTERNATIVE-BINDER",
+            "PK-TYPED-BINDER",
+            "PK-WILDCARD",
+            "PK-UNIT",
+            "PK-LITERAL",
+            "PK-PARENTHESIZED",
+            "PK-TUPLE",
+            "PK-LIST-EXACT",
+            "PK-LIST-IGNORED-TAIL",
+            "PK-LIST-SUFFIX-REST",
+            "PK-LIST-PREFIX-REST",
+            "PK-LIST-MIDDLE-REST",
+            "PK-RECORD-EXACT",
+            "PK-RECORD-OPEN-IGNORED",
+            "PK-RECORD-OPEN-CAPTURED",
+            "PK-MAP-EXACT",
+            "PK-MAP-OPEN-IGNORED",
+            "PK-MAP-OPEN-CAPTURED",
+            "PK-NOMINAL-TRANSPARENT",
+            "PK-VARIANT",
+            "PK-VARIANT-NAMED",
+            "PK-PIN",
+            "PK-RANGE",
+            "PK-RELATIONAL",
+            "PK-BOUNDED-BINDER",
+            "PK-OR",
+            "PK-ALIAS",
+            "PK-MOVE"
+          ]
+        }
+      }
+    },
+    "previewPatternDispatchKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "pattern_profile",
+        "identity_id"
+      ],
+      "properties": {
+        "kind": {
+          "const": "PATTERN"
+        },
+        "pattern_profile": {
+          "const": "EXPLICIT_PREVIEW"
+        },
+        "identity_id": {
+          "enum": [
+            "PK-AND",
+            "PK-NOT",
+            "PK-SET",
+            "PK-NUMERIC-ARRAY",
+            "PK-PATTERN-SYNONYM",
+            "PK-PATTERN-VIEW",
+            "PK-FIND",
+            "PK-GENERIC-SEQUENCE-REST",
+            "PK-TUPLE-REST"
+          ]
+        }
+      }
+    },
+    "loweringDispatchKey": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/topLevelDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/resolvedRefDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/callPairDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/callArgumentDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/intrinsicDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/currentPatternDispatchKey"
+        },
+        {
+          "$ref": "#/$defs/previewPatternDispatchKey"
+        }
+      ]
+    },
+    "capabilityId": {
+      "enum": [
+        "DM-CAP-CORE-CFG-R1",
+        "DM-CAP-CONST-IDENTITY-R1",
+        "DM-CAP-STATIC-IDENTITY-R1",
+        "DM-CAP-CALL-CHANNELS-R1",
+        "DM-CAP-CALL-DIRECT-R1",
+        "DM-CAP-CALL-VIRTUAL-R1",
+        "DM-CAP-CALL-TRAIT-WITNESS-R1",
+        "DM-CAP-CALL-EXTENSION-STATIC-R1",
+        "DM-CAP-MESSAGE-MODE-R1",
+        "DM-CAP-RESERVED-OPERATION-R1",
+        "DM-CAP-FIXED-OPERATOR-R1",
+        "DM-CAP-POWER-R1",
+        "DM-CAP-PLACE-OWNERSHIP-R1",
+        "DM-CAP-ATOMIC-REPLACE-R1",
+        "DM-CAP-PATTERN-COMMIT-R1",
+        "DM-CAP-BUILDER-TRANSACTION-R1",
+        "DM-CAP-CLEANUP-OUTCOME-R1",
+        "DM-CAP-CLOSURE-R1",
+        "DM-CAP-SUSPEND-CANCEL-R1",
+        "DM-CAP-CONCUR-RUN-R1",
+        "DM-CAP-ACTOR-TRANSPORT-R1",
+        "DM-CAP-PROVIDER-AUTHORITY-R1",
+        "DM-CAP-ONCE-CELL-R1",
+        "DM-CAP-SYNCHRONIZATION-R1",
+        "DM-CAP-SAFEPOINT-ROOTMAP-R1",
+        "DM-CAP-PROVENANCE-PAIR-R1"
+      ]
+    },
+    "operationKind": {
+      "enum": [
+        "CONST",
+        "STATIC_REF",
+        "PURE_INTRINSIC",
+        "TOTAL_PROJECTION",
+        "CONTEXT_ADAPT",
+        "AGGREGATE_INJECT",
+        "AGGREGATE_ASSEMBLE",
+        "PLACE_LOAD",
+        "PLACE_STORE_INIT",
+        "PLACE_MOVE",
+        "MOVE_RESERVE",
+        "MOVE_CANCEL",
+        "LOAN_BEGIN_SHARED",
+        "LOAN_BEGIN_EXCLUSIVE",
+        "LOAN_BEGIN_REBORROW",
+        "LOAN_END",
+        "CLEANUP_REGION_ENTER",
+        "CLEANUP_REGISTER",
+        "CLEANUP_PIN",
+        "CLEANUP_SEAL",
+        "CLEANUP_DISARM",
+        "BUILDER_BEGIN",
+        "BUILDER_STAGE",
+        "BUILDER_COMMIT",
+        "PATTERN_PROBE",
+        "BINDING_COMMIT",
+        "CLOSURE_MAKE",
+        "CONCUR_ENTER",
+        "ACTOR_ENVELOPE_PREPARE"
+      ]
+    },
+    "terminatorKind": {
+      "enum": [
+        "BR",
+        "COND_BR",
+        "SWITCH_ENUM",
+        "SWITCH_INT",
+        "INVOKE",
+        "CHECKED",
+        "PLACE_REPLACE",
+        "LEAVE",
+        "SUSPEND",
+        "CANCEL_CHECK",
+        "RUN_OP",
+        "ACTOR_OP",
+        "PROVIDER_OP",
+        "ONCE_OP",
+        "SYNC_OP",
+        "COMPLETE",
+        "UNREACHABLE_PROVEN"
+      ]
+    },
+    "operationPlanStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal",
+        "operation_kind",
+        "semantic_operation_id",
+        "input_roles",
+        "output_roles",
+        "condition"
+      ],
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "operation_kind": {
+          "$ref": "#/$defs/operationKind"
+        },
+        "semantic_operation_id": {
+          "enum": [
+            "DM-SEMOP-CONST-R1",
+            "DM-SEMOP-STATIC-REF-R1",
+            "DM-SEMOP-PURE-INTRINSIC-R1",
+            "DM-SEMOP-TOTAL-PROJECTION-R1",
+            "DM-SEMOP-CONTEXT-ADAPT-R1",
+            "DM-SEMOP-AGGREGATE-INJECT-R1",
+            "DM-SEMOP-AGGREGATE-ASSEMBLE-R1",
+            "DM-SEMOP-PLACE-LOAD-R1",
+            "DM-SEMOP-PLACE-STORE-INIT-R1",
+            "DM-SEMOP-PLACE-MOVE-R1",
+            "DM-SEMOP-MOVE-RESERVE-R1",
+            "DM-SEMOP-MOVE-CANCEL-R1",
+            "DM-SEMOP-LOAN-BEGIN-SHARED-R1",
+            "DM-SEMOP-LOAN-BEGIN-EXCLUSIVE-R1",
+            "DM-SEMOP-LOAN-BEGIN-REBORROW-R1",
+            "DM-SEMOP-LOAN-END-R1",
+            "DM-SEMOP-CLEANUP-REGION-ENTER-R1",
+            "DM-SEMOP-CLEANUP-REGISTER-R1",
+            "DM-SEMOP-CLEANUP-PIN-R1",
+            "DM-SEMOP-CLEANUP-SEAL-R1",
+            "DM-SEMOP-CLEANUP-DISARM-R1",
+            "DM-SEMOP-BUILDER-BEGIN-R1",
+            "DM-SEMOP-BUILDER-STAGE-R1",
+            "DM-SEMOP-BUILDER-COMMIT-R1",
+            "DM-SEMOP-PATTERN-PROBE-R1",
+            "DM-SEMOP-BINDING-COMMIT-R1",
+            "DM-SEMOP-CLOSURE-MAKE-R1",
+            "DM-SEMOP-CONCUR-ENTER-R1",
+            "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"
+          ],
+          "description": "Must equal the total one-to-one mapping for operation_kind in deeplus.mir-machine-registry/r1."
+        },
+        "input_roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "output_roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "condition": {
+          "enum": [
+            "ALWAYS",
+            "ON_SUCCESS",
+            "ON_ERROR",
+            "ON_DEFECT",
+            "ON_CANCEL",
+            "ON_SUSPEND"
+          ]
+        }
+      }
+    },
+    "terminatorPlanStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinal",
+        "terminator_kind",
+        "input_roles",
+        "successor_roles"
+      ],
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terminator_kind": {
+          "$ref": "#/$defs/terminatorKind"
+        },
+        "input_roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "successor_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "NORMAL",
+              "ERROR",
+              "DEFECT",
+              "CANCELLATION",
+              "SUSPEND",
+              "CLEANUP",
+              "COMPLETE"
+            ]
+          }
+        }
+      }
+    },
+    "tokenKind": {
+      "enum": [
+        "ACCESS",
+        "MOVE_RESERVATION",
+        "CLEANUP",
+        "BUILDER",
+        "CALL_RIGHT",
+        "CONCUR",
+        "RUN",
+        "REPLY",
+        "SUSPENSION",
+        "CANCELLATION",
+        "ACTOR_TURN",
+        "AUTHORITY"
+      ]
+    },
+    "tokenPlan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "token_kind",
+          "token_role",
+          "cardinality"
+        ],
+        "properties": {
+          "token_kind": {
+            "$ref": "#/$defs/tokenKind"
+          },
+          "token_role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cardinality": {
+            "const": 1
+          }
+        }
+      }
+    },
+    "axisProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axis",
+        "hir_role",
+        "mir_residue_role",
+        "projection_kind"
+      ],
+      "properties": {
+        "axis": {
+          "enum": [
+            "value_mode",
+            "resource",
+            "place_access",
+            "effects",
+            "recoverable_errors",
+            "defects",
+            "cancellation",
+            "suspension",
+            "isolation",
+            "authority",
+            "cleanup"
+          ]
+        },
+        "hir_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mir_residue_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "projection_kind": {
+          "enum": [
+            "EXACT_VALUE",
+            "EXACT_SET",
+            "ORDERED_EXPANSION",
+            "EMPTY_PRESERVED"
+          ]
+        }
+      }
+    },
+    "responsibilityProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axis_order",
+        "axis_projections",
+        "dropped_axis_count",
+        "changed_axis_count"
+      ],
+      "properties": {
+        "axis_order": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "prefixItems": [
+            {
+              "const": "value_mode"
+            },
+            {
+              "const": "resource"
+            },
+            {
+              "const": "place_access"
+            },
+            {
+              "const": "effects"
+            },
+            {
+              "const": "recoverable_errors"
+            },
+            {
+              "const": "defects"
+            },
+            {
+              "const": "cancellation"
+            },
+            {
+              "const": "suspension"
+            },
+            {
+              "const": "isolation"
+            },
+            {
+              "const": "authority"
+            },
+            {
+              "const": "cleanup"
+            }
+          ],
+          "items": false
+        },
+        "axis_projections": {
+          "type": "array",
+          "minItems": 11,
+          "maxItems": 11,
+          "prefixItems": [
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "value_mode"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "resource"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "place_access"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "effects"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "recoverable_errors"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "defects"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "cancellation"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "suspension"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "isolation"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "authority"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/axisProjection"
+                },
+                {
+                  "properties": {
+                    "axis": {
+                      "const": "cleanup"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "items": false
+        },
+        "dropped_axis_count": {
+          "const": 0
+        },
+        "changed_axis_count": {
+          "const": 0
+        }
+      }
+    },
+    "provenanceProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_shape",
+        "hir_body_id_role",
+        "hir_node_id_role",
+        "lowering_rule_id_role",
+        "ordered_mir_node_ids_role"
+      ],
+      "properties": {
+        "key_shape": {
+          "const": "(HirBodyId,HirNodeId,LoweringRuleId)"
+        },
+        "hir_body_id_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hir_node_id_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lowering_rule_id_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ordered_mir_node_ids_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "x-deeplus-registry-invariants": {
+    "identity_catalog_count": 128,
+    "current_exact_row_count": 102,
+    "preview_max_exact_row_count": 111,
+    "row_family_counts": {
+      "TOP_LEVEL_EXPRESSION_OR_STATEMENT": 35,
+      "RESOLVED_REF": 2,
+      "VALID_CALL_MODE_TARGET_PAIR": 10,
+      "CALL_ARGUMENT": 7,
+      "FIXED_OPERATOR_OR_POWER": 19,
+      "PATTERN_CURRENT": 29,
+      "PATTERN_PREVIEW_ADDITIONAL": 9
+    },
+    "structural_schema_independent_row_count": 0,
+    "pre_hir_rejection_row_count": 0,
+    "excluded_pre_hir_pattern_ids": [
+      "PK-EFFECTFUL-EXTRACTOR",
+      "PK-BACKTRACKING"
+    ],
+    "row_sort_key": [
+      "composition_rank",
+      "row_schema_version",
+      "hir_identity_ids",
+      "row_id"
+    ]
+  },
+  "x-deeplus-machine-invariants": {
+    "semantic_operation_total_mapping": "semantic_operation_id = DM-SEMOP-operation_kind.replace('_','-')-R1",
+    "hir_identity_catalog_lookup": "EXACT_128_ROW_CLOSED_SET",
+    "capability_failure_boundary": "Capability insufficiency rejects ExecutableHirH1 construction; it is not a lowering-row disposition and cannot mutate Verified<CanonicalHirH1>."
+  }
+}

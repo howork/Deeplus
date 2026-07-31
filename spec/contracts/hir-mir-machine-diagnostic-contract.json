@@ -1,0 +1,388 @@
+{
+  "schema": "deeplus.hir-mir-machine-diagnostic-contract/r1",
+  "status": "STABLE_DESIGN",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "branch": "main",
+  "baseline_commit": "7632a2943e3e70dd4c6adffd53977671aec0f6c5",
+  "baseline_tree": "e850e042259b4dd355d937cd1fdd50ea79a03a11",
+  "gap_id": "IR-OWN-P0-015",
+  "feature_id": "hir_h1_current_mir_bridge_design",
+  "classification_rule": {
+    "new_source_level_diagnostic_count": 0,
+    "new_internal_release_verifier_diagnostic_count": 5,
+    "repository_only_failure_id_count": 6,
+    "source_diagnostic_policy": "The original lexer, parser, or checker diagnostic remains primary. R10 internal diagnostics report a failed canonical or artifact verification boundary and are never ordinary user-source diagnostics.",
+    "repository_failure_policy": "Repository-only failure IDs name static validator or corpus defects and must not be added to the public compiler diagnostic catalog."
+  },
+  "deterministic_internal_priority": [
+    {
+      "rank": 1,
+      "diagnostic_id": "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+      "trigger": "A recovery, error, missing-expression, invalid, unresolved, or analysis-only node reaches CanonicalHirH1 sealing.",
+      "priority_rule": "Emit once for the earliest canonical node ordered by HirNodeId. Preserve the original source diagnostic; do not construct canonical HIR."
+    },
+    {
+      "rank": 2,
+      "diagnostic_id": "HIR_VARIANT_UNMAPPED",
+      "trigger": "A canonical identity is unknown to, or has no unique row in, the bound lowering registry.",
+      "priority_rule": "After recovery exclusion, select the first failure ordered by schema-version identity, canonical HIR identity, and row ID."
+    },
+    {
+      "rank": 3,
+      "diagnostic_id": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+      "trigger": "The recomputed executable-capability receipt does not exactly bind the HIR schema, MIR schema, lowering registry, reachability, provided set, or unsupported count.",
+      "priority_rule": "Use capability_mismatch_subpriority; preserve Verified<CanonicalHirH1> and reject only ExecutableHirH1 construction."
+    },
+    {
+      "rank": 4,
+      "diagnostic_id": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "trigger": "An entire ordered responsibility axis is absent from the MIR projection.",
+      "priority_rule": "Use the first affected HirNodeId and then the fixed eleven-axis order."
+    },
+    {
+      "rank": 5,
+      "diagnostic_id": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+      "trigger": "A retained responsibility axis changes value, ordering, membership, or MIR residue.",
+      "priority_rule": "Use the first affected HirNodeId and then the fixed eleven-axis order."
+    },
+    {
+      "rank": 6,
+      "diagnostic_id": "HIR_MIR_PAIR_RELOWERING_MISMATCH",
+      "trigger": "Deterministic relowering or canonical encode/decode/re-encode does not reproduce the supplied MIR semantic bytes and ordered projection.",
+      "priority_rule": "Emit only after earlier canonical, capability, and responsibility checks pass."
+    }
+  ],
+  "capability_mismatch_subpriority": [
+    {
+      "rank": 1,
+      "field": "hir_schema_digest"
+    },
+    {
+      "rank": 2,
+      "field": "mir_schema_digest"
+    },
+    {
+      "rank": 3,
+      "field": "lowering_registry_digest"
+    },
+    {
+      "rank": 4,
+      "field": "reachable_lowering_key_set_digest_and_required_capability_ids"
+    },
+    {
+      "rank": 5,
+      "field": "provided_capability_ids_exact_sorted_unique_set"
+    },
+    {
+      "rank": 6,
+      "field": "unsupported_reachable_key_count"
+    }
+  ],
+  "responsibility_axis_priority": [
+    "value_mode",
+    "resource",
+    "place_access",
+    "effects",
+    "recoverable_errors",
+    "defects",
+    "cancellation",
+    "suspension",
+    "isolation",
+    "authority",
+    "cleanup"
+  ],
+  "new_internal_diagnostics": [
+    {
+      "diagnostic_id": "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+      "priority_rank": 1,
+      "ordinary_source_diagnostic": false,
+      "catalog_row": {
+        "authority": "LANGUAGE / CHECKER / VERIFIER",
+        "authority_set": [
+          "LANGUAGE",
+          "CHECKER",
+          "VERIFIER"
+        ],
+        "baseline": "0.1.2-baseline.r51f3",
+        "diagnostic_id": "HIR_CANONICAL_RECOVERY_NODE_FORBIDDEN",
+        "diagnostic_maturity": "active",
+        "diagnostic_status": "active",
+        "feature_refs": [
+          "hir_h1_current_mir_bridge_design"
+        ],
+        "fixit_kind": "none",
+        "fixit_policy": "No release-verifier fix-it; repair the originating frontend defect and preserve its original source diagnostic.",
+        "message": "A recovery or analysis-only node reached CanonicalHirH1 sealing.",
+        "notes": "Internal canonical-seal invariant. It does not replace or duplicate the originating lexer/parser/checker diagnostic; product emission receipt NOT_RUN.",
+        "primary_source": "spec/language.md",
+        "product_support": "NOT_RUN",
+        "related_feature_refs": [],
+        "row_schema_version": "deeplus.diagnostic-row/r51f3",
+        "severity": "error",
+        "stage": "checker",
+        "diagnostic_class": "release_verifier",
+        "emission_domain": "release_verifier"
+      }
+    },
+    {
+      "diagnostic_id": "HIR_VARIANT_UNMAPPED",
+      "priority_rank": 2,
+      "ordinary_source_diagnostic": false,
+      "catalog_row": {
+        "authority": "LANGUAGE / CHECKER / VERIFIER",
+        "authority_set": [
+          "LANGUAGE",
+          "CHECKER",
+          "VERIFIER"
+        ],
+        "baseline": "0.1.2-baseline.r51f3",
+        "diagnostic_id": "HIR_VARIANT_UNMAPPED",
+        "diagnostic_maturity": "active",
+        "diagnostic_status": "active",
+        "feature_refs": [
+          "hir_h1_current_mir_bridge_design"
+        ],
+        "fixit_kind": "none",
+        "fixit_policy": "No source fix-it; restore exact canonical-identity and lowering-registry closure.",
+        "message": "A canonical HIR identity has no unique lowering-registry mapping.",
+        "notes": "Internal release-verifier diagnostic; repository missing/duplicate/extra row defects retain separate validator failure IDs; product emission receipt NOT_RUN.",
+        "primary_source": "spec/language.md",
+        "product_support": "NOT_RUN",
+        "related_feature_refs": [],
+        "row_schema_version": "deeplus.diagnostic-row/r51f3",
+        "severity": "error",
+        "stage": "checker",
+        "diagnostic_class": "release_verifier",
+        "emission_domain": "release_verifier"
+      }
+    },
+    {
+      "diagnostic_id": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+      "priority_rank": 3,
+      "ordinary_source_diagnostic": false,
+      "catalog_row": {
+        "authority": "LANGUAGE / CHECKER / VERIFIER",
+        "authority_set": [
+          "LANGUAGE",
+          "CHECKER",
+          "VERIFIER"
+        ],
+        "baseline": "0.1.2-baseline.r51f3",
+        "diagnostic_id": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+        "diagnostic_maturity": "active",
+        "diagnostic_status": "active",
+        "feature_refs": [
+          "hir_h1_current_mir_bridge_design"
+        ],
+        "fixit_kind": "none",
+        "fixit_policy": "No source fix-it; recompute and bind the exact HIR/MIR schema, lowering registry, reachability, and capability sets.",
+        "message": "The MIR capability receipt does not exactly cover the reachable canonical HIR lowering keys.",
+        "notes": "Verified canonical HIR remains valid and inert; only ExecutableHirH1 construction fails. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+        "primary_source": "spec/language.md",
+        "product_support": "NOT_RUN",
+        "related_feature_refs": [],
+        "row_schema_version": "deeplus.diagnostic-row/r51f3",
+        "severity": "error",
+        "stage": "checker",
+        "diagnostic_class": "release_verifier",
+        "emission_domain": "release_verifier"
+      }
+    },
+    {
+      "diagnostic_id": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+      "priority_rank": 5,
+      "ordinary_source_diagnostic": false,
+      "catalog_row": {
+        "authority": "LANGUAGE / CHECKER / VERIFIER",
+        "authority_set": [
+          "LANGUAGE",
+          "CHECKER",
+          "VERIFIER"
+        ],
+        "baseline": "0.1.2-baseline.r51f3",
+        "diagnostic_id": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+        "diagnostic_maturity": "active",
+        "diagnostic_status": "active",
+        "feature_refs": [
+          "hir_h1_current_mir_bridge_design"
+        ],
+        "fixit_kind": "none",
+        "fixit_policy": "No source fix-it; restore the exact ordered HIR responsibility value and MIR residue.",
+        "message": "A retained HIR responsibility axis changed during MIR projection.",
+        "notes": "Use RCTS_RESPONSIBILITY_AXIS_DROPPED when the entire axis is absent. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+        "primary_source": "spec/language.md",
+        "product_support": "NOT_RUN",
+        "related_feature_refs": [],
+        "row_schema_version": "deeplus.diagnostic-row/r51f3",
+        "severity": "error",
+        "stage": "checker",
+        "diagnostic_class": "release_verifier",
+        "emission_domain": "release_verifier"
+      }
+    },
+    {
+      "diagnostic_id": "HIR_MIR_PAIR_RELOWERING_MISMATCH",
+      "priority_rank": 6,
+      "ordinary_source_diagnostic": false,
+      "catalog_row": {
+        "authority": "LANGUAGE / CHECKER / VERIFIER",
+        "authority_set": [
+          "LANGUAGE",
+          "CHECKER",
+          "VERIFIER"
+        ],
+        "baseline": "0.1.2-baseline.r51f3",
+        "diagnostic_id": "HIR_MIR_PAIR_RELOWERING_MISMATCH",
+        "diagnostic_maturity": "active",
+        "diagnostic_status": "active",
+        "feature_refs": [
+          "hir_h1_current_mir_bridge_design"
+        ],
+        "fixit_kind": "none",
+        "fixit_policy": "No source fix-it; deterministically relower and replace the nonmatching MIR artifact.",
+        "message": "Deterministic relowering did not reproduce the supplied canonical MIR semantic bytes and ordered projection.",
+        "notes": "Independent matching digest strings are insufficient. Internal release-verifier diagnostic; product emission receipt NOT_RUN.",
+        "primary_source": "spec/language.md",
+        "product_support": "NOT_RUN",
+        "related_feature_refs": [],
+        "row_schema_version": "deeplus.diagnostic-row/r51f3",
+        "severity": "error",
+        "stage": "checker",
+        "diagnostic_class": "release_verifier",
+        "emission_domain": "release_verifier"
+      }
+    }
+  ],
+  "existing_diagnostic_reuse": [
+    {
+      "diagnostic_id": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+      "priority_rank": 4,
+      "reuse_scope": "Only an entirely absent responsibility axis."
+    },
+    {
+      "diagnostic_id": "RESOLVER_HIR_SEAL_INCOMPLETE",
+      "priority_rank": null,
+      "reuse_scope": "Only unresolved resolver references before canonical HIR sealing; it does not report lowering-row, capability, responsibility-projection, or pair-relowering defects."
+    },
+    {
+      "diagnostic_id": "RECEIVER_MODE_MISMATCH",
+      "priority_rank": null,
+      "reuse_scope": "Exact pre-HIR rejection for fixture R10-HM-NEG-013 where ACTOR_MESSAGE is paired with VIRTUAL_SLOT. Other invalid surface states retain their own existing source diagnostic."
+    }
+  ],
+  "repository_preflight_stages": [
+    {
+      "rank": 1,
+      "stage_id": "SCHEMA_PARSE_VERSION_DIGEST",
+      "repository_failure_id_or_null": null,
+      "failure_class": "JSON_SCHEMA_VALIDATION_FAILURE"
+    },
+    {
+      "rank": 2,
+      "stage_id": "VARIANT_UNIQUENESS_CLOSURE",
+      "repository_failure_id_or_null": "R10_HM_VARIANT_REGISTRY_MISMATCH",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    },
+    {
+      "rank": 3,
+      "stage_id": "DUPLICATE_LOWERING_ROW",
+      "repository_failure_id_or_null": "R10_HM_LOWERING_ROW_DUPLICATE",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    },
+    {
+      "rank": 4,
+      "stage_id": "MISSING_LOWERING_ROW",
+      "repository_failure_id_or_null": "R10_HM_LOWERING_ROW_MISSING",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    },
+    {
+      "rank": 5,
+      "stage_id": "UNKNOWN_MIR_OR_CAPABILITY_REFERENCE",
+      "repository_failure_id_or_null": "R10_HM_LOWERING_TARGET_UNKNOWN",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    },
+    {
+      "rank": 6,
+      "stage_id": "DIAGNOSTIC_RELATION_BINDING",
+      "repository_failure_id_or_null": "R10_HM_DIAGNOSTIC_BINDING_INVALID",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    },
+    {
+      "rank": 7,
+      "stage_id": "PRODUCT_STATUS_FENCE",
+      "repository_failure_id_or_null": "R10_HM_PRODUCT_STATUS_OVERCLAIM",
+      "failure_class": "REPOSITORY_VALIDATOR"
+    }
+  ],
+  "repository_only_failures": [
+    {
+      "failure_id": "R10_HM_LOWERING_ROW_MISSING",
+      "public_compiler_diagnostic": false,
+      "trigger": "A current or selected Preview reachable dispatch key has no lowering row."
+    },
+    {
+      "failure_id": "R10_HM_LOWERING_ROW_DUPLICATE",
+      "public_compiler_diagnostic": false,
+      "trigger": "Two or more lowering rows claim the same schema-bound dispatch key."
+    },
+    {
+      "failure_id": "R10_HM_VARIANT_REGISTRY_MISMATCH",
+      "public_compiler_diagnostic": false,
+      "trigger": "The identity catalog, profile classification, or extra-row set differs from the closed 128/102/111 model."
+    },
+    {
+      "failure_id": "R10_HM_LOWERING_TARGET_UNKNOWN",
+      "public_compiler_diagnostic": false,
+      "trigger": "A row references an unknown MIR operation, terminator, capability, semantic-operation identity, or an unknown vertex or directed cycle in the lowering-plan dependency graph.",
+      "failure_details": [
+        "UNKNOWN_TARGET_REFERENCE",
+        "DEPENDENCY_CYCLE"
+      ]
+    },
+    {
+      "failure_id": "R10_HM_DIAGNOSTIC_BINDING_INVALID",
+      "public_compiler_diagnostic": false,
+      "trigger": "An internal diagnostic is missing, duplicated, misclassified as source-facing, or bound to the wrong deterministic priority."
+    },
+    {
+      "failure_id": "R10_HM_PRODUCT_STATUS_OVERCLAIM",
+      "public_compiler_diagnostic": false,
+      "trigger": "Any R10 product lane changes from NOT_RUN without exact target-bound execution evidence."
+    }
+  ],
+  "status_fence": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  },
+  "semantic_operation_mapping": {
+    "registry": "deeplus.mir-machine-registry/r1",
+    "mapping_kind": "TOTAL_ONE_TO_ONE",
+    "operation_count": 29,
+    "formula": "DM-SEMOP-<OPERATION_KIND_WITH_HYPHENS>-R1",
+    "no_runtime_emission_has_semantic_operation": false
+  },
+  "semantic_dependency_resolutions": [
+    {
+      "id": "R10-VAL-GAP-001",
+      "status": "RESOLVED_BY_MIR_MACHINE_REGISTRY",
+      "description": "The closed semantic_operation_id registry and its exact mapping for all 102/111 rows are not present in the controlling draft; the lowering-row schema therefore validates ID shape and requires external registry resolution without inventing IDs.",
+      "resolution": "The exact 29-entry total semantic-operation map is bound by deeplus.mir-machine-registry/r1 and rechecked for every operation plan step."
+    },
+    {
+      "id": "R10-VAL-GAP-002",
+      "status": "RESOLVED_FOR_EXACT_FIXTURE",
+      "description": "The exact existing source diagnostic for each invalid pre-HIR call-mode/target combination is not selected by the controlling draft. The fixtures require an existing source-checker diagnostic without creating a new R10 source ID.",
+      "resolution": "R10-HM-NEG-013 reuses active current-source diagnostic RECEIVER_MODE_MISMATCH; no total invalid-pair diagnostic map is claimed."
+    },
+    {
+      "id": "R10-VAL-GAP-003",
+      "status": "RESOLVED_BY_EXISTING_REPOSITORY_FAILURE",
+      "description": "A dependency-cycle failure is provisionally owned by R10_HM_LOWERING_TARGET_UNKNOWN; Design_ must confirm that this validator ID intentionally covers invalid target-reference graphs or split a dedicated repository-only ID.",
+      "resolution": "R10_HM_LOWERING_TARGET_UNKNOWN owns both unknown vertices and directed dependency cycles; failure_detail distinguishes DEPENDENCY_CYCLE."
+    }
+  ]
+}
