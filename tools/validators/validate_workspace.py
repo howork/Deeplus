@@ -38,7 +38,10 @@ R10_SEMANTIC_SOURCE_COMMIT = "6460e8127620d495e055cd0b800198fb6f7e1a06"
 R10_SEMANTIC_PUBLICATION_COMMIT = "7d609678bdb8c94f2a365e89be578e595bb394b6"
 R10_SEMANTIC_PUBLICATION_TREE = "76189fb47e75d4faeb3f2f975f51df265dc42146"
 R11_R19_SEMANTIC_PUBLICATION_COMMIT = "0f3fa1e145d38725ad22f929d5100fda9584ac10"
-CURRENT_PUBLICATION_TARGET_COMMIT = R11_R19_SEMANTIC_PUBLICATION_COMMIT
+R25_R27_SEMANTIC_SOURCE_COMMIT = "75474ed4a03cd5cb3a424509694c70831b512b59"
+R25_R27_SEMANTIC_PUBLICATION_COMMIT = "2feba9e077ffdf35403c3b8467c17ddcfcf142f6"
+R25_R27_SEMANTIC_PUBLICATION_TREE = "7118be15102e259d916874612423fa208e8e2c5b"
+CURRENT_PUBLICATION_TARGET_COMMIT = R25_R27_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -250,6 +253,27 @@ R10_INDEPENDENT_TEST_VERIFICATION_BYTES = 4324
 R10_INDEPENDENT_TEST_VERIFICATION_SHA256 = (
     "0a5bec964f1cc622292b2d14645a17d747074238dfd779e1ed38d355395eb7d8"
 )
+R25_R27_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R25_R27_Frontend_Trace_Diagnostic_Grammar_Topology_"
+    "Publication_Closure_R1.md"
+)
+R25_R27_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r25-r27-frontend-trace-diagnostic-grammar-topology-publication-"
+    "closure-receipt.json"
+)
+R25_R27_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R25-R27-FRONTEND-TRACE-DIAGNOSTIC-GRAMMAR-TOPOLOGY-"
+    "PUBLICATION-CLOSURE"
+)
+R25_R27_PUBLICATION_CLOSURE_GAP_IDS = [
+    "IR-TRACE-P1-009",
+    "IR-TRACE-P1-010",
+    "IR-TRACE-P2-011",
+    "IR-FE-P1-035",
+    "IR-FE-P1-039",
+]
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
     "IR-RES-P0-041",
@@ -15379,7 +15403,8 @@ def main() -> int:
         [
             "governance/reports/"
             "Design_Deeplus_R11_R19_Frontend_Readiness_"
-            "Publication_Closure_R1.md"
+            "Publication_Closure_R1.md",
+            R25_R27_PUBLICATION_CLOSURE_REPORT,
         ]
         if revision == R11_R19_FRONTEND_REVISION
         else []
@@ -16397,6 +16422,149 @@ def main() -> int:
             }
         ),
     )
+    r25_r27_report_path = root / R25_R27_PUBLICATION_CLOSURE_REPORT
+    r25_r27_receipt_path = root / R25_R27_PUBLICATION_CLOSURE_RECEIPT
+    r25_r27_receipt = parsed.get(r25_r27_receipt_path, {})
+    r25_r27_semantic_publication = r25_r27_receipt.get(
+        "semantic_publication", {}
+    )
+    r25_r27_pr_ci = r25_r27_receipt.get("semantic_pr_github_ci", [])
+    r25_r27_main_ci = r25_r27_receipt.get(
+        "semantic_merge_main_ci", []
+    )
+    r25_r27_validation = r25_r27_receipt.get("semantic_validation", {})
+    r25_r27_gap_transition = r25_r27_receipt.get("gap_transition", {})
+    r25_r27_governance = r25_r27_receipt.get("governance", {})
+    r25_r27_pointer_target = r25_r27_receipt.get("pointer_target", {})
+    check(
+        r25_r27_report_path.is_file()
+        and r25_r27_receipt_path.is_file()
+        and r25_r27_receipt.get("schema")
+        == (
+            "deeplus.r25-r27-frontend-trace-diagnostic-grammar-topology-"
+            "publication-closure-receipt/v1"
+        )
+        and r25_r27_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r25_r27_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r25_r27_semantic_publication
+        == {
+            "pull_request": 56,
+            "url": "https://github.com/howork/Deeplus/pull/56",
+            "branch": "codex/r27-grammar-topology-closure",
+            "source_commit": R25_R27_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": R25_R27_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": R25_R27_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R25_R27_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "3f0077dd8f021718dc87b3b239f417e5d3f770a6",
+                R25_R27_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-01T23:47:09+09:00",
+            "post_merge_readback": "PASS",
+        }
+        and len(r25_r27_pr_ci) == 2
+        and {row.get("workflow") for row in r25_r27_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R25_R27_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r25_r27_pr_ci
+        )
+        and len(r25_r27_main_ci) == 2
+        and {row.get("workflow") for row in r25_r27_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R25_R27_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r25_r27_main_ci
+        )
+        and r25_r27_receipt.get("closure_pr_evidence")
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R25_R27_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r25_r27_semantic_publication,
+                "semantic_pr_github_ci": r25_r27_pr_ci,
+                "semantic_merge_main_ci": r25_r27_main_ci,
+            }
+        ),
+    )
+    check(
+        r25_r27_validation.get("change_scope")
+        == {
+            "changed_file_count": 50,
+            "production_crate_change_count": 0,
+            "grammar_production_change_count": 0,
+            "source_spelling_change_count": 0,
+            "semantic_change_count": 0,
+            "new_diagnostic_id_count": 0,
+        }
+        and r25_r27_validation.get("focused", {}).get("r25_checks")
+        == "36_OF_36_PASS"
+        and r25_r27_validation.get("focused", {}).get("r26_checks")
+        == "8_OF_8_PASS"
+        and r25_r27_validation.get("focused", {}).get("r27_checks")
+        == "10_OF_10_PASS"
+        and r25_r27_validation.get("workspace", {}).get("result") == "PASS"
+        and r25_r27_validation.get("workspace", {}).get("checks")
+        == "5965_OF_5965_PASS"
+        and r25_r27_validation.get("evidence_level")
+        == "E2_DESIGN_STATIC"
+        and r25_r27_validation.get("production_execution") == "NOT_RUN"
+        and r25_r27_gap_transition
+        == {
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 5,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 5,
+            "gap_ids": R25_R27_PUBLICATION_CLOSURE_GAP_IDS,
+        }
+        and r25_r27_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r25_r27_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "semantic_merge_commit": R25_R27_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r25_r27_receipt.get("next_checkpoint")
+        == {
+            "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+            "candidate_cluster": "DEPENDENCY_ORDERED_LOCAL_SELECTION",
+            "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION",
+            "activation": (
+                "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_"
+                "BASELINE_OBSERVATION"
+            ),
+        },
+        "R25_R27_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "validation": r25_r27_validation,
+                "gap_transition": r25_r27_gap_transition,
+                "governance": r25_r27_governance,
+                "pointer_target": r25_r27_pointer_target,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -16406,10 +16574,35 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R4_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    r25_r27_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R25_R27_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(r25_r27_closure_laws) == 1
+        and r25_r27_closure_laws[0].get("status") == "CURRENT"
+        and r25_r27_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and r25_r27_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and r25_r27_closure_laws[0].get("effective_revision")
+        == R11_R19_FRONTEND_REVISION
+        and R25_R27_PUBLICATION_CLOSURE_REPORT
+        in r25_r27_closure_laws[0].get("source_evidence", "")
+        and R25_R27_PUBLICATION_CLOSURE_RECEIPT
+        in r25_r27_closure_laws[0].get("source_evidence", "")
+        and all(
+            gap_id in r25_r27_closure_laws[0].get("law", "")
+            for gap_id in R25_R27_PUBLICATION_CLOSURE_GAP_IDS
+        ),
+        "R25_R27_PUBLICATION_CLOSURE_DECISION",
+        repr(r25_r27_closure_laws),
+    )
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            56
+            57
             if revision == R11_R19_FRONTEND_REVISION
             else 46
             if revision == R10_HIR_MIR_REVISION
