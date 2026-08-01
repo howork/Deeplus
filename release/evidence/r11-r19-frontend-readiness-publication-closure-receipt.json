@@ -1,0 +1,128 @@
+{
+  "schema": "deeplus.r11-r19-frontend-readiness-publication-closure-receipt/v1",
+  "recorded_at": "2026-08-01T18:35:18+09:00",
+  "candidate_verdict": "READY_FOR_PUBLICATION_CLOSURE_MERGE",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_publication": {
+    "pull_request": 54,
+    "url": "https://github.com/howork/Deeplus/pull/54",
+    "branch": "agent/r11-r19-readiness-canonicalization",
+    "source_commit": "823e867b2d06dc6fbceea9e2f9c754a4997c45f2",
+    "source_tree": "a5b4f651cc75842fe0dbe2da5b877bde2aad1d1b",
+    "merge_commit": "0f3fa1e145d38725ad22f929d5100fda9584ac10",
+    "tree": "a5b4f651cc75842fe0dbe2da5b877bde2aad1d1b",
+    "parents": [
+      "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+      "823e867b2d06dc6fbceea9e2f9c754a4997c45f2"
+    ],
+    "merged_at": "2026-08-01T18:33:03+09:00",
+    "post_merge_readback": "PASS"
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30693651135,
+      "job": "validate",
+      "job_id": 91352681821,
+      "head_sha": "823e867b2d06dc6fbceea9e2f9c754a4997c45f2",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30693651135/job/91352681821",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30693651130,
+      "job": "scaffold",
+      "job_id": 91352681732,
+      "head_sha": "823e867b2d06dc6fbceea9e2f9c754a4997c45f2",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30693651130/job/91352681732",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "semantic_validation": {
+    "change_scope": {
+      "changed_file_count": 81,
+      "production_crate_change_count": 0,
+      "grammar_change_count": 0,
+      "source_syntax_activation_count": 0
+    },
+    "focused": {
+      "result": "PASS",
+      "hir_identities": 129,
+      "hir_structural_identities": 17,
+      "structural_plan_contracts": 13,
+      "mir_operations": 42,
+      "lowering_rows": 111,
+      "grammar_production_dispositions": 638,
+      "frontend_fixture_cases": 168,
+      "source_role_profile_roots": 6,
+      "active_gates": 3,
+      "nonactivatable_gates": 115,
+      "new_final_diagnostic_ids": 0
+    },
+    "workspace": {
+      "command": "py -3.9 tools/validators/validate_workspace.py",
+      "result": "PASS",
+      "checks": "5939_OF_5939_PASS",
+      "json_files_parsed": 378,
+      "catalogs_reassembled": 14,
+      "rust_scaffold_crates": 15
+    },
+    "source_manifest": {
+      "path": "release/source-tree-manifest.json",
+      "bytes": 132952,
+      "sha256": "fae628252441dc78cfd9f62f1cd59f055f6ebf27a4810567965f2fcabc74e334",
+      "file_count_excluding_manifest": 696,
+      "total_bytes_excluding_manifest": 22878147,
+      "tree_sha256": "c51a05f6b7a0b8dbc8870169d39326c911ad5e5cce96be7a635c1b855ad97414",
+      "binding": "WORKTREE_AND_INDEX_BOUND"
+    },
+    "evidence_level": "E2_DESIGN_STATIC",
+    "production_execution": "NOT_RUN"
+  },
+  "gap_transition": {
+    "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+    "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+    "transition_candidate_count": 9,
+    "closed_count_before_closure_readback": 0,
+    "eligible_closed_count_after_readback": 9,
+    "gap_ids": [
+      "IR-OWN-P0-016",
+      "IR-FE-P0-028",
+      "IR-FE-P0-029",
+      "IR-FE-P1-034",
+      "IR-FE-P1-031",
+      "IR-FE-P1-032",
+      "IR-FE-P1-033",
+      "IR-FE-P0-030",
+      "IR-FE-P1-036"
+    ]
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "candidate_binding": false,
+    "source_snapshot": null,
+    "closed_by_candidate": 0,
+    "new_feature_p1": 0
+  },
+  "pointer_target": {
+    "role": "publication_authority_source",
+    "semantic_merge_commit": "0f3fa1e145d38725ad22f929d5100fda9584ac10",
+    "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "self_binding_forbidden": true
+  },
+  "closure_pr_evidence": {
+    "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+    "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT"
+  },
+  "next_checkpoint": {
+    "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+    "candidate_cluster": "DEPENDENCY_ORDERED_R20_SELECTION",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION",
+    "activation": "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_BASELINE_OBSERVATION"
+  }
+}
