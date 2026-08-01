@@ -1,0 +1,393 @@
+
+{
+  "schema": "deeplus.frontend-recovery-invalid-tree-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251"
+  },
+  "gap_id": "IR-FE-P1-034",
+  "dependencies": {
+    "IR-FE-P0-028": "APPROVED_NOT_INTEGRATED_LOCAL_R12_CANDIDATE",
+    "IR-FE-P0-029": "APPROVED_NOT_INTEGRATED_LOCAL_R13_CANDIDATE",
+    "IR-OWN-P0-015": "VERIFIED_CLOSED_CANONICAL"
+  },
+  "parse_modes": {
+    "STRICT_CANONICAL": {
+      "recovery_cst_permitted": true,
+      "canonical_ast_requires_zero_recovery_taint": true,
+      "analysis_ast_permitted": false,
+      "purpose": "batch acceptance, canonical AST/HIR handoff, and conformance"
+    },
+    "ANALYSIS_RECOVERY": {
+      "recovery_cst_permitted": true,
+      "canonical_ast_requires_zero_recovery_taint": true,
+      "analysis_ast_permitted": true,
+      "purpose": "editor diagnostics, navigation, completion, and bounded formatting"
+    }
+  },
+  "recovery_episode": {
+    "identity": "RecoveryEpisodeId(SourceFileId, parser_owner_id, parser_state_id, token_index, ordinal_at_site)",
+    "record_fields": [
+      "episode_id",
+      "parser_owner_id",
+      "recovery_class",
+      "parser_state_id_before",
+      "parser_state_id_after",
+      "token_index_before",
+      "token_index_after",
+      "action",
+      "expected_token_kinds_in_canonical_order",
+      "observed_token_kind_or_eof",
+      "sync_token_kind_or_eof",
+      "recovery_cst_node_ids",
+      "reason_code",
+      "fixit_or_null"
+    ],
+    "action_domain": [
+      "INSERT_EXPECTED_STRUCTURAL_TOKEN",
+      "DELETE_ONE_UNEXPECTED_TOKEN",
+      "SKIP_NONEMPTY_TO_CONTEXT_SYNC",
+      "TERMINATE_RECOVERY_BUDGET_EXHAUSTED"
+    ]
+  },
+  "recovery_cst_kinds": [
+    {
+      "kind": "RECOVERY_MISSING_TOKEN",
+      "action": "INSERT_EXPECTED_STRUCTURAL_TOKEN",
+      "fields": [
+        "episode_id",
+        "expected_token_kind",
+        "zero_width_byte_position",
+        "parser_state_id"
+      ],
+      "source_token_consumption": 0,
+      "canonical_ast_cardinality": 0
+    },
+    {
+      "kind": "RECOVERY_UNEXPECTED_TOKEN",
+      "action": "DELETE_ONE_UNEXPECTED_TOKEN",
+      "fields": [
+        "episode_id",
+        "unexpected_token_id",
+        "exact_source_bytes",
+        "byte_range"
+      ],
+      "source_token_consumption": 1,
+      "canonical_ast_cardinality": 0
+    },
+    {
+      "kind": "RECOVERY_SKIPPED_TOKENS",
+      "action": "SKIP_NONEMPTY_TO_CONTEXT_SYNC",
+      "fields": [
+        "episode_id",
+        "ordered_token_ids",
+        "exact_source_bytes",
+        "byte_range",
+        "sync_token_kind_or_eof"
+      ],
+      "source_token_consumption": "ONE_OR_MORE",
+      "canonical_ast_cardinality": 0
+    },
+    {
+      "kind": "RECOVERY_ERROR_NODE",
+      "action": "EPISODE_WRAPPER",
+      "fields": [
+        "episode_id",
+        "failed_production_id",
+        "ordered_child_ids",
+        "reason_code",
+        "byte_range"
+      ],
+      "source_token_consumption": "DERIVED_FROM_CHILDREN",
+      "canonical_ast_cardinality": 0
+    }
+  ],
+  "insert_safe_tokens": [
+    ")",
+    "]",
+    "}",
+    "}}",
+    ",",
+    ";",
+    "=>",
+    "INTERPOLATION_CLOSE",
+    "STRING_END"
+  ],
+  "insert_forbidden_categories": [
+    "identifier",
+    "keyword carrying declaration or control meaning",
+    "literal",
+    "expression",
+    "pattern",
+    "type",
+    "operator with semantic evaluation meaning",
+    "ownership, effect, authority, or conformance marker"
+  ],
+  "bounded_recovery_selection": {
+    "ordered_actions": [
+      {
+        "rank": 1,
+        "action": "EXACT_PARSE",
+        "condition": "the current registered production or parselet accepts the token"
+      },
+      {
+        "rank": 2,
+        "action": "INSERT_EXPECTED_STRUCTURAL_TOKEN",
+        "condition": "exactly one expected token is insert-safe, lookahead belongs to the post-insertion follow set, and this state/token pair has not inserted before"
+      },
+      {
+        "rank": 3,
+        "action": "DELETE_ONE_UNEXPECTED_TOKEN",
+        "condition": "the following token or EOF is accepted by the unchanged parser state and deletion does not cross the owner delimiter"
+      },
+      {
+        "rank": 4,
+        "action": "SKIP_NONEMPTY_TO_CONTEXT_SYNC",
+        "condition": "consume at least one token until the nearest token in the active recovery-class sync set at owner delimiter depth"
+      },
+      {
+        "rank": 5,
+        "action": "TERMINATE_RECOVERY_BUDGET_EXHAUSTED",
+        "condition": "no earlier action is admitted or the file/owner budget is exhausted"
+      }
+    ],
+    "tie_break": [
+      "lower action rank",
+      "shorter consumed source-token distance",
+      "earlier expected token in canonical parser-state order",
+      "lower recovery-class ordinal"
+    ],
+    "replacement_action_count": 0,
+    "semantic_token_invention_count": 0,
+    "backtracking_after_committed_recovery_count": 0
+  },
+  "recovery_classes": [
+    {
+      "ordinal": 1,
+      "id": "SOURCE_ITEM",
+      "explicit_owners": [
+        "Deeplus",
+        "LibrarySourceFile",
+        "ExecutableSourceFile",
+        "ScriptSourceFile"
+      ],
+      "sync": [
+        "root StatementBoundary",
+        "next registered source-item starter",
+        "EOF"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "id": "DECLARATION_HEADER",
+      "explicit_owners": [
+        "TopLevelDecl",
+        "MemberDecl",
+        "TraitItem",
+        "ActorItem",
+        "ActorProtocolItem"
+      ],
+      "sync": [
+        "owner body opener",
+        "StatementBoundary",
+        "next declaration starter",
+        "owner close delimiter",
+        "EOF only when the owner is root"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "id": "BLOCK_ITEM",
+      "explicit_owners": [
+        "Block",
+        "BlockSequence",
+        "Stmt"
+      ],
+      "sync": [
+        "nested StatementBoundary",
+        "next registered BlockItem starter",
+        "owner close }"
+      ]
+    },
+    {
+      "ordinal": 4,
+      "id": "MATCH_ARM",
+      "explicit_owners": [
+        "MatchArmSequence",
+        "MatchArm",
+        "MatchArmBodySlot"
+      ],
+      "sync": [
+        "comma at arm depth",
+        "R13 contextual newline with successful transactional next-arm probe",
+        "exact match close delimiter"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "id": "DELIMITED_LIST",
+      "explicit_owners": [
+        "ParameterList",
+        "ArgumentList",
+        "TypeArgumentList",
+        "PatternList",
+        "ExpressionList"
+      ],
+      "sync": [
+        "comma at owner depth",
+        "exact owner close delimiter",
+        "admitted layout LineBreakBoundary when that owner supports layout"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "id": "EXPRESSION",
+      "explicit_owners": [
+        "Expr",
+        "PredicateExpr",
+        "SliceIndexExpr",
+        "PrimaryExpr"
+      ],
+      "sync": [
+        "the parent owner's registered delimiter",
+        "R13 StatementBoundary result",
+        "R13 MatchArmSeparator result",
+        "comma only when owned by the parent"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "id": "TYPE_OR_UNIT",
+      "explicit_owners": [
+        "TypeRef",
+        "NonFunctionTypeRef",
+        "UnitExpr"
+      ],
+      "sync": [
+        "the parent owner's registered comma or close delimiter",
+        "where, arrow, throws, effects, or body opener only when admitted by the parent grammar state",
+        "R13 StatementBoundary result"
+      ]
+    },
+    {
+      "ordinal": 8,
+      "id": "STRING_INTERPOLATION",
+      "explicit_owners": [
+        "InterpolationExpr",
+        "StringLiteralExpr"
+      ],
+      "sync": [
+        "INTERPOLATION_CLOSE",
+        "STRING_END",
+        "EOF"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "id": "SCANNER_ATOMIC",
+      "explicit_owners": [
+        "lexical scanner mode"
+      ],
+      "sync": [
+        "emit one invalid or unterminated atomic token outcome and return to the parser",
+        "EOF"
+      ]
+    }
+  ],
+  "context_selection": {
+    "law": "choose the nearest active parser frame whose production or external entry is an explicit owner; helper productions inherit that frame",
+    "same_depth_tie_break": "innermost active frame, then lower recovery-class ordinal",
+    "fallback": "SOURCE_ITEM only at a source root; otherwise terminate the current owner without skipping",
+    "unbound_context_count": 0
+  },
+  "progress_and_budget": {
+    "progress_measure": "each step strictly decreases remaining input, advances a never-repeated insertion state, or unwinds one active parser owner",
+    "strict_progress_law": "every nonterminal recovery edit consumes at least one source token or inserts one token while advancing to a strictly later parser state; budget exhaustion unwinds the current owner",
+    "same_state_same_token_insertion_count_max": 1,
+    "delete_token_count_per_episode_max": 1,
+    "skip_token_count_per_episode_min": 1,
+    "file_episode_budget": "min(256, max(16, 2 * significant_source_token_count + 1))",
+    "owner_episode_budget": 16,
+    "budget_exhaustion": "emit one terminal recovery error node for the owner, consume no further owner tokens, and unwind to the nearest parent sync point",
+    "infinite_loop_possible": false
+  },
+  "recovery_taint": {
+    "identity": "RecoveryTaint(RecoveryEpisodeId set)",
+    "propagation": "transitive from each recovery CST node through every containing CST production node to the selected source root",
+    "canonical_ast_gate": "the selected semantic CST subtree must have an empty taint set",
+    "canonical_hir_gate": "CanonicalAstSeal PASS and zero recovery, error, missing-expression, invalid, unresolved, or analysis-only nodes",
+    "canonical_mir_gate": "Verified<CanonicalHirH1> only",
+    "clear_by_reparse": "only a new parse over changed input may remove taint; a checker or formatter cannot clear it"
+  },
+  "analysis_only_quarantine": {
+    "types": [
+      "RecoveredAnalysisAst",
+      "AnalysisAstFragment",
+      "AnalysisHoleId"
+    ],
+    "taint_required": true,
+    "canonical_ast_serialization": false,
+    "canonical_hir_serialization": false,
+    "module_api_residue": false,
+    "mir_residue": false,
+    "runtime_residue": false,
+    "allowed_consumers": [
+      "editor diagnostics",
+      "syntax highlighting",
+      "completion under explicit analysis-only APIs",
+      "navigation within recovery-free sibling fragments",
+      "range formatting of recovery-free subtrees"
+    ],
+    "forbidden_consumers": [
+      "canonical name resolution",
+      "canonical type/effect/ownership checking",
+      "module interface hashing",
+      "HIR sealing",
+      "MIR lowering",
+      "code generation",
+      "publication or conformance PASS"
+    ]
+  },
+  "diagnostic_ordering": {
+    "episode_primary_key": [
+      "lowest source byte start",
+      "innermost explicit recovery owner",
+      "lower bounded-recovery action rank",
+      "earlier expected token in canonical parser-state order",
+      "lower recovery-class ordinal"
+    ],
+    "one_primary_per_episode": true,
+    "failed_probe_diagnostic_count": 0,
+    "cascade_suppression": "a later episode wholly contained in the byte/token span of an earlier skipped range is attached as a note or suppressed, never a second primary",
+    "final_source_diagnostic_binding": "DEFERRED_TO_IR-FE-P1-035"
+  },
+  "formatter_lsp_fence": {
+    "whole_file_canonical_format_requires_empty_taint": true,
+    "range_format": "only the smallest recovery-free CST subtree wholly containing the range",
+    "fixit": "only the exact admitted insertion or deletion action; never invent an expression, name, literal, type, pattern, ownership marker, or conformance",
+    "lsp_semantic_tokens": "may use exact tokens and recovery-free fragments; recovered meaning is never advertised as canonical",
+    "incremental_reparse": "recompute every recovery episode whose token interval, parser entry, profile, Grammar digest, R12 registry digest, or R13 boundary digest changed"
+  },
+  "reason_codes": [
+    "RECOVERY_EXPECTED_STRUCTURAL_TOKEN_INSERTED",
+    "RECOVERY_UNEXPECTED_TOKEN_DELETED",
+    "RECOVERY_TOKENS_SKIPPED_TO_SYNC",
+    "RECOVERY_BUDGET_EXHAUSTED",
+    "REJECT_RECOVERY_NODE_ESCAPE"
+  ],
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "checker_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

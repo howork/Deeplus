@@ -1,0 +1,47 @@
+{
+  "schema": "deeplus.construction-cleanup-state-fixtures/r1",
+  "contract": "spec/contracts/construction-cleanup-state-r1.json",
+  "revision": "R11-INTEGRATED-R1",
+  "status": "DESIGN_STATIC_NOT_RUN",
+  "gap_id": "IR-OWN-P0-016",
+  "cases": [
+    {"test_id":"R11-CON-P-001","kind":"POSITIVE","scenario":"root constructor commits one plain object","expected":{"admission":"ACCEPT","publication_count":1,"construction_token_terminal_balance":0,"cleanup_token_terminal_balance":0}},
+    {"test_id":"R11-CON-P-002","kind":"POSITIVE","scenario":"resource fields transfer to one live object owner","expected":{"admission":"ACCEPT","object_owner_count":1,"field_cleanup_token_count":2,"normal_field_cleanup_order":"REVERSE_ACQUISITION"}},
+    {"test_id":"R11-CON-P-003","kind":"POSITIVE","scenario":"same-type delegation reuses one session","expected":{"admission":"ACCEPT","construction_session_count":1,"allocation_count":1,"publication_count":1,"delegated_target_result":"PREPARED_NOT_PUBLISHED"}},
+    {"test_id":"R11-CON-P-004","kind":"POSITIVE","scenario":"base then derived storage follows C-04","expected":{"admission":"ACCEPT","phase_order":["BASE_INITIALIZING","BASE_INITIALIZED","STORAGE_INITIALIZING","POST_INIT","LIVE"]}},
+    {"test_id":"R11-CON-P-005","kind":"POSITIVE","scenario":"live cleanup hook precedes automatic field cleanup","expected":{"admission":"ACCEPT","cleanup_order":["MOST_DERIVED_DEF_HASH_CLEANUP","FIELDS_REVERSE_ACQUISITION","BASE_RECURSIVE"],"whole_object_cleanup_hook_count":1}},
+    {"test_id":"R11-CON-P-006","kind":"POSITIVE","scenario":"initialized field projection can be read","expected":{"admission":"ACCEPT","required_projection_state":"Live","self_escape_count":0}},
+    {"test_id":"R11-CON-B-007","kind":"BOUNDARY","scenario":"failure before first field commit cleans no field","expected":{"publication_count":0,"field_cleanup_count":0,"destination_state":"Uninitialized","terminal_phase":"FAILED_UNPUBLISHED"}},
+    {"test_id":"R11-CON-B-008","kind":"BOUNDARY","scenario":"failure after field N cleans exactly N through one","expected":{"publication_count":0,"cleanup_order":["FIELD_3","FIELD_2","FIELD_1"],"cleanup_count":3}},
+    {"test_id":"R11-CON-B-009","kind":"BOUNDARY","scenario":"derived failure cleans derived fields then committed base","expected":{"publication_count":0,"cleanup_order":["DERIVED_FIELD","BASE_DEF_HASH_CLEANUP_IF_PRESENT","BASE_FIELDS_REVERSE_ACQUISITION"],"derived_whole_cleanup_hook_count":0}},
+    {"test_id":"R11-CON-B-010","kind":"BOUNDARY","scenario":"admitted move transfers token away from source slot","expected":{"source_state":"Moved","source_cleanup_count":0,"transferred_owner_cleanup_count":1,"partial_move_surface_widened":false}},
+    {"test_id":"R11-CON-B-011","kind":"BOUNDARY","scenario":"branch join proves definite initialization","expected":{"admission":"ACCEPT","joined_slot_state":"Live","owner_alternative_count":1}},
+    {"test_id":"R11-CON-B-012","kind":"BOUNDARY","scenario":"var first assignment initializes and second assignment writes","expected":{"admission":"ACCEPT","operation_sequence":["FIELD_INIT_COMMIT","WRITE_OR_REPLACE_LIVE"],"slot_state":"Live"}},
+    {"test_id":"R11-CON-B-013","kind":"BOUNDARY","scenario":"post-init guard failure remains unpublished","expected":{"publication_count":0,"whole_object_cleanup_hook_count":0,"field_cleanup_order":"REVERSE_ACQUISITION","terminal_phase":"FAILED_UNPUBLISHED"}},
+    {"test_id":"R11-CON-B-014","kind":"BOUNDARY","scenario":"cleanup failures never mask construction failure","expected":{"primary":"CONSTRUCTION_FAILURE","suppressed":["FIRST_CLEANUP_FAILURE","SECOND_CLEANUP_FAILURE"],"cleanup_continues_after_failure":true}},
+    {"test_id":"R11-CON-N-015","kind":"NEGATIVE","scenario":"required field missing at commit","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_REQUIRED_SLOT_NOT_LIVE_AT_COMMIT","publication_count":0}},
+    {"test_id":"R11-CON-N-016","kind":"NEGATIVE","scenario":"field read before initialization","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_FIELD_READ_BEFORE_INITIALIZATION","hir_construction_count":0}},
+    {"test_id":"R11-CON-N-017","kind":"NEGATIVE","scenario":"let field initialized twice","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_LET_FIELD_ALREADY_INITIALIZED"}},
+    {"test_id":"R11-CON-N-018","kind":"NEGATIVE","scenario":"self escapes before commit","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_SELF_ESCAPE_BEFORE_COMMIT","self_escape_count":0}},
+    {"test_id":"R11-CON-N-019","kind":"NEGATIVE","scenario":"dynamic dispatch before commit","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_PRECOMMIT_DISPATCH_NOT_ADMITTED"}},
+    {"test_id":"R11-CON-N-020","kind":"NEGATIVE","scenario":"branch join is not definitely initialized","expected":{"admission":"REJECT","diagnostic":"CONSTRUCTION_INIT_STATE_JOIN_MISMATCH","joined_slot_state":"MaybeMoved_OR_NOT_DEFINITE"}},
+    {"test_id":"R11-CON-M-021","kind":"MUTATION","scenario":"whole-object hook injected before commit","expected":{"verdict":"REJECT_MUTATION","diagnostic":"MIR_CONSTRUCTION_CLEANUP_ORDER_INVALID"}},
+    {"test_id":"R11-CON-M-022","kind":"MUTATION","scenario":"duplicate cleanup token holder","expected":{"verdict":"REJECT_MUTATION","diagnostic":"MIR_CONSTRUCTION_TOKEN_BALANCE_INVALID"}},
+    {"test_id":"R11-CON-M-023","kind":"MUTATION","scenario":"wrong field cleanup order","expected":{"verdict":"REJECT_MUTATION","diagnostic":"MIR_CONSTRUCTION_CLEANUP_ORDER_INVALID"}},
+    {"test_id":"R11-CON-M-024","kind":"MUTATION","scenario":"double publication","expected":{"verdict":"REJECT_MUTATION","diagnostic":"MIR_CONSTRUCTION_PUBLICATION_COUNT_INVALID","allowed_publication_count":1}}
+  ],
+  "expected_counts": {
+    "total": 24,
+    "POSITIVE": 6,
+    "BOUNDARY": 8,
+    "NEGATIVE": 6,
+    "MUTATION": 4
+  },
+  "status_fence": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN"
+  }
+}

@@ -1,18 +1,18 @@
 {
   "schema": "deeplus.hir-h1-identity-catalog/r1",
-  "schema_revision": "R10-INTEGRATED-R2",
+  "schema_revision": "R11-INTEGRATED-R1",
   "status": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA",
   "artifact_context": {
     "repository": "https://github.com/howork/Deeplus.git",
     "branch": "main",
-    "baseline_commit": "7632a2943e3e70dd4c6adffd53977671aec0f6c5",
-    "baseline_tree": "e850e042259b4dd355d937cd1fdd50ea79a03a11",
-    "gap_id": "IR-OWN-P0-015",
+    "baseline_commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "baseline_tree": "f6f256eaf73b67337c0d09535fe09c806c959251",
+    "gap_id": "IR-OWN-P0-016",
     "included_in_hir_instance_semantic_projection": false
   },
   "machine_binding": {
     "hir_schema_id": "deeplus.canonical-hir-h1/r1",
-    "hir_schema_revision": "R10-INTEGRATED-R2",
+    "hir_schema_revision": "R11-INTEGRATED-R1",
     "instance_required_digest_fields": [
       "schema_digest",
       "authority_digest"
@@ -23,11 +23,11 @@
     "CURRENT",
     "EXPLICIT_PREVIEW"
   ],
-  "identity_count": 128,
+  "identity_count": 129,
   "family_counts": {
     "EXPR_KIND": 31,
     "STMT_KIND": 4,
-    "STRUCTURAL_SCHEMA": 16,
+    "STRUCTURAL_SCHEMA": 17,
     "RESOLVED_REF_KIND": 2,
     "CALL_MODE": 3,
     "CALL_ARGUMENT_KIND": 7,
@@ -40,13 +40,13 @@
   "role_counts": {
     "TOP_LEVEL_DIRECT": 31,
     "TOP_LEVEL_ORCHESTRATOR": 4,
-    "STRUCTURAL_SCHEMA": 16,
+    "STRUCTURAL_SCHEMA": 17,
     "NESTED_AXIS": 11,
     "NESTED_LEAF": 66
   },
   "profile_catalog_counts": {
-    "CURRENT": 119,
-    "EXPLICIT_PREVIEW": 128
+    "CURRENT": 120,
+    "EXPLICIT_PREVIEW": 129
   },
   "profile_reachability_contract": {
     "occurrence_profile_source": "ROOT_SOURCE_PROFILE_ONLY",
@@ -169,6 +169,7 @@
     {"identity_id":"HIR-H1/STRUCT/PLACE_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CONTEXT_ADAPTATION_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CONSTRUCTION_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
+    {"identity_id":"HIR-H1/STRUCT/CONSTRUCTION_LIFECYCLE_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/MAP_LITERAL_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/INTERPOLATION_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CLOSURE_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
@@ -255,7 +256,7 @@
     {"identity_id":"HIR-H1/PATTERN/PK-GENERIC-SEQUENCE-REST","family":"PATTERN_KIND","role":"NESTED_LEAF","parent_identity_id":"HIR-H1/EXPR/PATTERN_ATTEMPT","reachability":"FEATURE_GATED","source_profiles":["EXPLICIT_PREVIEW"],"lowering_requirement":"NESTED_ROW","authority_group":"PATTERN"},
     {"identity_id":"HIR-H1/PATTERN/PK-TUPLE-REST","family":"PATTERN_KIND","role":"NESTED_LEAF","parent_identity_id":"HIR-H1/EXPR/PATTERN_ATTEMPT","reachability":"FEATURE_GATED","source_profiles":["EXPLICIT_PREVIEW"],"lowering_requirement":"NESTED_ROW","authority_group":"PATTERN"}
   ],
-  "structural_plan_contract_count": 12,
+  "structural_plan_contract_count": 13,
   "structural_plan_contracts_are_catalog_identities": false,
   "structural_plan_contract_conventions": {
     "common_required_header": [
@@ -432,6 +433,53 @@
         "exactly one initialization step initializes each required closed-row field and no field is initialized twice",
         "commit_boundary is AFTER_ALL_FIELD_INIT_BEFORE_PUBLICATION",
         "precommit failure publishes no value and discharges every acquired temporary; success commits exactly once"
+      ]
+    },
+    {
+      "structural_identity_id": "HIR-H1/STRUCT/CONSTRUCTION_LIFECYCLE_PLAN",
+      "schema_ref": "#/$defs/HirConstructionLifecyclePlan",
+      "owner_node_domain": "HIR_CONSTRUCTOR_BODY_OWNER_ID",
+      "required_plan_fields": [
+        "construction_plan_id",
+        "constructor_decl_id",
+        "most_derived_class_id",
+        "base_segment_ids",
+        "field_slot_descriptors",
+        "initial_mask",
+        "selected_delegation_plan",
+        "cfg_mask_states",
+        "field_init_commits",
+        "owner_token_transfers",
+        "prepublication_self_uses",
+        "post_init_guards",
+        "abort_cleanup_order",
+        "normal_cleanup_order",
+        "commit_predicate",
+        "unique_publication_site",
+        "source_provenance"
+      ],
+      "owning_reference_slots": [],
+      "nonowning_reference_slots": [
+        {"slot":"construction_plan_id","reference_domain":"CONSTRUCTION_PLAN_ID","cardinality":"N1"},
+        {"slot":"constructor_decl_id","reference_domain":"CONSTRUCTOR_DECL_ID","cardinality":"N1"},
+        {"slot":"most_derived_class_id","reference_domain":"CLASS_ID","cardinality":"N1"},
+        {"slot":"base_segment_ids[*]","reference_domain":"BASE_SEGMENT_ID","cardinality":"N*","ordering":"EXACT_INHERITANCE_CHAIN"},
+        {"slot":"field_slot_descriptors[*].field_slot_id","reference_domain":"FIELD_SLOT_ID","cardinality":"N*","ordering":"DECLARATION_AND_STORAGE_RESPONSIBILITY_ORDER"},
+        {"slot":"field_slot_descriptors[*].normalized_type_id","reference_domain":"NORMALIZED_TYPE_ID","cardinality":"N1_PER_SLOT"},
+        {"slot":"field_slot_descriptors[*].responsibility_profile_id","reference_domain":"RESPONSIBILITY_PROFILE_ID","cardinality":"N1_PER_SLOT"},
+        {"slot":"selected_delegation_plan.target_constructor_decl_id","reference_domain":"CONSTRUCTOR_DECL_ID","cardinality":"N?","optional_encoding":"REQUIRED_OR_NULL"},
+        {"slot":"prepublication_self_uses[*]","reference_domain":"HIR_NODE_ID","cardinality":"N*","ordering":"SOURCE_ORDER"},
+        {"slot":"post_init_guards[*]","reference_domain":"HIR_NODE_ID","cardinality":"N*","ordering":"SOURCE_ORDER"},
+        {"slot":"unique_publication_site","reference_domain":"HIR_NODE_ID","cardinality":"N1"},
+        {"slot":"source_provenance[*]","reference_domain":"SOURCE_ORIGIN_ID","cardinality":"N+","ordering":"SORTED_UNIQUE"}
+      ],
+      "cross_field_rules": [
+        "one external construction attempt owns exactly one ConstructionSessionId and ConstructionTokenId; same-type delegation reuses both",
+        "every required field slot begins Uninitialized and only an atomic FIELD_INIT_COMMIT changes a complete required subtree to Live",
+        "commit requires every required slot Live, no forbidden self escape, exactly balanced owner and cleanup-token transfers, and publication_count zero",
+        "commit consumes the ConstructionTokenId and publishes exactly one Self; abort consumes it and publishes zero values",
+        "abort cleanup visits only Live non-Moved units in reverse successful acquisition order, then committed base segments recursively",
+        "normal cleanup runs the most-derived def#cleanup hook before fields and then recursively processes base segments"
       ]
     },
     {
@@ -1097,7 +1145,7 @@
     "A CURRENT body validates only Current patterns; an EXPLICIT_PREVIEW body may validate the nine Preview patterns only with FEATURE_GATED nonempty required features.",
     "Every required feature ID is a member of the exact root feature set and all feature arrays are deterministically sorted.",
     "Every payload_ref resolves in the same body and its owner, expression kind, payload contract, ordered slot roles, reference classes, and cardinalities exactly equal one catalog payload contract.",
-    "Every structural plan matches exactly one of the twelve closed StructuralPlan discriminators, every plan and nested sum or product rejects additional fields, and every optional value is present as its required *_or_null encoding.",
+    "Every structural plan matches exactly one of the thirteen closed StructuralPlan discriminators, every plan and nested sum or product rejects additional fields, and every optional value is present as its required *_or_null encoding.",
     "Every structural-plan reference resolves in the required domain with the cataloged owning or nonowning cardinality and order; plan IDs and ordinals are unique, ordinals are contiguous, and every named plan-reference slot resolves to exactly one actual structural plan of the required class.",
     "Every owning child has exactly one parent, every nonowning reference resolves, and orphan, cyclic, cross-body, duplicate, and multiply-owned payloads are rejected.",
     "Every lowering-row hir_identity_ids value resolves to exactly one of the 128 identity rows and exactly matches the lowering dispatch key.",

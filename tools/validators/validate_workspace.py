@@ -23,6 +23,8 @@ LEGACY_REVISION = "r51f3-current-publication-m1.3"
 POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
 LANGUAGE_COHERENCE_REVISION = "r51f3-current-trait-operator-refinement-r1"
 R10_HIR_MIR_REVISION = "r51f3-current-hir-mir-machine-contract-r1"
+R11_R19_FRONTEND_REVISION = "r51f3-current-frontend-readiness-r11-r19-r1"
+CURRENT_MACHINE_REVISIONS = {R10_HIR_MIR_REVISION, R11_R19_FRONTEND_REVISION}
 TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
@@ -142,6 +144,15 @@ CURRENT_DECISION_INDEX_PATHS = [
     "decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
 ]
 R10_DECISION_PATH = "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md"
+R11_R19_DECISION_PATHS = [
+    "decisions/language/Design_Deeplus_Construction_Cleanup_State_R1.md",
+    "decisions/language/Design_Deeplus_Frontend_CST_Parser_Recovery_Readiness_R1.md",
+    "decisions/language/Design_Deeplus_Closed_Pratt_Parse_Goal_R1.md",
+    "decisions/language/Design_Deeplus_Complete_Token_Lexical_Goal_R1.md",
+    "decisions/language/Design_Deeplus_Shorthand_Interpolation_State_Machine_R1.md",
+    "decisions/language/Design_Deeplus_Multiline_Interpolation_Atomic_Payload_R1.md",
+    "decisions/language/Design_Deeplus_R19_Source_Role_Profile_Gate_R1.md",
+]
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
     "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
@@ -10938,6 +10949,456 @@ def r9_diagnostic_dispatch_workspace_checks(
         )
 
 
+def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+
+    def emit(check_id: str, condition: bool, detail: Any) -> None:
+        rows.append(
+            {
+                "check_id": check_id,
+                "pass": bool(condition),
+                "detail": (
+                    detail
+                    if isinstance(detail, str)
+                    else json.dumps(detail, ensure_ascii=False, sort_keys=True)
+                ),
+            }
+        )
+
+    try:
+        grammar_path = root / "spec/grammar/deeplus.ebnf"
+        grammar_bytes = grammar_path.read_bytes()
+        grammar_text = grammar_bytes.decode("utf-8")
+        grammar_sha = hashlib.sha256(grammar_bytes).hexdigest()
+        without_comments = re.sub(
+            r"\(\*.*?\*\)",
+            lambda match: "\n" * match.group(0).count("\n"),
+            grammar_text,
+            flags=re.DOTALL,
+        )
+        production_matches = list(
+            re.finditer(
+                r"(?ms)^([A-Za-z_][A-Za-z0-9_]*)\s*::=\s*(.*?);\s*",
+                without_comments,
+            )
+        )
+        production_names = [match.group(1) for match in production_matches]
+        production_rhs = {
+            match.group(1): re.sub(r"\s+", " ", match.group(2)).strip()
+            for match in production_matches
+        }
+
+        registry = json.loads(
+            (
+                root
+                / "spec/contracts/grammar-production-disposition-registry-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        contract = json.loads(
+            (
+                root
+                / "spec/contracts/frontend-cst-boundary-recovery-contract.json"
+            ).read_text(encoding="utf-8")
+        )
+        r13 = json.loads(
+            (
+                root
+                / "spec/contracts/parser-boundary-match-arm-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        r14 = json.loads(
+            (
+                root
+                / "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        r15 = json.loads(
+            (
+                root
+                / "spec/contracts/closed-pratt-parse-goal-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        r16 = json.loads(
+            (
+                root
+                / "spec/contracts/complete-token-lexical-goal-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        r17 = json.loads(
+            (
+                root
+                / "spec/contracts/shorthand-interpolation-state-machine-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        r18 = json.loads(
+            (
+                root
+                / "spec/contracts/multiline-interpolation-atomic-payload-contract-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        frontend = json.loads(
+            (root / "spec/frontend/frontend-model.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        cst_fixture = json.loads(
+            (
+                root
+                / "tests/fixtures/current/frontend-cst-boundary-recovery-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        scanner_fixture = json.loads(
+            (
+                root
+                / "tests/fixtures/current/frontend-pratt-scanner-interpolation-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        source_roles = json.loads(
+            (root / "spec/contracts/source-roles.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        gate_map = json.loads(
+            (root / "spec/features/gates.json").read_text(encoding="utf-8")
+        )
+        source_role_fixture = json.loads(
+            (
+                root
+                / "tests/fixtures/current/source-role-profile-gate-r1.json"
+            ).read_text(encoding="utf-8")
+        )
+        feature_rows: list[dict[str, Any]] = []
+        for feature_chunk in sorted(
+            (root / "spec/features/catalog/chunks").glob("part-*.json")
+        ):
+            chunk_rows = json.loads(feature_chunk.read_text(encoding="utf-8"))
+            if isinstance(chunk_rows, list):
+                feature_rows.extend(
+                    row for row in chunk_rows if isinstance(row, dict)
+                )
+
+        production_rows = registry.get("production_rows", [])
+        disposition_counts = Counter(
+            row.get("disposition") for row in production_rows
+        )
+        emit(
+            "FRONTEND_R12_GRAMMAR_IDENTITY",
+            grammar_sha
+            == "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
+            and len(grammar_bytes) == 66033
+            and len(production_names) == 638
+            and registry.get("grammar", {}).get("sha256") == grammar_sha,
+            {
+                "sha256": grammar_sha,
+                "bytes": len(grammar_bytes),
+                "productions": len(production_names),
+            },
+        )
+        emit(
+            "FRONTEND_R12_DISPOSITION_TOTALITY",
+            len(production_rows) == 638
+            and [row.get("ordinal") for row in production_rows]
+            == list(range(1, 639))
+            and [row.get("production_id") for row in production_rows]
+            == production_names
+            and all(
+                row.get("normalized_rhs")
+                == production_rhs.get(row.get("production_id"))
+                and row.get("rhs_sha256")
+                == hashlib.sha256(
+                    production_rhs.get(row.get("production_id"), "").encode(
+                        "utf-8"
+                    )
+                ).hexdigest()
+                for row in production_rows
+            )
+            and disposition_counts
+            == Counter(
+                {
+                    "ast_node": 202,
+                    "cst_only": 407,
+                    "external_parser_entry": 19,
+                    "normalize_to": 10,
+                }
+            ),
+            {
+                "rows": len(production_rows),
+                "dispositions": dict(sorted(disposition_counts.items())),
+            },
+        )
+        emit(
+            "FRONTEND_R12_NORMALIZATION_RECOVERY_FENCE",
+            len(registry.get("normalization_rules", [])) == 10
+            and len(registry.get("recovery_kinds", [])) == 4
+            and all(
+                row.get("disposition") == "reject_before_ast"
+                and row.get("ast_node_count") == 0
+                for row in registry.get("recovery_kinds", [])
+            )
+            and contract.get("r12_cst_ast_normalization", {}).get(
+                "production_count"
+            )
+            == 638,
+            {
+                "normalizations": len(registry.get("normalization_rules", [])),
+                "recovery_kinds": len(registry.get("recovery_kinds", [])),
+            },
+        )
+        emit(
+            "FRONTEND_R13_BOUNDARY_MATCH_ARM_CLOSURE",
+            r13.get("schema") == "deeplus.parser-boundary-match-arm-contract/r1"
+            and len(r13.get("reason_codes", [])) == 5
+            and r13.get("diagnostic_authority_fence", "").endswith(
+                "IR-FE-P1-035"
+            )
+            and r13.get("surface_fence", {}).get(
+                "new_source_spelling_count"
+            )
+            == 0,
+            {
+                "reason_codes": len(r13.get("reason_codes", [])),
+                "new_source_spelling_count": r13.get(
+                    "surface_fence", {}
+                ).get("new_source_spelling_count"),
+            },
+        )
+        emit(
+            "FRONTEND_R14_RECOVERY_QUARANTINE",
+            r14.get("schema")
+            == "deeplus.frontend-recovery-invalid-tree-contract/r1"
+            and len(r14.get("recovery_cst_kinds", [])) == 4
+            and len(r14.get("insert_safe_tokens", [])) == 9
+            and len(r14.get("recovery_classes", [])) == 9
+            and r14.get("analysis_only_quarantine", {}).get(
+                "canonical_hir_serialization"
+            )
+            is False
+            and r14.get("progress_and_budget", {}).get(
+                "infinite_loop_possible"
+            )
+            is False,
+            {
+                "recovery_kinds": len(r14.get("recovery_cst_kinds", [])),
+                "insert_safe_tokens": len(r14.get("insert_safe_tokens", [])),
+                "recovery_classes": len(r14.get("recovery_classes", [])),
+            },
+        )
+
+        goal_domain = [row.get("goal") for row in r15.get("goal_registry", [])]
+        postfix = next(
+            row
+            for row in frontend["pratt"]["expression"]["operators"]
+            if row.get("id") == "postfix"
+        )
+        message_led = frontend["pratt"]["closed_parse_goal_contract"][
+            "message_led"
+        ]
+        emit(
+            "FRONTEND_R15_CLOSED_PRATT_GOALS",
+            goal_domain
+            == [
+                "EXPRESSION",
+                "PREDICATE",
+                "SLICE_INDEX",
+                "TYPE",
+                "NON_FUNCTION_TYPE",
+                "UNIT",
+            ]
+            and "message" not in postfix.get("structured", [])
+            and message_led.get("~", {}).get("lbp") == 15
+            and message_led.get(":~", {}).get("associativity")
+            == "terminal_nonassociative",
+            {
+                "goals": goal_domain,
+                "postfix_structured": postfix.get("structured", []),
+                "message_led": message_led,
+            },
+        )
+        emit(
+            "FRONTEND_R16_TOKEN_LEXICAL_TOTALITY",
+            len(r16.get("scanner_modes", [])) == 6
+            and len(r16.get("lexical_goals", [])) == 10
+            and len(r16.get("syntax_terminal_registry", [])) == 201
+            and len(r16.get("atomic_token_registry", [])) == 22
+            and len(r16.get("trivia_registry", [])) == 8
+            and r16.get("token_transaction", {}).get(
+                "failed_probe_source_byte_consumption"
+            )
+            == 0
+            and r16.get("token_transaction", {}).get(
+                "failed_probe_diagnostic_count"
+            )
+            == 0,
+            {
+                "scanner_modes": len(r16.get("scanner_modes", [])),
+                "lexical_goals": len(r16.get("lexical_goals", [])),
+                "terminals": len(r16.get("syntax_terminal_registry", [])),
+                "atomic_tokens": len(r16.get("atomic_token_registry", [])),
+                "trivia": len(r16.get("trivia_registry", [])),
+            },
+        )
+        emit(
+            "FRONTEND_R17_SHORTHAND_STATE_MACHINE",
+            len(r17.get("state_registry", [])) == 14
+            and len(r17.get("transition_registry", [])) == 20
+            and r17.get("diagnostic_fence", {}).get(
+                "new_final_diagnostic_id_count"
+            )
+            == 0
+            and frontend["scanner"]["shorthand_interpolation_state_machine"][
+                "final_diagnostic_owner_gap"
+            ]
+            == "IR-FE-P1-035",
+            {
+                "states": len(r17.get("state_registry", [])),
+                "transitions": len(r17.get("transition_registry", [])),
+            },
+        )
+        emit(
+            "FRONTEND_R18_MULTILINE_ATOMIC_PAYLOAD",
+            len(r18.get("outer_token", {}).get("payload_fields", [])) == 12
+            and len(r18.get("part_variants", [])) == 4
+            and len(r18.get("pipeline", [])) == 7
+            and r18.get("scanner_parser_handshake", {}).get(
+                "atomic_envelope_is_cst_leaf"
+            )
+            is False
+            and r18.get("scanner_parser_handshake", {}).get(
+                "payload_leaves_partition_source_exactly_once"
+            )
+            is True
+            and frontend["scanner"]["multiline_string_phase_a"].get(
+                "closer_on_own_line"
+            )
+            is True,
+            {
+                "payload_fields": len(
+                    r18.get("outer_token", {}).get("payload_fields", [])
+                ),
+                "part_variants": len(r18.get("part_variants", [])),
+                "pipeline": len(r18.get("pipeline", [])),
+            },
+        )
+
+        cst_suites = cst_fixture.get("suites", {})
+        scanner_suites = scanner_fixture.get("suites", {})
+        emit(
+            "FRONTEND_READINESS_FIXTURE_BINDING",
+            set(cst_suites) == {"r12", "r13", "r14"}
+            and set(scanner_suites) == {"r15", "r16", "r17", "r18"}
+            and all(
+                suite.get("counts", {}).get("total")
+                == len(suite.get("tests", []))
+                for suite in list(cst_suites.values())
+                + list(scanner_suites.values())
+            )
+            and scanner_fixture.get("diagnostic_fence", {}).get(
+                "new_final_diagnostic_id_count"
+            )
+            == 0,
+            {
+                "cst_suites": sorted(cst_suites),
+                "scanner_suites": sorted(scanner_suites),
+                "test_count": sum(
+                    len(suite.get("tests", []))
+                    for suite in list(cst_suites.values())
+                    + list(scanner_suites.values())
+                ),
+            },
+        )
+        expected_role_profile_roots = [
+            ("library", "stable", "LibrarySourceFile", "CURRENT"),
+            ("library", "preview", "PreviewLibrarySourceFile", "EXPLICIT_PREVIEW"),
+            ("executable", "stable", "ExecutableSourceFile", "CURRENT"),
+            ("executable", "preview", "PreviewExecutableSourceFile", "EXPLICIT_PREVIEW"),
+            ("script", "stable", "ScriptSourceFile", "CURRENT"),
+            ("script", "preview", "PreviewScriptSourceFile", "EXPLICIT_PREVIEW"),
+        ]
+        actual_role_profile_roots = [
+            (
+                row.get("source_role"),
+                row.get("activation_profile"),
+                row.get("root"),
+                row.get("normalized_hir_source_profile"),
+            )
+            for row in source_roles.get("role_profile_root_matrix", [])
+        ]
+        frontend_root_rows = [
+            (
+                row.get("role"),
+                row.get("activation_profile"),
+                root_name,
+                row.get("normalized_hir_source_profile"),
+            )
+            for root_name, row in frontend.get("source_roots", {}).items()
+        ]
+        emit(
+            "FRONTEND_R19_SOURCE_ROLE_PROFILE_ROOT_TOTALITY",
+            source_roles.get("source_role_domain")
+            == ["library", "executable", "script"]
+            and source_roles.get("activation_profile_domain")
+            == ["stable", "preview"]
+            and actual_role_profile_roots == expected_role_profile_roots
+            and sorted(frontend_root_rows) == sorted(expected_role_profile_roots)
+            and source_role_fixture.get("source_role_domain")
+            == ["library", "executable", "script"]
+            and source_role_fixture.get("activation_profile_domain")
+            == ["stable", "preview"],
+            {
+                "contract_rows": actual_role_profile_roots,
+                "frontend_rows": frontend_root_rows,
+            },
+        )
+        active_gate_ids = [
+            row.get("feature_id") for row in gate_map.get("entries", [])
+        ]
+        nonactivatable_catalog_ids = sorted(
+            row.get("feature_id")
+            for row in feature_rows
+            if row.get("source_activation") == "nonactivatable"
+        )
+        frontend_gate_ids = [
+            row.get("feature_id")
+            for row in frontend.get(
+                "source_role_profile_gate_contract", {}
+            ).get("active_gate_registry_projection", [])
+        ]
+        emit(
+            "FRONTEND_R19_GATE_PROJECTION_AND_ATOMICITY",
+            active_gate_ids
+            == [
+                "ffi_c_extern_unsafe_surface_msp",
+                "ffi_minimum_sound_profile",
+                "numeric_array_elementwise_power_msp",
+            ]
+            and frontend_gate_ids == active_gate_ids
+            and gate_map.get("nonactivatable")
+            == nonactivatable_catalog_ids
+            and len(nonactivatable_catalog_ids) == 115
+            and source_role_fixture.get("atomic_failure_result")
+            == {
+                "activated_features": [],
+                "canonical_source_unit_ast": None,
+            }
+            and source_role_fixture.get("acceptance", {}).get(
+                "new_diagnostic_id_count"
+            )
+            == 0,
+            {
+                "active_gate_ids": active_gate_ids,
+                "frontend_gate_ids": frontend_gate_ids,
+                "nonactivatable_count": len(nonactivatable_catalog_ids),
+            },
+        )
+    except Exception as exc:  # noqa: BLE001
+        emit(
+            "FRONTEND_READINESS_VALIDATOR_INTEGRATION",
+            False,
+            f"{type(exc).__name__}: {exc}",
+        )
+    return rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -10965,6 +11426,9 @@ def main() -> int:
     )
     for row in r9_diagnostic_dispatch_check_results:
         check(row["pass"], row["check_id"], row["detail"])
+    frontend_readiness_check_results = frontend_readiness_workspace_checks(root)
+    for row in frontend_readiness_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
 
     try:
         revision = tomllib.loads(
@@ -10975,19 +11439,24 @@ def main() -> int:
         check(False, "REVISION_PARITY", str(exc))
     check(
         revision
-        in {LEGACY_REVISION, POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION},
+        in {
+            LEGACY_REVISION,
+            POST_PR16_REVISION,
+            LANGUAGE_COHERENCE_REVISION,
+            *CURRENT_MACHINE_REVISIONS,
+        },
         "REVISION_PARITY",
         revision,
     )
     inherited_component_revision = (
         LANGUAGE_COHERENCE_REVISION
-        if revision == R10_HIR_MIR_REVISION
+        if revision in CURRENT_MACHINE_REVISIONS
         else revision
     )
 
     language_coherence_contract: dict[str, Any] = {}
     if revision in {
-        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+        LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS
     }:
         try:
             language_coherence_contract = json.loads(
@@ -11065,13 +11534,13 @@ def main() -> int:
             "tools/validators/run_post_pr16_current_integrity_tests.py",
         ])
     elif revision in {
-        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
+        LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS
     }:
         required.extend([
             "tools/generators/generate_language_coherence_current_integrity.py",
             LANGUAGE_COHERENCE_CONTRACT_REL,
         ])
-    if revision == R10_HIR_MIR_REVISION:
+    if revision in CURRENT_MACHINE_REVISIONS:
         required.extend([
             "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
             "schemas/language/canonical-hir-h1.schema.json",
@@ -11096,7 +11565,7 @@ def main() -> int:
     check(not (root / ("current/current-pointer.json" if args.candidate else "release/candidate-state.json")).exists(),
           "RELEASE_STATE_EXCLUSIVE", "candidate and published current states are mutually exclusive")
 
-    if revision == R10_HIR_MIR_REVISION:
+    if revision in CURRENT_MACHINE_REVISIONS:
         r10_validator = (
             root / "tools/validators/validate_hir_mir_machine_contract.py"
         )
@@ -11182,9 +11651,7 @@ def main() -> int:
             detail[-4000:],
         )
 
-    if revision in {
-        LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
-    }:
+    if revision in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}:
         current_integrity_generator_rel = (
             "tools/generators/generate_language_coherence_current_integrity.py"
         )
@@ -11361,7 +11828,7 @@ def main() -> int:
     def revision_identity_exempt(relative: str, current_sha256: str) -> bool:
         if revision == POST_PR16_REVISION:
             return relative in POST_PR16_CANONICAL_DELTA_PATHS
-        if revision == R10_HIR_MIR_REVISION:
+        if revision in CURRENT_MACHINE_REVISIONS:
             return relative in R10_SEMANTIC_DELTA_PATHS or (
                 language_identity_exemptions.get(relative) == current_sha256
             )
@@ -11515,9 +11982,7 @@ def main() -> int:
             ).items()
             if key != "prelude_entries"
         }
-        if revision in {
-            LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
-        }
+        if revision in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}
         else EXPECTED
     )
     for key, expected in expected_counts.items():
@@ -11914,11 +12379,9 @@ def main() -> int:
         if isinstance(row, dict) and set(row) == {"path", "sha256"}
     }
     for rel, expected_sha in FROZEN_UNCHANGED_SEMANTIC_HASHES.items():
-        if revision == R10_HIR_MIR_REVISION and rel == "spec/frontend/frontend-model.json":
+        if revision in CURRENT_MACHINE_REVISIONS and rel == "spec/frontend/frontend-model.json":
             continue
-        if revision in {
-            LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION
-        }:
+        if revision in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}:
             check(
                 successor_semantic_files.get(rel) == file_sha(root / rel),
                 "SUCCESSOR_SEMANTIC_FILE_IDENTITY",
@@ -12150,9 +12613,14 @@ def main() -> int:
     )
     hir_machine = hir_contract.get("machine_acceptance", {})
     hir_counts = hir_fixture.get("expected_counts", {})
+    hir_bridge_component_revision = (
+        R10_HIR_MIR_REVISION
+        if revision == R11_R19_FRONTEND_REVISION
+        else revision
+    )
     check(
-        hir_contract.get("revision") == revision
-        and hir_fixture.get("revision") == revision
+        hir_contract.get("revision") == hir_bridge_component_revision
+        and hir_fixture.get("revision") == hir_bridge_component_revision
         and hir_contract.get("semantic_p0") == 0
         and hir_machine.get("pipeline_stage_count") == 7
         and hir_machine.get("power_operation_count") == 6
@@ -14670,7 +15138,8 @@ def main() -> int:
             ),
         )
         for relative in CURRENT_DECISION_INDEX_PATHS
-        + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else [])
+        + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
+        + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -14685,15 +15154,17 @@ def main() -> int:
         R9_PUBLICATION_CLOSURE_REPORT,
     ] + (
         [R10_PUBLICATION_CLOSURE_REPORT]
-        if revision == R10_HIR_MIR_REVISION
+        if revision in CURRENT_MACHINE_REVISIONS
         else []
     )
     check(
         indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
-        + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else [])
+        + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
+        + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else [])
         and indexed_decision_rows == expected_decision_rows
         and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
-                + ([R10_DECISION_PATH] if revision == R10_HIR_MIR_REVISION else []))
+                + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
+                + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else []))
         and indexed_governance_paths == expected_governance_paths
         and all(
             (root / relative).is_file()
@@ -15710,7 +16181,13 @@ def main() -> int:
     ]
     check(
         current_decisions.get("law_count") == len(current_laws)
-        == (46 if revision == R10_HIR_MIR_REVISION else 44)
+        == (
+            55
+            if revision == R11_R19_FRONTEND_REVISION
+            else 46
+            if revision == R10_HIR_MIR_REVISION
+            else 44
+        )
         and r4_closure_laws
         == [
             {
@@ -16530,7 +17007,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R10_HIR_MIR_REVISION:
+        if revision == R11_R19_FRONTEND_REVISION:
+            expected_predecessor = R10_HIR_MIR_REVISION
+        elif revision == R10_HIR_MIR_REVISION:
             expected_predecessor = LANGUAGE_COHERENCE_REVISION
         elif revision == LANGUAGE_COHERENCE_REVISION:
             expected_predecessor = PREVIOUS_LANGUAGE_COHERENCE_REVISION
@@ -16554,7 +17033,12 @@ def main() -> int:
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         expected_action_ids = (
             SUCCESSOR_ACTION_IDS
-            if revision in {POST_PR16_REVISION, LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
+            if revision
+            in {
+                POST_PR16_REVISION,
+                LANGUAGE_COHERENCE_REVISION,
+                *CURRENT_MACHINE_REVISIONS,
+            }
             else EXPECTED_ACTION_IDS
         )
         check(
@@ -16808,7 +17292,7 @@ def main() -> int:
         language_coherence_contract.get("canonical_counts", {}).get(
             "prelude_entries"
         )
-        if revision in {LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
+        if revision in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}
         else 49
     )
     check(
@@ -17001,7 +17485,7 @@ def main() -> int:
                     "ARCH-001", "EVID-001", "PUB-001", "PUB-002", "P1-001",
                     "CMA-001", "MIRX1-001", "EXPR-001", "AUTH-001",
                 }
-                | ({"PUB-003"} if revision == R10_HIR_MIR_REVISION else set())
+                | ({"PUB-003"} if revision in CURRENT_MACHINE_REVISIONS else set())
                 if path.name == "Design_Deeplus_Current_Memory.json"
                 else {
                     "ARCH-001", "EVID-001", "PUB-001", "P1-001",
@@ -17013,7 +17497,8 @@ def main() -> int:
             and facts_by_id.get("CMA-001", {}).get("introduced")
             == (
                 POST_PR16_REVISION
-                if revision in {LANGUAGE_COHERENCE_REVISION, R10_HIR_MIR_REVISION}
+                if revision
+                in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}
                 else revision
             )
             and "Issue #24 remains open" in facts_by_id.get("MIRX1-001", {}).get("statement", "")
@@ -17157,7 +17642,7 @@ def main() -> int:
         design_memory.get("updated_at")
         == (
             "2026-07-31T18:49:43+09:00"
-            if revision == R10_HIR_MIR_REVISION
+            if revision in CURRENT_MACHINE_REVISIONS
             else "2026-07-31T06:51:51+09:00"
         )
         and design_facts.get("PUB-002", {}).get("source")
@@ -17313,6 +17798,16 @@ def main() -> int:
         ],
         "r9_diagnostic_dispatch_check_results":
             r9_diagnostic_dispatch_check_results,
+        "frontend_readiness_check_scope": "R12_R19_EXACT_DESIGN_STATIC",
+        "frontend_readiness_check_count":
+            len(frontend_readiness_check_results),
+        "frontend_readiness_passed_check_ids": [
+            row["check_id"]
+            for row in frontend_readiness_check_results
+            if row["pass"]
+        ],
+        "frontend_readiness_check_results":
+            frontend_readiness_check_results,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,

@@ -1,0 +1,269 @@
+
+{
+  "schema": "deeplus.multiline-interpolation-atomic-payload-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251"
+  },
+  "gap_id": "IR-FE-P0-030",
+  "dependencies": {
+    "IR-FE-P0-028": "R12_APPROVED_NOT_INTEGRATED",
+    "IR-FE-P1-032": "R16_APPROVED_NOT_INTEGRATED",
+    "IR-FE-P1-033": "R17_APPROVED_NOT_INTEGRATED"
+  },
+  "evidence_locators": [
+    "spec/grammar/deeplus.ebnf:40",
+    "spec/grammar/deeplus.ebnf:110-125",
+    "spec/grammar/deeplus.ebnf:1210-1230",
+    "spec/frontend/frontend-model.json:1989-2008",
+    "spec/language.md:154-168",
+    "spec/language.md:962-987",
+    "docs/grammar-reference/01-lexical-structure.md:250-256",
+    "spec/mir/semantics.md:450",
+    "spec/contracts/hir-h1-identity-catalog.json:471-500",
+    "spec/contracts/hir-mir-lowering-registry.json:2054-2130",
+    "examples/guide/review-corpus.md:10738-10770"
+  ],
+  "canonical_surface": {
+    "opener": "triple quote followed immediately by CRLF or LF",
+    "closer": "triple quote on an otherwise indentation-only physical line",
+    "raw_multiline": "NOT_CURRENT",
+    "one_line_triple_quote": "NOT_CURRENT",
+    "part_kinds": [
+      "TEXT",
+      "ESCAPE",
+      "SHORTHAND_PATH",
+      "BRACED_EXPRESSION"
+    ],
+    "new_syntax_count": 0,
+    "feature_status_change_count": 0
+  },
+  "outer_token": {
+    "token_kind": "MULTILINE_STRING_LITERAL",
+    "top_level_token_count": 1,
+    "payload_schema": "MultilineStringTokenPayloadV1",
+    "payload_fields": [
+      "raw_literal_span",
+      "opener_span",
+      "opener_line_terminator_span",
+      "raw_content_span",
+      "closer_margin_span",
+      "closer_span",
+      "closer_line_terminator_span_or_null",
+      "physical_lines",
+      "indent_profile",
+      "parts_in_source_order",
+      "raw_to_normalized_coordinate_map",
+      "delimiter_balance_receipt"
+    ],
+    "parser_goal": "MULTILINE_ATOMIC",
+    "split_into_top_level_STRING_START_PART_END_tokens": false,
+    "cst_leaf_role": "NON_CST_ENVELOPE_RECEIPT",
+    "payload_leaf_partition": "delimiters, text, escapes and hole leaves partition every source byte EXACTLY_ONCE"
+  },
+  "part_variants": [
+    {
+      "kind": "TEXT",
+      "required_fields": [
+        "raw_fragments",
+        "normalized_utf8",
+        "coordinate_map_rows"
+      ],
+      "semantic_role": "direct String content after margin removal and logical-newline normalization"
+    },
+    {
+      "kind": "ESCAPE",
+      "required_fields": [
+        "raw_span",
+        "escape_kind",
+        "decoded_unicode_scalars"
+      ],
+      "semantic_role": "same closed escape set as ordinary String"
+    },
+    {
+      "kind": "SHORTHAND_PATH",
+      "required_fields": [
+        "raw_span",
+        "embedded_raw_span",
+        "parser_materialized_token_tape_receipt",
+        "r17_transaction_receipt"
+      ],
+      "semantic_role": "R17 root-once read-only path"
+    },
+    {
+      "kind": "BRACED_EXPRESSION",
+      "required_fields": [
+        "open_span",
+        "expression_raw_span",
+        "embedded_raw_span",
+        "parser_materialized_token_tape_receipt",
+        "nested_delimiter_receipt",
+        "format_payload_or_null",
+        "close_span"
+      ],
+      "semantic_role": "R15 expression parsed under interpolation lexical goals"
+    }
+  ],
+  "pipeline": [
+    {
+      "ordinal": 1,
+      "phase": "OPEN",
+      "rule": "recognize exact triple quote and require immediate CRLF or LF",
+      "failure": "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE"
+    },
+    {
+      "ordinal": 2,
+      "phase": "STRUCTURAL_SCAN",
+      "rule": "scan raw physical lines, hole spans and structural balance without precommitting goal-sensitive embedded token kinds",
+      "failure": "SYMBOLIC_MULTILINE_DELIMITER_UNBALANCED_PENDING_IR_FE_P1_035"
+    },
+    {
+      "ordinal": 3,
+      "phase": "CLOSER_COMMIT",
+      "rule": "recognize closer only in the outer MULTILINE_STRING frame on an otherwise indentation-only line",
+      "failure": "MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE"
+    },
+    {
+      "ordinal": 4,
+      "phase": "CONTENT_LCP_PROJECTION",
+      "rule": "compute the longest exact common space/tab prefix of all nonblank content lines; closer indentation is structural metadata only",
+      "failure": "NONE_TOTAL_FINITE_PREFIX_COMPUTATION"
+    },
+    {
+      "ordinal": 5,
+      "phase": "NORMALIZED_PROJECTION",
+      "rule": "remove the computed common prefix from literal-text line prefixes, discard blank-line horizontal bytes, normalize internal CRLF/LF to U+000A, and retain the raw coordinate map",
+      "failure": "INTERNAL_CONTRACT_VIOLATION"
+    },
+    {
+      "ordinal": 6,
+      "phase": "EMBEDDED_PARSE",
+      "rule": "materialize each embedded token tape lazily through the parser-owned R16 lexical-goal cursor, then parse shorthand with R17 and braced expressions with R15",
+      "failure": "R14_ERROR_NODE_NO_CANONICAL_AST"
+    },
+    {
+      "ordinal": 7,
+      "phase": "AST_HIR_LOWERING",
+      "rule": "plain payload becomes HIR literal/ConstString; any hole becomes the existing HIR interpolation plan and ordered builder transaction",
+      "failure": "NO_PARTIAL_HIR_OR_MIR"
+    }
+  ],
+  "line_terminator_law": {
+    "accepted_source_spellings": [
+      "CRLF",
+      "LF"
+    ],
+    "lossless_cst_preserves_raw_spelling": true,
+    "runtime_value_spelling": "U+000A",
+    "opener_terminator_in_value": false,
+    "closer_boundary_terminator_in_value": false,
+    "internal_content_line_terminators_in_value": true,
+    "empty_literal_value": ""
+  },
+  "indent_profile": {
+    "indent_alphabet": [
+      "SPACE_U0020",
+      "TAB_U0009"
+    ],
+    "tab_and_space_are_distinct_bytes": true,
+    "closer_indent": "exact space/tab prefix before the committed closer; structural and coordinate metadata only",
+    "nonblank_line": "a content line whose bytes after horizontal indentation and before its terminator are nonempty",
+    "computed_common_prefix": "longest byte-exact prefix shared by every nonblank content line",
+    "admission": "every finite content-line set admits one deterministic computed_common_prefix; closer indentation does not constrain it",
+    "no_nonblank_lines": "computed_common_prefix is the empty byte string",
+    "blank_line_projection": "discard all horizontal indentation bytes and preserve only an internal logical line terminator",
+    "extra_indent_after_margin": "preserved as literal text or embedded-code trivia according to the owning part",
+    "projection_failure": "internal contract violation; one invalid-literal CST node and no canonical AST"
+  },
+  "mode_and_balance_protocol": {
+    "outer_frame": "MULTILINE_STRING",
+    "embedded_braced_frame": "INTERPOLATION_CODE",
+    "embedded_shorthand_substate": "STRING_SHORTHAND",
+    "delimiter_frames": [
+      "PAREN",
+      "BRACKET",
+      "BRACE",
+      "INTERPOLATION",
+      "STRING",
+      "MULTILINE_STRING"
+    ],
+    "outer_closer_eligible": "only when current frame is the original outer MULTILINE_STRING and no interpolation frame is open",
+    "braced_close_eligible": "only matching } at interpolation delimiter depth zero outside nested string modes",
+    "nested_string_delimiters_do_not_close_interpolation": true,
+    "outer_closer_seen_while_interpolation_open": "ordinary embedded-source tokenization followed by unbalanced rejection; never close outer literal",
+    "out_of_order_close": "one deterministic error tree and no canonical AST/HIR/MIR"
+  },
+  "scanner_parser_handshake": {
+    "scanner_owns": [
+      "outer atomic token extent",
+      "physical line facts and raw spans",
+      "mode/delimiter balance",
+      "escape boundaries",
+      "raw-to-normalized coordinate map"
+    ],
+    "parser_owns": [
+      "MultilineStringLiteralCst from the atomic payload",
+      "embedded R17 path CST",
+      "embedded R15 expression CST/AST",
+      "R16 lexical-goal cursor and lazy embedded token-tape materialization",
+      "part-order validation",
+      "R14 error-node projection"
+    ],
+    "checker_owns": [
+      "Display witness selection",
+      "read-only shorthand projection validity",
+      "effect/error typing of braced holes",
+      "DedentedMultilineStringAdmitted result"
+    ],
+    "failed_atomic_token_canonical_ast_count": 0,
+    "failed_embedded_part_canonical_ast_count": 0,
+    "part_order": "strict raw source span order; adjacent TEXT may coalesce only with an exact fragment map",
+    "embedded_token_tape_materialization_owner": "parser_with_R16_lexical_goal_cursor",
+    "atomic_envelope_is_cst_leaf": false,
+    "payload_leaves_partition_source_exactly_once": true
+  },
+  "lexical_goal_cursor": {
+    "shorthand": "R17 STRING_SHORTHAND transaction parameterized by MULTILINE_STRING host mode",
+    "braced_prefix": "R16 INTERPOLATION_EXPRESSION_PREFIX",
+    "braced_continuation": "R16 INTERPOLATION_EXPRESSION_CONTINUATION",
+    "materialization": "lazy, checkpoint-bound, raw-span preserving, full-span consuming",
+    "scanner_precommitted_embedded_token_kind_count": 0
+  },
+  "cst_ast_hir_mir": {
+    "cst": "MultilineStringLiteralCst retains raw token, payload, delimiters, indentation, every part and all coordinate rows",
+    "plain_ast": "StringLiteral(multiline=true, interpolated=false, normalized_value)",
+    "interpolated_ast": "StringLiteral(multiline=true, interpolated=true, parts_in_source_order)",
+    "plain_hir": "HIR-H1/EXPR/LITERAL with one CONST_STRING_ID",
+    "interpolated_hir": "HIR-H1/EXPR/INTERPOLATION with HIR-H1/STRUCT/INTERPOLATION_PLAN",
+    "plain_mir": "ConstString",
+    "interpolated_mir": "DM-LR-TOP-INTERPOLATION-R1 BUILDER_BEGIN, ordered BUILDER_STAGE, BUILDER_COMMIT on success",
+    "hole_evaluation_order": "left-to-right exactly once",
+    "publication": "after every direct segment and display hole succeeds",
+    "rollback": "reverse acquired-temporary cleanup; publish no partial String"
+  },
+  "diagnostic_binding": {
+    "missing_opener_newline": "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE",
+    "off_line_closer": "MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE",
+    "raw_multiline": "RAW_MULTILINE_STRING_NOT_CURRENT",
+    "unbalanced_or_out_of_order": "PENDING_IR_FE_P1_035_EXACT_PRIMARY",
+    "escape_or_embedded_parse": "existing ordinary String/parser diagnostic when exact; otherwise IR-FE-P1-035",
+    "new_final_diagnostic_id_count": 0
+  },
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_scanner_execution": "NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "production_checker_execution": "NOT_RUN",
+    "production_hir_mir_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

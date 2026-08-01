@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.frontend-model/r51f3",
-  "revision": "r51f3-current-hir-mir-machine-contract-r1",
+  "revision": "r51f3-current-frontend-readiness-r11-r19-r1",
   "status": "CURRENT_CANONICAL_PACKAGE_COMPONENT",
   "date": "2026-07-28",
   "authority_bundle": {
@@ -1714,7 +1714,6 @@
             "tuple_ordinal",
             "index",
             "member",
-            "message",
             "transpose",
             "constructor",
             "derivation",
@@ -1847,7 +1846,35 @@
       "UnitPostfixParselet",
       "UnitInfixOperator",
       "UnitPrimary"
-    ]
+    ],
+    "closed_parse_goal_contract": {
+      "contract": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
+      "schema": "deeplus.closed-pratt-parse-goal-contract/r1",
+      "goal_domain": [
+        "EXPRESSION",
+        "PREDICATE",
+        "SLICE_INDEX",
+        "TYPE",
+        "NON_FUNCTION_TYPE",
+        "UNIT"
+      ],
+      "dispatch_key": "parse_goal + exact attached token sequence or structured lookahead signature",
+      "unknown_or_disabled": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+      "message_led": {
+        "~": {
+          "mode": "Message",
+          "lbp": 15,
+          "associativity": "left"
+        },
+        ":~": {
+          "mode": "ActorMessage",
+          "lbp": 15,
+          "associativity": "terminal_nonassociative"
+        }
+      },
+      "generic_postfix_message_member_count": 0,
+      "product_execution": "NOT_RUN"
+    }
   },
   "scanner": {
     "unicode_version": "15.1.0",
@@ -1876,11 +1903,17 @@
       "mir": "ConstString"
     },
     "multiline_string_phase_a": {
+      "contract": "spec/contracts/multiline-interpolation-atomic-payload-contract-r1.json",
+      "payload_schema": "MultilineStringTokenPayloadV1",
       "delimiter": "\"\"\"",
       "opener_followed_by_newline": true,
       "closer_on_own_line": true,
-      "indentation": "strip longest exact common indentation prefix; tab and space are distinct",
-      "escape_and_interpolation": "same as ordinary String",
+      "indentation": "strip the byte-exact longest common space/tab prefix of nonblank content lines; closer indentation is structural coordinate metadata only",
+      "outer_token": "MULTILINE_STRING_LITERAL",
+      "outer_token_is_cst_leaf": false,
+      "payload_leaves_partition_source_exactly_once": true,
+      "embedded_token_tapes": "parser-lazy under the complete token lexical-goal cursor",
+      "escape_and_interpolation": "same admitted escape and interpolation surface as ordinary String",
       "raw_multiline": "not_current"
     },
     "external_terminals": {
@@ -1989,18 +2022,22 @@
       "ScannerMultilineStringLiteral": {
         "token": "MULTILINE_STRING_LITERAL",
         "mode": "MULTILINE_STRING",
-        "cst": "MultilineStringLiteralCst",
+        "payload_schema": "MultilineStringTokenPayloadV1",
+        "parser_stream_role": "one atomic token envelope",
+        "cst": "payload delimiter/text/escape/hole leaves partition source bytes exactly once; the outer envelope is not a CST leaf",
         "opener": "\"\"\" followed by a physical newline",
         "closer": "\"\"\" on its own physical line",
-        "indent": "strip the longest exact common indentation prefix; tab and space are distinct",
+        "indent": "strip the byte-exact longest common indentation prefix of nonblank content lines; tab and space are distinct; closer indentation is metadata only",
         "parts": [
           "text",
           "escape",
           "interpolation_path",
           "interpolation_expr"
         ],
+        "embedded_token_materialization": "parser-lazy under R16 lexical goals before R17 shorthand or R15 braced-expression parsing",
         "ast": "StringLiteral(multiline=true, interpolated=parts contain interpolation)",
-        "mir": "ConstString for plain content; ordered RenderParts for interpolation",
+        "hir": "plain -> HIR-H1/EXPR/LITERAL; interpolated -> HIR-H1/EXPR/INTERPOLATION",
+        "mir": "ConstString for plain content; DM-LR-TOP-INTERPOLATION-R1 ordered builder transaction for interpolation",
         "invalid_forms": [
           "missing opener newline",
           "off-line closer",
@@ -2033,7 +2070,57 @@
           "unterminated at EOF"
         ]
       }
+    },
+    "complete_token_lexical_goal_contract": {
+      "contract": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
+      "schema": "deeplus.complete-token-lexical-goal-contract/r1",
+      "scanner_mode_count": 6,
+      "lexical_goal_count": 10,
+      "syntax_terminal_count": 201,
+      "atomic_token_count": 22,
+      "trivia_kind_count": 8,
+      "token_probe": "complete-checkpoint transaction; failed probe consumes zero bytes/tokens and emits zero diagnostics",
+      "rational_probe": "expression prefix only in NORMAL or INTERPOLATION_CODE",
+      "multiline_rebind": "MULTILINE_ATOMIC owns MultilineStringTokenPayloadV1",
+      "product_execution": "NOT_RUN"
+    },
+    "shorthand_interpolation_state_machine": {
+      "contract": "spec/contracts/shorthand-interpolation-state-machine-contract-r1.json",
+      "schema": "deeplus.shorthand-interpolation-state-machine-contract/r1",
+      "state_count": 14,
+      "transition_count": 20,
+      "surface": "Identifier-or-@ root followed by zero or more read-only member/static-index selectors",
+      "braced_precedence": "${ wins before shorthand",
+      "complete_path_delimiter": "ordinary nonselector delimiter terminates without consumption and is reprocessed in STRING",
+      "committed_incomplete_selector": "reject with one CST error node and zero partial selector AST",
+      "final_diagnostic_owner_gap": "IR-FE-P1-035",
+      "new_final_diagnostic_id_count": 0,
+      "product_execution": "NOT_RUN"
+    },
+    "multiline_interpolation_atomic_payload_contract": {
+      "contract": "spec/contracts/multiline-interpolation-atomic-payload-contract-r1.json",
+      "schema": "deeplus.multiline-interpolation-atomic-payload-contract/r1",
+      "payload_schema": "MultilineStringTokenPayloadV1",
+      "payload_field_count": 12,
+      "part_variant_count": 4,
+      "pipeline_phase_count": 7,
+      "atomic_envelope_is_cst_leaf": false,
+      "payload_leaves_partition_source_exactly_once": true,
+      "final_diagnostic_owner_gap": "IR-FE-P1-035",
+      "new_final_diagnostic_id_count": 0,
+      "product_execution": "NOT_RUN"
     }
+  },
+  "frontend_cst_boundary_recovery_contract": {
+    "contract": "spec/contracts/frontend-cst-boundary-recovery-contract.json",
+    "schema": "deeplus.frontend-cst-boundary-recovery-contract/r1",
+    "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
+    "grammar_production_count": 638,
+    "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
+    "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
+    "canonical_ast_recovery_node_count": 0,
+    "canonical_hir_recovery_node_count": 0,
+    "product_execution": "NOT_RUN"
   },
   "lowering_and_semantic_responsibility": {
     "grammar": "structure only",
@@ -2645,31 +2732,90 @@
   "source_roots": {
     "LibrarySourceFile": {
       "role": "library",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "gate_required": false,
       "must_consume": "EOF"
     },
     "ExecutableSourceFile": {
       "role": "executable",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "gate_required": false,
       "must_consume": "EOF"
     },
     "ScriptSourceFile": {
       "role": "script",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "gate_required": false,
       "must_consume": "EOF"
     },
     "PreviewLibrarySourceFile": {
-      "role": "preview_library",
+      "role": "library",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
       "must_consume": "EOF",
       "gate_required": true
     },
     "PreviewExecutableSourceFile": {
-      "role": "preview_executable",
+      "role": "executable",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
       "must_consume": "EOF",
       "gate_required": true
     },
     "PreviewScriptSourceFile": {
-      "role": "preview_script",
+      "role": "script",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
       "must_consume": "EOF",
       "gate_required": true
     }
+  },
+  "source_role_profile_gate_contract": {
+    "carrier_contract": "spec/contracts/source-roles.json",
+    "gate_registry": "spec/features/gates.json",
+    "source_role_domain": [
+      "library",
+      "executable",
+      "script"
+    ],
+    "activation_profile_domain": [
+      "stable",
+      "preview"
+    ],
+    "root_mapping_cardinality": 6,
+    "role_or_profile_fixed_before_parse": true,
+    "root_selection_by_trial_parse": false,
+    "nested_profile_override_count": 0,
+    "preview_gate_changes_role_or_profile": false,
+    "preview_gate_presence_must_match_profile": true,
+    "active_gate_registry_projection": [
+      {
+        "feature_id": "ffi_c_extern_unsafe_surface_msp",
+        "gate": "#preview(ffi_c_extern_unsafe_surface_msp,ffi_minimum_sound_profile)",
+        "frontend_owner": "PreviewFfiBlockDecl|PreviewFfiFunctionDecl",
+        "semantic_owner": "parser_then_checker"
+      },
+      {
+        "feature_id": "ffi_minimum_sound_profile",
+        "gate": "#preview(ffi_minimum_sound_profile)",
+        "frontend_owner": "PreviewFfiFunctionDecl",
+        "semantic_owner": "parser_then_checker"
+      },
+      {
+        "feature_id": "numeric_array_elementwise_power_msp",
+        "gate": "#preview(numeric_array_elementwise_power_msp)",
+        "frontend_owner": "PrattExpr",
+        "semantic_owner": "checker"
+      }
+    ],
+    "active_gate_projection_must_equal_registry": true,
+    "nonactivatable_projection_must_equal_feature_catalog": true,
+    "dependency_order": "left_to_right_declared_dependency_closure",
+    "failure_commit": "zero activated features and zero canonical source-unit AST",
+    "final_diagnostic_ids_added": 0
   },
   "class_modifier_compatibility": {
     "ordinary": [

@@ -78,10 +78,11 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / PARSER",
+    "authority": "LANGUAGE / PARSER / CHECKER",
     "authority_set": [
       "LANGUAGE",
-      "PARSER"
+      "PARSER",
+      "CHECKER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
@@ -91,7 +92,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The rooted opt-in profile validation mechanism is itself a current Stable contract with no source activation; exactly three registry-listed opt-in features use explicit activation.",
+    "notes": "The rooted opt-in profile validation mechanism is itself a current Stable contract with no source activation. source_role remains exactly library/executable/script; the separate carrier activation_profile stable/preview selects one of six roots before parsing and normalizes to HIR CURRENT/EXPLICIT_PREVIEW. A leading gate verifies but never rewrites those axes. spec/features/gates.json exhaustively projects exactly three explicit-gate features, including the checker-owned NumericArray power route; any failure commits zero features and zero canonical source-unit AST. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

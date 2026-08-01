@@ -1,0 +1,31 @@
+{
+  "schema": "deeplus.construction-cleanup-diagnostic-contract/r1",
+  "revision": "R11-INTEGRATED-R1",
+  "status": "STABLE_DESIGN",
+  "gap_id": "IR-OWN-P0-016",
+  "source_diagnostics": [
+    {"diagnostic_id":"CONSTRUCTION_FIELD_READ_BEFORE_INITIALIZATION","trigger":"A constructor reads a stored-field subtree whose mask state is not Live.","priority":"EARLIEST_FIELD_MASK_DIAGNOSTIC","product_support":"NOT_RUN"},
+    {"diagnostic_id":"CONSTRUCTION_LET_FIELD_ALREADY_INITIALIZED","trigger":"A reachable second initialization targets a let FieldSlotId.","priority":"EARLIEST_FIELD_MASK_DIAGNOSTIC","product_support":"NOT_RUN"},
+    {"diagnostic_id":"CONSTRUCTION_INIT_STATE_JOIN_MISMATCH","trigger":"A constructor CFG join cannot prove the required slot Live on every incoming path.","priority":"EARLIEST_FIELD_MASK_DIAGNOSTIC","product_support":"NOT_RUN"},
+    {"diagnostic_id":"CONSTRUCTION_REQUIRED_SLOT_NOT_LIVE_AT_COMMIT","trigger":"COMMIT_READY contains a required Uninitialized, Moved, or MaybeMoved slot.","priority":"FINAL_COMMIT_DIAGNOSTIC","product_support":"NOT_RUN"},
+    {"diagnostic_id":"CONSTRUCTION_SELF_ESCAPE_BEFORE_COMMIT","trigger":"PrepublicationSelf crosses a forbidden storage, return, capture, send, FFI, async, generator, or escaping-borrow boundary.","priority":"SELF_ESCAPE_OR_DISPATCH_DIAGNOSTIC","product_support":"NOT_RUN"},
+    {"diagnostic_id":"CONSTRUCTION_PRECOMMIT_DISPATCH_NOT_ADMITTED","trigger":"PrepublicationSelf is used for dynamic, witness, extension, actor-message, or unknown dispatch.","priority":"SELF_ESCAPE_OR_DISPATCH_DIAGNOSTIC","product_support":"NOT_RUN"}
+  ],
+  "release_verifier_diagnostics": [
+    {"diagnostic_id":"HIR_CONSTRUCTION_MASK_INVALID","trigger":"HirConstructionLifecyclePlan has a non-total, inconsistent, or non-atomic mask transition.","product_support":"NOT_RUN"},
+    {"diagnostic_id":"MIR_CONSTRUCTION_TOKEN_BALANCE_INVALID","trigger":"ConstructionTokenId or a CleanupTokenId is duplicated, leaked, or consumed more than once.","product_support":"NOT_RUN"},
+    {"diagnostic_id":"MIR_CONSTRUCTION_CLEANUP_ORDER_INVALID","trigger":"Abort or live cleanup differs from the exact reverse-acquisition and base-recursion contract.","product_support":"NOT_RUN"},
+    {"diagnostic_id":"MIR_CONSTRUCTION_PUBLICATION_COUNT_INVALID","trigger":"A construction session publishes other than once on commit or zero times on abort.","product_support":"NOT_RUN"}
+  ],
+  "deterministic_priority": [
+    "EXISTING_DELEGATION_DIAGNOSTIC",
+    "EARLIEST_FIELD_MASK_DIAGNOSTIC",
+    "SELF_ESCAPE_OR_DISPATCH_DIAGNOSTIC",
+    "FINAL_COMMIT_DIAGNOSTIC",
+    "INTERNAL_HIR_MIR_VERIFIER_DIAGNOSTIC"
+  ],
+  "ordinary_source_diagnostic_count": 6,
+  "release_verifier_diagnostic_count": 4,
+  "new_diagnostic_count": 10,
+  "product_execution": "NOT_RUN"
+}

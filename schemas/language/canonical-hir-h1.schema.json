@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus-lang.org/schema/r10-integrated-r2/canonical-hir-h1.schema.json",
-  "title": "Deeplus Canonical HIR-H1 integrated semantic draft R2",
+  "$id": "https://deeplus-lang.org/schema/r11-integrated-r1/canonical-hir-h1.schema.json",
+  "title": "Deeplus Canonical HIR-H1 R11 construction-lifecycle successor",
   "description": "Machine-bound canonical HIR payload. Audit baseline, audit status, and product status are deliberately outside the instance semantic projection.",
   "type": "object",
   "additionalProperties": false,
@@ -19,7 +19,7 @@
       "const": "deeplus.canonical-hir-h1/r1"
     },
     "schema_revision": {
-      "const": "R10-INTEGRATED-R2"
+      "const": "R11-INTEGRATED-R1"
     },
     "schema_digest": {
       "$ref": "#/$defs/Sha256"
@@ -400,6 +400,7 @@
         "HIR-H1/STRUCT/PLACE_PLAN",
         "HIR-H1/STRUCT/CONTEXT_ADAPTATION_PLAN",
         "HIR-H1/STRUCT/CONSTRUCTION_PLAN",
+        "HIR-H1/STRUCT/CONSTRUCTION_LIFECYCLE_PLAN",
         "HIR-H1/STRUCT/MAP_LITERAL_PLAN",
         "HIR-H1/STRUCT/INTERPOLATION_PLAN",
         "HIR-H1/STRUCT/CLOSURE_PLAN",
@@ -1675,6 +1676,219 @@
       ],
       "unevaluatedProperties": false
     },
+    "ConstructionLifecycleFieldSlotDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field_slot_id",
+        "declaring_class_id",
+        "normalized_type_id",
+        "responsibility_profile_id",
+        "initial_state"
+      ],
+      "properties": {
+        "field_slot_id": {"$ref": "#/$defs/Id"},
+        "declaring_class_id": {"$ref": "#/$defs/Id"},
+        "normalized_type_id": {"$ref": "#/$defs/Id"},
+        "responsibility_profile_id": {"$ref": "#/$defs/Id"},
+        "initial_state": {"const": "Uninitialized"}
+      }
+    },
+    "ConstructionLifecycleMaskRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field_slot_id", "state"],
+      "properties": {
+        "field_slot_id": {"$ref": "#/$defs/Id"},
+        "state": {
+          "enum": ["Uninitialized", "Live", "Moved", "MaybeMoved"]
+        }
+      }
+    },
+    "ConstructionLifecycleTransitionRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transition_id",
+        "construction_session_id",
+        "phase_before",
+        "phase_after",
+        "mask_digest_before",
+        "mask_digest_after",
+        "consumed_owner_ids",
+        "produced_owner_ids",
+        "consumed_cleanup_token_ids",
+        "produced_cleanup_token_ids",
+        "outcome_edge",
+        "source_origin_id"
+      ],
+      "properties": {
+        "transition_id": {"$ref": "#/$defs/Id"},
+        "construction_session_id": {"$ref": "#/$defs/Id"},
+        "phase_before": {"$ref": "#/$defs/Id"},
+        "phase_after": {"$ref": "#/$defs/Id"},
+        "mask_digest_before": {"$ref": "#/$defs/Sha256"},
+        "mask_digest_after": {"$ref": "#/$defs/Sha256"},
+        "consumed_owner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        },
+        "produced_owner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        },
+        "consumed_cleanup_token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        },
+        "produced_cleanup_token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        },
+        "outcome_edge": {
+          "enum": ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]
+        },
+        "source_origin_id": {"$ref": "#/$defs/Id"}
+      }
+    },
+    "ConstructionLifecycleDelegationPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "target_constructor_decl_id",
+        "reuses_construction_session",
+        "allocation_delta",
+        "publication_delta"
+      ],
+      "properties": {
+        "kind": {"enum": ["ROOT", "SAME_TYPE", "SUPERCLASS"]},
+        "target_constructor_decl_id": {"$ref": "#/$defs/NullableId"},
+        "reuses_construction_session": {"type": "boolean"},
+        "allocation_delta": {"type": "integer", "minimum": 0, "maximum": 1},
+        "publication_delta": {"const": 0}
+      }
+    },
+    "ConstructionLifecycleCommitPredicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_required_fields_live",
+        "no_moved_or_maybe_moved_required_slot",
+        "delegation_root_unique",
+        "post_init_guards_succeeded",
+        "cleanup_tokens_balanced",
+        "temporary_tokens_discharged_or_transferred",
+        "self_escape_count_zero",
+        "publication_count_zero"
+      ],
+      "properties": {
+        "all_required_fields_live": {"const": true},
+        "no_moved_or_maybe_moved_required_slot": {"const": true},
+        "delegation_root_unique": {"const": true},
+        "post_init_guards_succeeded": {"const": true},
+        "cleanup_tokens_balanced": {"const": true},
+        "temporary_tokens_discharged_or_transferred": {"const": true},
+        "self_escape_count_zero": {"const": true},
+        "publication_count_zero": {"const": true}
+      }
+    },
+    "HirConstructionLifecyclePlan": {
+      "allOf": [
+        {"$ref": "#/$defs/PlanHeader"},
+        {
+          "type": "object",
+          "required": [
+            "construction_plan_id",
+            "constructor_decl_id",
+            "most_derived_class_id",
+            "base_segment_ids",
+            "field_slot_descriptors",
+            "initial_mask",
+            "selected_delegation_plan",
+            "cfg_mask_states",
+            "field_init_commits",
+            "owner_token_transfers",
+            "prepublication_self_uses",
+            "post_init_guards",
+            "abort_cleanup_order",
+            "normal_cleanup_order",
+            "commit_predicate",
+            "unique_publication_site",
+            "source_provenance"
+          ],
+          "properties": {
+            "structural_identity_id": {
+              "const": "HIR-H1/STRUCT/CONSTRUCTION_LIFECYCLE_PLAN"
+            },
+            "construction_plan_id": {"$ref": "#/$defs/Id"},
+            "constructor_decl_id": {"$ref": "#/$defs/Id"},
+            "most_derived_class_id": {"$ref": "#/$defs/Id"},
+            "base_segment_ids": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "field_slot_descriptors": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ConstructionLifecycleFieldSlotDescriptor"}
+            },
+            "initial_mask": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ConstructionLifecycleMaskRow"}
+            },
+            "selected_delegation_plan": {
+              "$ref": "#/$defs/ConstructionLifecycleDelegationPlan"
+            },
+            "cfg_mask_states": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ConstructionLifecycleTransitionRecord"}
+            },
+            "field_init_commits": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ConstructionLifecycleTransitionRecord"}
+            },
+            "owner_token_transfers": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ConstructionLifecycleTransitionRecord"}
+            },
+            "prepublication_self_uses": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "post_init_guards": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "abort_cleanup_order": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "normal_cleanup_order": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "commit_predicate": {
+              "$ref": "#/$defs/ConstructionLifecycleCommitPredicate"
+            },
+            "unique_publication_site": {"$ref": "#/$defs/Id"},
+            "source_provenance": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/Id"}
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
     "MapLiteralEntry": {
       "oneOf": [
         {
@@ -2606,6 +2820,9 @@
         },
         {
           "$ref": "#/$defs/ConstructionPlan"
+        },
+        {
+          "$ref": "#/$defs/HirConstructionLifecyclePlan"
         },
         {
           "$ref": "#/$defs/MapLiteralPlan"
@@ -4719,7 +4936,7 @@
     "occurrence_profile_rule": "The root source_profile is the sole occurrence profile. Nested profile overrides do not exist.",
     "preview_pattern_rule": "A Preview pattern exists only in EXPLICIT_PREVIEW and its containing PATTERN_ATTEMPT reachability is FEATURE_GATED with a nonempty required feature set.",
     "no_recovery_unknown_rule": "Every canonical discriminator is closed. Analysis recovery, unresolved, overload-set, unknown, and the two rejected pre-HIR patterns cannot validate.",
-    "structural_plan_contract_count": 12,
+    "structural_plan_contract_count": 13,
     "structural_plan_optional_encoding": "REQUIRED_OR_NULL",
     "focused_verifier_obligations": [
       "Recompute schema_digest and authority_digest from the selected machine contract and authority bundle.",
@@ -4727,12 +4944,12 @@
       "Require feature_ids and required_feature_ids to be deterministically sorted.",
       "Resolve every payload_ref to exactly one GenericPayloadEnvelope in the same body.",
       "Require payload owner_expr_id, owner_expr_kind, payload_contract_id, slot order, slot roles, reference classes, and cardinalities to exactly match the integrated identity catalog payload contract.",
-      "Require every structural plan to match exactly one of the twelve StructuralPlan discriminators and require every optional value to use its required *_or_null field.",
+      "Require every structural plan to match exactly one of the thirteen StructuralPlan discriminators and require every optional value to use its required *_or_null field.",
       "Require each named plan-reference slot to resolve to exactly one StructuralPlan whose structural_identity_id is the exact plan class required by that slot.",
       "Reject missing or extra plan fields, unresolved or cross-body plan references, noncontiguous ordinals, cardinality mismatches, multiply-owned children, wrong reference domains, and omitted nullable encodings.",
       "Reject missing, duplicate, orphan, cyclic, cross-body, or multiply-owned payload and node references.",
       "Resolve PatternAttempt.lowering_id and pattern_kind_id to the same admitted pattern registry row.",
-      "Require each lowering-row hir_identity_ids entry to resolve in the exact 128-row catalog and to equal the identities implied by its dispatch key.",
+      "Require each lowering-row hir_identity_ids entry to resolve in the exact 129-row catalog and to equal the identities implied by its dispatch key.",
       "Allow only LOWER or NO_RUNTIME_EMISSION lowering rows. Capability insufficiency is not represented as a lowering row; preserve the verified HIR semantic digest exactly and do not create ExecutableHirH1."
     ],
     "capability_gate_contract": {

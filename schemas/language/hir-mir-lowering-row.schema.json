@@ -112,7 +112,7 @@
         "type": "string",
         "minLength": 1
       },
-      "description": "Every identity must resolve in the exact 128-row deeplus.hir-h1-identity-catalog/r1 and must be the exact identity tuple owned by lowering_dispatch_key."
+      "description": "Every identity must resolve in the exact 129-row deeplus.hir-h1-identity-catalog/r1 and must be the exact identity tuple owned by lowering_dispatch_key."
     },
     "disposition": {
       "enum": [
@@ -858,7 +858,20 @@
         "BINDING_COMMIT",
         "CLOSURE_MAKE",
         "CONCUR_ENTER",
-        "ACTOR_ENVELOPE_PREPARE"
+        "ACTOR_ENVELOPE_PREPARE",
+        "OBJECT_CONSTRUCTION_BEGIN",
+        "BASE_SEGMENT_BEGIN",
+        "BASE_SEGMENT_COMMIT",
+        "FIELD_INIT_COMMIT",
+        "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+        "CONSTRUCTION_POST_INIT_GUARD",
+        "OBJECT_CONSTRUCTION_COMMIT",
+        "OBJECT_CONSTRUCTION_ABORT",
+        "OBJECT_CLEANUP_BEGIN",
+        "OBJECT_CLEANUP_HOOK",
+        "OBJECT_FIELD_CLEANUP",
+        "OBJECT_BASE_CLEANUP",
+        "OBJECT_CLEANUP_END"
       ]
     },
     "terminatorKind": {
@@ -931,7 +944,20 @@
             "DM-SEMOP-BINDING-COMMIT-R1",
             "DM-SEMOP-CLOSURE-MAKE-R1",
             "DM-SEMOP-CONCUR-ENTER-R1",
-            "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"
+            "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1",
+            "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1",
+            "DM-SEMOP-BASE-SEGMENT-BEGIN-R1",
+            "DM-SEMOP-BASE-SEGMENT-COMMIT-R1",
+            "DM-SEMOP-FIELD-INIT-COMMIT-R1",
+            "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1",
+            "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1",
+            "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1",
+            "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1",
+            "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1",
+            "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1",
+            "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1",
+            "DM-SEMOP-OBJECT-BASE-CLEANUP-R1",
+            "DM-SEMOP-OBJECT-CLEANUP-END-R1"
           ],
           "description": "Must equal the total one-to-one mapping for operation_kind in deeplus.mir-machine-registry/r1."
         },

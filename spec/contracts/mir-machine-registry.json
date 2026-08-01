@@ -1,10 +1,10 @@
 {
   "schema": "deeplus.mir-machine-registry/r1",
-  "draft_revision": "R2_INTEGRATED",
+  "draft_revision": "R11-INTEGRATED-R1",
   "status": "DESIGN_REGISTRY_NOT_IMPLEMENTATION_OR_EXECUTION_EVIDENCE",
   "repository": "https://github.com/howork/Deeplus.git",
   "branch": "main",
-  "gap_id": "IR-OWN-P0-015",
+  "gap_id": "IR-OWN-P0-016",
   "mir_schema_id": "deeplus.mir/r1",
   "capability_receipt_schema_id": "deeplus.mir-capability-receipt/r1",
   "semantic_serialization": {
@@ -315,7 +315,7 @@
     "verifier_rule": "RECOMPUTE_KIND_DISCRIMINATED_CANONICAL_PAYLOAD_AND_REJECT_NONCANONICAL_EQUIVALENTS"
   },
   "semantic_operation_contract": {
-    "operation_kind_count": 29,
+    "operation_kind_count": 42,
     "semantic_operation_id_rule": "DM-SEMOP-<EXACT_OPERATION_KIND_WITH_UNDERSCORES_RENDERED_AS_HYPHENS>-R1",
     "closed_set": true,
     "unknown_operation_or_semantic_operation_id_rejected": true
@@ -578,6 +578,123 @@
       "semantic_operation_id": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1",
       "payload_contract": {
         "required_fields": ["actor_envelope_id"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CONSTRUCTION_BEGIN",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BASE_SEGMENT_BEGIN",
+      "semantic_operation_id": "DM-SEMOP-BASE-SEGMENT-BEGIN-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "BASE_SEGMENT_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-BASE-SEGMENT-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "FIELD_INIT_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FIELD-INIT-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+      "semantic_operation_id": "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "CONSTRUCTION_POST_INIT_GUARD",
+      "semantic_operation_id": "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CONSTRUCTION_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CONSTRUCTION_ABORT",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CLEANUP_BEGIN",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CLEANUP_HOOK",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_FIELD_CLEANUP",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_BASE_CLEANUP",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-BASE-CLEANUP-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "OBJECT_CLEANUP_END",
+      "semantic_operation_id": "DM-SEMOP-OBJECT-CLEANUP-END-R1",
+      "payload_contract": {
+        "required_fields": ["construction_session_id", "phase_before", "phase_after", "mask_digest_before", "mask_digest_after", "consumed_owner_ids", "produced_owner_ids", "consumed_cleanup_token_ids", "produced_cleanup_token_ids", "outcome_edge", "hir_provenance"],
         "optional_fields": [],
         "additional_fields": false
       }
@@ -1103,7 +1220,7 @@
     "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY"
   },
   "status_fence": {
-    "schema_materialization": "R2_INTEGRATED_DRAFT",
+    "schema_materialization": "R11_INTEGRATED_DESIGN",
     "design_registry_only": true,
     "provided_capability_receipt_emitted": false,
     "product_lanes": "15_OF_15_NOT_RUN",

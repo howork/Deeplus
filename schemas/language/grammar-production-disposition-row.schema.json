@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/grammar-production-disposition-row.schema.json",
+  "title": "Deeplus exact Grammar production disposition row R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ordinal",
+    "production_id",
+    "profile",
+    "source_line",
+    "normalized_rhs",
+    "rhs_sha256",
+    "referenced_productions",
+    "reachability_owner",
+    "disposition",
+    "cst_shape",
+    "cst_kind",
+    "cst_owner_rule",
+    "ast_target",
+    "ast_output_cardinality",
+    "invalid_or_recovery_ast_count"
+  ],
+  "properties": {
+    "ordinal": { "type": "integer", "minimum": 1, "maximum": 638 },
+    "production_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+    },
+    "profile": { "enum": ["LEXICAL", "STABLE", "PREVIEW"] },
+    "source_line": { "type": "integer", "minimum": 1 },
+    "normalized_rhs": { "type": "string", "minLength": 1 },
+    "rhs_sha256": { "$ref": "#/$defs/sha256" },
+    "referenced_productions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+      }
+    },
+    "reachability_owner": {
+      "enum": [
+        "SCANNER",
+        "CURRENT_SOURCE_GRAPH",
+        "HANDWRITTEN_PARSER_REGISTRY",
+        "PREVIEW_PROFILE_GRAPH",
+        "PREVIEW_HANDWRITTEN_PARSER_REGISTRY"
+      ]
+    },
+    "disposition": {
+      "enum": [
+        "cst_only",
+        "ast_node",
+        "normalize_to",
+        "external_parser_entry"
+      ]
+    },
+    "cst_shape": {
+      "enum": [
+        "TOKEN_OR_TRIVIA_LEAF",
+        "PRODUCTION_NODE",
+        "INLINE_IN_PARENT_PRODUCTION_NODE",
+        "DISPATCH_ENTRY_NO_NODE"
+      ]
+    },
+    "cst_kind": {
+      "type": ["string", "null"]
+    },
+    "cst_owner_rule": { "type": "string", "minLength": 1 },
+    "ast_target": {
+      "type": ["string", "null"]
+    },
+    "ast_output_cardinality": { "enum": ["ZERO", "EXACTLY_ONE"] },
+    "invalid_or_recovery_ast_count": { "const": 0 }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

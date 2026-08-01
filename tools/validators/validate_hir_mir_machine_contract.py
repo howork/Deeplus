@@ -404,7 +404,7 @@ def derive_hir_identity_set(schema: dict[str, Any]) -> set[str]:
 
     The JSON representation intentionally uses compact per-family
     discriminators such as ``ExprKind = "CALL"``.  Requiring the schema to
-    duplicate all 128 fully qualified catalog strings would create a second
+    duplicate all 129 fully qualified catalog strings would create a second
     registry.  This projection instead proves that the executable schema
     discriminators and the catalog use the same closed universe.
     """
@@ -522,6 +522,7 @@ def check_schema_and_bindings(
         "profile_contract",
         "coverage_contract",
         "semantic_operation_mapping",
+        "nominal_construction_lifecycle_mapping",
         "capability_gate_contract",
         "rows",
         "status_fence",
@@ -539,8 +540,8 @@ def check_schema_and_bindings(
         "lowering registry schema ID is not r1",
     )
     report.require(
-        registry.get("draft_revision") == "R10-INTEGRATED-R2"
-        and registry.get("lowering_rules_revision") == "R10-INTEGRATED-R2",
+        registry.get("draft_revision") == "R11-INTEGRATED-R1"
+        and registry.get("lowering_rules_revision") == "R11-INTEGRATED-R1",
         1,
         "JSON_SCHEMA_VALIDATION_FAILURE",
         "lowering registry revisions are not the integrated R2 revision",
@@ -678,13 +679,13 @@ def check_hir_catalog(
         "HIR identity catalog schema ID differs from r1",
     )
     report.require(
-        catalog.get("identity_count") == 128
-        and len(identity_rows) == 128
-        and len(identity_ids) == 128
-        and len(identity_set) == 128,
+        catalog.get("identity_count") == 129
+        and len(identity_rows) == 129
+        and len(identity_ids) == 129
+        and len(identity_set) == 129,
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "HIR identity catalog is not an exact unique 128-row closed set",
+        "HIR identity catalog is not an exact unique 129-row closed set",
     )
 
     family_counts = Counter(
@@ -721,10 +722,10 @@ def check_hir_catalog(
             "CURRENT": current_profile_count,
             "EXPLICIT_PREVIEW": preview_profile_count,
         }
-        == {"CURRENT": 119, "EXPLICIT_PREVIEW": 128},
+        == {"CURRENT": 120, "EXPLICIT_PREVIEW": 129},
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "HIR catalog profile counts are not exact 119/128",
+        "HIR catalog profile counts are not exact 120/129",
     )
     for row in identity_rows:
         if not isinstance(row, dict):
@@ -748,14 +749,14 @@ def check_hir_catalog(
         all(f"HIR-H1/PATTERN/{pattern}" not in identity_set for pattern in excluded),
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "a pre-HIR rejected pattern was admitted to the 128-row catalog",
+        "a pre-HIR rejected pattern was admitted to the 129-row catalog",
     )
     schema_identity_set = derive_hir_identity_set(hir_schema)
     report.require(
         schema_identity_set == identity_set,
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "HIR schema identity literals and the exact 128-row catalog differ",
+        "HIR schema identity literals and the exact 129-row catalog differ",
     )
 
     expected_gate = {
@@ -780,10 +781,10 @@ def check_hir_catalog(
         "HIR schema and catalog capability-gate contracts differ",
     )
     report.require(
-        catalog.get("structural_plan_contract_count") == 12,
+        catalog.get("structural_plan_contract_count") == 13,
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "HIR structural_plan_contract_count is not exactly 12",
+        "HIR structural_plan_contract_count is not exactly 13",
     )
     receipt_validation_results = (
         catalog.get("verification_receipt_contract", {})
@@ -992,10 +993,10 @@ def check_mir_registry(
                 f"MIR semantic operation ID for {kind} violates the total-map formula",
             )
     report.require(
-        len(operation_map) == 29 and len(set(operation_map.values())) == 29,
+        len(operation_map) == 42 and len(set(operation_map.values())) == 42,
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
-        "MIR semantic-operation map is not a total one-to-one 29-entry map",
+        "MIR semantic-operation map is not a total one-to-one 42-entry map",
     )
 
     terminator_set = {
@@ -1329,7 +1330,7 @@ def check_rows(
             f"{label} schema digest tuple does not bind current HIR/MIR bytes",
         )
         report.require(
-            row.get("lowering_rules_revision") == "R10-INTEGRATED-R2",
+            row.get("lowering_rules_revision") == "R11-INTEGRATED-R1",
             1,
             "JSON_SCHEMA_VALIDATION_FAILURE",
             f"{label} lowering revision is not integrated R2",
@@ -1686,10 +1687,10 @@ def check_rows(
         for kind, semantic_id in operation_map.items()
     ]
     report.require(
-        semantic_mapping == expected_mapping and len(semantic_mapping) == 29,
+        semantic_mapping == expected_mapping and len(semantic_mapping) == 42,
         5,
         "R10_HM_LOWERING_TARGET_UNKNOWN",
-        "lowering registry does not bind the exact ordered total 29-operation map",
+        "lowering registry does not bind the exact ordered total 42-operation map",
     )
     report.require(
         registry.get("capability_gate_contract")
@@ -2059,9 +2060,9 @@ def check_fixture_bindings(
             "executable_hir_created=false",
         },
         "R10-HM-BOUND-008": {
-            "structural_schema_identity_count=16",
+            "structural_schema_identity_count=17",
             "structural_schema_independent_row_count=0",
-            "identity_catalog_count=128",
+            "identity_catalog_count=129",
         },
         "R10-HM-NEG-013": {
             "pair=ACTOR_MESSAGE::VIRTUAL_SLOT",
@@ -2253,7 +2254,7 @@ def check_schema_closed_sets(
     defs = row_schema.get("$defs", {})
     report.require(
         set(defs.get("operationKind", {}).get("enum", [])) == set(operation_map)
-        and len(defs.get("operationKind", {}).get("enum", [])) == 29,
+        and len(defs.get("operationKind", {}).get("enum", [])) == 42,
         1,
         "JSON_SCHEMA_VALIDATION_FAILURE",
         "lowering-row schema operation enum differs from MIR registry",
@@ -2346,11 +2347,11 @@ def main() -> int:
     preview_count = len(rows) - current_count
     print("R10 HIR/MIR MACHINE CONTRACT: PASS")
     print(
-        "  HIR identities=128; lowering rows="
+        "  HIR identities=129; lowering rows="
         f"{len(rows)} ({current_count} CURRENT + {preview_count} EXPLICIT_PREVIEW)"
     )
     print(
-        "  MIR operations=29; terminators=17; tokens=12; "
+        "  MIR operations=42; terminators=17; tokens=12; "
         "capabilities=26; capability graph=ACYCLIC"
     )
     print(

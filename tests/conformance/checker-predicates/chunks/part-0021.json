@@ -743,6 +743,8 @@
         "selected_entry_target_count": 0,
         "manifest_source_role": "script",
         "external_source_role": "script",
+        "manifest_activation_profile": "preview",
+        "external_activation_profile": "preview",
         "normalized_path_conflict": false,
         "library_target_contains_script_root": false
       },
@@ -757,7 +759,9 @@
       "unicode_scalar_constraint": null,
       "label_row": null,
       "product_evidence": {
-        "fixture": true
+        "fixture": true,
+        "selected_root": "PreviewScriptSourceFile",
+        "normalized_hir_source_profile": "EXPLICIT_PREVIEW"
       },
       "source_role": "script",
       "entry_kind": null,
@@ -772,7 +776,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "ordered branch 1: normalize every manifest path to one project-root-relative lexical key before parsing; normalized_path_conflict true means the first repeated key emits SOURCE_ROLE_CARRIER_CONFLICT even when both rows name the same role; ordered branch 2: the manifest role is authoritative; source_role or an external CLI, API, or IDE role unequal to manifest_source_role emits SOURCE_ROLE_CARRIER_CONFLICT; ordered branch 3: a library target containing any script-classified source root emits LIBRARY_TARGET_CONTAINS_TOP_LEVEL_SCRIPT; ordered branch 4: an explicit entry in a library emits ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE; a top-level statement in a library or executable root emits TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT; an executable top-level binding emits TOP_LEVEL_BINDING_NOT_ALLOWED_IN_EXECUTABLE_SOURCE; an explicit entry in a script emits SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT; ordered branch 5: explicit_entry_count unequal to selected_entry_target_count emits SOURCE_ROLE_ENTRY_COUNT_MISMATCH; after equality, executable zero/multiple counts emit NO_EXECUTABLE_ENTRY/ENTRY_DECL_DUPLICATE and library/script counts must both be zero; only after all branches pass does source_role choose exactly one Stable or Preview role root; trying roots to infer a role is forbidden",
+    "rule_seed": "source_role is exactly library/executable/script and activation_profile is exactly stable/preview; the external pair selects one same-role root before parsing without trial, preview normalizes to EXPLICIT_PREVIEW, and a source gate may verify but never rewrite either identity",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

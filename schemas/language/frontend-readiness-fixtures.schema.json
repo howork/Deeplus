@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/frontend-readiness-fixtures.schema.json",
+  "title": "Deeplus frontend implementation-readiness acceptance fixture suites R1",
+  "type": "object",
+  "required": ["schema", "status", "suites", "execution"],
+  "properties": {
+    "schema": {
+      "enum": [
+        "deeplus.frontend-cst-boundary-recovery-fixtures/r1",
+        "deeplus.frontend-pratt-scanner-interpolation-fixtures/r1"
+      ]
+    },
+    "status": { "const": "CURRENT_DESIGN_ACCEPTANCE_SPECIFICATION" },
+    "suites": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["gap_id", "tests", "counts"],
+        "properties": {
+          "gap_id": { "type": "string", "pattern": "^IR-FE-P[01]-[0-9]{3}$" },
+          "tests": { "type": "array", "minItems": 1, "items": { "type": "object" } },
+          "counts": { "type": "object", "minProperties": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["design_static_projection", "product_lanes"],
+      "properties": {
+        "design_static_projection": { "const": "PASS" },
+        "production_scanner": { "const": "NOT_RUN" },
+        "production_parser": { "const": "NOT_RUN" },
+        "checker": { "const": "NOT_RUN" },
+        "formatter_lsp": { "const": "NOT_RUN" },
+        "runtime_backend": { "const": "NOT_RUN" },
+        "product_lanes": { "const": "15_OF_15_NOT_RUN" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
