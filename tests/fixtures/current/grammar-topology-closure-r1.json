@@ -1,0 +1,73 @@
+{
+  "schema": "deeplus.grammar-topology-closure-fixtures/r1",
+  "contract": "spec/contracts/grammar-topology-closure-r1.json",
+  "acceptance_cases": [
+    {
+      "test_id": "IR-R3-GAP-12-P",
+      "kind": "positive",
+      "scenario": "resolve every canonical RHS identifier through the declared production set or the closed 40-symbol external registry and cover every production through a source root, aggregate entry root, scanner owner, or parser-registry owner",
+      "expected_outcome": "ACCEPT_CLOSED_TOPOLOGY"
+    },
+    {
+      "test_id": "IR-R3-GAP-12-B",
+      "kind": "boundary",
+      "scenario": "reach one Stable production from all six source roots and count it once in the shared set rather than as a duplicate",
+      "expected_outcome": "ACCEPT_SHARED_REACHABILITY"
+    },
+    {
+      "test_id": "IR-R3-GAP-12-N",
+      "kind": "negative",
+      "scenario": "rename one RHS identifier or detach one production from every admitted source, aggregate, scanner, and parser-registry owner",
+      "expected_outcome": "REJECT_UNDEFINED_OR_ORPHAN_WITH_LOCATOR"
+    }
+  ],
+  "mutation_specs": [
+    {
+      "mutation_id": "R27-MUT-001",
+      "target": "spec/grammar/deeplus.ebnf",
+      "change": "rename UnicodeScalar reference",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_EXTERNAL_REGISTRY"
+    },
+    {
+      "mutation_id": "R27-MUT-002",
+      "target": "spec/contracts/grammar-production-disposition-registry-r1.json",
+      "change": "remove one external symbol row",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_EXTERNAL_REGISTRY"
+    },
+    {
+      "mutation_id": "R27-MUT-003",
+      "target": "spec/grammar/deeplus.ebnf",
+      "change": "detach LibrarySourceItem from LibrarySourceFile",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_ROOT_REACHABILITY"
+    },
+    {
+      "mutation_id": "R27-MUT-004",
+      "target": "spec/grammar/deeplus.ebnf",
+      "change": "add a Stable to Preview edge",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_PROFILE_EDGE"
+    },
+    {
+      "mutation_id": "R27-MUT-005",
+      "target": "spec/contracts/grammar-production-disposition-registry-r1.json",
+      "change": "misclassify one parser-registry production as current source graph",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_ORPHAN"
+    },
+    {
+      "mutation_id": "R27-MUT-006",
+      "target": "spec/contracts/grammar-topology-closure-r1.json",
+      "change": "remove one of the six source roots",
+      "expected_error_prefix": "GRAMMAR_TOPOLOGY_ROOT_SET"
+    }
+  ],
+  "acceptance": {
+    "case_count": 3,
+    "mutation_count": 6,
+    "production_count": 638,
+    "external_symbol_count": 40,
+    "source_root_count": 6,
+    "unowned_orphan_count": 0,
+    "illegal_cross_profile_edge_count": 0,
+    "semantic_change_count": 0,
+    "product_execution": "NOT_RUN"
+  }
+}

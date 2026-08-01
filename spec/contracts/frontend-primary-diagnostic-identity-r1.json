@@ -1,0 +1,140 @@
+{
+  "schema": "deeplus.frontend-primary-diagnostic-identity-contract/r1",
+  "revision": "r51f3-current-frontend-readiness-r11-r19-r25-r26-r1",
+  "authority": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "baseline": {
+    "commit": "3f0077dd8f021718dc87b3b239f417e5d3f770a6",
+    "tree": "f042c6188b1da6bfd152d161985977da2e2b73fc"
+  },
+  "dependency": {
+    "gap_id": "IR-TRACE-P1-010",
+    "candidate": "R25-LOCAL-CANONICAL-PROJECTION-FREEZE-R1",
+    "status": "APPROVED_NOT_INTEGRATED",
+    "authority_use": "EXPLICIT_NONCANONICAL_DEPENDENCY_ONLY"
+  },
+  "identity_policy": {
+    "frontend_diagnostic_rows_must_name_one_active_registry_id": true,
+    "no_go_rows_must_name_one_active_primary_diagnostic": true,
+    "fix_text_is_not_a_diagnostic_identity": true,
+    "stage_must_equal_registry_owner_stage": true,
+    "exact_invalid_surface_probe_precedes_generic_recovery": true,
+    "frontend_binding_count": 6,
+    "frontend_id_insert_count": 5,
+    "frontend_redundant_placeholder_removal_count": 1,
+    "frontend_diagnostic_row_count": 39,
+    "no_go_binding_count": 3,
+    "binding_family_count": 6,
+    "new_diagnostic_id_count": 0,
+    "new_source_spelling_count": 0,
+    "semantic_change_count": 0
+  },
+  "binding_families": [
+    {
+      "family_id": "NAMED_REST_TRIPLE_STAR_CONTEXT",
+      "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+      "stage": "PARSER",
+      "frontend_fix": "***",
+      "frontend_action": "BIND_EXISTING_ACTIVE_ID",
+      "no_go_rejection_ids": [
+        "NG-NAMED-REST-DOUBLE-STAR"
+      ],
+      "current_ast_created": false
+    },
+    {
+      "family_id": "OPTION_BARE_NONE_CONTEXT",
+      "primary_diagnostic": "OPTION_BARE_NONE_REMOVED",
+      "stage": "CHECKER",
+      "frontend_fix": "::none",
+      "frontend_action": "BIND_EXISTING_ACTIVE_ID",
+      "no_go_rejection_ids": [],
+      "current_ast_created": true
+    },
+    {
+      "family_id": "NONADMITTED_OPERATOR_CONTEXT",
+      "primary_diagnostic": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "stage": "CHECKER",
+      "frontend_fix": "use one of the exact 13 admitted roles or a named Trait method/API; assignment, range, power, bitwise, logical, membership, type identity, and arbitrary custom glyph hooks remain closed",
+      "frontend_action": "REMOVE_REDUNDANT_UNBOUND_PLACEHOLDER_USE_EXISTING_ROW",
+      "no_go_rejection_ids": [],
+      "current_ast_created": true
+    },
+    {
+      "family_id": "EMPTY_SLICE_RANGE_CONTEXT",
+      "primary_diagnostic": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "stage": "PARSER",
+      "frontend_fix": "write both bounds with .. or ..<; use * only for a NumericArray full axis",
+      "frontend_action": "BIND_EXISTING_ACTIVE_ID",
+      "no_go_rejection_ids": [],
+      "current_ast_created": false
+    },
+    {
+      "family_id": "NONCURRENT_LAZY_INTRODUCER_CONTEXT",
+      "primary_diagnostic": "LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH",
+      "stage": "PARSER",
+      "frontend_fix": "let#lazy",
+      "frontend_action": "BIND_EXISTING_ACTIVE_ID",
+      "no_go_rejection_ids": [
+        "NG-R51B-LAZY-AT"
+      ],
+      "current_ast_created": false
+    },
+    {
+      "family_id": "UNIT_MIDDLE_DOT_CONTEXT",
+      "primary_diagnostic": "UNIT_MIDDLE_DOT_REMOVED_USE_STAR",
+      "stage": "PARSER",
+      "frontend_fix": "*",
+      "frontend_action": "BIND_EXISTING_ACTIVE_ID",
+      "no_go_rejection_ids": [
+        "NG-R51B-UNIT-MIDDLE-DOT"
+      ],
+      "current_ast_created": false
+    }
+  ],
+  "diagnostic_precedence": [
+    {
+      "rule_id": "R26-PREC-001",
+      "winner": "exact no-go surface primary diagnostic",
+      "loser": "generic parser recovery or trailing-token diagnostic",
+      "condition": "the exact forbidden spelling probe commits"
+    },
+    {
+      "rule_id": "R26-PREC-002",
+      "winner": "OPTION_BARE_NONE_REMOVED",
+      "loser": "ordinary unresolved-name diagnostic",
+      "condition": "the identifier is exactly bare None in value or pattern position"
+    },
+    {
+      "rule_id": "R26-PREC-003",
+      "winner": "OPTION_NONE_REQUIRES_EXPECTED_TYPE",
+      "loser": "OPTION_BARE_NONE_REMOVED",
+      "condition": "the source is canonical ::none but no expected Option type exists"
+    },
+    {
+      "rule_id": "R26-PREC-004",
+      "winner": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "loser": "generic conformance lookup failure",
+      "condition": "a parsed fixed glyph requests a conformance role outside the exact admitted set"
+    },
+    {
+      "rule_id": "R26-PREC-005",
+      "winner": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "loser": "INDEX_SUFFIX_REQUIRES_AXIS",
+      "condition": "a bracket suffix contains an empty range delimiter"
+    },
+    {
+      "rule_id": "R26-PREC-006",
+      "winner": "the parser-stage diagnostic",
+      "loser": "all AST, checker, HIR, MIR, and runtime diagnostics",
+      "condition": "the parser-stage rejection creates no current AST"
+    }
+  ],
+  "governance": {
+    "gap_id": "IR-FE-P1-035",
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN",
+    "canonical_integration": "NOT_PERFORMED",
+    "github_mutation": 0
+  }
+}

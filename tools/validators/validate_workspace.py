@@ -432,7 +432,7 @@ REFINEMENT_SURFACE_CASE_SHA256 = {
     "TRN-R1-POS-055": "1f7d04c1a280ac95f7f1c1a19a70799b43c4ecbdb1aa155b40d67547c218d1bb",
     "TRN-R1-NEG-056": "4676503c257b8d25eb3cb937fad99e25ce3e2c92fc6237681dafe13c018ff567",
     "TRN-R1-BOUND-057": "f04f8e08f7a8ce300526f0d6ab47d71644b578ad0d457f2c24e34532ed664672",
-    "TRN-R1-NEG-058": "f4167e587ce908b1ce5e05b7c085e5a8f6aca74561ef03fb392c58a0e282c7ea",
+    "TRN-R1-NEG-058": "aa427e0788a031f819d374dde5ac03eaa0f0ace759edd5319f3c44e70c80f0f5",
 }
 SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
     *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
@@ -10736,6 +10736,28 @@ R9_DIAGNOSTIC_DISPATCH_CHECK_IDS = (
     "R9_DD_REGISTRY_DISPATCH_EXACT",
     "R9_DD_GOVERNANCE_FENCE",
 )
+R26_PRIMARY_DIAGNOSTIC_CHECK_IDS = (
+    "R26_CONTRACT_EXACT",
+    "R26_FRONTEND_BINDINGS_EXACT_6",
+    "R26_NO_GO_BINDINGS_EXACT_3",
+    "R26_ACTIVE_REGISTRY_STAGE_BINDING",
+    "R26_PRECEDENCE_EXACT_6",
+    "R26_ACCEPTANCE_CASES_EXACT_18",
+    "R26_MUTATIONS_EXACT_6",
+    "R26_GOVERNANCE_FENCE",
+)
+R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
+    "R27_CONTRACT_EXACT",
+    "R27_RHS_REFERENCE_BINDING_638",
+    "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40",
+    "R27_SIX_ROOT_REACHABILITY_EXACT",
+    "R27_UNOWNED_ORPHAN_COUNT_ZERO",
+    "R27_PROFILE_EDGE_FENCE",
+    "R27_AGGREGATE_ENTRY_FENCE",
+    "R27_ACCEPTANCE_CASES_EXACT_3",
+    "R27_MUTATIONS_EXACT_6",
+    "R27_GOVERNANCE_FENCE",
+)
 
 
 def _r5_strict_receipt_json(payload: str) -> dict[str, Any]:
@@ -11400,6 +11422,192 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def r26_primary_diagnostic_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact R26 diagnostic-identity receipt without product claims."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R26_PRIMARY_DIAGNOSTIC_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_frontend_primary_diagnostic_identity.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R26 primary-diagnostic runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R26 primary-diagnostic runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R26_PRIMARY_DIAGNOSTIC_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.r26-frontend-primary-diagnostic-validation-receipt/r1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("evidence_level") != "E2_STATIC_CLOSURE"
+            or receipt.get("check_scope")
+            != "R26_PRIMARY_DIAGNOSTIC_IDENTITY_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(expected_ids)
+            or receipt.get("frontend_binding_count") != 6
+            or receipt.get("no_go_binding_count") != 3
+            or receipt.get("binding_family_count") != 6
+            or receipt.get("acceptance_case_count") != 18
+            or receipt.get("mutation_count") != 6
+            or receipt.get("rejected_mutation_count") != 6
+            or receipt.get("new_diagnostic_id_count") != 0
+            or receipt.get("semantic_change_count") != 0
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("errors") != []
+            or not isinstance(rows, list)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass"}
+                or row.get("pass") is not True
+                for row in rows
+            )
+        ):
+            return failed_rows("R26 primary-diagnostic receipt-contract drift")
+        detail = json.dumps(
+            {
+                "frontend_bindings": 6,
+                "no_go_bindings": 3,
+                "families": 6,
+                "acceptance_cases": 18,
+                "mutations_rejected": 6,
+                "new_diagnostic_ids": 0,
+                "semantic_changes": 0,
+                "product_execution": "NOT_RUN",
+            },
+            sort_keys=True,
+        )
+        return [
+            {"check_id": row["check_id"], "pass": True, "detail": detail}
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R26 primary-diagnostic runner integration failure: {exc}"
+        )
+
+
+def r27_grammar_topology_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact R27 grammar-topology receipt without product claims."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R27_GRAMMAR_TOPOLOGY_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_grammar_topology_closure.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R27 grammar-topology runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R27 grammar-topology runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R27_GRAMMAR_TOPOLOGY_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.r27-grammar-topology-validation-receipt/r1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("evidence_level") != "E2_STATIC_CLOSURE"
+            or receipt.get("check_scope")
+            != "R27_GRAMMAR_TOPOLOGY_CLOSURE_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(expected_ids)
+            or receipt.get("production_count") != 638
+            or receipt.get("declared_reference_binding_count") != 638
+            or receipt.get("external_symbol_count") != 40
+            or receipt.get("source_root_count") != 6
+            or receipt.get("six_root_union_count") != 487
+            or receipt.get("six_root_shared_count") != 460
+            or receipt.get("six_root_unreachable_count") != 151
+            or receipt.get("aggregate_entry_root_count") != 2
+            or receipt.get("unowned_orphan_count") != 0
+            or receipt.get("illegal_cross_profile_edge_count") != 0
+            or receipt.get("acceptance_case_count") != 3
+            or receipt.get("mutation_count") != 6
+            or receipt.get("rejected_mutation_count") != 6
+            or receipt.get("grammar_production_change_count") != 0
+            or receipt.get("new_source_spelling_count") != 0
+            or receipt.get("semantic_change_count") != 0
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("errors") != []
+            or not isinstance(rows, list)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass"}
+                or row.get("pass") is not True
+                for row in rows
+            )
+        ):
+            return failed_rows("R27 grammar-topology receipt-contract drift")
+        detail = json.dumps(
+            {
+                "productions": 638,
+                "external_symbols": 40,
+                "source_roots": 6,
+                "six_root_union": 487,
+                "six_root_shared": 460,
+                "unowned_orphans": 0,
+                "illegal_profile_edges": 0,
+                "mutations_rejected": 6,
+                "semantic_changes": 0,
+                "product_execution": "NOT_RUN",
+            },
+            sort_keys=True,
+        )
+        return [
+            {"check_id": row["check_id"], "pass": True, "detail": detail}
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R27 grammar-topology runner integration failure: {exc}"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -11429,6 +11637,16 @@ def main() -> int:
         check(row["pass"], row["check_id"], row["detail"])
     frontend_readiness_check_results = frontend_readiness_workspace_checks(root)
     for row in frontend_readiness_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
+    r26_primary_diagnostic_check_results = (
+        r26_primary_diagnostic_workspace_checks(root)
+    )
+    for row in r26_primary_diagnostic_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
+    r27_grammar_topology_check_results = (
+        r27_grammar_topology_workspace_checks(root)
+    )
+    for row in r27_grammar_topology_check_results:
         check(row["pass"], row["check_id"], row["detail"])
 
     try:
@@ -14188,7 +14406,7 @@ def main() -> int:
         "TRN-R1-POS-055": None,
         "TRN-R1-NEG-056": "REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
         "TRN-R1-BOUND-057": None,
-        "TRN-R1-NEG-058": "PATTERN_PIN_VALUE_NOT_STABLE",
+        "TRN-R1-NEG-058": "PATTERN_PIN_REQUIRES_STABLE_VALUE",
     }
     trn_surface = trn_contract.get("refinement_surface", {})
     trn_binder = trn_contract.get("chained_binder_pattern", {})
@@ -17817,6 +18035,28 @@ def main() -> int:
         ],
         "frontend_readiness_check_results":
             frontend_readiness_check_results,
+        "r26_primary_diagnostic_check_scope":
+            "R26_PRIMARY_DIAGNOSTIC_IDENTITY_EXACT",
+        "r26_primary_diagnostic_check_count":
+            len(R26_PRIMARY_DIAGNOSTIC_CHECK_IDS),
+        "r26_primary_diagnostic_passed_check_ids": [
+            row["check_id"]
+            for row in r26_primary_diagnostic_check_results
+            if row["pass"]
+        ],
+        "r26_primary_diagnostic_check_results":
+            r26_primary_diagnostic_check_results,
+        "r27_grammar_topology_check_scope":
+            "R27_GRAMMAR_TOPOLOGY_CLOSURE_EXACT",
+        "r27_grammar_topology_check_count":
+            len(R27_GRAMMAR_TOPOLOGY_CHECK_IDS),
+        "r27_grammar_topology_passed_check_ids": [
+            row["check_id"]
+            for row in r27_grammar_topology_check_results
+            if row["pass"]
+        ],
+        "r27_grammar_topology_check_results":
+            r27_grammar_topology_check_results,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,

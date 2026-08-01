@@ -2171,6 +2171,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `LAYOUT_ARG_SEPARATOR_REQUIRES_ALL_NAMED_ARGUMENTS` [error]: Layout argument separator is only admitted in multiline all-named argument lists.
 - `LAYOUT_SEPARATOR_AMBIGUOUS_CONTINUATION` [error]: This newline cannot be used as a labeled aggregate entry separator because the expression may continue.
 - `LAYOUT_SEPARATOR_NOT_ALLOWED_HERE` [error]: A newline is not an element separator in this context.
+- `LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH` [error]: Lazy binding uses attached `let#lazy`; replace `let@lazy` without changing the initializer or binding responsibility.
 - `LAZY_HIDDEN_FAILURE_CHANNEL_FORBIDDEN` [error]: A lazy binding cannot memoize a hidden failure channel; use an explicit Result value.
 - `LAZY_INITIALIZATION_CYCLE` [error]: A lazy binding cannot directly or indirectly force itself before its first commit.
 - `LAZY_LET_INITIALIZER_NOT_ADMITTED` [error]: The lazy initializer must be pure, synchronous, nonthrowing, authority-free, resource-free, and capture only reusable immutable values.
@@ -2563,7 +2564,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `RECORD_PATTERN_PRIVATE_FIELD` [error]: A Record pattern cannot project a label that is not visible in the current authority domain.
 - `RECORD_PATTERN_SHAPE_MISMATCH` [error]: An exact Record Pattern and subject row differ; write `.._` or `..name` only when an open remainder is intentional.
 - `MAP_PATTERN_DUPLICATE_KEY` [error]: A Map Pattern names the same canonical key more than once.
-- `PATTERN_PIN_VALUE_NOT_STABLE` [error]: A pin Pattern requires one stable value whose strong equality is selected statically.
+- `PATTERN_PIN_REQUIRES_STABLE_VALUE` [error]: A pin Pattern requires one stable value whose strong equality is selected statically.
 - `PATTERN_RANGE_DOMAIN_NOT_ADMITTED` [error]: This Pattern range/relational domain is not a closed exact ordered domain.
 - `PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN` [error]: Pattern decomposition cannot open a Class, Dyn, Facet, FFI, or opaque private representation.
 - `REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT` [error]: This context requires the checker to prove the Pattern irrefutable for its admitted subject type.
@@ -2627,6 +2628,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNION_MEMBER_SUBSUMED` [error]: Phase-A closed union members must be pairwise disjoint; a subsumed alternative is forbidden.
 - `UNION_VALUE_REQUIRES_NARROWING` [error]: A union value must be narrowed before member access, call, operator use, or extraction.
 - `UNIT_BRACKET_ON_NON_LITERAL_IS_INDEXING` [error]: `[unit]` after a non-literal is indexing, not measure construction.
+- `UNIT_MIDDLE_DOT_REMOVED_USE_STAR` [error]: Unit multiplication uses `*`; the middle-dot spelling is not a current Deeplus surface.
 - `UNIT_CONTEXT_ANCHOR_NOT_A_VALUE` [error]: A unit context anchor is not a first-class value.
 - `UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS` [error]: Unit context anchor requires a statically known unit witness.
 - `UNIT_CONVERSION_APPROXIMATE_REQUIRES_POLICY` [error]: Approximate unit conversion requires an explicit approximation policy.

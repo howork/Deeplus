@@ -23,6 +23,10 @@ from typing import Any
 
 CONTRACT_REL = "spec/contracts/grammar-reference-r1.json"
 MANIFEST_REL = "docs/grammar-reference/coverage-manifest.json"
+TOPOLOGY_CONTRACT_REL = "spec/contracts/grammar-topology-closure-r1.json"
+DISPOSITION_REGISTRY_REL = (
+    "spec/contracts/grammar-production-disposition-registry-r1.json"
+)
 EXPECTED_COVERAGE_SCHEMA_PATH = (
     "schemas/language/grammar-reference-coverage.schema.json"
 )
@@ -61,10 +65,10 @@ PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
     "grammar_productions": 638,
     "features": 719,
-    "diagnostics": 1441,
+    "diagnostics": 1443,
     "predicates": 277,
     "prelude_entries": 72,
-    "examples": 738,
+    "examples": 743,
     "hard_keywords": 29,
     "contextual_words": 105,
 }
@@ -347,6 +351,9 @@ def validate_contract(root: Path) -> dict[str, Any]:
     if (
         grammar.get("expected_total") != EXPECTED_COUNTS["grammar_productions"]
         or grammar.get("expected_profile_counts") != EXPECTED_PROFILES
+        or grammar.get("topology_contract_path") != TOPOLOGY_CONTRACT_REL
+        or grammar.get("disposition_registry_path")
+        != DISPOSITION_REGISTRY_REL
     ):
         raise GeneratorError("GRAMMAR_REFERENCE_GRAMMAR_TARGET", repr(grammar))
 
@@ -675,6 +682,220 @@ def parse_grammar(
             f"declared={declared} observed={counts}",
         )
     return productions, counts
+
+
+def grammar_name_digest(names: set[str]) -> str:
+    return hashlib.sha256(
+        ("\n".join(sorted(names)) + "\n").encode("utf-8")
+    ).hexdigest()
+
+
+def validate_grammar_topology(
+    productions: list[dict[str, Any]],
+    frontend: dict[str, Any],
+    topology: dict[str, Any],
+    disposition: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate the closed EBNF graph and its non-EBNF owner boundary."""
+
+    if topology.get("schema") != "deeplus.grammar-topology-closure/r1":
+        raise GeneratorError("GRAMMAR_TOPOLOGY_CONTRACT", "schema")
+    if (
+        topology.get("status") != "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT"
+        or topology.get("product_support") != "NOT_RUN"
+    ):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_GOVERNANCE", "status")
+
+    by_name = {row["name"]: row for row in productions}
+    names = set(by_name)
+    if (
+        len(by_name) != 638
+        or topology.get("production_set", {}).get("count") != len(names)
+        or topology.get("production_set", {}).get("sha256")
+        != grammar_name_digest(names)
+    ):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_PRODUCTION_SET", str(len(names)))
+
+    disposition_rows = disposition.get("production_rows")
+    if not isinstance(disposition_rows, list):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_DISPOSITION", "rows")
+    disposition_by_name = {
+        row.get("production_id"): row
+        for row in disposition_rows
+        if isinstance(row, dict) and isinstance(row.get("production_id"), str)
+    }
+    if len(disposition_by_name) != len(names) or set(disposition_by_name) != names:
+        raise GeneratorError("GRAMMAR_TOPOLOGY_DISPOSITION", "production set")
+
+    quoted = re.compile(r'"(?:\\.|[^"\\])*"')
+    declared_references: dict[str, set[str]] = {}
+    external_uses: dict[str, set[str]] = {}
+    for row in productions:
+        identifiers = set(
+            re.findall(
+                r"\b[A-Za-z][A-Za-z0-9_]*\b",
+                quoted.sub(" ", row["definition"]),
+            )
+        )
+        declared = identifiers & names
+        declared_references[row["name"]] = declared
+        for symbol in identifiers - names:
+            external_uses.setdefault(symbol, set()).add(row["name"])
+        registered = disposition_by_name[row["name"]].get(
+            "referenced_productions"
+        )
+        if registered != sorted(declared):
+            raise GeneratorError(
+                "GRAMMAR_TOPOLOGY_REFERENCE_BINDING", row["name"]
+            )
+
+    external_rows = disposition.get("external_symbol_contracts")
+    if not isinstance(external_rows, list):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_EXTERNAL_REGISTRY", "rows")
+    external_by_symbol = {
+        row.get("symbol"): row
+        for row in external_rows
+        if isinstance(row, dict) and isinstance(row.get("symbol"), str)
+    }
+    external_names = set(external_uses)
+    expected_external = topology.get("external_symbol_set", {})
+    if (
+        len(external_by_symbol) != len(external_rows)
+        or set(external_by_symbol) != external_names
+        or expected_external.get("count") != len(external_names)
+        or expected_external.get("sha256") != grammar_name_digest(external_names)
+    ):
+        raise GeneratorError(
+            "GRAMMAR_TOPOLOGY_EXTERNAL_REGISTRY", str(sorted(external_names))
+        )
+    for symbol, used_by in external_uses.items():
+        row = external_by_symbol[symbol]
+        if (
+            row.get("contract") != "BOUND_EXTERNAL_NO_EBNF_PRODUCTION"
+            or row.get("used_by_productions") != sorted(used_by)
+        ):
+            raise GeneratorError("GRAMMAR_TOPOLOGY_EXTERNAL_USE", symbol)
+
+    roots = topology.get("source_roots")
+    if not isinstance(roots, list):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_ROOT_SET", "not an array")
+    root_ids = [row.get("production_id") for row in roots if isinstance(row, dict)]
+    frontend_roots = frontend.get("source_roots")
+    if (
+        len(root_ids) != 6
+        or len(set(root_ids)) != 6
+        or not isinstance(frontend_roots, dict)
+        or root_ids != list(frontend_roots)
+        or any(root_id not in names for root_id in root_ids)
+    ):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_ROOT_SET", repr(root_ids))
+
+    def reachable(start: str) -> set[str]:
+        seen: set[str] = set()
+        pending = [start]
+        while pending:
+            current = pending.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            pending.extend(declared_references[current] - seen)
+        return seen
+
+    root_reachability: dict[str, set[str]] = {}
+    for root_row in roots:
+        root_id = root_row["production_id"]
+        reached = reachable(root_id)
+        root_reachability[root_id] = reached
+        if (
+            root_row.get("profile") != by_name[root_id]["profile"]
+            or root_row.get("reachable_count") != len(reached)
+            or root_row.get("reachable_sha256") != grammar_name_digest(reached)
+        ):
+            raise GeneratorError("GRAMMAR_TOPOLOGY_ROOT_REACHABILITY", root_id)
+
+    union = set().union(*root_reachability.values())
+    shared = set.intersection(*root_reachability.values())
+    for name, observed in (("union", union), ("shared", shared)):
+        expected = topology.get("six_root_reachability", {}).get(name, {})
+        if (
+            expected.get("count") != len(observed)
+            or expected.get("sha256") != grammar_name_digest(observed)
+        ):
+            raise GeneratorError(
+                "GRAMMAR_TOPOLOGY_ROOT_REACHABILITY", name
+            )
+
+    aggregate_rows = topology.get("aggregate_entry_roots")
+    if not isinstance(aggregate_rows, list):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_AGGREGATE_ROOT", "rows")
+    aggregate_ids: set[str] = set()
+    for row in aggregate_rows:
+        aggregate_id = row.get("production_id")
+        targets = row.get("dispatches_to")
+        if (
+            not isinstance(aggregate_id, str)
+            or aggregate_id in aggregate_ids
+            or aggregate_id in root_ids
+            or aggregate_id not in names
+            or not isinstance(targets, list)
+            or declared_references[aggregate_id] != set(targets)
+        ):
+            raise GeneratorError(
+                "GRAMMAR_TOPOLOGY_AGGREGATE_ROOT", repr(row)
+            )
+        aggregate_ids.add(aggregate_id)
+    if aggregate_ids != {"Deeplus", "DeeplusPreview"}:
+        raise GeneratorError("GRAMMAR_TOPOLOGY_AGGREGATE_ROOT", repr(aggregate_ids))
+
+    allowed_external_owners = set(
+        topology.get("non_source_reachability_owners", [])
+    )
+    unreachable = names - union
+    unowned_orphans: set[str] = set()
+    owner_counts: Counter[str] = Counter()
+    for production_id in unreachable:
+        owner = disposition_by_name[production_id].get("reachability_owner")
+        owner_counts[str(owner)] += 1
+        if production_id not in aggregate_ids and owner not in allowed_external_owners:
+            unowned_orphans.add(production_id)
+    if unowned_orphans or topology.get("unowned_orphan_count") != 0:
+        raise GeneratorError(
+            "GRAMMAR_TOPOLOGY_ORPHAN", repr(sorted(unowned_orphans))
+        )
+    expected_unreachable = topology.get("six_root_unreachable", {})
+    if (
+        expected_unreachable.get("count") != len(unreachable)
+        or expected_unreachable.get("sha256") != grammar_name_digest(unreachable)
+        or expected_unreachable.get("owner_counts") != dict(sorted(owner_counts.items()))
+    ):
+        raise GeneratorError("GRAMMAR_TOPOLOGY_UNREACHABLE_SET", str(len(unreachable)))
+
+    allowed_edges = {
+        "LEXICAL": {"LEXICAL"},
+        "STABLE": {"LEXICAL", "STABLE"},
+        "PREVIEW": {"LEXICAL", "STABLE", "PREVIEW"},
+    }
+    illegal_edges = sorted(
+        (source, target)
+        for source, targets in declared_references.items()
+        for target in targets
+        if by_name[target]["profile"] not in allowed_edges[by_name[source]["profile"]]
+    )
+    if illegal_edges or topology.get("illegal_cross_profile_edge_count") != 0:
+        raise GeneratorError("GRAMMAR_TOPOLOGY_PROFILE_EDGE", repr(illegal_edges))
+
+    return {
+        "production_count": len(names),
+        "declared_reference_binding_count": len(names),
+        "external_symbol_count": len(external_names),
+        "source_root_count": len(root_ids),
+        "six_root_union_count": len(union),
+        "six_root_shared_count": len(shared),
+        "six_root_unreachable_count": len(unreachable),
+        "aggregate_entry_root_count": len(aggregate_ids),
+        "unowned_orphan_count": len(unowned_orphans),
+        "illegal_cross_profile_edge_count": len(illegal_edges),
+    }
 
 
 def validate_manual_documents(
@@ -1959,6 +2180,17 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
     frontend_path = safe_path(root, contract["grammar"]["frontend_model_path"])
     frontend = read_json(frontend_path, "GRAMMAR_REFERENCE_FRONTEND_JSON")
     productions, profile_counts = parse_grammar(grammar_text, frontend, contract)
+    topology = read_json(
+        safe_path(root, TOPOLOGY_CONTRACT_REL),
+        "GRAMMAR_REFERENCE_TOPOLOGY_CONTRACT_JSON",
+    )
+    disposition = read_json(
+        safe_path(root, DISPOSITION_REGISTRY_REL),
+        "GRAMMAR_REFERENCE_DISPOSITION_REGISTRY_JSON",
+    )
+    topology_metrics = validate_grammar_topology(
+        productions, frontend, topology, disposition
+    )
 
     vocabulary_path = safe_path(root, contract["vocabulary"]["path"])
     vocabulary = read_json(
@@ -2121,6 +2353,7 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
         "generated_outputs": len(outputs),
         "manual_documents": len(manual_documents),
         "grammar_profiles": profile_counts,
+        "grammar_topology": topology_metrics,
         "coverage": observed,
         "manual_quality": {
             "preview_review_cards": manual_quality[

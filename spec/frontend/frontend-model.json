@@ -2122,6 +2122,17 @@
     "canonical_hir_recovery_node_count": 0,
     "product_execution": "NOT_RUN"
   },
+  "frontend_primary_diagnostic_identity_contract": {
+    "contract": "spec/contracts/frontend-primary-diagnostic-identity-r1.json",
+    "fixtures": "tests/fixtures/current/frontend-primary-diagnostic-identity-r1.json",
+    "frontend_binding_family_count": 6,
+    "frontend_id_insert_count": 5,
+    "frontend_redundant_placeholder_removal_count": 1,
+    "no_go_binding_count": 3,
+    "new_diagnostic_id_count": 0,
+    "semantic_change_count": 0,
+    "product_execution": "NOT_RUN"
+  },
   "lowering_and_semantic_responsibility": {
     "grammar": "structure only",
     "cst": "all tokens/trivia, missing/unexpected tokens, source form, supply-policy IDs",
@@ -2247,16 +2258,14 @@
       "fix": "${...}"
     },
     {
+      "id": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
       "stage": "PARSER",
       "fix": "***"
     },
     {
-      "stage": "PARSER",
+      "id": "OPTION_BARE_NONE_REMOVED",
+      "stage": "CHECKER",
       "fix": "::none"
-    },
-    {
-      "stage": "PARSER",
-      "fix": "named Trait method or function"
     },
     {
       "id": "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
@@ -2339,8 +2348,9 @@
       "fix": "use one of the exact 13 admitted roles or a named Trait method/API; assignment, range, power, bitwise, logical, membership, type identity, and arbitrary custom glyph hooks remain closed"
     },
     {
+      "id": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
       "stage": "PARSER",
-      "fix": ".. or ..<"
+      "fix": "write both bounds with .. or ..<; use * only for a NumericArray full axis"
     },
     {
       "id": "INDEX_SUFFIX_REQUIRES_AXIS",
@@ -2348,10 +2358,12 @@
       "fix": "declared first coordinate/key; [*] only for NumericArray"
     },
     {
+      "id": "LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH",
       "stage": "PARSER",
       "fix": "let#lazy"
     },
     {
+      "id": "UNIT_MIDDLE_DOT_REMOVED_USE_STAR",
       "stage": "PARSER",
       "fix": "*"
     },
@@ -2400,6 +2412,16 @@
     "LEXICAL": 91,
     "STABLE": 534,
     "PREVIEW": 13
+  },
+  "grammar_topology_closure": {
+    "contract": "spec/contracts/grammar-topology-closure-r1.json",
+    "disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
+    "source_root_count": 6,
+    "production_count": 638,
+    "closed_external_symbol_count": 40,
+    "unowned_orphan_count": 0,
+    "illegal_cross_profile_edge_count": 0,
+    "product_support": "NOT_RUN"
   },
   "numeric_lexical_policy": {
     "sign_is_prefix_operator": true,
