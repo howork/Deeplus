@@ -1,0 +1,790 @@
+
+{
+  "schema": "deeplus.frontend-pratt-scanner-interpolation-fixtures/r1",
+  "status": "CURRENT_DESIGN_ACCEPTANCE_SPECIFICATION",
+  "frontend_model": "spec/frontend/frontend-model.json",
+  "suites": {
+    "r15": {
+      "gap_id": "IR-FE-P1-031",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-04-P",
+          "category": "positive",
+          "goal": "EXPRESSION",
+          "source": "a + b * c",
+          "expected": "ACCEPT_DECLARED_PRECEDENCE",
+          "ast": "add(a, multiply(b, c))"
+        },
+        {
+          "id": "IR-R3-GAP-04-B",
+          "category": "boundary",
+          "goal": "TYPE",
+          "source": "Box<Int> where this > 0",
+          "expected": "ACCEPT_GOAL_SPECIFIC_PARSELETS",
+          "ast": "NamedType(Box<Int>), then owner refinement"
+        },
+        {
+          "id": "IR-R3-GAP-04-N",
+          "category": "negative",
+          "goal": "UNIT",
+          "source": "m + s",
+          "expected": "REJECT_UNKNOWN_PARSELET",
+          "oracle": "R15_UNKNOWN_PARSELET_FOR_GOAL"
+        },
+        {
+          "id": "R15-EXPR-POWER-SIGN",
+          "category": "boundary",
+          "goal": "EXPRESSION",
+          "source": "-2 ^ 2",
+          "expected": "NumericSignExpr(PowerExpr(2, 2))"
+        },
+        {
+          "id": "R15-EXPR-POWER-NEGATIVE-RHS",
+          "category": "boundary",
+          "goal": "EXPRESSION",
+          "source": "2 ^ -3",
+          "expected": "PowerExpr(2, NumericSignExpr(3))"
+        },
+        {
+          "id": "R15-EXPR-MESSAGE-RANK",
+          "category": "positive",
+          "goal": "EXPRESSION",
+          "source": "ready ? actor :~ fetch id : fallback",
+          "expected": "ConditionalExpr(ready, ActorMessageCall(actor, fetch, id), fallback)"
+        },
+        {
+          "id": "R15-EXPR-ACTOR-TERMINAL",
+          "category": "negative",
+          "goal": "EXPRESSION",
+          "source": "a :~ ping :~ pong",
+          "expected": "REJECT_SECOND_ACTOR_MESSAGE_AT_SAME_LEVEL"
+        },
+        {
+          "id": "R15-PREDICATE-BOOL",
+          "category": "positive",
+          "goal": "PREDICATE",
+          "source": "0 <= x and then x < 100",
+          "expected": "ACCEPT_BOOL_PREDICATE"
+        },
+        {
+          "id": "R15-PREDICATE-ASSIGNMENT",
+          "category": "negative",
+          "goal": "PREDICATE",
+          "source": "x = 1",
+          "expected": "REJECT_DISABLED_PARSELET",
+          "oracle": "R15_UNKNOWN_PARSELET_FOR_GOAL"
+        },
+        {
+          "id": "R15-SLICE-SCALAR",
+          "category": "positive",
+          "goal": "SLICE_INDEX",
+          "source": "i + 1]",
+          "expected": "ACCEPT_AND_STOP_BEFORE_RIGHT_BRACKET"
+        },
+        {
+          "id": "R15-SLICE-RANGE-OWNER",
+          "category": "boundary",
+          "goal": "SLICE_INDEX",
+          "source": "i..<j]",
+          "expected": "STOP_BEFORE_RANGE_FOR_SLICE_RANGE_OWNER"
+        },
+        {
+          "id": "R15-SLICE-ASSIGNMENT",
+          "category": "negative",
+          "goal": "SLICE_INDEX",
+          "source": "i = 1]",
+          "expected": "REJECT_DISABLED_PARSELET"
+        },
+        {
+          "id": "R15-TYPE-PRECEDENCE",
+          "category": "positive",
+          "goal": "TYPE",
+          "source": "A | B & C?",
+          "expected": "UnionType(A, IntersectionType(B, OptionalType(C)))"
+        },
+        {
+          "id": "R15-TYPE-OWNERSHIP",
+          "category": "boundary",
+          "goal": "TYPE",
+          "source": "borrowed A?",
+          "expected": "OwnershipQualifiedType(OptionalType(A))"
+        },
+        {
+          "id": "R15-NONFUNCTION-DIRECT",
+          "category": "negative",
+          "goal": "NON_FUNCTION_TYPE",
+          "source": "(Int) -> String",
+          "expected": "REJECT_OUTER_FUNCTION_TAIL"
+        },
+        {
+          "id": "R15-NONFUNCTION-NESTED",
+          "category": "positive",
+          "goal": "NON_FUNCTION_TYPE",
+          "source": "((Int) -> String)",
+          "expected": "ACCEPT_PARENTHESIZED_FUNCTION_TYPE"
+        },
+        {
+          "id": "R15-UNIT-LEFT",
+          "category": "positive",
+          "goal": "UNIT",
+          "source": "kg / m / s",
+          "expected": "UnitDivisionExpr(UnitDivisionExpr(kg, m), s)"
+        },
+        {
+          "id": "R15-UNIT-POWER",
+          "category": "positive",
+          "goal": "UNIT",
+          "source": "m ^ -2",
+          "expected": "UnitPowerExpr(m, -2)"
+        },
+        {
+          "id": "R15-UNIT-RUNTIME-EXPONENT",
+          "category": "negative",
+          "goal": "UNIT",
+          "source": "m ^ n",
+          "expected": "UNIT_EXPONENT_REQUIRES_STATIC_INT"
+        },
+        {
+          "id": "R15-UNIT-DOUBLE-POWER",
+          "category": "negative",
+          "goal": "UNIT",
+          "source": "m ^ 2 ^ 3",
+          "expected": "REJECT_NONASSOCIATIVE_UNIT_POWER"
+        },
+        {
+          "id": "R15-MUTATION-MESSAGE-LBP",
+          "category": "mutation",
+          "mutation": "message_call.lbp = 190",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R15-MUTATION-MISSING-PARSELET",
+          "category": "mutation",
+          "mutation": "remove bitwise_or",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R15-MUTATION-PREDICATE-ASSIGNMENT",
+          "category": "mutation",
+          "mutation": "enable assignment in PREDICATE",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R15-MUTATION-SLICE-RANGE",
+          "category": "mutation",
+          "mutation": "enable range in SLICE_INDEX",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R15-MUTATION-NONFUNCTION-TAIL",
+          "category": "mutation",
+          "mutation": "enable outer_paren_function_tail in NON_FUNCTION_TYPE",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R15-MUTATION-UNIT-RUNTIME-EXPONENT",
+          "category": "mutation",
+          "mutation": "unit power operand = Expr",
+          "expected": "REJECT"
+        }
+      ],
+      "counts": {
+        "total": 26,
+        "positive": 8,
+        "boundary": 5,
+        "negative": 7,
+        "mutation": 6
+      }
+    },
+    "r16": {
+      "gap_id": "IR-FE-P1-032",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-05-P",
+          "category": "positive",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "<2/3>",
+          "expected": "ACCEPT_COMMITTED_RATIONAL_TOKEN"
+        },
+        {
+          "id": "IR-R3-GAP-05-B",
+          "category": "boundary",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "<2/0>",
+          "expected": "ACCEPT_TOKEN_THEN_STATIC_REJECT",
+          "diagnostic": "RATIONAL_LITERAL_DENOMINATOR_ZERO"
+        },
+        {
+          "id": "IR-R3-GAP-05-N",
+          "category": "negative",
+          "goal": "EXPRESSION_CONTINUATION",
+          "source": "a<2/3>b",
+          "expected": "DO_NOT_EMIT_RATIONAL_TOKEN_AND_PRESERVE_ZERO_PROBE_CONSUMPTION"
+        },
+        {
+          "id": "R16-RATIONAL-TYPE-GOAL",
+          "category": "negative",
+          "goal": "TYPE",
+          "source": "Box<2/3>",
+          "expected": "NO_RATIONAL_TOKEN"
+        },
+        {
+          "id": "R16-RATIONAL-INTERPOLATION",
+          "category": "positive",
+          "goal": "INTERPOLATION_EXPRESSION_PREFIX",
+          "source": "${<2/3>}",
+          "expected": "RATIONAL_TOKEN_INSIDE_INTERPOLATION_CODE"
+        },
+        {
+          "id": "R16-RATIONAL-SIGNED-PREFIX",
+          "category": "boundary",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "-<2/3>",
+          "expected": "MINUS_THEN_RATIONAL_LITERAL"
+        },
+        {
+          "id": "R16-RATIONAL-NO-MATCH",
+          "category": "boundary",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "<value",
+          "expected": "ROLLBACK_THEN_LESS_TOKEN"
+        },
+        {
+          "id": "R16-RATIONAL-MALFORMED-STEM",
+          "category": "negative",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "<2/x>",
+          "expected": "ONE_ERROR_TOKEN_NO_VALID_PREFIX_TOKEN"
+        },
+        {
+          "id": "R16-LONGEST-STAR",
+          "category": "positive",
+          "goal": "NORMAL",
+          "source": "***",
+          "expected": "TRIPLE_STAR"
+        },
+        {
+          "id": "R16-LONGEST-RANGE",
+          "category": "positive",
+          "goal": "EXPRESSION_CONTINUATION",
+          "source": "..<",
+          "expected": "DOT_DOT_LESS"
+        },
+        {
+          "id": "R16-CONTEXTUAL",
+          "category": "boundary",
+          "goal": "NORMAL",
+          "source": "conforms",
+          "expected": "IDENTIFIER_WITH_OWNER_LEXEME"
+        },
+        {
+          "id": "R16-ORDINARY-ARRAY",
+          "category": "positive",
+          "goal": "NORMAL",
+          "source": "array",
+          "expected": "IDENTIFIER"
+        },
+        {
+          "id": "R16-ORDINARY-CASE",
+          "category": "positive",
+          "goal": "NORMAL",
+          "source": "case",
+          "expected": "IDENTIFIER"
+        },
+        {
+          "id": "R16-STALE-CHECKPOINT",
+          "category": "negative",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "commit after another token advanced",
+          "expected": "REJECT_STALE_CHECKPOINT"
+        },
+        {
+          "id": "R16-ROLLBACK-IDENTITY",
+          "category": "boundary",
+          "goal": "EXPRESSION_PREFIX",
+          "source": "failed probe",
+          "expected": "BYTE_IDENTICAL_SCANNER_STATE"
+        },
+        {
+          "id": "R16-MODE-CLOSE",
+          "category": "positive",
+          "goal": "INTERPOLATION_EXPRESSION_CONTINUATION",
+          "source": "}",
+          "expected": "INTERPOLATION_CLOSE_BEFORE_GENERIC_RBRACE"
+        },
+        {
+          "id": "R16-UNKNOWN-GOAL",
+          "category": "negative",
+          "goal": "UNKNOWN",
+          "source": "x",
+          "expected": "REJECT_BEFORE_SCANNING"
+        },
+        {
+          "id": "R16-MULTILINE-FENCE",
+          "category": "boundary",
+          "goal": "MULTILINE_ATOMIC",
+          "source": "multiline literal",
+          "expected": "PRESERVE_ATOMIC_TOKEN_AND_R18_HOLD"
+        },
+        {
+          "id": "R16-MUTATION-RATIONAL-TYPE",
+          "category": "mutation",
+          "mutation": "enable rational probe in TYPE",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R16-MUTATION-ROLLBACK-CONSUMES",
+          "category": "mutation",
+          "mutation": "failed probe consumes one byte",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R16-MUTATION-CONTEXTUAL-KIND",
+          "category": "mutation",
+          "mutation": "contextual word emits dedicated keyword kind",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R16-MUTATION-PRIORITY-DUPLICATE",
+          "category": "mutation",
+          "mutation": "duplicate priority rank",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R16-MUTATION-REMOVE-TERMINAL",
+          "category": "mutation",
+          "mutation": "remove one current syntax terminal row",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R16-MUTATION-MULTILINE-CLAIM",
+          "category": "mutation",
+          "mutation": "claim multiline payload closed",
+          "expected": "REJECT"
+        }
+      ],
+      "counts": {
+        "total": 24,
+        "positive": 7,
+        "boundary": 6,
+        "negative": 5,
+        "mutation": 6
+      }
+    },
+    "r17": {
+      "gap_id": "IR-FE-P1-033",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-06-P",
+          "category": "positive",
+          "source": "\"$user.name\"",
+          "expected": "ACCEPT_COMPLETE_PATH"
+        },
+        {
+          "id": "IR-R3-GAP-06-B",
+          "category": "boundary",
+          "source": "\"$user.name` suffix\"",
+          "expected": "ACCEPT_EXPLICIT_TERMINATION"
+        },
+        {
+          "id": "IR-R3-GAP-06-N",
+          "category": "negative",
+          "source": "\"$user()\"",
+          "expected": "REJECT_CALL_SUFFIX_REQUIRES_BRACES",
+          "diagnostic": "INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES"
+        },
+        {
+          "id": "R17-ROOT-IDENTIFIER",
+          "category": "positive",
+          "source": "\"$user\"",
+          "expected": "ROOT_ONCE_ZERO_SELECTORS"
+        },
+        {
+          "id": "R17-ROOT-AT",
+          "category": "positive",
+          "source": "\"$@.name\"",
+          "expected": "AT_ROOT_ONE_MEMBER"
+        },
+        {
+          "id": "R17-MEMBER-CHAIN",
+          "category": "positive",
+          "source": "\"$user.profile.name\"",
+          "expected": "TWO_MEMBER_SELECTORS"
+        },
+        {
+          "id": "R17-DOT-STATIC",
+          "category": "positive",
+          "source": "\"$tuple.1\"",
+          "expected": "ONE_STATIC_SELECTOR"
+        },
+        {
+          "id": "R17-INDEX-STATIC",
+          "category": "positive",
+          "source": "\"$items[1]\"",
+          "expected": "ONE_STATIC_INDEX_SELECTOR"
+        },
+        {
+          "id": "R17-INDEX-NAME",
+          "category": "positive",
+          "source": "\"$items[index]\"",
+          "expected": "ONE_IDENTIFIER_INDEX_SELECTOR"
+        },
+        {
+          "id": "R17-CHAIN-MIX",
+          "category": "positive",
+          "source": "\"$users[index].profile.1\"",
+          "expected": "THREE_ORDERED_SELECTORS"
+        },
+        {
+          "id": "R17-MAXIMAL-XID",
+          "category": "boundary",
+          "source": "\"$user_name9!\"",
+          "expected": "MAXIMAL_ROOT_THEN_TEXT"
+        },
+        {
+          "id": "R17-SPACE-TERMINATION",
+          "category": "boundary",
+          "source": "\"$user name\"",
+          "expected": "PATH_THEN_SPACE_TEXT"
+        },
+        {
+          "id": "R17-NEWLINE-TERMINATION",
+          "category": "boundary",
+          "source": "$user\nname",
+          "expected": "PATH_THEN_NEWLINE_TEXT"
+        },
+        {
+          "id": "R17-DOLLAR-TERMINATION",
+          "category": "boundary",
+          "source": "\"$user$user2\"",
+          "expected": "TWO_PATH_PARTS"
+        },
+        {
+          "id": "R17-BACKTICK-NO-OUTPUT",
+          "category": "boundary",
+          "source": "\"$user`x\"",
+          "expected": "BOUNDARY_CONSUMED_NO_OUTPUT"
+        },
+        {
+          "id": "R17-BRACED-PRIORITY",
+          "category": "boundary",
+          "source": "\"${compute()}\"",
+          "expected": "BRACED_NOT_SHORTHAND"
+        },
+        {
+          "id": "R17-HYPHEN-TERMINATION",
+          "category": "boundary",
+          "source": "\"$i-th value\"",
+          "expected": "ROOT_I_THEN_HYPHEN_STRING_TEXT"
+        },
+        {
+          "id": "R17-FORMAT-REJECT",
+          "category": "negative",
+          "source": "\"$user:<12\"",
+          "expected": "REJECT_FORMAT_REQUIRES_BRACED_FORM",
+          "diagnostic": "INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM"
+        },
+        {
+          "id": "R17-MISSING-ROOT",
+          "category": "negative",
+          "source": "\"$ 1\"",
+          "expected": "REJECT_EXPECTED_IDENTIFIER",
+          "diagnostic": "INTERPOLATION_SHORTHAND_EXPECTED_IDENTIFIER"
+        },
+        {
+          "id": "R17-BOUNDARY-OUTSIDE",
+          "category": "negative",
+          "source": "\"text`more\"",
+          "expected": "REJECT_BOUNDARY_OUTSIDE_PATH",
+          "diagnostic": "INTERPOLATION_BOUNDARY_OUTSIDE_PATH"
+        },
+        {
+          "id": "R17-INCOMPLETE-DOT",
+          "category": "negative",
+          "source": "\"$user.\"",
+          "expected": "ONE_ERROR_NODE_NO_SELECTOR_AST"
+        },
+        {
+          "id": "R17-INCOMPLETE-INDEX",
+          "category": "negative",
+          "source": "\"$user[index\"",
+          "expected": "ONE_ERROR_NODE_NO_INDEX_AST"
+        },
+        {
+          "id": "R17-COMPLEX-INDEX",
+          "category": "negative",
+          "source": "\"$user[index + 1]\"",
+          "expected": "REJECT_COMPLEX_INDEX_NO_PARTIAL_AST"
+        },
+        {
+          "id": "R17-MUTATION-ADMIT-CALL",
+          "category": "mutation",
+          "mutation": "treat ( as string delimiter instead of forbidden continuation",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R17-MUTATION-CONSUME-DELIMITER",
+          "category": "mutation",
+          "mutation": "shorthand consumes one terminating space",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R17-MUTATION-BOUNDARY-OUTPUT",
+          "category": "mutation",
+          "mutation": "append backtick to output",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R17-MUTATION-PARTIAL-AST",
+          "category": "mutation",
+          "mutation": "emit selector AST after incomplete dot",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R17-MUTATION-BRACED-AS-SHORTHAND",
+          "category": "mutation",
+          "mutation": "classify ${ as dollar shorthand",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R17-MUTATION-ROOT-TWICE",
+          "category": "mutation",
+          "mutation": "evaluate shorthand root twice",
+          "expected": "REJECT"
+        }
+      ],
+      "counts": {
+        "total": 29,
+        "positive": 8,
+        "boundary": 8,
+        "negative": 7,
+        "mutation": 6
+      }
+    },
+    "r18": {
+      "gap_id": "IR-FE-P0-030",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-03-P",
+          "category": "positive",
+          "scenario": "dedented multiline with ${compute()}",
+          "expected": "ACCEPT_ORDERED_RENDER_PARTS"
+        },
+        {
+          "id": "IR-R3-GAP-03-B",
+          "category": "boundary",
+          "scenario": "nested delimiters inside braced multiline interpolation",
+          "expected": "ACCEPT_BALANCED_NESTED_EXPR"
+        },
+        {
+          "id": "IR-R3-GAP-03-N",
+          "category": "negative",
+          "scenario": "close interpolation or multiline literal out of order",
+          "expected": "REJECT_UNBALANCED_MULTILINE_INTERPOLATION"
+        },
+        {
+          "id": "R18-PLAIN-CONST",
+          "category": "positive",
+          "scenario": "plain two-line multiline",
+          "expected": "ONE_LITERAL_AST_AND_CONST_STRING"
+        },
+        {
+          "id": "R18-ESCAPE",
+          "category": "positive",
+          "scenario": "text plus ordinary String escape",
+          "expected": "ORDERED_TEXT_ESCAPE_PARTS"
+        },
+        {
+          "id": "R18-SHORTHAND",
+          "category": "positive",
+          "scenario": "Hello, $user.name",
+          "expected": "R17_SHORTHAND_PAYLOAD"
+        },
+        {
+          "id": "R18-BRACED",
+          "category": "positive",
+          "scenario": "result ${compute()}",
+          "expected": "R15_R16_BRACED_PAYLOAD"
+        },
+        {
+          "id": "R18-MIXED-ORDER",
+          "category": "positive",
+          "scenario": "text, shorthand, escape, braced, text",
+          "expected": "EXACT_FIVE_PART_ORDER"
+        },
+        {
+          "id": "R18-CRLF",
+          "category": "positive",
+          "scenario": "CRLF source",
+          "expected": "RAW_CRLF_CST_VALUE_LF"
+        },
+        {
+          "id": "R18-EMPTY",
+          "category": "positive",
+          "scenario": "opener newline immediately followed by closer",
+          "expected": "EMPTY_STRING"
+        },
+        {
+          "id": "R18-MARGIN-EXACT",
+          "category": "boundary",
+          "scenario": "closer and nonblank common prefix exact",
+          "expected": "ACCEPT_EXACT_MARGIN"
+        },
+        {
+          "id": "R18-EXTRA-INDENT",
+          "category": "boundary",
+          "scenario": "one content line has extra indent after common margin",
+          "expected": "PRESERVE_EXTRA_INDENT"
+        },
+        {
+          "id": "R18-INTERNAL-BLANK",
+          "category": "boundary",
+          "scenario": "internal whitespace-only line",
+          "expected": "EMPTY_LOGICAL_LINE_WITH_LF"
+        },
+        {
+          "id": "R18-STRUCTURAL-NEWLINES",
+          "category": "boundary",
+          "scenario": "opener and closer boundary line terminators",
+          "expected": "EXCLUDE_BOTH_STRUCTURAL_TERMINATORS"
+        },
+        {
+          "id": "R18-ESCAPED-DOLLAR",
+          "category": "boundary",
+          "scenario": "escaped dollar and backtick",
+          "expected": "NO_INTERPOLATION_PART"
+        },
+        {
+          "id": "R18-SHORTHAND-BOUNDARY",
+          "category": "boundary",
+          "scenario": "shorthand explicit backtick boundary",
+          "expected": "BOUNDARY_IN_CST_NOT_OUTPUT"
+        },
+        {
+          "id": "R18-BRACED-FORMAT",
+          "category": "boundary",
+          "scenario": "${value:<12}",
+          "expected": "FORMAT_PAYLOAD_BOUND_TO_BRACED_HOLE"
+        },
+        {
+          "id": "R18-NESTED-STRING",
+          "category": "boundary",
+          "scenario": "nested ordinary string containing braces inside interpolation",
+          "expected": "NESTED_STRING_DOES_NOT_CLOSE_HOLE"
+        },
+        {
+          "id": "R18-OPENER-NO-NEWLINE",
+          "category": "negative",
+          "scenario": "one-line triple quote",
+          "expected": "REJECT_OPENER_NEWLINE",
+          "diagnostic": "MULTILINE_STRING_OPENER_REQUIRES_NEWLINE"
+        },
+        {
+          "id": "R18-OFFLINE-CLOSER",
+          "category": "negative",
+          "scenario": "text followed directly by triple quote",
+          "expected": "REJECT_CLOSER_OWN_LINE",
+          "diagnostic": "MULTILINE_STRING_CLOSER_MUST_BE_OWN_LINE"
+        },
+        {
+          "id": "R18-LCP-SHORT-LINE",
+          "category": "boundary",
+          "scenario": "one nonblank line has less indentation than the closer",
+          "expected": "ACCEPT_AND_STRIP_CONTENT_LCP"
+        },
+        {
+          "id": "R18-LCP-LONG-LINES",
+          "category": "boundary",
+          "scenario": "all nonblank lines have a longer common prefix than the closer",
+          "expected": "ACCEPT_AND_STRIP_LONGER_CONTENT_LCP"
+        },
+        {
+          "id": "R18-UNBALANCED-BRACE",
+          "category": "negative",
+          "scenario": "${call( without matching delimiters",
+          "expected": "REJECT_UNBALANCED_MULTILINE_INTERPOLATION"
+        },
+        {
+          "id": "R18-CLOSER-WHILE-HOLE-OPEN",
+          "category": "negative",
+          "scenario": "outer closer-like line while interpolation frame open",
+          "expected": "DO_NOT_CLOSE_OUTER_THEN_REJECT_UNBALANCED"
+        },
+        {
+          "id": "R18-INVALID-SHORTHAND",
+          "category": "negative",
+          "scenario": "incomplete R17 dot selector",
+          "expected": "R14_ERROR_NODE_NO_CANONICAL_AST"
+        },
+        {
+          "id": "R18-MUTATION-SPLIT-TOP-TOKEN",
+          "category": "mutation",
+          "mutation": "emit top-level STRING_START/PART/END tokens",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-INCLUDE-STRUCTURAL-NEWLINE",
+          "category": "mutation",
+          "mutation": "include opener or closer boundary newline in value",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-USE-CLOSER-AS-MARGIN",
+          "category": "mutation",
+          "mutation": "use closer indentation instead of content LCP",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-REORDER-PARTS",
+          "category": "mutation",
+          "mutation": "sort parts by kind",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-CLOSE-WHILE-HOLE-OPEN",
+          "category": "mutation",
+          "mutation": "close outer literal while interpolation frame is open",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-INTERPOLATED-CONST",
+          "category": "mutation",
+          "mutation": "lower interpolation payload directly to ConstString",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-EAGER-HOLE-TOKENS",
+          "category": "mutation",
+          "mutation": "scanner precommits embedded token kinds without parser lexical goal",
+          "expected": "REJECT"
+        },
+        {
+          "id": "R18-MUTATION-CST-LEAF-OVERLAP",
+          "category": "mutation",
+          "mutation": "make the atomic envelope a CST leaf in addition to payload leaves",
+          "expected": "REJECT"
+        }
+      ],
+      "counts": {
+        "total": 33,
+        "positive": 8,
+        "boundary": 11,
+        "negative": 6,
+        "mutation": 8
+      }
+    }
+  },
+  "diagnostic_fence": {
+    "final_catalog_owner_gap": "IR-FE-P1-035",
+    "new_final_diagnostic_id_count": 0
+  },
+  "execution": {
+    "design_static_projection": "PASS",
+    "production_scanner": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_backend": "NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

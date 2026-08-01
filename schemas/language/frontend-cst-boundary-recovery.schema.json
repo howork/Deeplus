@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/frontend-cst-boundary-recovery.schema.json",
+  "title": "Deeplus lossless CST, normalized AST, parser-boundary and recovery contract R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "authority",
+    "grammar_sha256",
+    "r12_cst_ast_normalization",
+    "r13_boundary_and_match_arm",
+    "r14_recovery_and_invalid_tree",
+    "evidence_fence"
+  ],
+  "properties": {
+    "schema": { "const": "deeplus.frontend-cst-boundary-recovery-contract/r1" },
+    "status": { "const": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT" },
+    "authority": {
+      "type": "object",
+      "required": ["decision", "source_surface_change_count", "grammar_byte_change_count"],
+      "properties": {
+        "decision": { "const": "decisions/language/Design_Deeplus_Frontend_CST_Parser_Recovery_Readiness_R1.md" },
+        "source_surface_change_count": { "const": 0 },
+        "grammar_byte_change_count": { "const": 0 }
+      },
+      "additionalProperties": false
+    },
+    "grammar_sha256": { "$ref": "#/$defs/sha256" },
+    "r12_cst_ast_normalization": { "$ref": "#/$defs/nonemptyObject" },
+    "r13_boundary_and_match_arm": { "$ref": "#/$defs/nonemptyObject" },
+    "r14_recovery_and_invalid_tree": { "$ref": "#/$defs/nonemptyObject" },
+    "evidence_fence": {
+      "type": "object",
+      "required": ["production_parser", "checker", "formatter_lsp", "runtime_backend", "product_lanes", "canonical_feature_p1", "m13_actions", "final_diagnostic_ids_added"],
+      "properties": {
+        "production_parser": { "const": "NOT_RUN" },
+        "checker": { "const": "NOT_RUN" },
+        "formatter_lsp": { "const": "NOT_RUN" },
+        "runtime_backend": { "const": "NOT_RUN" },
+        "product_lanes": { "const": "15_OF_15_NOT_RUN" },
+        "canonical_feature_p1": { "const": "22_OPEN_UNCHANGED" },
+        "m13_actions": { "const": "4_OPEN_UNCHANGED" },
+        "final_diagnostic_ids_added": { "const": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "nonemptyObject": { "type": "object", "minProperties": 1 }
+  }
+}

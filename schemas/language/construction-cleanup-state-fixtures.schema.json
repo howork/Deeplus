@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r11/construction-cleanup-state-fixtures.schema.json",
+  "title": "Deeplus R11 construction and cleanup state design fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "contract", "revision", "status", "gap_id", "cases", "expected_counts", "status_fence"],
+  "properties": {
+    "schema": {"const": "deeplus.construction-cleanup-state-fixtures/r1"},
+    "contract": {"const": "spec/contracts/construction-cleanup-state-r1.json"},
+    "revision": {"const": "R11-INTEGRATED-R1"},
+    "status": {"const": "DESIGN_STATIC_NOT_RUN"},
+    "gap_id": {"const": "IR-OWN-P0-016"},
+    "cases": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "POSITIVE", "BOUNDARY", "NEGATIVE", "MUTATION"],
+      "properties": {
+        "total": {"const": 24},
+        "POSITIVE": {"const": 6},
+        "BOUNDARY": {"const": 8},
+        "NEGATIVE": {"const": 6},
+        "MUTATION": {"const": 4}
+      }
+    },
+    "status_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "canonical_feature_p1", "m13_actions", "product_lanes", "product_execution"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "canonical_feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "product_execution": {"const": "NOT_RUN"}
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["test_id", "kind", "scenario", "expected"],
+      "properties": {
+        "test_id": {"type": "string", "pattern": "^R11-CON-(P|B|N|M)-[0-9]{3}$"},
+        "kind": {"enum": ["POSITIVE", "BOUNDARY", "NEGATIVE", "MUTATION"]},
+        "scenario": {"type": "string", "minLength": 1},
+        "expected": {"type": "object", "minProperties": 1}
+      }
+    }
+  }
+}

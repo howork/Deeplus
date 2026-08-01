@@ -110,8 +110,18 @@ Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
 
 ### source-gated Preview 루트
 
-Preview source는 Stable source와 다른 루트를 선택하고, 선택적 shebang
-직후이자 `ModuleDecl`과 모든 source item보다 앞에 정확한 gate를 둔다.
+carrier는 parsing 전에 `source_role = library | executable | script`와
+`activation_profile = stable | preview`를 각각 정확히 하나씩 선언한다.
+두 축은 여섯 source root 중 하나를 직접 고른다. `stable`은 HIR
+`CURRENT`, `preview`는 HIR `EXPLICIT_PREVIEW`로 정규화한다. parser가
+여러 root를 시도해 role이나 profile을 추론하는 방식은 허용하지 않는다.
+
+Preview source는 선택적 shebang 직후이자 `ModuleDecl`과 모든 source
+item보다 앞에 정확한 gate를 둔다. gate는 carrier가 이미 고른 Preview
+root에서 기능 route와 dependency closure를 검증할 뿐, source role이나
+activation profile을 바꾸지 않는다. Stable carrier의 gate, Preview
+carrier의 gate 누락, 잘못된 위치·ID·dependency는 모두 source unit AST와
+활성 기능 집합을 원자적으로 commit하기 전에 거부한다.
 
 ```ebnf
 DeeplusPreview ::= PreviewLibrarySourceFile

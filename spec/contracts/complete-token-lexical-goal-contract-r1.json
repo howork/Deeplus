@@ -1,0 +1,1748 @@
+
+{
+  "schema": "deeplus.complete-token-lexical-goal-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251"
+  },
+  "gap_id": "IR-FE-P1-032",
+  "downstream_unlock_order": [
+    "IR-FE-P1-033",
+    "IR-FE-P0-030"
+  ],
+  "scanner_modes": [
+    "NORMAL",
+    "STRING",
+    "MULTILINE_STRING",
+    "INTERPOLATION_CODE",
+    "RAW_STRING",
+    "BYTES"
+  ],
+  "lexical_goals": [
+    {
+      "id": "NORMAL",
+      "scanner_mode": "NORMAL",
+      "rational_probe": false,
+      "owner": "recursive-descent source structure"
+    },
+    {
+      "id": "EXPRESSION_PREFIX",
+      "scanner_mode": "NORMAL",
+      "rational_probe": true,
+      "owner": "R15 EXPRESSION/PREDICATE/SLICE_INDEX nud dispatch"
+    },
+    {
+      "id": "EXPRESSION_CONTINUATION",
+      "scanner_mode": "NORMAL",
+      "rational_probe": false,
+      "owner": "R15 expression led/stop dispatch"
+    },
+    {
+      "id": "TYPE",
+      "scanner_mode": "NORMAL",
+      "rational_probe": false,
+      "owner": "R15 TYPE/NON_FUNCTION_TYPE dispatch"
+    },
+    {
+      "id": "UNIT",
+      "scanner_mode": "NORMAL",
+      "rational_probe": false,
+      "owner": "R15 UNIT dispatch"
+    },
+    {
+      "id": "PATTERN",
+      "scanner_mode": "NORMAL",
+      "rational_probe": false,
+      "owner": "recursive-descent Pattern owner"
+    },
+    {
+      "id": "STRING_PART",
+      "scanner_mode": "STRING",
+      "rational_probe": false,
+      "owner": "string part scanner"
+    },
+    {
+      "id": "INTERPOLATION_EXPRESSION_PREFIX",
+      "scanner_mode": "INTERPOLATION_CODE",
+      "rational_probe": true,
+      "owner": "nested R15 expression nud dispatch"
+    },
+    {
+      "id": "INTERPOLATION_EXPRESSION_CONTINUATION",
+      "scanner_mode": "INTERPOLATION_CODE",
+      "rational_probe": false,
+      "owner": "nested R15 expression led/stop dispatch"
+    },
+    {
+      "id": "MULTILINE_ATOMIC",
+      "scanner_mode": "MULTILINE_STRING",
+      "rational_probe": false,
+      "owner": "current atomic token pending IR-FE-P0-030/R18 payload split"
+    }
+  ],
+  "syntax_terminal_registry": [
+    {
+      "spelling": "!",
+      "scanner_kind": "BANG",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "!!",
+      "scanner_kind": "DOUBLE_BANG",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "!=",
+      "scanner_kind": "BANG_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "#",
+      "scanner_kind": "HASH",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "$",
+      "scanner_kind": "DOLLAR",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "$$",
+      "scanner_kind": "DOUBLE_DOLLAR",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "${",
+      "scanner_kind": "DOLLAR_LBRACE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "%",
+      "scanner_kind": "PERCENT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "%=",
+      "scanner_kind": "PERCENT_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "&",
+      "scanner_kind": "AMPERSAND",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "&&",
+      "scanner_kind": "DOUBLE_AMPERSAND",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "(",
+      "scanner_kind": "LPAREN",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ")",
+      "scanner_kind": "RPAREN",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "*",
+      "scanner_kind": "STAR",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "**",
+      "scanner_kind": "DOUBLE_STAR",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "***",
+      "scanner_kind": "TRIPLE_STAR",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "*+",
+      "scanner_kind": "STAR_PLUS",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "*.",
+      "scanner_kind": "STAR_DOT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "*=",
+      "scanner_kind": "STAR_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "+",
+      "scanner_kind": "PLUS",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "+=",
+      "scanner_kind": "PLUS_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ",",
+      "scanner_kind": "COMMA",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "-",
+
+      "scanner_kind": "MINUS",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "-=",
+      "scanner_kind": "MINUS_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "->",
+      "scanner_kind": "THIN_ARROW",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ".",
+      "scanner_kind": "DOT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "..",
+      "scanner_kind": "DOT_DOT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "...",
+      "scanner_kind": "DOT_DOT_DOT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "..<",
+      "scanner_kind": "DOT_DOT_LESS",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "/",
+      "scanner_kind": "SLASH",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "/=",
+      "scanner_kind": "SLASH_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ":",
+      "scanner_kind": "COLON",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "::",
+      "scanner_kind": "COLON_COLON",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ":=",
+      "scanner_kind": "COLON_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ":~",
+      "scanner_kind": "COLON_TILDE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "<",
+      "scanner_kind": "LESS",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "<=",
+      "scanner_kind": "LESS_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "=",
+      "scanner_kind": "EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "==",
+      "scanner_kind": "EQUAL_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "=>",
+      "scanner_kind": "FAT_ARROW",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ">",
+      "scanner_kind": "GREATER",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": ">=",
+      "scanner_kind": "GREATER_EQUAL",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "?",
+      "scanner_kind": "QUESTION",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "?:",
+      "scanner_kind": "QUESTION_COLON",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "@",
+      "scanner_kind": "AT",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "C",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "EffectRow",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "ErrorSet",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "Facet",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "StaticInt",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "[",
+      "scanner_kind": "LBRACKET",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "\\\\",
+      "scanner_kind": "BACKSLASH",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "]",
+      "scanner_kind": "RBRACKET",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "^",
+      "scanner_kind": "CARET",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "^^",
+      "scanner_kind": "DOUBLE_CARET",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "_",
+      "scanner_kind": "WILDCARD",
+      "classification": "DEDICATED_TOKEN",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "abstract",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "actor",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "and",
+      "scanner_kind": "KW_AND",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+
+    {
+      "spelling": "any",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "as",
+      "scanner_kind": "KW_AS",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "async",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "auto",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "await",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "backing",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "bitfield",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "borrow",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "borrowed",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "break",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "budget",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "by",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "c",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "cancellable",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "capability",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "capacity",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "catalog",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "catch",
+      "scanner_kind": "KW_CATCH",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "class",
+      "scanner_kind": "KW_CLASS",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "cleanup",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "clone",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "common",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "concur",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "conform",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "conformance",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "conforms",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "consume",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "context",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "continue",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "copy",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "data",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "decreasing",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "deep",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "def",
+      "scanner_kind": "KW_DEF",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "defer",
+      "scanner_kind": "KW_DEFER",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "delegate",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "derives",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "effects",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "else",
+      "scanner_kind": "KW_ELSE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "ensures",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "entry",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "enum",
+      "scanner_kind": "KW_ENUM",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "equalsRatio",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "error",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "errors",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "export",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "extension",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "extern",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "facet",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "false",
+      "scanner_kind": "KW_FALSE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "final",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "finally",
+      "scanner_kind": "KW_FINALLY",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "flags",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "for",
+      "scanner_kind": "KW_FOR",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "forward",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "generate",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "get",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "guard",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "if",
+      "scanner_kind": "KW_IF",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "import",
+      "scanner_kind": "KW_IMPORT",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "in",
+      "scanner_kind": "KW_IN",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "increasing",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "inout",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "invariant",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "OWNER_EXACT_IDENTIFIER_LEXEME",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "is",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "isolated",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "law",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "lazy",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "let",
+      "scanner_kind": "KW_LET",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "lsb0",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "mailbox",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "map",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "match",
+      "scanner_kind": "KW_MATCH",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "module",
+
+      "scanner_kind": "KW_MODULE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "move",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "mut",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "not",
+      "scanner_kind": "KW_NOT",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "on",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "once",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "opaque",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "open",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "or",
+      "scanner_kind": "KW_OR",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "order",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "otherwise",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "out",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "owned",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "pack",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "preview",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "private",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "protocol",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "public",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "pure",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "raw",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "repeat",
+      "scanner_kind": "KW_REPEAT",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "request",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "requires",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "resource",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "ret",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "return",
+      "scanner_kind": "KW_RETURN",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "schema",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "scope",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "scoped",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "sealed",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "send",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "set",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "shielded",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "signature",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "some",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "spawn",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "static",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+
+    {
+      "spelling": "super",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "supports",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "then",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "throw",
+      "scanner_kind": "KW_THROW",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "throws",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "to",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "trait",
+      "scanner_kind": "KW_TRAIT",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "true",
+      "scanner_kind": "KW_TRUE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "try",
+      "scanner_kind": "KW_TRY",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "type",
+      "scanner_kind": "KW_TYPE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "typeof",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "typestate",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "unit",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "unsafe",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "use",
+      "scanner_kind": "KW_USE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "using",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "value",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "var",
+      "scanner_kind": "KW_VAR",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "via",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "where",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "while",
+      "scanner_kind": "KW_WHILE",
+      "classification": "HARD_KEYWORD",
+      "role_commitment": "scanner"
+    },
+    {
+      "spelling": "witness",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "yield",
+      "scanner_kind": "IDENTIFIER",
+      "classification": "CONTEXTUAL_WORD",
+      "role_commitment": "parser_owner_after_identifier_scan"
+    },
+    {
+      "spelling": "{",
+      "scanner_kind": "LBRACE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "{{",
+      "scanner_kind": "DOUBLE_LBRACE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "|",
+      "scanner_kind": "PIPE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "||",
+      "scanner_kind": "DOUBLE_PIPE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "}",
+      "scanner_kind": "RBRACE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "}}",
+      "scanner_kind": "DOUBLE_RBRACE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "~",
+      "scanner_kind": "TILDE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "~>",
+      "scanner_kind": "TILDE_GREATER",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
+      "spelling": "~~",
+      "scanner_kind": "DOUBLE_TILDE",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    }
+  ],
+  "atomic_token_registry": [
+    {
+      "token_kind": "IDENTIFIER",
+      "category": "identifier",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "WILDCARD",
+      "category": "identifier_boundary",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "INTEGER_LITERAL",
+      "category": "numeric",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+
+    },
+    {
+      "token_kind": "FLOAT_LITERAL",
+      "category": "numeric",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "IMAGINARY_LITERAL",
+      "category": "numeric",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "RATIONAL_LITERAL",
+      "category": "goal_specific_numeric",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "CHAR_LITERAL",
+      "category": "literal",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "PLAIN_STRING_LITERAL",
+      "category": "string",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "STRING_START",
+      "category": "string_part",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "STRING_TEXT",
+      "category": "string_part",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "STRING_ESCAPE",
+      "category": "string_part",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "INTERPOLATION_BOUNDARY",
+      "category": "string_part",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "INTERPOLATION_OPEN",
+      "category": "mode_boundary",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "INTERPOLATION_CLOSE",
+      "category": "mode_boundary",
+      "scanner_modes": [
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "INTERPOLATION_FORMAT_TEXT",
+      "category": "string_part",
+      "scanner_modes": [
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "STRING_END",
+      "category": "mode_boundary",
+      "scanner_modes": [
+        "STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "RAW_STRING_LITERAL",
+      "category": "string",
+      "scanner_modes": [
+        "RAW_STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "MULTILINE_STRING_LITERAL",
+      "category": "multiline_atomic_pending_r18",
+      "scanner_modes": [
+        "MULTILINE_STRING"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "BYTES_LITERAL",
+      "category": "bytes",
+      "scanner_modes": [
+        "BYTES"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "NAME_TOKEN",
+      "category": "escaped_name",
+      "scanner_modes": [
+        "NORMAL",
+        "INTERPOLATION_CODE"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "ERROR_TOKEN",
+      "category": "lexical_error",
+      "scanner_modes": [
+        "NORMAL",
+        "STRING",
+        "MULTILINE_STRING",
+        "INTERPOLATION_CODE",
+        "RAW_STRING",
+        "BYTES"
+      ],
+      "parser_visible": true
+    },
+    {
+      "token_kind": "EOF",
+      "category": "end",
+      "scanner_modes": [
+        "NORMAL"
+      ],
+      "parser_visible": true
+    }
+  ],
+  "trivia_registry": [
+    {
+      "kind": "HORIZONTAL_SPACE",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "LINE_BREAK",
+      "retained_in_lossless_cst": true,
+      "parser_token": false,
+      "metanode_projection": "LINE_BREAK_IN_TRIVIA"
+    },
+    {
+      "kind": "LINE_COMMENT",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "DOC_LINE_COMMENT",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "NESTED_BLOCK_COMMENT",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "DOC_BLOCK_COMMENT",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "WORD_COMMENT",
+      "retained_in_lossless_cst": true,
+      "parser_token": false
+    },
+    {
+      "kind": "SHEBANG",
+      "retained_in_lossless_cst": true,
+      "parser_token": false,
+      "admission": "byte offset zero only"
+    }
+  ],
+  "priority_registry": [
+    {
+      "rank": 1,
+      "id": "ACTIVE_MODE_CLOSER_OR_ESCAPE",
+      "examples": [
+        "INTERPOLATION_CLOSE",
+        "STRING_END",
+        "STRING_ESCAPE"
+      ]
+    },
+    {
+      "rank": 2,
+
+      "id": "FILE_START_SHEBANG",
+      "examples": [
+        "#! at byte offset zero"
+      ]
+    },
+    {
+      "rank": 3,
+      "id": "COMMENT_OR_DOC_COMMENT",
+      "examples": [
+        "//",
+        "//!",
+        "//--",
+        "//!!"
+      ]
+    },
+    {
+      "rank": 4,
+      "id": "PREFIX_LITERAL_INTRODUCER",
+      "examples": [
+        "#raw\"",
+        "#bytes\"",
+        "\"\"\"",
+        "\""
+      ]
+    },
+    {
+      "rank": 5,
+      "id": "GOAL_SPECIFIC_TRANSACTIONAL_COMPOUND",
+      "examples": [
+        "RATIONAL_LITERAL at expression prefix"
+      ]
+    },
+    {
+      "rank": 6,
+      "id": "MAXIMAL_NUMERIC_TOKEN",
+      "examples": [
+        "IMAGINARY_LITERAL",
+        "FLOAT_LITERAL",
+        "INTEGER_LITERAL"
+      ]
+    },
+    {
+      "rank": 7,
+      "id": "IDENTIFIER_THEN_HARD_KEYWORD_CLASSIFICATION",
+      "examples": [
+        "IDENTIFIER",
+        "KW_CLASS"
+      ]
+    },
+    {
+      "rank": 8,
+      "id": "LONGEST_FIXED_GLYPH",
+      "examples": [
+        "*** before ** before *",
+        "..< before .. before .",
+        ":~ before :"
+      ]
+    },
+    {
+      "rank": 9,
+      "id": "INVALID_SCALAR_ERROR_TOKEN",
+      "examples": [
+        "ERROR_TOKEN"
+      ]
+    }
+  ],
+  "contextual_word_law": {
+    "hard_keyword_count": 29,
+    "contextual_word_count": 105,
+    "hard_words_emit_dedicated_kind": true,
+    "contextual_words_emit_identifier": true,
+    "owner_exact_identifier_lexemes_emit_identifier": true,
+    "array_and_case_are_ordinary_identifiers": true,
+    "type_information_participates": false
+  },
+  "token_transaction": {
+    "request_key": "(checkpoint_id, lexical_goal)",
+    "checkpoint_fields": [
+      "source_byte_offset",
+      "unicode_scalar_cursor",
+      "scanner_mode_stack",
+      "delimiter_and_interpolation_stack",
+      "trivia_cursor",
+      "next_token_serial"
+    ],
+    "probe_result_domain": [
+      "NO_MATCH",
+      "TENTATIVE_TOKEN",
+      "TENTATIVE_ERROR_TOKEN"
+    ],
+    "probe_mutates_scanner_state": false,
+    "commit_requires_exact_checkpoint_identity": true,
+    "commit_advances_once": true,
+    "rollback_restores": "byte-identical checkpoint state",
+    "failed_probe_source_byte_consumption": 0,
+    "failed_probe_token_consumption": 0,
+    "failed_probe_diagnostic_count": 0,
+    "stale_checkpoint_commit": "REJECT",
+    "nested_probe_order": "LIFO"
+  },
+  "rational_probe": {
+    "enabled_goals": [
+      "EXPRESSION_PREFIX",
+      "INTERPOLATION_EXPRESSION_PREFIX"
+    ],
+    "disabled_goals": [
+      "NORMAL",
+      "EXPRESSION_CONTINUATION",
+      "TYPE",
+      "UNIT",
+      "PATTERN",
+      "STRING_PART",
+      "INTERPOLATION_EXPRESSION_CONTINUATION",
+      "MULTILINE_ATOMIC"
+    ],
+    "exact_token_shape": "<UnsignedDecimalMagnitude/UnsignedDecimalMagnitude>",
+    "success": "TENTATIVE_TOKEN(RATIONAL_LITERAL) then parser commit",
+    "denominator_zero": "successful RATIONAL_LITERAL token then checker RATIONAL_LITERAL_DENOMINATOR_ZERO",
+    "no_match": "NO_MATCH then ordinary tokenization from the unchanged checkpoint",
+    "committed_malformed_stem": "TENTATIVE_ERROR_TOKEN with one exact rational lexical diagnostic; no valid prefix token is emitted",
+    "malformed_commit_threshold": "expression-prefix '<' followed by a rational-only stem such as decimal magnitude plus slash, or a closed angle candidate with forbidden sign/radix/suffix/trivia",
+    "outside_prefix": "ordinary LESS, numeric, SLASH, numeric, GREATER tokens as owner context permits",
+    "type_goal": "Rational compound probing disabled; generic angle ownership remains TYPE",
+    "cst_success": "RationalLiteralCst retains raw spelling and component spans",
+    "ast_success": "RationalLiteralExpr",
+    "failed_probe_cst_count": 0,
+    "failed_probe_ast_count": 0
+  },
+  "mode_transition_registry": [
+    {
+      "from": "NORMAL",
+      "trigger": "ordinary interpolated string opener",
+      "to": "STRING",
+      "emits": "STRING_START"
+    },
+    {
+      "from": "STRING",
+      "trigger": "${",
+      "to": "INTERPOLATION_CODE",
+      "emits": "INTERPOLATION_OPEN",
+      "pushes_delimiter_frame": true
+    },
+    {
+      "from": "INTERPOLATION_CODE",
+      "trigger": "matching }",
+      "to": "STRING",
+      "emits": "INTERPOLATION_CLOSE",
+      "pops_delimiter_frame": true
+    },
+    {
+      "from": "STRING",
+      "trigger": "closing quote",
+      "to": "NORMAL",
+      "emits": "STRING_END"
+    },
+    {
+      "from": "NORMAL",
+      "trigger": "#raw\"",
+      "to": "RAW_STRING",
+      "emits_on_close": "RAW_STRING_LITERAL"
+    },
+    {
+      "from": "NORMAL",
+      "trigger": "#bytes\"",
+      "to": "BYTES",
+      "emits_on_close": "BYTES_LITERAL"
+    },
+    {
+      "from": "NORMAL",
+      "trigger": "\"\"\" newline",
+      "to": "MULTILINE_STRING",
+      "emits_on_close": "MULTILINE_STRING_LITERAL",
+      "status": "CURRENT_ATOMIC_PENDING_R18"
+    }
+  ],
+  "totality_law": {
+    "every_current_parser_terminal_has_registry_row": true,
+    "every_parser_visible_atomic_token_has_registry_row": true,
+    "every_lexical_goal_has_mode_and_rational_policy": true,
+    "every_overlap_family_has_unique_priority_rank": true,
+    "unknown_goal": "REJECT_BEFORE_SCANNING",
+    "unknown_token_kind": "REJECT_BEFORE_PARSER_DISPATCH"
+  },
+  "downstream_fences": {
+    "IR-FE-P1-033": "shorthand interpolation states remain unresolved and must consume this transaction API",
+    "IR-FE-P0-030": "MULTILINE_STRING_LITERAL remains current atomic token; ordered part-token payload is not decided here",
+    "IR-FE-P1-035": "final diagnostic wording/span/fix-it identities are not invented here"
+  },
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_scanner_execution": "NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

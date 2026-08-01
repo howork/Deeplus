@@ -1,0 +1,73 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "PrimaryCtorPromotedFieldReachable",
+    "source_name": "PrimaryCtorPromotedFieldReachable",
+    "summary": "Primary constructor grammar route reaches PromotedFieldDecl including +let/-let/#let/#var visibility.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "primary_ctor_promoted_field_visibility_sigil_msp",
+      "r49_primary_constructor_grammar_closure"
+    ],
+    "diagnostic_refs": [
+      "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE"
+    ],
+    "design_seed_diagnostic_refs": [
+      "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-PrimaryCtorPromotedFieldReachable",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "RCTSDescriptorV5 fields required by the referenced feature laws"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record PrimaryCtorPromotedFieldReachable requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-PrimaryCtorPromotedFieldReachable-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-PrimaryCtorPromotedFieldReachable-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "81e4a9317e67d2c92d168a7bedd294388318b52231df11d311a46f8a9d13f805",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  }
+]

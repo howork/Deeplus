@@ -29,12 +29,27 @@ Language-design maturity is separate from product support. `STABLE_DESIGN` means
 
 Deeplus distinguishes library, executable, and script roots. Every selected root must consume the scanner's end-of-input token. A parser must not accept a valid prefix while ignoring trailing tokens.
 
+`source_role` is the closed three-valued identity `library | executable | script`.
+The manifest or the single-file external carrier fixes it before parsing. The
+separate carrier `activation_profile` is exactly `stable | preview`; `stable`
+normalizes in HIR to `CURRENT`, while `preview` normalizes to
+`EXPLICIT_PREVIEW`. Their Cartesian product selects exactly one of the six
+Stable/Preview role roots. An implementation must not invent
+`preview_library`, `preview_executable`, or `preview_script` roles and must not
+infer either axis by trying roots.
+
 - A library source contains declarations and no implicit top-level execution.
 - An executable source identifies exactly one eligible `def#entry` or `def#entry#async` after target configuration.
 - A script source may contain top-level executable statements under the script root contract.
 - Package and Module identities are static but distinct. A Package is the unit of distribution, dependency resolution, build configuration, and artifact provenance. A Module is the unit of namespace, visibility, static name resolution, and source composition. Runtime strings become neither identity.
 
 The implementation must preserve source role through CST, AST/HIR, module API digest, and diagnostic reporting. Entry selection is a checker/linker responsibility; source order is not a tie-breaker.
+
+A Stable carrier profile requires the absence of `#preview(...)`. A Preview
+carrier profile requires one valid leading gate (after the optional script
+shebang only). The gate verifies the already selected profile; it changes
+neither source role nor activation profile. Carrier/profile failure commits no
+canonical source-unit AST and no activated feature.
 
 A resolved Module identity is the pair `(PackageId, ModulePath)`. `PackageId`
 comes from the build manifest and resolved dependency graph; Deeplus has no
@@ -1447,6 +1462,16 @@ The exact minimum contracts and negative boundaries are in the tooling/profile c
 
 The following families remain Preview or Preview-design unless their feature row explicitly says otherwise: dynamic/unsafe quarantine scope, FFI, NumericArray elementwise power, owned/inout Facet packaging, async callable/comprehension, dynamic Trait state, local/first-class Witness values, specialization, weak atomics, solver-backed general refinements, effectful/module/class activation, static-once values, and Dyn-RCTS. Fixed operator conformance overloading is Stable only for its exact 13 unary, arithmetic, equality, and ordering roles. Arbitrary custom operators are excluded by the language design rather than treated as Preview.
 
+`spec/features/gates.json` is the exhaustive feature-ID-keyed source-gate
+projection. Gate validation first checks carrier/root and placement, then scans
+IDs left to right for unknown, nonactivatable and duplicate entries, then checks
+the explicitly listed reflexive-transitive explicit-gate dependency closure.
+Only after every check succeeds is the canonical feature set committed once.
+Parser-owned `grammar_routes` and checker-owned `semantic_reference_routes` are
+separate; in particular NumericArray elementwise power uses shared `PrattExpr`
+syntax and checker admission. Any failure leaves zero activated features and
+zero canonical source-unit AST.
+
 # Part IX — Exact Grammar authority and conformance
 
 ## 46. Exact Grammar incorporation
@@ -1520,6 +1545,36 @@ domains below:
 
 The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Source roots must consume EOF, and a parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
 
+The source carrier fixes one role (`library`, `executable`, or `script`) and one
+activation profile (`stable` or `preview`) before scanning or parsing. These two
+axes select exactly one of the six source roots. `stable` normalizes to HIR
+profile `CURRENT`; `preview` normalizes to `EXPLICIT_PREVIEW`. A leading
+`#preview(...)` gate validates the already selected Preview profile and commits
+its dependency closure atomically. It cannot select or rewrite a role, profile,
+or root. A mismatch produces no activated feature and no canonical source-unit
+AST.
+
+The exact 638 Grammar productions are bound by the canonical production-
+disposition registry. Every production has exactly one disposition: lossless
+CST-only, canonical AST node, deterministic normalization, external parser
+entry, or reject-before-AST recovery. The lossless CST preserves every source
+token and trivia occurrence exactly once. Canonical AST contains neither
+missing/unexpected/skipped tokens nor recovery/error nodes.
+
+Pratt dispatch is closed over `EXPRESSION`, `PREDICATE`, `SLICE_INDEX`, `TYPE`,
+`NON_FUNCTION_TYPE`, and `UNIT`. Each goal has its own admitted nud/led/primary
+registry and stop set. `~` and `:~` are structured message-call led parselets at
+binding rank 15, not generic postfix operators. The scanner likewise uses the
+closed complete-token and lexical-goal registries; failed speculative probes
+consume zero bytes and emit zero diagnostics.
+
+Shorthand interpolation uses its closed scanner state machine. Multiline
+strings use one atomic scanner-stream envelope whose payload leaves partition
+the source bytes exactly once. Multiline dedent is the byte longest common
+indentation prefix of nonblank content lines; tab and space are distinct, and
+closer indentation is metadata rather than a dedent input. Embedded token tapes
+are materialized lazily by the parser under the declared lexical goals.
+
 ## 50. AST, HIR, resolver, and checker obligations
 
 AST construction rejects invalid forms. HIR assigns static identities to
@@ -1537,6 +1592,21 @@ The resolver uses typed identities rather than a generic `ScopeId` or
 deterministic traversal of the normalized committed scope/binding tree.
 Absolute paths, spans, timestamps, file order, and recovery nodes are never
 identity inputs.
+
+Parser recovery has two consumers but only one canonical gate. Both
+`STRICT_CANONICAL` and `ANALYSIS_RECOVERY` retain a lossless recovery CST and
+use the same bounded progress and deterministic episode ordering. Recovery
+taint propagates to every containing CST owner. It may be removed only by a new
+parse of changed input; neither a checker nor formatter can clear it. Analysis
+fragments may serve explicitly analysis-only editor APIs, but cannot be
+serialized as canonical AST/HIR, enter module API identity or MIR, or support a
+conformance/product claim.
+
+Statement and match-arm boundaries are selected by the closed contextual
+algorithms in the Frontend Model. An unfinished delimiter or required child
+continues before a newline can terminate an owner. A contextual next-arm probe
+is transactional: failure consumes no token and emits no diagnostic. Every
+selected boundary and arm partition is retained in the parser receipt.
 
 An import binding is keyed exactly by
 `(ResolverScopeId, namespace, local_binding_name)`. Repeating that key is an

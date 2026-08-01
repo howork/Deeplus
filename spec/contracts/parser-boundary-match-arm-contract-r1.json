@@ -1,0 +1,344 @@
+
+{
+  "schema": "deeplus.parser-boundary-match-arm-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251",
+    "grammar_sha256": "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
+  },
+  "gap_id": "IR-FE-P0-029",
+  "dependency": {
+    "gap_id": "IR-FE-P0-028",
+    "status": "APPROVED_NOT_INTEGRATED",
+    "candidate": "audit/implementation-readiness-r12-cst-ast-grammar-normalization/R12_LOCAL_CANDIDATE_FREEZE_CHECKPOINT_R1.json"
+  },
+  "surface_fence": {
+    "new_source_spelling_count": 0,
+    "removed_source_spelling_count": 0,
+    "stable_feature_state_change_count": 0,
+    "preview_feature_state_change_count": 0,
+    "semicolon_is_statement_boundary": true,
+    "comma_is_match_arm_separator": true,
+    "newline_is_contextual_boundary": true,
+    "closing_delimiter_is_statement_boundary": false
+  },
+  "boundary_context": {
+    "identity": "BoundaryContextId(SourceFileId, parser_owner_id, owner_entry_token_index, boundary_kind)",
+    "fields": [
+      "source_file_id",
+      "source_role",
+      "feature_profile",
+      "parser_owner_id",
+      "boundary_kind",
+      "owner_delimiter_depth",
+      "current_delimiter_depth",
+      "lexical_mode",
+      "previous_significant_token_or_null",
+      "next_significant_token_or_eof",
+      "intervening_trivia_range_id",
+      "physical_line_break_count",
+      "owner_parse_state",
+      "pratt_goal_or_null",
+      "pratt_left_node_id_or_null"
+    ],
+    "boundary_kind_domain": [
+      "LINE_BREAK",
+      "STATEMENT_ROOT",
+      "STATEMENT_NESTED"
+    ],
+    "owner_parse_state_domain": [
+      "COMPLETE",
+      "REQUIRES_CHILD",
+      "COMPLETE_WITH_OPTIONAL_CONTINUATION"
+    ],
+    "lexical_mode_requirement": "DEFAULT_OR_COMPLETED_ATOMIC_TOKEN",
+    "delimiter_rule": "a boundary is considered only when current_delimiter_depth equals owner_delimiter_depth"
+  },
+  "line_break_boundary_algorithm": {
+    "result_domain": [
+      "ACCEPT_LINE_BREAK_BOUNDARY",
+      "NO_LINE_BREAK_BOUNDARY"
+    ],
+    "ordered_steps": [
+      {
+        "rank": 1,
+        "when": "lexical_mode is not DEFAULT_OR_COMPLETED_ATOMIC_TOKEN",
+        "result": "NO_LINE_BREAK_BOUNDARY"
+      },
+      {
+        "rank": 2,
+        "when": "current_delimiter_depth differs from owner_delimiter_depth",
+        "result": "NO_LINE_BREAK_BOUNDARY"
+      },
+      {
+        "rank": 3,
+        "when": "physical_line_break_count is at least one in the exact intervening trivia range",
+        "result": "ACCEPT_LINE_BREAK_BOUNDARY"
+      },
+      {
+        "rank": 4,
+        "when": "otherwise",
+        "result": "NO_LINE_BREAK_BOUNDARY"
+      }
+    ],
+    "comment_policy": "a physical newline inside line-comment or block-comment trivia counts; the boundary references but does not duplicate the trivia owner",
+    "semicolon_policy": "semicolon never satisfies LineBreakBoundary",
+    "eof_policy": "EOF never satisfies LineBreakBoundary"
+  },
+  "continuation_classifier": {
+    "identity": "ContinuationDecision(parser_owner_id, pratt_goal_or_null, left_shape_or_null, next_token, delimiter_depth)",
+    "result_domain": [
+      "REQUIRED_CONTINUATION",
+      "ADMITTED_OPTIONAL_CONTINUATION",
+      "NO_CONTINUATION"
+    ],
+    "required_continuation_sources": [
+      "owner_parse_state REQUIRES_CHILD",
+      "a consumed prefix, infix, comma, label, arrow, assignment, opener, or introducer whose registered grammar child is missing"
+    ],
+    "optional_continuation_sources": [
+      "a registered Pratt led/postfix parselet that accepts the current left node and next token",
+      "an owner-specific suffix admitted by the current grammar state"
+    ],
+    "forbidden_heuristics": [
+      "indentation width",
+      "token text not present in the registered parser tables",
+      "formatter preference",
+      "AST expected type",
+      "checker recovery",
+      "source or allocation order"
+    ]
+  },
+  "statement_boundary_algorithm": {
+    "result_domain": [
+      "ACCEPT_EXPLICIT_SEMICOLON",
+      "ACCEPT_CONTEXTUAL_NEWLINE",
+      "ACCEPT_ROOT_EOF",
+      "CONTINUE_CURRENT_OWNER",
+      "REJECT_MISSING_STATEMENT_BOUNDARY",
+      "REJECT_NESTED_EOF",
+      "REJECT_INCOMPLETE_OWNER"
+    ],
+    "ordered_steps": [
+      {
+        "rank": 1,
+        "when": "owner_parse_state is REQUIRES_CHILD",
+        "action": "continue the registered owner; if its required child cannot parse, reject without treating newline or EOF as a boundary",
+        "result": "CONTINUE_CURRENT_OWNER_OR_REJECT_INCOMPLETE_OWNER"
+      },
+      {
+        "rank": 2,
+        "when": "owner_parse_state is complete and a semicolon is the next significant token at owner_delimiter_depth",
+        "action": "consume exactly one semicolon",
+        "result": "ACCEPT_EXPLICIT_SEMICOLON"
+      },
+      {
+        "rank": 3,
+        "when": "a physical newline is present and ContinuationDecision is REQUIRED_CONTINUATION or ADMITTED_OPTIONAL_CONTINUATION",
+        "action": "do not consume a boundary; resume the current owner",
+        "result": "CONTINUE_CURRENT_OWNER"
+      },
+      {
+        "rank": 4,
+        "when": "a physical newline is present, owner_parse_state is complete, and ContinuationDecision is NO_CONTINUATION",
+        "action": "record a virtual statement boundary referencing the exact trivia range",
+        "result": "ACCEPT_CONTEXTUAL_NEWLINE"
+      },
+      {
+        "rank": 5,
+        "when": "next token is EOF and boundary_kind is STATEMENT_ROOT and owner_parse_state is complete",
+        "result": "ACCEPT_ROOT_EOF"
+      },
+      {
+        "rank": 6,
+        "when": "next token is EOF and boundary_kind is STATEMENT_NESTED",
+        "result": "REJECT_NESTED_EOF"
+      },
+      {
+        "rank": 7,
+        "when": "otherwise",
+        "result": "REJECT_MISSING_STATEMENT_BOUNDARY"
+      }
+    ],
+    "empty_statement_count": 0,
+    "multiple_semicolon_policy": "the first semicolon closes the statement; a following semicolon has no empty-statement owner and is rejected",
+    "closing_delimiter_policy": "a closing delimiter does not satisfy StatementBoundary; BlockFinalItem or the owning grammar production must admit the unterminated final form"
+  },
+  "match_arm_context": {
+    "identity": "MatchArmContextId(match_owner_id, arm_sequence_id, mode, close_delimiter)",
+    "fields": [
+      "match_owner_id",
+      "arm_sequence_id",
+      "mode",
+      "owner_delimiter_depth",
+      "close_delimiter",
+      "subject_supply_policy_id",
+      "arm_result_policy"
+    ],
+    "mode_domain": [
+      "STATEMENT_MATCH",
+      "VALUE_MATCH",
+      "CLAUSE_FUNCTION"
+    ],
+    "mode_contracts": {
+      "STATEMENT_MATCH": {
+        "close_delimiter": "}",
+        "arm_result_policy": "STATEMENT_EFFECT_OR_CONTROL_TRANSFER",
+        "direct_expression_result": "discarded after ordinary ExprStmt responsibility checking"
+      },
+      "VALUE_MATCH": {
+        "close_delimiter": "}",
+        "arm_result_policy": "DIRECT_EXPR_OR_LOCAL_RET_BLOCK",
+        "ordinary_return": "parsed for deterministic AT_MATCH_ARM_RETURN_IS_NOT_RESULT checking, never a local arm result"
+      },
+      "CLAUSE_FUNCTION": {
+        "close_delimiter": "}}",
+        "arm_result_policy": "DIRECT_EXPR_OR_NAMED_FUNCTION_CONTROL_TRANSFER",
+        "subject_supply": "ImplicitParent(function parameter subject)"
+      }
+    }
+  },
+  "match_arm_body_algorithm": {
+    "body_kind_domain": [
+      "BRACED_BODY",
+      "CONTROL_TRANSFER_BODY",
+      "DIRECT_EXPRESSION_BODY"
+    ],
+    "ordered_entry_choice": [
+      {
+        "rank": 1,
+        "lookahead": "{",
+        "body_kind": "BRACED_BODY",
+        "law": "the brace immediately after an arm FAT_ARROW belongs to the arm body; a closure value in this position must be parenthesized"
+      },
+      {
+        "rank": 2,
+        "lookahead": "return, throw, break, continue, or yield introducer",
+        "body_kind": "CONTROL_TRANSFER_BODY",
+        "law": "parse one ControlTransfer; the checker applies the mode-specific admission law"
+      },
+      {
+        "rank": 3,
+        "lookahead": "any other admitted expression starter",
+        "body_kind": "DIRECT_EXPRESSION_BODY",
+        "law": "parse one expression under MATCH_ARM_EXPRESSION_GOAL"
+      }
+    ],
+    "braced_body_by_mode": {
+      "STATEMENT_MATCH": "Block",
+      "VALUE_MATCH": "local value block; every normal path produces its result through ret",
+      "CLAUSE_FUNCTION": "function-clause block; direct result and control-transfer laws follow the enclosing named function"
+    },
+    "direct_expression_stop_candidates": [
+      "comma at owner_delimiter_depth",
+      "the exact match close delimiter at owner_delimiter_depth",
+      "physical newline followed by a successful transactional MatchHead GuardClause? FAT_ARROW probe"
+    ],
+    "required_rhs_rule": "a prefix or infix construct requiring a child always continues across newline and cannot yield an arm separator",
+    "open_range_rule": "a completed terminal open-range expression such as a.. may stop at newline when the transactional next-arm probe succeeds",
+    "evaluation_or_type_effect": "none; this is a parse partition only"
+  },
+  "match_arm_separator_algorithm": {
+    "result_domain": [
+      "ACCEPT_COMMA_SEPARATOR",
+      "ACCEPT_CONTEXTUAL_NEWLINE_SEPARATOR",
+      "ACCEPT_MATCH_CLOSE_WITHOUT_SEPARATOR",
+      "CONTINUE_ARM_BODY",
+      "REJECT_MISSING_MATCH_ARM_SEPARATOR",
+      "REJECT_INCOMPLETE_MATCH_ARM_BODY"
+    ],
+    "transactional_next_arm_probe": {
+      "input": "the next significant token after newline at owner_delimiter_depth",
+      "parse": "MatchHead GuardClause? FAT_ARROW under the same feature profile and MatchArmContext",
+      "success": "the probe reaches the arm FAT_ARROW at owner_delimiter_depth",
+      "failure": "consume zero tokens and emit zero diagnostics from the probe",
+      "memoization_key": "(token_index, MatchArmContextId, feature_profile, grammar_digest, boundary_contract_digest)"
+    },
+    "ordered_steps": [
+      {
+        "rank": 1,
+        "when": "arm body has an unclosed delimiter or required child",
+        "result": "CONTINUE_ARM_BODY_OR_REJECT_INCOMPLETE_MATCH_ARM_BODY"
+      },
+      {
+        "rank": 2,
+        "when": "next significant token is comma at owner_delimiter_depth",
+        "action": "consume one comma and any following trivia",
+        "result": "ACCEPT_COMMA_SEPARATOR"
+      },
+      {
+        "rank": 3,
+        "when": "next significant token is the exact match close delimiter and the arm body is complete",
+        "result": "ACCEPT_MATCH_CLOSE_WITHOUT_SEPARATOR"
+      },
+      {
+        "rank": 4,
+        "when": "newline exists and the transactional next-arm probe succeeds",
+        "action": "stop the current body without consuming the probed head",
+        "result": "ACCEPT_CONTEXTUAL_NEWLINE_SEPARATOR"
+      },
+      {
+        "rank": 5,
+        "when": "the current body has an admitted continuation",
+        "result": "CONTINUE_ARM_BODY"
+      },
+      {
+        "rank": 6,
+        "when": "otherwise",
+        "result": "REJECT_MISSING_MATCH_ARM_SEPARATOR"
+      }
+    ],
+    "semicolon_policy": "semicolon is not a match-arm separator",
+    "blank_line_policy": "one or more physical line breaks form one contextual separator",
+    "comment_policy": "comments remain exact trivia; a newline inside comment trivia participates in the same probe",
+    "trailing_separator_policy": "one comma or one contextual newline may precede the close delimiter; no empty arm is created"
+  },
+  "parse_receipt": {
+    "required_fields": [
+      "source_file_id",
+      "input_sha256",
+      "grammar_sha256",
+      "r12_disposition_registry_sha256",
+      "r13_boundary_contract_sha256",
+      "feature_profile",
+      "source_role",
+      "boundary_decisions_in_source_order",
+      "match_arm_partitions_in_source_order",
+      "diagnostic_reason_codes_in_order",
+      "cst_root_id_or_null",
+      "ast_root_id_or_null"
+    ],
+    "decision_record_fields": [
+      "BoundaryContextId_or_MatchArmContextId",
+      "token_index_before",
+      "token_index_after",
+      "selected_rank",
+      "result",
+      "trivia_range_id_or_null",
+      "continuation_decision_or_null",
+      "probe_result_or_null"
+    ]
+  },
+  "reason_codes": [
+    "REJECT_MISSING_STATEMENT_BOUNDARY",
+    "REJECT_NESTED_EOF",
+    "REJECT_INCOMPLETE_OWNER",
+    "REJECT_MISSING_MATCH_ARM_SEPARATOR",
+    "REJECT_INCOMPLETE_MATCH_ARM_BODY"
+  ],
+  "diagnostic_authority_fence": "reason codes are exact parser oracles; final primary diagnostic registry binding remains in IR-FE-P1-035",
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

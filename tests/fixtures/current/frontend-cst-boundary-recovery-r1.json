@@ -1,0 +1,421 @@
+
+{
+  "schema": "deeplus.frontend-cst-boundary-recovery-fixtures/r1",
+  "status": "CURRENT_DESIGN_ACCEPTANCE_SPECIFICATION",
+  "contract": "spec/contracts/frontend-cst-boundary-recovery-contract.json",
+  "suites": {
+    "r12": {
+      "gap_id": "IR-FE-P0-028",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-01-P",
+          "category": "positive",
+          "fixture": "an admitted class conforms declaration with an attached conform block",
+          "oracle": "ACCEPT_EXACT_SCHEMA",
+          "required_evidence": "executed parser receipt binds input, profile, Grammar digest, registry digest, CST root and exact AST kinds"
+        },
+        {
+          "id": "IR-R3-GAP-01-B",
+          "category": "boundary",
+          "fixture": "rightward local binding and ordinary local binding retain distinct CST spellings but normalize to AST/LocalBindingStmt",
+          "oracle": "ACCEPT_EQUAL_AST_DISTINCT_CST",
+          "required_evidence": "two parser receipts plus AST equivalence and CST inequality"
+        },
+        {
+          "id": "IR-R3-GAP-01-N",
+          "category": "negative",
+          "fixture": "an incomplete expression creates lossless recovery CST data",
+          "oracle": "REJECT_INVALID_TREE_BEFORE_HIR",
+          "required_evidence": "AST root null for the invalid semantic subtree and HIR count zero"
+        },
+        {
+          "id": "R12-TOTAL-638",
+          "category": "static_positive",
+          "fixture": "exact canonical Grammar snapshot",
+          "oracle": "638 unique production rows and exactly one disposition per production",
+          "required_evidence": "focused registry validator"
+        },
+        {
+          "id": "R12-EXTERNAL-40",
+          "category": "static_positive",
+          "fixture": "all symbolic references without EBNF bodies",
+          "oracle": "40 unique symbols, each bound to exactly one external owner",
+          "required_evidence": "focused registry validator"
+        },
+        {
+          "id": "R12-PROFILE-FENCE",
+          "category": "boundary",
+          "fixture": "current Deeplus root and DeeplusPreview root",
+          "oracle": "Stable and Preview ownership remain separated; feature maturity is unchanged",
+          "required_evidence": "profile and reachability registry validation"
+        },
+        {
+          "id": "R12-NORMALIZE-10",
+          "category": "static_positive",
+          "fixture": "the ten admitted source-sugar production families",
+          "oracle": "each has one exact normalization rule and exactly one AST target",
+          "required_evidence": "focused registry validator"
+        },
+        {
+          "id": "R12-MUTATION-MISSING-ROW",
+          "category": "mutation",
+          "fixture": "remove one production-disposition row",
+          "oracle": "FRONTEND_GRAMMAR_DISPOSITION_MISSING",
+          "required_evidence": "focused validator rejects the mutation"
+        },
+        {
+          "id": "R12-MUTATION-DUPLICATE-ROW",
+          "category": "mutation",
+          "fixture": "duplicate one production-disposition row",
+          "oracle": "FRONTEND_GRAMMAR_DISPOSITION_MULTIPLE",
+          "required_evidence": "focused validator rejects the mutation"
+        },
+        {
+          "id": "R12-MUTATION-UNBOUND-EXTERNAL",
+          "category": "mutation",
+          "fixture": "remove one external-symbol owner contract",
+          "oracle": "FRONTEND_EXTERNAL_SYMBOL_UNBOUND",
+          "required_evidence": "focused validator rejects the mutation"
+        },
+        {
+          "id": "R12-MUTATION-RECOVERY-AST",
+          "category": "mutation",
+          "fixture": "give one recovery kind a nonzero AST cardinality",
+          "oracle": "FRONTEND_CST_RECOVERY_REACHED_AST",
+          "required_evidence": "focused validator rejects the mutation"
+        },
+        {
+          "id": "R12-MUTATION-NORMALIZE-TARGET",
+          "category": "mutation",
+          "fixture": "change RightwardLocalBindingSurface away from AST/LocalBindingStmt",
+          "oracle": "FRONTEND_AST_NORMALIZATION_RECEIPT_MISSING",
+          "required_evidence": "focused validator rejects the mutation"
+        },
+        {
+          "id": "R12-RECEIPT-DIGEST-MISMATCH",
+          "category": "negative",
+          "fixture": "parser receipt names a different Grammar or registry digest",
+          "oracle": "FRONTEND_PARSER_RECEIPT_VERSION_MISMATCH",
+          "required_evidence": "future executed parser receipt verifier"
+        },
+        {
+          "id": "R12-PRODUCT-EVIDENCE-FENCE",
+          "category": "boundary",
+          "fixture": "design-static registry validation succeeds without a Rust frontend execution",
+          "oracle": "all 15 product lanes remain NOT_RUN",
+          "required_evidence": "candidate status fence"
+        }
+      ],
+      "counts": {
+        "total": 14,
+        "positive_or_static_positive": 4,
+        "boundary": 3,
+        "negative": 2,
+        "mutation": 5
+      }
+    },
+    "r13": {
+      "gap_id": "IR-FE-P0-029",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-02-P",
+          "category": "positive",
+          "fixture": "let first = 1\\nlet second = 2",
+          "oracle": "ACCEPT_TWO_STATEMENTS",
+          "decision_trace": [
+            "owner complete",
+            "one physical newline",
+            "NO_CONTINUATION",
+            "ACCEPT_CONTEXTUAL_NEWLINE"
+          ]
+        },
+        {
+          "id": "IR-R3-GAP-02-B",
+          "category": "boundary",
+          "fixture": "@match value {\\n ::some(x) => { audit(x); ret x }\\n ::none => 0\\n}",
+          "oracle": "ACCEPT_CONTEXTUAL_ARM_BOUNDARY",
+          "decision_trace": [
+            "VALUE_MATCH",
+            "BRACED_BODY",
+            "transactional next-arm probe succeeds",
+            "ACCEPT_CONTEXTUAL_NEWLINE_SEPARATOR"
+          ]
+        },
+        {
+          "id": "IR-R3-GAP-02-N",
+          "category": "negative",
+          "fixture": "let first = 1 let second = 2",
+          "oracle": "REJECT_MISSING_STATEMENT_BOUNDARY",
+          "decision_trace": [
+            "no semicolon",
+            "no newline",
+            "not root EOF",
+            "REJECT_MISSING_STATEMENT_BOUNDARY"
+          ]
+        },
+        {
+          "id": "R13-STMT-SEMICOLON",
+          "category": "positive",
+          "fixture": "consume(first); consume(second)",
+          "oracle": "ACCEPT_EXPLICIT_SEMICOLON"
+        },
+        {
+          "id": "R13-STMT-ROOT-EOF",
+          "category": "boundary",
+          "fixture": "a completed root statement immediately followed by EOF",
+          "oracle": "ACCEPT_ROOT_EOF"
+        },
+        {
+          "id": "R13-STMT-NESTED-EOF",
+          "category": "negative",
+          "fixture": "an unterminated nested block reaches EOF",
+          "oracle": "REJECT_NESTED_EOF"
+        },
+        {
+          "id": "R13-STMT-REQUIRED-CONTINUATION",
+          "category": "boundary",
+          "fixture": "let total = first +\\n second",
+          "oracle": "CONTINUE_CURRENT_OWNER"
+        },
+        {
+          "id": "R13-STMT-POSTFIX-CONTINUATION",
+          "category": "boundary",
+          "fixture": "service\\n .status",
+          "oracle": "CONTINUE_CURRENT_OWNER"
+        },
+        {
+          "id": "R13-STMT-CLOSE-NOT-BOUNDARY",
+          "category": "negative",
+          "fixture": "a nested statement requiring StatementBoundary is followed immediately by }",
+          "oracle": "REJECT_MISSING_STATEMENT_BOUNDARY"
+        },
+        {
+          "id": "R13-ARM-COMMA",
+          "category": "positive",
+          "fixture": "@match value { ::a => 1, ::b => 2 }",
+          "oracle": "ACCEPT_COMMA_SEPARATOR"
+        },
+        {
+          "id": "R13-ARM-OPEN-RANGE",
+          "category": "boundary",
+          "fixture": "def choose(x: Input) -> Range<Int> = {{ p => a..\\n Q::ready => r }}",
+          "oracle": "ACCEPT_OPEN_RANGE_THEN_QUALIFIED_NEXT_ARM"
+        },
+        {
+          "id": "R13-ARM-REQUIRED-RHS",
+          "category": "negative",
+          "fixture": "@match value { ::a => left +\\n ::b => right }",
+          "oracle": "REJECT_INCOMPLETE_MATCH_ARM_BODY"
+        },
+        {
+          "id": "R13-ARM-SAME-LINE-MISSING",
+          "category": "negative",
+          "fixture": "@match value { ::a => 1 ::b => 2 }",
+          "oracle": "REJECT_MISSING_MATCH_ARM_SEPARATOR"
+        },
+        {
+          "id": "R13-ARM-SEMICOLON-NOT-SEPARATOR",
+          "category": "negative",
+          "fixture": "@match value { ::a => 1; ::b => 2 }",
+          "oracle": "REJECT_MISSING_MATCH_ARM_SEPARATOR"
+        },
+        {
+          "id": "R13-ARM-COMMENT-NEWLINE",
+          "category": "boundary",
+          "fixture": "@match value { ::a => 1 // first\\n ::b => 2 }",
+          "oracle": "ACCEPT_CONTEXTUAL_NEWLINE_SEPARATOR"
+        },
+        {
+          "id": "R13-ARM-BRACE-OWNERSHIP",
+          "category": "boundary",
+          "fixture": "@match value { ::a => { ret 1 } }",
+          "oracle": "BRACED_BODY",
+          "note": "a direct closure-valued arm parenthesizes the closure so the brace after FAT_ARROW remains unambiguous"
+        },
+        {
+          "id": "R13-MUTATION-EOF-NESTED",
+          "category": "mutation",
+          "fixture": "change STATEMENT_NESTED to accept EOF",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R13-MUTATION-CLOSE-BOUNDARY",
+          "category": "mutation",
+          "fixture": "change } to satisfy StatementBoundary",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R13-MUTATION-ARM-SEMICOLON",
+          "category": "mutation",
+          "fixture": "add semicolon to MatchArmSeparator",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R13-MUTATION-OPEN-RANGE-PRECEDENCE",
+          "category": "mutation",
+          "fixture": "force open range to consume the probed next MatchHead as its endpoint",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R13-MUTATION-PROBE-CONSUMES",
+          "category": "mutation",
+          "fixture": "failed transactional next-arm probe consumes one token or emits a diagnostic",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R13-PRODUCT-EVIDENCE-FENCE",
+          "category": "boundary",
+          "fixture": "design-static contract validation succeeds without a Rust parser execution",
+          "oracle": "15_OF_15_NOT_RUN"
+        }
+      ],
+      "counts": {
+        "total": 22,
+        "positive": 3,
+        "boundary": 8,
+        "negative": 6,
+        "mutation": 5
+      }
+    },
+    "r14": {
+      "gap_id": "IR-FE-P1-034",
+      "tests": [
+        {
+          "id": "IR-R3-GAP-07-P",
+          "category": "positive",
+          "fixture": "a valid source file parses with zero recovery episodes",
+          "oracle": "ACCEPT_CANONICAL_AST"
+        },
+        {
+          "id": "IR-R3-GAP-07-B",
+          "category": "boundary",
+          "fixture": "one missing ) is inserted because lookahead is in the exact follow set",
+          "oracle": "ACCEPT_ANALYSIS_ONLY_RECOVERY_TREE"
+        },
+        {
+          "id": "IR-R3-GAP-07-N",
+          "category": "negative",
+          "fixture": "a recovered error node is presented to CanonicalAstSeal or CanonicalHirH1 sealing",
+          "oracle": "REJECT_RECOVERY_NODE_ESCAPE"
+        },
+        {
+          "id": "R14-STRICT-VALID",
+          "category": "positive",
+          "fixture": "STRICT_CANONICAL parses valid input",
+          "oracle": "ZERO_TAINT_AST_ROOT_NON_NULL"
+        },
+        {
+          "id": "R14-ANALYSIS-SIBLING",
+          "category": "positive",
+          "fixture": "one invalid subtree has a recovery-free sibling",
+          "oracle": "SIBLING_ANALYSIS_FRAGMENT_AVAILABLE_NO_CANONICAL_ROOT"
+        },
+        {
+          "id": "R14-DELETE-ONE",
+          "category": "boundary",
+          "fixture": "one unexpected token precedes a token accepted by the unchanged parser state",
+          "oracle": "DELETE_ONE_UNEXPECTED_TOKEN"
+        },
+        {
+          "id": "R14-SKIP-TO-SYNC",
+          "category": "boundary",
+          "fixture": "neither exact parse, insert, nor one-token delete is admitted before a BlockItem sync token",
+          "oracle": "SKIP_NONEMPTY_TO_CONTEXT_SYNC"
+        },
+        {
+          "id": "R14-INSERT-PROGRESS",
+          "category": "boundary",
+          "fixture": "one structural closer insertion advances the parser state without consuming input",
+          "oracle": "INSERT_ONCE_AND_ADVANCE_STATE"
+        },
+        {
+          "id": "R14-BUDGET-EXHAUSTION",
+          "category": "boundary",
+          "fixture": "owner recovery episode count reaches 16",
+          "oracle": "TERMINATE_OWNER_AND_UNWIND"
+        },
+        {
+          "id": "R14-MATCH-ARM-SYNC",
+          "category": "boundary",
+          "fixture": "invalid arm body synchronizes at an R13 contextual next-arm boundary",
+          "oracle": "SYNC_WITHOUT_CONSUMING_NEXT_MATCH_HEAD"
+        },
+        {
+          "id": "R14-NO-SEMANTIC-INSERT",
+          "category": "negative",
+          "fixture": "a missing expression, identifier, literal, type, or pattern is proposed for insertion",
+          "oracle": "SEMANTIC_INSERT_FORBIDDEN"
+        },
+        {
+          "id": "R14-FORMAT-TAINTED-ROOT",
+          "category": "negative",
+          "fixture": "whole-file canonical format is requested for a tainted CST root",
+          "oracle": "CANONICAL_FORMAT_REQUIRES_EMPTY_TAINT"
+        },
+        {
+          "id": "R14-PROBE-NO-DIAGNOSTIC",
+          "category": "negative",
+          "fixture": "a failed R13 transactional next-arm probe attempts to emit a recovery diagnostic",
+          "oracle": "FAILED_PROBE_DIAGNOSTIC_FORBIDDEN"
+        },
+        {
+          "id": "R14-ANALYSIS-HIR-EXPORT",
+          "category": "negative",
+          "fixture": "RecoveredAnalysisAst is serialized as canonical HIR or module API residue",
+          "oracle": "REJECT_RECOVERY_NODE_ESCAPE"
+        },
+        {
+          "id": "R14-MUTATION-INSERT-IDENTIFIER",
+          "category": "mutation",
+          "fixture": "add identifier to insert_safe_tokens",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R14-MUTATION-REPEAT-INSERT",
+          "category": "mutation",
+          "fixture": "allow repeated insertion at the same parser state and token index",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R14-MUTATION-ZERO-SKIP",
+          "category": "mutation",
+          "fixture": "allow SKIP_NONEMPTY_TO_CONTEXT_SYNC to consume zero tokens",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R14-MUTATION-CANONICAL-TAINT",
+          "category": "mutation",
+          "fixture": "allow nonempty RecoveryTaint at CanonicalAstSeal",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R14-MUTATION-PROBE-DIAGNOSTIC",
+          "category": "mutation",
+          "fixture": "allow a failed next-arm probe to emit one diagnostic",
+          "oracle": "MUTATION_REJECTED"
+        },
+        {
+          "id": "R14-MUTATION-ANALYSIS-MIR",
+          "category": "mutation",
+          "fixture": "allow RecoveredAnalysisAst to produce MIR residue",
+          "oracle": "MUTATION_REJECTED"
+        }
+      ],
+      "counts": {
+        "total": 20,
+        "positive": 3,
+        "boundary": 6,
+        "negative": 5,
+        "mutation": 6
+      }
+    }
+  },
+  "execution": {
+    "design_static_projection": "PASS",
+    "production_parser": "NOT_RUN",
+    "checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_backend": "NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

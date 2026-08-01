@@ -1,0 +1,288 @@
+{
+  "schema": "deeplus.construction-cleanup-state/r1",
+  "revision": "R11-INTEGRATED-R1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "branch": "main",
+  "baseline_commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+  "baseline_tree": "f6f256eaf73b67337c0d09535fe09c806c959251",
+  "gap_id": "IR-OWN-P0-016",
+  "dependencies": {
+    "IR-OWN-P0-013": "VERIFIED_CLOSED",
+    "IR-OWN-P0-015": "VERIFIED_CLOSED"
+  },
+  "source_surface": {
+    "new_surface_count": 0,
+    "grammar_change_required": false,
+    "preserved": [
+      "def! name(...)",
+      "Type!(...)",
+      "Type!name(...)",
+      ": name(...)",
+      ": super!name?(...)",
+      "def#cleanup()"
+    ]
+  },
+  "identity_domains": [
+    {"id": "ConstructorDeclId", "kind": "STATIC", "law": "selected def! declaration identity"},
+    {"id": "ConstructionPlanId", "kind": "STATIC", "law": "one normalized lifecycle plan per constructor path"},
+    {"id": "FieldSlotId", "kind": "STATIC", "law": "declaring ClassId plus canonical name, normalized type, responsibility, and layout epoch; distinct from ClassSlotId and CLOSED_ROW_FIELD_ID"},
+    {"id": "BaseSegmentId", "kind": "STATIC", "law": "one superclass storage segment in the exact inheritance chain"},
+    {"id": "ConstructionDiagnosticSiteId", "kind": "STATIC", "law": "stable source and checker site for construction diagnostics"},
+    {"id": "ConstructionSessionId", "kind": "DYNAMIC", "law": "one external construction attempt; same-type delegation reuses it"},
+    {"id": "ObjectOwnerId", "kind": "DYNAMIC_EXISTING_OWNER_SPECIALIZATION", "law": "provisional OwnerId for the allocated object until commit"},
+    {"id": "ConstructionTokenId", "kind": "DYNAMIC_LINEAR", "law": "nominal-lifecycle specialization of MIR BUILDER; consumed exactly once by commit or abort"},
+    {"id": "CleanupTokenId", "kind": "DYNAMIC_EXISTING", "law": "one owner-bound token for each live cleanup-bearing ownership unit"}
+  ],
+  "session_state_machine": {
+    "normal_phases": [
+      "ALLOCATED",
+      "PRE_DELEGATION",
+      "BASE_INITIALIZING",
+      "BASE_INITIALIZED",
+      "STORAGE_INITIALIZING",
+      "POST_INIT",
+      "COMMIT_READY",
+      "LIVE"
+    ],
+    "failure_phases": ["ABORTING", "FAILED_UNPUBLISHED"],
+    "commit_transition": {"from": "COMMIT_READY", "to": "LIVE", "token_consumed": "ConstructionTokenId", "publication_delta": 1},
+    "abort_transition": {"from": "ANY_PRE_LIVE_PHASE", "to": "ABORTING", "terminal": "FAILED_UNPUBLISHED", "token_consumed": "ConstructionTokenId", "publication_delta": 0},
+    "retry_count": 0,
+    "resurrection_count": 0,
+    "rollback_from_live_count": 0
+  },
+  "field_slot_state": {
+    "states": ["Uninitialized", "Live", "Moved", "MaybeMoved"],
+    "initializer_evaluation": "destination remains Uninitialized while the expression evaluates in a separate temporary",
+    "atomic_commit": "after all checks, commit the complete required slot subtree to Live and transfer its owners and tokens",
+    "let_second_initialization": "REJECT",
+    "var_first_assignment": "FIELD_INIT_COMMIT",
+    "var_later_assignment": "WRITE_OR_REPLACE_LIVE",
+    "commit_admitted_states": ["Live"],
+    "commit_rejected_states": ["Uninitialized", "Moved", "MaybeMoved"],
+    "optional_omission": "REQUIRES_EXPLICIT_OR_DEFAULT_NONE_INITIALIZATION"
+  },
+  "delegation": {
+    "same_type": {
+      "session_delta": 0,
+      "allocation_delta": 0,
+      "object_owner_delta": 0,
+      "construction_token_delta": 0,
+      "target_result": "PREPARED_NOT_PUBLISHED",
+      "delegating_body_phase": "POST_INIT",
+      "delegating_body_stored_field_initialization": "REJECT",
+      "outer_external_entry_is_sole_commit_owner": true
+    },
+    "superclass": {
+      "canonical_order": "BASE_BEFORE_CURRENT_CLASS_STORAGE",
+      "completed_segment_state": "CommittedPrepublication",
+      "derived_failure_order": ["CURRENT_CLASS_FIELDS_REVERSE_ACQUISITION", "COMMITTED_BASE_SEGMENT_RECURSIVE_CLEANUP"],
+      "failed_uncommitted_segment_whole_hook_count": 0
+    }
+  },
+  "prepublication_self": {
+    "internal_capability": "PrepublicationSelf(ConstructionSessionId,InitMask)",
+    "surface_type_count": 0,
+    "admitted_operations": [
+      "INITIALIZE_CURRENT_CLASS_UNINITIALIZED_FIELD",
+      "READ_FULLY_LIVE_FIELD_PROJECTION",
+      "WRITE_OR_REPLACE_LIVE_VAR_FIELD",
+      "SELECTED_HEADER_DELEGATION",
+      "NONESCAPING_DIRECT_HELPER_AFTER_REQUIRED_MASK_LIVE",
+      "PURE_TOTAL_POST_INIT_GUARD_AFTER_REQUIRED_MASK_LIVE"
+    ],
+    "forbidden_operations": [
+      "RETURN_SELF",
+      "STORE_SELF",
+      "PACKAGE_SELF",
+      "CAPTURE_SELF",
+      "ESCAPING_BORROW_SELF",
+      "SEND_SELF",
+      "DYNAMIC_DISPATCH_SELF",
+      "WITNESS_DISPATCH_SELF",
+      "EXTENSION_DISPATCH_SELF",
+      "ACTOR_MESSAGE_SELF",
+      "FFI_TRANSFER_SELF",
+      "ASYNC_OR_GENERATOR_SELF",
+      "UNKNOWN_DISPATCH_SELF",
+      "READ_NONLIVE_FIELD",
+      "DELEGATION_GUARD_OBSERVES_SELF"
+    ],
+    "self_escape_count_before_commit": 0
+  },
+  "field_initialization_commit": {
+    "operation": "FIELD_INIT_COMMIT",
+    "preconditions": [
+      "destination required subtree is wholly Uninitialized",
+      "expression result type equals normalized field type",
+      "ownership, loan, isolation, effect, error, and token checks pass",
+      "one ownership binding exists for each ownership unit",
+      "no owner or token identity is duplicated"
+    ],
+    "postconditions": [
+      "complete required subtree is Live",
+      "owners and cleanup tokens are held through the construction session",
+      "acquisition ledger appends each transferred cleanup token once",
+      "source temporary is discharged or Moved"
+    ],
+    "partial_publication_count": 0
+  },
+  "object_commit": {
+    "operation": "OBJECT_CONSTRUCTION_COMMIT",
+    "preconditions": [
+      "all required fields in all segments are Live",
+      "no required mask row is Moved or MaybeMoved",
+      "delegation has exactly one root and required superclass path",
+      "post-init guards and contracts succeeded",
+      "each live cleanup-bearing unit has exactly one available CleanupTokenId",
+      "every temporary token is discharged or transferred",
+      "self_escape_count equals zero",
+      "publication_count equals zero"
+    ],
+    "atomic_effects": [
+      "transfer construction-held live owners and tokens to ObjectOwnerId",
+      "seal normal cleanup plan",
+      "publish exactly one Self value",
+      "set publication_count to one",
+      "consume ConstructionTokenId"
+    ],
+    "publication_count_after": 1
+  },
+  "construction_abort": {
+    "operation": "OBJECT_CONSTRUCTION_ABORT",
+    "ordered_steps": [
+      "CONSUME_CONSTRUCTION_TOKEN",
+      "PRESERVE_TRIGGERING_OUTCOME_AS_PRIMARY",
+      "CURRENT_CLASS_LIVE_FIELDS_REVERSE_ACQUISITION",
+      "COMMITTED_BASE_SEGMENTS_RECURSIVE",
+      "APPEND_CLEANUP_FAILURES_AS_SUPPRESSED",
+      "RETIRE_SESSION_OWNERS_AND_TOKENS",
+      "ENTER_FAILED_UNPUBLISHED"
+    ],
+    "most_derived_whole_cleanup_hook_count": 0,
+    "uninitialized_slot_cleanup_count": 0,
+    "moved_slot_cleanup_count": 0,
+    "publication_count_after": 0,
+    "terminal_owner_balance": 0,
+    "terminal_available_token_balance": 0
+  },
+  "admitted_move_interaction": {
+    "owner_transfer_before_source_state_change": true,
+    "cleanup_token_transfer_before_source_state_change": true,
+    "source_state_after": "Moved",
+    "later_source_cleanup_count": 0,
+    "current_partial_move_surface_widened": false,
+    "resource_partial_move_current_status": "REJECT_UNCHANGED"
+  },
+  "live_object_cleanup": {
+    "ordered_steps": [
+      "CONSUME_WHOLE_OBJECT_CLEANUP_ONCE_GUARD",
+      "MOST_DERIVED_DEF_HASH_CLEANUP_IF_PRESENT",
+      "MOST_DERIVED_FIELDS_REVERSE_ACQUISITION",
+      "DIRECT_BASE_SEGMENT_RECURSIVE",
+      "ROOT_BASE_SEGMENT_TERMINAL"
+    ],
+    "continue_after_cleanup_failure": true,
+    "automatic_cleanup_suppressed_by_user_hook": false,
+    "primary_failure_rule": "existing primary remains primary; otherwise first cleanup failure is primary",
+    "suppressed_failure_rule": "later cleanup failures append in actual cleanup execution order",
+    "cancellation_is_error": false,
+    "rollback_after_cleanup_start": false
+  },
+  "hir_contract": {
+    "identity": "HirConstructionLifecyclePlan",
+    "structural_identity_id": "HIR-H1/STRUCT/CONSTRUCTION_LIFECYCLE_PLAN",
+    "required_fields": [
+      "construction_plan_id",
+      "constructor_decl_id",
+      "most_derived_class_id",
+      "base_segment_ids",
+      "field_slot_descriptors",
+      "initial_mask",
+      "selected_delegation_plan",
+      "cfg_mask_states",
+      "field_init_commits",
+      "owner_token_transfers",
+      "prepublication_self_uses",
+      "post_init_guards",
+      "abort_cleanup_order",
+      "normal_cleanup_order",
+      "commit_predicate",
+      "unique_publication_site",
+      "source_provenance"
+    ],
+    "generic_call_only_representation": false,
+    "same_type_delegation_allocates": false
+  },
+  "mir_contract": {
+    "operation_kinds": [
+      "OBJECT_CONSTRUCTION_BEGIN",
+      "BASE_SEGMENT_BEGIN",
+      "BASE_SEGMENT_COMMIT",
+      "FIELD_INIT_COMMIT",
+      "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+      "CONSTRUCTION_POST_INIT_GUARD",
+      "OBJECT_CONSTRUCTION_COMMIT",
+      "OBJECT_CONSTRUCTION_ABORT",
+      "OBJECT_CLEANUP_BEGIN",
+      "OBJECT_CLEANUP_HOOK",
+      "OBJECT_FIELD_CLEANUP",
+      "OBJECT_BASE_CLEANUP",
+      "OBJECT_CLEANUP_END"
+    ],
+    "transition_required_fields": [
+      "construction_session_id",
+      "phase_before",
+      "phase_after",
+      "mask_digest_before",
+      "mask_digest_after",
+      "consumed_owner_ids",
+      "produced_owner_ids",
+      "consumed_cleanup_token_ids",
+      "produced_cleanup_token_ids",
+      "outcome_edge",
+      "hir_provenance"
+    ],
+    "construction_token_kind": "BUILDER",
+    "construction_token_specialization": "ConstructionTokenId",
+    "backend_neutral": true,
+    "backend_drop_flags_are_projection_only": true
+  },
+  "diagnostics": {
+    "source": [
+      "CONSTRUCTION_FIELD_READ_BEFORE_INITIALIZATION",
+      "CONSTRUCTION_LET_FIELD_ALREADY_INITIALIZED",
+      "CONSTRUCTION_INIT_STATE_JOIN_MISMATCH",
+      "CONSTRUCTION_REQUIRED_SLOT_NOT_LIVE_AT_COMMIT",
+      "CONSTRUCTION_SELF_ESCAPE_BEFORE_COMMIT",
+      "CONSTRUCTION_PRECOMMIT_DISPATCH_NOT_ADMITTED"
+    ],
+    "release_verifier": [
+      "HIR_CONSTRUCTION_MASK_INVALID",
+      "MIR_CONSTRUCTION_TOKEN_BALANCE_INVALID",
+      "MIR_CONSTRUCTION_CLEANUP_ORDER_INVALID",
+      "MIR_CONSTRUCTION_PUBLICATION_COUNT_INVALID"
+    ],
+    "priority": [
+      "EXISTING_DELEGATION_DIAGNOSTIC",
+      "EARLIEST_FIELD_MASK_DIAGNOSTIC",
+      "SELF_ESCAPE_OR_DISPATCH_DIAGNOSTIC",
+      "FINAL_COMMIT_DIAGNOSTIC",
+      "INTERNAL_HIR_MIR_VERIFIER_DIAGNOSTIC"
+    ]
+  },
+  "rejected_alternatives": [
+    "IMPLICIT_ZERO_OR_NULL_INITIALIZATION",
+    "BACKEND_ONLY_DROP_FLAGS",
+    "WHOLE_OBJECT_CLEANUP_ON_PARTIAL_FAILURE",
+    "FORBID_ALL_THROWING_OR_RESOURCE_CONSTRUCTORS"
+  ],
+  "status_fence": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN"
+  }
+}

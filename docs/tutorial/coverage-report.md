@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-hir-mir-machine-contract-r1`
+- revision: `r51f3-current-frontend-readiness-r11-r19-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -14,8 +14,8 @@
 - Deeplus 코드 블록: 367
 - 연습 prompt 표식: 261
 - 로컬 링크 오류: 0
-- contract SHA-256: `5d39b12c9a55cda1975bfc3d429886a43aee2f4b9c5fab16ac646bb4ee36373f`
-- coverage schema SHA-256: `dd79b8c54d2ca2bad96709e0994242be2ccaee24b927a79f72e17fc331da1866`
+- contract SHA-256: `9d0753186bee0645ae548143464af98a3442aff055556c65885ef3df6cf61baa`
+- coverage schema SHA-256: `bcef822b2061514981ec941cd2f3bd98b4b3559075831f6f087ef8af694e2ad3`
 
 ## authority 울타리
 

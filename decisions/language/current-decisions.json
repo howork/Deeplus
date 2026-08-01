@@ -2,8 +2,89 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 46,
+  "law_count": 55,
   "laws": [
+    {
+      "id": "DSGN-CURRENT-CONSTRUCTION-CLEANUP-STATE",
+      "law": "Construction is one failure-atomic lifecycle from allocation through field and delegation admission to exactly one publish or abort outcome. The canonical HIR carries one structural lifecycle plan and Deeplus MIR exposes the closed thirteen-operation construction/cleanup family with an explicit ConstructionTokenId specialization. Cleanup is reverse responsibility order, publication occurs once only after complete admission, and failure leaves no published partial owner.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Construction_Cleanup_State_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-CST-AST-GRAMMAR-NORMALIZATION",
+      "law": "Every one of the exact 638 Grammar productions has exactly one canonical disposition. Lossless CST retains tokens, trivia, recovery residue and production ownership; normalization to canonical AST is deterministic and receipt-bound; recovery nodes never enter canonical AST or HIR.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Frontend_CST_Parser_Recovery_Readiness_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-PARSER-BOUNDARY-MATCH-ARM",
+      "law": "Statement boundaries and match-arm bodies and separators are chosen by closed parser-context algorithms. Transactional probes consume no input and emit no diagnostics on failure; delimiters and required children outrank contextual newline termination; parse receipts preserve every selected boundary decision.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Frontend_CST_Parser_Recovery_Readiness_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-RECOVERY-INVALID-TREE-QUARANTINE",
+      "law": "STRICT_CANONICAL and ANALYSIS_RECOVERY share the same lossless recovery CST, bounded progress law and deterministic episode ordering. Recovery taint is transitive, cannot be cleared by a checker or formatter, and excludes recovered or analysis-only nodes from canonical AST, HIR, MIR, API digest, execution and conformance evidence.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Frontend_CST_Parser_Recovery_Readiness_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-CLOSED-PRATT-PARSE-GOAL",
+      "law": "Pratt dispatch is closed over exactly EXPRESSION, PREDICATE, SLICE_INDEX, TYPE, NON_FUNCTION_TYPE and UNIT. Parselet admission, stop sets and binding powers are goal-specific. Message-call operators are structured led parselets at rank 15 rather than generic postfix operators.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Closed_Pratt_Parse_Goal_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-COMPLETE-TOKEN-LEXICAL-GOAL",
+      "law": "The scanner uses a closed lexical-goal and complete-token registry with declared priority, failure-atomic speculative probes, exact byte partitioning and explicit mode transitions. It never commits an incomplete token prefix or infers semantic checker responsibility from token shape.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Complete_Token_Lexical_Goal_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-SHORTHAND-INTERPOLATION-STATE-MACHINE",
+      "law": "Shorthand interpolation is owned by a closed scanner state machine. The scanner fixes only the token boundary and exact source partition; parser and checker retain path, type and availability responsibility, and malformed shorthand cannot materialize an admitted canonical AST.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Shorthand_Interpolation_State_Machine_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-MULTILINE-INTERPOLATION-ATOMIC-PAYLOAD",
+      "law": "A multiline string is one atomic scanner-stream envelope whose payload leaves partition bytes exactly once. Dedent uses the byte longest common indentation prefix of nonblank content lines; closer indentation is metadata only. Embedded token tapes are materialized lazily under the closed lexical goals and no partial payload is canonical.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_Multiline_Interpolation_Atomic_Payload_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-SOURCE-ROLE-PROFILE-GATE",
+      "law": "A source carrier fixes exactly one role from library, executable and script and exactly one activation profile from stable and preview before parsing. The six role/profile pairs select the six roots; stable normalizes to CURRENT and preview to EXPLICIT_PREVIEW. A PreviewGate validates an already selected preview profile, commits dependencies atomically and never changes role, profile or root.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "decisions/language/Design_Deeplus_R19_Source_Role_Profile_Gate_R1.md",
+      "effective_revision": "r51f3-current-frontend-readiness-r11-r19-r1"
+    },
     {
       "id": "DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW",
       "law": "Literal-shaped type-position spellings [T], #mut[T], #set{T}, #map{K:V}, and ${label:T,...} are accepted only as PREVIEW_DESIGN sugar for existing canonical identities and remain nonactivatable. Parser goals, one-based indexing, the current bracket matrix, Union formation, Map/Record domains, and current Prelude signatures are unchanged. Collection ownership is immutable-first with explicit mutable owners; Sequence stays traversal-only. Current FrozenList and ListSnapshot identities remain distinct. Freeze is shallow, failure-atomic, and supplies no shareability proof; snapshot preserves its source and yields an independent point-in-time value; a view is owner-bounded and coordinate/provenance preserving. Semantic P0 is 0, feature P1 remains exactly 22 OPEN, and product lanes remain 15/15 NOT_RUN.",

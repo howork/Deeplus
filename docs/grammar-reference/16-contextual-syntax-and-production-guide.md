@@ -1224,8 +1224,12 @@ outcome에서 공급된다.
 
 <!-- deeplus-status-fence: PREVIEW_GATED -->
 
-Preview 문법은 stable `Deeplus`의 숨은 대안이 아니다.
-별도 진입점 `DeeplusPreview`와 파일 선두의 `PreviewGate`를 요구한다.
+Preview 문법은 stable `Deeplus`의 숨은 대안이 아니다. carrier가 parsing
+전에 `source_role = library | executable | script`와
+`activation_profile = preview`를 선언하여 별도 진입점
+`DeeplusPreview`의 정확한 role root를 고르고, 파일 선두에는
+`PreviewGate`를 둔다. gate는 이미 선택된 root를 검증하며 role/profile을
+바꾸지 않는다.
 
 ```ebnf
 DeeplusPreview ::= PreviewLibrarySourceFile
@@ -1237,7 +1241,7 @@ PreviewGate ::= "#" "preview" "(" PreviewFeatureList ")"
 ```
 
 gate 이름이 catalog에 존재하고 활성화 가능한 Preview feature여야 하며,
-source role이 Preview root로 선택되어야 한다.
+carrier의 activation profile이 `preview`여야 한다.
 gate가 있다는 사실만으로 nonactivatable Preview Design을 켤 수 없다.
 
 현재 gated FFI surface는 `PreviewFfiDecl`,
@@ -1261,7 +1265,7 @@ source-root commitment를 위반한다.
 
 | 항목 | 기록할 내용 |
 |---|---|
-| source role | library/executable/script 및 stable/Preview root |
+| carrier | `source_role` 3종, `activation_profile` 2종 및 그 둘이 고른 6개 root |
 | structural owner | 가장 작은 concrete production |
 | nested goal | declaration/type/expression/predicate/slice/pattern/block |
 | input supply | explicit 또는 정확한 implicit supply ID |

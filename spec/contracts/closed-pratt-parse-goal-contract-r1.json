@@ -1,0 +1,1223 @@
+
+{
+  "schema": "deeplus.closed-pratt-parse-goal-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251"
+  },
+  "gap_id": "IR-FE-P1-031",
+  "dependencies": {
+    "IR-FE-P0-028": "APPROVED_NOT_INTEGRATED_LOCAL_R12_CANDIDATE"
+  },
+  "canonical_conflict_resolution": {
+    "conflict": "frontend-model expression.postfix lists message at lbp 190 while language.md and mode_and_pratt_contract place ~ and :~ at rank 15",
+    "decision": "rank 15 is controlling; remove message from generic postfix projection and register ~ and :~ as distinct structured led parselets",
+    "semantic_reason": "assignment at 10 remains the only lower family; ternary at 20 remains the next higher family; ~ is left-associative and :~ is terminal",
+    "new_surface_count": 0
+  },
+  "dispatch_law": {
+    "key": "(parse_goal, exact attached token sequence or structured lookahead signature)",
+    "priority": [
+      "registered parselet with binding power admitted by min_bp",
+      "declared stop token for the active owner",
+      "reject unknown token-goal pair"
+    ],
+    "longest_attached_token_first": true,
+    "type_information_used_for_dispatch": false,
+    "failed_structured_probe_consumes_tokens": false,
+    "failed_structured_probe_emits_diagnostic": false,
+    "unknown_or_disabled_oracle": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+    "final_diagnostic_registry_binding": "DEFERRED_TO_IR-FE-P1-035_WITHOUT_CHANGING_PARSE_RESULT"
+  },
+  "goal_registry": [
+    {
+      "goal": "EXPRESSION",
+      "entry": "EXPRESSION_PRATT_ENTRY",
+      "root_ast": "PrattExpr",
+      "nud_sources": [
+        "expression_nud",
+        "primary_dispatch"
+      ],
+      "led_sources": [
+        "expression_led",
+        "structured_postfix"
+      ],
+      "disabled_parselets": [],
+      "stop_set": "EXPRESSION_OWNER",
+      "semantic_gate": "ordinary expression typing and owner admission"
+    },
+    {
+      "goal": "PREDICATE",
+      "entry": "PREDICATE_PRATT_ENTRY",
+      "root_ast": "PrattPredicateExpr",
+      "nud_sources": [
+        "expression_nud",
+        "primary_dispatch"
+      ],
+      "led_sources": [
+        "expression_led",
+        "structured_postfix"
+      ],
+      "disabled_parselets": [
+        "assignment"
+      ],
+      "stop_set": "PREDICATE_OWNER",
+      "semantic_gate": "Bool result plus owner-specific purity, throws, effects, suspension, and R0 restrictions"
+    },
+    {
+      "goal": "SLICE_INDEX",
+      "entry": "SLICE_INDEX_PRATT_ENTRY",
+      "root_ast": "PrattSliceIndexExpr",
+      "nud_sources": [
+        "expression_nud",
+        "primary_dispatch"
+      ],
+      "led_sources": [
+        "expression_led",
+        "structured_postfix"
+      ],
+      "disabled_parselets": [
+        "assignment",
+        "range"
+      ],
+      "stop_set": "SLICE_INDEX_OWNER",
+      "semantic_gate": "scalar index expression; ^ and $ are owned only by SliceBound; * is owned only by AxisWildcard"
+    },
+    {
+      "goal": "TYPE",
+      "entry": "TYPE_PRATT_ENTRY",
+      "root_ast": "PrattType",
+      "nud_sources": [
+        "type_primary",
+        "type_parselets(kind=NUD)"
+      ],
+      "led_sources": [
+        "type_parselets(kind=LED|POSTFIX_LED)"
+      ],
+      "disabled_parselets": [],
+      "stop_set": "TYPE_OWNER",
+      "semantic_gate": "FunctionTypeTail allowed on the current outer ParenTypeSyntax owner"
+    },
+    {
+      "goal": "NON_FUNCTION_TYPE",
+      "entry": "NON_FUNCTION_TYPE_PRATT_ENTRY",
+      "root_ast": "PrattNonFunctionType",
+      "nud_sources": [
+        "type_primary",
+        "type_parselets(kind=NUD)"
+      ],
+      "led_sources": [
+        "type_parselets(kind=LED|POSTFIX_LED)"
+      ],
+      "disabled_parselets": [
+        "outer_paren_function_tail"
+      ],
+      "stop_set": "NON_FUNCTION_TYPE_OWNER",
+      "semantic_gate": "FunctionTypeTail forbidden on the outer ParenTypeSyntax; nested parenthesized TypeRef re-enters TYPE"
+    },
+    {
+      "goal": "UNIT",
+      "entry": "UNIT_PRATT_ENTRY",
+      "root_ast": "PrattUnitExpr",
+      "nud_sources": [
+        "UnitPrimary"
+      ],
+      "led_sources": [
+        "unit_parselets"
+      ],
+      "disabled_parselets": [],
+      "stop_set": "UNIT_OWNER",
+      "semantic_gate": "unit namespace only; exact dimension normalization follows parsing"
+    }
+  ],
+  "stop_sets": {
+    "EXPRESSION_OWNER": [
+      ",",
+      ")",
+      "]",
+      "}",
+      ";",
+      "=>",
+      ":",
+      "{",
+      "LINE_BREAK_BOUNDARY",
+      "EOF"
+    ],
+    "PREDICATE_OWNER": [
+      ",",
+      ")",
+      "]",
+      "}",
+      ";",
+      "=>",
+      ":",
+      "{",
+      "where",
+      "requires",
+      "ensures",
+      "LINE_BREAK_BOUNDARY",
+      "EOF"
+    ],
+    "SLICE_INDEX_OWNER": [
+      "..",
+      "..<",
+      ";",
+      "]"
+    ],
+    "TYPE_OWNER": [
+      ",",
+      ">",
+      ")",
+      "]",
+      "}",
+      "=",
+      "=>",
+      "where",
+      "throws",
+      "effects",
+      "{",
+      ";",
+      "LINE_BREAK_BOUNDARY",
+      "EOF"
+    ],
+    "NON_FUNCTION_TYPE_OWNER": [
+      ",",
+      ">",
+      ")",
+      "]",
+      "}",
+      "=",
+      "=>",
+      "where",
+      "throws",
+      "effects",
+      "{",
+      ";",
+      "LINE_BREAK_BOUNDARY",
+      "EOF"
+    ],
+    "UNIT_OWNER": [
+      "]",
+      ")",
+      ",",
+      ";",
+      "LINE_BREAK_BOUNDARY",
+      "EOF"
+    ]
+  },
+  "expression_nud": [
+    {
+      "id": "numeric_prefix_sign",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "+"
+        ],
+        [
+          "-"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 159,
+      "associativity": "right_operand",
+      "ast_target": "NumericSignExpr",
+      "profile": "STABLE",
+      "semantic_boundary": "language-reserved numeric sign; never conformance lookup"
+    },
+    {
+      "id": "boolean_not",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "not"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "BooleanNotExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "bitwise_complement",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "~~"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "BitwiseComplementExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "move",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "move"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "MoveExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "borrow",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "borrow"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "BorrowExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "context_anchor",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "&"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "ContextAnchorCandidateExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "await",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "await"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 170,
+      "associativity": "right_operand",
+      "ast_target": "AwaitExpr",
+      "profile": "STABLE"
+    }
+  ],
+  "primary_dispatch": [
+    {
+      "id": "literal",
+      "trigger": "Literal scanner token",
+      "grammar_owner": "Literal",
+      "ast_target": "LiteralExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "identifier",
+      "trigger": "Identifier",
+      "grammar_owner": "Identifier",
+      "ast_target": "NameExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "implicit_at",
+      "trigger": "@ without a registered composite introducer",
+      "grammar_owner": "ImplicitAtExpr",
+      "ast_target": "ImplicitAtExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "paren_or_tuple",
+      "trigger": "(",
+      "grammar_owner": "ParenExprSyntax",
+      "ast_target": "ParenthesizedExpr | TupleExpr | UnitLiteralExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "list_bounded_or_comprehension",
+      "trigger": "[",
+      "grammar_owner": "ListLiteral | BoundedListLiteral | ComprehensionExpr",
+      "ast_target": "ListExpr | BoundedListExpr | ComprehensionExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "materialization",
+      "trigger": "${",
+      "grammar_owner": "MaterializationBody",
+      "ast_target": "MaterializationExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "typed_materialization",
+      "trigger": "TypeRef immediately followed by ${",
+      "grammar_owner": "TypedMaterializationExpr",
+      "ast_target": "TypedMaterializationExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "map",
+      "trigger": "# map {",
+      "grammar_owner": "MapLiteral | MapComprehensionExpr",
+      "ast_target": "MapExpr | MapComprehensionExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "set",
+      "trigger": "# set {",
+      "grammar_owner": "SetLiteral | SetComprehensionExpr",
+      "ast_target": "SetExpr | SetComprehensionExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "mut_list",
+      "trigger": "# mut [",
+      "grammar_owner": "MutListLiteral",
+      "ast_target": "MutListExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "numeric_array",
+      "trigger": "# [ or # StaticDimensionList [",
+      "grammar_owner": "NumericArrayLiteral",
+      "ast_target": "NumericArrayExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "qualified_static",
+      "trigger": "StaticQualifier :: Identifier",
+      "grammar_owner": "QualifiedStaticExpr",
+      "ast_target": "QualifiedStaticExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "expected_variant",
+      "trigger": ":: Identifier",
+      "grammar_owner": "ExpectedVariantExpr",
+      "ast_target": "ExpectedVariantExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "at_control",
+      "trigger": "@ if | @ try | @ scope",
+      "grammar_owner": "AtControlExpr",
+      "ast_target": "AtIfExpr | AtTryExpr | AtScopeExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "match",
+      "trigger": "@ match",
+      "grammar_owner": "MatchExpr",
+      "ast_target": "MatchExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "closure",
+      "trigger": "CaptureList? HashTag* {",
+      "grammar_owner": "ClosureExpr",
+      "ast_target": "ClosureExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "generator",
+      "trigger": "CaptureList? @ for | @ while | @ repeat",
+      "grammar_owner": "GeneratorExpr",
+      "ast_target": "GeneratorExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "spawn",
+      "trigger": "spawn",
+      "grammar_owner": "SpawnExpr",
+      "ast_target": "SpawnExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "concur",
+      "trigger": "concur {",
+      "grammar_owner": "ConcurExpr",
+      "ast_target": "ConcurExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "unsafe",
+      "trigger": "unsafe {",
+      "grammar_owner": "UnsafeBlockExpr",
+      "ast_target": "UnsafeBlockExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "facet",
+      "trigger": "facet [",
+      "grammar_owner": "FacetExpr",
+      "ast_target": "FacetExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    }
+  ],
+  "expression_led": [
+    {
+      "id": "assignment",
+      "kind": "LED",
+      "tokens": [
+        [
+          "="
+        ],
+        [
+          "+="
+        ],
+        [
+          "-="
+        ],
+        [
+          "*="
+        ],
+        [
+          "/="
+        ],
+        [
+          "%="
+        ]
+      ],
+      "lbp": 10,
+      "rbp": 9,
+      "associativity": "right",
+      "ast_target": "AssignmentExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "message_call",
+      "kind": "STRUCTURED_LED",
+      "tokens": [
+        [
+          "~"
+        ]
+      ],
+      "lbp": 15,
+      "rbp": 16,
+      "associativity": "left",
+      "ast_target": "CallExpr(mode=Message)",
+      "profile": "STABLE",
+      "grammar_owner": "TildeCallLed"
+    },
+    {
+      "id": "actor_message_call",
+      "kind": "STRUCTURED_LED",
+      "tokens": [
+        [
+          ":~"
+        ]
+      ],
+      "lbp": 15,
+      "rbp": null,
+      "associativity": "terminal_nonassociative",
+      "ast_target": "CallExpr(mode=ActorMessage)",
+      "profile": "STABLE",
+      "grammar_owner": "TildeCallLed"
+    },
+    {
+      "id": "ternary",
+      "kind": "LED",
+      "tokens": [
+        [
+          "?"
+        ]
+      ],
+      "lbp": 20,
+      "rbp": 19,
+      "associativity": "right",
+      "ast_target": "ConditionalExpr",
+      "profile": "STABLE",
+      "companion_token": ":"
+    },
+    {
+      "id": "otherwise",
+      "kind": "LED",
+      "tokens": [
+        [
+          "otherwise"
+        ]
+      ],
+      "lbp": 30,
+      "rbp": 31,
+      "associativity": "left",
+      "ast_target": "ShortCircuitBooleanExpr(kind=otherwise)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "or",
+      "kind": "LED",
+      "tokens": [
+        [
+          "or"
+        ]
+      ],
+      "lbp": 40,
+      "rbp": 41,
+      "associativity": "left",
+      "ast_target": "StrictBooleanExpr(kind=or)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "and_then",
+      "kind": "LED",
+      "tokens": [
+        [
+          "and",
+          "then"
+        ]
+      ],
+      "lbp": 50,
+      "rbp": 51,
+      "associativity": "left",
+      "ast_target": "ShortCircuitBooleanExpr(kind=and_then)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "and",
+      "kind": "LED",
+      "tokens": [
+        [
+          "and"
+        ]
+      ],
+      "lbp": 60,
+      "rbp": 61,
+      "associativity": "left",
+      "ast_target": "StrictBooleanExpr(kind=and)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "comparison",
+      "kind": "LED",
+      "tokens": [
+        [
+          "=="
+        ],
+        [
+          "!="
+        ],
+        [
+          "<"
+        ],
+        [
+          "<="
+        ],
+        [
+          ">"
+        ],
+        [
+          ">="
+        ],
+        [
+          "in"
+        ],
+        [
+          "!",
+          "in"
+        ],
+        [
+          "is"
+        ],
+        [
+          "!",
+          "is"
+        ]
+      ],
+      "lbp": 70,
+      "rbp": 71,
+      "associativity": "checker_bounded_chain",
+      "ast_target": "ComparisonChainExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "option_coalesce",
+      "kind": "LED",
+      "tokens": [
+        [
+          "?:"
+        ]
+      ],
+      "lbp": 80,
+      "rbp": 79,
+      "associativity": "right",
+      "ast_target": "OptionCoalesceExpr",
+      "profile": "STABLE",
+      "evaluation": "lhs_once_rhs_lazy"
+    },
+    {
+      "id": "bitwise_or",
+      "kind": "LED",
+      "tokens": [
+        [
+          "||"
+        ]
+      ],
+      "lbp": 90,
+      "rbp": 91,
+      "associativity": "left",
+      "ast_target": "BitwiseExpr(kind=or)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "bitwise_xor",
+      "kind": "LED",
+      "tokens": [
+        [
+          "^^"
+        ]
+      ],
+      "lbp": 100,
+      "rbp": 101,
+      "associativity": "left",
+      "ast_target": "BitwiseExpr(kind=xor)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "bitwise_and",
+      "kind": "LED",
+      "tokens": [
+        [
+          "&&"
+        ]
+      ],
+      "lbp": 110,
+      "rbp": 111,
+      "associativity": "left",
+      "ast_target": "BitwiseExpr(kind=and)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "range",
+      "kind": "LED",
+      "tokens": [
+        [
+          ".."
+        ],
+        [
+          "..<"
+        ]
+      ],
+      "lbp": 120,
+      "rbp": 121,
+      "associativity": "nonassociative",
+      "ast_target": "RangeExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "additive",
+      "kind": "LED",
+      "tokens": [
+        [
+          "+"
+        ],
+        [
+          "-"
+        ]
+      ],
+      "lbp": 130,
+      "rbp": 131,
+      "associativity": "left",
+      "ast_target": "FixedGlyphBinaryExpr(family=additive)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "multiplicative",
+      "kind": "LED",
+      "tokens": [
+        [
+          "*"
+        ],
+        [
+          "/"
+        ],
+        [
+          "%"
+        ]
+      ],
+      "lbp": 140,
+      "rbp": 141,
+      "associativity": "left",
+      "ast_target": "FixedGlyphBinaryExpr(family=multiplicative)",
+      "profile": "STABLE"
+    },
+    {
+      "id": "linear_product",
+      "kind": "LED",
+      "tokens": [
+        [
+          "**"
+        ],
+        [
+          "*+"
+        ]
+      ],
+      "lbp": 150,
+      "rbp": 151,
+      "associativity": "left",
+      "ast_target": "LinearProductExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "power",
+      "kind": "LED",
+      "tokens": [
+        [
+          "^"
+        ]
+      ],
+      "lbp": 160,
+      "rbp": 159,
+      "associativity": "right",
+      "ast_target": "PowerExpr",
+      "profile": "STABLE",
+      "attachment": "SPACED_INFIX_CARET",
+      "attachment_policy": "CARET_ATTACHMENT"
+    },
+    {
+      "id": "cast",
+      "kind": "LED",
+      "tokens": [
+        [
+          "as",
+          "?"
+        ],
+        [
+          "as",
+          "!"
+        ]
+      ],
+      "lbp": 180,
+      "rbp": null,
+      "associativity": "nonassociative",
+      "ast_target": "CastExpr",
+      "profile": "STABLE"
+    }
+  ],
+  "structured_postfix": [
+    {
+      "id": "call",
+      "trigger": "ArgumentList or AtomicCallArgument followed by TrailingClosureGroup",
+      "grammar_owner": "CallSuffix",
+      "ast_target": "CallExpr(mode=Ordinary)",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "tuple_ordinal",
+      "trigger": ". StaticIntLiteral",
+      "grammar_owner": "TupleOrdinalSuffix",
+      "ast_target": "TupleOrdinalExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "index",
+      "trigger": "[",
+      "grammar_owner": "IndexSuffix",
+      "ast_target": "IndexExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "member",
+      "trigger": ". Identifier or . \\ NAME_TOKEN",
+      "grammar_owner": "MemberSuffix",
+      "ast_target": "MemberExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "transpose",
+      "trigger": "attached ^",
+      "grammar_owner": "NumericArrayTransposeSuffix",
+      "ast_target": "NumericArrayTransposeExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "constructor",
+      "trigger": "attached ! ArgumentList",
+      "grammar_owner": "ConstructorCallSuffix",
+      "ast_target": "ConstructorCallExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "named_constructor",
+      "trigger": "attached ! Identifier ArgumentList",
+      "grammar_owner": "NamedConstructorCallSuffix",
+      "ast_target": "ConstructorCallExpr(named)",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "derivation",
+      "trigger": "attached ! or !! followed by DerivationBody",
+      "grammar_owner": "PrototypeDerivationSuffix",
+      "ast_target": "PrototypeDerivationExpr",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    },
+    {
+      "id": "trailing_closure",
+      "trigger": "TrailingClosureGroup after an admitted CallExpr owner",
+      "grammar_owner": "TrailingClosureGroup",
+      "ast_target": "CallExpr(with trailing closures)",
+      "kind": "STRUCTURED_LED",
+      "lbp": 190,
+      "rbp": null,
+      "associativity": "left_attachment",
+      "profile": "STABLE"
+    }
+  ],
+  "type_primary": [
+    {
+      "id": "qualified",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "QualifiedTypeReference",
+      "ast_target": "NamedTypeRef",
+      "profile": "STABLE"
+    },
+    {
+      "id": "facet",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "FacetType",
+      "ast_target": "FacetType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "paren",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "ParenTypeSyntax",
+      "ast_target": "ParenthesizedType | TupleType | FunctionType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "sharp_shape",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "SharpShapeType",
+      "ast_target": "ShapedType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "existential",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "ExistentialType",
+      "ast_target": "ExistentialType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "opaque",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "OpaqueType",
+      "ast_target": "OpaqueType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "typeof",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "TypeofType",
+      "ast_target": "TypeofType",
+      "profile": "STABLE"
+    },
+    {
+      "id": "associated_projection",
+      "kind": "NUD_PRIMARY",
+      "grammar_owner": "AssociatedProjection",
+      "ast_target": "AssociatedTypeProjection",
+      "profile": "STABLE"
+    }
+  ],
+  "type_parselets": [
+    {
+      "id": "type_union",
+      "kind": "LED",
+      "tokens": [
+        [
+          "|"
+        ]
+      ],
+      "lbp": 10,
+      "rbp": 11,
+      "associativity": "left_flattening",
+      "ast_target": "UnionType",
+      "profile": "STABLE",
+      "goal_family": "TYPE"
+    },
+    {
+      "id": "type_intersection",
+      "kind": "LED",
+      "tokens": [
+        [
+          "&"
+        ]
+      ],
+      "lbp": 20,
+      "rbp": 21,
+      "associativity": "left_flattening",
+      "ast_target": "IntersectionType",
+      "profile": "STABLE",
+      "goal_family": "TYPE"
+    },
+    {
+      "id": "type_ownership",
+      "kind": "NUD",
+      "tokens": [
+        [
+          "owned"
+        ],
+        [
+          "borrowed"
+        ],
+        [
+          "mut"
+        ],
+        [
+          "inout"
+        ]
+      ],
+      "lbp": null,
+      "rbp": 30,
+      "associativity": "right_operand",
+      "ast_target": "OwnershipQualifiedType",
+      "profile": "STABLE",
+      "goal_family": "TYPE"
+    },
+    {
+      "id": "type_optional",
+      "kind": "POSTFIX_LED",
+      "tokens": [
+        [
+          "?"
+        ]
+      ],
+      "lbp": 40,
+      "rbp": null,
+      "associativity": "postfix_nonassociative",
+      "ast_target": "OptionalType",
+      "profile": "STABLE",
+      "goal_family": "TYPE"
+    }
+  ],
+  "unit_primary": [
+    {
+      "id": "unit_symbol",
+      "kind": "NUD_PRIMARY",
+      "trigger": "Identifier",
+      "ast_target": "UnitSymbolExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "qualified_unit_symbol",
+      "kind": "NUD_PRIMARY",
+      "trigger": "QualifiedPath",
+      "ast_target": "QualifiedUnitSymbolExpr",
+      "profile": "STABLE"
+    },
+    {
+      "id": "parenthesized_unit",
+      "kind": "NUD_PRIMARY",
+      "trigger": "( UnitExpr )",
+      "ast_target": "ParenthesizedUnitExpr",
+      "profile": "STABLE"
+    }
+  ],
+  "unit_parselets": [
+    {
+      "id": "unit_product",
+      "kind": "LED",
+      "tokens": [
+        [
+          "*"
+        ]
+      ],
+      "lbp": 20,
+      "rbp": 21,
+      "associativity": "left",
+      "ast_target": "UnitProductExpr",
+      "profile": "STABLE",
+      "goal_family": "UNIT"
+    },
+    {
+      "id": "unit_division",
+      "kind": "LED",
+      "tokens": [
+        [
+          "/"
+        ]
+      ],
+      "lbp": 20,
+      "rbp": 21,
+      "associativity": "left",
+      "ast_target": "UnitDivisionExpr",
+      "profile": "STABLE",
+      "goal_family": "UNIT"
+    },
+    {
+      "id": "unit_power",
+      "kind": "POSTFIX_LED",
+      "tokens": [
+        [
+          "^"
+        ]
+      ],
+      "lbp": 30,
+      "rbp": null,
+      "associativity": "postfix_nonassociative",
+      "ast_target": "UnitPowerExpr",
+      "profile": "STABLE",
+      "goal_family": "UNIT",
+      "operand": "SignedStaticInt",
+      "invalid_operand_diagnostic": "UNIT_EXPONENT_REQUIRES_STATIC_INT"
+    }
+  ],
+  "normalization_laws": {
+    "left_associative": "rbp = lbp + 1",
+    "right_associative": "rbp = lbp - 1",
+    "nonassociative": "a second same-family led at the same parse level rejects",
+    "type_union_and_intersection": "parse left, then flatten and canonicalize under the type-system contract",
+    "unit_product_division": "parse left; semantic unit normalization reduces to exact dimension vector and scale",
+    "unit_power": "consume exactly one SignedStaticInt and reject a second unparenthesized caret",
+    "numeric_sign_and_power": "numeric sign rbp 159 and power lbp 160/rbp 159 preserve -(2 ^ 2) and 2 ^ (-3)"
+  },
+  "ast_and_cst_fence": {
+    "lossless_cst_preserves": [
+      "exact tokens",
+      "attachment",
+      "delimiters",
+      "trivia",
+      "parse goal"
+    ],
+    "ast_root_count_per_successful_entry": 1,
+    "unknown_parselet_ast_count": 0,
+    "failed_probe_ast_count": 0,
+    "recovery_contract": "R14 analysis recovery may produce tainted analysis trees only; canonical AST requires empty RecoveryTaint"
+  },
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "checker_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

@@ -158,6 +158,14 @@ implicit nullable type or sentinel conversion is inferred.
 
 Move, borrow, inout, resource, isolation, suspension, effect, error, defect, cancellation, and cleanup obligations remain explicit. Cancellation is not an ErrorSet member and suspension is not hidden in an EffectRow. Borrow escape and inout aliasing are rejected. Cleanup is deterministic across normal return, failure, and cancellation.
 
+Construction uses one explicit lifecycle plan and one `ConstructionTokenId`.
+Allocation begins an unpublished owner; field/default/delegation steps update
+the lifecycle masks only after their responsibilities are admitted. Commit is
+legal exactly once after every required mask is complete and publishes exactly
+one owner. Abort publishes nothing and runs the registered responsibilities in
+reverse order. A failing field, delegation, default, conformance, effect, error,
+or cancellation edge cannot expose a partially initialized owner.
+
 ## 8. Patterns, clauses, and laws
 
 Every Pattern owner uses one normalized Pattern AST plus an explicit context
@@ -488,6 +496,12 @@ Typed labeled materialization checks the target schema/Record row, field default
 ## 15. Ownership and place-state transitions
 
 Each place has a state sufficient to reject use-after-move, overlapping inout access, mutable/shared alias violations, and borrow escape. A move consumes the source place unless the normalized type is reusable. A shared borrow prevents conflicting mutation for its admitted region. An inout borrow is exclusive and cannot be duplicated. Resource cleanup responsibility follows the owned value across moves.
+
+The construction lifecycle is represented in HIR by one structural plan and in
+Deeplus MIR by the closed construction/cleanup operation family. The token,
+owner, phase, required/initialized/delegated/registered masks, and terminal
+publish-or-abort transition remain explicit across lowering. A backend may
+coalesce storage only after preserving this state machine and its failure edges.
 
 Closure capture, async suspension, actor isolation, Facet packaging, defer registration, and return are escape boundaries. The checker must prove every captured borrow outlives its use and every resource has exactly one cleanup path. Borrow Facet packaging is current because it cannot outlive its source region; owned and inout Facet packaging remain Preview-design.
 

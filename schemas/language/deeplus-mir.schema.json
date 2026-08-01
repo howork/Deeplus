@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus-lang.org/schema/r10/integrated/deeplus-mir-r1.schema.json",
-  "title": "Deeplus backend-neutral MIR R1 integrated semantic module",
-  "description": "R2 integrated design schema for Verified<DeeplusMirR1>. The schema binds one closed MIR machine registry and admits no target projection, XBC slot, CLIF value, native register, machine address, ABI layout, object layout, product execution, or MIR-X1 authority.",
+  "$id": "https://deeplus-lang.org/schema/r11/integrated/deeplus-mir-r1.schema.json",
+  "title": "Deeplus backend-neutral MIR R11 construction-lifecycle successor",
+  "description": "R11 integrated design schema for Verified<DeeplusMirR1>. It extends the closed R10 machine with backend-neutral nominal construction and cleanup transitions while admitting no target projection, XBC slot, CLIF value, native register, machine address, ABI layout, object layout, product execution, or MIR-X1 authority.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -1954,6 +1954,54 @@
         "stage_index": {"$ref": "#/$defs/nonnegativeInteger"}
       }
     },
+    "constructionLifecyclePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "construction_session_id",
+        "phase_before",
+        "phase_after",
+        "mask_digest_before",
+        "mask_digest_after",
+        "consumed_owner_ids",
+        "produced_owner_ids",
+        "consumed_cleanup_token_ids",
+        "produced_cleanup_token_ids",
+        "outcome_edge",
+        "hir_provenance"
+      ],
+      "properties": {
+        "construction_session_id": {"$ref": "#/$defs/id"},
+        "phase_before": {"$ref": "#/$defs/id"},
+        "phase_after": {"$ref": "#/$defs/id"},
+        "mask_digest_before": {"$ref": "#/$defs/sha256"},
+        "mask_digest_after": {"$ref": "#/$defs/sha256"},
+        "consumed_owner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "produced_owner_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "consumed_cleanup_token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "produced_cleanup_token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "outcome_edge": {
+          "enum": ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]
+        },
+        "hir_provenance": {"$ref": "#/$defs/id"}
+      }
+    },
     "operationKind": {
       "enum": [
         "CONST",
@@ -1984,7 +2032,20 @@
         "BINDING_COMMIT",
         "CLOSURE_MAKE",
         "CONCUR_ENTER",
-        "ACTOR_ENVELOPE_PREPARE"
+        "ACTOR_ENVELOPE_PREPARE",
+        "OBJECT_CONSTRUCTION_BEGIN",
+        "BASE_SEGMENT_BEGIN",
+        "BASE_SEGMENT_COMMIT",
+        "FIELD_INIT_COMMIT",
+        "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+        "CONSTRUCTION_POST_INIT_GUARD",
+        "OBJECT_CONSTRUCTION_COMMIT",
+        "OBJECT_CONSTRUCTION_ABORT",
+        "OBJECT_CLEANUP_BEGIN",
+        "OBJECT_CLEANUP_HOOK",
+        "OBJECT_FIELD_CLEANUP",
+        "OBJECT_BASE_CLEANUP",
+        "OBJECT_CLEANUP_END"
       ]
     },
     "semanticOperationId": {
@@ -2017,7 +2078,20 @@
         "DM-SEMOP-BINDING-COMMIT-R1",
         "DM-SEMOP-CLOSURE-MAKE-R1",
         "DM-SEMOP-CONCUR-ENTER-R1",
-        "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"
+        "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1",
+        "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1",
+        "DM-SEMOP-BASE-SEGMENT-BEGIN-R1",
+        "DM-SEMOP-BASE-SEGMENT-COMMIT-R1",
+        "DM-SEMOP-FIELD-INIT-COMMIT-R1",
+        "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1",
+        "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1",
+        "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1",
+        "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1",
+        "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1",
+        "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1",
+        "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1",
+        "DM-SEMOP-OBJECT-BASE-CLEANUP-R1",
+        "DM-SEMOP-OBJECT-CLEANUP-END-R1"
       ]
     },
     "mirOperation": {
@@ -2081,7 +2155,20 @@
         {"$ref": "#/$defs/opBindingCommit"},
         {"$ref": "#/$defs/opClosureMake"},
         {"$ref": "#/$defs/opConcurEnter"},
-        {"$ref": "#/$defs/opActorEnvelopePrepare"}
+        {"$ref": "#/$defs/opActorEnvelopePrepare"},
+        {"$ref": "#/$defs/opObjectConstructionBegin"},
+        {"$ref": "#/$defs/opBaseSegmentBegin"},
+        {"$ref": "#/$defs/opBaseSegmentCommit"},
+        {"$ref": "#/$defs/opFieldInitCommit"},
+        {"$ref": "#/$defs/opConstructionFieldMoveTransfer"},
+        {"$ref": "#/$defs/opConstructionPostInitGuard"},
+        {"$ref": "#/$defs/opObjectConstructionCommit"},
+        {"$ref": "#/$defs/opObjectConstructionAbort"},
+        {"$ref": "#/$defs/opObjectCleanupBegin"},
+        {"$ref": "#/$defs/opObjectCleanupHook"},
+        {"$ref": "#/$defs/opObjectFieldCleanup"},
+        {"$ref": "#/$defs/opObjectBaseCleanup"},
+        {"$ref": "#/$defs/opObjectCleanupEnd"}
       ]
     },
     "opConst": {"properties": {"kind": {"const": "CONST"}, "semantic_operation_id": {"const": "DM-SEMOP-CONST-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["constant_id"]}]}}},
@@ -2113,6 +2200,19 @@
     "opClosureMake": {"properties": {"kind": {"const": "CLOSURE_MAKE"}, "semantic_operation_id": {"const": "DM-SEMOP-CLOSURE-MAKE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["closure_id"]}]}}},
     "opConcurEnter": {"properties": {"kind": {"const": "CONCUR_ENTER"}, "semantic_operation_id": {"const": "DM-SEMOP-CONCUR-ENTER-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["concur_id"]}]}}},
     "opActorEnvelopePrepare": {"properties": {"kind": {"const": "ACTOR_ENVELOPE_PREPARE"}, "semantic_operation_id": {"const": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["actor_envelope_id"]}]}}},
+    "opObjectConstructionBegin": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opBaseSegmentBegin": {"properties": {"kind": {"const": "BASE_SEGMENT_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opBaseSegmentCommit": {"properties": {"kind": {"const": "BASE_SEGMENT_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opFieldInitCommit": {"properties": {"kind": {"const": "FIELD_INIT_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FIELD-INIT-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opConstructionFieldMoveTransfer": {"properties": {"kind": {"const": "CONSTRUCTION_FIELD_MOVE_TRANSFER"}, "semantic_operation_id": {"const": "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opConstructionPostInitGuard": {"properties": {"kind": {"const": "CONSTRUCTION_POST_INIT_GUARD"}, "semantic_operation_id": {"const": "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectConstructionCommit": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectConstructionAbort": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_ABORT"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectCleanupBegin": {"properties": {"kind": {"const": "OBJECT_CLEANUP_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectCleanupHook": {"properties": {"kind": {"const": "OBJECT_CLEANUP_HOOK"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectFieldCleanup": {"properties": {"kind": {"const": "OBJECT_FIELD_CLEANUP"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectBaseCleanup": {"properties": {"kind": {"const": "OBJECT_BASE_CLEANUP"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-BASE-CLEANUP-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opObjectCleanupEnd": {"properties": {"kind": {"const": "OBJECT_CLEANUP_END"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-END-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
     "edgeArgument": {
       "type": "object",
       "additionalProperties": false,
@@ -2533,8 +2633,8 @@
     }
   },
   "x-deeplus-closed-universe": {
-    "operation_kind_count": 29,
-    "semantic_operation_id_count": 29,
+    "operation_kind_count": 42,
+    "semantic_operation_id_count": 42,
     "terminator_kind_count": 17,
     "linear_token_kind_count": 12,
     "responsibility_axis_count": 11,
@@ -2546,7 +2646,7 @@
   },
   "x-deeplus-verifier-contract": {
     "machine_registry_digest_resolution": "RESOLVE_EXACT_REGISTRY_BYTES_AND_VERIFY_RFC8949_CBOR_DIGEST",
-    "semantic_operation_kind_id_bijection": "RECOMPUTE_EXACT_29",
+    "semantic_operation_kind_id_bijection": "RECOMPUTE_EXACT_42",
     "operation_payload_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
     "terminator_payload_successor_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
     "token_kind_binding_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
@@ -2568,7 +2668,7 @@
     "product_execution": "NOT_RUN"
   },
   "x-deeplus-status-fence": {
-    "schema_materialization": "R2_INTEGRATED_DRAFT",
+    "schema_materialization": "R11_INTEGRATED_DESIGN",
     "design_contract_only": true,
     "product_lanes": "15_OF_15_NOT_RUN",
     "product_execution": "NOT_RUN",

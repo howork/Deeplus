@@ -61,8 +61,10 @@
             ]
           },
           "activation_profile": {
-            "type": "string",
-            "minLength": 1
+            "enum": [
+              "stable",
+              "preview"
+            ]
           }
         },
         "oneOf": [
@@ -140,8 +142,10 @@
             "pattern": "^TargetId:[^\\s]+$"
           },
           "activation_profile": {
-            "type": "string",
-            "minLength": 1
+            "enum": [
+              "stable",
+              "preview"
+            ]
           },
           "module_id": {
             "type": "string",
@@ -226,6 +230,66 @@
         }
       ],
       "expected": "admitted"
+    },
+    {
+      "fixture_id": "SRCROLE-CARRIER-POS-PREVIEW-001",
+      "profile": "R4_NAME_RESOLUTION_MODULES",
+      "package_id": "PackageId:fixture",
+      "targets": [
+        {
+          "target_id": "TargetId:fixture.lib",
+          "canonical_manifest_target_name": "lib",
+          "target_kind": "library",
+          "source_role_policy": "library",
+          "activation_profile": "preview"
+        }
+      ],
+      "package_module_source_graph_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "source_files": [
+        {
+          "path": "src/lib.dp",
+          "source_role": "library",
+          "source_file_id": "SourceFileId:fixture.lib/src/lib.dp",
+          "target_id": "TargetId:fixture.lib",
+          "activation_profile": "preview",
+          "module_id": "ModuleId:fixture.lib",
+          "module_path": [
+            "fixture",
+            "lib"
+          ]
+        }
+      ],
+      "expected": "admitted"
+    },
+    {
+      "fixture_id": "SRCROLE-CARRIER-NEG-PROFILE-001",
+      "profile": "R4_NAME_RESOLUTION_MODULES",
+      "package_id": "PackageId:fixture",
+      "targets": [
+        {
+          "target_id": "TargetId:fixture.lib",
+          "canonical_manifest_target_name": "lib",
+          "target_kind": "library",
+          "source_role_policy": "library",
+          "activation_profile": "experimental"
+        }
+      ],
+      "package_module_source_graph_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "source_files": [
+        {
+          "path": "src/lib.dp",
+          "source_role": "library",
+          "source_file_id": "SourceFileId:fixture.lib/src/lib.dp",
+          "target_id": "TargetId:fixture.lib",
+          "activation_profile": "experimental",
+          "module_id": "ModuleId:fixture.lib",
+          "module_path": [
+            "fixture",
+            "lib"
+          ]
+        }
+      ],
+      "expected": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID"
     },
     {
       "fixture_id": "SRCROLE-CARRIER-NEG-001",

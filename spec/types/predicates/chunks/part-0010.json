@@ -1198,7 +1198,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "PreviewFeatureGateAdmitted",
     "source_name": "PreviewFeatureGateAdmitted",
-    "summary": "the selected root is exactly Preview{Role}SourceFile and the gate precedes ModuleDecl/source items; gate ids are scanned left-to-right; an unknown id emits PREVIEW_GATE_UNKNOWN_FEATURE; a known id whose lifecycle is not PREVIEW/explicit_feature_gate emits PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE; the first repeated id emits PREVIEW_GATE_DUPLICATE_FEATURE; the gate id set equals the explicit transitive Preview dependency closure of the requested feature set; omission emits PREVIEW_GATE_DEPENDENCY_MISSING; every requested feature is present and the parsed AST production occurs in its gate-map route set; after admission the checker applies the feature-local semantic predicate; no dependency is activated implicitly",
+    "summary": "the external carrier fixes one source_role in library/executable/script and activation_profile=preview before parsing; that pair selects exactly the same-role Preview root without trial parsing and normalizes to HIR EXPLICIT_PREVIEW; one leading PreviewGate verifies but never rewrites the role or profile; gate ids are scanned left-to-right for unknown, nonactivatable and duplicate ids; the explicit id set equals each selected feature's reflexive transitive explicit-gate dependency closure; spec/features/gates.json is an exhaustive feature-id-keyed projection; parser owns grammar_routes, checker owns semantic_reference_routes, and any failure commits zero activated features and zero canonical source-unit AST",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "product_evidence",
@@ -1206,9 +1206,9 @@
     ],
     "feature_refs": [
       "preview_profile_root_contract",
+      "source_role_contract",
       "ffi_minimum_sound_profile",
       "ffi_c_extern_unsafe_surface_msp",
-      "dynamic_unit_conversion_provider_msp",
       "numeric_array_elementwise_power_msp"
     ],
     "diagnostic_refs": [
@@ -1221,13 +1221,14 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "the selected root is exactly Preview{Role}SourceFile and the gate precedes ModuleDecl/source items",
+      "source_role is exactly library, executable or script; external activation_profile=preview selects the unique same-role Preview root before parsing and normalizes to HIR EXPLICIT_PREVIEW",
+      "the gate precedes ModuleDecl/source items, except that one Script shebang may precede it; the gate verifies and never selects or rewrites source_role or activation_profile",
       "gate ids are scanned left-to-right; an unknown id emits PREVIEW_GATE_UNKNOWN_FEATURE",
       "a known id whose lifecycle is not PREVIEW/explicit_feature_gate emits PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE",
       "the first repeated id emits PREVIEW_GATE_DUPLICATE_FEATURE",
       "the gate id set equals the explicit transitive Preview dependency closure of the requested feature set; omission emits PREVIEW_GATE_DEPENDENCY_MISSING",
-      "every requested feature is present and the parsed AST production occurs in its gate-map route set",
-      "after admission the checker applies the feature-local semantic predicate; no dependency is activated implicitly"
+      "spec/features/gates.json is the exhaustive feature-id-keyed projection; every requested feature is present and every parser grammar route or checker semantic route occurs in its exact owner set",
+      "after admission commit the canonical sorted feature set once; on any failure commit zero activated features and zero canonical source-unit AST; no dependency is activated implicitly"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1240,20 +1241,22 @@
     "algorithm_owner": "parser_then_integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "the selected root is exactly Preview{Role}SourceFile and the gate precedes ModuleDecl/source items",
+      "source_role is exactly library, executable or script; external activation_profile=preview selects the unique same-role Preview root before parsing and normalizes to HIR EXPLICIT_PREVIEW",
+      "the gate precedes ModuleDecl/source items, except that one Script shebang may precede it; the gate verifies and never selects or rewrites source_role or activation_profile",
       "gate ids are scanned left-to-right; an unknown id emits PREVIEW_GATE_UNKNOWN_FEATURE",
       "a known id whose lifecycle is not PREVIEW/explicit_feature_gate emits PREVIEW_GATE_FEATURE_NOT_ACTIVATABLE",
       "the first repeated id emits PREVIEW_GATE_DUPLICATE_FEATURE",
       "the gate id set equals the explicit transitive Preview dependency closure of the requested feature set; omission emits PREVIEW_GATE_DEPENDENCY_MISSING",
-      "every requested feature is present and the parsed AST production occurs in its gate-map route set",
-      "after admission the checker applies the feature-local semantic predicate; no dependency is activated implicitly"
+      "spec/features/gates.json is the exhaustive feature-id-keyed projection; every requested feature is present and every parser grammar route or checker semantic route occurs in its exact owner set",
+      "after admission commit the canonical sorted feature set once; on any failure commit zero activated features and zero canonical source-unit AST; no dependency is activated implicitly"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "preserve source_role; normalize carrier activation_profile stable to CURRENT or preview to EXPLICIT_PREVIEW; canonicalize the admitted feature-id set by UTF-8 feature-id order only after all validation succeeds",
     "decision_procedure": [
       "validate the closed RCTS-V5 descriptor",
       "evaluate dependency predicates left-to-right and propagate the dependency's selected diagnostic unchanged",
-      "evaluate PreviewFeatureGateAdmitted diagnostic_dispatch conditions once in their declared deterministic order",
-      "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
+      "verify the externally selected Preview role root and leading-gate placement without changing role or profile",
+      "evaluate PreviewFeatureGateAdmitted diagnostic_dispatch conditions once in placement, unknown, nonactivatable, duplicate and dependency order",
+      "verify exact gates.json projection and parser/checker route ownership, then atomically commit one EXPLICIT_PREVIEW profile and canonical feature set; on failure emit only the first selected diagnostic and commit neither"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -1292,77 +1295,6 @@
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "a264ddb09e54051ce0c18a0ee52765cab0bb9127257dffaae18f428adc96e534",
-      "disposition": "superseded_by_current_r51a1_row"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "PrimaryCtorPromotedFieldReachable",
-    "source_name": "PrimaryCtorPromotedFieldReachable",
-    "summary": "Primary constructor grammar route reaches PromotedFieldDecl including +let/-let/#let/#var visibility.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "source_role",
-      "element_types"
-    ],
-    "feature_refs": [
-      "primary_ctor_promoted_field_visibility_sigil_msp",
-      "r49_primary_constructor_grammar_closure"
-    ],
-    "diagnostic_refs": [
-      "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE"
-    ],
-    "design_seed_diagnostic_refs": [
-      "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE"
-    ],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
-    ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "source_role",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-PrimaryCtorPromotedFieldReachable",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record PrimaryCtorPromotedFieldReachable requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "PRIMARY_CTOR_PROMOTED_FIELD_ROUTE_UNREACHABLE",
-    "secondary_diagnostics": [],
-    "positive_fixture_ids": [
-      "PF-PrimaryCtorPromotedFieldReachable-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-PrimaryCtorPromotedFieldReachable-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "81e4a9317e67d2c92d168a7bedd294388318b52231df11d311a46f8a9d13f805",
       "disposition": "superseded_by_current_r51a1_row"
     }
   }

@@ -1,0 +1,349 @@
+
+{
+  "schema": "deeplus.shorthand-interpolation-state-machine-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+    "tree": "f6f256eaf73b67337c0d09535fe09c806c959251"
+  },
+  "gap_id": "IR-FE-P1-033",
+  "depends_on": {
+    "gap_id": "IR-FE-P1-032",
+    "candidate": "R16_APPROVED_NOT_INTEGRATED"
+  },
+  "evidence_locators": [
+    "spec/grammar/deeplus.ebnf:1220-1230",
+    "spec/frontend/frontend-model.json:733-738",
+    "spec/frontend/frontend-model.json:1865",
+    "spec/frontend/frontend-model.json:1947-1952",
+    "spec/language.md:962-982",
+    "examples/guide/review-corpus.md:1109-1122",
+    "tests/conformance/surface/positive/chunks/part-0001.json:401"
+  ],
+  "canonical_surface": {
+    "grammar": "InterpolationPath ::= '$' (Identifier | '@') (('.' (Identifier | StaticIntLiteral)) | ('[' (StaticIntLiteral | Identifier) ']'))* INTERPOLATION_BOUNDARY?",
+    "static_int": "DECIMAL_INTEGER",
+    "admitted_roots": [
+      "Identifier",
+      "@"
+    ],
+    "admitted_selectors": [
+      ".Identifier",
+      ".StaticIntLiteral",
+      "[Identifier]",
+      "[StaticIntLiteral]"
+    ],
+    "new_syntax_count": 0
+  },
+  "state_registry": [
+    {
+      "id": "STRING",
+      "kind": "outer_mode",
+      "accepting": false
+    },
+    {
+      "id": "AFTER_DOLLAR",
+      "kind": "root_commit",
+      "accepting": false
+    },
+    {
+      "id": "ROOT_IDENTIFIER",
+      "kind": "maximal_identifier",
+      "accepting": true
+    },
+    {
+      "id": "ROOT_AT",
+      "kind": "exact_root",
+      "accepting": true
+    },
+    {
+      "id": "PATH_COMPLETE",
+      "kind": "parser_commit_point",
+      "accepting": true
+    },
+    {
+      "id": "AFTER_DOT",
+      "kind": "selector_commit",
+      "accepting": false
+    },
+    {
+      "id": "SELECTOR_IDENTIFIER",
+      "kind": "maximal_identifier",
+      "accepting": true
+    },
+    {
+      "id": "SELECTOR_STATIC_INT",
+      "kind": "maximal_decimal_integer",
+      "accepting": true
+    },
+    {
+      "id": "AFTER_LBRACKET",
+      "kind": "index_commit",
+      "accepting": false
+    },
+    {
+      "id": "INDEX_IDENTIFIER",
+      "kind": "maximal_identifier",
+      "accepting": false
+    },
+    {
+      "id": "INDEX_STATIC_INT",
+      "kind": "maximal_decimal_integer",
+      "accepting": false
+    },
+    {
+      "id": "EXPECT_RBRACKET",
+      "kind": "index_close_commit",
+      "accepting": false
+    },
+    {
+      "id": "EXPLICIT_BOUNDARY",
+      "kind": "no_output_terminal",
+      "accepting": true
+    },
+    {
+      "id": "ERROR_TERMINAL",
+      "kind": "recovery_terminal",
+      "accepting": false
+    }
+  ],
+  "transition_registry": [
+    {
+      "from": "STRING",
+      "input": "${",
+      "guard": "unescaped and longest-match before shorthand",
+      "to": "INTERPOLATION_CODE_EXTERNAL",
+      "action": "emit INTERPOLATION_OPEN; do not enter shorthand transaction"
+    },
+    {
+      "from": "STRING",
+      "input": "$ followed by XID_Start",
+      "to": "ROOT_IDENTIFIER",
+      "action": "begin R16 checkpoint transaction; emit DOLLAR and maximal IDENTIFIER with STRING_SHORTHAND origin"
+    },
+    {
+      "from": "STRING",
+      "input": "$@",
+      "to": "ROOT_AT",
+      "action": "begin R16 checkpoint transaction; emit DOLLAR and AT with STRING_SHORTHAND origin"
+    },
+    {
+      "from": "STRING",
+      "input": "$ followed by any other scalar or EOF",
+      "to": "ERROR_TERMINAL",
+      "action": "consume only dollar as invalid shorthand start; reprocess following input in STRING",
+      "diagnostic": "INTERPOLATION_SHORTHAND_EXPECTED_IDENTIFIER"
+    },
+    {
+      "from": "ROOT_IDENTIFIER|ROOT_AT|SELECTOR_IDENTIFIER|SELECTOR_STATIC_INT",
+      "input": "completion",
+      "to": "PATH_COMPLETE",
+      "action": "commit the complete root or selector to InterpolationPathCst"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": ".",
+      "to": "AFTER_DOT",
+      "action": "commit selector introducer; no partial selector AST"
+    },
+    {
+      "from": "AFTER_DOT",
+      "input": "XID_Start",
+      "to": "SELECTOR_IDENTIFIER",
+      "action": "emit maximal IDENTIFIER selector"
+    },
+    {
+      "from": "AFTER_DOT",
+      "input": "DECIMAL_INTEGER start",
+      "to": "SELECTOR_STATIC_INT",
+      "action": "emit maximal DECIMAL_INTEGER selector"
+    },
+    {
+      "from": "AFTER_DOT",
+      "input": "any other scalar or EOF",
+      "to": "ERROR_TERMINAL",
+      "action": "emit one malformed-selector error node; reprocess non-EOF input in STRING; emit no selector AST",
+      "diagnostic": "PENDING_IR_FE_P1_035_EXACT_PRIMARY"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": "[",
+      "to": "AFTER_LBRACKET",
+      "action": "commit index selector introducer; no partial selector AST"
+    },
+    {
+      "from": "AFTER_LBRACKET",
+      "input": "XID_Start",
+      "to": "INDEX_IDENTIFIER",
+      "action": "emit maximal IDENTIFIER index"
+    },
+    {
+      "from": "AFTER_LBRACKET",
+      "input": "DECIMAL_INTEGER start",
+      "to": "INDEX_STATIC_INT",
+      "action": "emit maximal DECIMAL_INTEGER index"
+    },
+    {
+      "from": "INDEX_IDENTIFIER|INDEX_STATIC_INT",
+      "input": "completion",
+      "to": "EXPECT_RBRACKET",
+      "action": "retain index token in uncommitted selector frame"
+    },
+    {
+      "from": "EXPECT_RBRACKET",
+      "input": "]",
+      "to": "PATH_COMPLETE",
+      "action": "commit one index selector to InterpolationPathCst"
+    },
+    {
+      "from": "AFTER_LBRACKET|EXPECT_RBRACKET",
+      "input": "any inadmissible scalar or EOF",
+      "to": "ERROR_TERMINAL",
+      "action": "emit one malformed-index error node; reprocess non-EOF delimiter in STRING; emit no index-selector AST",
+      "diagnostic": "PENDING_IR_FE_P1_035_EXACT_PRIMARY"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": "unescaped backtick",
+      "to": "EXPLICIT_BOUNDARY",
+      "action": "emit INTERPOLATION_BOUNDARY; consume backtick; append no output text; return STRING"
+    },
+    {
+      "from": "STRING",
+      "input": "unescaped backtick not immediately after a complete shorthand path",
+      "to": "ERROR_TERMINAL",
+      "action": "consume backtick as error token and continue STRING",
+      "diagnostic": "INTERPOLATION_BOUNDARY_OUTSIDE_PATH"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": "(",
+      "to": "ERROR_TERMINAL",
+      "action": "consume no call suffix into the path; recover at the string-part boundary",
+      "diagnostic": "INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": ":",
+      "to": "ERROR_TERMINAL",
+      "action": "consume no format suffix into the path; recover at the string-part boundary",
+      "diagnostic": "INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM"
+    },
+    {
+      "from": "PATH_COMPLETE",
+      "input": "whitespace, comment-shaped text, newline, escape, quote, dollar, or any other non-selector scalar",
+      "to": "STRING",
+      "action": "finish path before delimiter; consume zero delimiter bytes in shorthand; reprocess delimiter in STRING"
+    }
+  ],
+  "scanner_parser_handshake": {
+    "outer_scanner_mode": "STRING",
+    "subtransaction_origin": "STRING_SHORTHAND",
+    "checkpoint_api": "R16 token_transaction",
+    "tokens": [
+      "DOLLAR",
+      "IDENTIFIER",
+      "AT",
+      "DOT",
+      "DECIMAL_INTEGER",
+      "LBRACKET",
+      "RBRACKET",
+      "INTERPOLATION_BOUNDARY",
+      "ERROR_TOKEN"
+    ],
+    "scanner_owns": [
+      "maximal token extent",
+      "escape and mode boundary",
+      "zero-consumption reprocessing",
+      "checkpoint identity"
+    ],
+    "parser_owns": [
+      "root and selector structure",
+      "complete-path commitment",
+      "call/format forbidden continuation",
+      "CST error-node placement"
+    ],
+    "checker_owns": [
+      "member existence",
+      "index domain",
+      "read-only projection validity",
+      "Display witness"
+    ],
+    "delimiter_reprocessing": "finish shorthand with zero delimiter consumption, commit the complete path, then scan the same delimiter under STRING",
+    "failed_selector_partial_ast_count": 0,
+    "failed_selector_valid_path_extension_count": 0
+  },
+  "termination_priority": [
+    "braced opener ${ wins in STRING before shorthand",
+    "committed incomplete dot or bracket selector is an error, never normal termination",
+    "complete path followed by ( is a braced-expression diagnostic",
+    "complete path followed by : is a braced-format diagnostic",
+    "complete path followed by unescaped backtick is explicit no-output termination",
+    "all other non-selector input terminates with zero delimiter consumption and STRING reprocessing"
+  ],
+  "cst_ast_contract": {
+    "cst": "InterpolationPathCst(root, selectors, optional_boundary, raw_span, token_origin)",
+    "ast": "InterpolationPathExpr(root, selectors)",
+    "boundary_in_ast": false,
+    "boundary_retained_in_lossless_cst": true,
+    "malformed_suffix": "R14 error node in CST only; no admitted selector or interpolation-path AST extension",
+    "path_root_evaluation_count": 1,
+    "selector_order": "source order exactly once",
+    "authority": "read-only projection only"
+  },
+  "diagnostic_binding": {
+    "INTERPOLATION_BOUNDARY_OUTSIDE_PATH": {
+      "status": "active",
+      "stage": "lexer",
+      "message": "A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode."
+    },
+    "INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES": {
+      "status": "active",
+      "stage": "parser",
+      "message": "Complex interpolation expression requires ${...}."
+    },
+    "INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM": {
+      "status": "active",
+      "stage": "parser",
+      "message": "Interpolation format spec is admitted only in braced form ${expr:format}."
+    },
+    "INTERPOLATION_SHORTHAND_EXPECTED_IDENTIFIER": {
+      "status": "active",
+      "stage": "checker",
+      "message": "String interpolation shorthand requires an identifier after $."
+    }
+  },
+  "diagnostic_fence": {
+    "missing_root_reason": "EXPECTED_IDENTIFIER_OR_AT",
+    "missing_root_metadata_repair": "PENDING_IR_FE_P1_035_STAGE_MESSAGE_SPAN_FIXIT",
+    "malformed_dot_or_index_primary": "PENDING_IR_FE_P1_035_EXACT_PRIMARY",
+    "final_span_fixit_ordering": "PENDING_IR_FE_P1_035",
+    "new_final_diagnostic_id_count": 0
+  },
+  "semantic_contract": {
+    "evaluation_order": "root once, then selectors left-to-right once",
+    "read_only": true,
+    "calls": "FORBIDDEN_IN_SHORTHAND",
+    "mutation": "FORBIDDEN_IN_SHORTHAND",
+    "await": "FORBIDDEN_IN_SHORTHAND",
+    "assignment": "FORBIDDEN_IN_SHORTHAND",
+    "arbitrary_operators": "NOT_PART_OF_PATH; ordinary characters remain string text after termination",
+    "format": "BRACED_FORM_ONLY",
+    "implicit_authority_lookup": false
+  },
+  "status_fences": {
+    "semantic_p0_created": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_scanner_execution": "NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "checker_execution": "NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "canonical_source_mutation": 0,
+    "github_mutation": 0
+  }
+}

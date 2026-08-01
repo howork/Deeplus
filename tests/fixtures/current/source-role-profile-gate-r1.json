@@ -1,0 +1,134 @@
+{
+  "schema": "deeplus.source-role-profile-gate-fixture/r1",
+  "baseline_commit": "88bbc4fe6217fc1b0e8d5db05379ef046eb07abe",
+  "gap_id": "IR-FE-P1-036",
+  "source_role_domain": [
+    "library",
+    "executable",
+    "script"
+  ],
+  "activation_profile_domain": [
+    "stable",
+    "preview"
+  ],
+  "hir_source_profile_normalization": {
+    "stable": "CURRENT",
+    "preview": "EXPLICIT_PREVIEW"
+  },
+  "role_profile_root_matrix": [
+    {
+      "source_role": "library",
+      "activation_profile": "stable",
+      "root": "LibrarySourceFile"
+    },
+    {
+      "source_role": "executable",
+      "activation_profile": "stable",
+      "root": "ExecutableSourceFile"
+    },
+    {
+      "source_role": "script",
+      "activation_profile": "stable",
+      "root": "ScriptSourceFile"
+    },
+    {
+      "source_role": "library",
+      "activation_profile": "preview",
+      "root": "PreviewLibrarySourceFile"
+    },
+    {
+      "source_role": "executable",
+      "activation_profile": "preview",
+      "root": "PreviewExecutableSourceFile"
+    },
+    {
+      "source_role": "script",
+      "activation_profile": "preview",
+      "root": "PreviewScriptSourceFile"
+    }
+  ],
+  "active_gate_projection": [
+    {
+      "feature_id": "ffi_c_extern_unsafe_surface_msp",
+      "owner_stage": "parser",
+      "grammar_routes": [
+        "PreviewFfiBlockDecl",
+        "PreviewFfiFunctionDecl"
+      ],
+      "semantic_reference_routes": []
+    },
+    {
+      "feature_id": "ffi_minimum_sound_profile",
+      "owner_stage": "parser",
+      "grammar_routes": [
+        "PreviewFfiFunctionDecl"
+      ],
+      "semantic_reference_routes": []
+    },
+    {
+      "feature_id": "numeric_array_elementwise_power_msp",
+      "owner_stage": "checker",
+      "grammar_routes": [],
+      "semantic_reference_routes": [
+        "PrattExpr"
+      ]
+    }
+  ],
+  "atomic_failure_result": {
+    "activated_features": [],
+    "canonical_source_unit_ast": null
+  },
+  "oracles": [
+    {
+      "id": "IR-R3-GAP-09-P",
+      "category": "positive",
+      "expected": "ACCEPT_SAME_ROLE_PREVIEW_PROFILE_AND_GATE_CLOSURE"
+    },
+    {
+      "id": "IR-R3-GAP-09-B",
+      "category": "boundary",
+      "expected": "REJECT_ATOMIC_GATE_DEPENDENCY",
+      "diagnostic": "PREVIEW_GATE_DEPENDENCY_MISSING"
+    },
+    {
+      "id": "IR-R3-GAP-09-N",
+      "category": "negative",
+      "expected": "REJECT_GATE_PROJECTION_DRIFT"
+    },
+    {
+      "id": "R19-STABLE-WITH-GATE",
+      "category": "negative",
+      "expected": "REJECT_PROFILE_GATE_MISMATCH",
+      "diagnostic": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID"
+    },
+    {
+      "id": "R19-PREVIEW-WITHOUT-GATE",
+      "category": "negative",
+      "expected": "REJECT_PROFILE_GATE_MISMATCH",
+      "diagnostic": "PACKAGE_MODULE_SOURCE_GRAPH_INVALID"
+    },
+    {
+      "id": "R19-PSEUDO-ROLE",
+      "category": "negative",
+      "input_source_role": "preview_library",
+      "expected": "REJECT_ROLE_DOMAIN"
+    },
+    {
+      "id": "R19-NUMARR-CHECKER",
+      "category": "positive",
+      "expected": "CHECKER_SEMANTIC_ROUTE"
+    },
+    {
+      "id": "R19-PARTIAL",
+      "category": "negative",
+      "expected": "ZERO_PARTIAL_ACTIVATION"
+    }
+  ],
+  "acceptance": {
+    "active_gate_projection_count": 3,
+    "nonactivatable_gate_projection_count": 115,
+    "new_syntax_count": 0,
+    "new_diagnostic_id_count": 0,
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

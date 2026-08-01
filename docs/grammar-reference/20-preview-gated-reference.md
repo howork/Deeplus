@@ -9,8 +9,10 @@
 `source_activation = explicit_feature_gate`인 기능만 설명한다. 여기에
 등재된 예시는 정적 설계 예시이며 제품 실행 증거가 아니다. lexer, parser,
 checker, MIR, xVM, Cranelift, formatter/LSP를 포함한 15개 제품 lane은 모두
-`NOT_RUN`이다. gate는 해당 source root와 구문 또는 의미 route를 선택할
-뿐이며, ABI·타입·소유권·효과·오류·provenance 검사를 면제하지 않는다.
+`NOT_RUN`이다. carrier가 `source_role`과 `activation_profile`로 source
+root를 먼저 고른다. gate는 이미 선택된 Preview root에서 구문 또는 의미
+route와 dependency closure를 검증할 뿐이며 source role/profile을 바꾸거나
+ABI·타입·소유권·효과·오류·provenance 검사를 면제하지 않는다.
 gate ID는 왼쪽에서 오른쪽으로 검사되고, 의존성은 암시적으로 켜지지
 않는다.
 
@@ -39,8 +41,8 @@ soundness의 증거가 아니다.
 source의 첫 위치에서 gate를 선택한 뒤 `PreviewFfiFunctionDecl` 형태의
 `extern#C def#unsafe` 선언을 사용한다. script에서는 shebang 다음 첫
 비-shebang token이어야 하고 library/executable에서는 첫 token이어야
-한다. 최소 profile ID만 적은 gate는 알려진 Preview ID로서 root 선택에는
-유효하지만, 실제 C extern unsafe surface가 함께 필요한 선언은 아래
+한다. 최소 profile ID만 적은 gate는 알려진 Preview ID지만 필요한 기능
+route 전체를 활성화하지는 않는다. 실제 C extern unsafe surface가 함께 필요한 선언은 아래
 두 번째 기능과 그 명시적 dependency closure를 함께 적어야 한다.
 
 **정적 판정과 상호작용**
@@ -229,7 +231,8 @@ NumericArray의 각 원소에 같은 지수를 적용하는 의도를 닫힌 연
 
 **제안 표면**
 source 첫 위치의
-`#preview(numeric_array_elementwise_power_msp)`가 Preview root를 고른다.
+carrier가 Preview root를 고르고,
+`#preview(numeric_array_elementwise_power_msp)`가 checker 의미 route를 연다.
 이 기능의 gate closure에는 다른 Preview ID가 없고, registry의
 `caret_power_operator_msp`와
 `numeric_array_elementwise_arithmetic_msp` 의존성은 이미 Stable

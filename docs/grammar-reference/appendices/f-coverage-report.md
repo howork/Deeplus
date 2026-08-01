@@ -1,7 +1,7 @@
 <!-- tools/generators/generate_grammar_reference.py가 생성함; 직접 수정하지 마십시오. -->
 # 부록 F — 커버리지 보고서
 
-- 리비전: `r51f3-current-hir-mir-machine-contract-r1`
+- 리비전: `r51f3-current-frontend-readiness-r11-r19-r1`
 - 투영 상태: `CURRENT_CANONICAL_DOCUMENTATION_PROJECTION`
 - 의미론 권위: `false`
 - 제품 지원: `NOT_RUN`
@@ -31,11 +31,11 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `7997706431ca6f96d0e68660332e8dfbdebbc29d9f9391e35f5c4917146e9449` |
+| `human_language` | `spec/language.md` | `7191f45e2367b127b989acdff9c5ee5c225de6e7b89eecac94da7aabf15c234b` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `943f941c93b95d2bc41682740ad5a4143a719fa178e8ea53f9311503c1e2dd65` |
-| `type_system` | `spec/types/type-system.md` | `2b8fc798fbf76a7a80f0eafa1a79fa34c985d288100a3f3421f5cf22dc56228c` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `d1aa2ca156b52ff4a51ab9aede8e18c30fdc2eafa868520a71a442526a497e66` |
+| `type_system` | `spec/types/type-system.md` | `5f72e7ee39740a3bd329f2bbc45c17b9f7bb5707453ab94678b8e89cb62a0558` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `95199faee37482c25896a6bedb3eb1285087d6c9c522164d9f027c58b5da6559` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `e68a4237fd8e231ce74601295e5cb9975fc60afa03bbe81500e5368183d96efe` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `35c20cccef65dcb19c0477b4470a11c8f97a08f8a0dde4cef1098b573df998f1` |
@@ -46,5 +46,5 @@
 | `enum_derived_capabilities` | `spec/contracts/enum-derived-capabilities.json` | `3cd9f28d0483090d6558e24ce7f50fc0d0dbdb2299ad4d0b3ff51d0a035cfe39` |
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `4327168a3dc9d79391237b20af8d8ac48d4c11b50803a129a8b6534187026366` |
 | `prelude` | `library/prelude/prelude.md` | `699f06e8ce8a367b108f08d51060d01b41e69318a867f2eb15ce655735ce9c41` |
-| `current_decisions` | `decisions/language/current-decisions.json` | `242f15abc027ca1f6eb6f840eeb400b7f21ecd747b6ba35eda0363cebac43682` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `9bd0878e2118ec78ac26a6655e1667907c8789b4cd3304662b9c413f1b017482` |
+| `current_decisions` | `decisions/language/current-decisions.json` | `bd93481745bcc97ec45f7c7f1c395181aacdb201d6e7c023cc0eae0a8be13148` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `5fbafebba199e901b652ec55c55c2b17c6fa4648fad0b6846a8776769a679f88` |

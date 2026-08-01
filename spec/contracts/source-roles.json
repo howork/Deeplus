@@ -39,6 +39,19 @@
     "script_module_importable": false,
     "canonical_order": "TYPED_ID_CANONICAL_BYTE_ORDER"
   },
+  "source_role_domain": [
+    "library",
+    "executable",
+    "script"
+  ],
+  "activation_profile_domain": [
+    "stable",
+    "preview"
+  ],
+  "hir_source_profile_normalization": {
+    "stable": "CURRENT",
+    "preview": "EXPLICIT_PREVIEW"
+  },
   "roles": {
     "library": {
       "root": "LibrarySourceFile",
@@ -89,6 +102,44 @@
     "executable": "PreviewExecutableSourceFile",
     "script": "PreviewScriptSourceFile"
   },
+  "role_profile_root_matrix": [
+    {
+      "source_role": "library",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "root": "LibrarySourceFile"
+    },
+    {
+      "source_role": "library",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
+      "root": "PreviewLibrarySourceFile"
+    },
+    {
+      "source_role": "executable",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "root": "ExecutableSourceFile"
+    },
+    {
+      "source_role": "executable",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
+      "root": "PreviewExecutableSourceFile"
+    },
+    {
+      "source_role": "script",
+      "activation_profile": "stable",
+      "normalized_hir_source_profile": "CURRENT",
+      "root": "ScriptSourceFile"
+    },
+    {
+      "source_role": "script",
+      "activation_profile": "preview",
+      "normalized_hir_source_profile": "EXPLICIT_PREVIEW",
+      "root": "PreviewScriptSourceFile"
+    }
+  ],
   "entry_signatures": [
     "() -> Unit",
     "(Sequence<String>) -> Unit",
@@ -109,11 +160,20 @@
   "module_static_block": "PREVIEW_DESIGN/nonactivatable",
   "script_and_explicit_entry": "forbidden_in_script_root; choose ExecutableSourceFile before parsing an explicit-entry file",
   "root_selection": {
-    "selector": "source_role",
+    "selector": [
+      "source_role",
+      "activation_profile"
+    ],
     "timing": "required before parsing",
     "inference_by_trying_roots": "forbidden",
     "exactly_one_role": true,
-    "preview_selection": "source_activation=explicit_feature_gate maps the same role to Preview{Role}SourceFile"
+    "exactly_one_activation_profile": true,
+    "stable_selection": "activation_profile=stable selects the Stable root for the unchanged source role and requires PreviewGate absence",
+    "preview_selection": "activation_profile=preview selects Preview{Role}SourceFile for the unchanged source role and requires one valid leading PreviewGate",
+    "preview_gate_may_select_or_override_activation_profile": false,
+    "preview_gate_may_change_source_role": false,
+    "nested_profile_override_count": 0,
+    "failure_commit": "zero activated features and zero canonical source-unit AST"
   },
   "graph_cycle_profiles": {
     "package_dependency": "ACYCLIC",
