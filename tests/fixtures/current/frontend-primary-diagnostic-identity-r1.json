@@ -1,0 +1,183 @@
+{
+  "schema": "deeplus.frontend-primary-diagnostic-identity-fixtures/r1",
+  "contract": "spec/contracts/frontend-primary-diagnostic-identity-r1.json",
+  "cases": [
+    {
+      "case_id": "R26-NAMED-REST-P",
+      "class": "positive",
+      "source_or_scenario": "def collect(***named: Record) -> Unit = {}",
+      "expected_outcome": "ACCEPT_CURRENT_NAMED_REST",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-NAMED-REST-B",
+      "class": "boundary",
+      "source_or_scenario": "collect(**record)",
+      "expected_outcome": "ACCEPT_NAMED_UNFOLD_NOT_DECLARATION_REST",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-NAMED-REST-N",
+      "class": "negative",
+      "source_or_scenario": "def collect(**named: Record) -> Unit = {}",
+      "expected_outcome": "REJECT_BEFORE_AST",
+      "expected_stage_or_null": "PARSER",
+      "expected_primary_diagnostic_or_null": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    },
+    {
+      "case_id": "R26-OPTION-NONE-P",
+      "class": "positive",
+      "source_or_scenario": "let value: Int? = ::none",
+      "expected_outcome": "ACCEPT_CANONICAL_OPTION_NONE",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-OPTION-NONE-B",
+      "class": "boundary",
+      "source_or_scenario": "let value = ::none",
+      "expected_outcome": "REJECT_MISSING_EXPECTED_OPTION_TYPE",
+      "expected_stage_or_null": "CHECKER",
+      "expected_primary_diagnostic_or_null": "OPTION_NONE_REQUIRES_EXPECTED_TYPE"
+    },
+    {
+      "case_id": "R26-OPTION-NONE-N",
+      "class": "negative",
+      "source_or_scenario": "let value: Int? = None",
+      "expected_outcome": "REJECT_AFTER_NEUTRAL_AST",
+      "expected_stage_or_null": "CHECKER",
+      "expected_primary_diagnostic_or_null": "OPTION_BARE_NONE_REMOVED"
+    },
+    {
+      "case_id": "R26-OPERATOR-P",
+      "class": "positive",
+      "source_or_scenario": "one admitted fixed-glyph role selects one exact left-owner conformance",
+      "expected_outcome": "ACCEPT_EXACT_FIXED_GLYPH_ROLE",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-OPERATOR-B",
+      "class": "boundary",
+      "source_or_scenario": "a built-in intrinsic-reserved operand pair uses no conformance lookup",
+      "expected_outcome": "ACCEPT_INTRINSIC_ROUTE",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-OPERATOR-N",
+      "class": "negative",
+      "source_or_scenario": "a parsed fixed glyph requests a conformance role outside the exact admitted set",
+      "expected_outcome": "REJECT_AFTER_NEUTRAL_AST",
+      "expected_stage_or_null": "CHECKER",
+      "expected_primary_diagnostic_or_null": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE"
+    },
+    {
+      "case_id": "R26-SLICE-P",
+      "class": "positive",
+      "source_or_scenario": "values[^..$]",
+      "expected_outcome": "ACCEPT_BOUNDED_SLICE_RANGE",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-SLICE-B",
+      "class": "boundary",
+      "source_or_scenario": "matrix[*]",
+      "expected_outcome": "ACCEPT_NUMERIC_ARRAY_FULL_AXIS_ONLY",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-SLICE-N",
+      "class": "negative",
+      "source_or_scenario": "values[..]",
+      "expected_outcome": "REJECT_BEFORE_AST",
+      "expected_stage_or_null": "PARSER",
+      "expected_primary_diagnostic_or_null": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR"
+    },
+    {
+      "case_id": "R26-LAZY-P",
+      "class": "positive",
+      "source_or_scenario": "let#lazy value = compute()",
+      "expected_outcome": "ACCEPT_CURRENT_LAZY_INTRODUCER_UNDER_ITS_PROFILE",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-LAZY-B",
+      "class": "boundary",
+      "source_or_scenario": "let#lazy value: Int = compute()",
+      "expected_outcome": "ACCEPT_EXPLICIT_TYPE_WITH_CURRENT_LAZY_INTRODUCER",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-LAZY-N",
+      "class": "negative",
+      "source_or_scenario": "let@lazy value = compute()",
+      "expected_outcome": "REJECT_BEFORE_AST",
+      "expected_stage_or_null": "PARSER",
+      "expected_primary_diagnostic_or_null": "LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH"
+    },
+    {
+      "case_id": "R26-UNIT-P",
+      "class": "positive",
+      "source_or_scenario": "9.81[m*s^-2]",
+      "expected_outcome": "ACCEPT_STAR_UNIT_MULTIPLICATION",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-UNIT-B",
+      "class": "boundary",
+      "source_or_scenario": "9.81[m / s^2]",
+      "expected_outcome": "ACCEPT_UNIT_DIVISION",
+      "expected_stage_or_null": null,
+      "expected_primary_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R26-UNIT-N",
+      "class": "negative",
+      "source_or_scenario": "9.81[m·s^-2]",
+      "expected_outcome": "REJECT_BEFORE_AST",
+      "expected_stage_or_null": "PARSER",
+      "expected_primary_diagnostic_or_null": "UNIT_MIDDLE_DOT_REMOVED_USE_STAR"
+    }
+  ],
+  "mutations": [
+    {
+      "mutation_id": "R26-MUT-001",
+      "axis": "frontend diagnostic id removed",
+      "expected_validator_result": "REJECT"
+    },
+    {
+      "mutation_id": "R26-MUT-002",
+      "axis": "frontend stage differs from registry owner",
+      "expected_validator_result": "REJECT"
+    },
+    {
+      "mutation_id": "R26-MUT-003",
+      "axis": "active diagnostic registry row removed",
+      "expected_validator_result": "REJECT"
+    },
+    {
+      "mutation_id": "R26-MUT-004",
+      "axis": "no-go primary diagnostic retargeted",
+      "expected_validator_result": "REJECT"
+    },
+    {
+      "mutation_id": "R26-MUT-005",
+      "axis": "binding family duplicated",
+      "expected_validator_result": "REJECT"
+    },
+    {
+      "mutation_id": "R26-MUT-006",
+      "axis": "product lane overclaim",
+      "expected_validator_result": "REJECT"
+    }
+  ],
+  "product_execution": "NOT_RUN"
+}

@@ -1,0 +1,158 @@
+{
+  "schema": "deeplus.grammar-topology-closure/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "3f0077dd8f021718dc87b3b239f417e5d3f770a6",
+    "tree": "f042c6188b1da6bfd152d161985977da2e2b73fc"
+  },
+  "inputs": {
+    "grammar": {
+      "path": "spec/grammar/deeplus.ebnf",
+      "bytes": 66033,
+      "sha256": "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
+    },
+    "frontend": "spec/frontend/frontend-model.json",
+    "disposition_registry": {
+      "path": "spec/contracts/grammar-production-disposition-registry-r1.json",
+      "bytes": 504001,
+      "sha256": "445c44c909d2f29343aba8f8b78c9d34f8d043e0588b6448b2f320ce387aa61f"
+    }
+  },
+  "reference_extraction": {
+    "source": "comment-stripped normalized RHS",
+    "quoted_terminals_are_references": false,
+    "declared_production_binding": "exact case-sensitive identifier match",
+    "remaining_identifier_binding": "closed external_symbol_set",
+    "undefined_reference_count": 0
+  },
+  "production_set": {
+    "count": 638,
+    "sha256": "d24f4716c5aa163c617b364c7b76b911bbc48f4efcb10064b29b74d57a2c312b"
+  },
+  "external_symbol_set": {
+    "count": 40,
+    "sha256": "0533f0d437fd88c9ebb53bb30649d22f210e505ce5496514025ab5527083ccf2",
+    "authority": "spec/contracts/grammar-production-disposition-registry-r1.json#external_symbol_contracts",
+    "open_ended": false
+  },
+  "source_roots": [
+    {
+      "production_id": "LibrarySourceFile",
+      "profile": "STABLE",
+      "reachable_count": 465,
+      "reachable_sha256": "b19bb0a42fbf5a3abdf9e73ea19fdbd489f9f216019b0859d31325546d370404"
+    },
+    {
+      "production_id": "ExecutableSourceFile",
+      "profile": "STABLE",
+      "reachable_count": 465,
+      "reachable_sha256": "f251f94a43c4e3ff5c7f3d2bfa4e4f5823642738768112a6519743362d270f84"
+    },
+    {
+      "production_id": "ScriptSourceFile",
+      "profile": "STABLE",
+      "reachable_count": 465,
+      "reachable_sha256": "8b558a477fb43d9fa7b84dd5e4b72d76982e9cb487146fb18aa064815f77f37c"
+    },
+    {
+      "production_id": "PreviewLibrarySourceFile",
+      "profile": "PREVIEW",
+      "reachable_count": 472,
+      "reachable_sha256": "2605f43a6aa819830502a73592aafcf35984f8aa24dab858794d35faf9614097"
+    },
+    {
+      "production_id": "PreviewExecutableSourceFile",
+      "profile": "PREVIEW",
+      "reachable_count": 472,
+      "reachable_sha256": "140d02975e7eedd783a8302f8cc8080fb4e0de838f521ac40b3fbe14ece3deeb"
+    },
+    {
+      "production_id": "PreviewScriptSourceFile",
+      "profile": "PREVIEW",
+      "reachable_count": 472,
+      "reachable_sha256": "cbb4ab034daa25d3dc820d51bd18d9a5587d99d0de2d59a2ba80809be1833aba"
+    }
+  ],
+  "aggregate_entry_roots": [
+    {
+      "production_id": "Deeplus",
+      "dispatches_to": [
+        "LibrarySourceFile",
+        "ExecutableSourceFile",
+        "ScriptSourceFile"
+      ]
+    },
+    {
+      "production_id": "DeeplusPreview",
+      "dispatches_to": [
+        "PreviewLibrarySourceFile",
+        "PreviewExecutableSourceFile",
+        "PreviewScriptSourceFile"
+      ]
+    }
+  ],
+  "six_root_reachability": {
+    "union": {
+      "count": 487,
+      "sha256": "521573860c09a6248e95da05a0a5f79674637b4cc2820b36999ccc49c0b1e9bc"
+    },
+    "shared": {
+      "count": 460,
+      "sha256": "04c393b0ba8ad980f7b8c56a4c83383f6ed9ed03c32785aa5a1787242bbd6de7"
+    }
+  },
+  "six_root_unreachable": {
+    "count": 151,
+    "sha256": "2be6c32ec2a2073aa4e04d61729584d039c3df8f1643c16b994ef30551b1b375",
+    "owner_counts": {
+      "CURRENT_SOURCE_GRAPH": 1,
+      "HANDWRITTEN_PARSER_REGISTRY": 103,
+      "PREVIEW_PROFILE_GRAPH": 1,
+      "SCANNER": 46
+    },
+    "interpretation": "not an orphan when it is an aggregate entry root or has an admitted non-source reachability owner"
+  },
+  "non_source_reachability_owners": [
+    "SCANNER",
+    "HANDWRITTEN_PARSER_REGISTRY",
+    "PREVIEW_HANDWRITTEN_PARSER_REGISTRY"
+  ],
+  "unowned_orphan_count": 0,
+  "profile_edge_policy": {
+    "LEXICAL": [
+      "LEXICAL"
+    ],
+    "STABLE": [
+      "LEXICAL",
+      "STABLE"
+    ],
+    "PREVIEW": [
+      "LEXICAL",
+      "STABLE",
+      "PREVIEW"
+    ]
+  },
+  "illegal_cross_profile_edge_count": 0,
+  "diagnostic_policy": {
+    "undefined_reference": "GRAMMAR_TOPOLOGY_EXTERNAL_REGISTRY",
+    "detached_production": "GRAMMAR_TOPOLOGY_ORPHAN",
+    "root_reachability_drift": "GRAMMAR_TOPOLOGY_ROOT_REACHABILITY",
+    "illegal_cross_profile_edge": "GRAMMAR_TOPOLOGY_PROFILE_EDGE",
+    "locator": "production_id plus source line when available"
+  },
+  "governance": {
+    "gap_id": "IR-FE-P1-039",
+    "semantic_change_count": 0,
+    "grammar_production_change_count": 0,
+    "new_source_spelling_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN",
+    "canonical_integration": "NOT_PERFORMED_LOCAL_CANDIDATE"
+  },
+  "product_support": "NOT_RUN"
+}

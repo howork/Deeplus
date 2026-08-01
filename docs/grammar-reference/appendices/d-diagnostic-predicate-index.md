@@ -544,6 +544,7 @@
 | `LAYOUT_ARG_SEPARATOR_REQUIRES_ALL_NAMED_ARGUMENTS` | `checker` | `error` | `active` | Layout argument separator is only admitted in multiline all-named argument lists. |
 | `LAYOUT_SEPARATOR_AMBIGUOUS_CONTINUATION` | `checker` | `error` | `active` | This newline cannot be used as a labeled aggregate entry separator because the expression may continue. |
 | `LAYOUT_SEPARATOR_NOT_ALLOWED_HERE` | `checker` | `error` | `active` | A newline is not an element separator in this context. |
+| `LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH` | `parser` | `error` | `active` | Lazy binding uses the attached \`let#lazy\` role; \`let@lazy\` is not a current Deeplus surface. |
 | `LAZY_HIDDEN_FAILURE_CHANNEL_FORBIDDEN` | `checker` | `error` | `active` | A lazy binding cannot memoize a hidden failure channel; use an explicit Result value. |
 | `LAZY_INITIALIZATION_CYCLE` | `checker` | `error` | `active` | A lazy binding cannot directly or indirectly force itself before its first commit. |
 | `LAZY_LET_INITIALIZER_NOT_ADMITTED` | `checker` | `error` | `active` | The lazy initializer must be pure, synchronous, nonthrowing, authority-free, resource-free, and capture only reusable immutable values. |
@@ -1220,6 +1221,7 @@
 | `UNIT_EXPONENT_REQUIRES_STATIC_INT` | `parser` | `error` | `active` | A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, suffixed integer, decimal point, or exponent-form number is not admitted. |
 | `UNIT_EXPR_REQUIRES_UNIT_NAMESPACE` | `checker` | `error` | `active` | Unit brackets contain only unit symbols, catalog qualifiers, powers, products, and divisions. |
 | `UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED` | `checker` | `error` | `active` | No whitespace is allowed between numeric literal and unit bracket. |
+| `UNIT_MIDDLE_DOT_REMOVED_USE_STAR` | `parser` | `error` | `active` | Unit multiplication uses \`*\`; the middle-dot spelling is not a current Deeplus surface. |
 | `UNIT_PROVIDER_REQUIRES_UNIT_WITNESS_CARRIER` | `checker` | `error` | `active` | Provider endpoints must use unit witness carriers such as \`1[USD]\`. |
 | `UNIT_SYMBOL_NOT_ACTIVE` | `checker` | `error` | `active` | Unit symbol is known but no active catalog authority is in scope. Use the catalog, do not merely import it. |
 | `UNIT_TYPE_IS_UNIT_NOT_NONE` | `checker` | `note` | `seed` | The unit return type is \`Unit\`. \`None\` is the Option case expression, not the unit type. |

@@ -9059,6 +9059,23 @@ let second: Int = first
 ```deeplus
 let background = spawn { => 1 }
 ```
+## EX-R51a1-NG-060 — rejected: executable entry cannot be generic
+
+- **source_feature_ids:** `entry_signature_contract`, `explicit_entry_function_surface`
+- **checker_trace_ids:** `EntrySignatureAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `executable`
+- **source_root:** `ExecutableSourceFile`
+- **primary_diagnostic:** `ENTRY_SIGNATURE_NOT_ADMITTED`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+def#entry<T>() -> Unit = {
+}
+// ENTRY_SIGNATURE_NOT_ADMITTED
+```
 ## EX-R51a1-NG-061 — rejected: two selected entry declarations in one executable root
 
 - **source_feature_ids:** `entry_signature_contract`, `entry_target_uniqueness_law`
@@ -9767,6 +9784,22 @@ configure(**settings)
 let#lazy model: Result<Model, error ParseError> = parseResult(text)
 inspect(model)
 ```
+## EX-R51b-GRAM-NG-002 — Lazy binding does not use the at role
+
+- **source_feature_ids:** `lazy_let_call_by_need_msp`, `r51e_frontend_grammar_current_canonical`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let@lazy model = parseResult(text)
+// LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH
+```
 ## EX-R51b-GRAM-P-003 — Unit products use star and slash
 
 - **source_feature_ids:** `unit_operation_policy_msp`, `r51e_frontend_grammar_current_canonical`
@@ -9780,6 +9813,22 @@ inspect(model)
 
 ```deeplus
 let acceleration = 9.8[m/s^2]
+```
+## EX-R51b-GRAM-NG-004 — Unit multiplication does not use a middle dot
+
+- **source_feature_ids:** `unit_operation_policy_msp`, `measure_semantic_core`, `r51e_frontend_grammar_current_canonical`
+- **checker_trace_ids:** `UnitOperationPolicyCoreAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `UNIT_MIDDLE_DOT_REMOVED_USE_STAR`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let area = 12[m·m]
+// UNIT_MIDDLE_DOT_REMOVED_USE_STAR
 ```
 ## EX-R51b-GRAM-P-004 — Data class may omit its body
 
@@ -10430,6 +10479,38 @@ public type Configure = (Record***) -> Unit
 ```deeplus
 let options = ${ timeout: 30, retries: 2 }
 configure(**options)
+```
+## EX-R51c1-004 — Named-rest parameter cannot use a double-star suffix
+
+- **source_feature_ids:** `named_rest_parameter_record_msp`
+- **checker_trace_ids:** `NamedRestCollectorAdmitted`, `NamedRestParameterRecordAndLastPosition`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def configure(options**: Record) -> Unit = {
+    apply(**options)
+}
+```
+## EX-R51c1-005 — Function-type named-rest residue cannot use double-star
+
+- **source_feature_ids:** `call_shape_rest_type_residue_law`, `named_rest_parameter_record_msp`
+- **checker_trace_ids:** `FunctionRestResiduePreserved`, `NamedRestCollectorAdmitted`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **primary_diagnostic:** `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Configure = (Record**) -> Unit
 ```
 ## EX-R51c1-006 — Triple-star cannot be used as named unfold
 

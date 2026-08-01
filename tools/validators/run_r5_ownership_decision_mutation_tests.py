@@ -3562,7 +3562,7 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1441
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1443
             and relation_metadata_doc.value.get("relation_count") == 559,
             "diagnostic/relation canonical counts changed",
         ),

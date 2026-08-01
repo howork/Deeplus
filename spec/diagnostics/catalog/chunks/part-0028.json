@@ -133,5 +133,62 @@
     "stage": "checker",
     "diagnostic_class": "release_verifier",
     "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "lazy_let_call_by_need_msp"
+    ],
+    "fixit_hint": "replace `let@lazy` with `let#lazy`",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "rewrite only the attached lazy-binding introducer; do not alter the initializer or binding responsibility",
+    "message": "Lazy binding uses the attached `let#lazy` role; `let@lazy` is not a current Deeplus surface.",
+    "notes": "Current-source exact-surface rejection; product parser emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "r51e_frontend_grammar_current_canonical"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "UNIT_MIDDLE_DOT_REMOVED_USE_STAR",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "unit_operation_policy_msp",
+      "measure_semantic_core"
+    ],
+    "fixit_hint": "replace the unit middle dot with `*`",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "rewrite only a middle dot recognized inside UnitExpr; never rewrite ordinary source text or an expression operator",
+    "message": "Unit multiplication uses `*`; the middle-dot spelling is not a current Deeplus surface.",
+    "notes": "Current-source exact-surface rejection with unit-grammar ownership; product parser emission receipt NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]
