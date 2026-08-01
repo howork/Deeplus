@@ -37,7 +37,8 @@ R9_SEMANTIC_PUBLICATION_TREE = "3afc92cae7f8cf7232e30944d6516aec811e6981"
 R10_SEMANTIC_SOURCE_COMMIT = "6460e8127620d495e055cd0b800198fb6f7e1a06"
 R10_SEMANTIC_PUBLICATION_COMMIT = "7d609678bdb8c94f2a365e89be578e595bb394b6"
 R10_SEMANTIC_PUBLICATION_TREE = "76189fb47e75d4faeb3f2f975f51df265dc42146"
-CURRENT_PUBLICATION_TARGET_COMMIT = R10_SEMANTIC_PUBLICATION_COMMIT
+R11_R19_SEMANTIC_PUBLICATION_COMMIT = "0f3fa1e145d38725ad22f929d5100fda9584ac10"
+CURRENT_PUBLICATION_TARGET_COMMIT = R11_R19_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -15156,6 +15157,14 @@ def main() -> int:
         [R10_PUBLICATION_CLOSURE_REPORT]
         if revision in CURRENT_MACHINE_REVISIONS
         else []
+    ) + (
+        [
+            "governance/reports/"
+            "Design_Deeplus_R11_R19_Frontend_Readiness_"
+            "Publication_Closure_R1.md"
+        ]
+        if revision == R11_R19_FRONTEND_REVISION
+        else []
     )
     check(
         indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
@@ -16182,7 +16191,7 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            55
+            56
             if revision == R11_R19_FRONTEND_REVISION
             else 46
             if revision == R10_HIR_MIR_REVISION
