@@ -12326,6 +12326,45 @@ def r23_actor_protocol_binding_workspace_check(root: Path) -> dict[str, Any]:
         }
 
 
+def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
+    """Run the exact-main R22 lifecycle validator without product overclaim."""
+
+    runner = root / "tools/validators/validate_actor_minimum_lifecycle.py"
+    expected = (
+        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=20 fixtures=10 admit=5 "
+        "reject=5 restart=0 interleaving=0 product=NOT_RUN"
+    )
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                f"focused validator nonzero exit {completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr or completed.stdout.strip() != expected:
+            raise ValueError("focused lifecycle receipt-contract drift")
+        return {
+            "check_id": "R22_ACTOR_MINIMUM_LIFECYCLE",
+            "pass": True,
+            "detail": expected,
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R22_ACTOR_MINIMUM_LIFECYCLE",
+            "pass": False,
+            "detail": f"R22 Actor lifecycle integration failure: {exc}",
+        }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -12392,6 +12431,12 @@ def main() -> int:
         r23_actor_protocol_binding_check_result["pass"],
         r23_actor_protocol_binding_check_result["check_id"],
         r23_actor_protocol_binding_check_result["detail"],
+    )
+    r22_actor_lifecycle_check_result = r22_actor_lifecycle_workspace_check(root)
+    check(
+        r22_actor_lifecycle_check_result["pass"],
+        r22_actor_lifecycle_check_result["check_id"],
+        r22_actor_lifecycle_check_result["detail"],
     )
 
     try:
@@ -12475,6 +12520,7 @@ def main() -> int:
         "tests/fixtures/current/actor-protocol-binding-table-r1.json",
         "tools/generators/bind_actor_protocol_binding_tables.py",
         "tools/validators/validate_actor_protocol_binding_descriptors.py",
+        "tools/validators/validate_actor_minimum_lifecycle.py",
         "spec/diagnostics/catalog/chunks/part-0029.json",
         "spec/diagnostics/relations/chunks/part-0009.json",
         "tests/conformance/checker-predicates/chunks/part-0031.json",

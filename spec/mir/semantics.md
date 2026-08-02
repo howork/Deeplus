@@ -351,6 +351,53 @@ no current MIR identity.
 
 The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound reply lifecycle under the existing cancellation law.
 
+One non-forgeable internal `ActorRuntimeRootOwnerId` owns the terminal
+lifecycle observation of each Actor incarnation. Static `ActorId` remains the
+source declaration and R23 binding-table identity; one runtime incarnation has
+a distinct internal `ActorInstanceId`. The provisional instance may exist
+during creation, but no `ActorRef` capability exists before
+`actor_publish_committed`. MIR orders `create_prepare`, state initialization,
+mailbox initialization, and publication; publication happens-before external
+prepare-send or enqueue through that reference. A prepublication failure emits
+no ActorRef, enters `CREATION_ABORTED`, rolls back only initialized resources
+exactly once in reverse initialization order, and reports one `FailureId` to
+the root owner. `supervisor_id` remains null.
+
+Normal stop is `DRAIN_ALL_COMMITTED_V1`. Its observable barriers are
+`stop_requested -> admission_closed -> drain_started -> drain_completed ->
+actor_state_cleanup_completed -> root_owner_observed ->
+termination_published`. The drain set is exactly the envelopes whose enqueue
+committed before admission closure. An indefinitely suspended active turn keeps
+stop pending with its exact `ContinuationReceiptId`, continuation-interface
+digest, state-region authority, managed roots, loans and cleanup tokens; it
+emits no implicit resume, cancel, cancellation, cleanup, root observation,
+reply or termination.
+
+An uncaught Defect is `STOP_AND_FAIL_PENDING_V1`. After `defect_observed`, no
+queued `turn_start` is legal. Admission closes; queued payloads, the active turn,
+and Actor state clean exactly once before a still-open Reply becomes observably
+terminal through `ActorMessageError::receiverClosedBeforeReply`. Every active
+loan ends first through the existing infallible `LOAN_END`; deferred, capture
+and owner cleanup tokens discharge exactly once within the enclosing cleanup
+event. A reply already terminal before the Defect remains terminal and is not
+duplicated. The primary `DefectId` is never replaced; cleanup Defects are
+suppressed in contiguous reverse-cleanup execution order. Before the root owner
+observes that outcome, each actor-owned managed `RootId` has one exact
+transfer-or-removal receipt. `ActorRuntimeRootOwnerId` and managed `RootId`
+remain disjoint identity domains, and termination is published last.
+
+MIR preserves lifecycle policy and state transition, conditional cleanup sets,
+reply-terminal counts and the complete R41/R23 selection residue:
+`ActorProtocolBindingTableId`, `ActorProtocolBindingId`, the typed
+`ActorHandlerId` or `ActorRequestId`, `ResponsibilityId`, and
+`binding_row_sha256`. These fields resolve one already verified selection;
+lifecycle processing performs no lookup, creation, reselection or digest
+mutation. xVM and runtime own policy execution. Cranelift and the single typed
+runtime ABI preserve the barriers but cannot choose policy, add a second ABI,
+absorb R24 code-generation lifetime, or reorder observable events. A lifecycle
+helper not present in the exact typed helper allowlist requires an explicit
+registry and runtime-ABI digest rebind before admission.
+
 `concur` regions record `ConcurId`, their owner `ExecutionId`, ordered
 `ConcurRunId` children, cancellation state, and cleanup barrier. A region exit
 joins every admitted run; no detached-run event is current. `spawn` first

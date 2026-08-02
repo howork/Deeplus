@@ -1510,6 +1510,56 @@ The current ordering guarantee is FIFO only for successfully committed messages 
 
 Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T: SharedMutexPayload>` publishes a different, context-specific payload law. `SharedMutexPayload` is a sealed public constraint checked by the internal `SharedMutexPayloadAdmitted` predicate; it is neither a Trait nor a user conformance or synthesis surface. The predicate admits cleanup-free Reusable or Affine owner-closed payload graphs and rejects Resource lifecycle, cleanup tokens or hooks, cleanup errors or effects, authority, suspension or cancellation responsibility, borrow or `inout` views, and opaque or unbounded generic components. A generic payload must state the bound. Admission creates no Plain, Copy, Clone, Shareable, Transferable, layout, ABI, serialization or other responsibility evidence, and the bound remains part of public API identity. SharedMutex supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; construction checks the payload before move commit, and unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
 
+Static `ActorId` denotes the source Actor declaration and remains the only Actor
+identity admitted into R23 protocol-binding tables. Each runtime incarnation
+instead receives one internal, non-forgeable `ActorInstanceId`; its `ActorRef`,
+mailbox, state region and `ActorRuntimeRootOwnerId` bind that instance. Runtime
+instance identity never enters module API binding bytes, binding-table digests
+or executable-origin identity. `ActorRuntimeRootOwnerId` is also distinct from
+the managed-memory `RootId` domain: it owns the terminal lifecycle observation,
+while managed roots are transferred or removed through their own exact receipts.
+
+Each Actor incarnation is owned by one compiler/runtime-only,
+non-forgeable `ActorRuntimeRootOwnerId`. The compatibility
+`supervisor_id` field is `null`; restart and supervision are not current. Actor
+creation is fail-closed: state and mailbox initialization commit before
+`actor_publish_committed`, which is the first point at which an `ActorRef` may
+escape. A failure before that point publishes no reference, enters the internal
+`CREATION_ABORTED` state, cleans each initialized resource exactly once in
+reverse order, and reports one non-forgeable `FailureId` to the root owner.
+
+Normal stop uses `DRAIN_ALL_COMMITTED_V1`: it records `stop_requested`, closes
+admission, drains the exact set of envelopes already committed before that
+close under the existing local-serial and per-channel ordering rules,
+terminalizes every admitted request exactly once, cleans Actor state, reports
+once to the root owner, and only then publishes termination. This is a safety
+rule rather than a fairness promise. If the active turn remains suspended
+indefinitely, stop remains pending with its exact continuation receipt,
+state-region authority, managed roots, loans and cleanup tokens; the runtime
+does not invent cancellation, a reply, cleanup, resume, cancel or termination.
+
+For a protocol-originated event the lifecycle trace references exactly one
+already verified R23 selection by `ActorProtocolBindingTableId` and stable
+`ActorProtocolBindingId`, and retains its typed handler/request identity,
+`ResponsibilityId`, and `binding_row_sha256`. Concrete non-protocol operations
+carry no such foreign key. Lifecycle processing creates or reselects no binding,
+and R24 code-generation lifetime is outside this profile.
+
+An uncaught Defect uses `STOP_AND_FAIL_PENDING_V1`. Admission closes and no
+queued handler starts. Unexecuted queued payloads and active-turn obligations
+are consumed once, every active loan ends through the existing infallible
+`LOAN_END`, and deferred, capture and owner cleanup tokens discharge exactly
+once before Actor state cleanup completes. Only after that cleanup may each
+admitted Reply without a prior terminal result fail exactly once through
+`ActorMessageError::receiverClosedBeforeReply`; the Defect itself is not
+converted into a recoverable Error. The root owner next observes the primary
+`DefectId` and any cleanup Defects in deterministic reverse-cleanup execution
+order, after all actor-owned managed roots have an exact transfer-or-removal
+receipt, and termination is then published. Restart, actor generations,
+interleaved turns, persistent mailboxes, and distributed lifecycle behavior
+remain inactive. These barriers consume the single typed runtime ABI; runtime
+helpers cannot create a second ABI, choose a handler or reselect a binding.
+
 ## 39. Compiler tree boundary
 
 Compiler-internal Rust lossless CST, AST, typed HIR and Deeplus MIR are not

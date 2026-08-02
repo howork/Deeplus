@@ -311,7 +311,16 @@ def main(root: Path = ROOT) -> None:
         "ACC-G002 R41 rebased design status",
     )
     require(gate["status"] == "BLOCKS_PRODUCT_EXECUTION", "ACC-G002 product fence")
-    require(actor["machine_acceptance"]["rule_count"] == len(actor["rules"]) == 19, "actor rule count")
+    rule_ids = [row["rule_id"] for row in actor["rules"]]
+    require(
+        actor["machine_acceptance"]["rule_count"] == len(actor["rules"])
+        and rule_ids
+        in (
+            [f"ACC-R{i:03d}" for i in range(1, 20)],
+            [f"ACC-R{i:03d}" for i in range(1, 21)],
+        ),
+        "actor rule set must be exact R41 or R41+R22",
+    )
     passed.append("actor coherence binding")
 
     predicate = next(row for row in predicates if row["predicate_id"] == "ActorProtocolGateAdmitted")

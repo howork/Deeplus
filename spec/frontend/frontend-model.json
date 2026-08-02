@@ -3930,6 +3930,12 @@
       "ActorProtocolBindingId",
       "ActorProtocolBindingTableId"
     ],
+    "mir_runtime_only_identities": [
+      "ActorInstanceId",
+      "ActorRuntimeRootOwnerId",
+      "ActorTurnId",
+      "DefectId"
+    ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
     "message_send_owner": ":~ TildeCallLed normalizes to CallExpr mode ActorMessage with the shared ordered CallArgument and trailing-closure contracts; actor dispatch never falls back to ordinary call resolution",
@@ -4051,6 +4057,44 @@
     "cancellation_phase_split": {
       "before_commit": "abort, sender retains owners, no channel_sequence, Cancellation is not ActorMessageError",
       "after_commit": "message remains actor-owned and admission Result is not rewritten"
+    },
+    "actor_minimum_lifecycle_contract": {
+      "static_actor_identity": "ActorId:STATIC_ACTOR_DECLARATION_ID",
+      "runtime_instance_identity": "one internal ActorInstanceId per Actor incarnation",
+      "runtime_instance_in_module_binding_bytes_count": 0,
+      "root_owner_identity": "one non-forgeable compiler/runtime-only ActorRuntimeRootOwnerId per Actor incarnation",
+      "root_owner_source_constructor_count": 0,
+      "root_owner_is_managed_root_id": false,
+      "supervisor_id_current_value": null,
+      "actor_ref_publication": "actor_publish_committed after state and mailbox initialization commit",
+      "creation_failure": "publish no ActorRef, enter CREATION_ABORTED, reverse-clean every initialized resource exactly once, and report one FailureId to the root owner",
+      "normal_stop_policy": "DRAIN_ALL_COMMITTED_V1",
+      "normal_stop_suspended_turn": "PENDING_WITH_EXACT_CONTINUATION_RECEIPT_WITHOUT_IMPLICIT_CANCELLATION_CLEANUP_OR_TERMINATION",
+      "defect_policy": "STOP_AND_FAIL_PENDING_V1",
+      "defect_cleanup_before_reply_failure_observation": true,
+      "loan_and_cleanup_binding": "LOAN_END precedes overlapping owner cleanup; deferred, capture and owner cleanup tokens discharge exactly once before the enclosing actor cleanup event completes",
+      "managed_root_binding": "managed roots are transferred or removed through exact receipts before root-owner observation; ActorRuntimeRootOwnerId and RootId are disjoint",
+      "continuation_binding": "suspended turns retain exact ContinuationReceiptId and continuation-interface digest; stop does not choose resume or cancel",
+      "pending_reply_failure": "ActorMessageError::receiverClosedBeforeReply",
+      "r23_binding_foreign_key": [
+        "ActorProtocolBindingTableId",
+        "ActorProtocolBindingId"
+      ],
+      "r23_binding_preserved_fields": [
+        "implementation_kind",
+        "ActorHandlerId_or_ActorRequestId",
+        "ResponsibilityId",
+        "binding_row_sha256"
+      ],
+      "lifecycle_binding_creation_or_reselection_count": 0,
+      "runtime_abi_count": 1,
+      "r24_codegen_lifetime_absorbed_count": 0,
+      "defect_as_recoverable_error": false,
+      "queued_handler_start_after_defect_count": 0,
+      "root_observation_before_termination": true,
+      "restart_event_count": 0,
+      "interleaving_event_count": 0,
+      "product_execution": "NOT_RUN"
     },
     "await_owner": "the existing prefix await operator only",
     "detached_execution_node_count": 0,
