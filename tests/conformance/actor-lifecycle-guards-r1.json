@@ -1,0 +1,89 @@
+{
+  "schema": "deeplus.actor-lifecycle-guard-matrix/r1",
+  "feature_id": "actor_minimum_lifecycle_r1",
+  "gap_id": "IR-ACTOR-P1-005",
+  "fixture_source": "tests/fixtures/current/actor-concurrency-coherence-r1.json",
+  "validator": "tools/validators/validate_actor_minimum_lifecycle.py",
+  "direct_guards": [
+    {
+      "test_id": "ACC-LC-GUARD-DIRECT-001",
+      "base_fixture_id": "ACC-LC-006-PUBLISH-BEFORE-MAILBOX",
+      "expected_first_failure": "ACTOR_LIFECYCLE_PUBLICATION_BEFORE_COMMIT"
+    },
+    {
+      "test_id": "ACC-LC-GUARD-DIRECT-002",
+      "base_fixture_id": "ACC-LC-007-ADMISSION-AFTER-CLOSE",
+      "expected_first_failure": "ACTOR_LIFECYCLE_ADMISSION_AFTER_CLOSE"
+    },
+    {
+      "test_id": "ACC-LC-GUARD-DIRECT-003",
+      "base_fixture_id": "ACC-LC-008-HANDLER-AFTER-DEFECT",
+      "expected_first_failure": "ACTOR_LIFECYCLE_HANDLER_AFTER_DEFECT"
+    },
+    {
+      "test_id": "ACC-LC-GUARD-DIRECT-004",
+      "base_fixture_id": "ACC-LC-009-TERMINATE-WITHOUT-ROOT",
+      "expected_first_failure": "ACTOR_LIFECYCLE_ROOT_OBSERVATION_INVALID"
+    },
+    {
+      "test_id": "ACC-LC-GUARD-DIRECT-005",
+      "base_fixture_id": "ACC-LC-010-RESTART-DEFERRED",
+      "expected_first_failure": "ACTOR_LIFECYCLE_DEFERRED_POLICY_ACTIVATED"
+    }
+  ],
+  "mutation_guards": [
+    {
+      "test_id": "R51-LC-MUT-001",
+      "base_fixture_id": "ACC-LC-001-CREATE-PUBLISH",
+      "mutation_id": "orphan_binding_foreign_key",
+      "expected_first_failure": "ACTOR_LIFECYCLE_BINDING_FOREIGN_KEY_INVALID"
+    },
+    {
+      "test_id": "R51-LC-MUT-002",
+      "base_fixture_id": "ACC-LC-001-CREATE-PUBLISH",
+      "mutation_id": "collide_static_and_instance_identity",
+      "expected_first_failure": "ACTOR_LIFECYCLE_IDENTITY_INVALID"
+    },
+    {
+      "test_id": "R51-LC-MUT-003",
+      "base_fixture_id": "ACC-LC-005-DEFECT-FAIL-PENDING",
+      "mutation_id": "duplicate_queued_payload_cleanup",
+      "expected_first_failure": "ACTOR_LIFECYCLE_PAYLOAD_CLEANUP_CARDINALITY"
+    },
+    {
+      "test_id": "R51-LC-MUT-004",
+      "base_fixture_id": "ACC-LC-003-NORMAL-STOP-REQUEST",
+      "mutation_id": "mismatch_reply_responsibility",
+      "expected_first_failure": "ACTOR_LIFECYCLE_REPLY_BINDING_INVALID"
+    },
+    {
+      "test_id": "R51-LC-MUT-005",
+      "base_fixture_id": "ACC-LC-003-NORMAL-STOP-REQUEST",
+      "mutation_id": "remove_reply_terminal",
+      "expected_first_failure": "ACTOR_LIFECYCLE_REPLY_TERMINAL_CARDINALITY"
+    },
+    {
+      "test_id": "R51-LC-MUT-006",
+      "base_fixture_id": "ACC-LC-003-NORMAL-STOP-REQUEST",
+      "mutation_id": "remove_actor_state_cleanup",
+      "expected_first_failure": "ACTOR_LIFECYCLE_TERMINATION_BEFORE_CLEANUP"
+    },
+    {
+      "test_id": "R51-LC-MUT-007",
+      "base_fixture_id": "ACC-LC-002-CREATE-FAIL-REVERSE-CLEANUP",
+      "mutation_id": "reverse_required_creation_cleanup_order",
+      "expected_first_failure": "ACTOR_LIFECYCLE_TRANSITION_INVALID"
+    }
+  ],
+  "machine_acceptance": {
+    "declared_guard_count": 12,
+    "direct_guard_count": 5,
+    "mutation_guard_count": 7,
+    "intersection_count": 0,
+    "duplicate_guard_count": 0,
+    "uncovered_guard_count": 0,
+    "base_fixture_mutation_count": 0,
+    "runtime_execution": "NOT_RUN",
+    "product_execution": "NOT_RUN"
+  }
+}

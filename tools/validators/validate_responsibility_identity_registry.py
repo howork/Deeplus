@@ -994,6 +994,10 @@ def projection_errors(root: Path, input_fixtures: dict[str, Any]) -> list[str]:
         INPUT_SCHEMA_REL in artifacts and INPUT_FIXTURE_REL in artifacts,
         "FEATURE_ARTIFACT_BINDING",
     )
+    require(
+        feature.get("depends_on") == ["trait_witness_coherence_phase_a"],
+        "FEATURE_DEPENDENCY_BINDING",
+    )
     return errors
 
 

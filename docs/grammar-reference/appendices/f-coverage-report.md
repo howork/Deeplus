@@ -11,7 +11,7 @@
 | 도메인 | 목표 | 관측 | 결과 |
 |---|---:|---:|---|
 | `grammar_productions` | 644 | 644 | `통과` |
-| `features` | 722 | 722 | `통과` |
+| `features` | 723 | 723 | `통과` |
 | `diagnostics` | 1483 | 1483 | `통과` |
 | `predicates` | 281 | 281 | `통과` |
 | `prelude_entries` | 77 | 77 | `통과` |
@@ -41,7 +41,7 @@
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `8c620428b6f2672e9a1ffa8b2a2c41f0892ff4548cab8db18f539c1e5ae94077` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `92fd16dc3bc87f43521e6066159015adcde128300dfe9f1bab866a4d04401370` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `35c20cccef65dcb19c0477b4470a11c8f97a08f8a0dde4cef1098b573df998f1` |
-| `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `1926f54627d180d4645777f3a019dab3f27ebd925cfa9fa6fb272caa671488d8` |
+| `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `355c295018e32054e08082b07494efdd0d7f282a2df3ddc923d4ad2cb3a9f7c3` |
 | `shared_state_coherence` | `spec/contracts/shared-state-coherence.json` | `da7e1244ee4bcd24bb81287065d74e0f5cfeb5662650fbc6cf5adae94dfd27d5` |
 | `tooling_profiles` | `spec/contracts/tooling-and-profiles.json` | `c145655ee26dfb6916f14e4bd071976974c521be7ce3c59afb214ed0e68f5aff` |
 | `provider_derive_via` | `spec/contracts/provider-derive-via.json` | `385b9dc084cd80189a223bdc7d3f5e496de37385cbf52c13ca6a9264166d38d9` |
@@ -49,4 +49,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `a83467df9ae86922569a90388c69c44443c5d2f0142cb9ea32fd2e31c8aafdad` |
 | `prelude` | `library/prelude/prelude.md` | `94175d3dd153cb9759cb6b3f4f1d858f8defbab82b5c1431bb57f2d771cf8673` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `2755c192b6ca458da511ec67d976e43e865b0b125b530ecb2d9931e85f15f3ae` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `d90c940c28ca88149b56095304b41b282d4790b0b62184d8efde6dc2dabd4431` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `2b07355e090ecbcfa6558ab3fa93fc35a7337d48c8eab7a399b25d01100bb10b` |

@@ -306,6 +306,7 @@ def main() -> int:
         "api": "schemas/language/module-api-digest.schema.json",
         "predicate_metadata": "spec/types/predicates/catalog-metadata.json",
         "fixture_metadata": "tests/conformance/checker-predicates/catalog-metadata.json",
+        "feature_chunk": "spec/features/catalog/chunks/part-0003.json",
     }
     loaded = {key: load_json(root, rel) for key, rel in paths.items()}
     contract = loaded["contract"]
@@ -314,6 +315,20 @@ def main() -> int:
     mir_defs = loaded["mir"]["$defs"]
     lowering = loaded["lowering"]["closure_capture_plan_lowering_contract"]
     mir_registry = loaded["mir_registry"]["closure_environment_plan_contract"]
+    feature_rows = loaded["feature_chunk"]
+    capture_features = [
+        row for row in feature_rows
+        if isinstance(row, dict)
+        and row.get("feature_id") == "closure_capture_descriptor_msp"
+    ] if isinstance(feature_rows, list) else []
+
+    check(
+        len(capture_features) == 1
+        and capture_features[0].get("depends_on")
+        == ["function_signature_exactness", "responsibility_identity_registry_r1"],
+        "CCP-V00_FEATURE_DEPENDENCY",
+        "closure capture explicitly depends on exact signature and responsibility identity",
+    )
 
     check(
         loaded["input_schema"].get("additionalProperties") is False

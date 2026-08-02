@@ -14,6 +14,16 @@ def load(relative: str) -> dict:
     return json.loads((ROOT / relative).read_text(encoding="utf-8"))
 
 
+def rows_from_chunks(relative: str) -> list[dict]:
+    rows: list[dict] = []
+    for path in sorted((ROOT / relative).glob("part-*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, list):
+            fail(f"catalog chunk is not an array: {path}")
+        rows.extend(payload)
+    return rows
+
+
 def fail(message: str) -> None:
     raise SystemExit(f"ACTOR_MINIMUM_LIFECYCLE_FAIL: {message}")
 
@@ -247,6 +257,10 @@ def main() -> int:
     schema = load("schemas/language/mir-responsibility.schema.json")
     fixtures = load("tests/fixtures/current/actor-concurrency-coherence-r1.json")
     frontend = load("spec/frontend/frontend-model.json")
+    trace_contract = load("spec/contracts/actor-minimum-lifecycle-trace-r1.json")
+    guard_matrix = load("tests/conformance/actor-lifecycle-guards-r1.json")
+    feature_rows = rows_from_chunks("spec/features/catalog/chunks")
+    handoff = (ROOT / "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md").read_text(encoding="utf-8")
     language = (ROOT / "spec/language.md").read_text(encoding="utf-8")
     mir = (ROOT / "spec/mir/semantics.md").read_text(encoding="utf-8")
 
@@ -289,6 +303,19 @@ def main() -> int:
         fail("R22/R23/R24 boundary drift")
     if lifecycle.get("restart_event_count") != 0 or lifecycle.get("interleaving_event_count") != 0:
         fail("deferred lifecycle surface activated")
+    if (
+        lifecycle.get("feature_id") != "actor_minimum_lifecycle_r1"
+        or lifecycle.get("trace_contract")
+        != "spec/contracts/actor-minimum-lifecycle-trace-r1.json"
+        or lifecycle.get("compiler_source_diagnostic_lane")
+        != "NOT_APPLICABLE_INTERNAL_LIFECYCLE_EVIDENCE_INVARIANT"
+        or lifecycle.get("acceptance_matrix")
+        != "tests/conformance/actor-lifecycle-guards-r1.json"
+        or lifecycle.get("acceptance_guard_coverage") != "12_OF_12"
+        or lifecycle.get("debugger_projection")
+        != "RECEIPT_BOUND_READ_ONLY_IDENTITY_STATE_AND_COMMITTED_EVENT_ORDER_PRODUCT_NOT_RUN"
+    ):
+        fail("R51 lifecycle trace binding drift")
     defect_order = lifecycle.get("defect_order", [])
     if not (
         defect_order.index("actor_state_cleanup_completed")
@@ -364,6 +391,96 @@ def main() -> int:
     if frontend_lifecycle.get("product_execution") != "NOT_RUN":
         fail("frontend product execution overclaim")
 
+    trace = trace_contract.get("trace", {})
+    diagnostic = trace.get("diagnostic", {})
+    tooling = trace.get("tooling_and_debugger", {})
+    acceptance = trace.get("acceptance_tests", {})
+    exact_guards = {
+        "ACTOR_LIFECYCLE_ADMISSION_AFTER_CLOSE",
+        "ACTOR_LIFECYCLE_BINDING_FOREIGN_KEY_INVALID",
+        "ACTOR_LIFECYCLE_DEFERRED_POLICY_ACTIVATED",
+        "ACTOR_LIFECYCLE_HANDLER_AFTER_DEFECT",
+        "ACTOR_LIFECYCLE_IDENTITY_INVALID",
+        "ACTOR_LIFECYCLE_PAYLOAD_CLEANUP_CARDINALITY",
+        "ACTOR_LIFECYCLE_PUBLICATION_BEFORE_COMMIT",
+        "ACTOR_LIFECYCLE_REPLY_BINDING_INVALID",
+        "ACTOR_LIFECYCLE_REPLY_TERMINAL_CARDINALITY",
+        "ACTOR_LIFECYCLE_ROOT_OBSERVATION_INVALID",
+        "ACTOR_LIFECYCLE_TERMINATION_BEFORE_CLEANUP",
+        "ACTOR_LIFECYCLE_TRANSITION_INVALID",
+    }
+    if (
+        trace_contract.get("feature_id") != "actor_minimum_lifecycle_r1"
+        or trace_contract.get("gap_id") != "IR-ACTOR-P1-005"
+        or trace_contract.get("semantic_change_from_r49") is not False
+        or diagnostic.get("compiler_user_diagnostic_lane")
+        != "NOT_APPLICABLE_INTERNAL_LIFECYCLE_EVIDENCE_INVARIANT"
+        or diagnostic.get("canonical_diagnostic_registry_id_count") != 0
+        or set(diagnostic.get("internal_verifier_guards", [])) != exact_guards
+        or tooling.get("formatter_lsp")
+        != "NOT_APPLICABLE_NO_NEW_SOURCE_SURFACE"
+        or len(tooling.get("debugger_obligations", [])) != 3
+        or tooling.get("product_execution") != "NOT_RUN"
+        or acceptance.get("guard_coverage") != "12_OF_12"
+        or acceptance.get("direct_fixture_count") != 5
+        or acceptance.get("mutation_test_count") != 7
+        or trace_contract.get("evidence_boundary", {}).get("product_lanes")
+        != "15/15_NOT_RUN"
+    ):
+        fail("R51 end-to-end trace contract drift")
+
+    direct = guard_matrix.get("direct_guards", [])
+    mutations = guard_matrix.get("mutation_guards", [])
+    matrix_acceptance = guard_matrix.get("machine_acceptance", {})
+    matrix_guards = {
+        row.get("expected_first_failure") for row in [*direct, *mutations]
+    }
+    if (
+        guard_matrix.get("feature_id") != "actor_minimum_lifecycle_r1"
+        or guard_matrix.get("gap_id") != "IR-ACTOR-P1-005"
+        or len(direct) != 5
+        or len(mutations) != 7
+        or matrix_guards != exact_guards
+        or len({row.get("test_id") for row in [*direct, *mutations]}) != 12
+        or matrix_acceptance.get("uncovered_guard_count") != 0
+        or matrix_acceptance.get("product_execution") != "NOT_RUN"
+    ):
+        fail("R51 lifecycle guard matrix drift")
+
+    lifecycle_features = [
+        row for row in feature_rows
+        if row.get("feature_id") == "actor_minimum_lifecycle_r1"
+    ]
+    if len(lifecycle_features) != 1:
+        fail("R51 lifecycle feature identity is not unique")
+    feature = lifecycle_features[0]
+    if (
+        feature.get("status_enum") != "STABLE_DESIGN"
+        or feature.get("depends_on")
+        != [
+            "actor_request_reply",
+            "managed_reference_memory_profile_phase1",
+            "internal_runtime_abi_r1",
+        ]
+        or feature.get("normative_trace_refs", {}).get("diagnostics") != []
+        or feature.get("product_support") != "NOT_RUN"
+        or "spec/contracts/actor-minimum-lifecycle-trace-r1.json"
+        not in feature.get("artifact_trace_refs", [])
+    ):
+        fail("R51 lifecycle feature row drift")
+
+    for marker in (
+        "Frontend identity preservation",
+        "Checker lifecycle plan",
+        "MIR lowering",
+        "xVM runtime",
+        "Debugger projection",
+        "Conformance execution",
+        "R24 remains held",
+    ):
+        if marker not in handoff:
+            fail(f"R51 implementation handoff missing {marker}")
+
     for text, label in ((language, "language"), (mir, "MIR")):
         for marker in (
             "ActorRuntimeRootOwnerId",
@@ -377,7 +494,8 @@ def main() -> int:
 
     print(
         "ACTOR_MINIMUM_LIFECYCLE_PASS: "
-        "rules=20 fixtures=10 admit=5 reject=5 restart=0 interleaving=0 product=NOT_RUN"
+        "rules=20 fixtures=10 admit=5 reject=5 guards=12 trace=complete "
+        "restart=0 interleaving=0 product=NOT_RUN"
     )
     return 0
 

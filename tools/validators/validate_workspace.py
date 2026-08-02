@@ -100,7 +100,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 722, "diagnostics": 1483, "predicates": 281,
+    "features": 723, "diagnostics": 1483, "predicates": 281,
     "predicate_fixtures": 864, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -12332,7 +12332,8 @@ def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
     runner = root / "tools/validators/validate_actor_minimum_lifecycle.py"
     expected = (
         "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=20 fixtures=10 admit=5 "
-        "reject=5 restart=0 interleaving=0 product=NOT_RUN"
+        "reject=5 guards=12 trace=complete restart=0 interleaving=0 "
+        "product=NOT_RUN"
     )
     try:
         completed = subprocess.run(
@@ -12362,6 +12363,45 @@ def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
             "check_id": "R22_ACTOR_MINIMUM_LIFECYCLE",
             "pass": False,
             "detail": f"R22 Actor lifecycle integration failure: {exc}",
+        }
+
+
+def r51_actor_lifecycle_guard_workspace_check(root: Path) -> dict[str, Any]:
+    """Run the exact 12-guard in-memory evidence partition."""
+
+    runner = root / "tools/validators/run_actor_lifecycle_guard_mutation_tests.py"
+    expected = (
+        "ACTOR_LIFECYCLE_GUARD_MUTATION_PASS: guards=12 direct=5 "
+        "mutation=7 uncovered=0 product=NOT_RUN"
+    )
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                f"guard mutation runner nonzero exit {completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr or completed.stdout.strip() != expected:
+            raise ValueError("guard mutation receipt-contract drift")
+        return {
+            "check_id": "R51_ACTOR_LIFECYCLE_GUARD_PARTITION",
+            "pass": True,
+            "detail": expected,
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R51_ACTOR_LIFECYCLE_GUARD_PARTITION",
+            "pass": False,
+            "detail": f"R51 Actor lifecycle guard integration failure: {exc}",
         }
 
 
@@ -12438,6 +12478,14 @@ def main() -> int:
         r22_actor_lifecycle_check_result["check_id"],
         r22_actor_lifecycle_check_result["detail"],
     )
+    r51_actor_lifecycle_guard_check_result = (
+        r51_actor_lifecycle_guard_workspace_check(root)
+    )
+    check(
+        r51_actor_lifecycle_guard_check_result["pass"],
+        r51_actor_lifecycle_guard_check_result["check_id"],
+        r51_actor_lifecycle_guard_check_result["detail"],
+    )
 
     try:
         revision = tomllib.loads(
@@ -12478,7 +12526,7 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 722
+                and fixed_counts.get("features") == 723
                 and fixed_counts.get("predicates") == 281
                 and fixed_counts.get("predicate_fixtures") == 864
                 and fixed_counts.get("no_go") == 156
@@ -12521,6 +12569,10 @@ def main() -> int:
         "tools/generators/bind_actor_protocol_binding_tables.py",
         "tools/validators/validate_actor_protocol_binding_descriptors.py",
         "tools/validators/validate_actor_minimum_lifecycle.py",
+        "tools/validators/run_actor_lifecycle_guard_mutation_tests.py",
+        "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+        "tests/conformance/actor-lifecycle-guards-r1.json",
+        "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md",
         "spec/diagnostics/catalog/chunks/part-0029.json",
         "spec/diagnostics/relations/chunks/part-0009.json",
         "tests/conformance/checker-predicates/chunks/part-0031.json",

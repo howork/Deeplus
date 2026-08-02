@@ -730,14 +730,21 @@ def main() -> int:
             )
         ],
     ]
+    internal_feature_rows = [
+        row for row in feature_rows
+        if row.get("feature_id") == "internal_runtime_abi_r1"
+    ]
     check(
         contract.get("diagnostics") == DIAGNOSTICS
         and fixtures.get("expected_counts", {}).get("diagnostics")
         == len(DIAGNOSTICS)
-        and len(feature_rows) == 1
-        and feature_rows[0].get("feature_id") == "internal_runtime_abi_r1"
-        and feature_rows[0].get("authority_set")
+        and len(internal_feature_rows) == 1
+        and internal_feature_rows[0].get("authority_set")
         == ["LANGUAGE", "RUNTIME", "VERIFIER"]
+        and "consumes the exact continuation and managed-reference digests"
+        in internal_feature_rows[0].get("notes", "")
+        and "does not canonically close IR-OWN-P0-017"
+        in internal_feature_rows[0].get("notes", "")
         and [row.get("diagnostic_id") for row in diagnostic_rows]
         == DIAGNOSTICS
         and all(
@@ -748,7 +755,8 @@ def main() -> int:
         and not catalog_schema_errors,
         "R37_CATALOG_PRIORITY",
         (
-            f"feature_rows={len(feature_rows)} diagnostics={len(diagnostic_rows)} "
+            f"feature_rows={len(feature_rows)} internal_features={len(internal_feature_rows)} "
+            f"diagnostics={len(diagnostic_rows)} "
             f"schema_errors={catalog_schema_errors[:3]}"
         ),
         failures,
