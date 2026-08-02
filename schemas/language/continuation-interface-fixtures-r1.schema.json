@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/continuation-interface-fixtures-r1.schema.json",
+  "title": "Deeplus continuation interface R1 fixture index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "authority_contract", "receipt_schema", "status", "expected_counts", "tests", "product_execution"],
+  "properties": {
+    "schema": {"const": "deeplus.continuation-interface-fixtures/r1"},
+    "authority_contract": {"const": "spec/contracts/continuation-interface-r1.json"},
+    "receipt_schema": {"const": "schemas/language/continuation-receipt-r1.schema.json"},
+    "status": {"const": "SPECIFIED_NOT_RUN"},
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "positive", "boundary", "mutation"],
+      "properties": {"total": {"const": 18}, "positive": {"const": 3}, "boundary": {"const": 3}, "mutation": {"const": 12}}
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 18,
+      "maxItems": 18,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["test_id", "class", "axis", "scenario", "expected", "diagnostic_or_null"],
+        "properties": {
+          "test_id": {"type": "string", "pattern": "^R38-CI-(P|B|M)-[0-9]{3}$"},
+          "class": {"enum": ["positive", "boundary", "mutation"]},
+          "axis": {"type": "string", "minLength": 1},
+          "scenario": {"type": "string", "minLength": 1},
+          "expected": {"type": "string", "minLength": 1},
+          "diagnostic_or_null": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+        }
+      }
+    },
+    "product_execution": {"const": "NOT_RUN"}
+  }
+}

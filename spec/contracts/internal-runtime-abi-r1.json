@@ -1,0 +1,530 @@
+{
+  "schema": "deeplus.internal-runtime-abi-contract/r1",
+  "revision": "r37-internal-runtime-abi-r1",
+  "feature_id": "internal_runtime_abi_r1",
+  "status": "STABLE_DESIGN",
+  "decision": "decisions/language/Design_Deeplus_Internal_Runtime_ABI_R1.md",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "e680568057ec9c6b02218dbe153758471734cf44",
+    "tree": "4d91b75d244f0c6adb5980cee19fec756c337053"
+  },
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "current_binding": false,
+  "authority_fence": {
+    "semantic_authority": "Verified<DeeplusMirR1>",
+    "backend_neutral": true,
+    "source_syntax_change_count": 0,
+    "mir_operation_change_count": 0,
+    "mir_terminator_change_count": 0,
+    "production_implementation": false,
+    "product_execution": "NOT_RUN"
+  },
+  "dependencies": {
+    "mir_schema": "deeplus.mir/r1",
+    "mir_schema_digest_required": true,
+    "mir_machine_registry_digest_required": true,
+    "managed_reference_profile_gap": "IR-OWN-P1-025",
+    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+    "continuation_interface_gap": "IR-OWN-P0-017",
+    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND",
+    "canonical_promotion_ready": true
+  },
+  "identity_domains": [
+    "RuntimeAbiId",
+    "RuntimeHelperId",
+    "RuntimeHelperSignatureId",
+    "RuntimeAbiRecordId",
+    "RuntimeAbiTargetProjectionId",
+    "RuntimeAbiReceiptId"
+  ],
+  "canonical_encoding": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "object_keys": "UTF8_LEXICOGRAPHIC_ASCENDING",
+    "helper_rows": "RuntimeHelperId_ASCENDING_UNIQUE",
+    "signature_parameters": "DECLARED_ORDINAL_ASCENDING",
+    "self_digest_fields_excluded": true,
+    "target_private_addresses_excluded": true,
+    "compatibility": "EXACT_ABI_ID_AND_FULL_DIGEST_ONLY"
+  },
+  "calling_model": {
+    "abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+    "boundary_kinds": [
+      "GENERATED_TO_GENERATED",
+      "GENERATED_TO_RUNTIME",
+      "XVM_TO_RUNTIME"
+    ],
+    "runtime_to_generated_callback_admitted": false,
+    "host_unwind_across_boundary": false,
+    "native_exception_outcome": false,
+    "symbol_or_link_order_selects_identity": false,
+    "host_default_selects_projection": false
+  },
+  "logical_value_kinds": [
+    {
+      "kind": "UNIT",
+      "class": "NO_PAYLOAD"
+    },
+    {
+      "kind": "BOOL",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "I8",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "I16",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "I32",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "I64",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "I128",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "U8",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "U16",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "U32",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "U64",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "U128",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "ISIZE",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "USIZE",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "F32",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "F64",
+      "class": "DIRECT_SCALAR"
+    },
+    {
+      "kind": "MANAGED_HANDLE",
+      "class": "DIRECT_OPAQUE_HANDLE"
+    },
+    {
+      "kind": "AGGREGATE_SLOT",
+      "class": "INDIRECT_TYPED_SLOT"
+    },
+    {
+      "kind": "TYPE_ID",
+      "class": "DIRECT_OPAQUE_ID"
+    },
+    {
+      "kind": "OPAQUE_RUNTIME_TOKEN",
+      "class": "DIRECT_OPAQUE_TOKEN"
+    }
+  ],
+  "type_classification": {
+    "direct_primitive_source_domains": [
+      "Bool",
+      "Char",
+      "Int8",
+      "Int16",
+      "Int32",
+      "Int64",
+      "Int128",
+      "UInt8",
+      "UInt16",
+      "UInt32",
+      "UInt64",
+      "UInt128",
+      "ISize",
+      "USize",
+      "Float32",
+      "Float64"
+    ],
+    "always_indirect_source_families": [
+      "Tuple",
+      "Record",
+      "Enum",
+      "Option",
+      "Result",
+      "ClassValue",
+      "TraitObject",
+      "Closure",
+      "Array",
+      "List",
+      "Map",
+      "Set",
+      "String",
+      "Bytes",
+      "Rational",
+      "Complex",
+      "NumericArray",
+      "UnknownOpaque"
+    ],
+    "aggregate_register_split_admitted": false,
+    "one_field_aggregate_scalar_collapse": false,
+    "zero_sized_nominal_erases_identity": false,
+    "managed_handle_requires_exact_dependency_digest": true,
+    "never_may_return": false,
+    "unit_has_payload": false
+  },
+  "parameter_channels": {
+    "modes": [
+      "COPY_VALUE",
+      "CONSUME_ON_ENTRY",
+      "BORROW_READ_CALL_BOUND",
+      "INOUT_EXCLUSIVE_CALL_BOUND",
+      "OPAQUE_HANDLE"
+    ],
+    "source_evaluation_once": true,
+    "source_evaluation_order": "LEFT_TO_RIGHT",
+    "borrow_or_inout_address_semantic_identity": false,
+    "borrow_or_inout_escape": false,
+    "hidden_parameter_order": [
+      "CALL_FRAME",
+      "NORMAL_SLOT",
+      "ERROR_SLOT",
+      "DEFECT_SLOT",
+      "CANCELLATION_SLOT"
+    ]
+  },
+  "dispatcher_contract": {
+    "entry_profile": "DEEPLUS_INTERNAL_RUNTIME_DISPATCH_R1",
+    "logical_signature": "RuntimeDispatchCompletion dispatch(RuntimeContextHandle, RuntimeCallPacketSlot)",
+    "runtime_call_packet_is_indirect": true,
+    "completion_kinds": [
+      "COMPLETE",
+      "PARKED"
+    ],
+    "completion_union": {
+      "COMPLETE": "OutcomeTag",
+      "PARKED": "ContinuationReceiptId"
+    },
+    "complete_requires_one_outcome_tag": true,
+    "parked_requires_continuation_interface_digest": true,
+    "parked_requires_continuation_ownership_receipt": true,
+    "parked_commits_outcome_tag": false,
+    "parked_commits_outcome_slot": false,
+    "parked_commits_mir_successor": false,
+    "bounded_continuation_dispatch": {
+      "profile_count": 1,
+      "continuation_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+      "continuation_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "operation_allowlist": [
+        "RESUME",
+        "CANCEL"
+      ]
+    },
+    "arbitrary_callback_entry_count": 0
+  },
+  "outcome_channel": {
+    "tag_kind": "U8",
+    "tags": [
+      {
+        "ordinal": 0,
+        "name": "NORMAL",
+        "payload_slot": "NORMAL_SLOT"
+      },
+      {
+        "ordinal": 1,
+        "name": "ERROR",
+        "payload_slot": "ERROR_SLOT"
+      },
+      {
+        "ordinal": 2,
+        "name": "DEFECT",
+        "payload_slot": "DEFECT_SLOT"
+      },
+      {
+        "ordinal": 3,
+        "name": "CANCELLATION",
+        "payload_slot": "CANCELLATION_SLOT"
+      }
+    ],
+    "exactly_one_tag_commits": true,
+    "nonselected_slots_remain_uninitialized": true,
+    "unit_normal_payload_slot": false,
+    "aggregate_normal_uses_sret_slot": true,
+    "error_is_defect": false,
+    "cancellation_is_error": false,
+    "suspension_is_outcome_tag": false,
+    "host_unwind_is_outcome": false
+  },
+  "ownership_boundary": {
+    "pre_entry_order": [
+      "EVALUATE_ONCE",
+      "ACQUIRE_AND_STAGE",
+      "VERIFY_ABI_AND_SIGNATURE",
+      "PREPARE_TYPED_SLOTS",
+      "PUBLISH_REQUIRED_ROOTS",
+      "OWNERSHIP_COMMIT",
+      "CALLEE_ENTRY"
+    ],
+    "ownership_commit_count": 1,
+    "pre_entry_failure_restores_caller": true,
+    "post_entry_outcome_restores_transferred_input": false,
+    "complete_loan_end_on_every_outcome": true,
+    "parked_transfer_receipt": {
+      "receipt_id_type": "ContinuationReceiptId",
+      "required_dependency_gap": "IR-OWN-P0-017",
+      "committed_owners_transfer_count": "EXACT",
+      "active_loans_transfer_count": "EXACT",
+      "admitted_loan_classes": [
+        "NONE",
+        "STATIC_IMMUTABLE_SHARED"
+      ],
+      "forbidden_loan_classes": [
+        "STACK",
+        "REGION",
+        "INOUT",
+        "EXCLUSIVE",
+        "TEMPORARY_VIEW",
+        "CALLBACK",
+        "FACET"
+      ],
+      "cleanup_tokens_transfer_count": "EXACT",
+      "root_ownership_transfer_count": "EXACT",
+      "source_residual_count": 0,
+      "transfer_commit_count": 1,
+      "loan_end": "RESUME_OR_CANCEL_TERMINAL_EDGE"
+    },
+    "output_owner_transfers_only_on_selected_slot_commit": true,
+    "cleanup_owned_by_mir": true
+  },
+  "helper_registry": {
+    "contract": "spec/contracts/runtime-helper-registry-r1.json",
+    "schema": "schemas/language/runtime-helper-registry-r1.schema.json",
+    "row_schema": "deeplus.runtime-helper-signature/r1",
+    "helper_id_type": "RuntimeHelperId",
+    "signature_id_type": "RuntimeHelperSignatureId",
+    "required_row_fields": [
+      "runtime_helper_id",
+      "runtime_helper_signature_id",
+      "parameters",
+      "normal_result_kind",
+      "admitted_outcomes",
+      "completion_modes",
+      "may_block",
+      "may_collect",
+      "may_suspend",
+      "observes_cancellation",
+      "ownership_profile_digest",
+      "parameter_address_classes",
+      "managed_referent_or_interior_address_cross_boundary",
+      "managed_reference_profile_digest_or_null",
+      "continuation_interface_digest_or_null"
+    ],
+    "sorted_unique_by": "runtime_helper_id",
+    "allowlist_digest_required": true,
+    "duplicate_missing_or_signature_mismatch": "TERMINAL_BEFORE_EXECUTION",
+    "symbol_spelling_is_helper_identity": false,
+    "unlisted_helper_fallback": false
+  },
+  "managed_address_fence": {
+    "opaque_managed_handle_is_raw_address": false,
+    "raw_referent_address_crosses_call": false,
+    "raw_interior_address_crosses_call": false,
+    "raw_referent_or_interior_address_crosses_collect": false,
+    "raw_referent_or_interior_address_crosses_suspension": false,
+    "raw_referent_or_interior_address_crosses_actor_boundary": false,
+    "raw_referent_or_interior_address_crosses_ffi": false
+  },
+  "target_projection_contract": {
+    "schema": "deeplus.internal-runtime-abi-target-projection/r1",
+    "module_kinds": [
+      "Xvm",
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "required_fields": [
+      "projection_id",
+      "runtime_abi_id",
+      "runtime_abi_digest",
+      "mir_schema_digest",
+      "mir_machine_registry_digest",
+      "target_triple",
+      "pointer_width",
+      "endianness",
+      "stack_alignment_bytes",
+      "calling_convention",
+      "module_kind",
+      "scalar_mapping_digest",
+      "indirect_slot_mapping_digest",
+      "outcome_mapping_digest",
+      "helper_allowlist_digest",
+      "helper_symbol_or_table_map_digest",
+      "toolchain_digest",
+      "managed_reference_profile_digest_or_null",
+      "continuation_interface_digest_or_null",
+      "projection_digest"
+    ],
+    "target_location_is_semantic_identity": false,
+    "missing_field_uses_host_default": false,
+    "exact_runtime_abi_digest_required": true
+  },
+  "backend_mappings": {
+    "Xvm": {
+      "call_transport": "LOGICAL_TYPED_SLOT_VECTOR",
+      "helper_binding": "TYPED_HELPER_TABLE",
+      "native_symbol_required": false
+    },
+    "ObjectAot": {
+      "call_transport": "TARGET_CALLING_CONVENTION_WITH_INDIRECT_AGGREGATES",
+      "helper_binding": "EXACT_SYMBOL_SIDECAR_AND_LINK_RECEIPT",
+      "native_symbol_required": true
+    },
+    "InMemoryJit": {
+      "call_transport": "TARGET_CALLING_CONVENTION_WITH_INDIRECT_AGGREGATES",
+      "helper_binding": "EXACT_IMPORT_ALLOWLIST_AND_RESOLVED_MAP",
+      "native_symbol_required": true
+    }
+  },
+  "jit_lifetime": {
+    "immutable_image_generation_identity_required": true,
+    "active_call_lease_count_required": true,
+    "suspended_continuation_lease_count_required_when_bound": true,
+    "outstanding_root_receipt_count_required_when_bound": true,
+    "retire_only_after_all_leases_zero": true,
+    "address_reuse_selects_identity": false
+  },
+  "compatibility": {
+    "abi_id_match": "EXACT",
+    "runtime_abi_digest_match": "EXACT",
+    "helper_signature_digest_match": "EXACT",
+    "target_projection_digest_match": "EXACT",
+    "minor_or_subset_compatibility": false,
+    "symbol_prefix_compatibility": false,
+    "host_default_compatibility": false,
+    "mismatch_action": "TERMINAL_LINK_OR_LOAD_REJECTION_BEFORE_EXECUTION"
+  },
+  "diagnostics": [
+    "RUNTIME_ABI_DIGEST_MISMATCH",
+    "RUNTIME_ABI_HELPER_SET_INVALID",
+    "RUNTIME_ABI_HELPER_SIGNATURE_MISMATCH",
+    "RUNTIME_ABI_CHANNEL_PROJECTION_INVALID",
+    "RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID",
+    "RUNTIME_ABI_OWNERSHIP_COMMIT_INVALID",
+    "RUNTIME_ABI_HOST_UNWIND_FORBIDDEN",
+    "RUNTIME_ABI_TARGET_PROJECTION_MISMATCH",
+    "RUNTIME_ABI_JIT_IMPORT_INVALID",
+    "RUNTIME_ABI_JIT_RETIREMENT_LEASE_VIOLATION",
+    "RUNTIME_ABI_CROSS_PATH_PARITY_MISMATCH",
+    "RUNTIME_ABI_ARTIFACT_BINDING_MISMATCH"
+  ],
+  "rules": [
+    {
+      "rule_id": "IRA-R001",
+      "law": "Verified Deeplus MIR remains semantic authority and the internal ABI is a target projection only."
+    },
+    {
+      "rule_id": "IRA-R002",
+      "law": "R1 compatibility requires exact ABI ID and full canonical digest equality."
+    },
+    {
+      "rule_id": "IRA-R003",
+      "law": "Only the fixed primitive scalar set is direct; aggregates and nominal values are indirect typed slots."
+    },
+    {
+      "rule_id": "IRA-R004",
+      "law": "Aggregate normal results use the caller-provided normal slot as sret and are never register-split."
+    },
+    {
+      "rule_id": "IRA-R005",
+      "law": "COMPLETE carries exactly one NORMAL ERROR DEFECT or CANCELLATION OutcomeTag and commits one selected disjoint slot."
+    },
+    {
+      "rule_id": "IRA-R006",
+      "law": "PARKED carries one ContinuationReceiptId, commits no outcome or MIR successor, and requires the separate continuation interface."
+    },
+    {
+      "rule_id": "IRA-R007",
+      "law": "Ownership commits exactly once immediately before callee entry after all preconditions close."
+    },
+    {
+      "rule_id": "IRA-R008",
+      "law": "Pre-entry failure restores the caller; post-entry outcomes never restore transferred inputs."
+    },
+    {
+      "rule_id": "IRA-R009",
+      "law": "Borrow and inout channels end on each completed outcome edge; PARKED transfers committed state exactly once and admits across suspension only NONE or STATIC_IMMUTABLE_SHARED loans."
+    },
+    {
+      "rule_id": "IRA-R010",
+      "law": "Host unwind and native exceptions cannot cross the boundary or select a Deeplus outcome."
+    },
+    {
+      "rule_id": "IRA-R011",
+      "law": "Every declared helper has one typed ID, exact dependency digests and exact signature/ownership digests in the sorted unique active allowlist."
+    },
+    {
+      "rule_id": "IRA-R012",
+      "law": "Missing duplicate unlisted or signature-mismatched helpers fail before execution."
+    },
+    {
+      "rule_id": "IRA-R013",
+      "law": "xVM Object AOT and JIT project one logical ABI without backend semantic reselection."
+    },
+    {
+      "rule_id": "IRA-R014",
+      "law": "Every target parameter and mapping is explicit; host defaults cannot fill a missing field."
+    },
+    {
+      "rule_id": "IRA-R015",
+      "law": "JIT retirement requires UNPUBLISHED and zero call, continuation and outstanding-root-receipt leases; addresses never act as identity."
+    },
+    {
+      "rule_id": "IRA-R016",
+      "law": "Managed handles require the exact managed-reference dependency digest."
+    },
+    {
+      "rule_id": "IRA-R017",
+      "law": "External FFI and arbitrary runtime-to-generated callbacks remain outside R1; only the exact R38 RESUME/CANCEL continuation dispatch profile is admitted."
+    },
+    {
+      "rule_id": "IRA-R018",
+      "law": "Static validation creates no implementation execution P1 closure or product support."
+    }
+  ],
+  "expected_counts": {
+    "identity_domains": 6,
+    "logical_value_kinds": 20,
+    "boundary_kinds": 3,
+    "parameter_modes": 5,
+    "outcome_tags": 4,
+    "module_kinds": 3,
+    "diagnostics": 12,
+    "rules": 18,
+    "declared_base_helpers": 22,
+    "active_base_helpers": 22,
+    "conditional_continuation_helpers": 6,
+    "conditional_managed_helpers": 3,
+    "active_conditional_helpers": 3,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "separate_actions_open": 4,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

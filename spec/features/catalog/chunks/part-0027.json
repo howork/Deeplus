@@ -1,0 +1,66 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "hir_h1_current_mir_bridge_design",
+      "managed_reference_memory_profile_phase1"
+    ],
+    "display_name": "Internal runtime ABI R1",
+    "feature_id": "internal_runtime_abi_r1",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "One backend-neutral internal runtime ABI binds fixed scalar versus indirect aggregate channels, four explicit MIR outcomes, one ownership commit, exact helper identities/signatures, target projections, JIT imports and retirement. The exact IR-OWN-P1-025 managed-reference and IR-OWN-P0-017 continuation-interface digests are bound; 22 base helpers plus 3 conditionally admitted managed-memory helpers are active. External FFI and callbacks remain excluded. Product execution is NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "RUNTIME_ABI_DIGEST_MISMATCH",
+        "RUNTIME_ABI_HELPER_SET_INVALID",
+        "RUNTIME_ABI_HELPER_SIGNATURE_MISMATCH",
+        "RUNTIME_ABI_CHANNEL_PROJECTION_INVALID",
+        "RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID",
+        "RUNTIME_ABI_OWNERSHIP_COMMIT_INVALID",
+        "RUNTIME_ABI_HOST_UNWIND_FORBIDDEN",
+        "RUNTIME_ABI_TARGET_PROJECTION_MISMATCH",
+        "RUNTIME_ABI_JIT_IMPORT_INVALID",
+        "RUNTIME_ABI_JIT_RETIREMENT_LEASE_VIOLATION",
+        "RUNTIME_ABI_CROSS_PATH_PARITY_MISMATCH",
+        "RUNTIME_ABI_ARTIFACT_BINDING_MISMATCH"
+      ],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_Internal_Runtime_ABI_R1.md",
+      "spec/contracts/internal-runtime-abi-r1.json",
+      "spec/contracts/runtime-helper-registry-r1.json",
+      "schemas/language/internal-runtime-abi-r1.schema.json",
+      "schemas/language/runtime-helper-registry-r1.schema.json",
+      "schemas/language/internal-runtime-target-projection-r1.schema.json",
+      "schemas/language/internal-runtime-artifact-binding-receipt-r1.schema.json",
+      "tests/fixtures/current/internal-runtime-abi-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  }
+]

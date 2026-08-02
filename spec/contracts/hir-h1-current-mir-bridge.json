@@ -530,6 +530,37 @@
     "trait_witness_boundary": "PRESERVE_ALREADY_ADMITTED_EvidenceOriginId_ONLY_NO_SELECTION_OR_MATERIALIZATION",
     "product_support": "NOT_RUN"
   },
+  "suspension_frame_responsibility_bridge": {
+    "status": "STABLE_DESIGN_LOCAL_PROJECTION_NOT_PUBLISHED",
+    "contract": "spec/contracts/suspension-frame-responsibility-r1.json",
+    "schema": "schemas/language/suspension-frame-responsibility.schema.json",
+    "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
+    "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
+    "hir_structural_plan": "ContinuationFramePlan",
+    "static_identity_count": 3,
+    "dynamic_identity_count": 3,
+    "frame_state_count": 6,
+    "epoch_state_count": 5,
+    "frame_operation_count": 6,
+    "frame_slot_disposition_count": 4,
+    "source_spelling_delta": 0,
+    "grammar_delta": 0,
+    "source_diagnostic_count": 1,
+    "release_verifier_diagnostic_count": 4,
+    "checker_predicate": "BorrowAcrossSuspensionAdmitted",
+    "resume_cancel_winner_count_per_epoch": 1,
+    "cleanup_token_discharge_count": 1,
+    "target_projection_order": [
+      "Xvm",
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "root_rebind_policy": "BIJECTIVE_STORAGE_LOCATION_REBIND",
+    "backend_owner_inference": "FORBIDDEN",
+    "product_support": "NOT_RUN"
+  },
   "current_mir_bridge": {
     "current_semantic_authority": "spec/mir/semantics.md",
     "compatibility_target": "DP-RFC-0001 ProposedMirX1",
@@ -579,9 +610,19 @@
       "pointer_width_and_endianness",
       "object_format_and_code_relocation_model",
       "calling_convention",
+      "internal_runtime_abi_id",
+      "internal_runtime_abi_schema_id",
       "runtime_abi_digest",
+      "runtime_helper_registry_digest",
+      "internal_runtime_target_projection_digest",
+      "internal_runtime_artifact_binding_receipt_schema_id",
       "optimization_settings_digest",
       "runtime_helper_and_safepoint_capability_digest",
+      "managed_memory_profile_digest",
+      "managed_memory_plan_digest",
+      "continuation_root_interface_digest",
+      "target_root_projection_digest",
+      "runtime_root_registry_digest",
       "object_linker_or_jit_import_map_identity"
     ],
     "backend_private_identity_kinds": [
@@ -626,11 +667,69 @@
       "native_exception_or_personality_is_semantic_authority": false,
       "host_unwind_is_semantic_authority": false
     },
-    "managed_reference_guard": "missing required stack-map or stable-handle capability blocks native lowering",
+    "managed_reference_guard": {
+      "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+      "profile_contract": "spec/contracts/managed-reference-memory-profile-r1.json",
+      "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
+      "native_projection_receipt_schema": "deeplus.managed-reference-native-projection-receipt/r1",
+      "plan_is_deterministically_recomputed_from_verified_mir": true,
+      "target_locations_are_semantic_identity": false,
+      "missing_or_invalid_plan": "BLOCK_NATIVE_LOWERING",
+      "raw_pointer_fallback": false,
+      "required_native_projection_receipt_fields": [
+        "managed_memory_profile_digest",
+        "managed_memory_plan_digest",
+        "continuation_root_interface_digest",
+        "handle_abi_digest",
+        "shadow_root_frame_abi_digest",
+        "safepoint_projection_digest",
+        "target_root_projection_digest",
+        "runtime_root_registry_digest",
+        "runtime_abi_digest",
+        "image_metadata_lifetime_receipt_digest",
+        "semantic_parity_trace_digest",
+        "receipt_semantic_digest"
+      ],
+      "jit_finalized_image_field": "finalized_image_identity_or_null",
+      "jit_finalized_image_is_generation_identity": true
+    },
     "debug_projection": "SourceLoc and DebugOrigin use a separate nonsemantic debug digest",
     "symbol_spelling_selects_semantic_identity": false,
     "link_or_load_order_selects_semantics": false,
     "host_default_selects_target_profile": false
+  },
+  "internal_runtime_abi_contract": {
+    "feature_id": "internal_runtime_abi_r1",
+    "contract": "spec/contracts/internal-runtime-abi-r1.json",
+    "helper_registry": "spec/contracts/runtime-helper-registry-r1.json",
+    "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+    "backend_neutral": true,
+    "direct_value_class": "FIXED_PRIMITIVE_SCALAR_ONLY",
+    "aggregate_and_nominal_class": "INDIRECT_TYPED_SLOT",
+    "aggregate_result": "CALLER_OWNED_NORMAL_SRET_SLOT",
+    "outcome_tags": [
+      "NORMAL",
+      "ERROR",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "suspension_outcome_tag_count": 0,
+    "ownership_commit": "EXACTLY_ONCE_AFTER_PREFLIGHT_IMMEDIATELY_BEFORE_ENTRY",
+    "host_unwind_admitted": false,
+    "exact_digest_compatibility_only": true,
+    "declared_base_runtime_helper_count": 22,
+    "active_base_runtime_helper_count": 22,
+    "conditional_continuation_helper_count": 6,
+    "conditional_managed_helper_count": 3,
+    "active_conditional_managed_helper_count": 3,
+    "runtime_callback_count": 0,
+    "external_ffi_included": false,
+    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "canonical_promotion_ready": true,
+    "release_verifier_diagnostic_count": 12,
+    "product_support": "NOT_RUN",
+    "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND"
   },
   "rules": [
     {
@@ -726,17 +825,22 @@
     {
       "rule_id": "H1MB-R019",
       "title": "the bridge observes current backend authority without reselecting it",
-      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. This HIR bridge adds no backend-specific HIR field and cannot select xVM-only, restore a superseded native path, or claim product execution."
+      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. Managed references use the external deterministic deeplus.managed-memory-plan/r1 under STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1; target root locations never enter HIR. This bridge cannot select xVM-only, restore a superseded native path, or claim product execution."
     },
     {
       "rule_id": "H1MB-R020",
       "title": "evidence boundaries remain exact",
       "contract": "Semantic P0 remains zero, the exact 22 feature P1 remain OPEN, M13-A002 through A005 remain separate, every product lane remains NOT_RUN, and static fixtures are not implementation receipts."
+    },
+    {
+      "rule_id": "H1MB-R021",
+      "title": "suspension frames preserve responsibility atomically",
+      "contract": "Every suspension point binds one closed ContinuationFramePlan and exact ContinuationInterfaceId/digest. Suspension commit atomically transfers the owner, admitted-loan, cleanup-token, and retained-authority partition; managed storage-location roots are bijectively rebound to fresh destination RootIds before source removal. A fresh epoch admits exactly one resume-or-cancel winner, and every terminal path has zero responsibility balance."
     }
   ],
   "machine_acceptance": {
     "pipeline_stage_count": 7,
-    "rule_count": 20,
+    "rule_count": 21,
     "power_operation_count": 6,
     "power_adaptation_count": 5,
     "literal_variant_count": 2,
@@ -761,10 +865,10 @@
     "new_feature_p1_count": 0,
     "product_execution_receipt_count": 0,
     "product_lanes": "15/15_NOT_RUN",
-    "hir_identity_count": 128,
+    "hir_identity_count": 130,
     "current_lowering_row_count": 102,
     "explicit_preview_max_lowering_row_count": 111,
-    "mir_operation_count": 29,
+    "mir_operation_count": 48,
     "mir_terminator_count": 17,
     "mir_linear_token_kind_count": 12,
     "responsibility_axis_count": 11,
@@ -772,8 +876,11 @@
     "valid_call_mode_target_pair_count": 10,
     "fixed_operator_role_count": 13,
     "fixed_operator_trait_root_count": 9,
-    "new_release_verifier_diagnostic_count": 5,
-    "new_source_diagnostic_count": 0
+    "new_release_verifier_diagnostic_count": 9,
+    "managed_reference_projection_verifier_diagnostic_count": 7,
+    "new_source_diagnostic_count": 1,
+    "suspension_frame_fixture_count": 24,
+    "suspension_frame_predicate_fixture_count": 3
   },
   "machine_schema_authorities": {
     "canonical_hir": "deeplus.canonical-hir-h1/r1",
@@ -785,6 +892,9 @@
     "capability_receipt": "deeplus.mir-capability-receipt/r1",
     "fixture_contract": "deeplus.hir-mir-machine-contract-fixtures/r1",
     "diagnostic_contract": "deeplus.hir-mir-machine-diagnostic-contract/r1",
+    "suspension_frame_contract": "deeplus.suspension-frame-responsibility/r1",
+    "managed_memory_plan": "deeplus.managed-memory-plan/r1",
+    "managed_reference_native_projection_receipt": "deeplus.managed-reference-native-projection-receipt/r1",
     "authority_level": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA",
     "instance_or_product_receipt_created": false
   },

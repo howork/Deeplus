@@ -78,6 +78,15 @@ receipt의 일부다. MIR semantic digest와 다음 입력을 결합한다.
 host default, 환경 변수, link order 또는 symbol lookup order가 이 입력을
 암묵적으로 대신할 수 없다.
 
+내부 runtime 쪽 경계는 `DEEPLUS_INTERNAL_RUNTIME_ABI_R1`로 닫는다. fixed
+primitive scalar만 direct이며 aggregate/nominal value는 typed indirect
+slot, aggregate result는 caller-owned sret를 사용한다. 네 MIR outcome은
+분리된 slot을 사용하고 ownership은 entry 직전에 한 번 commit되며 host
+unwind는 금지된다. exact helper registry와 xVM/Object/JIT projection은
+digest-bound다. managed-reference와 suspending entry는 해당 dependency
+digest가 정본에 결속될 때까지 fail-closed하며 external FFI나 runtime
+callback은 이 결정으로 활성화되지 않는다.
+
 ## 5. 공통 lowering과 두 finalization 경로
 
 Object AOT와 JIT는 하나의 MIR→CLIF lowering 법칙을 공유한다. 두 경로는
@@ -189,3 +198,17 @@ dependency/supply-chain 검토를 하나의 별도 Build decision으로 결합�
 - <https://docs.rs/cranelift-object/latest/cranelift_object/struct.ObjectModule.html>
 - <https://docs.rs/cranelift-jit/latest/cranelift_jit/struct.JITModule.html>
 - <https://github.com/bytecodealliance/wasmtime/blob/main/cranelift/docs/ir.md>
+
+## 12. R36 managed-reference profile binding
+
+The fail-closed managed-reference guard is refined by
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`. Verified MIR binds a
+deterministically recomputed `deeplus.managed-memory-plan/r1`; Cranelift maps
+its logical roots to explicit shadow-root slots and records the mapping in a
+`deeplus.managed-reference-native-projection-receipt/r1` receipt.
+
+Phase 1 does not use a moving, concurrent or generational collector and exposes
+no weak-reference, finalizer, resurrection, pinning or managed-handle FFI
+surface. Missing or invalid memory-plan, target-root projection, runtime-root
+registry or JIT lifetime evidence blocks native lowering. This binding changes
+no HIR identity, source syntax, feature P1 or product-support lane.

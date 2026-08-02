@@ -1,0 +1,110 @@
+[
+  {
+    "fixture_id": "PF-BorrowAcrossSuspensionAdmitted-POS",
+    "predicate_id": "BorrowAcrossSuspensionAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "live_after_suspension": true,
+      "loan_class": "NONE",
+      "frame_slot_disposition": "REUSABLE_COPY"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-BorrowAcrossSuspensionAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "observe",
+        "authorities": [],
+        "suspends": true,
+        "isolation": "task"
+      }
+    },
+    "admitted_condition": "A reusable live value is copied into one REUSABLE_COPY frame slot without a loan or cleanup transfer.",
+    "rule_seed": "R20 suspension-frame responsibility positive fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-BorrowAcrossSuspensionAdmitted-BOUNDARY",
+    "predicate_id": "BorrowAcrossSuspensionAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "live_after_suspension": true,
+      "loan_class": "STATIC_IMMUTABLE_SHARED",
+      "referent_storage_duration": "STATIC",
+      "frame_slot_disposition": "STATIC_SHARED_BORROW"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-BorrowAcrossSuspensionAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "view_release",
+        "effects": [],
+        "errors": [],
+        "cancellation": "observe",
+        "authorities": [],
+        "suspends": true,
+        "isolation": "task"
+      }
+    },
+    "admitted_condition": "The only admitted live loan is immutable shared access to a referent with static storage duration.",
+    "rule_seed": "R20 suspension-frame responsibility boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-BorrowAcrossSuspensionAdmitted-NEG",
+    "predicate_id": "BorrowAcrossSuspensionAdmitted",
+    "expected": "rejected",
+    "descriptor": {
+      "live_after_suspension": true,
+      "loan_class": "STACK_SHARED",
+      "referent_storage_duration": "INVOCATION",
+      "attempted_frame_slot_disposition": "STATIC_SHARED_BORROW"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-BorrowAcrossSuspensionAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "borrow",
+        "cleanup": "view_release",
+        "effects": [],
+        "errors": [],
+        "cancellation": "observe",
+        "authorities": [],
+        "suspends": true,
+        "isolation": "task"
+      }
+    },
+    "rule_seed": "R20 suspension-frame responsibility negative fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active design algorithm",
+    "fixture_kind": "concrete_negative",
+    "expected_primary_diagnostic": "BORROW_CROSSES_SUSPENSION",
+    "violated_condition": "A stack-scoped shared loan remains live after FRAME_SUSPEND_COMMIT.",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

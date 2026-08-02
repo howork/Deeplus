@@ -405,6 +405,7 @@
         "HIR-H1/STRUCT/INTERPOLATION_PLAN",
         "HIR-H1/STRUCT/CLOSURE_PLAN",
         "HIR-H1/STRUCT/CLEANUP_SCOPE_PLAN",
+        "HIR-H1/STRUCT/CONTINUATION_FRAME_PLAN",
         "HIR-H1/STRUCT/SUSPEND_PLAN",
         "HIR-H1/STRUCT/CONCUR_PLAN",
         "HIR-H1/STRUCT/PROVIDER_OPERATION_PLAN",
@@ -2440,6 +2441,147 @@
       ],
       "unevaluatedProperties": false
     },
+    "ContinuationPlaceDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_place_id", "disposition", "frame_slot_id_or_null"],
+      "properties": {
+        "source_place_id": {"$ref": "#/$defs/Id"},
+        "disposition": {"enum": ["NOT_LIVE_AFTER_SUSPEND", "REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]},
+        "frame_slot_id_or_null": {"$ref": "#/$defs/NullableId"}
+      },
+      "allOf": [
+        {"if": {"properties": {"disposition": {"const": "NOT_LIVE_AFTER_SUSPEND"}}, "required": ["disposition"]}, "then": {"properties": {"frame_slot_id_or_null": {"type": "null"}}}},
+        {"if": {"properties": {"disposition": {"enum": ["REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]}}, "required": ["disposition"]}, "then": {"properties": {"frame_slot_id_or_null": {"$ref": "#/$defs/Id"}}}}
+      ]
+    },
+    "ContinuationFrameSlotPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_slot_id",
+        "source_place_id",
+        "normalized_type_id",
+        "disposition",
+        "init_state",
+        "owner_id_or_null",
+        "loan_id_or_null",
+        "cleanup_token_bindings",
+        "root_projection_ids"
+      ],
+      "properties": {
+        "frame_slot_id": {"$ref": "#/$defs/Id"},
+        "source_place_id": {"$ref": "#/$defs/Id"},
+        "normalized_type_id": {"$ref": "#/$defs/Id"},
+        "disposition": {
+          "enum": [
+            "REUSABLE_COPY",
+            "OWNED_TRANSFER",
+            "STATIC_SHARED_BORROW"
+          ]
+        },
+        "init_state": {"const": "Live"},
+        "owner_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "loan_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "cleanup_token_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["cleanup_token_id", "owner_id", "cleanup_region_id", "cleanup_region_rank", "registration_rank"],
+            "properties": {
+              "cleanup_token_id": {"$ref": "#/$defs/Id"},
+              "owner_id": {"$ref": "#/$defs/Id"},
+              "cleanup_region_id": {"$ref": "#/$defs/Id"},
+              "cleanup_region_rank": {"type": "integer", "minimum": 0},
+              "registration_rank": {"type": "integer", "minimum": 0}
+            }
+          }
+        },
+        "root_projection_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"disposition": {"const": "OWNED_TRANSFER"}},
+            "required": ["disposition"]
+          },
+          "then": {"properties": {"owner_id_or_null": {"$ref": "#/$defs/Id"}}}
+        },
+        {
+          "if": {
+            "properties": {"disposition": {"enum": ["REUSABLE_COPY", "STATIC_SHARED_BORROW"]}},
+            "required": ["disposition"]
+          },
+          "then": {
+            "properties": {
+              "owner_id_or_null": {"type": "null"},
+              "cleanup_token_bindings": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"disposition": {"const": "STATIC_SHARED_BORROW"}},
+            "required": ["disposition"]
+          },
+          "then": {
+            "properties": {
+              "loan_id_or_null": {"$ref": "#/$defs/Id"},
+              "root_projection_ids": {"minItems": 1}
+            }
+          }
+        }
+      ]
+    },
+    "ContinuationFramePlan": {
+      "allOf": [
+        {"$ref": "#/$defs/PlanHeader"},
+        {
+          "type": "object",
+          "required": [
+            "continuation_interface_identity",
+            "continuation_interface_digest",
+            "place_dispositions",
+            "frame_slots",
+            "suspension_point_ids",
+            "authority_token_ids",
+            "cancellation_id_or_null",
+            "epoch_policy",
+            "cleanup_order",
+            "owner_partition_policy",
+            "root_partition_policy"
+          ],
+          "properties": {
+            "structural_identity_id": {"const": "HIR-H1/STRUCT/CONTINUATION_FRAME_PLAN"},
+            "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+            "continuation_interface_digest": {"$ref": "#/$defs/Sha256"},
+            "place_dispositions": {"type": "array", "items": {"$ref": "#/$defs/ContinuationPlaceDisposition"}},
+            "frame_slots": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/ContinuationFrameSlotPlan"}
+            },
+            "suspension_point_ids": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"$ref": "#/$defs/Id"}
+            },
+            "authority_token_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/Id"}},
+            "cancellation_id_or_null": {"$ref": "#/$defs/NullableId"},
+            "epoch_policy": {"const": "FRESH_MONOTONIC_PER_FRAME"},
+            "cleanup_order": {"const": "REVERSE_REGISTRATION_WITHIN_REVERSE_NESTED_CLEANUP_REGION"},
+            "owner_partition_policy": {"const": "EXACT_DISJOINT_UNION"},
+            "root_partition_policy": {"const": "BIJECTIVE_STORAGE_LOCATION_REBIND"}
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
     "SuspendPlan": {
       "allOf": [
         {
@@ -2451,6 +2593,7 @@
             "suspend_kind",
             "payload_expr_id_or_null",
             "site_id",
+            "continuation_frame_plan_id",
             "payload_type_id",
             "resume_type_id",
             "cancellation_profile_id",
@@ -2473,6 +2616,9 @@
               "x-deeplus-reference-role": "OWNING_CHILD_EXPR_OR_NULL"
             },
             "site_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "continuation_frame_plan_id": {
               "$ref": "#/$defs/Id"
             },
             "payload_type_id": {
@@ -2835,6 +2981,9 @@
         },
         {
           "$ref": "#/$defs/CleanupScopePlan"
+        },
+        {
+          "$ref": "#/$defs/ContinuationFramePlan"
         },
         {
           "$ref": "#/$defs/SuspendPlan"

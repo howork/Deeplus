@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r37/internal-runtime-abi-fixtures-r1.schema.json",
+  "title": "Deeplus internal runtime ABI fixtures R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "fixture_schema", "revision", "contract", "baseline",
+    "evidence_state", "runtime_abi_instance", "target_projection_instances",
+    "artifact_binding_receipts", "semantic_cases", "mutations", "expected_counts"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.internal-runtime-abi-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/internal-runtime-abi-fixtures-r1.schema.json"},
+    "revision": {"const": "r37-internal-runtime-abi-r1"},
+    "contract": {"const": "spec/contracts/internal-runtime-abi-r1.json"},
+    "baseline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["commit", "tree"],
+      "properties": {"commit": {"$ref": "#/$defs/gitSha"}, "tree": {"$ref": "#/$defs/gitSha"}}
+    },
+    "evidence_state": {"type": "object", "minProperties": 5},
+    "runtime_abi_instance": {"type": "object"},
+    "target_projection_instances": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "object"}},
+    "artifact_binding_receipts": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "object"}},
+    "semantic_cases": {"type": "array", "minItems": 31, "maxItems": 31, "items": {"$ref": "#/$defs/case"}},
+    "mutations": {"type": "array", "minItems": 20, "maxItems": 20, "items": {"$ref": "#/$defs/mutation"}},
+    "expected_counts": {"type": "object", "minProperties": 10}
+  },
+  "$defs": {
+    "gitSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "diagnostic": {
+      "enum": [
+        "RUNTIME_ABI_DIGEST_MISMATCH",
+        "RUNTIME_ABI_HELPER_SET_INVALID",
+        "RUNTIME_ABI_HELPER_SIGNATURE_MISMATCH",
+        "RUNTIME_ABI_CHANNEL_PROJECTION_INVALID",
+        "RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID",
+        "RUNTIME_ABI_OWNERSHIP_COMMIT_INVALID",
+        "RUNTIME_ABI_HOST_UNWIND_FORBIDDEN",
+        "RUNTIME_ABI_TARGET_PROJECTION_MISMATCH",
+        "RUNTIME_ABI_JIT_IMPORT_INVALID",
+        "RUNTIME_ABI_JIT_RETIREMENT_LEASE_VIOLATION",
+        "RUNTIME_ABI_CROSS_PATH_PARITY_MISMATCH",
+        "RUNTIME_ABI_ARTIFACT_BINDING_MISMATCH"
+      ]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "class", "scenario", "facts", "expected", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^R37-IRA-(P|B|N)-[0-9]{3}$"},
+        "class": {"enum": ["positive", "boundary", "negative"]},
+        "scenario": {"type": "string", "minLength": 1},
+        "facts": {"type": "object"},
+        "expected": {
+          "type": "object", "additionalProperties": false,
+          "required": ["verdict", "diagnostic_id_or_null"],
+          "properties": {
+            "verdict": {"enum": ["ADMIT_STATIC", "REJECT_STATIC"]},
+            "diagnostic_id_or_null": {"oneOf": [{"$ref": "#/$defs/diagnostic"}, {"type": "null"}]}
+          }
+        },
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mutation_id", "operator", "expected_diagnostic"],
+      "properties": {
+        "mutation_id": {"type": "string", "pattern": "^R37-IRA-M-[0-9]{3}$"},
+        "operator": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
+        "expected_diagnostic": {"$ref": "#/$defs/diagnostic"}
+      }
+    }
+  }
+}

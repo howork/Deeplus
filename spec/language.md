@@ -1460,6 +1460,69 @@ outcome/edge로 유지한다. native exception, personality, host unwind 또는
 lowering은 fail-closed한다. debug projection은 별도 debug digest를 쓰며
 언어 의미나 제품 지원을 만들지 않는다.
 
+### 41.1 Phase-1 managed-reference memory profile
+
+Managed reference의 최초 구현 프로파일은
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`이다. 이는 정지-세계,
+비이동, 비세대, 비동시 full-heap tracing과 opaque stable handle을 사용한다.
+handle과 객체 주소는 소스 이름, 직렬화 tag, module API, ABI 또는 HIR/MIR
+의미 identity가 아니다.
+
+`deeplus.managed-memory-plan/r1` companion은 verified MIR digest와 정확한
+trace descriptor, safepoint, logical root map, allocation, interior projection,
+suspension root-transfer 표를 결합한다. root map은 running/frame/runtime 세
+partition의 정렬·중복 제거 합집합과 정확히 같아야 하며, 누락·추가·중복,
+오래된 generation 또는 digest/order 불일치는 native projection을 막는다.
+plan, suspension transfer, native projection receipt는 통합된
+`IR-OWN-P0-017` continuation-root interface의 exact digest도 함께 결합해야
+한다. 이 digest가 비어 있으면 local candidate일 수는 있어도 정본 승격은
+통과할 수 없다.
+
+collection은 선언된 safepoint에서만 가능하다. non-tail call, managed
+allocation slow path, suspension/cancellation observation, runtime entry, CFG
+backedge와 FFI 진입이 닫힌 집합을 이룬다. allocation fast path는 collect하지
+않고, collector는 `def#cleanup`이나 cancellation을 실행하지 않는다. raw
+interior address는 검증된 no-collect region 안에서만 존재하며 call,
+safepoint, suspension, actor boundary 또는 FFI를 건널 수 없다.
+moving/concurrent/generational GC, weak reference, finalizer, resurrection,
+pinning과 managed-handle FFI export는 Phase 1에서 제공하지 않는다.
+
+JIT image는 unpublished 상태이고 active activation, suspended continuation,
+outstanding root receipt가 모두 0일 때만 한 번 retire한다. xVM, Object AOT,
+JIT parity는 logical roots, owner transfer, cleanup과 outcome을 비교하며 주소,
+heap layout, collection 시점은 비교하지 않는다. 이 설계 계약은 product
+구현 영수증이 아니므로 관련 lane은 계속 `NOT_RUN`이다.
+내부 runtime 경계는 `DEEPLUS_INTERNAL_RUNTIME_ABI_R1`이라는 하나의
+backend-neutral logical ABI를 사용한다. 고정 primitive scalar만 direct
+channel을 사용하고 aggregate와 nominal value는 모두 typed indirect slot을
+사용한다. aggregate normal result는 caller가 제공한 normal slot을 sret로
+사용하며 register splitting은 허용하지 않는다. 이 분류는 language value
+identity나 공개 FFI ABI를 새로 만들지 않는다.
+
+dispatcher 결과는 `COMPLETE(OutcomeTag) | PARKED(ContinuationReceiptId)`의
+닫힌 합이다. 완료된 runtime call만 `NORMAL`, `ERROR`, `DEFECT`,
+`CANCELLATION` 네 tag 중 정확히 하나와 그 전용 payload slot을 commit한다.
+`PARKED`는 다섯 번째 tag가 아니며 outcome tag·slot·MIR successor를 commit하지
+않는다. 대신 committed owner, active loan, cleanup token과 root를 하나의
+continuation receipt로 정확히 한 번 옮기고 source residual을 0으로 만든다.
+이 loan은 resume 또는 cancellation의 terminal edge에서만 끝난다. 모든
+preflight와 root publication이 끝난 뒤 callee entry 직전에
+`ownership_commit`이 한 번 일어난다. entry 전 실패는 caller owner를
+보존하지만 entry 뒤의 어떤 outcome도 transferred input을 되돌리지 않는다.
+host unwind와 native exception은 이 경계를 통과할 수 없다.
+
+xVM은 typed helper table을, Object AOT는 exact symbol/link receipt를, JIT는
+exact import/signature/provider map과 image-generation/retirement receipt를
+사용한다. R1 compatibility는 ABI ID와 full digest의 exact equality뿐이다.
+managed-reference와 suspending helper는 각각 `IR-OWN-P1-025`와
+`IR-OWN-P0-017`의 exact digest에 결속된다. 여섯 suspending helper는 22개
+base helper에 포함되고, 세 managed-memory helper가 조건부로 admit되어 active
+helper는 정확히 25개다. digest가 없거나 stale이면 fail-closed한다. 반면 function
+static ensure, lazy force와 scoped mutex acquire의 host-thread blocking은 언어
+의미의 suspension이 아니므로 `COMPLETE`-only다. managed safepoint도
+Cancellation을 관찰하거나 전달하지 않는다.
+외부 FFI와 runtime callback은 이 내부 ABI에 포함되지 않는다.
+
 ## 42. MIR handoff
 
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.
@@ -5952,7 +6015,7 @@ tooling execution remain `NOT_RUN`.
 
 `deeplus.canonical-hir-h1/r1` is the Current Stable-design canonical HIR
 machine schema. Its closed identity catalog
-`deeplus.hir-h1-identity-catalog/r1` has exactly 128 identities. Recovery,
+`deeplus.hir-h1-identity-catalog/r1` has exactly 130 identities. Recovery,
 missing, unresolved, candidate-set, and analysis-only nodes cannot be sealed
 as canonical HIR. Current source programs reach exactly 102 lowering rows; an
 explicit-Preview module can reach at most 111.
@@ -5970,8 +6033,45 @@ registry rows, transitive capability dependencies, and independently resolved
 provider evidence. Failure preserves `Verified<CanonicalHirH1>` and blocks only
 `ExecutableHirH1`.
 
-This design adds exactly five release-verifier diagnostics and no source
-diagnostic. It adds no RCTS predicate, relation, or generic checker fixture,
-no source syntax or source-profile activation, and no production or product
-support. `ProposedMirX1` remains compatibility-only and nonactivatable; all 15
-product lanes remain `NOT_RUN`.
+The current bridge cumulatively adds nine release-verifier diagnostics and one
+source diagnostic. Its suspension subset contributes the checker predicate
+`BorrowAcrossSuspensionAdmitted`; it adds no source syntax or source-profile
+activation and no production or product support. `ProposedMirX1` remains
+compatibility-only and nonactivatable; all 15 product lanes remain `NOT_RUN`.
+
+### Continuation interface and suspension responsibility
+
+Every async or generator body seals one `ContinuationFramePlanId`. Every
+source suspension point has one `SuspensionPointId`, each runtime invocation
+has one `ContinuationFrameId`, and each visit creates a fresh monotonic
+`SuspensionEpochId`. `ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1`
+binds those identities to the exact HIR schema, MIR schema, MIR operation
+registry and typed receipt schema by digest. A runtime address, CLIF value,
+native symbol or host function pointer is never a continuation identity.
+
+A place is classified before a frame slot is materialized. In particular,
+`NOT_LIVE_AFTER_SUSPEND` has no `FrameSlotId`; the three materialized
+dispositions are `REUSABLE_COPY`, `OWNED_TRANSFER` and
+`STATIC_SHARED_BORROW`. The suspend commit atomically partitions owners,
+admitted static loans, cleanup tokens and retained authority tokens. Managed
+`RootId` values identify storage locations and therefore are not transferred
+unchanged: source roots are bijectively rebound to fresh destination roots,
+the destination root map is installed, one immutable receipt is published,
+and only then are source roots removed. Collector entry during that handover
+is forbidden.
+
+One committed epoch admits exactly one winner: resume or cancel. The loser has
+no effect. Cancellation discharges cleanup tokens exactly once in reverse
+registration order within reverse nested cleanup-region order. An actor turn
+crosses suspension only through an explicit `ACTOR_TURN` authority record with
+the `STATE_REGION_MUTATION` and `DEQUEUE` axes; an actor-state loan must end
+before suspension and is reacquired with a fresh `LoanId` only after resume.
+All terminal paths have zero owner, loan, cleanup-token, root, frame-slot and
+actor-authority balances.
+
+`Xvm`, `ObjectAot` and `InMemoryJit` consume the same logical plan, receipt and
+transition digest. `InMemoryJit` additionally binds an image-generation
+identity and continuation lease. Resume and cancel enter generated code only
+through the typed internal continuation dispatcher after exact interface,
+receipt, epoch and operation validation; this does not grant arbitrary
+runtime-to-generated callback authority.

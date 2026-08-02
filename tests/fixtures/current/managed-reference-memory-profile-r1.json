@@ -1,0 +1,389 @@
+{
+  "schema": "deeplus.managed-reference-memory-profile-fixtures/r1",
+  "fixture_schema": "schemas/language/managed-reference-memory-profile-fixtures-r1.schema.json",
+  "revision": "r36-managed-reference-memory-profile-r1",
+  "contract": "spec/contracts/managed-reference-memory-profile-r1.json",
+  "baseline": {
+    "commit": "e680568057ec9c6b02218dbe153758471734cf44",
+    "tree": "4d91b75d244f0c6adb5980cee19fec756c337053"
+  },
+  "evidence_state": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN"
+  },
+  "semantic_cases": [
+    {
+      "case_id": "R36-MRM-P-001",
+      "class": "positive",
+      "rule_ids": ["MRM-R005", "MRM-R006", "MRM-R007"],
+      "scenario": "one live managed handle crosses a non-tail INVOKE with one exact running root",
+      "facts": {
+        "site_kind": "NONTAIL_INVOKE",
+        "terminator_kind": "INVOKE",
+        "safepoint_declared": true,
+        "running_root_ids": ["Root.call.value0"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.call.value0"],
+        "entry_root_ids": ["Root.call.value0"],
+        "root_set_digest_valid": true,
+        "receipt_published_before_entry": true,
+        "receipt_live_through_outcome": true
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-P-002",
+      "class": "positive",
+      "rule_ids": ["MRM-R008", "MRM-R009"],
+      "scenario": "managed allocation fast path is noncollecting and its slow path enters an explicit CHECKED safepoint",
+      "facts": {
+        "site_kind": "MANAGED_ALLOCATION_SLOW_PATH",
+        "terminator_kind": "CHECKED",
+        "safepoint_declared": true,
+        "running_root_ids": ["Root.alloc.input0"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.alloc.input0"],
+        "entry_root_ids": ["Root.alloc.input0"],
+        "root_set_digest_valid": true,
+        "receipt_published_before_entry": true,
+        "receipt_live_through_outcome": true,
+        "allocation_fast_path_may_collect": false
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-P-003",
+      "class": "positive",
+      "rule_ids": ["MRM-R017", "MRM-R018"],
+      "scenario": "xVM consumes the exact semantic root set without exposing a target address as identity",
+      "facts": {
+        "site_kind": "RUN_RUNTIME_ENTRY",
+        "terminator_kind": "RUN_OP",
+        "safepoint_declared": true,
+        "running_root_ids": ["Root.xvm.value0"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.xvm.value0"],
+        "entry_root_ids": ["Root.xvm.value0"],
+        "root_set_digest_valid": true,
+        "receipt_published_before_entry": true,
+        "receipt_live_through_outcome": true,
+        "cross_path_parity": true
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-P-004",
+      "class": "positive",
+      "rule_ids": ["MRM-R017", "MRM-R018"],
+      "scenario": "Object AOT maps the same logical roots to target-private shadow slots",
+      "facts": {
+        "site_kind": "SYNC_RUNTIME_ENTRY",
+        "terminator_kind": "SYNC_OP",
+        "safepoint_declared": true,
+        "running_root_ids": ["Root.aot.place0"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.aot.place0"],
+        "entry_root_ids": ["Root.aot.place0"],
+        "root_set_digest_valid": true,
+        "receipt_published_before_entry": true,
+        "receipt_live_through_outcome": true,
+        "cross_path_parity": true
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-P-005",
+      "class": "positive",
+      "rule_ids": ["MRM-R015", "MRM-R016"],
+      "scenario": "a live JIT activation and root receipt retain their immutable image generation",
+      "facts": {
+        "jit_state": "ACTIVE",
+        "active_native_activation_count": 1,
+        "suspended_continuation_count": 0,
+        "outstanding_root_receipt_count": 1,
+        "retirement_requested": false
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-P-006",
+      "class": "positive",
+      "rule_ids": ["MRM-R017", "MRM-R018", "MRM-R020"],
+      "scenario": "xVM Object AOT and JIT preserve identical ownership cleanup safepoint and terminal traces",
+      "facts": {"cross_path_parity": true, "product_execution": "NOT_RUN"},
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-001",
+      "class": "boundary",
+      "rule_ids": ["MRM-R004", "MRM-R005"],
+      "scenario": "a declared safepoint with no live managed roots carries an explicit empty root map",
+      "facts": {
+        "site_kind": "CFG_BACKEDGE",
+        "terminator_kind": "BR",
+        "safepoint_declared": true,
+        "running_root_ids": [],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": [],
+        "entry_root_ids": [],
+        "root_set_digest_valid": true,
+        "receipt_published_before_entry": true,
+        "receipt_live_through_outcome": true
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-002",
+      "class": "boundary",
+      "rule_ids": ["MRM-R005", "MRM-R006"],
+      "scenario": "two live locations containing one stable handle remain two logical roots",
+      "facts": {
+        "running_root_ids": ["Root.alias.left", "Root.alias.right"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.alias.left", "Root.alias.right"],
+        "entry_root_ids": ["Root.alias.left", "Root.alias.right"],
+        "root_set_digest_valid": true
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-003",
+      "class": "boundary",
+      "rule_ids": ["MRM-R011"],
+      "scenario": "suspension atomically transfers one root from the running frame to the continuation frame",
+      "facts": {
+        "transfer_count": 1,
+        "source_residual_count": 0,
+        "source_root_id": "RootId:running.value0",
+        "destination_root_id": "RootId:frame.value0",
+        "source_handle_generation": 7,
+        "destination_handle_generation": 7
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-004",
+      "class": "boundary",
+      "rule_ids": ["MRM-R010", "MRM-R011"],
+      "scenario": "resume or cancel transfers or discharges continuation roots without duplication",
+      "facts": {
+        "transfer_count": 1,
+        "source_residual_count": 0,
+        "source_root_id": "RootId:frame.value0",
+        "destination_root_id": "RootId:running.value1",
+        "source_handle_generation": 7,
+        "destination_handle_generation": 7
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-005",
+      "class": "boundary",
+      "rule_ids": ["MRM-R012", "MRM-R013"],
+      "scenario": "an interior address is born and killed wholly inside one proven no-collect region",
+      "facts": {"raw_interior_crosses_safepoint": false, "raw_interior_crosses_ffi": false},
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-006",
+      "class": "boundary",
+      "rule_ids": ["MRM-R008"],
+      "scenario": "a successful managed-allocation fast path does not collect or publish a hidden safepoint",
+      "facts": {"allocation_fast_path_may_collect": false},
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-B-007",
+      "class": "boundary",
+      "rule_ids": ["MRM-R015", "MRM-R016"],
+      "scenario": "an unpublished JIT generation stays alive while a suspended-frame lease exists",
+      "facts": {
+        "jit_state": "UNPUBLISHED",
+        "active_native_activation_count": 0,
+        "suspended_continuation_count": 1,
+        "outstanding_root_receipt_count": 0,
+        "retirement_requested": false
+      },
+      "expected": {"verdict": "ADMIT_STATIC", "diagnostic_id_or_null": null},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-001",
+      "class": "negative",
+      "rule_ids": ["MRM-R005", "MRM-R019"],
+      "scenario": "one live running root is omitted from the declared root set",
+      "facts": {
+        "running_root_ids": ["Root.live"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": [],
+        "entry_root_ids": []
+      },
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-002",
+      "class": "negative",
+      "rule_ids": ["MRM-R005", "MRM-R019"],
+      "scenario": "one root identity appears twice in the declared root set",
+      "facts": {
+        "running_root_ids": ["Root.live"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.live", "Root.live"],
+        "entry_root_ids": ["Root.live"]
+      },
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-003",
+      "class": "negative",
+      "rule_ids": ["MRM-R005", "MRM-R019"],
+      "scenario": "a stale root survives after liveness recomputation",
+      "facts": {
+        "running_root_ids": ["Root.live"],
+        "frame_root_ids": [],
+        "runtime_root_ids": [],
+        "declared_root_ids": ["Root.live", "Root.stale"],
+        "entry_root_ids": ["Root.live", "Root.stale"]
+      },
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-004",
+      "class": "negative",
+      "rule_ids": ["MRM-R012", "MRM-R019"],
+      "scenario": "a raw managed interior address remains live across a safepoint",
+      "facts": {"raw_interior_crosses_safepoint": true},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-005",
+      "class": "negative",
+      "rule_ids": ["MRM-R004", "MRM-R019"],
+      "scenario": "a backend inserts an implicit safepoint outside the closed semantic set",
+      "facts": {"site_kind": "IMPLICIT_BACKEND_SITE", "terminator_kind": "BACKEND_PRIVATE", "safepoint_declared": true},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-006",
+      "class": "negative",
+      "rule_ids": ["MRM-R007", "MRM-R019"],
+      "scenario": "the root receipt is published only after the may-collect helper is entered",
+      "facts": {"receipt_published_before_entry": false, "receipt_live_through_outcome": true},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-007",
+      "class": "negative",
+      "rule_ids": ["MRM-R015", "MRM-R019"],
+      "scenario": "JIT retirement is requested while a suspended continuation lease remains live",
+      "facts": {
+        "jit_state": "UNPUBLISHED",
+        "active_native_activation_count": 0,
+        "suspended_continuation_count": 1,
+        "outstanding_root_receipt_count": 0,
+        "retirement_requested": true
+      },
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-008",
+      "class": "negative",
+      "rule_ids": ["MRM-R017", "MRM-R019"],
+      "scenario": "one target changes a semantic root owner or cleanup outcome trace",
+      "facts": {"cross_path_parity": false},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-009",
+      "class": "negative",
+      "rule_ids": ["MRM-R001", "MRM-R014", "MRM-R019"],
+      "scenario": "a moving collector is selected under the Phase-1 memory profile identity",
+      "facts": {"moving_collector": true},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-010",
+      "class": "negative",
+      "rule_ids": ["MRM-R001", "MRM-R014", "MRM-R019"],
+      "scenario": "a concurrent or generational collector is selected without separate authority",
+      "facts": {"concurrent_collector": true, "generational_collector": true},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R36-MRM-N-011",
+      "class": "negative",
+      "rule_ids": ["MRM-R010", "MRM-R014", "MRM-R019"],
+      "scenario": "weak references and a user finalizer are enabled in the Phase-1 profile",
+      "facts": {"weak_reference_count": 1, "user_finalizer_count": 1},
+      "expected": {"verdict": "REJECT_STATIC", "diagnostic_id_or_null": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "mutation_matrix": [
+    {"mutation_id": "R36-MRM-MUT-001", "operator": "DROP_ROOT", "expected_failure": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-002", "operator": "ADD_STALE_ROOT", "expected_failure": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-003", "operator": "DUPLICATE_ROOT", "expected_failure": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-004", "operator": "REVERSE_ROOT_ORDER", "expected_failure": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-005", "operator": "CORRUPT_ROOT_DIGEST", "expected_failure": "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-006", "operator": "CHANGE_SAFEPOINT_ID_WITHOUT_DIGEST", "expected_failure": "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-007", "operator": "REMOVE_SAFEPOINT_DECLARATION", "expected_failure": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-008", "operator": "ENABLE_COLLECTING_FAST_PATH", "expected_failure": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-009", "operator": "EXTEND_INTERIOR_POINTER_ACROSS_SAFEPOINT", "expected_failure": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+    {"mutation_id": "R36-MRM-MUT-010", "operator": "PUBLISH_RECEIPT_AFTER_ENTRY", "expected_failure": "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID"},
+    {"mutation_id": "R36-MRM-MUT-011", "operator": "ENABLE_RELOCATION", "expected_failure": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-012", "operator": "ENABLE_CONCURRENT_OR_GENERATIONAL_COLLECTION", "expected_failure": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-013", "operator": "ENABLE_WEAK_REFERENCE", "expected_failure": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-014", "operator": "ENABLE_USER_FINALIZER", "expected_failure": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"},
+    {"mutation_id": "R36-MRM-MUT-015", "operator": "RETIRE_JIT_WITH_SUSPENDED_LEASE", "expected_failure": "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION"},
+    {"mutation_id": "R36-MRM-MUT-016", "operator": "CHANGE_TARGET_SEMANTIC_TRACE_OR_CLAIM_PRODUCT_PASS", "expected_failure": "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH_OR_PRODUCT_OVERCLAIM"},
+    {"mutation_id": "R36-MRM-MUT-017", "operator": "EXTEND_INTERIOR_POINTER_ACROSS_CALL", "expected_failure": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+    {"mutation_id": "R36-MRM-MUT-018", "operator": "EXTEND_INTERIOR_POINTER_ACROSS_SUSPENSION", "expected_failure": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+    {"mutation_id": "R36-MRM-MUT-019", "operator": "EXTEND_INTERIOR_POINTER_ACROSS_ACTOR_BOUNDARY", "expected_failure": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+    {"mutation_id": "R36-MRM-MUT-020", "operator": "DROP_CONTINUATION_INTERFACE_BINDING", "expected_failure": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH"}
+  ],
+  "expected_counts": {
+    "semantic_cases": 24,
+    "positive": 6,
+    "boundary": 7,
+    "negative": 11,
+    "mutations": 20,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_m13_actions": 4,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

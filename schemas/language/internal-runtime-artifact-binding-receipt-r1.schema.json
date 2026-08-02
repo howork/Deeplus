@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r37/internal-runtime-artifact-binding-receipt-r1.schema.json",
+  "title": "Deeplus internal runtime ABI artifact binding receipt R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "receipt_id", "artifact_id", "module_kind",
+    "runtime_abi_digest", "target_projection_digest", "helper_allowlist_digest",
+    "helper_symbol_or_table_map_digest", "artifact_digest",
+    "resolved_import_map_digest_or_null", "image_generation_id_or_null",
+    "active_call_lease_count", "suspended_continuation_lease_count",
+    "outstanding_root_receipt_count",
+    "retirement_requested", "retirement_admitted", "digest_material",
+    "receipt_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.internal-runtime-abi-artifact-binding-receipt/r1"},
+    "receipt_id": {"type": "string", "pattern": "^RuntimeAbiReceiptId:[A-Za-z0-9_.:/-]+$"},
+    "artifact_id": {"type": "string", "pattern": "^ArtifactId:[A-Za-z0-9_.:/-]+$"},
+    "module_kind": {"enum": ["Xvm", "ObjectAot", "InMemoryJit"]},
+    "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+    "target_projection_digest": {"$ref": "#/$defs/sha256"},
+    "helper_allowlist_digest": {"$ref": "#/$defs/sha256"},
+    "helper_symbol_or_table_map_digest": {"$ref": "#/$defs/sha256"},
+    "artifact_digest": {"$ref": "#/$defs/sha256"},
+    "resolved_import_map_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "image_generation_id_or_null": {"oneOf": [{"type": "string", "pattern": "^JitImageGenerationId:[A-Za-z0-9_.:/-]+$"}, {"type": "null"}]},
+    "active_call_lease_count": {"type": "integer", "minimum": 0},
+    "suspended_continuation_lease_count": {"type": "integer", "minimum": 0},
+    "outstanding_root_receipt_count": {"type": "integer", "minimum": 0},
+    "retirement_requested": {"type": "boolean"},
+    "retirement_admitted": {"type": "boolean"},
+    "digest_material": {"type": "object", "minProperties": 1},
+    "receipt_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"module_kind": {"const": "InMemoryJit"}}, "required": ["module_kind"]},
+      "then": {
+        "properties": {
+          "resolved_import_map_digest_or_null": {"$ref": "#/$defs/sha256"},
+          "image_generation_id_or_null": {"type": "string", "pattern": "^JitImageGenerationId:[A-Za-z0-9_.:/-]+$"}
+        }
+      },
+      "else": {
+        "properties": {
+          "image_generation_id_or_null": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+  },
+  "x-deeplus-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "digest_preimage": "digest_material"
+  }
+}

@@ -364,9 +364,9 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "reassembly non-owned")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
-        "features": 719,
-        "predicates": 277,
-        "predicate_fixtures": 855,
+        "features": 721,
+        "predicates": 278,
+        "predicate_fixtures": 858,
         "no_go": 155,
         "hard_keywords": 29,
         "contextual_words": 105,

@@ -31,7 +31,7 @@
       "rule_ids": ["CLB-R005"],
       "scenario": "a native receipt binds target triple ISA settings toolchain module ABI and optimization identities",
       "expected": "ADMIT_STATIC",
-      "assertions": ["required_receipt_input_count=12", "host_default_authority=false"],
+      "assertions": ["required_receipt_input_count=22", "internal_runtime_abi_id=RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1", "internal_runtime_abi_exact_digest=true", "active_base_runtime_helper_count=22", "conditional_continuation_helper_count=6", "managed_extension_helper_count=3", "active_runtime_helper_count=25", "host_default_authority=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {
@@ -56,9 +56,9 @@
       "fixture_id": "CLB-R1-POS-006",
       "class": "positive",
       "rule_ids": ["CLB-R009", "CLB-R011", "CLB-R012"],
-      "scenario": "a managed-reference path with required capability remains design-only and changes no language P1",
+      "scenario": "a managed-reference path binds the Phase-1 logical plan and native projection receipt while remaining design-only",
       "expected": "ADMIT_STATIC",
-      "assertions": ["product_executed=0", "open_feature_p1=22", "semantic_p0=0"],
+      "assertions": ["memory_profile=STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1", "managed_memory_plan_schema=deeplus.managed-memory-plan/r1", "continuation_root_interface_digest=required", "product_executed=0", "open_feature_p1=22", "semantic_p0=0"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {
@@ -94,16 +94,16 @@
       "rule_ids": ["CLB-R006", "CLB-R007"],
       "scenario": "a mutant turns recoverable Error into host unwind and arbitrary trap selection",
       "expected": "REJECT_STATIC",
-      "assertions": ["host_unwind_semantic_authority=false", "arbitrary_trap_authority=false"],
+      "assertions": ["dispatcher_completion=COMPLETE(OutcomeTag)|PARKED(ContinuationReceiptId)", "parked_outcome_commit_count=0", "outcome_tags=NORMAL|ERROR|DEFECT|CANCELLATION", "host_unwind_semantic_authority=false", "arbitrary_trap_authority=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {
       "fixture_id": "CLB-R1-NEG-011",
       "class": "negative",
       "rule_ids": ["CLB-R008", "CLB-R009"],
-      "scenario": "a JIT mutant resolves an unlisted import and substitutes raw pointers for missing root-map capability",
+      "scenario": "a JIT mutant resolves an unlisted import or substitutes raw pointers for a missing or invalid managed-memory plan",
       "expected": "REJECT_STATIC",
-      "assertions": ["unlisted_import=terminal_link_failure", "raw_pointer_fallback=false"],
+      "assertions": ["unlisted_or_signature_mismatched_import=terminal_link_failure", "missing_or_invalid_plan=block_native_lowering", "continuation_dependency_unbound_helper_admitted=false", "runtime_helper_registry_digest_required=true", "raw_pointer_fallback=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {

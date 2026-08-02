@@ -136,6 +136,67 @@ Deeplus semantic identity가 아니다. managed reference가 live인 site에서
 필요한 root-map/stack-map capability가 없다면 backend는 raw pointer로
 우회하지 않고 lowering을 중단한다.
 
+최초 memory profile은
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`이다. xVM과 Cranelift는
+같은 논리적 root map을 소비하지만 실제 VM slot, native stack slot과 register
+배치는 서로 달라도 된다. 중요한 것은 주소가 아니라 어떤 live storage가
+어느 owner의 root인지, suspension 때 root가 continuation으로 한 번만
+이전되는지, cleanup과 최종 outcome이 같은지이다.
+
+예를 들어 call 직전에 두 지역 변수가 같은 managed handle을 담고 있다면
+root는 객체 하나가 아니라 지역 저장 위치 두 개다. compiler는 두 root를
+shadow-root frame에 게시한 뒤 call에 들어가며, call outcome이 commit될 때까지
+receipt를 유지한다. 반대로 managed object 내부를 잠시 가리키는 native
+address는 no-collect 구간 안에서만 사용할 수 있고 call, safepoint,
+suspension, actor boundary 또는 FFI를 넘어갈 수 없다. suspension root
+transfer와 native projection은 통합된 `IR-OWN-P0-017` interface digest를
+결합해야 하므로, 그 digest가 없는 설계 후보는 정본 승격 대상이 아니다.
+
+이 프로파일은 moving/concurrent GC, weak reference, finalizer, pinning을
+지원한다고 주장하지 않는다. collector가 `def#cleanup` 또는 cancellation을
+대신 실행하는 것도 허용하지 않는다. 이러한 기능은 별도 설계 authority와
+실행 증거가 생기기 전까지 닫혀 있다.
+내부 runtime 호출도 같은 원칙을 따른다. Deeplus는
+`DEEPLUS_INTERNAL_RUNTIME_ABI_R1` 하나를 logical contract로 두고 xVM,
+Object AOT, JIT가 각각 target projection을 만든다. primitive scalar는
+direct channel로 전달할 수 있지만 Tuple, Record, Enum, Option, Result,
+class value, closure, collection, Rational, Complex 같은 값은 typed indirect
+slot을 사용한다. aggregate result는 caller-owned normal sret slot에만
+쓴다. 한 필드짜리 aggregate라고 해서 target 편의에 따라 scalar로
+바꾸지 않는다.
+
+fallible runtime call을 생각해 보자. caller는 Normal, Error, Defect,
+Cancellation용 서로 다른 slot을 준비한다. dispatcher 결과가
+`COMPLETE(tag)`이면 네 tag 중 정확히 하나만 반환한다. 예를 들어 `ERROR`
+tag와 Error slot이 함께 commit되면
+Normal/Defect/Cancellation slot은 초기화되지 않는다. `ERROR`를 host
+exception으로 던지거나 Cancellation을 Error slot에 넣는 구현은
+`RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID` 또는
+`RUNTIME_ABI_HOST_UNWIND_FORBIDDEN`으로 실행 전에 거부된다.
+
+ownership도 ABI가 새로 해석하지 않는다. argument를 왼쪽에서 오른쪽으로
+한 번 평가하고 모든 digest, helper signature, slot, root 조건을 검증한
+뒤 callee entry 직전에 ownership을 한 번 commit한다. 그 전의 실패는
+caller owner를 보존하지만 entry 뒤 Error나 Cancellation은 이미 넘긴
+owner를 되돌리지 않는다. cleanup과 loan 종료는 MIR의 명시적 edge가
+담당한다.
+
+반면 `PARKED(receipt)`는 다섯 번째 outcome이 아니다. outcome tag와 slot을
+commit하지 않고 owner, loan, cleanup token, root의 정확한 상태를
+continuation receipt에 한 번 넘긴다. exact continuation ABI digest가 결속된
+현재 설계에서는 suspension helper 여섯 개가 22개 base allowlist에 포함된다.
+세 managed-memory helper까지 조건부로 admit되어 active helper는 25개이며,
+어느 dependency digest라도 없거나 stale이면 해당 경로는 fail-closed한다.
+function static 초기화, lazy force와 scoped mutex acquire가 host thread를
+기다리게 할 수 있어도 그것은 Deeplus suspension이 아니므로 COMPLETE-only다.
+
+JIT는 helper 이름이 우연히 맞는다고 호출하지 않는다. exact
+`RuntimeHelperId`, signature digest, provider map과 image generation을
+allowlist receipt에 묶는다. image는 먼저 publish를 해제하고 active call과
+suspended continuation lease가 모두 0이 된 뒤에만 retire할 수 있다.
+이 설명은 design-static 계약이며 실제 xVM/native 실행은 여전히
+`NOT_RUN`이다.
+
 ## 8. 다른 기능과의 연결
 
 - diagnostics는 rejected source에 MIR residue가 생기지 않게 한다.

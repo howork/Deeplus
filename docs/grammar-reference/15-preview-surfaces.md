@@ -957,7 +957,7 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
   [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
 - source root, gate 및 비활성 상세 결합:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
-- 719-row feature registry:
+- 720-row feature registry:
   [`spec/features/catalog`](../../spec/features/catalog)
 - activatable/nonactivatable gate map:
   [`spec/features/gates.json`](../../spec/features/gates.json)

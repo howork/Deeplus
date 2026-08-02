@@ -1442,11 +1442,19 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "suspend_site_id"
+        "suspend_site_id",
+        "continuation_frame_plan_id",
+        "continuation_interface_digest"
       ],
       "properties": {
         "suspend_site_id": {
           "$ref": "#/$defs/id"
+        },
+        "continuation_frame_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "continuation_interface_digest": {
+          "$ref": "#/$defs/sha256"
         }
       }
     },
@@ -1655,11 +1663,132 @@
         }
       ]
     },
+    "continuationPlaceDispositionDecl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_place_id",
+        "normalized_type_id",
+        "disposition",
+        "materializes_frame_slot",
+        "frame_slot_id_or_null"
+      ],
+      "properties": {
+        "source_place_id": {"$ref": "#/$defs/id"},
+        "normalized_type_id": {"$ref": "#/$defs/id"},
+        "disposition": {"enum": ["NOT_LIVE_AFTER_SUSPEND", "REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]},
+        "materializes_frame_slot": {"type": "boolean"},
+        "frame_slot_id_or_null": {"$ref": "#/$defs/nullableId"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"disposition": {"const": "NOT_LIVE_AFTER_SUSPEND"}}, "required": ["disposition"]},
+          "then": {"properties": {"materializes_frame_slot": {"const": false}, "frame_slot_id_or_null": {"type": "null"}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"enum": ["REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]}}, "required": ["disposition"]},
+          "then": {"properties": {"materializes_frame_slot": {"const": true}, "frame_slot_id_or_null": {"$ref": "#/$defs/id"}}}
+        }
+      ]
+    },
+    "continuationFrameSlotDecl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_slot_id",
+        "source_place_id",
+        "normalized_type_id",
+        "disposition",
+        "init_state",
+        "owner_id_or_null",
+        "loan_id_or_null",
+        "cleanup_token_bindings",
+        "root_projection_ids"
+      ],
+      "properties": {
+        "frame_slot_id": {"$ref": "#/$defs/id"},
+        "source_place_id": {"$ref": "#/$defs/id"},
+        "normalized_type_id": {"$ref": "#/$defs/id"},
+        "disposition": {"enum": ["REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]},
+        "init_state": {"const": "Live"},
+        "owner_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "loan_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "cleanup_token_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["cleanup_token_id", "owner_id", "cleanup_region_id", "cleanup_region_rank", "registration_rank"],
+            "properties": {
+              "cleanup_token_id": {"$ref": "#/$defs/id"},
+              "owner_id": {"$ref": "#/$defs/id"},
+              "cleanup_region_id": {"$ref": "#/$defs/id"},
+              "cleanup_region_rank": {"type": "integer", "minimum": 0},
+              "registration_rank": {"type": "integer", "minimum": 0}
+            }
+          }
+        },
+        "root_projection_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"disposition": {"const": "OWNED_TRANSFER"}}, "required": ["disposition"]},
+          "then": {"properties": {"owner_id_or_null": {"$ref": "#/$defs/id"}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"enum": ["REUSABLE_COPY", "STATIC_SHARED_BORROW"]}}, "required": ["disposition"]},
+          "then": {"properties": {"owner_id_or_null": {"type": "null"}, "cleanup_token_bindings": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"disposition": {"const": "STATIC_SHARED_BORROW"}}, "required": ["disposition"]},
+          "then": {"properties": {"loan_id_or_null": {"$ref": "#/$defs/id"}, "root_projection_ids": {"minItems": 1}}}
+        }
+      ]
+    },
+    "continuationFramePlanDecl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "continuation_frame_plan_id",
+        "continuation_interface_identity",
+        "continuation_interface_digest",
+        "place_dispositions",
+        "frame_slots",
+        "suspension_point_ids",
+        "authority_token_ids",
+        "cancellation_id_or_null",
+        "frame_states",
+        "epoch_states",
+        "epoch_policy",
+        "cleanup_order",
+        "partition_policy",
+        "root_rebind_policy"
+      ],
+      "properties": {
+        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
+        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
+        "place_dispositions": {"type": "array", "items": {"$ref": "#/$defs/continuationPlaceDispositionDecl"}},
+        "frame_slots": {"type": "array", "items": {"$ref": "#/$defs/continuationFrameSlotDecl"}},
+        "suspension_point_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "authority_token_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "cancellation_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "frame_states": {"const": ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
+        "epoch_states": {"const": ["PREPARING", "COMMITTED", "RESUME_WON", "CANCEL_WON", "DISCHARGED"]},
+        "epoch_policy": {"const": "FRESH_MONOTONIC_PER_FRAME"},
+        "cleanup_order": {"const": "REVERSE_REGISTRATION_WITHIN_REVERSE_NESTED_CLEANUP_REGION"},
+        "partition_policy": {"const": "EXACT_DISJOINT_OWNER_LOAN_CLEANUP_ROOT_AUTHORITY_UNION"},
+        "root_rebind_policy": {"const": "BIJECTIVE_STORAGE_LOCATION_REBIND"}
+      }
+    },
     "suspensionSiteDecl": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "suspend_site_id",
+        "continuation_frame_plan_id",
+        "frame_slot_ids",
+        "epoch_policy",
         "kind",
         "resume_type_id",
         "live_value_ids",
@@ -1673,6 +1802,9 @@
         "suspend_site_id": {
           "$ref": "#/$defs/id"
         },
+        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
+        "frame_slot_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "epoch_policy": {"const": "FRESH_MONOTONIC_PER_FRAME"},
         "kind": {
           "enum": [
             "AWAIT",
@@ -2002,6 +2134,182 @@
         "hir_provenance": {"$ref": "#/$defs/id"}
       }
     },
+    "frameOperationPayloadCommon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "continuation_interface_identity",
+        "continuation_interface_digest",
+        "continuation_receipt_id_or_null",
+        "continuation_frame_plan_id",
+        "frame_id",
+        "suspension_point_id_or_null",
+        "epoch_id_or_null",
+        "partition_digest",
+        "cleanup_token_id_or_null",
+        "terminal_state_or_null",
+        "frame_state_before",
+        "frame_state_after",
+        "epoch_state_before_or_null",
+        "epoch_state_after_or_null",
+        "winner_witness_or_null",
+        "hir_provenance"
+      ],
+      "properties": {
+        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
+        "continuation_receipt_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
+        "frame_id": {"$ref": "#/$defs/id"},
+        "suspension_point_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "epoch_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "partition_digest": {"$ref": "#/$defs/sha256"},
+        "cleanup_token_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "terminal_state_or_null": {
+          "oneOf": [
+            {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
+            {"type": "null"}
+          ]
+        },
+        "frame_state_before": {"enum": ["ABSENT", "RUNNING", "SUSPENDED", "CLEANING"]},
+        "frame_state_after": {"enum": ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
+        "epoch_state_before_or_null": {
+          "oneOf": [
+            {"enum": ["PREPARING", "COMMITTED", "CANCEL_WON"]},
+            {"type": "null"}
+          ]
+        },
+        "epoch_state_after_or_null": {
+          "oneOf": [
+            {"enum": ["COMMITTED", "CANCEL_WON", "DISCHARGED"]},
+            {"type": "null"}
+          ]
+        },
+        "winner_witness_or_null": {
+          "oneOf": [
+            {"enum": ["RESUME_WON", "CANCEL_WON"]},
+            {"type": "null"}
+          ]
+        },
+        "hir_provenance": {"$ref": "#/$defs/id"}
+      }
+    },
+    "frameCreatePayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"properties": {
+          "continuation_receipt_id_or_null": {"type": "null"},
+          "suspension_point_id_or_null": {"type": "null"},
+          "epoch_id_or_null": {"type": "null"},
+          "cleanup_token_id_or_null": {"type": "null"},
+          "terminal_state_or_null": {"type": "null"},
+          "frame_state_before": {"const": "ABSENT"},
+          "frame_state_after": {"const": "RUNNING"},
+          "epoch_state_before_or_null": {"type": "null"},
+          "epoch_state_after_or_null": {"type": "null"},
+          "winner_witness_or_null": {"type": "null"}
+        }}
+      ]
+    },
+    "frameSuspendCommitPayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"properties": {
+          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
+          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
+          "epoch_id_or_null": {"$ref": "#/$defs/id"},
+          "cleanup_token_id_or_null": {"type": "null"},
+          "terminal_state_or_null": {"type": "null"},
+          "frame_state_before": {"const": "RUNNING"},
+          "frame_state_after": {"const": "SUSPENDED"},
+          "epoch_state_before_or_null": {"const": "PREPARING"},
+          "epoch_state_after_or_null": {"const": "COMMITTED"},
+          "winner_witness_or_null": {"type": "null"}
+        }}
+      ]
+    },
+    "frameResumeCommitPayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"properties": {
+          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
+          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
+          "epoch_id_or_null": {"$ref": "#/$defs/id"},
+          "cleanup_token_id_or_null": {"type": "null"},
+          "terminal_state_or_null": {"type": "null"},
+          "frame_state_before": {"const": "SUSPENDED"},
+          "frame_state_after": {"const": "RUNNING"},
+          "epoch_state_before_or_null": {"const": "COMMITTED"},
+          "epoch_state_after_or_null": {"const": "DISCHARGED"},
+          "winner_witness_or_null": {"const": "RESUME_WON"}
+        }}
+      ]
+    },
+    "frameCancelCommitPayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"properties": {
+          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
+          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
+          "epoch_id_or_null": {"$ref": "#/$defs/id"},
+          "cleanup_token_id_or_null": {"type": "null"},
+          "terminal_state_or_null": {"type": "null"},
+          "frame_state_before": {"const": "SUSPENDED"},
+          "frame_state_after": {"const": "CLEANING"},
+          "epoch_state_before_or_null": {"const": "COMMITTED"},
+          "epoch_state_after_or_null": {"const": "CANCEL_WON"},
+          "winner_witness_or_null": {"const": "CANCEL_WON"}
+        }}
+      ]
+    },
+    "frameCleanupStepPayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"properties": {
+          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
+          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
+          "epoch_id_or_null": {"$ref": "#/$defs/id"},
+          "cleanup_token_id_or_null": {"$ref": "#/$defs/id"},
+          "terminal_state_or_null": {"type": "null"},
+          "frame_state_before": {"const": "CLEANING"},
+          "frame_state_after": {"const": "CLEANING"},
+          "epoch_state_before_or_null": {"const": "CANCEL_WON"},
+          "epoch_state_after_or_null": {"const": "CANCEL_WON"},
+          "winner_witness_or_null": {"type": "null"}
+        }}
+      ]
+    },
+    "frameTerminatePayload": {
+      "allOf": [
+        {"$ref": "#/$defs/frameOperationPayloadCommon"},
+        {"oneOf": [
+          {"properties": {
+            "continuation_receipt_id_or_null": {"type": "null"},
+            "suspension_point_id_or_null": {"type": "null"},
+            "epoch_id_or_null": {"type": "null"},
+            "cleanup_token_id_or_null": {"type": "null"},
+            "terminal_state_or_null": {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED"]},
+            "frame_state_before": {"const": "RUNNING"},
+            "frame_state_after": {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED"]},
+            "epoch_state_before_or_null": {"type": "null"},
+            "epoch_state_after_or_null": {"type": "null"},
+            "winner_witness_or_null": {"type": "null"}
+          }},
+          {"properties": {
+            "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
+            "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
+            "epoch_id_or_null": {"$ref": "#/$defs/id"},
+            "cleanup_token_id_or_null": {"type": "null"},
+            "terminal_state_or_null": {"const": "TERMINAL_CANCELLED"},
+            "frame_state_before": {"const": "CLEANING"},
+            "frame_state_after": {"const": "TERMINAL_CANCELLED"},
+            "epoch_state_before_or_null": {"const": "CANCEL_WON"},
+            "epoch_state_after_or_null": {"const": "DISCHARGED"},
+            "winner_witness_or_null": {"type": "null"}
+          }}
+        ]}
+      ]
+    },
     "operationKind": {
       "enum": [
         "CONST",
@@ -2033,6 +2341,12 @@
         "CLOSURE_MAKE",
         "CONCUR_ENTER",
         "ACTOR_ENVELOPE_PREPARE",
+        "FRAME_CREATE",
+        "FRAME_SUSPEND_COMMIT",
+        "FRAME_RESUME_COMMIT",
+        "FRAME_CANCEL_COMMIT",
+        "FRAME_CLEANUP_STEP",
+        "FRAME_TERMINATE",
         "OBJECT_CONSTRUCTION_BEGIN",
         "BASE_SEGMENT_BEGIN",
         "BASE_SEGMENT_COMMIT",
@@ -2079,6 +2393,12 @@
         "DM-SEMOP-CLOSURE-MAKE-R1",
         "DM-SEMOP-CONCUR-ENTER-R1",
         "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1",
+        "DM-SEMOP-FRAME-CREATE-R1",
+        "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1",
+        "DM-SEMOP-FRAME-RESUME-COMMIT-R1",
+        "DM-SEMOP-FRAME-CANCEL-COMMIT-R1",
+        "DM-SEMOP-FRAME-CLEANUP-STEP-R1",
+        "DM-SEMOP-FRAME-TERMINATE-R1",
         "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1",
         "DM-SEMOP-BASE-SEGMENT-BEGIN-R1",
         "DM-SEMOP-BASE-SEGMENT-COMMIT-R1",
@@ -2156,6 +2476,12 @@
         {"$ref": "#/$defs/opClosureMake"},
         {"$ref": "#/$defs/opConcurEnter"},
         {"$ref": "#/$defs/opActorEnvelopePrepare"},
+        {"$ref": "#/$defs/opFrameCreate"},
+        {"$ref": "#/$defs/opFrameSuspendCommit"},
+        {"$ref": "#/$defs/opFrameResumeCommit"},
+        {"$ref": "#/$defs/opFrameCancelCommit"},
+        {"$ref": "#/$defs/opFrameCleanupStep"},
+        {"$ref": "#/$defs/opFrameTerminate"},
         {"$ref": "#/$defs/opObjectConstructionBegin"},
         {"$ref": "#/$defs/opBaseSegmentBegin"},
         {"$ref": "#/$defs/opBaseSegmentCommit"},
@@ -2200,6 +2526,12 @@
     "opClosureMake": {"properties": {"kind": {"const": "CLOSURE_MAKE"}, "semantic_operation_id": {"const": "DM-SEMOP-CLOSURE-MAKE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["closure_id"]}]}}},
     "opConcurEnter": {"properties": {"kind": {"const": "CONCUR_ENTER"}, "semantic_operation_id": {"const": "DM-SEMOP-CONCUR-ENTER-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["concur_id"]}]}}},
     "opActorEnvelopePrepare": {"properties": {"kind": {"const": "ACTOR_ENVELOPE_PREPARE"}, "semantic_operation_id": {"const": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["actor_envelope_id"]}]}}},
+    "opFrameCreate": {"properties": {"kind": {"const": "FRAME_CREATE"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CREATE-R1"}, "payload": {"$ref": "#/$defs/frameCreatePayload"}}},
+    "opFrameSuspendCommit": {"properties": {"kind": {"const": "FRAME_SUSPEND_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameSuspendCommitPayload"}}},
+    "opFrameResumeCommit": {"properties": {"kind": {"const": "FRAME_RESUME_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-RESUME-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameResumeCommitPayload"}}},
+    "opFrameCancelCommit": {"properties": {"kind": {"const": "FRAME_CANCEL_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameCancelCommitPayload"}}},
+    "opFrameCleanupStep": {"properties": {"kind": {"const": "FRAME_CLEANUP_STEP"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CLEANUP-STEP-R1"}, "payload": {"$ref": "#/$defs/frameCleanupStepPayload"}}},
+    "opFrameTerminate": {"properties": {"kind": {"const": "FRAME_TERMINATE"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-TERMINATE-R1"}, "payload": {"$ref": "#/$defs/frameTerminatePayload"}}},
     "opObjectConstructionBegin": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
     "opBaseSegmentBegin": {"properties": {"kind": {"const": "BASE_SEGMENT_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
     "opBaseSegmentCommit": {"properties": {"kind": {"const": "BASE_SEGMENT_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
@@ -2607,7 +2939,7 @@
     "mirBody": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["body_id", "function_id", "signature", "entry_block_id", "value_table", "place_table", "move_path_table", "region_table", "loan_table", "cleanup_region_table", "linear_token_table", "suspension_site_table", "responsibility_table", "leave_plan_table", "proof_table", "blocks"],
+      "required": ["body_id", "function_id", "signature", "entry_block_id", "value_table", "place_table", "move_path_table", "region_table", "loan_table", "cleanup_region_table", "linear_token_table", "continuation_frame_plan_table", "suspension_site_table", "responsibility_table", "leave_plan_table", "proof_table", "blocks"],
       "properties": {
         "body_id": {"$ref": "#/$defs/id"},
         "function_id": {"$ref": "#/$defs/id"},
@@ -2620,6 +2952,7 @@
         "loan_table": {"type": "array", "items": {"$ref": "#/$defs/loanDecl"}},
         "cleanup_region_table": {"type": "array", "items": {"$ref": "#/$defs/cleanupRegionDecl"}},
         "linear_token_table": {"type": "array", "items": {"$ref": "#/$defs/linearTokenDecl"}},
+        "continuation_frame_plan_table": {"type": "array", "items": {"$ref": "#/$defs/continuationFramePlanDecl"}},
         "suspension_site_table": {"type": "array", "items": {"$ref": "#/$defs/suspensionSiteDecl"}},
         "responsibility_table": {"type": "array", "items": {"$ref": "#/$defs/responsibilitySummary"}},
         "leave_plan_table": {"type": "array", "items": {"$ref": "#/$defs/leavePlan"}},
@@ -2633,8 +2966,8 @@
     }
   },
   "x-deeplus-closed-universe": {
-    "operation_kind_count": 42,
-    "semantic_operation_id_count": 42,
+    "operation_kind_count": 48,
+    "semantic_operation_id_count": 48,
     "terminator_kind_count": 17,
     "linear_token_kind_count": 12,
     "responsibility_axis_count": 11,
@@ -2646,7 +2979,7 @@
   },
   "x-deeplus-verifier-contract": {
     "machine_registry_digest_resolution": "RESOLVE_EXACT_REGISTRY_BYTES_AND_VERIFY_RFC8949_CBOR_DIGEST",
-    "semantic_operation_kind_id_bijection": "RECOMPUTE_EXACT_42",
+    "semantic_operation_kind_id_bijection": "RECOMPUTE_EXACT_48",
     "operation_payload_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
     "terminator_payload_successor_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
     "token_kind_binding_shape": "RECOMPUTE_FROM_BOUND_MACHINE_REGISTRY",
@@ -2662,6 +2995,10 @@
     "linear_token_balance": "RECOMPUTE_PATH_SENSITIVE_EXACTLY_ONCE",
     "cleanup_lifo_and_suppression": "RECOMPUTE",
     "suspension_live_set_and_root_map": "RECOMPUTE",
+    "continuation_frame_owner_token_root_partition": "RECOMPUTE_EXACT_DISJOINT_UNION",
+    "continuation_frame_epoch_single_winner": "RECOMPUTE_EXACTLY_ONE_RESUME_OR_CANCEL",
+    "continuation_frame_cleanup_balance": "RECOMPUTE_EXACTLY_ONCE_LIFO",
+    "managed_memory_plan": "RECOMPUTE_AND_BIND_DEEPLUS_MANAGED_MEMORY_PLAN_R1_WHEN_DM_CAP_SAFEPOINT_ROOTMAP_R1_IS_REQUIRED",
     "responsibility_projection": "RECOMPUTE_ALL_11_AXES_IN_EXACT_ORDER_AND_PROPERTY_MAPPING",
     "target_identity_fence": "REJECT_XBC_CLIF_NATIVE_ADDRESS_ABI_OBJECT_LAYOUT_AND_TARGET_PROJECTION_DOMAINS",
     "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY",

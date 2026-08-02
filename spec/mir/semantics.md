@@ -332,6 +332,59 @@ rejected before MIR. Its invocation may be consumed only by a local `await`,
 local `spawn`, or an inward nested concur whose owner chain proves the same
 residence. General escaping async-lambda events have no current MIR identity.
 
+### 7.1 Continuation-frame machine
+
+Suspension lowering consumes the verified
+`ContinuationFramePlan` associated with the HIR `SuspendPlan`. The plan carries
+only semantic identities and responsibility partitions; it contains no stack
+offset, object layout, machine address, XBC slot, CLIF value or ABI decision.
+`Xvm`, `ObjectAot` and `InMemoryJit` must consume the same plan, typed
+continuation receipt and transition digest. `InMemoryJit` additionally binds
+the exact image-generation identity and continuation lease; no code address is
+a semantic identity.
+
+The closed frame states are `RUNNING`, `SUSPENDED`, `CLEANING`,
+`TERMINAL_COMPLETED`, `TERMINAL_FAILED` and `TERMINAL_CANCELLED`. A suspension
+visit owns a separate epoch in `PREPARING`, `COMMITTED`, `RESUME_WON`,
+`CANCEL_WON` or `DISCHARGED`. The admitted semantic operation family is:
+
+1. `FRAME_CREATE`: create one running frame for an invocation;
+2. `FRAME_SUSPEND_COMMIT`: atomically install the exact owner, admitted-loan,
+   cleanup-token and retained-authority partition, bijectively rebind managed
+   roots to fresh destination storage locations, publish one receipt and commit
+   a fresh epoch;
+3. `FRAME_RESUME_COMMIT`: win the epoch once, restore the exact partition and
+   discharge the epoch;
+4. `FRAME_CANCEL_COMMIT`: win the epoch once, retain the partition and enter
+   cleanup;
+5. `FRAME_CLEANUP_STEP`: discharge the next exact cleanup token in the
+   prescribed order;
+6. `FRAME_TERMINATE`: enter exactly one terminal state with zero owner, loan,
+   cleanup-token, root, frame-slot and actor-authority balance.
+
+`SUSPEND` and `CANCEL_CHECK` remain control-flow forms; they do not replace the
+six responsibility operations. Each operation has its own closed payload shape;
+nullable fields cannot encode a different operation's transition. The verifier
+rejects a missing, duplicated or partially transferred
+owner/loan/token/authority identity, a non-bijective root rebind, an
+inadmissible state or epoch
+transition, a stale or second race winner, a cleanup-order or balance error,
+and any root-set disagreement. The corresponding verifier diagnostics are
+`CONTINUATION_FRAME_OWNER_PARTITION_INVALID`,
+`CONTINUATION_FRAME_TRANSITION_INVALID`,
+`CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID` and
+`CONTINUATION_FRAME_ROOT_SET_INVALID`.
+
+The generic frame machine treats actor delivery, mailbox, stop and supervision
+state as out of scope. It may retain only the closed `ACTOR_TURN` scope with
+`STATE_REGION_MUTATION` and `DEQUEUE` authority; it creates no actor lifecycle
+authority and carries no actor-state loan. Resume and cancel re-enter generated
+code only through the internal typed dispatcher after exact interface, receipt,
+epoch and operation validation. This is distinct from—and grants no authority
+to—an arbitrary runtime callback. Backend allocation and storage coalescing
+occur only after the semantic partition and transition sequence have been
+verified.
+
 ## 8. Objects, evidence and construction
 
 Nominal dispatch, Trait evidence, extension resolution, construction and materialization lower to explicit MIR identities. Runtime strings and Map keys never become static labels or witnesses. Tooling certificates and provider-derive sidecars are consumed before ordinary source checking and never become execution authority.
@@ -474,9 +527,101 @@ bound. Checked arithmetic preserves its explicit success/`ArithmeticDefect`
 boundary. Missing stack-map or stable-handle capability for a live managed
 reference blocks native lowering rather than inventing a layout.
 
+Phase-1 managed references use
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`. The backend-neutral
+companion `deeplus.managed-memory-plan/r1` binds the exact MIR digest, trace
+descriptors, safepoints, logical root maps, allocation plans, interior
+projections and suspension root transfers. It is deterministically recomputed;
+a matching claimed digest alone is insufficient.
+The plan and every native projection receipt bind the exact integrated
+`IR-OWN-P0-017` continuation-root interface digest. Until that digest exists,
+R36 remains an approved local candidate and cannot pass canonical promotion.
+
+The collector is cooperative stop-the-world, nonmoving, nongenerational and
+nonconcurrent. It has no weak-reference, finalizer, resurrection or pinning
+surface and never performs MIR cleanup or cancellation. Allocation fast paths
+cannot collect. A slow allocation path uses an explicit `CHECKED` safepoint and
+existing `AllocationError effects allocate`; precommit failure cancels its
+reservation, restores the input owner, reverse-cleans staged resources and
+publishes nothing.
+
+The closed safepoint set consists of non-tail `INVOKE`, managed-allocation
+`CHECKED`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
+`ACTOR_OP`, `PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`, CFG backedges, and an FFI
+transition after root publication. No backend-private implicit safepoint is
+admitted. At each site the declared roots are the sorted unique union of
+pairwise-disjoint running, continuation-frame and runtime roots. Root identity
+denotes a live storage location, not an object, so two locations that contain
+one handle remain two roots. The receipt is published before operation entry
+and lives through outcome commit.
+
+An interior projection is a stable handle plus semantic `ProjectionId`. A raw
+address may exist only in a verified no-collect region and cannot cross a call,
+safepoint, suspension, actor boundary or FFI. JIT image retirement requires
+unpublished state plus zero active activations, suspended continuations and
+outstanding root receipts. xVM, Object AOT and JIT compare logical safepoint,
+root-owner, ownership, cleanup and outcome traces; target addresses, heap
+layout, collection timing and stack offsets are excluded.
+
 Source locations and `DebugOrigin` project through a separate nonsemantic debug
 digest. Debug info, unwind tables and profiler metadata do not change program
 meaning and remain unsupported until a target-bound receipt exists.
+
+### Internal runtime ABI R1
+
+Every generated-code/runtime crossing uses the backend-neutral logical identity
+`DEEPLUS_INTERNAL_RUNTIME_ABI_R1`. Its canonical manifest, closed helper
+registry, target projection and artifact-binding receipt are defined by
+`spec/contracts/internal-runtime-abi-r1.json`. A matching-looking symbol name,
+table index, native address, link order or host default is not ABI evidence.
+R1 admits only exact ABI ID and full-digest equality.
+
+Fixed primitive scalars use direct channels. Every aggregate, nominal value,
+closure, collection, `Option`, `Result`, Rational, Complex and unrecognized
+opaque value crosses through an indirect typed slot. A normal aggregate result
+uses the caller-owned normal slot as sret. A one-field or zero-sized nominal
+does not collapse to a scalar, and an aggregate is never split across target
+registers at this boundary. Borrow and `inout` addresses are call-bounded target
+coordinates: they neither escape nor become semantic identities.
+
+The dispatcher returns the closed union `COMPLETE(OutcomeTag) |
+PARKED(ContinuationReceiptId)`. A completed call carries exactly one `U8`
+outcome tag: `NORMAL = 0`, `ERROR = 1`, `DEFECT = 2`, or `CANCELLATION = 3`.
+The caller supplies four disjoint typed slots and only the selected completed-
+call slot commits. `Unit` has no normal payload and `Never` cannot return.
+Suspension is not a fifth outcome: `PARKED` commits no outcome tag, no outcome
+slot and no MIR successor. It transfers committed owners, active loans,
+cleanup tokens and roots exactly once to one continuation receipt, leaving zero
+source residual; those loans end only at the resumed or cancelled terminal
+edge.
+
+Argument evaluation, acquisition, ABI/signature verification, slot preparation
+and root publication precede one atomic `ownership_commit`, which immediately
+precedes callee entry. Pre-entry failure cancels reservations and retains the
+caller owner. After entry, Normal, Error, Defect and Cancellation never restore
+transferred input ownership. Completed-call loans end and cleanup runs on the
+explicit MIR edges; parked state remains owned by the continuation receipt.
+Native exceptions and host unwind cannot cross this boundary; violation
+is `RUNTIME_ABI_HOST_UNWIND_FORBIDDEN`.
+
+The helper registry declares exactly the 22 runtime-bound base operations
+already named by `CANCEL_CHECK`, `SUSPEND`, `RUN_OP`, `ACTOR_OP`,
+`PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`. Ordinary user calls and checked
+arithmetic are not helpers. The six suspending rows bind the exact
+`IR-OWN-P0-017` continuation-interface digest and remain part of those 22 base
+operations. Three managed-memory helpers are conditionally admitted by the
+exact `IR-OWN-P1-025` managed-reference profile digest, producing 25 active
+helpers in this fused design contract. Function-static ensure, lazy force and
+scoped mutex acquire are synchronous COMPLETE-only helpers; they may block a
+host thread but never manufacture semantic PARKED. Both dependency fields are
+exactly bound; a missing, stale, or substituted digest fails closed.
+
+xVM binds typed helper-table entries. Object AOT binds an exact symbol sidecar
+and linker receipt. JIT binds an exact import allowlist, resolved
+signature/provider map, immutable image-generation identity and retirement
+receipt. An image can retire only after it is unpublished and all active-call
+and suspended-continuation leases are zero. External FFI and runtime-to-generated
+callbacks are not part of R1.
 ## 11. Elaboration and evaluation preservation
 
 Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation.

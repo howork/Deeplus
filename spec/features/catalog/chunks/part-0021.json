@@ -289,7 +289,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The current Stable-design bridge is now bound to deeplus.canonical-hir-h1/r1, deeplus.mir/r1, the exact 128-identity catalog, 102 Current/111 explicit-Preview lowering rows, and MirCapabilityReceiptR1. Capability failure preserves verified HIR and blocks only ExecutableHirH1. ProposedMirX1 remains a noncanonical compatibility target; no source activation, production implementation, or product execution is claimed.",
+    "notes": "The current Stable-design bridge is bound to deeplus.canonical-hir-h1/r1, deeplus.mir/r1, the exact 130-identity catalog, 102 Current/111 explicit-Preview lowering rows, 48 closed MIR operations, and MirCapabilityReceiptR1. The R38 continuation interface separates non-live place dispositions from physical slots, closes owner/loan/cleanup/authority partitions, defines storage-location RootId rebinding, binds one resume-or-cancel winner and projects the same typed receipt to Xvm, ObjectAot and InMemoryJit without adding source spelling. Capability failure preserves verified HIR and blocks only ExecutableHirH1. ProposedMirX1 remains a noncanonical compatibility target; no source activation, production implementation, or product execution is claimed.",
     "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -308,9 +308,16 @@
         "HIR_VARIANT_UNMAPPED",
         "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
         "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
-        "HIR_MIR_PAIR_RELOWERING_MISMATCH"
+        "HIR_MIR_PAIR_RELOWERING_MISMATCH",
+        "BORROW_CROSSES_SUSPENSION",
+        "CONTINUATION_FRAME_OWNER_PARTITION_INVALID",
+        "CONTINUATION_FRAME_TRANSITION_INVALID",
+        "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID",
+        "CONTINUATION_FRAME_ROOT_SET_INVALID"
       ],
-      "predicates": [],
+      "predicates": [
+        "BorrowAcrossSuspensionAdmitted"
+      ],
       "examples": [
         "EX-R51f3-HIR-H1-001"
       ],
@@ -320,6 +327,13 @@
     "artifact_trace_refs": [
       "rfcs/DP-RFC-0002-current-hir-h1.md",
       "spec/contracts/hir-h1-current-mir-bridge.json",
+      "spec/contracts/continuation-interface-r1.json",
+      "spec/contracts/suspension-frame-responsibility-r1.json",
+      "schemas/language/continuation-interface-r1.schema.json",
+      "schemas/language/continuation-receipt-r1.schema.json",
+      "schemas/language/suspension-frame-responsibility.schema.json",
+      "tests/fixtures/current/continuation-interface-r1.json",
+      "tests/fixtures/current/suspension-frame-responsibility-r1.json",
       "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json",
       "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
       "schemas/language/canonical-hir-h1.schema.json",

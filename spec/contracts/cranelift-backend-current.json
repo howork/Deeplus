@@ -69,9 +69,19 @@
     "pointer_width_and_endianness",
     "object_format_and_code_relocation_model",
     "calling_convention",
+    "internal_runtime_abi_id",
+    "internal_runtime_abi_schema_id",
     "runtime_abi_digest",
+    "runtime_helper_registry_digest",
+    "internal_runtime_target_projection_digest",
+    "internal_runtime_artifact_binding_receipt_schema_id",
     "optimization_settings_digest",
     "runtime_helper_and_safepoint_capability_digest",
+    "managed_memory_profile_digest",
+    "managed_memory_plan_digest",
+    "continuation_root_interface_digest",
+    "target_root_projection_digest",
+    "runtime_root_registry_digest",
     "object_linker_or_jit_import_map_identity"
   ],
   "outcome_guard": {
@@ -84,6 +94,42 @@
     "host_unwind_semantic_authority": false,
     "arbitrary_backend_trap_semantic_authority": false,
     "trap_requires_preselected_defect_or_verified_unreachable": true
+  },
+  "internal_runtime_abi_guard": {
+    "contract": "spec/contracts/internal-runtime-abi-r1.json",
+    "helper_registry": "spec/contracts/runtime-helper-registry-r1.json",
+    "manifest_schema": "deeplus.internal-runtime-abi-manifest/r1",
+    "target_projection_schema": "deeplus.internal-runtime-abi-target-projection/r1",
+    "artifact_binding_receipt_schema": "deeplus.internal-runtime-abi-artifact-binding-receipt/r1",
+    "logical_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+    "fixed_primitive_scalars_direct": true,
+    "aggregate_and_nominal_values_indirect": true,
+    "aggregate_result_uses_sret_slot": true,
+    "aggregate_register_split_admitted": false,
+    "outcome_tags": [
+      "NORMAL",
+      "ERROR",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "dispatcher_completion_union": [
+      "COMPLETE(OutcomeTag)",
+      "PARKED(ContinuationReceiptId)"
+    ],
+    "active_base_runtime_helper_count": 22,
+    "conditional_continuation_helper_count": 6,
+    "conditional_managed_helper_count": 3,
+    "parked_commits_outcome_or_successor": false,
+    "parked_requires_exact_continuation_receipt": true,
+    "host_unwind_across_boundary": false,
+    "exact_digest_compatibility_only": true,
+    "runtime_to_generated_callback_admitted": false,
+    "external_ffi_included": false,
+    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "canonical_promotion_ready": true,
+    "active_conditional_managed_helper_count": 3,
+    "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND"
   },
   "aot_contract": {
     "module": "ObjectModule",
@@ -109,9 +155,33 @@
     "missing_duplicate_or_signature_mismatched_import": "TERMINAL_LINK_FAILURE"
   },
   "managed_reference_guard": {
+    "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+    "profile_contract": "spec/contracts/managed-reference-memory-profile-r1.json",
+    "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
     "mir_safepoint_identity_preserved": true,
     "root_map_requirement_preserved": true,
     "missing_stack_map_or_stable_handle_capability": "BLOCK_NATIVE_LOWERING",
+    "missing_or_invalid_plan": "BLOCK_NATIVE_LOWERING",
+    "native_root_strategy": "EXPLICIT_SHADOW_ROOT_FRAMES",
+    "moving_concurrent_or_generational_collector": false,
+    "implicit_backend_safepoint_count": 0,
+    "managed_handle_or_interior_pointer_ffi_export_count": 0,
+    "required_native_projection_receipt_fields": [
+      "managed_memory_profile_digest",
+      "managed_memory_plan_digest",
+      "continuation_root_interface_digest",
+      "handle_abi_digest",
+      "shadow_root_frame_abi_digest",
+      "safepoint_projection_digest",
+      "target_root_projection_digest",
+      "runtime_root_registry_digest",
+      "runtime_abi_digest",
+      "image_metadata_lifetime_receipt_digest",
+      "semantic_parity_trace_digest",
+      "receipt_semantic_digest"
+    ],
+    "jit_finalized_image_field": "finalized_image_identity_or_null",
+    "jit_finalized_image_is_generation_identity": true,
     "raw_pointer_fallback": false
   },
   "debug_guard": {
@@ -146,11 +216,11 @@
     },
     {
       "rule_id": "CLB-R005",
-      "law": "Exact target, ISA, toolchain, module, ABI and optimization inputs are receipt bound."
+      "law": "Exact target, ISA, toolchain, module, internal ABI ID/schema/digest, helper registry, target projection, artifact-binding schema and optimization inputs are receipt bound."
     },
     {
       "rule_id": "CLB-R006",
-      "law": "Error, Defect, Cancellation, suspension and cleanup remain explicit MIR outcomes."
+      "law": "Error, Defect and Cancellation use the four-tag internal ABI outcome channel; suspension and cleanup remain separate explicit MIR transitions and actions."
     },
     {
       "rule_id": "CLB-R007",
@@ -158,11 +228,11 @@
     },
     {
       "rule_id": "CLB-R008",
-      "law": "Object mode records object and linker identity; JIT mode records imports, image and lifetime."
+      "law": "Object mode records object, exact runtime helper symbols and linker identity; JIT mode records the exact helper allowlist, resolved signatures/providers, image generation and zero-lease retirement."
     },
     {
       "rule_id": "CLB-R009",
-      "law": "Missing managed-reference capabilities block native lowering."
+      "law": "Missing or invalid managed-memory profile, plan, root projection, runtime registry or image-lifetime evidence blocks native lowering."
     },
     {
       "rule_id": "CLB-R010",

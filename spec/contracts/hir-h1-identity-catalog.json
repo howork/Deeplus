@@ -23,11 +23,11 @@
     "CURRENT",
     "EXPLICIT_PREVIEW"
   ],
-  "identity_count": 129,
+  "identity_count": 130,
   "family_counts": {
     "EXPR_KIND": 31,
     "STMT_KIND": 4,
-    "STRUCTURAL_SCHEMA": 17,
+    "STRUCTURAL_SCHEMA": 18,
     "RESOLVED_REF_KIND": 2,
     "CALL_MODE": 3,
     "CALL_ARGUMENT_KIND": 7,
@@ -40,13 +40,13 @@
   "role_counts": {
     "TOP_LEVEL_DIRECT": 31,
     "TOP_LEVEL_ORCHESTRATOR": 4,
-    "STRUCTURAL_SCHEMA": 17,
+    "STRUCTURAL_SCHEMA": 18,
     "NESTED_AXIS": 11,
     "NESTED_LEAF": 66
   },
   "profile_catalog_counts": {
-    "CURRENT": 120,
-    "EXPLICIT_PREVIEW": 129
+    "CURRENT": 121,
+    "EXPLICIT_PREVIEW": 130
   },
   "profile_reachability_contract": {
     "occurrence_profile_source": "ROOT_SOURCE_PROFILE_ONLY",
@@ -174,6 +174,7 @@
     {"identity_id":"HIR-H1/STRUCT/INTERPOLATION_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CLOSURE_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CLEANUP_SCOPE_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
+    {"identity_id":"HIR-H1/STRUCT/CONTINUATION_FRAME_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/SUSPEND_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/CONCUR_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
     {"identity_id":"HIR-H1/STRUCT/PROVIDER_OPERATION_PLAN","family":"STRUCTURAL_SCHEMA","role":"STRUCTURAL_SCHEMA","parent_identity_id":"HIR-H1/STRUCT/BODY","reachability":"CURRENT_DEFAULT","source_profiles":["CURRENT","EXPLICIT_PREVIEW"],"lowering_requirement":"SCHEMA_ONLY","authority_group":"STRUCTURAL"},
@@ -256,7 +257,7 @@
     {"identity_id":"HIR-H1/PATTERN/PK-GENERIC-SEQUENCE-REST","family":"PATTERN_KIND","role":"NESTED_LEAF","parent_identity_id":"HIR-H1/EXPR/PATTERN_ATTEMPT","reachability":"FEATURE_GATED","source_profiles":["EXPLICIT_PREVIEW"],"lowering_requirement":"NESTED_ROW","authority_group":"PATTERN"},
     {"identity_id":"HIR-H1/PATTERN/PK-TUPLE-REST","family":"PATTERN_KIND","role":"NESTED_LEAF","parent_identity_id":"HIR-H1/EXPR/PATTERN_ATTEMPT","reachability":"FEATURE_GATED","source_profiles":["EXPLICIT_PREVIEW"],"lowering_requirement":"NESTED_ROW","authority_group":"PATTERN"}
   ],
-  "structural_plan_contract_count": 13,
+  "structural_plan_contract_count": 14,
   "structural_plan_contracts_are_catalog_identities": false,
   "structural_plan_contract_conventions": {
     "common_required_header": [
@@ -612,6 +613,47 @@
       ]
     },
     {
+      "structural_identity_id": "HIR-H1/STRUCT/CONTINUATION_FRAME_PLAN",
+      "schema_ref": "#/$defs/ContinuationFramePlan",
+      "owner_node_domain": "HIR_BODY_ID_SUSPENSION_CAPABLE",
+      "required_plan_fields": [
+        "continuation_interface_identity",
+        "continuation_interface_digest",
+        "place_dispositions",
+        "frame_slots",
+        "suspension_point_ids",
+        "authority_token_ids",
+        "cancellation_id_or_null",
+        "epoch_policy",
+        "cleanup_order",
+        "owner_partition_policy",
+        "root_partition_policy"
+      ],
+      "owning_reference_slots": [],
+      "nonowning_reference_slots": [
+        {"slot":"place_dispositions[*].source_place_id","reference_domain":"PLACE_ID","cardinality":"N1_PER_PLACE"},
+        {"slot":"place_dispositions[*].frame_slot_id_or_null","reference_domain":"FRAME_SLOT_ID","cardinality":"N?_BY_DISPOSITION","optional_encoding":"REQUIRED_OR_NULL"},
+        {"slot":"frame_slots[*].frame_slot_id","reference_domain":"FRAME_SLOT_ID","cardinality":"N1_PER_SLOT"},
+        {"slot":"frame_slots[*].source_place_id","reference_domain":"PLACE_ID","cardinality":"N1_PER_SLOT"},
+        {"slot":"frame_slots[*].normalized_type_id","reference_domain":"NORMALIZED_TYPE_ID","cardinality":"N1_PER_SLOT"},
+        {"slot":"frame_slots[*].owner_id_or_null","reference_domain":"OWNER_ID","cardinality":"N?_PER_SLOT","optional_encoding":"REQUIRED_OR_NULL"},
+        {"slot":"frame_slots[*].loan_id_or_null","reference_domain":"LOAN_ID","cardinality":"N?_PER_SLOT","optional_encoding":"REQUIRED_OR_NULL"},
+        {"slot":"frame_slots[*].cleanup_token_bindings[*].cleanup_token_id","reference_domain":"CLEANUP_TOKEN_ID","cardinality":"N*_PER_SLOT","ordering":"REGION_RANK_THEN_REGISTRATION_RANK"},
+        {"slot":"frame_slots[*].root_projection_ids[*]","reference_domain":"ROOT_PROJECTION_ID","cardinality":"N*_PER_SLOT","ordering":"TYPED_ID_ASCENDING_UNIQUE"},
+        {"slot":"suspension_point_ids[*]","reference_domain":"SUSPENSION_POINT_ID","cardinality":"N+","ordering":"SOURCE_SITE_ORDER"},
+        {"slot":"authority_token_ids[*]","reference_domain":"ACTOR_TURN_ID_OR_CONCUR_RUN_ID","cardinality":"N*","ordering":"TYPED_ID_ASCENDING_UNIQUE"},
+        {"slot":"cancellation_id_or_null","reference_domain":"CANCELLATION_ID","cardinality":"N?","optional_encoding":"REQUIRED_OR_NULL"}
+      ],
+      "cross_field_rules": [
+        "NOT_LIVE_AFTER_SUSPEND has no FrameSlotId; all three materialized dispositions have exactly one FrameSlotId",
+        "FrameSlotId and SuspensionPointId are unique within one ContinuationFramePlanId",
+        "OWNED_TRANSFER has exactly one OwnerId and every other disposition has no OwnerId",
+        "STATIC_SHARED_BORROW has one static immutable loan and one or more root projections",
+        "cleanup bindings carry region and registration ranks for deterministic reverse execution",
+        "owners, admitted loans, cleanup tokens and retained authority identities form exact disjoint running/frame partitions; roots use a bijective storage-location rebind at commit"
+      ]
+    },
+    {
       "structural_identity_id": "HIR-H1/STRUCT/SUSPEND_PLAN",
       "schema_ref": "#/$defs/SuspendPlan",
       "owner_node_domain": "HIR_EXPR_ID_AWAIT_OR_YIELD",
@@ -619,6 +661,7 @@
         "suspend_kind",
         "payload_expr_id_or_null",
         "site_id",
+        "continuation_frame_plan_id",
         "payload_type_id",
         "resume_type_id",
         "cancellation_profile_id",
@@ -631,6 +674,7 @@
       ],
       "nonowning_reference_slots": [
         {"slot":"site_id","reference_domain":"SUSPEND_SITE_ID","cardinality":"N1"},
+        {"slot":"continuation_frame_plan_id","reference_domain":"CONTINUATION_FRAME_PLAN_ID","cardinality":"N1"},
         {"slot":"payload_type_id","reference_domain":"NORMALIZED_TYPE_ID","cardinality":"N1"},
         {"slot":"resume_type_id","reference_domain":"NORMALIZED_TYPE_ID","cardinality":"N1"},
         {"slot":"cancellation_profile_id","reference_domain":"CANCELLATION_PROFILE_ID","cardinality":"N1"},

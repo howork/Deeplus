@@ -814,7 +814,7 @@ def main():
   except Exception as e:checks.append({"check_id":i,"status":"FAIL","detail":str(e)});errors.append(f"{i}: {e}")
  def c0():assert len(s["oneOf"])==3 and "rcts-v5" not in json.dumps(s).lower();return "closed union=3; RCTS fallback=0"
  ck(IDS[0],c0)
- def c1():assert c["closed_input_union"]["rcts_fallback"]=="PROHIBITED" and c["expected_registry_counts"]=={"predicates":277,"diagnostics":1436,"relations":559,"dispatch_rows":226,"undefined_or_unlisted_dispatch":0};return "exact semantic contract"
+ def c1():assert c["closed_input_union"]["rcts_fallback"]=="PROHIBITED" and c["expected_registry_counts"]=={"predicates":278,"diagnostics":1448,"relations":562,"dispatch_rows":226,"undefined_or_unlisted_dispatch":0};return "exact semantic contract"
  ck(IDS[1],c1)
  def c2():
   assert len(f["cases"])==18 and len({x["test_id"] for x in f["cases"]})==18

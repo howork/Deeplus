@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r36/managed-memory-plan-r1.schema.json",
+  "title": "Deeplus managed-memory logical plan R1",
+  "description": "Backend-neutral deterministic companion plan for Verified<DeeplusMirR1>. Target root locations are supplied only by a projection receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "plan_id",
+    "mir_schema_id",
+    "mir_semantic_digest",
+    "memory_profile_id",
+    "memory_profile_digest",
+    "continuation_root_interface_id",
+    "continuation_root_interface_digest",
+    "trace_descriptor_table",
+    "bodies",
+    "canonicalization",
+    "plan_semantic_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.managed-memory-plan/r1"},
+    "plan_id": {"$ref": "#/$defs/managedMemoryPlanId"},
+    "mir_schema_id": {"const": "deeplus.mir/r1"},
+    "mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+    "memory_profile_id": {"const": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1"},
+    "memory_profile_digest": {"$ref": "#/$defs/sha256"},
+    "continuation_root_interface_id": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+    "continuation_root_interface_digest": {"$ref": "#/$defs/sha256"},
+    "trace_descriptor_table": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/traceDescriptor"}
+    },
+    "bodies": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/bodyPlan"}
+    },
+    "canonicalization": {"$ref": "#/$defs/canonicalization"},
+    "plan_semantic_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:/-]*$"
+    },
+    "managedMemoryPlanId": {"type": "string", "pattern": "^ManagedMemoryPlanId:[^\\s]+$"},
+    "bodyId": {"type": "string", "pattern": "^BodyId:[^\\s]+$"},
+    "mirNodeId": {"type": "string", "pattern": "^MirNodeId:[^\\s]+$"},
+    "typeId": {"type": "string", "pattern": "^TypeId:[^\\s]+$"},
+    "managedTraceDescriptorId": {"type": "string", "pattern": "^ManagedTraceDescriptorId:[^\\s]+$"},
+    "projectionId": {"type": "string", "pattern": "^ProjectionId:[^\\s]+$"},
+    "rootId": {"type": "string", "pattern": "^RootId:[^\\s]+$"},
+    "rootMapId": {"type": "string", "pattern": "^RootMapId:[^\\s]+$"},
+    "safepointId": {"type": "string", "pattern": "^SafepointId:[^\\s]+$"},
+    "activeFrameId": {"type": "string", "pattern": "^ActiveFrameId:[^\\s]+$"},
+    "continuationFrameId": {"type": "string", "pattern": "^ContinuationFrameId:[^\\s]+$"},
+    "cleanupCaptureId": {"type": "string", "pattern": "^CleanupCaptureId:[^\\s]+$"},
+    "pendingOutcomeId": {"type": "string", "pattern": "^PendingOutcomeId:[^\\s]+$"},
+    "closureEnvironmentId": {"type": "string", "pattern": "^ClosureEnvironmentId:[^\\s]+$"},
+    "actorEnvelopeId": {"type": "string", "pattern": "^ActorEnvelopeId:[^\\s]+$"},
+    "runStateId": {"type": "string", "pattern": "^RunStateId:[^\\s]+$"},
+    "replyStateId": {"type": "string", "pattern": "^ReplyStateId:[^\\s]+$"},
+    "runtimeOwnerId": {"type": "string", "pattern": "^RuntimeOwnerId:[^\\s]+$"},
+    "ownerId": {"oneOf": [
+      {"$ref": "#/$defs/activeFrameId"},
+      {"$ref": "#/$defs/continuationFrameId"},
+      {"$ref": "#/$defs/cleanupCaptureId"},
+      {"$ref": "#/$defs/pendingOutcomeId"},
+      {"$ref": "#/$defs/closureEnvironmentId"},
+      {"$ref": "#/$defs/actorEnvelopeId"},
+      {"$ref": "#/$defs/runStateId"},
+      {"$ref": "#/$defs/replyStateId"},
+      {"$ref": "#/$defs/runtimeOwnerId"}
+    ]},
+    "valueId": {"type": "string", "pattern": "^ValueId:[^\\s]+$"},
+    "placeId": {"type": "string", "pattern": "^PlaceId:[^\\s]+$"},
+    "frameSlotId": {"type": "string", "pattern": "^FrameSlotId:[^\\s]+$"},
+    "runtimeRootSlotId": {"type": "string", "pattern": "^RuntimeRootSlotId:[^\\s]+$"},
+    "storageId": {"oneOf": [
+      {"$ref": "#/$defs/valueId"},
+      {"$ref": "#/$defs/placeId"},
+      {"$ref": "#/$defs/frameSlotId"},
+      {"$ref": "#/$defs/runtimeRootSlotId"}
+    ]},
+    "noCollectRegionId": {"type": "string", "pattern": "^NoCollectRegionId:[^\\s]+$"},
+    "allocationPlanId": {"type": "string", "pattern": "^AllocationPlanId:[^\\s]+$"},
+    "constructionSessionId": {"type": "string", "pattern": "^ConstructionSessionId:[^\\s]+$"},
+    "moveReservationId": {"type": "string", "pattern": "^MoveReservationId:[^\\s]+$"},
+    "cleanupActionId": {"type": "string", "pattern": "^CleanupActionId:[^\\s]+$"},
+    "cancellationPointId": {"type": "string", "pattern": "^CancellationPointId:[^\\s]+$"},
+    "suspensionPointId": {"type": "string", "pattern": "^SuspensionPointId:[^\\s]+$"},
+    "nullableId": {
+      "oneOf": [
+        {"$ref": "#/$defs/id"},
+        {"type": "null"}
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "traceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trace_descriptor_id",
+        "type_id",
+        "trace_kind",
+        "ordered_managed_projection_ids"
+      ],
+      "properties": {
+        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"},
+        "type_id": {"$ref": "#/$defs/typeId"},
+        "trace_kind": {"enum": ["NONE", "HANDLE", "AGGREGATE"]},
+        "ordered_managed_projection_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/projectionId"}
+        }
+      }
+    },
+    "rootEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_id",
+        "partition",
+        "owner_kind",
+        "owner_id",
+        "storage_kind",
+        "storage_id",
+        "trace_descriptor_id",
+        "handle_generation"
+      ],
+      "properties": {
+        "root_id": {"$ref": "#/$defs/rootId"},
+        "partition": {"enum": ["RUNNING", "FRAME", "RUNTIME"]},
+        "owner_kind": {
+          "enum": [
+            "ACTIVE_FRAME",
+            "SUSPENDED_FRAME",
+            "CLEANUP_CAPTURE",
+            "PENDING_OUTCOME",
+            "CLOSURE_ENVIRONMENT",
+            "ACTOR_ENVELOPE",
+            "RUN_STATE",
+            "REPLY_STATE",
+            "RUNTIME_OWNER"
+          ]
+        },
+        "owner_id": {"$ref": "#/$defs/ownerId"},
+        "storage_kind": {"enum": ["VALUE", "PLACE", "FRAME_SLOT", "RUNTIME_SLOT"]},
+        "storage_id": {"$ref": "#/$defs/storageId"},
+        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"},
+        "handle_generation": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [
+        {"if": {"properties": {"owner_kind": {"const": "ACTIVE_FRAME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/activeFrameId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "SUSPENDED_FRAME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/continuationFrameId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "CLEANUP_CAPTURE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/cleanupCaptureId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "PENDING_OUTCOME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/pendingOutcomeId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "CLOSURE_ENVIRONMENT"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/closureEnvironmentId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "ACTOR_ENVELOPE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/actorEnvelopeId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "RUN_STATE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/runStateId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "REPLY_STATE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/replyStateId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "RUNTIME_OWNER"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/runtimeOwnerId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "VALUE"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/valueId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "PLACE"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/placeId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "FRAME_SLOT"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/frameSlotId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "RUNTIME_SLOT"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/runtimeRootSlotId"}}}}
+      ]
+    },
+    "receiptLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verified_before_publish",
+        "published_before_operation_entry",
+        "live_through_outcome_commit",
+        "released_after_outcome_commit"
+      ],
+      "properties": {
+        "verified_before_publish": {"const": true},
+        "published_before_operation_entry": {"const": true},
+        "live_through_outcome_commit": {"const": true},
+        "released_after_outcome_commit": {"const": true}
+      }
+    },
+    "rootMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_map_id",
+        "safepoint_id",
+        "running_root_ids",
+        "frame_root_ids",
+        "runtime_root_ids",
+        "declared_root_ids",
+        "entries",
+        "canonical_root_set_digest",
+        "receipt_lifecycle"
+      ],
+      "properties": {
+        "root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "safepoint_id": {"$ref": "#/$defs/safepointId"},
+        "running_root_ids": {"$ref": "#/$defs/sortedUniqueRootIds"},
+        "frame_root_ids": {"$ref": "#/$defs/sortedUniqueRootIds"},
+        "runtime_root_ids": {"$ref": "#/$defs/sortedUniqueRootIds"},
+        "declared_root_ids": {"$ref": "#/$defs/sortedUniqueRootIds"},
+        "entries": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/rootEntry"}
+        },
+        "canonical_root_set_digest": {"$ref": "#/$defs/sha256"},
+        "receipt_lifecycle": {"$ref": "#/$defs/receiptLifecycle"}
+      }
+    },
+    "safepoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "safepoint_id",
+        "node_id",
+        "site_kind",
+        "terminator_kind",
+        "root_map_id",
+        "cancellation_point_id_or_null",
+        "collection_permitted"
+      ],
+      "properties": {
+        "safepoint_id": {"$ref": "#/$defs/safepointId"},
+        "node_id": {"$ref": "#/$defs/mirNodeId"},
+        "site_kind": {
+          "enum": [
+            "NONTAIL_INVOKE",
+            "MANAGED_ALLOCATION_SLOW_PATH",
+            "SUSPENSION_AFTER_ROOT_TRANSFER",
+            "CANCELLATION_OBSERVATION",
+            "RUN_RUNTIME_ENTRY",
+            "ACTOR_RUNTIME_ENTRY",
+            "PROVIDER_RUNTIME_ENTRY",
+            "ONCE_RUNTIME_ENTRY",
+            "SYNC_RUNTIME_ENTRY",
+            "CFG_BACKEDGE",
+            "FFI_TRANSITION"
+          ]
+        },
+        "terminator_kind": {
+          "enum": [
+            "BR",
+            "COND_BR",
+            "INVOKE",
+            "CHECKED",
+            "SUSPEND",
+            "CANCEL_CHECK",
+            "RUN_OP",
+            "ACTOR_OP",
+            "PROVIDER_OP",
+            "ONCE_OP",
+            "SYNC_OP"
+          ]
+        },
+        "root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "cancellation_point_id_or_null": {"oneOf": [{"$ref": "#/$defs/cancellationPointId"}, {"type": "null"}]},
+        "collection_permitted": {"const": true}
+      }
+    },
+    "allocationPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allocation_plan_id",
+        "node_id",
+        "type_id",
+        "trace_descriptor_id",
+        "construction_session_id",
+        "move_reservation_ids",
+        "allocation_error_id",
+        "effect_id",
+        "publish_node_id",
+        "rollback_cleanup_order",
+        "fast_path_may_collect"
+      ],
+      "properties": {
+        "allocation_plan_id": {"$ref": "#/$defs/allocationPlanId"},
+        "node_id": {"$ref": "#/$defs/mirNodeId"},
+        "type_id": {"$ref": "#/$defs/typeId"},
+        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"},
+        "construction_session_id": {"$ref": "#/$defs/constructionSessionId"},
+        "move_reservation_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/moveReservationId"}},
+        "allocation_error_id": {"const": "AllocationError"},
+        "effect_id": {"const": "allocate"},
+        "publish_node_id": {"$ref": "#/$defs/mirNodeId"},
+        "rollback_cleanup_order": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/cleanupActionId"}
+        },
+        "fast_path_may_collect": {"const": false}
+      }
+    },
+    "interiorProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projection_id",
+        "base_handle_value_id",
+        "no_collect_region_id",
+        "crosses_safepoint",
+        "crosses_call",
+        "crosses_suspension",
+        "crosses_actor_boundary",
+        "crosses_ffi"
+      ],
+      "properties": {
+        "projection_id": {"$ref": "#/$defs/projectionId"},
+        "base_handle_value_id": {"type": "string", "pattern": "^ValueId:[^\\s]+$"},
+        "no_collect_region_id": {"$ref": "#/$defs/noCollectRegionId"},
+        "crosses_safepoint": {"const": false},
+        "crosses_call": {"const": false},
+        "crosses_suspension": {"const": false},
+        "crosses_actor_boundary": {"const": false},
+        "crosses_ffi": {"const": false}
+      }
+    },
+    "suspensionTransfer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suspend_site_id",
+        "source_root_map_id",
+        "destination_root_map_id",
+        "transferred_root_ids",
+        "root_rebind_pairs",
+        "transfer_count",
+        "source_residual_count"
+        ,"continuation_root_interface_id"
+        ,"continuation_root_interface_digest"
+      ],
+      "properties": {
+        "suspend_site_id": {"$ref": "#/$defs/suspensionPointId"},
+        "source_root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "destination_root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "transferred_root_ids": {"$ref": "#/$defs/sortedUniqueRootIds"},
+        "transfer_count": {"const": 1},
+        "source_residual_count": {"const": 0},
+        "root_rebind_pairs": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/rootRebindPair"}
+        },
+        "continuation_root_interface_id": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_root_interface_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "rootRebindPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root_id",
+        "destination_root_id",
+        "source_handle_generation",
+        "destination_handle_generation"
+      ],
+      "properties": {
+        "source_root_id": {"$ref": "#/$defs/rootId"},
+        "destination_root_id": {"$ref": "#/$defs/rootId"},
+        "source_handle_generation": {"type": "integer", "minimum": 0},
+        "destination_handle_generation": {"type": "integer", "minimum": 0}
+      }
+    },
+    "bodyPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "body_id",
+        "safepoint_table",
+        "root_map_table",
+        "allocation_plan_table",
+        "interior_projection_table",
+        "suspension_transfer_table"
+      ],
+      "properties": {
+        "body_id": {"$ref": "#/$defs/bodyId"},
+        "safepoint_table": {"type": "array", "items": {"$ref": "#/$defs/safepoint"}},
+        "root_map_table": {"type": "array", "items": {"$ref": "#/$defs/rootMap"}},
+        "allocation_plan_table": {"type": "array", "items": {"$ref": "#/$defs/allocationPlan"}},
+        "interior_projection_table": {"type": "array", "items": {"$ref": "#/$defs/interiorProjection"}},
+        "suspension_transfer_table": {"type": "array", "items": {"$ref": "#/$defs/suspensionTransfer"}}
+      }
+    },
+    "sortedUniqueIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "sortedUniqueRootIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/rootId"}
+    },
+    "canonicalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "sorted_unique_set_fields",
+        "digest_rule",
+        "decode_reencode_byte_equality"
+      ],
+      "properties": {
+        "encoding": {"const": "RFC8949_DETERMINISTIC_CBOR"},
+        "sorted_unique_set_fields": {"const": true},
+        "digest_rule": {"const": "SHA256_OF_DETERMINISTIC_CBOR_WITH_PLAN_SEMANTIC_DIGEST_OMITTED"},
+        "decode_reencode_byte_equality": {"const": true}
+      }
+    }
+  },
+  "x-deeplus-verifier-contract": {
+    "profile_binding": "RESOLVE_EXACT_PROFILE_ID_AND_DIGEST",
+    "safepoints": "RECOMPUTE_FROM_CFG_TERMINATORS_BACKEDGES_ALLOCATION_AND_FFI_SITES",
+    "roots": "RECOMPUTE_LIVENESS_AND_REQUIRE_EXACT_SORTED_UNIQUE_PARTITION_UNION",
+    "trace_descriptors": "RECOMPUTE_TRANSITIVE_MANAGED_PROJECTIONS_WITH_NO_NATIVE_LAYOUT_FIELDS",
+    "interior_pointers": "PROVE_NO_CALL_SAFEPOINT_SUSPENSION_ACTOR_OR_FFI_CROSSING",
+    "suspension": "REQUIRE_EXACT_ONCE_SOURCE_TO_CONTINUATION_ROOT_TRANSFER",
+    "continuation_dependency": "REQUIRE_TYPED_CONTINUATION_INTERFACE_ID_AND_EXACT_R38_INTERFACE_DIGEST",
+    "target_identity_fence": "TARGET_LOCATIONS_EXIST_ONLY_IN_TARGET_PROJECTION_RECEIPT"
+  },
+  "x-deeplus-status-fence": {
+    "design_contract_only": true,
+    "canonical_promotion_requires_integrated_continuation_root_interface_digest": true,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

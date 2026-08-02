@@ -1,0 +1,30 @@
+{
+  "schema": "deeplus.continuation-interface-fixtures/r1",
+  "authority_contract": "spec/contracts/continuation-interface-r1.json",
+  "receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
+  "status": "SPECIFIED_NOT_RUN",
+  "expected_counts": {"total": 18, "positive": 3, "boundary": 3, "mutation": 12},
+  "tests": [
+    {"test_id": "R38-CI-P-001", "class": "positive", "axis": "receipt_digest", "scenario": "a suspend commit receipt binds the exact interface, plan, partition and root-map digests", "expected": "accept one immutable SUSPEND_COMMIT receipt", "diagnostic_or_null": null},
+    {"test_id": "R38-CI-P-002", "class": "positive", "axis": "projection_parity", "scenario": "Xvm, ObjectAot and InMemoryJit project the same plan and receipt", "expected": "accept three exact projection entries; JIT additionally binds image generation and continuation lease", "diagnostic_or_null": null},
+    {"test_id": "R38-CI-P-003", "class": "positive", "axis": "root_rebind", "scenario": "source roots are bijectively rebound to fresh destination storage-location roots", "expected": "install destination, publish receipt, then remove source with no collector entry during handover", "diagnostic_or_null": null},
+
+    {"test_id": "R38-CI-B-001", "class": "boundary", "axis": "zero_slot", "scenario": "all places are NOT_LIVE_AFTER_SUSPEND", "expected": "accept zero physical frame slots while retaining place dispositions and a committed epoch", "diagnostic_or_null": null},
+    {"test_id": "R38-CI-B-002", "class": "boundary", "axis": "no_actor", "scenario": "a non-actor continuation carries no actor authority", "expected": "accept actor_scope NONE and zero actor-authority terminal balance", "diagnostic_or_null": null},
+    {"test_id": "R38-CI-B-003", "class": "boundary", "axis": "cancel_terminal", "scenario": "cancel wins after suspension commit and cleanup has no remaining token", "expected": "CLEANING transitions to TERMINAL_CANCELLED and the epoch becomes DISCHARGED", "diagnostic_or_null": null},
+
+    {"test_id": "R38-CI-M-001", "class": "mutation", "axis": "not_live_slot", "scenario": "materialize a FrameSlotId for NOT_LIVE_AFTER_SUSPEND", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID"},
+    {"test_id": "R38-CI-M-002", "class": "mutation", "axis": "loan_partition", "scenario": "omit one admitted static loan from both running and frame partitions", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID"},
+    {"test_id": "R38-CI-M-003", "class": "mutation", "axis": "root_identity_transfer", "scenario": "reuse one RootId on both source and destination storage locations", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_ROOT_SET_INVALID"},
+    {"test_id": "R38-CI-M-004", "class": "mutation", "axis": "cleanup_rank", "scenario": "remove a cleanup token registration rank", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID"},
+    {"test_id": "R38-CI-M-005", "class": "mutation", "axis": "actor_authority", "scenario": "retain ActorTurnId without STATE_REGION_MUTATION and DEQUEUE axes", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID"},
+    {"test_id": "R38-CI-M-006", "class": "mutation", "axis": "double_winner", "scenario": "resume and cancel both claim one committed epoch", "expected": "reject loser with zero effect", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R38-CI-M-007", "class": "mutation", "axis": "pseudo_epoch_state", "scenario": "emit COMMITTED_OR_DISCHARGED as an epoch state", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R38-CI-M-008", "class": "mutation", "axis": "operation_payload", "scenario": "encode a cancel-winner payload as FRAME_RESUME_COMMIT", "expected": "reject the operation-specific payload", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R38-CI-M-009", "class": "mutation", "axis": "projection_set", "scenario": "omit InMemoryJit from the target projection map", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R38-CI-M-010", "class": "mutation", "axis": "address_identity", "scenario": "use a host or generated code address as continuation identity", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_ROOT_SET_INVALID"},
+    {"test_id": "R38-CI-M-011", "class": "mutation", "axis": "arbitrary_callback", "scenario": "enter generated code through an unvalidated arbitrary runtime callback", "expected": "reject", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R38-CI-M-012", "class": "mutation", "axis": "sibling_dependency", "scenario": "mark R37 runtime helpers dependency-bound without an exact interface digest", "expected": "reject candidate stacking", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"}
+  ],
+  "product_execution": "NOT_RUN"
+}

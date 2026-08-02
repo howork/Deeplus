@@ -1,0 +1,314 @@
+[
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_DIGEST_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; rebuild every ABI artifact from the exact canonical manifest and dependency set.",
+    "message": "The internal runtime ABI identity or canonical digest does not match.",
+    "notes": "Highest-priority internal ABI release-verifier diagnostic; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_HELPER_SET_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; regenerate the exact sorted helper allowlist from reachable verified MIR.",
+    "message": "The internal runtime helper set is missing, extra, duplicate, unordered, or unlisted.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_HELPER_SIGNATURE_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore the exact typed helper signature, version, record and ownership digest.",
+    "message": "A runtime helper identity is bound to the wrong signature or version.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_CHANNEL_PROJECTION_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore the fixed scalar or indirect typed-slot classification and sret contract.",
+    "message": "An internal ABI argument or result uses an invalid direct, indirect, alignment, or sret projection.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore the exact outcome tag and its one disjoint selected payload slot.",
+    "message": "The runtime ABI outcome tag and payload-slot commitment are inconsistent.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_OWNERSHIP_COMMIT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore one post-preflight pre-entry ownership commit and explicit outcome cleanup.",
+    "message": "The internal ABI commits ownership too early, more than once, or rolls it back after callee entry.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_HOST_UNWIND_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; keep Error, Defect and Cancellation on their explicit MIR outcome channels.",
+    "message": "Host unwind or a native exception crosses the Deeplus internal runtime ABI boundary.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_TARGET_PROJECTION_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; rebuild the exact target projection without host-default substitution.",
+    "message": "The runtime ABI target projection is missing, stale, or inconsistent with its digest.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_JIT_IMPORT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore the exact JIT helper allowlist, signature and provider binding.",
+    "message": "A JIT import is unlisted, missing, duplicate, or signature/provider mismatched.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_JIT_RETIREMENT_LEASE_VIOLATION",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; unpublish the image and wait for every call and continuation lease to reach zero.",
+    "message": "A JIT image retires while it is published or still has an active ABI lease.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_CROSS_PATH_PARITY_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore identical logical helper, channel, ownership and outcome traces across xVM, AOT and JIT.",
+    "message": "xVM, Object AOT, and JIT disagree on an internal runtime ABI logical trace.",
+    "notes": "Target-private registers and addresses are excluded; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RUNTIME_ABI_ARTIFACT_BINDING_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "internal_runtime_abi_r1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; regenerate the artifact receipt from the exact ABI, target, helper and image identities.",
+    "message": "A runtime artifact receipt does not bind the exact ABI, target projection, helper map, or image identity.",
+    "notes": "Release-verifier only; product execution NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  }
+]

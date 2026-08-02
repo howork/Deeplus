@@ -10,6 +10,7 @@
   "classification_rule": {
     "new_source_level_diagnostic_count": 0,
     "new_internal_release_verifier_diagnostic_count": 5,
+    "new_target_projection_verifier_diagnostic_count": 7,
     "repository_only_failure_id_count": 6,
     "source_diagnostic_policy": "The original lexer, parser, or checker diagnostic remains primary. R10 internal diagnostics report a failed canonical or artifact verification boundary and are never ordinary user-source diagnostics.",
     "repository_failure_policy": "Repository-only failure IDs name static validator or corpus defects and must not be added to the public compiler diagnostic catalog."
@@ -90,6 +91,49 @@
     "isolation",
     "authority",
     "cleanup"
+  ],
+  "managed_reference_projection_priority": [
+    {
+      "rank": 1,
+      "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID",
+      "trigger": "The recomputed closed safepoint set differs from the managed-memory plan."
+    },
+    {
+      "rank": 2,
+      "diagnostic_id": "MANAGED_REFERENCE_ROOT_SET_INVALID",
+      "trigger": "A root partition, entry, trace descriptor or generation is missing, extra, duplicate, unordered or stale."
+    },
+    {
+      "rank": 3,
+      "diagnostic_id": "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH",
+      "trigger": "Canonical root and safepoint bytes do not reproduce the claimed receipt digest."
+    },
+    {
+      "rank": 4,
+      "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID",
+      "trigger": "Root verification, publication, operation entry, outcome commit or release is out of order."
+    },
+    {
+      "rank": 5,
+      "diagnostic_id": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT",
+      "trigger": "A managed-derived raw or interior pointer survives a safepoint or FFI boundary."
+    },
+    {
+      "rank": 6,
+      "diagnostic_id": "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION",
+      "trigger": "A JIT generation retires outside unpublished-and-zero-leases state."
+    },
+    {
+      "rank": 7,
+      "diagnostic_id": "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH",
+      "trigger": "xVM, Object AOT and JIT disagree on a logical managed-memory observation."
+    }
+  ],
+  "managed_reference_same_priority_order": [
+    "ModuleId",
+    "BodyId",
+    "SafepointId",
+    "RootId_or_node_id"
   ],
   "new_internal_diagnostics": [
     {
@@ -361,7 +405,7 @@
   "semantic_operation_mapping": {
     "registry": "deeplus.mir-machine-registry/r1",
     "mapping_kind": "TOTAL_ONE_TO_ONE",
-    "operation_count": 29,
+    "operation_count": 48,
     "formula": "DM-SEMOP-<OPERATION_KIND_WITH_HYPHENS>-R1",
     "no_runtime_emission_has_semantic_operation": false
   },
@@ -370,7 +414,7 @@
       "id": "R10-VAL-GAP-001",
       "status": "RESOLVED_BY_MIR_MACHINE_REGISTRY",
       "description": "The closed semantic_operation_id registry and its exact mapping for all 102/111 rows are not present in the controlling draft; the lowering-row schema therefore validates ID shape and requires external registry resolution without inventing IDs.",
-      "resolution": "The exact 29-entry total semantic-operation map is bound by deeplus.mir-machine-registry/r1 and rechecked for every operation plan step."
+      "resolution": "The exact 48-entry total semantic-operation map is bound by deeplus.mir-machine-registry/r1 and rechecked for every operation plan step."
     },
     {
       "id": "R10-VAL-GAP-002",
