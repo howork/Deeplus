@@ -12133,7 +12133,7 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 719
+                and fixed_counts.get("features") == 720
                 and fixed_counts.get("predicates") == 277
                 and fixed_counts.get("predicate_fixtures") == 855
                 and fixed_counts.get("no_go") == 155
@@ -13471,7 +13471,7 @@ def main() -> int:
         is False
         and cranelift_projection.get("symbol_or_link_order_selects_semantics")
         is False
-        and len(cranelift_contract.get("required_receipt_inputs", [])) == 12
+        and len(cranelift_contract.get("required_receipt_inputs", [])) == 17
         and cranelift_outcomes.get("native_exception_semantic_authority")
         is False
         and cranelift_outcomes.get("host_unwind_semantic_authority") is False
@@ -13493,6 +13493,20 @@ def main() -> int:
         == "TERMINAL_LINK_FAILURE"
         and cranelift_managed.get("mir_safepoint_identity_preserved") is True
         and cranelift_managed.get("root_map_requirement_preserved") is True
+        and cranelift_managed.get("memory_profile_id")
+        == "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1"
+        and cranelift_managed.get("managed_memory_plan_schema")
+        == "deeplus.managed-memory-plan/r1"
+        and cranelift_managed.get("missing_or_invalid_plan")
+        == "BLOCK_NATIVE_LOWERING"
+        and cranelift_managed.get("native_root_strategy")
+        == "EXPLICIT_SHADOW_ROOT_FRAMES"
+        and len(
+            cranelift_managed.get(
+                "required_native_projection_receipt_fields", []
+            )
+        )
+        == 12
         and cranelift_managed.get("raw_pointer_fallback") is False
         and cranelift_debug.get("separate_debug_digest") is True
         and cranelift_debug.get("debug_info_is_semantic_authority") is False
@@ -13502,6 +13516,25 @@ def main() -> int:
             f"toolchain={cranelift_toolchain} hir={cranelift_hir} "
             f"module={cranelift_projection.get('module_kinds')}"
         ),
+    )
+
+    r36_validator = root / "tools/validators/validate_managed_reference_memory_profile.py"
+    r36_process = subprocess.run(
+        [sys.executable, str(r36_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r36_detail = (
+        r36_process.stdout.strip()
+        if r36_process.returncode == 0
+        else (r36_process.stderr.strip() or r36_process.stdout.strip())
+    )
+    check(
+        r36_process.returncode == 0,
+        "R36_MANAGED_REFERENCE_MEMORY_PROFILE",
+        r36_detail[-4000:],
     )
 
     tfc_rel = "tests/fixtures/current/type-flow-callable-coherence-r1.json"

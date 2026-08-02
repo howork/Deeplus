@@ -109,7 +109,7 @@ HIR_H1_FENCE = {
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
     ),
     "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json": (
-        "ed1c4abd91a0276359511877a783686dfff77851bbffecdeeb4bfca681d7881c"
+        "137c810edbfc7100a67b8f5f3b34a1ce43feeefd2e08f32a373407f023d5f048"
     ),
 }
 

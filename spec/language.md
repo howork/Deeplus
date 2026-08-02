@@ -1460,6 +1460,39 @@ outcome/edge로 유지한다. native exception, personality, host unwind 또는
 lowering은 fail-closed한다. debug projection은 별도 debug digest를 쓰며
 언어 의미나 제품 지원을 만들지 않는다.
 
+### 41.1 Phase-1 managed-reference memory profile
+
+Managed reference의 최초 구현 프로파일은
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`이다. 이는 정지-세계,
+비이동, 비세대, 비동시 full-heap tracing과 opaque stable handle을 사용한다.
+handle과 객체 주소는 소스 이름, 직렬화 tag, module API, ABI 또는 HIR/MIR
+의미 identity가 아니다.
+
+`deeplus.managed-memory-plan/r1` companion은 verified MIR digest와 정확한
+trace descriptor, safepoint, logical root map, allocation, interior projection,
+suspension root-transfer 표를 결합한다. root map은 running/frame/runtime 세
+partition의 정렬·중복 제거 합집합과 정확히 같아야 하며, 누락·추가·중복,
+오래된 generation 또는 digest/order 불일치는 native projection을 막는다.
+plan, suspension transfer, native projection receipt는 통합된
+`IR-OWN-P0-017` continuation-root interface의 exact digest도 함께 결합해야
+한다. 이 digest가 비어 있으면 local candidate일 수는 있어도 정본 승격은
+통과할 수 없다.
+
+collection은 선언된 safepoint에서만 가능하다. non-tail call, managed
+allocation slow path, suspension/cancellation observation, runtime entry, CFG
+backedge와 FFI 진입이 닫힌 집합을 이룬다. allocation fast path는 collect하지
+않고, collector는 `def#cleanup`이나 cancellation을 실행하지 않는다. raw
+interior address는 검증된 no-collect region 안에서만 존재하며 call,
+safepoint, suspension, actor boundary 또는 FFI를 건널 수 없다.
+moving/concurrent/generational GC, weak reference, finalizer, resurrection,
+pinning과 managed-handle FFI export는 Phase 1에서 제공하지 않는다.
+
+JIT image는 unpublished 상태이고 active activation, suspended continuation,
+outstanding root receipt가 모두 0일 때만 한 번 retire한다. xVM, Object AOT,
+JIT parity는 logical roots, owner transfer, cleanup과 outcome을 비교하며 주소,
+heap layout, collection 시점은 비교하지 않는다. 이 설계 계약은 product
+구현 영수증이 아니므로 관련 lane은 계속 `NOT_RUN`이다.
+
 ## 42. MIR handoff
 
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.

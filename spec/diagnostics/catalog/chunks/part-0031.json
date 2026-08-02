@@ -1,0 +1,199 @@
+[
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1",
+      "raw_pointer_provenance"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No mechanical source fix-it; shorten the interior-address lifetime or redesign the boundary around the stable managed handle.",
+    "message": "A managed-derived raw or interior pointer remains live across a safepoint or FFI boundary.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; recompute the closed semantic safepoint set and its exact node bindings.",
+    "message": "The managed-memory plan has a missing, extra, implicit or wrongly bound safepoint.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_ROOT_SET_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; recompute exact liveness, partitions, entries, descriptors and handle generations.",
+    "message": "A managed root set is missing, extra, duplicate, unordered, stale or not equal to its partition union.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; deterministically regenerate the managed-memory plan and receipt.",
+    "message": "A managed root receipt digest does not match its canonical root set and safepoint binding.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; publish verified roots before entry and keep them live through outcome commit.",
+    "message": "Managed root publication, operation entry, outcome commit or receipt release is out of order.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; retain the image and metadata until every activation, continuation and root-receipt lease is discharged.",
+    "message": "A JIT image retirement violates the managed-reference generation lease gate.",
+    "notes": "Projection-verifier boundary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / MIR / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "MIR",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "managed_reference_memory_profile_phase1"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; restore identical logical safepoint, root-owner, ownership, cleanup and outcome traces.",
+    "message": "xVM, Object AOT and JIT disagree on a managed-reference semantic projection.",
+    "notes": "Projection-verifier boundary; target addresses and collection timing are excluded; product execution receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "runtime",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  }
+]

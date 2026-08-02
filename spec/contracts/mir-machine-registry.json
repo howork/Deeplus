@@ -1240,8 +1240,10 @@
       "capability_id": "DM-CAP-SAFEPOINT-ROOTMAP-R1",
       "requires": ["DM-CAP-CORE-CFG-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
       "operation_kinds": [],
-      "terminator_kinds": ["INVOKE", "CHECKED", "SUSPEND", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP"],
-      "token_kinds": ["ACCESS", "SUSPENSION", "ACTOR_TURN", "AUTHORITY"]
+      "terminator_kinds": ["BR", "COND_BR", "INVOKE", "CHECKED", "SUSPEND", "CANCEL_CHECK", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP"],
+      "token_kinds": ["ACCESS", "SUSPENSION", "ACTOR_TURN", "AUTHORITY"],
+      "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
+      "verification_result_contract": "RECOMPUTE_EXACT_LOGICAL_SAFEPOINT_ROOT_TRACE_ALLOCATION_INTERIOR_AND_SUSPENSION_TABLES_AND_BIND_PLAN_DIGEST"
     },
     {
       "capability_id": "DM-CAP-PROVENANCE-PAIR-R1",

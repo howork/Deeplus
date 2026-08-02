@@ -527,6 +527,42 @@ bound. Checked arithmetic preserves its explicit success/`ArithmeticDefect`
 boundary. Missing stack-map or stable-handle capability for a live managed
 reference blocks native lowering rather than inventing a layout.
 
+Phase-1 managed references use
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`. The backend-neutral
+companion `deeplus.managed-memory-plan/r1` binds the exact MIR digest, trace
+descriptors, safepoints, logical root maps, allocation plans, interior
+projections and suspension root transfers. It is deterministically recomputed;
+a matching claimed digest alone is insufficient.
+The plan and every native projection receipt bind the exact integrated
+`IR-OWN-P0-017` continuation-root interface digest. Until that digest exists,
+R36 remains an approved local candidate and cannot pass canonical promotion.
+
+The collector is cooperative stop-the-world, nonmoving, nongenerational and
+nonconcurrent. It has no weak-reference, finalizer, resurrection or pinning
+surface and never performs MIR cleanup or cancellation. Allocation fast paths
+cannot collect. A slow allocation path uses an explicit `CHECKED` safepoint and
+existing `AllocationError effects allocate`; precommit failure cancels its
+reservation, restores the input owner, reverse-cleans staged resources and
+publishes nothing.
+
+The closed safepoint set consists of non-tail `INVOKE`, managed-allocation
+`CHECKED`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
+`ACTOR_OP`, `PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`, CFG backedges, and an FFI
+transition after root publication. No backend-private implicit safepoint is
+admitted. At each site the declared roots are the sorted unique union of
+pairwise-disjoint running, continuation-frame and runtime roots. Root identity
+denotes a live storage location, not an object, so two locations that contain
+one handle remain two roots. The receipt is published before operation entry
+and lives through outcome commit.
+
+An interior projection is a stable handle plus semantic `ProjectionId`. A raw
+address may exist only in a verified no-collect region and cannot cross a call,
+safepoint, suspension, actor boundary or FFI. JIT image retirement requires
+unpublished state plus zero active activations, suspended continuations and
+outstanding root receipts. xVM, Object AOT and JIT compare logical safepoint,
+root-owner, ownership, cleanup and outcome traces; target addresses, heap
+layout, collection timing and stack offsets are excluded.
+
 Source locations and `DebugOrigin` project through a separate nonsemantic debug
 digest. Debug info, unwind tables and profiler metadata do not change program
 meaning and remain unsupported until a target-bound receipt exists.

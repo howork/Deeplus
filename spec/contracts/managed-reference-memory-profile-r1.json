@@ -1,0 +1,307 @@
+{
+  "schema": "deeplus.managed-reference-memory-profile/r1",
+  "fixture_schema": "schemas/language/managed-reference-memory-profile-fixtures-r1.schema.json",
+  "revision": "r36-managed-reference-memory-profile-r1",
+  "status": "STABLE_DESIGN_CANDIDATE",
+  "canonical_integration": "APPROVED_NOT_INTEGRATED",
+  "current_binding": false,
+  "repository": "howork/Deeplus",
+  "baseline_commit": "e680568057ec9c6b02218dbe153758471734cf44",
+  "baseline_tree": "4d91b75d244f0c6adb5980cee19fec756c337053",
+  "gap_id": "IR-OWN-P1-025",
+  "dependency_guard": {
+    "gap_id": "IR-OWN-P0-017",
+    "status_at_baseline": "APPROVED_NOT_INTEGRATED",
+    "required_before_canonical_closure": "PUBLISH_EXACT_BOUND_R38_CONTINUATION_INTERFACE",
+    "gap_role": "GOVERNANCE_TRACKING_ONLY",
+    "successor_binding_status": "EXACT_LOCAL_FUSION_BOUND",
+    "continuation_root_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_root_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "canonical_promotion_ready": true,
+    "r36_replaces_dependency_state_machine": false
+  },
+  "source_syntax_change_count": 0,
+  "semantic_p0": 0,
+  "feature_p1": "22_OPEN_UNCHANGED",
+  "m13_actions": "4_OPEN_UNCHANGED",
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "profile": {
+    "profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+    "collector_kind": "STOP_THE_WORLD_FULL_HEAP_MARK_SWEEP",
+    "relocation_policy": "NONMOVING",
+    "concurrency_policy": "NONCONCURRENT",
+    "generation_policy": "NONGENERATIONAL",
+    "handle_model": "OPAQUE_STABLE_HANDLE",
+    "root_strategy": "EXPLICIT_SHADOW_ROOT_FRAMES",
+    "conservative_scan": false,
+    "read_barrier_count": 0,
+    "write_barrier_count": 0,
+    "weak_reference_surface_count": 0,
+    "ephemeron_surface_count": 0,
+    "user_finalizer_surface_count": 0,
+    "resurrection_surface_count": 0,
+    "pinning_surface_count": 0,
+    "managed_ffi_export_count": 0
+  },
+  "handle_slot": {
+    "fields": [
+      "generation",
+      "state",
+      "referent",
+      "trace_descriptor_id",
+      "cleanup_state"
+    ],
+    "state_order": [
+      "FREE",
+      "RESERVED",
+      "INITIALIZING",
+      "LIVE",
+      "RETIRED",
+      "FREE"
+    ],
+    "generation_advances_before_reuse": true,
+    "source_identity": false,
+    "module_api_identity": false,
+    "serialization_identity": false,
+    "abi_identity": false
+  },
+  "trace_descriptor_contract": {
+    "trace_kinds": [
+      "NONE",
+      "HANDLE",
+      "AGGREGATE"
+    ],
+    "projection_identity": "ProjectionId",
+    "ordered_projection_ids_required": true,
+    "byte_offset_or_bitmap_semantic_identity": false
+  },
+  "safepoint_contract": {
+    "implicit_backend_safepoint_count": 0,
+    "standalone_gc_poll_count": 0,
+    "closed_site_kinds": [
+      "NONTAIL_INVOKE",
+      "MANAGED_ALLOCATION_SLOW_PATH",
+      "SUSPENSION_AFTER_ROOT_TRANSFER",
+      "CANCELLATION_OBSERVATION",
+      "RUN_RUNTIME_ENTRY",
+      "ACTOR_RUNTIME_ENTRY",
+      "PROVIDER_RUNTIME_ENTRY",
+      "ONCE_RUNTIME_ENTRY",
+      "SYNC_RUNTIME_ENTRY",
+      "CFG_BACKEDGE",
+      "FFI_TRANSITION"
+    ],
+    "terminator_binding": {
+      "NONTAIL_INVOKE": "INVOKE",
+      "MANAGED_ALLOCATION_SLOW_PATH": "CHECKED",
+      "SUSPENSION_AFTER_ROOT_TRANSFER": "SUSPEND",
+      "CANCELLATION_OBSERVATION": "CANCEL_CHECK",
+      "RUN_RUNTIME_ENTRY": "RUN_OP",
+      "ACTOR_RUNTIME_ENTRY": "ACTOR_OP",
+      "PROVIDER_RUNTIME_ENTRY": "PROVIDER_OP",
+      "ONCE_RUNTIME_ENTRY": "ONCE_OP",
+      "SYNC_RUNTIME_ENTRY": "SYNC_OP",
+      "CFG_BACKEDGE": "BR_OR_COND_BR_BACKEDGE",
+      "FFI_TRANSITION": "INVOKE_WITH_FOREIGN_CONTRACT"
+    },
+    "allocation_fast_path_may_collect": false,
+    "safepoint_is_cancellation_point": false,
+    "receipt_publish_order": [
+      "RECOMPUTE_LIVE_ROOTS",
+      "VERIFY_ROOT_RECEIPT",
+      "PUBLISH_ROOT_RECEIPT",
+      "ENTER_MAY_COLLECT_OPERATION",
+      "COMMIT_OPERATION_OUTCOME",
+      "RELEASE_ROOT_RECEIPT"
+    ]
+  },
+  "root_contract": {
+    "partitions": [
+      "RUNNING",
+      "FRAME",
+      "RUNTIME"
+    ],
+    "owner_kinds": [
+      "ACTIVE_FRAME",
+      "SUSPENDED_FRAME",
+      "CLEANUP_CAPTURE",
+      "PENDING_OUTCOME",
+      "CLOSURE_ENVIRONMENT",
+      "ACTOR_ENVELOPE",
+      "RUN_STATE",
+      "REPLY_STATE",
+      "RUNTIME_OWNER"
+    ],
+    "storage_kinds": [
+      "VALUE",
+      "PLACE",
+      "FRAME_SLOT",
+      "RUNTIME_SLOT"
+    ],
+    "equation": "declared_root_ids=sorted_unique(running_root_ids|frame_root_ids|runtime_root_ids)",
+    "partitions_pairwise_disjoint": true,
+    "root_identity_is_storage_location": true,
+    "same_handle_in_two_locations_has_two_roots": true,
+    "exact_handle_generation_value_required": true,
+    "missing_extra_duplicate_or_unsorted_root": "REJECT_PROJECTION"
+  },
+  "allocation_contract": {
+    "recoverable_error_id": "AllocationError",
+    "effect_id": "allocate",
+    "transaction_order": [
+      "RESERVE_HANDLE_AND_OBJECT",
+      "ROOT_INPUT_AND_STAGED_OWNERS",
+      "INITIALIZE_TRANSACTIONALLY",
+      "PUBLISH_ONCE"
+    ],
+    "precommit_failure_order": [
+      "CANCEL_RESERVATIONS",
+      "RESTORE_INPUT_OWNER",
+      "REVERSE_CLEAN_STAGED_RESOURCES",
+      "PUBLISH_NOTHING"
+    ],
+    "new_oom_defect_count": 0
+  },
+  "cleanup_and_cancellation_fence": {
+    "collector_invokes_cleanup": false,
+    "collector_consumes_cleanup_token": false,
+    "active_cleanup_token_roots_allocation": true,
+    "unreachable_live_object_with_active_cleanup": "INVARIANT_FAILURE",
+    "collector_delivers_cancellation": false,
+    "collection_changes_primary_or_suppressed_outcome": false
+  },
+  "suspension_root_transfer": {
+    "order": [
+      "INSTALL_DESTINATION_ROOTS",
+      "PUBLISH_DESTINATION_RECEIPT",
+      "REMOVE_SOURCE_ROOTS",
+      "COMMIT_SUSPENSION"
+    ],
+    "transfer_count_per_root": 1,
+    "source_residual_count_after_commit": 0,
+    "source_root_id_must_differ_from_destination_root_id": true,
+    "source_and_destination_handle_generation_must_match": true,
+    "generation_equality_rule": "source_handle_generation == destination_handle_generation",
+    "continuation_root_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_root_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "dependency_gap": "IR-OWN-P0-017"
+  },
+  "interior_pointer_fence": {
+    "semantic_form": "ManagedHandle+ProjectionId",
+    "raw_address_requires_no_collect_region": true,
+    "raw_address_crosses_safepoint": false,
+    "raw_address_crosses_call": false,
+    "raw_address_crosses_suspension": false,
+    "raw_address_crosses_actor_boundary": false,
+    "raw_address_crosses_ffi": false,
+    "pin_or_unpin_surface_count": 0
+  },
+  "ffi_fence": {
+    "runtime_managed_handle_exported": false,
+    "referent_address_exported": false,
+    "interior_pointer_exported": false,
+    "application_foreign_opaque_handle_is_runtime_managed_handle": false
+  },
+  "jit_retirement_contract": {
+    "required_state": "UNPUBLISHED",
+    "zero_gate_fields": [
+      "active_native_activation_count",
+      "suspended_continuation_count",
+      "outstanding_root_receipt_count"
+    ],
+    "retirement_count": 1,
+    "old_activation_or_frame_rebound_to_new_generation": false,
+    "managed_handle_lifetime_depends_on_code_image": false
+  },
+  "cross_path_parity": {
+    "paths": [
+      "xvm_interpreter",
+      "cranelift_object_aot_backend",
+      "cranelift_jit_backend"
+    ],
+    "compared": [
+      "ordered_safepoint_ids",
+      "logical_root_ids",
+      "root_owner_transfers",
+      "ownership_transitions",
+      "cleanup_outcomes",
+      "terminal_outcome"
+    ],
+    "excluded": [
+      "handle_addresses",
+      "heap_layout",
+      "collection_timing",
+      "mark_order",
+      "registers",
+      "stack_offsets"
+    ]
+  },
+  "native_projection_receipt": {
+    "schema": "deeplus.managed-reference-native-projection-receipt/r1",
+    "schema_path": "schemas/language/managed-reference-native-projection-receipt-r1.schema.json",
+    "current_target_receipt_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "diagnostic_contract": {
+    "capability_gate_diagnostic": "HIR_MIR_CAPABILITY_RECEIPT_MISMATCH",
+    "projection_diagnostics": [
+      "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT",
+      "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID",
+      "MANAGED_REFERENCE_ROOT_SET_INVALID",
+      "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH",
+      "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID",
+      "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION",
+      "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH"
+    ],
+    "projection_diagnostic_priority": [
+      {"rank": 1, "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_SET_INVALID"},
+      {"rank": 2, "diagnostic_id": "MANAGED_REFERENCE_ROOT_SET_INVALID"},
+      {"rank": 3, "diagnostic_id": "MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH"},
+      {"rank": 4, "diagnostic_id": "MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID"},
+      {"rank": 5, "diagnostic_id": "RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT"},
+      {"rank": 6, "diagnostic_id": "MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION"},
+      {"rank": 7, "diagnostic_id": "MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH"}
+    ],
+    "same_priority_first_violation_order": [
+      "ModuleId",
+      "BodyId",
+      "SafepointId",
+      "RootId_or_node_id"
+    ],
+    "source_fixit_count": 0
+  },
+  "rules": [
+    {"rule_id": "MRM-R001", "law": "Phase 1 uses stop-the-world nonmoving full-heap tracing with opaque stable handles."},
+    {"rule_id": "MRM-R002", "law": "Handle and object addresses are never language, module-API, serialization or ABI identities."},
+    {"rule_id": "MRM-R003", "law": "Every managed type has one semantic trace descriptor with ordered logical projections."},
+    {"rule_id": "MRM-R004", "law": "Safepoints are closed, explicit semantic sites; backend insertion is forbidden."},
+    {"rule_id": "MRM-R005", "law": "A root receipt equals the sorted unique union of pairwise-disjoint running, frame and runtime roots."},
+    {"rule_id": "MRM-R006", "law": "Root identity denotes storage location and binds an exact nonnegative handle-generation value."},
+    {"rule_id": "MRM-R007", "law": "The root receipt is published before a may-collect entry and lives through outcome commit."},
+    {"rule_id": "MRM-R008", "law": "Allocation fast paths cannot collect; slow paths use an explicit CHECKED safepoint."},
+    {"rule_id": "MRM-R009", "law": "Managed allocation is transactional and fails only through existing AllocationError effects allocate."},
+    {"rule_id": "MRM-R010", "law": "The collector does not execute cleanup, consume cleanup tokens, deliver cancellation or select outcomes."},
+    {"rule_id": "MRM-R011", "law": "Suspension transfers each source root to one distinct destination RootId with the same exact handle generation before removing active-frame roots, then commits exactly once."},
+    {"rule_id": "MRM-R012", "law": "A raw interior address is confined to a proven no-collect region and cannot cross safepoint or FFI."},
+    {"rule_id": "MRM-R013", "law": "Phase 1 exports no runtime managed handle or referent address through FFI."},
+    {"rule_id": "MRM-R014", "law": "Phase 1 has no relocation, concurrent or generational collection, barriers, weak refs, finalizers or pinning surface."},
+    {"rule_id": "MRM-R015", "law": "JIT image retirement requires unpublished state and zero active, suspended and root-receipt leases."},
+    {"rule_id": "MRM-R016", "law": "Old activations and frames never rebind to a new JIT generation."},
+    {"rule_id": "MRM-R017", "law": "xVM, Object AOT and JIT preserve identical logical root, ownership, cleanup and outcome traces."},
+    {"rule_id": "MRM-R018", "law": "Target locations and collection timing are excluded from semantic parity identity."},
+    {"rule_id": "MRM-R019", "law": "Missing or inconsistent capability, root, safepoint or lease evidence blocks projection."},
+    {"rule_id": "MRM-R020", "law": "Static materialization changes no source syntax, feature P1, M13 action or product lane."}
+  ],
+  "acceptance": {
+    "semantic_cases": 24,
+    "positive": 6,
+    "boundary": 7,
+    "negative": 11,
+    "mutation_cases": 20,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_m13_actions": 4,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

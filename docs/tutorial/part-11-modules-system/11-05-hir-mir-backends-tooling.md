@@ -136,6 +136,27 @@ Deeplus semantic identity가 아니다. managed reference가 live인 site에서
 필요한 root-map/stack-map capability가 없다면 backend는 raw pointer로
 우회하지 않고 lowering을 중단한다.
 
+최초 memory profile은
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`이다. xVM과 Cranelift는
+같은 논리적 root map을 소비하지만 실제 VM slot, native stack slot과 register
+배치는 서로 달라도 된다. 중요한 것은 주소가 아니라 어떤 live storage가
+어느 owner의 root인지, suspension 때 root가 continuation으로 한 번만
+이전되는지, cleanup과 최종 outcome이 같은지이다.
+
+예를 들어 call 직전에 두 지역 변수가 같은 managed handle을 담고 있다면
+root는 객체 하나가 아니라 지역 저장 위치 두 개다. compiler는 두 root를
+shadow-root frame에 게시한 뒤 call에 들어가며, call outcome이 commit될 때까지
+receipt를 유지한다. 반대로 managed object 내부를 잠시 가리키는 native
+address는 no-collect 구간 안에서만 사용할 수 있고 call, safepoint,
+suspension, actor boundary 또는 FFI를 넘어갈 수 없다. suspension root
+transfer와 native projection은 통합된 `IR-OWN-P0-017` interface digest를
+결합해야 하므로, 그 digest가 없는 설계 후보는 정본 승격 대상이 아니다.
+
+이 프로파일은 moving/concurrent GC, weak reference, finalizer, pinning을
+지원한다고 주장하지 않는다. collector가 `def#cleanup` 또는 cancellation을
+대신 실행하는 것도 허용하지 않는다. 이러한 기능은 별도 설계 authority와
+실행 증거가 생기기 전까지 닫혀 있다.
+
 ## 8. 다른 기능과의 연결
 
 - diagnostics는 rejected source에 MIR residue가 생기지 않게 한다.

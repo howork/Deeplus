@@ -189,3 +189,17 @@ dependency/supply-chain 검토를 하나의 별도 Build decision으로 결합�
 - <https://docs.rs/cranelift-object/latest/cranelift_object/struct.ObjectModule.html>
 - <https://docs.rs/cranelift-jit/latest/cranelift_jit/struct.JITModule.html>
 - <https://github.com/bytecodealliance/wasmtime/blob/main/cranelift/docs/ir.md>
+
+## 12. R36 managed-reference profile binding
+
+The fail-closed managed-reference guard is refined by
+`STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1`. Verified MIR binds a
+deterministically recomputed `deeplus.managed-memory-plan/r1`; Cranelift maps
+its logical roots to explicit shadow-root slots and records the mapping in a
+`deeplus.managed-reference-native-projection-receipt/r1` receipt.
+
+Phase 1 does not use a moving, concurrent or generational collector and exposes
+no weak-reference, finalizer, resurrection, pinning or managed-handle FFI
+surface. Missing or invalid memory-plan, target-root projection, runtime-root
+registry or JIT lifetime evidence blocks native lowering. This binding changes
+no HIR identity, source syntax, feature P1 or product-support lane.

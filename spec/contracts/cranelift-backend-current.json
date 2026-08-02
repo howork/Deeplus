@@ -72,6 +72,11 @@
     "runtime_abi_digest",
     "optimization_settings_digest",
     "runtime_helper_and_safepoint_capability_digest",
+    "managed_memory_profile_digest",
+    "managed_memory_plan_digest",
+    "continuation_root_interface_digest",
+    "target_root_projection_digest",
+    "runtime_root_registry_digest",
     "object_linker_or_jit_import_map_identity"
   ],
   "outcome_guard": {
@@ -109,9 +114,33 @@
     "missing_duplicate_or_signature_mismatched_import": "TERMINAL_LINK_FAILURE"
   },
   "managed_reference_guard": {
+    "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+    "profile_contract": "spec/contracts/managed-reference-memory-profile-r1.json",
+    "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
     "mir_safepoint_identity_preserved": true,
     "root_map_requirement_preserved": true,
     "missing_stack_map_or_stable_handle_capability": "BLOCK_NATIVE_LOWERING",
+    "missing_or_invalid_plan": "BLOCK_NATIVE_LOWERING",
+    "native_root_strategy": "EXPLICIT_SHADOW_ROOT_FRAMES",
+    "moving_concurrent_or_generational_collector": false,
+    "implicit_backend_safepoint_count": 0,
+    "managed_handle_or_interior_pointer_ffi_export_count": 0,
+    "required_native_projection_receipt_fields": [
+      "managed_memory_profile_digest",
+      "managed_memory_plan_digest",
+      "continuation_root_interface_digest",
+      "handle_abi_digest",
+      "shadow_root_frame_abi_digest",
+      "safepoint_projection_digest",
+      "target_root_projection_digest",
+      "runtime_root_registry_digest",
+      "runtime_abi_digest",
+      "image_metadata_lifetime_receipt_digest",
+      "semantic_parity_trace_digest",
+      "receipt_semantic_digest"
+    ],
+    "jit_finalized_image_field": "finalized_image_identity_or_null",
+    "jit_finalized_image_is_generation_identity": true,
     "raw_pointer_fallback": false
   },
   "debug_guard": {
@@ -162,7 +191,7 @@
     },
     {
       "rule_id": "CLB-R009",
-      "law": "Missing managed-reference capabilities block native lowering."
+      "law": "Missing or invalid managed-memory profile, plan, root projection, runtime registry or image-lifetime evidence blocks native lowering."
     },
     {
       "rule_id": "CLB-R010",

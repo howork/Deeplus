@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r36/managed-reference-native-projection-receipt-r1.schema.json",
+  "title": "Deeplus managed-reference native projection receipt R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receipt_id",
+    "mir_semantic_digest",
+    "managed_memory_profile_digest",
+    "managed_memory_plan_digest",
+    "continuation_root_interface_digest",
+    "module_kind",
+    "target_id",
+    "handle_abi_digest",
+    "shadow_root_frame_abi_digest",
+    "safepoint_projection_digest",
+    "target_root_projection_digest",
+    "runtime_root_registry_digest",
+    "runtime_abi_digest",
+    "image_metadata_lifetime_receipt_digest",
+    "semantic_parity_trace_digest",
+    "finalized_image_identity_or_null",
+    "finalized_image_is_jit_generation_identity",
+    "target_location_is_semantic_identity",
+    "receipt_semantic_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.managed-reference-native-projection-receipt/r1"},
+    "receipt_id": {"$ref": "#/$defs/id"},
+    "mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+    "managed_memory_profile_digest": {"$ref": "#/$defs/sha256"},
+    "managed_memory_plan_digest": {"$ref": "#/$defs/sha256"},
+    "continuation_root_interface_digest": {"$ref": "#/$defs/sha256"},
+    "module_kind": {"enum": ["ObjectAot", "InMemoryJit"]},
+    "target_id": {"$ref": "#/$defs/id"},
+    "handle_abi_digest": {"$ref": "#/$defs/sha256"},
+    "shadow_root_frame_abi_digest": {"$ref": "#/$defs/sha256"},
+    "safepoint_projection_digest": {"$ref": "#/$defs/sha256"},
+    "target_root_projection_digest": {"$ref": "#/$defs/sha256"},
+    "runtime_root_registry_digest": {"$ref": "#/$defs/sha256"},
+    "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+    "image_metadata_lifetime_receipt_digest": {"$ref": "#/$defs/sha256"},
+    "semantic_parity_trace_digest": {"$ref": "#/$defs/sha256"},
+    "target_location_is_semantic_identity": {"const": false},
+    "finalized_image_identity_or_null": {"$ref": "#/$defs/nullableId"},
+    "finalized_image_is_jit_generation_identity": {"type": "boolean"},
+    "generation_lease_lifecycle_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "retirement_receipt_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "receipt_semantic_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"module_kind": {"const": "InMemoryJit"}},
+        "required": ["module_kind"]
+      },
+      "then": {
+        "required": [
+          "finalized_image_identity_or_null",
+          "finalized_image_is_jit_generation_identity",
+          "generation_lease_lifecycle_digest_or_null",
+          "retirement_receipt_digest_or_null"
+        ],
+        "properties": {
+          "finalized_image_identity_or_null": {"$ref": "#/$defs/id"},
+          "finalized_image_is_jit_generation_identity": {"const": true},
+          "generation_lease_lifecycle_digest_or_null": {"$ref": "#/$defs/sha256"},
+          "retirement_receipt_digest_or_null": {"$ref": "#/$defs/sha256"}
+        }
+      },
+      "else": {
+        "required": [
+          "finalized_image_identity_or_null",
+          "finalized_image_is_jit_generation_identity",
+          "generation_lease_lifecycle_digest_or_null",
+          "retirement_receipt_digest_or_null"
+        ],
+        "properties": {
+          "finalized_image_identity_or_null": {"type": "null"},
+          "finalized_image_is_jit_generation_identity": {"const": false},
+          "generation_lease_lifecycle_digest_or_null": {"type": "null"},
+          "retirement_receipt_digest_or_null": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:/-]*$"
+    },
+    "nullableId": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+  },
+  "x-deeplus-canonicalization": {
+    "encoding": "RFC8949_DETERMINISTIC_CBOR",
+    "self_hash_field_excluded": "receipt_semantic_digest"
+  },
+  "x-deeplus-status-fence": {
+    "schema_materialization": "DESIGN_STATIC_ONLY",
+    "current_product_receipt_count": 0,
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

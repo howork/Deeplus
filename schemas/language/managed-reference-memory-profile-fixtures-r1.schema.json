@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r36/managed-reference-memory-profile-fixtures-r1.schema.json",
+  "title": "Deeplus managed-reference memory profile R1 design-static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "contract",
+    "baseline",
+    "evidence_state",
+    "semantic_cases",
+    "mutation_matrix",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.managed-reference-memory-profile-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/managed-reference-memory-profile-fixtures-r1.schema.json"},
+    "revision": {"const": "r36-managed-reference-memory-profile-r1"},
+    "contract": {"const": "spec/contracts/managed-reference-memory-profile-r1.json"},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree"],
+      "properties": {
+        "commit": {"const": "4a38cdfaee6bb76b6e21fba59eef4b4b870a5a44"},
+        "tree": {"const": "49831ccd810ee4aa4e419ce6a414b54950977549"}
+      }
+    },
+    "evidence_state": {
+      "const": {
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "product_execution": "NOT_RUN"
+      }
+    },
+    "semantic_cases": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"$ref": "#/$defs/semanticCase"}
+    },
+    "mutation_matrix": {
+      "type": "array",
+      "minItems": 20,
+      "maxItems": 20,
+      "items": {"$ref": "#/$defs/mutationCase"}
+    },
+    "expected_counts": {
+      "const": {
+        "semantic_cases": 24,
+        "positive": 6,
+        "boundary": 7,
+        "negative": 11,
+        "mutations": 20,
+        "semantic_p0": 0,
+        "open_feature_p1": 22,
+        "open_m13_actions": 4,
+        "product_lanes": 15,
+        "product_executed": 0
+      }
+    }
+  },
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "site_kind": {
+          "enum": [
+            "NONTAIL_INVOKE",
+            "MANAGED_ALLOCATION_SLOW_PATH",
+            "SUSPENSION_AFTER_ROOT_TRANSFER",
+            "CANCELLATION_OBSERVATION",
+            "RUN_RUNTIME_ENTRY",
+            "ACTOR_RUNTIME_ENTRY",
+            "PROVIDER_RUNTIME_ENTRY",
+            "ONCE_RUNTIME_ENTRY",
+            "SYNC_RUNTIME_ENTRY",
+            "CFG_BACKEDGE",
+            "FFI_TRANSITION",
+            "IMPLICIT_BACKEND_SITE"
+          ]
+        },
+        "terminator_kind": {"type": "string"},
+        "safepoint_declared": {"type": "boolean"},
+        "running_root_ids": {"$ref": "#/$defs/idList"},
+        "frame_root_ids": {"$ref": "#/$defs/idList"},
+        "runtime_root_ids": {"$ref": "#/$defs/idList"},
+        "declared_root_ids": {"type": "array", "items": {"type": "string"}},
+        "entry_root_ids": {"type": "array", "items": {"type": "string"}},
+        "root_set_digest_valid": {"type": "boolean"},
+        "receipt_published_before_entry": {"type": "boolean"},
+        "receipt_live_through_outcome": {"type": "boolean"},
+        "allocation_fast_path_may_collect": {"type": "boolean"},
+        "raw_interior_crosses_safepoint": {"type": "boolean"},
+        "raw_interior_crosses_call": {"type": "boolean"},
+        "raw_interior_crosses_suspension": {"type": "boolean"},
+        "raw_interior_crosses_actor_boundary": {"type": "boolean"},
+        "raw_interior_crosses_ffi": {"type": "boolean"},
+        "continuation_interface_bound": {"type": "boolean"},
+        "moving_collector": {"type": "boolean"},
+        "concurrent_collector": {"type": "boolean"},
+        "generational_collector": {"type": "boolean"},
+        "weak_reference_count": {"type": "integer", "minimum": 0},
+        "user_finalizer_count": {"type": "integer", "minimum": 0},
+        "transfer_count": {"type": "integer", "minimum": 0},
+        "source_residual_count": {"type": "integer", "minimum": 0},
+        "source_root_id": {"type": "string", "pattern": "^RootId:[^\\s]+$"},
+        "destination_root_id": {"type": "string", "pattern": "^RootId:[^\\s]+$"},
+        "source_handle_generation": {"type": "integer", "minimum": 0},
+        "destination_handle_generation": {"type": "integer", "minimum": 0},
+        "jit_state": {"enum": ["ACTIVE", "UNPUBLISHED", "RETIRED"]},
+        "active_native_activation_count": {"type": "integer", "minimum": 0},
+        "suspended_continuation_count": {"type": "integer", "minimum": 0},
+        "outstanding_root_receipt_count": {"type": "integer", "minimum": 0},
+        "retirement_requested": {"type": "boolean"},
+        "cross_path_parity": {"type": "boolean"},
+        "product_execution": {"enum": ["NOT_RUN", "PASS"]}
+      }
+    },
+    "semanticCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "class",
+        "rule_ids",
+        "scenario",
+        "facts",
+        "expected",
+        "execution_state"
+      ],
+      "properties": {
+        "case_id": {"pattern": "^R36-MRM-(P|B|N)-[0-9]{3}$"},
+        "class": {"enum": ["positive", "boundary", "negative"]},
+        "rule_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"pattern": "^MRM-R0(?:0[1-9]|1[0-9]|20)$"}
+        },
+        "scenario": {"type": "string", "minLength": 10},
+        "facts": {"$ref": "#/$defs/facts"},
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["verdict", "diagnostic_id_or_null"],
+          "properties": {
+            "verdict": {"enum": ["ADMIT_STATIC", "REJECT_STATIC"]},
+            "diagnostic_id_or_null": {"type": ["string", "null"]}
+          }
+        },
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    },
+    "mutationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mutation_id", "operator", "expected_failure"],
+      "properties": {
+        "mutation_id": {"pattern": "^R36-MRM-MUT-[0-9]{3}$"},
+        "operator": {
+          "enum": [
+            "DROP_ROOT",
+            "ADD_STALE_ROOT",
+            "DUPLICATE_ROOT",
+            "REVERSE_ROOT_ORDER",
+            "CORRUPT_ROOT_DIGEST",
+            "CHANGE_SAFEPOINT_ID_WITHOUT_DIGEST",
+            "REMOVE_SAFEPOINT_DECLARATION",
+            "ENABLE_COLLECTING_FAST_PATH",
+            "EXTEND_INTERIOR_POINTER_ACROSS_SAFEPOINT",
+            "EXTEND_INTERIOR_POINTER_ACROSS_CALL",
+            "EXTEND_INTERIOR_POINTER_ACROSS_SUSPENSION",
+            "EXTEND_INTERIOR_POINTER_ACROSS_ACTOR_BOUNDARY",
+            "DROP_CONTINUATION_INTERFACE_BINDING",
+            "PUBLISH_RECEIPT_AFTER_ENTRY",
+            "ENABLE_RELOCATION",
+            "ENABLE_CONCURRENT_OR_GENERATIONAL_COLLECTION",
+            "ENABLE_WEAK_REFERENCE",
+            "ENABLE_USER_FINALIZER",
+            "RETIRE_JIT_WITH_SUSPENDED_LEASE",
+            "CHANGE_TARGET_SEMANTIC_TRACE_OR_CLAIM_PRODUCT_PASS"
+          ]
+        },
+        "expected_failure": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

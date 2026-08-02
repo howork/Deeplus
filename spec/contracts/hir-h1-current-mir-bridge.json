@@ -536,7 +536,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "e8b0b6e4b9a888a67c068d56a41a3d9e05bcd4843a6904f8b153a53edee9193b",
+    "continuation_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -613,6 +613,11 @@
       "runtime_abi_digest",
       "optimization_settings_digest",
       "runtime_helper_and_safepoint_capability_digest",
+      "managed_memory_profile_digest",
+      "managed_memory_plan_digest",
+      "continuation_root_interface_digest",
+      "target_root_projection_digest",
+      "runtime_root_registry_digest",
       "object_linker_or_jit_import_map_identity"
     ],
     "backend_private_identity_kinds": [
@@ -657,7 +662,32 @@
       "native_exception_or_personality_is_semantic_authority": false,
       "host_unwind_is_semantic_authority": false
     },
-    "managed_reference_guard": "missing required stack-map or stable-handle capability blocks native lowering",
+    "managed_reference_guard": {
+      "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+      "profile_contract": "spec/contracts/managed-reference-memory-profile-r1.json",
+      "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
+      "native_projection_receipt_schema": "deeplus.managed-reference-native-projection-receipt/r1",
+      "plan_is_deterministically_recomputed_from_verified_mir": true,
+      "target_locations_are_semantic_identity": false,
+      "missing_or_invalid_plan": "BLOCK_NATIVE_LOWERING",
+      "raw_pointer_fallback": false,
+      "required_native_projection_receipt_fields": [
+        "managed_memory_profile_digest",
+        "managed_memory_plan_digest",
+        "continuation_root_interface_digest",
+        "handle_abi_digest",
+        "shadow_root_frame_abi_digest",
+        "safepoint_projection_digest",
+        "target_root_projection_digest",
+        "runtime_root_registry_digest",
+        "runtime_abi_digest",
+        "image_metadata_lifetime_receipt_digest",
+        "semantic_parity_trace_digest",
+        "receipt_semantic_digest"
+      ],
+      "jit_finalized_image_field": "finalized_image_identity_or_null",
+      "jit_finalized_image_is_generation_identity": true
+    },
     "debug_projection": "SourceLoc and DebugOrigin use a separate nonsemantic debug digest",
     "symbol_spelling_selects_semantic_identity": false,
     "link_or_load_order_selects_semantics": false,
@@ -757,7 +787,7 @@
     {
       "rule_id": "H1MB-R019",
       "title": "the bridge observes current backend authority without reselecting it",
-      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. This HIR bridge adds no backend-specific HIR field and cannot select xVM-only, restore a superseded native path, or claim product execution."
+      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. Managed references use the external deterministic deeplus.managed-memory-plan/r1 under STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1; target root locations never enter HIR. This bridge cannot select xVM-only, restore a superseded native path, or claim product execution."
     },
     {
       "rule_id": "H1MB-R020",
@@ -809,6 +839,7 @@
     "fixed_operator_role_count": 13,
     "fixed_operator_trait_root_count": 9,
     "new_release_verifier_diagnostic_count": 9,
+    "managed_reference_projection_verifier_diagnostic_count": 7,
     "new_source_diagnostic_count": 1,
     "suspension_frame_fixture_count": 24,
     "suspension_frame_predicate_fixture_count": 3
@@ -824,6 +855,8 @@
     "fixture_contract": "deeplus.hir-mir-machine-contract-fixtures/r1",
     "diagnostic_contract": "deeplus.hir-mir-machine-diagnostic-contract/r1",
     "suspension_frame_contract": "deeplus.suspension-frame-responsibility/r1",
+    "managed_memory_plan": "deeplus.managed-memory-plan/r1",
+    "managed_reference_native_projection_receipt": "deeplus.managed-reference-native-projection-receipt/r1",
     "authority_level": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA",
     "instance_or_product_receipt_created": false
   },
