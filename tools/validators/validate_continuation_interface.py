@@ -92,6 +92,50 @@ def git(root: Path, *args: str) -> str:
     ).stdout.strip()
 
 
+def source_manifest_export_binding(
+    root: Path, required_paths: list[Path]
+) -> tuple[bool, dict[str, Any]]:
+    """Bind a git-less clean export to its staged source-tree manifest."""
+    manifest_path = root / "release/source-tree-manifest.json"
+    if not manifest_path.is_file():
+        return False, {"mode": "SOURCE_TREE_MANIFEST_EXPORT", "error": "manifest_missing"}
+    try:
+        manifest = load(manifest_path)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return False, {
+            "mode": "SOURCE_TREE_MANIFEST_EXPORT",
+            "error": f"manifest_invalid:{type(exc).__name__}",
+        }
+    rows = manifest.get("files")
+    if (
+        manifest.get("schema") != "deeplus.source-tree-manifest/v1"
+        or not isinstance(rows, list)
+    ):
+        return False, {"mode": "SOURCE_TREE_MANIFEST_EXPORT", "error": "manifest_shape"}
+    declared = {
+        row.get("path"): row.get("sha256")
+        for row in rows
+        if isinstance(row, dict) and isinstance(row.get("path"), str)
+    }
+    required = [*required_paths, Path(__file__).resolve()]
+    mismatches: list[str] = []
+    for path in required:
+        try:
+            relative = path.resolve().relative_to(root).as_posix()
+        except ValueError:
+            mismatches.append(f"outside_root:{path}")
+            continue
+        if not path.is_file() or declared.get(relative) != sha256(path):
+            mismatches.append(relative)
+    return not mismatches, {
+        "mode": "SOURCE_TREE_MANIFEST_EXPORT",
+        "source_baseline": manifest.get("source_baseline"),
+        "tree_sha256": manifest.get("tree_sha256"),
+        "required_binding_count": len(required),
+        "mismatches": mismatches,
+    }
+
+
 def interface_errors(value: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if value.get("schema") != "deeplus.continuation-interface/r1":
@@ -355,8 +399,34 @@ def main() -> int:
     diagnostic_counts = Counter(row.get("diagnostic_id") for row in diagnostics)
     check("R38_DIAGNOSTIC_BINDING", all(diagnostic_counts[value] == 1 for value in DIAGNOSTICS), {value: diagnostic_counts[value] for value in DIAGNOSTICS})
     check("R38_GRAMMAR_UNCHANGED", sha256(paths["grammar"]) == GRAMMAR_SHA256, sha256(paths["grammar"]))
-    ancestry = git(root, "merge-base", "--is-ancestor", BASELINE_COMMIT, "HEAD")
-    check("R38_BASELINE", ancestry == "", git(root, "rev-parse", "HEAD"))
+    if (root / ".git").exists():
+        try:
+            ancestry = git(root, "merge-base", "--is-ancestor", BASELINE_COMMIT, "HEAD")
+            head_identity = git(root, "rev-parse", "HEAD")
+            baseline_ok = ancestry == ""
+            baseline_detail: Any = {
+                "mode": "GIT_ANCESTRY",
+                "baseline_commit": BASELINE_COMMIT,
+                "head": head_identity,
+            }
+        except subprocess.CalledProcessError as exc:
+            head_identity = "GIT_ANCESTRY_UNAVAILABLE"
+            baseline_ok = False
+            baseline_detail = {
+                "mode": "GIT_ANCESTRY",
+                "baseline_commit": BASELINE_COMMIT,
+                "returncode": exc.returncode,
+            }
+    else:
+        baseline_ok, baseline_detail = source_manifest_export_binding(
+            root, list(paths.values())
+        )
+        head_identity = (
+            f"SOURCE_TREE_MANIFEST:{baseline_detail.get('tree_sha256')}"
+            if baseline_ok
+            else "SOURCE_TREE_MANIFEST_UNBOUND"
+        )
+    check("R38_BASELINE", baseline_ok, baseline_detail)
 
     mutants: list[tuple[str, dict[str, Any]]] = []
     mutant = copy.deepcopy(interface); mutant["source_surface"]["new_spelling_count"] = 1; mutants.append(("NEW_SPELLING", mutant))
@@ -379,7 +449,7 @@ def main() -> int:
         "schema": "deeplus.continuation-interface-validation/r1",
         "result": "PASS" if not failed else "FAIL",
         "baseline_commit": BASELINE_COMMIT,
-        "head": git(root, "rev-parse", "HEAD"),
+        "head": head_identity,
         "interface_digest": expected_digest,
         "check_count": len(checks),
         "passed": len(checks) - len(failed),
