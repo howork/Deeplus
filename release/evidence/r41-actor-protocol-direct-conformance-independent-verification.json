@@ -1,0 +1,41 @@
+{
+  "schema": "deeplus.r41-actor-protocol-direct-conformance-independent-verification/v1",
+  "recorded_at": "2026-08-02T12:24:17+09:00",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_merge_commit": "fae105020a7b1ebc32a8fe85e80412d8ea10a803",
+  "scope": "READ_ONLY_DESIGN_STATIC_REVIEW",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "review_results": [
+    {
+      "review": "IR_BACKEND_TRACEABILITY",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "Grammar and Grammar Reference preserve WhereClause parity.",
+        "The active Actor Protocol coherence gate is SATISFIED_BY_R41_REBASED_DIRECT_CONFORMANCE.",
+        "R5 and R9 compatibility fences bind exact R41 identities, counts, bytes, and SHA-256 values."
+      ]
+    },
+    {
+      "review": "RUNTIME_MEMORY_ARTIFACT_NORMALIZATION",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "Generated JSON bytes were LF-normalized before final projection binding.",
+        "Topology, Grammar Reference, Tutorial, authority projection, and source manifest were regenerated in dependency order.",
+        "The final semantic source manifest binds 720 files."
+      ]
+    },
+    {
+      "review": "PROMOTION_AND_PUBLICATION_BOUNDARY",
+      "verdict": "TWO_STAGE_PUBLICATION_REQUIRED_AND_FOLLOWED",
+      "observations": [
+        "Semantic PR #59 was merged and read back before this closure candidate was created.",
+        "The four gaps remain INTEGRATED_UNVERIFIED until closure merge readback.",
+        "The pointer binds the semantic merge commit and does not predict the closure merge commit."
+      ]
+    }
+  ],
+  "canonical_source_mutation_by_independent_review": 0,
+  "github_mutation_by_independent_review": 0,
+  "product_execution": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+}
