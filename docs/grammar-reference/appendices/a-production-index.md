@@ -99,7 +99,7 @@
 | `NAME_TOKEN` | `ScannerEscapedNameToken` | 168 |
 | `EOF` | `ScannerEndOfInput` | 169 |
 
-## `STABLE` 프로파일 — 534개
+## `STABLE` 프로파일 — 539개
 
 | 문법 production | 정확한 EBNF 오른쪽 항 | 원천 줄 |
 |---|---|---:|
@@ -261,397 +261,402 @@
 | `ConformanceBody` | `"{" ConformanceItem* "}"` | 497 |
 | `ConformanceMethodDecl` | `MemberVisibility? DefIntroducer ConformanceMethodName TraitWitnessMarker FunctionRest` | 498 |
 | `ConformanceMethodName` | `Identifier \| QualifiedTypeReference "::" Identifier` | 500 |
-| `ConformBlockDecl` | `"conform" QualifiedTypeReference ConformanceBody` | 505 |
-| `ConformanceItem` | `ConformanceMethodDecl \| TypeSideMemberFunctionDecl \| AssociatedRequirementBinding \| ExtensionDelegationDecl \| LawDecl` | 506 |
-| `AssociatedRequirementBinding` | `"type" Identifier "=" TypeRef StatementBoundary \| "let" "::" Identifier "=" Expr StatementBoundary` | 511 |
-| `ExtensionDelegationDecl` | `"delegate" Identifier "to" QualifiedExtensionSelector StatementBoundary` | 513 |
-| `ExtensionSetDecl` | `TopLevelVisibility? "extension" TypeRef "as" Identifier ExtensionSetBody` | 517 |
-| `ExtensionSetBody` | `"{" ExtensionSetItem* "}"` | 518 |
-| `ExtensionSetItem` | `ExtensionSetFunctionDecl \| TypeSideMemberFunctionDecl` | 519 |
-| `ExtensionSetFunctionDecl` | `MemberVisibility? "def" Identifier ParameterList? ReturnClause? ThrowsClause* EffectsClause* WhereClause? FunctionBody` | 520 |
-| `ExtensionPackDecl` | `"extension" "pack" QualifiedPath ExtensionPackBody` | 522 |
-| `ExtensionPackBody` | `"{" UseExportDecl* "}"` | 523 |
-| `EnumDecl` | `TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? NominalConformanceClause* EnumBody` | 527 |
-| `EnumOrderRole` | `"#" ("increasing" \| "decreasing")` | 529 |
-| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody)? "}"` | 530 |
-| `EnumCommaCaseSequence` | `EnumCaseCore ("," EnumCaseCore)+ ","?` | 531 |
-| `EnumLayoutBody` | `EnumCaseDecl* EnumMemberDecl*` | 532 |
-| `EnumCaseDecl` | `EnumCaseCore StatementBoundary?` | 533 |
-| `EnumCaseCore` | `Identifier EnumCasePayload? EnumCaseDisplayMapping?` | 534 |
-| `EnumCasePayload` | `"(" EnumCaseFieldList? ")"` | 535 |
-| `EnumCaseFieldList` | `EnumCaseField ("," EnumCaseField)* ","?` | 536 |
-| `EnumCaseField` | `Identifier TypeAnnotation \| TypeRef` | 537 |
-| `EnumMemberDecl` | `MemberFunctionDecl \| TypeSideFieldDecl \| TypeSideMemberFunctionDecl \| AccessorPropertyDecl \| ConformBlockDecl \| EnumVariantSubsetAliasDecl` | 538 |
-| `EnumCaseDisplayMapping` | `"~>" RestrictedEnumDisplayTemplate` | 544 |
-| `RestrictedEnumDisplayTemplate` | `PLAIN_STRING_LITERAL \| MULTILINE_STRING_LITERAL \| InterpolatedString` | 545 |
-| `EnumVariantSubsetAliasDecl` | `"+" "type" Identifier "=" EnumVariantSubsetRhs StatementBoundary?` | 548 |
-| `EnumVariantSubsetRhs` | `Identifier ("\|" Identifier)*` | 550 |
-| `SchemaDecl` | `TopLevelVisibility? "schema" Identifier TypeParameterList? SchemaBody` | 554 |
-| `SchemaBody` | `"{" SchemaFieldSequence? "}"` | 555 |
-| `SchemaFieldSequence` | `CommaSchemaFields \| LayoutSchemaFields` | 556 |
-| `CommaSchemaFields` | `SchemaFieldDecl ("," SchemaFieldDecl)* ","?` | 557 |
-| `LayoutSchemaFields` | `LineBreakBoundary LayoutSchemaFieldDecl (LineBreakBoundary LayoutSchemaFieldDecl)* LineBreakBoundary?` | 558 |
-| `SchemaFieldDecl` | `Identifier TypeAnnotation Initializer? SchemaConstraint* StatementBoundary?` | 559 |
-| `LayoutSchemaFieldDecl` | `Identifier TypeAnnotation Initializer? SchemaConstraint*` | 560 |
-| `SchemaConstraint` | `"where" Expr` | 561 |
-| `TypeAliasDecl` | `TopLevelVisibility? "type" Identifier TypeParameterList? "=" TypeAliasRhs StatementBoundary` | 563 |
-| `TypeAliasRhs` | `TypeRef RefinementSuffix? \| StaticRangeType` | 564 |
-| `StaticRangeType` | `StaticIntLiteral ".." StaticIntLiteral` | 565 |
-| `TopLevelBindingDecl` | `TopLevelVisibility? ("let" \| "var") Identifier TypeAnnotation? "=" Expr StatementBoundary` | 567 |
-| `NamedEffectCapabilityDecl` | `TopLevelVisibility? "capability" Identifier "for" EffectRow StatementBoundary` | 568 |
-| `ActorDecl` | `TopLevelVisibility? "actor" MailboxClause? Identifier ActorBody` | 572 |
-| `MailboxClause` | `HashTag "(" "capacity" ":" StaticIntLiteral ")"` | 573 |
-| `ActorBody` | `"{" ActorItem* "}"` | 574 |
-| `ActorItem` | `ActorOnDecl \| ActorRequestDecl \| MemberDecl` | 575 |
-| `ActorOnDecl` | `MemberVisibility? "on" Identifier ParameterList? ThrowsClause* EffectsClause* FunctionBody` | 576 |
-| `ActorRequestDecl` | `MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* FunctionBody` | 577 |
-| `ActorProtocolDecl` | `TopLevelVisibility? "protocol" Identifier ActorProtocolBody` | 579 |
-| `ActorProtocolBody` | `"{" ActorProtocolItem* "}"` | 580 |
-| `ActorProtocolItem` | `ActorProtocolSendRequirement \| ActorProtocolRequestRequirement` | 581 |
-| `ActorProtocolSendRequirement` | `"send" Identifier ParameterList? ThrowsClause* EffectsClause* StatementBoundary` | 582 |
-| `ActorProtocolRequestRequirement` | `"request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* StatementBoundary` | 583 |
-| `TypestateResourceDecl` | `TopLevelVisibility? "typestate" Identifier TypeParameterList? TypestateBody` | 587 |
-| `TypestateBody` | `"{" TypestateTransitionDecl* "}"` | 588 |
-| `TypestateTransitionDecl` | `Identifier "->" Identifier FunctionBody?` | 589 |
-| `UnitCatalogDecl` | `TopLevelVisibility? "unit" "catalog" Identifier UnitCatalogBody` | 591 |
-| `UnitCatalogBody` | `"{" UnitCatalogEntry* "}"` | 592 |
-| `UnitCatalogEntry` | `ExactRatioUnitConversionDecl \| Identifier "=" UnitExpr StatementBoundary` | 593 |
-| `ExactRatioUnitConversionDecl` | `"unit" Identifier "equalsRatio" MeasureLiteralExpr "/" StaticIntLiteral StatementBoundary` | 594 |
-| `ModuleInterfaceDecl` | `ModuleSignatureDecl \| OpaqueModuleFacadeDecl` | 596 |
-| `ModuleSignatureDecl` | `TopLevelVisibility? "module" "signature" QualifiedPath ModuleInterfaceBody` | 597 |
-| `OpaqueModuleFacadeDecl` | `TopLevelVisibility? "opaque" "module" QualifiedPath ModuleInterfaceBody` | 598 |
-| `ModuleInterfaceBody` | `"{" ModuleInterfaceItem* "}"` | 599 |
-| `ModuleInterfaceItem` | `ExportDecl \| UseExportDecl \| OpaqueModuleFacadeDecl` | 600 |
-| `CleanupBudgetClause` | `"cleanup" "budget" "{" CleanupBudgetItem* "}"` | 604 |
-| `CleanupBudgetItem` | `EffectsBudget \| ErrorsBudget` | 605 |
-| `EffectsBudget` | `"effects" "{" IdentifierList? "}"` | 606 |
-| `ErrorsBudget` | `"errors" TypeRef` | 607 |
-| `BitfieldDecl` | `TopLevelVisibility? BitfieldIntroducer Identifier BitfieldBackingClause BitfieldOrderClause BitfieldBody` | 611 |
-| `BitfieldIntroducer` | `"bitfield" HashTag?` | 613 |
-| `BitfieldBackingClause` | `"backing" TypeRef` | 614 |
-| `BitfieldOrderClause` | `"order" "::" "lsb0"` | 615 |
-| `BitfieldBody` | `"{" BitfieldLayoutSection BitfieldMemberDecl* "}"` | 616 |
-| `BitfieldLayoutSection` | `BitfieldSlotDecl+ \| FlagSlotDecl+` | 617 |
-| `BitfieldSlotDecl` | `BitfieldNamedSlot StatementBoundary \| BitfieldReservedSlot StatementBoundary` | 618 |
-| `FlagSlotDecl` | `FlagNamedSlot StatementBoundary \| BitfieldReservedSlot StatementBoundary` | 619 |
-| `BitfieldNamedSlot` | `MemberVisibility? Identifier ":" StaticIntLiteral BitfieldDefault?` | 620 |
-| `BitfieldReservedSlot` | `"_" ":" StaticIntLiteral` | 621 |
-| `FlagNamedSlot` | `MemberVisibility? Identifier` | 622 |
-| `BitfieldDefault` | `"=" Literal` | 623 |
-| `BitfieldMemberDecl` | `MemberFunctionDecl \| TypeSideFieldDecl \| TypeSideMemberFunctionDecl \| AccessorPropertyDecl \| LawDecl` | 624 |
-| `TypeRef` | `PrattType` | 636 |
-| `NonFunctionTypeRef` | `PrattNonFunctionType` | 637 |
-| `TypePrimary` | `QualifiedTypeReference \| FacetType \| ParenTypeSyntax \| SharpShapeType \| ExistentialType \| OpaqueType \| TypeofType \| AssociatedProjection` | 640 |
-| `TypePrefixParselet` | `OwnershipQualifier` | 648 |
-| `TypePostfixParselet` | `"?"` | 649 |
-| `TypeInfixOperator` | `"&" \| "\|"` | 650 |
-| `QualifiedTypeReference` | `QualifiedPath TypeArgumentList?` | 652 |
-| `FacetType` | `"Facet" "<" "borrow" "any" QualifiedTypeReference AssociatedTypeConstraintList? ">"` | 654 |
-| `OwnershipQualifier` | `"owned" \| "borrowed" \| "mut" \| "inout"` | 655 |
-| `ParenTypeSyntax` | `HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?` | 659 |
-| `ParenTypeItemList` | `ParenTypeItem ("," ParenTypeItem)* ","?` | 660 |
-| `ParenTypeItem` | `TypeRef \| TypeRef "..." \| TypeRef "***"` | 661 |
-| `FunctionTypeTail` | `"->" ReturnTypeSurface ThrowsClause* EffectsClause*` | 662 |
-| `SharpShapeType` | `"#" StaticDimensionList "[" TypeRef "]"` | 664 |
-| `StaticDimensionList` | `StaticIntLiteral ("," StaticIntLiteral)*` | 665 |
-| `ExistentialType` | `"any" QualifiedTypeReference AssociatedTypeConstraintList?` | 667 |
-| `OpaqueType` | `"some" QualifiedTypeReference AssociatedTypeConstraintList?` | 668 |
-| `TypeofType` | `"typeof" TypeofStaticSampleOperand` | 669 |
-| `AssociatedProjection` | `"<" TypeRef "as" QualifiedTypeReference ">" "::" Identifier` | 670 |
-| `TypeofStaticSampleOperand` | `Literal \| ListLiteral \| StaticPrefixedCollectionSample \| NumericArrayLiteral \| MeasureLiteralExpr` | 673 |
-| `StaticPrefixedCollectionSample` | `MapLiteral \| SetLiteral \| MutListLiteral` | 678 |
-| `PrattType` | `TYPE_PRATT_ENTRY` | 681 |
-| `PrattNonFunctionType` | `NON_FUNCTION_TYPE_PRATT_ENTRY` | 682 |
-| `Pattern` | `OrPattern` | 690 |
-| `OrPattern` | `AliasPattern ("\|" AliasPattern)*` | 691 |
-| `AliasPattern` | `MovePattern ("as" Identifier)?` | 692 |
-| `MovePattern` | `"move"? PatternPrimary` | 693 |
-| `PatternPrimary` | `TypedBindingPattern \| Identifier \| PinPattern \| RangePattern \| RelationalPattern \| TuplePattern \| RecordPattern \| ListPattern \| MapPattern \| VariantPattern \| NominalPattern \| "_" \| UnitSyntax \| Literal \| ParenthesizedPattern` | 695 |
-| `TypedBindingPattern` | `Identifier ":" TypeRef` | 711 |
-| `ParenthesizedPattern` | `"(" Pattern ")"` | 712 |
-| `PinPattern` | `"^" StablePatternValue` | 713 |
-| `StablePatternValue` | `Identifier \| QualifiedStaticExpr \| Literal` | 714 |
-| `RangePattern` | `PatternBound (".." \| "..<") PatternBound` | 715 |
-| `RelationalPattern` | `("<" \| "<=" \| ">" \| ">=") PatternBound` | 716 |
-| `PatternBound` | `Literal \| PinPattern` | 717 |
-| `TuplePattern` | `"(" TuplePatternItems ")"` | 721 |
-| `TuplePatternItems` | `Pattern "," \| Pattern "," Pattern ("," Pattern)* ","?` | 722 |
-| `BindingPattern` | `BindingOrPattern TypeAnnotation?` | 734 |
-| `BindingOrPattern` | `BindingAliasPattern ("\|" BindingAliasPattern)*` | 735 |
-| `BindingAliasPattern` | `BindingMovePattern ("as" Identifier)?` | 736 |
-| `BindingMovePattern` | `"move"? BindingPatternPrimary` | 737 |
-| `BindingPatternPrimary` | `Identifier \| PinPattern \| RangePattern \| RelationalPattern \| TuplePattern \| RecordPattern \| ListPattern \| MapPattern \| VariantPattern \| NominalPattern \| "_" \| UnitSyntax \| Literal \| ParenthesizedPattern` | 738 |
-| `RecordPattern` | `"${" RecordPatternEntries? "}"` | 757 |
-| `RecordPatternEntries` | `RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)* PatternEntrySeparator?` | 758 |
-| `RecordPatternEntry` | `Identifier \| RecordDestination ":" Identifier \| RecordRestPattern` | 760 |
-| `RecordDestination` | `Pattern` | 761 |
-| `RecordRestPattern` | `".." RestBinder` | 762 |
-| `MapPattern` | `"#" "map" "{" MapPatternEntries? "}"` | 764 |
-| `MapPatternEntries` | `MapPatternEntry (PatternEntrySeparator MapPatternEntry)* PatternEntrySeparator?` | 765 |
-| `MapPatternEntry` | `MapDestination ":" MapKeyPattern \| MapRestPattern` | 767 |
-| `MapDestination` | `Pattern` | 768 |
-| `MapKeyPattern` | `Literal \| PinPattern` | 769 |
-| `MapRestPattern` | `".." RestBinder` | 770 |
-| `PatternEntrySeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 771 |
-| `ListPattern` | `"[" ListPatternBody? "]"` | 777 |
-| `ListPatternBody` | `IgnoredAllListRest \| ExactListPattern \| PrefixRestListPattern \| SuffixRestListPattern \| MiddleRestListPattern` | 778 |
-| `ExactListPattern` | `Pattern ("," Pattern)* ","?` | 783 |
-| `PrefixRestListPattern` | `PrefixListRest "," Pattern ("," Pattern)* ","?` | 784 |
-| `SuffixRestListPattern` | `Pattern ("," Pattern)* "," SuffixListRest ","?` | 785 |
-| `MiddleRestListPattern` | `Pattern ("," Pattern)* "," MiddleListRest "," Pattern ("," Pattern)* ","?` | 786 |
-| `PrefixListRest` | `RestBinder ".."` | 788 |
-| `SuffixListRest` | `".." RestBinder` | 789 |
-| `MiddleListRest` | `".." RestBinder ".."` | 790 |
-| `IgnoredAllListRest` | `".." "_" ","?` | 791 |
-| `RestBinder` | `Identifier \| "_"` | 792 |
-| `VariantPattern` | `VariantQualifier Identifier VariantPatternPayload?` | 794 |
-| `VariantQualifier` | `TypeRef "::" \| "::"` | 795 |
-| `VariantPatternPayload` | `VariantPositionalPatternPayload \| RecordPattern` | 796 |
-| `VariantPositionalPatternPayload` | `"(" PatternList? ")"` | 797 |
-| `NominalPattern` | `TypeRef RecordPattern` | 802 |
-| `Stmt` | `ForLoop \| WhileLoop \| RepeatLoop \| AsyncForLoop \| MatchStatement \| IfStmt \| LocalBindingStmt \| AssertiveBindingStmt \| PatternAssignmentStmt \| ParallelAssignmentStmt \| ControlTransferStmt \| TryStmt \| DeferStmt \| ScopedUseStmt \| ExprStmt \| ScopedImportStmt` | 810 |
-| `ExprStmt` | `Expr StatementBoundary` | 827 |
-| `Block` | `"{" BlockPrologue? BlockSequence "}"` | 829 |
-| `BlockPrologue` | `(UseDecl \| ImportDecl)+` | 830 |
-| `BlockSequence` | `BlockItem* BlockFinalItem?` | 831 |
-| `BlockItem` | `LocalFunctionDecl \| Stmt` | 832 |
-| `BlockFinalItem` | `ControlTransfer \| BindingCore \| Expr` | 835 |
-| `ValueBody` | `SingleExpressionValueBody \| ExplicitRetValueBody` | 838 |
-| `SingleExpressionValueBody` | `"{" ReturnValueSurface "}"` | 839 |
-| `ExplicitRetValueBody` | `"{" BlockItem* RetTransfer "}"` | 840 |
-| `RetTransfer` | `"ret" ReturnValueSurface? GuardClause?` | 841 |
-| `BindingCore` | `("let" \| "var") BindingHead "=" BindingValueSurface` | 846 |
-| `BindingHead` | `BindingPattern \| BareTupleBindingSurface` | 847 |
-| `BareTupleBindingSurface` | `BindingPattern "," BindingPattern ("," BindingPattern)*` | 848 |
-| `BindingValueSurface` | `Expr \| BareTupleValueSurface` | 849 |
-| `ReturnValueSurface` | `Expr \| BareTupleValueSurface` | 850 |
-| `BareTupleValueSurface` | `Expr "," Expr ("," Expr)*` | 851 |
-| `LocalBindingStmt` | `BindingCore StatementBoundary \| RightwardLocalBindingSurface \| LazyBindingStmt \| GuardedBindingStmt` | 852 |
-| `LazyBindingStmt` | `"let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary` | 853 |
-| `GuardedBindingStmt` | `("let" \| "var") BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary?` | 854 |
-| `AssertiveBindingStmt` | `("let" \| "var") "!" BindingPattern "=" Expr StatementBoundary` | 855 |
-| `GuardedBindingFailure` | `GuardedBindingExit \| Pattern "=>" GuardedBindingExit` | 857 |
-| `GuardedBindingExit` | `GuardedReturnExit \| GuardedThrowExit \| GuardedBreakExit \| GuardedContinueExit` | 858 |
-| `GuardedReturnExit` | `"return" Expr?` | 859 |
-| `GuardedThrowExit` | `"throw" Expr` | 860 |
-| `GuardedBreakExit` | `("break")+ Expr?` | 861 |
-| `GuardedContinueExit` | `("break")* "continue"` | 862 |
-| `ControlTransferStmt` | `ControlTransfer StatementBoundary` | 865 |
-| `ControlTransfer` | `ReturnTransfer \| ThrowTransfer \| BreakTransfer \| ContinueTransfer \| YieldTransfer` | 866 |
-| `ReturnTransfer` | `"return" ReturnValueSurface? GuardClause?` | 867 |
-| `ThrowTransfer` | `"throw" Expr GuardClause?` | 868 |
-| `BreakTransfer` | `("break")+ Expr? GuardClause?` | 869 |
-| `ContinueTransfer` | `("break")* "continue" GuardClause?` | 870 |
-| `YieldTransfer` | `"yield" Expr? (GuardClause \| YieldResponseBinding)?` | 871 |
-| `YieldResponseBinding` | `"->" DollarLocalBinding` | 872 |
-| `DollarLocalBinding` | `"$" Identifier TypeAnnotation? \| "$$" Identifier TypeAnnotation?` | 873 |
-| `GuardClause` | `PositiveGuard \| NegativeGuard` | 875 |
-| `PositiveGuard` | `"if" Expr` | 876 |
-| `NegativeGuard` | `"!" "if" Expr` | 877 |
-| `IfStmt` | `"if" PatternConditionChain Block ("else" (IfStmt \| Block))?` | 879 |
-| `PatternConditionChain` | `PatternControlCondition ("and" "then" PatternControlCondition)*` | 882 |
-| `PatternControlCondition` | `Expr \| "let" Pattern "=" Expr` | 884 |
-| `ForLoop` | `"for" ("let" Pattern \| Pattern) "in" Expr GuardClause? Block MatchStatement?` | 888 |
-| `WhileLoop` | `"while" PatternConditionChain Block MatchStatement?` | 889 |
-| `RepeatLoop` | `"repeat" Block "while" Expr MatchStatement?` | 890 |
-| `AsyncForLoop` | `"for" ForAwaitRole ("let" Pattern \| Pattern) "in" Expr GuardClause? Block` | 894 |
-| `ForAwaitRole` | `"#" "await"` | 895 |
-| `MatchStatement` | `"match" MatchCore` | 897 |
-| `MatchCore` | `MatchSubjectSlot MatchBody` | 898 |
-| `MatchSubjectSlot` | `MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY` | 899 |
-| `MatchBody` | `"{" LineBreakBoundary? MatchArmSequence "}"` | 900 |
-| `MatchArmSequence` | `MatchArm (MatchArmSeparator MatchArm)* MatchArmSeparator?` | 901 |
-| `MatchArm` | `MatchHead GuardClause? "=>" MatchArmBodySlot` | 902 |
-| `MatchHead` | `BoundedBinderPattern \| Pattern \| "otherwise"` | 903 |
-| `BoundedBinderPattern` | `PatternBound OrderedComparisonOperator Identifier OrderedComparisonOperator PatternBound` | 909 |
-| `MatchArmSeparator` | `MATCH_ARM_SEPARATOR_BY_CONTEXT` | 911 |
-| `MatchArmBodySlot` | `MATCH_ARM_BODY_BY_CONTEXT` | 912 |
-| `TryStmt` | `"try" Block (CatchClause+ FinallyClause? \| FinallyClause)` | 916 |
-| `CatchClause` | `"catch" Pattern? GuardClause? Block` | 917 |
-| `ValueCatchClause` | `"catch" Pattern? GuardClause? ValueBody` | 918 |
-| `FinallyClause` | `"finally" Block` | 919 |
-| `DeferStmt` | `"defer" DeferredCleanupInvocation StatementBoundary` | 921 |
-| `DeferredCleanupInvocation` | `DeferredDirectCall \| DeferredMessageCall` | 924 |
-| `DeferredDirectCall` | `DeferredReceiver ArgumentList` | 925 |
-| `DeferredMessageCall` | `DeferredReceiver "~" MessageSelector TildeArgumentSequence?` | 926 |
-| `DeferredReceiver` | `DeferredPrimary DeferTargetSuffix*` | 927 |
-| `DeferredPrimary` | `Identifier \| QualifiedStaticExpr` | 928 |
-| `DeferTargetSuffix` | `IndexSuffix \| MemberSuffix` | 929 |
-| `RightwardLocalBindingSurface` | `Expr "->" DollarLocalBinding StatementBoundary` | 933 |
-| `PatternAssignmentStmt` | `AssigneePattern "=" Expr StatementBoundary` | 937 |
-| `AssigneePattern` | `AssigneeTuplePattern \| AssigneeListPattern \| AssigneeRecordPattern \| AssigneeNominalPattern` | 938 |
-| `AssigneePrimary` | `Identifier \| "_"` | 942 |
-| `AssigneeTuplePattern` | `"(" AssigneeTupleItems ")"` | 943 |
-| `AssigneeTupleItems` | `AssigneePatternItem "," \| AssigneePatternItem "," AssigneePatternItem ("," AssigneePatternItem)* ","?` | 944 |
-| `AssigneePatternItem` | `AssigneePrimary \| AssigneeTuplePattern \| AssigneeListPattern \| AssigneeRecordPattern` | 947 |
-| `AssigneeListPattern` | `"[" AssigneeListBody? "]"` | 951 |
-| `AssigneeListBody` | `AssigneeIgnoredAllRest \| AssigneeExactList \| AssigneePrefixRestList \| AssigneeSuffixRestList \| AssigneeMiddleRestList` | 952 |
-| `AssigneeExactList` | `AssigneePatternItem ("," AssigneePatternItem)* ","?` | 957 |
-| `AssigneePrefixRestList` | `Identifier ".." "," AssigneeExactList` | 958 |
-| `AssigneeSuffixRestList` | `AssigneeExactList "," ".." Identifier ","?` | 959 |
-| `AssigneeMiddleRestList` | `AssigneeExactList "," ".." Identifier ".." "," AssigneeExactList` | 960 |
-| `AssigneeIgnoredAllRest` | `".." "_" ","?` | 962 |
-| `AssigneeRestPattern` | `".." ("_" \| Identifier)` | 963 |
-| `AssigneeRecordPattern` | `"${" AssigneeRecordEntries? "}"` | 964 |
-| `AssigneeRecordEntries` | `AssigneeRecordEntry (PatternEntrySeparator AssigneeRecordEntry)* PatternEntrySeparator?` | 965 |
-| `AssigneeRecordEntry` | `Identifier \| AssigneePrimary ":" Identifier \| AssigneeRestPattern` | 968 |
-| `AssigneeNominalPattern` | `TypeRef AssigneeRecordPattern` | 969 |
-| `ParallelAssignmentStmt` | `BareTuplePlaceSurface "=" AssignmentValueSurface StatementBoundary` | 970 |
-| `BareTuplePlaceSurface` | `Identifier "," Identifier ("," Identifier)*` | 971 |
-| `AssignmentValueSurface` | `Expr \| BareTupleValueSurface` | 972 |
-| `ScopedUseStmt` | `"use" ScopedPathList "in" Block` | 973 |
-| `ScopedImportStmt` | `"import" ScopedPathList "in" Block` | 974 |
-| `ScopedPathList` | `QualifiedPath ("," QualifiedPath)*` | 975 |
-| `Expr` | `PrattExpr` | 983 |
-| `PredicateExpr` | `PrattPredicateExpr` | 984 |
-| `SliceIndexExpr` | `PrattSliceIndexExpr` | 985 |
-| `ExpressionPrefixParselet` | `"+" \| "-" \| "not" \| "~~" \| "move" \| "borrow" \| "&" \| "await"` | 991 |
-| `ExpressionPostfixParselet` | `CallSuffix \| TildeCallLed \| TupleOrdinalSuffix \| IndexSuffix \| MemberSuffix \| NumericArrayTransposeSuffix \| ConstructorCallSuffix \| NamedConstructorCallSuffix \| PrototypeDerivationSuffix \| CastSuffix` | 993 |
-| `PrimaryExpr` | `Literal \| Identifier \| ImplicitAtExpr \| ParenExprSyntax \| ListLiteral \| BoundedListLiteral \| ComprehensionExpr \| MaterializationBody \| TypedMaterializationExpr \| MapLiteral \| SetLiteral \| MutListLiteral \| MapComprehensionExpr \| SetComprehensionExpr \| NumericArrayLiteral \| MeasureLiteralExpr \| QualifiedStaticExpr \| ExpectedVariantExpr \| AtControlExpr \| MatchExpr \| ClosureExpr \| GeneratorExpr \| SpawnExpr \| ConcurExpr \| UnsafeBlockExpr \| FacetExpr` | 1004 |
-| `ParenExprSyntax` | `"(" ParenExprContent? ")"` | 1032 |
-| `ParenExprContent` | `Expr ParenExprTail?` | 1033 |
-| `ParenExprTail` | `"," \| "," Expr ("," Expr)* ","?` | 1034 |
-| `ImplicitAtExpr` | `"@"` | 1035 |
-| `ExpectedVariantExpr` | `"::" Identifier` | 1036 |
-| `CallSuffix` | `ArgumentList TrailingClosureGroup? \| AtomicCallArgument TrailingClosureGroup` | 1040 |
-| `ArgumentList` | `"(" ")" \| "(" CommaArgumentSequence ")" \| "(" LayoutArgumentSequence ")"` | 1043 |
-| `CommaArgumentSequence` | `Argument ("," Argument)* ","?` | 1046 |
-| `LayoutArgumentSequence` | `LineBreakBoundary NamedLayoutArgument LineBreakBoundary NamedLayoutArgument (LineBreakBoundary NamedLayoutArgument)* LineBreakBoundary?` | 1048 |
-| `NamedLayoutArgument` | `NamedArgument \| NamedUnfoldArgument` | 1050 |
-| `Argument` | `ContextArgument \| WitnessArgument \| NamedArgument \| PositionalUnfoldArgument \| NamedUnfoldArgument \| Expr` | 1051 |
-| `ContextArgument` | `"context" Expr` | 1057 |
-| `WitnessArgument` | `"using" WitnessArgumentValue` | 1058 |
-| `WitnessArgumentValue` | `Identifier \| ConformanceEvidenceSelector \| NamedConformanceEvidenceSelector` | 1059 |
-| `NamedArgument` | `Identifier ":" Expr` | 1060 |
-| `PositionalUnfoldArgument` | `"*" Expr` | 1061 |
-| `NamedUnfoldArgument` | `"**" Expr` | 1062 |
-| `AtomicCallArgument` | `Literal \| Identifier \| QualifiedStaticExpr \| ExpectedVariantExpr` | 1063 |
-| `TrailingClosureGroup` | `TrailingClosureArgument+` | 1067 |
-| `TrailingClosureArgument` | `ClosureExpr \| Identifier ":" ClosureExpr` | 1068 |
-| `IndexSuffix` | `"[" SliceAxisList "]"` | 1072 |
-| `SliceAxisList` | `SliceAxis (";" SliceAxis)*` | 1073 |
-| `SliceAxis` | `SliceRange \| SliceIndexExpr \| AxisWildcard` | 1074 |
-| `SliceRange` | `SliceBound (".." \| "..<") SliceBound` | 1077 |
-| `SliceBound` | `SliceIndexExpr \| "^" \| "$" \| "^" OffsetExpr \| "$" OffsetExpr` | 1078 |
-| `OffsetExpr` | `("+" \| "-") NumericLiteral` | 1079 |
-| `AxisWildcard` | `"*"` | 1080 |
-| `TupleOrdinalSuffix` | `"." StaticIntLiteral` | 1082 |
-| `MemberSuffix` | `"." Identifier \| "." "\\\\" NAME_TOKEN` | 1083 |
-| `TildeCallLed` | `TildeCallToken MessageSelector TildeArgumentSequence? TrailingClosureGroup?` | 1089 |
-| `TildeCallToken` | `"~" \| ":~"` | 1091 |
-| `MessageSelector` | `Identifier \| QualifiedMessageSelector` | 1092 |
-| `QualifiedMessageSelector` | `TypeRef "::" Identifier ("::" Identifier)?` | 1093 |
-| `QualifiedExtensionSelector` | `TypeRef "::" Identifier "::" Identifier` | 1094 |
-| `TildeArgumentSequence` | `TildeArgument ("," TildeArgument)*` | 1095 |
-| `TildeArgument` | `ContextArgument \| WitnessArgument \| NamedArgument \| PositionalUnfoldArgument \| NamedUnfoldArgument \| Expr` | 1096 |
-| `NumericArrayTransposeSuffix` | `"^"` | 1103 |
-| `ConstructorCallSuffix` | `"!" ArgumentList` | 1104 |
-| `NamedConstructorCallSuffix` | `"!" Identifier ArgumentList` | 1105 |
-| `PrototypeDerivationSuffix` | `("!" \| "!!") DerivationBody` | 1106 |
-| `DerivationBody` | `"{" MaterializationEntryList? "}"` | 1107 |
-| `CastSuffix` | `"as" "?" TypeRef \| "as" "!" TypeRef` | 1109 |
-| `QualifiedStaticExpr` | `StaticQualifier "::" Identifier \| TraitQualifiedAssociatedSelector` | 1111 |
-| `StaticQualifier` | `QualifiedTypeReference \| AssociatedProjection` | 1113 |
-| `TraitQualifiedAssociatedSelector` | `"<" TypeRef "as" QualifiedTypeReference ">" "::" Identifier` | 1114 |
-| `AtControlExpr` | `AtIfExpr \| AtTryExpr \| AtScopeExpr` | 1120 |
-| `AtIfExpr` | `"@" "if" Expr ValueBody "else" ValueBody` | 1122 |
-| `AtTryExpr` | `"@" "try" ValueBody (ValueCatchClause+ FinallyClause? \| FinallyClause)` | 1123 |
-| `AtScopeExpr` | `"@" "scope" ScopeModifier* ValueBody` | 1124 |
-| `ScopeModifier` | `"isolated" \| "cancellable" \| "shielded"` | 1125 |
-| `MatchExpr` | `"@" "match" MatchCore` | 1127 |
-| `ClosureExpr` | `CaptureList? HashTag* "{" ClosureContent "}"` | 1131 |
-| `ClosureContent` | `ExplicitLambdaContent \| LambdaBody?` | 1136 |
-| `ExplicitLambdaContent` | `LambdaParameterList? "=>" LambdaBody` | 1137 |
-| `LambdaParameterList` | `LambdaParameter ("," LambdaParameter)* ","?` | 1138 |
-| `LambdaParameter` | `ParameterMode? LambdaParameterPattern TypeAnnotation?` | 1139 |
-| `LambdaParameterPattern` | `Identifier \| IrrefutableParameterPattern` | 1140 |
-| `LambdaBody` | `ReturnValueSurface \| LineBreakBoundary LambdaBlockContent` | 1141 |
-| `LambdaBlockContent` | `BlockItem* LambdaFinalItem?` | 1142 |
-| `LambdaFinalItem` | `RetTransfer \| Expr` | 1143 |
-| `CaptureList` | `"[" CaptureItemList? "]"` | 1145 |
-| `CaptureItemList` | `CaptureItem ("," CaptureItem)* ","?` | 1146 |
-| `CaptureItem` | `("let" \| "var") Identifier "=" Expr \| CaptureMode Identifier \| Identifier` | 1147 |
-| `CaptureMode` | `"borrow" \| "inout" \| "move" \| "clone" \| "deep" \| "copy" \| "once"` | 1150 |
-| `GeneratorExpr` | `CaptureList? GeneratorCore` | 1163 |
-| `GeneratorCore` | `"@" "for" Pattern "in" Expr Block \| "@" "while" Expr Block \| "@" "repeat" Block "while" Expr` | 1164 |
-| `SpawnExpr` | `"spawn" (SpawnBody \| SpawnOperandSlot)` | 1172 |
-| `SpawnBody` | `"{" "=>" SpawnBodySequence "}"` | 1173 |
-| `SpawnBodySequence` | `LineBreakBoundary? BlockSequence` | 1174 |
-| `SpawnOperandSlot` | `SPAWN_OPERAND_BY_PREFIX_PARSER` | 1175 |
-| `ConcurExpr` | `"concur" Block` | 1176 |
-| `UnsafeBlockExpr` | `"unsafe" Block` | 1177 |
-| `FacetExpr` | `"facet" "[" "borrow" Expr "as" QualifiedTypeReference AssociatedTypeConstraintList? "]"` | 1180 |
-| `ConformanceEvidenceSelector` | `"conformance" "(" TypeRef "conforms" QualifiedTypeReference ")"` | 1182 |
-| `NamedConformanceEvidenceSelector` | `ConformanceEvidenceSelector "::" Identifier` | 1183 |
-| `PrattExpr` | `EXPRESSION_PRATT_ENTRY` | 1186 |
-| `PrattPredicateExpr` | `PREDICATE_PRATT_ENTRY` | 1187 |
-| `PrattSliceIndexExpr` | `SLICE_INDEX_PRATT_ENTRY` | 1188 |
-| `Literal` | `BoolLiteral \| NumericLiteral \| ImaginaryLiteralExpr \| RationalLiteralExpr \| StringLiteralExpr \| CharLiteralExpr \| BytesLiteral` | 1196 |
-| `BoolLiteral` | `"true" \| "false"` | 1203 |
-| `NumericLiteral` | `NUMERIC_LITERAL` | 1204 |
-| `ImaginaryLiteralExpr` | `IMAGINARY_LITERAL` | 1205 |
-| `RationalLiteralExpr` | `RATIONAL_LITERAL` | 1206 |
-| `CharLiteralExpr` | `CHAR_LITERAL` | 1207 |
-| `BytesLiteral` | `BYTES_LITERAL` | 1208 |
-| `StringLiteralExpr` | `PLAIN_STRING_LITERAL \| RAW_STRING_LITERAL \| MULTILINE_STRING_LITERAL \| InterpolatedString` | 1211 |
-| `InterpolatedString` | `STRING_START InterpolatedStringPart* STRING_END` | 1212 |
-| `InterpolatedStringPart` | `STRING_TEXT \| STRING_ESCAPE \| InterpolationExpr \| InterpolationPath` | 1213 |
-| `InterpolationExpr` | `INTERPOLATION_OPEN Expr InterpolationFormat? INTERPOLATION_CLOSE` | 1217 |
-| `InterpolationFormat` | `":" INTERPOLATION_FORMAT_TEXT` | 1218 |
-| `InterpolationPath` | `"$" InterpolationPathRoot InterpolationPathSelector* INTERPOLATION_BOUNDARY?` | 1223 |
-| `InterpolationPathRoot` | `Identifier \| "@"` | 1224 |
-| `InterpolationPathSelector` | `"." Identifier \| "." StaticIntLiteral \| "[" InterpolationIndex "]"` | 1225 |
-| `InterpolationIndex` | `StaticIntLiteral \| Identifier` | 1228 |
-| `ListLiteral` | `"[" ExpressionList? "]"` | 1233 |
-| `BoundedListLiteral` | `"[" StaticIntLiteral ".." StaticIntLiteral ":" ExpressionList? "]"` | 1234 |
-| `ComprehensionExpr` | `"[" Expr ComprehensionClause+ "]"` | 1236 |
-| `TypedMaterializationExpr` | `TypeRef MaterializationBody` | 1239 |
-| `MaterializationBody` | `"${" MaterializationEntryList? "}"` | 1240 |
-| `MaterializationEntryList` | `MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?` | 1241 |
-| `MaterializationEntry` | `Identifier \| Identifier ":" Expr \| StringLiteralExpr ":" Expr \| NamedUnfoldArgument` | 1242 |
-| `MaterializationSeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 1246 |
-| `MapLiteral` | `"#" "map" "{" MapEntryList? "}"` | 1249 |
-| `MapEntryList` | `MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?` | 1250 |
-| `MapEntry` | `Expr ":" Expr \| NamedUnfoldArgument` | 1251 |
-| `SetLiteral` | `"#" "set" "{" ExpressionList? "}"` | 1252 |
-| `MutListLiteral` | `"#" "mut" "[" ExpressionList? "]"` | 1253 |
-| `MapComprehensionExpr` | `"#" "map" "{" MapEntry ComprehensionClause+ "}"` | 1254 |
-| `SetComprehensionExpr` | `"#" "set" "{" Expr ComprehensionClause+ "}"` | 1255 |
-| `ComprehensionClause` | `ForClause \| PositiveGuard \| IfLetClause \| UnfoldClause` | 1257 |
-| `ForClause` | `"for" Pattern "in" Expr` | 1258 |
-| `IfLetClause` | `"if" "let" Pattern "=" Expr` | 1259 |
-| `UnfoldClause` | `"for" "..." Pattern "in" Expr` | 1260 |
-| `NumericArrayLiteral` | `ShapeInferredArrayLiteral \| ShapeInferredColumnVectorLiteral \| ExactShapeArrayLiteral` | 1263 |
-| `ShapeInferredArrayLiteral` | `"#" "[" ExpressionList? "]"` | 1266 |
-| `ShapeInferredColumnVectorLiteral` | `"#" "[" Expr (";" Expr)+ "]"` | 1267 |
-| `ExactShapeArrayLiteral` | `"#" StaticDimensionList "[" ArrayInitializer? "]"` | 1268 |
-| `ArrayInitializer` | `ShapedRepeatInitializer \| ShapedGeneratorInitializer \| ShapedElementSequence` | 1269 |
-| `ShapedRepeatInitializer` | `"repeat" ":" Expr` | 1272 |
-| `ShapedGeneratorInitializer` | `"generate" ":" Expr` | 1273 |
-| `ShapedElementSequence` | `Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?` | 1274 |
-| `ShapedElementSeparator` | `"," \| ShapedAxisBoundary` | 1275 |
-| `ShapedAxisBoundary` | `";" ";"*` | 1276 |
-| `MeasureLiteralExpr` | `NumericLiteral "[" UnitExpr "]"` | 1279 |
-| `UnitExpr` | `PrattUnitExpr` | 1280 |
-| `UnitPrimary` | `Identifier \| QualifiedPath \| "(" UnitExpr ")"` | 1281 |
-| `UnitPostfixParselet` | `"^" SignedStaticInt` | 1282 |
-| `UnitInfixOperator` | `"*" \| "/"` | 1283 |
-| `PrattUnitExpr` | `UNIT_PRATT_ENTRY` | 1284 |
+| `ConformBlockDecl` | `"conform" QualifiedTypeReference ConformanceBody` | 506 |
+| `ConformanceItem` | `ConformanceMethodDecl \| TypeSideMemberFunctionDecl \| AssociatedRequirementBinding \| ExtensionDelegationDecl \| LawDecl` | 507 |
+| `AssociatedRequirementBinding` | `"type" Identifier "=" TypeRef StatementBoundary \| "let" "::" Identifier "=" Expr StatementBoundary` | 512 |
+| `ExtensionDelegationDecl` | `"delegate" Identifier "to" QualifiedExtensionSelector StatementBoundary` | 514 |
+| `ExtensionSetDecl` | `TopLevelVisibility? "extension" TypeRef "as" Identifier ExtensionSetBody` | 518 |
+| `ExtensionSetBody` | `"{" ExtensionSetItem* "}"` | 519 |
+| `ExtensionSetItem` | `ExtensionSetFunctionDecl \| TypeSideMemberFunctionDecl` | 520 |
+| `ExtensionSetFunctionDecl` | `MemberVisibility? "def" Identifier ParameterList? ReturnClause? ThrowsClause* EffectsClause* WhereClause? FunctionBody` | 521 |
+| `ExtensionPackDecl` | `"extension" "pack" QualifiedPath ExtensionPackBody` | 523 |
+| `ExtensionPackBody` | `"{" UseExportDecl* "}"` | 524 |
+| `EnumDecl` | `TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? NominalConformanceClause* EnumBody` | 528 |
+| `EnumOrderRole` | `"#" ("increasing" \| "decreasing")` | 530 |
+| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody)? "}"` | 531 |
+| `EnumCommaCaseSequence` | `EnumCaseCore ("," EnumCaseCore)+ ","?` | 532 |
+| `EnumLayoutBody` | `EnumCaseDecl* EnumMemberDecl*` | 533 |
+| `EnumCaseDecl` | `EnumCaseCore StatementBoundary?` | 534 |
+| `EnumCaseCore` | `Identifier EnumCasePayload? EnumCaseDisplayMapping?` | 535 |
+| `EnumCasePayload` | `"(" EnumCaseFieldList? ")"` | 536 |
+| `EnumCaseFieldList` | `EnumCaseField ("," EnumCaseField)* ","?` | 537 |
+| `EnumCaseField` | `Identifier TypeAnnotation \| TypeRef` | 538 |
+| `EnumMemberDecl` | `MemberFunctionDecl \| TypeSideFieldDecl \| TypeSideMemberFunctionDecl \| AccessorPropertyDecl \| ConformBlockDecl \| EnumVariantSubsetAliasDecl` | 539 |
+| `EnumCaseDisplayMapping` | `"~>" RestrictedEnumDisplayTemplate` | 545 |
+| `RestrictedEnumDisplayTemplate` | `PLAIN_STRING_LITERAL \| MULTILINE_STRING_LITERAL \| InterpolatedString` | 546 |
+| `EnumVariantSubsetAliasDecl` | `"+" "type" Identifier "=" EnumVariantSubsetRhs StatementBoundary?` | 549 |
+| `EnumVariantSubsetRhs` | `Identifier ("\|" Identifier)*` | 551 |
+| `SchemaDecl` | `TopLevelVisibility? "schema" Identifier TypeParameterList? SchemaBody` | 555 |
+| `SchemaBody` | `"{" SchemaFieldSequence? "}"` | 556 |
+| `SchemaFieldSequence` | `CommaSchemaFields \| LayoutSchemaFields` | 557 |
+| `CommaSchemaFields` | `SchemaFieldDecl ("," SchemaFieldDecl)* ","?` | 558 |
+| `LayoutSchemaFields` | `LineBreakBoundary LayoutSchemaFieldDecl (LineBreakBoundary LayoutSchemaFieldDecl)* LineBreakBoundary?` | 559 |
+| `SchemaFieldDecl` | `Identifier TypeAnnotation Initializer? SchemaConstraint* StatementBoundary?` | 560 |
+| `LayoutSchemaFieldDecl` | `Identifier TypeAnnotation Initializer? SchemaConstraint*` | 561 |
+| `SchemaConstraint` | `"where" Expr` | 562 |
+| `TypeAliasDecl` | `TopLevelVisibility? "type" Identifier TypeParameterList? "=" TypeAliasRhs StatementBoundary` | 564 |
+| `TypeAliasRhs` | `TypeRef RefinementSuffix? \| StaticRangeType` | 565 |
+| `StaticRangeType` | `StaticIntLiteral ".." StaticIntLiteral` | 566 |
+| `TopLevelBindingDecl` | `TopLevelVisibility? ("let" \| "var") Identifier TypeAnnotation? "=" Expr StatementBoundary` | 568 |
+| `NamedEffectCapabilityDecl` | `TopLevelVisibility? "capability" Identifier "for" EffectRow StatementBoundary` | 569 |
+| `ActorDecl` | `TopLevelVisibility? "actor" MailboxClause? Identifier ActorProtocolConformanceClause* ActorBody` | 573 |
+| `MailboxClause` | `HashTag "(" "capacity" ":" StaticIntLiteral ")"` | 575 |
+| `ActorBody` | `"{" ActorItem* "}"` | 576 |
+| `ActorProtocolConformanceClause` | `LineBreakBoundary "conforms" QualifiedTypeReference WhereClause?` | 577 |
+| `ActorItem` | `ActorOnDecl \| ActorRequestDecl \| ActorMemberDecl \| ActorProtocolConformBlock` | 579 |
+| `ActorMemberDecl` | `FieldDecl \| MemberFunctionDecl \| ConstructorDecl \| CleanupDecl \| TypeSideFieldDecl \| TypeSideMemberFunctionDecl \| AccessorPropertyDecl \| ForwardDecl` | 583 |
+| `ActorOnDecl` | `MemberVisibility? "on" Identifier ParameterList? ThrowsClause* EffectsClause* FunctionBody` | 591 |
+| `ActorRequestDecl` | `MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* FunctionBody` | 592 |
+| `ActorProtocolConformBlock` | `"conform" QualifiedTypeReference ActorProtocolConformanceBody` | 598 |
+| `ActorProtocolConformanceBody` | `"{" ActorProtocolConformanceItem* "}"` | 599 |
+| `ActorProtocolConformanceItem` | `ActorOnDecl \| ActorRequestDecl` | 600 |
+| `ActorProtocolDecl` | `TopLevelVisibility? "protocol" Identifier ActorProtocolBody` | 602 |
+| `ActorProtocolBody` | `"{" ActorProtocolItem* "}"` | 603 |
+| `ActorProtocolItem` | `ActorProtocolSendRequirement \| ActorProtocolRequestRequirement` | 604 |
+| `ActorProtocolSendRequirement` | `"send" Identifier ParameterList? ThrowsClause* EffectsClause* StatementBoundary` | 605 |
+| `ActorProtocolRequestRequirement` | `"request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* StatementBoundary` | 606 |
+| `TypestateResourceDecl` | `TopLevelVisibility? "typestate" Identifier TypeParameterList? TypestateBody` | 610 |
+| `TypestateBody` | `"{" TypestateTransitionDecl* "}"` | 611 |
+| `TypestateTransitionDecl` | `Identifier "->" Identifier FunctionBody?` | 612 |
+| `UnitCatalogDecl` | `TopLevelVisibility? "unit" "catalog" Identifier UnitCatalogBody` | 614 |
+| `UnitCatalogBody` | `"{" UnitCatalogEntry* "}"` | 615 |
+| `UnitCatalogEntry` | `ExactRatioUnitConversionDecl \| Identifier "=" UnitExpr StatementBoundary` | 616 |
+| `ExactRatioUnitConversionDecl` | `"unit" Identifier "equalsRatio" MeasureLiteralExpr "/" StaticIntLiteral StatementBoundary` | 617 |
+| `ModuleInterfaceDecl` | `ModuleSignatureDecl \| OpaqueModuleFacadeDecl` | 619 |
+| `ModuleSignatureDecl` | `TopLevelVisibility? "module" "signature" QualifiedPath ModuleInterfaceBody` | 620 |
+| `OpaqueModuleFacadeDecl` | `TopLevelVisibility? "opaque" "module" QualifiedPath ModuleInterfaceBody` | 621 |
+| `ModuleInterfaceBody` | `"{" ModuleInterfaceItem* "}"` | 622 |
+| `ModuleInterfaceItem` | `ExportDecl \| UseExportDecl \| OpaqueModuleFacadeDecl` | 623 |
+| `CleanupBudgetClause` | `"cleanup" "budget" "{" CleanupBudgetItem* "}"` | 627 |
+| `CleanupBudgetItem` | `EffectsBudget \| ErrorsBudget` | 628 |
+| `EffectsBudget` | `"effects" "{" IdentifierList? "}"` | 629 |
+| `ErrorsBudget` | `"errors" TypeRef` | 630 |
+| `BitfieldDecl` | `TopLevelVisibility? BitfieldIntroducer Identifier BitfieldBackingClause BitfieldOrderClause BitfieldBody` | 634 |
+| `BitfieldIntroducer` | `"bitfield" HashTag?` | 636 |
+| `BitfieldBackingClause` | `"backing" TypeRef` | 637 |
+| `BitfieldOrderClause` | `"order" "::" "lsb0"` | 638 |
+| `BitfieldBody` | `"{" BitfieldLayoutSection BitfieldMemberDecl* "}"` | 639 |
+| `BitfieldLayoutSection` | `BitfieldSlotDecl+ \| FlagSlotDecl+` | 640 |
+| `BitfieldSlotDecl` | `BitfieldNamedSlot StatementBoundary \| BitfieldReservedSlot StatementBoundary` | 641 |
+| `FlagSlotDecl` | `FlagNamedSlot StatementBoundary \| BitfieldReservedSlot StatementBoundary` | 642 |
+| `BitfieldNamedSlot` | `MemberVisibility? Identifier ":" StaticIntLiteral BitfieldDefault?` | 643 |
+| `BitfieldReservedSlot` | `"_" ":" StaticIntLiteral` | 644 |
+| `FlagNamedSlot` | `MemberVisibility? Identifier` | 645 |
+| `BitfieldDefault` | `"=" Literal` | 646 |
+| `BitfieldMemberDecl` | `MemberFunctionDecl \| TypeSideFieldDecl \| TypeSideMemberFunctionDecl \| AccessorPropertyDecl \| LawDecl` | 647 |
+| `TypeRef` | `PrattType` | 659 |
+| `NonFunctionTypeRef` | `PrattNonFunctionType` | 660 |
+| `TypePrimary` | `QualifiedTypeReference \| FacetType \| ParenTypeSyntax \| SharpShapeType \| ExistentialType \| OpaqueType \| TypeofType \| AssociatedProjection` | 663 |
+| `TypePrefixParselet` | `OwnershipQualifier` | 671 |
+| `TypePostfixParselet` | `"?"` | 672 |
+| `TypeInfixOperator` | `"&" \| "\|"` | 673 |
+| `QualifiedTypeReference` | `QualifiedPath TypeArgumentList?` | 675 |
+| `FacetType` | `"Facet" "<" "borrow" "any" QualifiedTypeReference AssociatedTypeConstraintList? ">"` | 677 |
+| `OwnershipQualifier` | `"owned" \| "borrowed" \| "mut" \| "inout"` | 678 |
+| `ParenTypeSyntax` | `HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?` | 682 |
+| `ParenTypeItemList` | `ParenTypeItem ("," ParenTypeItem)* ","?` | 683 |
+| `ParenTypeItem` | `TypeRef \| TypeRef "..." \| TypeRef "***"` | 684 |
+| `FunctionTypeTail` | `"->" ReturnTypeSurface ThrowsClause* EffectsClause*` | 685 |
+| `SharpShapeType` | `"#" StaticDimensionList "[" TypeRef "]"` | 687 |
+| `StaticDimensionList` | `StaticIntLiteral ("," StaticIntLiteral)*` | 688 |
+| `ExistentialType` | `"any" QualifiedTypeReference AssociatedTypeConstraintList?` | 690 |
+| `OpaqueType` | `"some" QualifiedTypeReference AssociatedTypeConstraintList?` | 691 |
+| `TypeofType` | `"typeof" TypeofStaticSampleOperand` | 692 |
+| `AssociatedProjection` | `"<" TypeRef "as" QualifiedTypeReference ">" "::" Identifier` | 693 |
+| `TypeofStaticSampleOperand` | `Literal \| ListLiteral \| StaticPrefixedCollectionSample \| NumericArrayLiteral \| MeasureLiteralExpr` | 696 |
+| `StaticPrefixedCollectionSample` | `MapLiteral \| SetLiteral \| MutListLiteral` | 701 |
+| `PrattType` | `TYPE_PRATT_ENTRY` | 704 |
+| `PrattNonFunctionType` | `NON_FUNCTION_TYPE_PRATT_ENTRY` | 705 |
+| `Pattern` | `OrPattern` | 713 |
+| `OrPattern` | `AliasPattern ("\|" AliasPattern)*` | 714 |
+| `AliasPattern` | `MovePattern ("as" Identifier)?` | 715 |
+| `MovePattern` | `"move"? PatternPrimary` | 716 |
+| `PatternPrimary` | `TypedBindingPattern \| Identifier \| PinPattern \| RangePattern \| RelationalPattern \| TuplePattern \| RecordPattern \| ListPattern \| MapPattern \| VariantPattern \| NominalPattern \| "_" \| UnitSyntax \| Literal \| ParenthesizedPattern` | 718 |
+| `TypedBindingPattern` | `Identifier ":" TypeRef` | 734 |
+| `ParenthesizedPattern` | `"(" Pattern ")"` | 735 |
+| `PinPattern` | `"^" StablePatternValue` | 736 |
+| `StablePatternValue` | `Identifier \| QualifiedStaticExpr \| Literal` | 737 |
+| `RangePattern` | `PatternBound (".." \| "..<") PatternBound` | 738 |
+| `RelationalPattern` | `("<" \| "<=" \| ">" \| ">=") PatternBound` | 739 |
+| `PatternBound` | `Literal \| PinPattern` | 740 |
+| `TuplePattern` | `"(" TuplePatternItems ")"` | 744 |
+| `TuplePatternItems` | `Pattern "," \| Pattern "," Pattern ("," Pattern)* ","?` | 745 |
+| `BindingPattern` | `BindingOrPattern TypeAnnotation?` | 757 |
+| `BindingOrPattern` | `BindingAliasPattern ("\|" BindingAliasPattern)*` | 758 |
+| `BindingAliasPattern` | `BindingMovePattern ("as" Identifier)?` | 759 |
+| `BindingMovePattern` | `"move"? BindingPatternPrimary` | 760 |
+| `BindingPatternPrimary` | `Identifier \| PinPattern \| RangePattern \| RelationalPattern \| TuplePattern \| RecordPattern \| ListPattern \| MapPattern \| VariantPattern \| NominalPattern \| "_" \| UnitSyntax \| Literal \| ParenthesizedPattern` | 761 |
+| `RecordPattern` | `"${" RecordPatternEntries? "}"` | 780 |
+| `RecordPatternEntries` | `RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)* PatternEntrySeparator?` | 781 |
+| `RecordPatternEntry` | `Identifier \| RecordDestination ":" Identifier \| RecordRestPattern` | 783 |
+| `RecordDestination` | `Pattern` | 784 |
+| `RecordRestPattern` | `".." RestBinder` | 785 |
+| `MapPattern` | `"#" "map" "{" MapPatternEntries? "}"` | 787 |
+| `MapPatternEntries` | `MapPatternEntry (PatternEntrySeparator MapPatternEntry)* PatternEntrySeparator?` | 788 |
+| `MapPatternEntry` | `MapDestination ":" MapKeyPattern \| MapRestPattern` | 790 |
+| `MapDestination` | `Pattern` | 791 |
+| `MapKeyPattern` | `Literal \| PinPattern` | 792 |
+| `MapRestPattern` | `".." RestBinder` | 793 |
+| `PatternEntrySeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 794 |
+| `ListPattern` | `"[" ListPatternBody? "]"` | 800 |
+| `ListPatternBody` | `IgnoredAllListRest \| ExactListPattern \| PrefixRestListPattern \| SuffixRestListPattern \| MiddleRestListPattern` | 801 |
+| `ExactListPattern` | `Pattern ("," Pattern)* ","?` | 806 |
+| `PrefixRestListPattern` | `PrefixListRest "," Pattern ("," Pattern)* ","?` | 807 |
+| `SuffixRestListPattern` | `Pattern ("," Pattern)* "," SuffixListRest ","?` | 808 |
+| `MiddleRestListPattern` | `Pattern ("," Pattern)* "," MiddleListRest "," Pattern ("," Pattern)* ","?` | 809 |
+| `PrefixListRest` | `RestBinder ".."` | 811 |
+| `SuffixListRest` | `".." RestBinder` | 812 |
+| `MiddleListRest` | `".." RestBinder ".."` | 813 |
+| `IgnoredAllListRest` | `".." "_" ","?` | 814 |
+| `RestBinder` | `Identifier \| "_"` | 815 |
+| `VariantPattern` | `VariantQualifier Identifier VariantPatternPayload?` | 817 |
+| `VariantQualifier` | `TypeRef "::" \| "::"` | 818 |
+| `VariantPatternPayload` | `VariantPositionalPatternPayload \| RecordPattern` | 819 |
+| `VariantPositionalPatternPayload` | `"(" PatternList? ")"` | 820 |
+| `NominalPattern` | `TypeRef RecordPattern` | 825 |
+| `Stmt` | `ForLoop \| WhileLoop \| RepeatLoop \| AsyncForLoop \| MatchStatement \| IfStmt \| LocalBindingStmt \| AssertiveBindingStmt \| PatternAssignmentStmt \| ParallelAssignmentStmt \| ControlTransferStmt \| TryStmt \| DeferStmt \| ScopedUseStmt \| ExprStmt \| ScopedImportStmt` | 833 |
+| `ExprStmt` | `Expr StatementBoundary` | 850 |
+| `Block` | `"{" BlockPrologue? BlockSequence "}"` | 852 |
+| `BlockPrologue` | `(UseDecl \| ImportDecl)+` | 853 |
+| `BlockSequence` | `BlockItem* BlockFinalItem?` | 854 |
+| `BlockItem` | `LocalFunctionDecl \| Stmt` | 855 |
+| `BlockFinalItem` | `ControlTransfer \| BindingCore \| Expr` | 858 |
+| `ValueBody` | `SingleExpressionValueBody \| ExplicitRetValueBody` | 861 |
+| `SingleExpressionValueBody` | `"{" ReturnValueSurface "}"` | 862 |
+| `ExplicitRetValueBody` | `"{" BlockItem* RetTransfer "}"` | 863 |
+| `RetTransfer` | `"ret" ReturnValueSurface? GuardClause?` | 864 |
+| `BindingCore` | `("let" \| "var") BindingHead "=" BindingValueSurface` | 869 |
+| `BindingHead` | `BindingPattern \| BareTupleBindingSurface` | 870 |
+| `BareTupleBindingSurface` | `BindingPattern "," BindingPattern ("," BindingPattern)*` | 871 |
+| `BindingValueSurface` | `Expr \| BareTupleValueSurface` | 872 |
+| `ReturnValueSurface` | `Expr \| BareTupleValueSurface` | 873 |
+| `BareTupleValueSurface` | `Expr "," Expr ("," Expr)*` | 874 |
+| `LocalBindingStmt` | `BindingCore StatementBoundary \| RightwardLocalBindingSurface \| LazyBindingStmt \| GuardedBindingStmt` | 875 |
+| `LazyBindingStmt` | `"let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary` | 876 |
+| `GuardedBindingStmt` | `("let" \| "var") BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary?` | 877 |
+| `AssertiveBindingStmt` | `("let" \| "var") "!" BindingPattern "=" Expr StatementBoundary` | 878 |
+| `GuardedBindingFailure` | `GuardedBindingExit \| Pattern "=>" GuardedBindingExit` | 880 |
+| `GuardedBindingExit` | `GuardedReturnExit \| GuardedThrowExit \| GuardedBreakExit \| GuardedContinueExit` | 881 |
+| `GuardedReturnExit` | `"return" Expr?` | 882 |
+| `GuardedThrowExit` | `"throw" Expr` | 883 |
+| `GuardedBreakExit` | `("break")+ Expr?` | 884 |
+| `GuardedContinueExit` | `("break")* "continue"` | 885 |
+| `ControlTransferStmt` | `ControlTransfer StatementBoundary` | 888 |
+| `ControlTransfer` | `ReturnTransfer \| ThrowTransfer \| BreakTransfer \| ContinueTransfer \| YieldTransfer` | 889 |
+| `ReturnTransfer` | `"return" ReturnValueSurface? GuardClause?` | 890 |
+| `ThrowTransfer` | `"throw" Expr GuardClause?` | 891 |
+| `BreakTransfer` | `("break")+ Expr? GuardClause?` | 892 |
+| `ContinueTransfer` | `("break")* "continue" GuardClause?` | 893 |
+| `YieldTransfer` | `"yield" Expr? (GuardClause \| YieldResponseBinding)?` | 894 |
+| `YieldResponseBinding` | `"->" DollarLocalBinding` | 895 |
+| `DollarLocalBinding` | `"$" Identifier TypeAnnotation? \| "$$" Identifier TypeAnnotation?` | 896 |
+| `GuardClause` | `PositiveGuard \| NegativeGuard` | 898 |
+| `PositiveGuard` | `"if" Expr` | 899 |
+| `NegativeGuard` | `"!" "if" Expr` | 900 |
+| `IfStmt` | `"if" PatternConditionChain Block ("else" (IfStmt \| Block))?` | 902 |
+| `PatternConditionChain` | `PatternControlCondition ("and" "then" PatternControlCondition)*` | 905 |
+| `PatternControlCondition` | `Expr \| "let" Pattern "=" Expr` | 907 |
+| `ForLoop` | `"for" ("let" Pattern \| Pattern) "in" Expr GuardClause? Block MatchStatement?` | 911 |
+| `WhileLoop` | `"while" PatternConditionChain Block MatchStatement?` | 912 |
+| `RepeatLoop` | `"repeat" Block "while" Expr MatchStatement?` | 913 |
+| `AsyncForLoop` | `"for" ForAwaitRole ("let" Pattern \| Pattern) "in" Expr GuardClause? Block` | 917 |
+| `ForAwaitRole` | `"#" "await"` | 918 |
+| `MatchStatement` | `"match" MatchCore` | 920 |
+| `MatchCore` | `MatchSubjectSlot MatchBody` | 921 |
+| `MatchSubjectSlot` | `MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY` | 922 |
+| `MatchBody` | `"{" LineBreakBoundary? MatchArmSequence "}"` | 923 |
+| `MatchArmSequence` | `MatchArm (MatchArmSeparator MatchArm)* MatchArmSeparator?` | 924 |
+| `MatchArm` | `MatchHead GuardClause? "=>" MatchArmBodySlot` | 925 |
+| `MatchHead` | `BoundedBinderPattern \| Pattern \| "otherwise"` | 926 |
+| `BoundedBinderPattern` | `PatternBound OrderedComparisonOperator Identifier OrderedComparisonOperator PatternBound` | 932 |
+| `MatchArmSeparator` | `MATCH_ARM_SEPARATOR_BY_CONTEXT` | 934 |
+| `MatchArmBodySlot` | `MATCH_ARM_BODY_BY_CONTEXT` | 935 |
+| `TryStmt` | `"try" Block (CatchClause+ FinallyClause? \| FinallyClause)` | 939 |
+| `CatchClause` | `"catch" Pattern? GuardClause? Block` | 940 |
+| `ValueCatchClause` | `"catch" Pattern? GuardClause? ValueBody` | 941 |
+| `FinallyClause` | `"finally" Block` | 942 |
+| `DeferStmt` | `"defer" DeferredCleanupInvocation StatementBoundary` | 944 |
+| `DeferredCleanupInvocation` | `DeferredDirectCall \| DeferredMessageCall` | 947 |
+| `DeferredDirectCall` | `DeferredReceiver ArgumentList` | 948 |
+| `DeferredMessageCall` | `DeferredReceiver "~" MessageSelector TildeArgumentSequence?` | 949 |
+| `DeferredReceiver` | `DeferredPrimary DeferTargetSuffix*` | 950 |
+| `DeferredPrimary` | `Identifier \| QualifiedStaticExpr` | 951 |
+| `DeferTargetSuffix` | `IndexSuffix \| MemberSuffix` | 952 |
+| `RightwardLocalBindingSurface` | `Expr "->" DollarLocalBinding StatementBoundary` | 956 |
+| `PatternAssignmentStmt` | `AssigneePattern "=" Expr StatementBoundary` | 960 |
+| `AssigneePattern` | `AssigneeTuplePattern \| AssigneeListPattern \| AssigneeRecordPattern \| AssigneeNominalPattern` | 961 |
+| `AssigneePrimary` | `Identifier \| "_"` | 965 |
+| `AssigneeTuplePattern` | `"(" AssigneeTupleItems ")"` | 966 |
+| `AssigneeTupleItems` | `AssigneePatternItem "," \| AssigneePatternItem "," AssigneePatternItem ("," AssigneePatternItem)* ","?` | 967 |
+| `AssigneePatternItem` | `AssigneePrimary \| AssigneeTuplePattern \| AssigneeListPattern \| AssigneeRecordPattern` | 970 |
+| `AssigneeListPattern` | `"[" AssigneeListBody? "]"` | 974 |
+| `AssigneeListBody` | `AssigneeIgnoredAllRest \| AssigneeExactList \| AssigneePrefixRestList \| AssigneeSuffixRestList \| AssigneeMiddleRestList` | 975 |
+| `AssigneeExactList` | `AssigneePatternItem ("," AssigneePatternItem)* ","?` | 980 |
+| `AssigneePrefixRestList` | `Identifier ".." "," AssigneeExactList` | 981 |
+| `AssigneeSuffixRestList` | `AssigneeExactList "," ".." Identifier ","?` | 982 |
+| `AssigneeMiddleRestList` | `AssigneeExactList "," ".." Identifier ".." "," AssigneeExactList` | 983 |
+| `AssigneeIgnoredAllRest` | `".." "_" ","?` | 985 |
+| `AssigneeRestPattern` | `".." ("_" \| Identifier)` | 986 |
+| `AssigneeRecordPattern` | `"${" AssigneeRecordEntries? "}"` | 987 |
+| `AssigneeRecordEntries` | `AssigneeRecordEntry (PatternEntrySeparator AssigneeRecordEntry)* PatternEntrySeparator?` | 988 |
+| `AssigneeRecordEntry` | `Identifier \| AssigneePrimary ":" Identifier \| AssigneeRestPattern` | 991 |
+| `AssigneeNominalPattern` | `TypeRef AssigneeRecordPattern` | 992 |
+| `ParallelAssignmentStmt` | `BareTuplePlaceSurface "=" AssignmentValueSurface StatementBoundary` | 993 |
+| `BareTuplePlaceSurface` | `Identifier "," Identifier ("," Identifier)*` | 994 |
+| `AssignmentValueSurface` | `Expr \| BareTupleValueSurface` | 995 |
+| `ScopedUseStmt` | `"use" ScopedPathList "in" Block` | 996 |
+| `ScopedImportStmt` | `"import" ScopedPathList "in" Block` | 997 |
+| `ScopedPathList` | `QualifiedPath ("," QualifiedPath)*` | 998 |
+| `Expr` | `PrattExpr` | 1006 |
+| `PredicateExpr` | `PrattPredicateExpr` | 1007 |
+| `SliceIndexExpr` | `PrattSliceIndexExpr` | 1008 |
+| `ExpressionPrefixParselet` | `"+" \| "-" \| "not" \| "~~" \| "move" \| "borrow" \| "&" \| "await"` | 1014 |
+| `ExpressionPostfixParselet` | `CallSuffix \| TildeCallLed \| TupleOrdinalSuffix \| IndexSuffix \| MemberSuffix \| NumericArrayTransposeSuffix \| ConstructorCallSuffix \| NamedConstructorCallSuffix \| PrototypeDerivationSuffix \| CastSuffix` | 1016 |
+| `PrimaryExpr` | `Literal \| Identifier \| ImplicitAtExpr \| ParenExprSyntax \| ListLiteral \| BoundedListLiteral \| ComprehensionExpr \| MaterializationBody \| TypedMaterializationExpr \| MapLiteral \| SetLiteral \| MutListLiteral \| MapComprehensionExpr \| SetComprehensionExpr \| NumericArrayLiteral \| MeasureLiteralExpr \| QualifiedStaticExpr \| ExpectedVariantExpr \| AtControlExpr \| MatchExpr \| ClosureExpr \| GeneratorExpr \| SpawnExpr \| ConcurExpr \| UnsafeBlockExpr \| FacetExpr` | 1027 |
+| `ParenExprSyntax` | `"(" ParenExprContent? ")"` | 1055 |
+| `ParenExprContent` | `Expr ParenExprTail?` | 1056 |
+| `ParenExprTail` | `"," \| "," Expr ("," Expr)* ","?` | 1057 |
+| `ImplicitAtExpr` | `"@"` | 1058 |
+| `ExpectedVariantExpr` | `"::" Identifier` | 1059 |
+| `CallSuffix` | `ArgumentList TrailingClosureGroup? \| AtomicCallArgument TrailingClosureGroup` | 1063 |
+| `ArgumentList` | `"(" ")" \| "(" CommaArgumentSequence ")" \| "(" LayoutArgumentSequence ")"` | 1066 |
+| `CommaArgumentSequence` | `Argument ("," Argument)* ","?` | 1069 |
+| `LayoutArgumentSequence` | `LineBreakBoundary NamedLayoutArgument LineBreakBoundary NamedLayoutArgument (LineBreakBoundary NamedLayoutArgument)* LineBreakBoundary?` | 1071 |
+| `NamedLayoutArgument` | `NamedArgument \| NamedUnfoldArgument` | 1073 |
+| `Argument` | `ContextArgument \| WitnessArgument \| NamedArgument \| PositionalUnfoldArgument \| NamedUnfoldArgument \| Expr` | 1074 |
+| `ContextArgument` | `"context" Expr` | 1080 |
+| `WitnessArgument` | `"using" WitnessArgumentValue` | 1081 |
+| `WitnessArgumentValue` | `Identifier \| ConformanceEvidenceSelector \| NamedConformanceEvidenceSelector` | 1082 |
+| `NamedArgument` | `Identifier ":" Expr` | 1083 |
+| `PositionalUnfoldArgument` | `"*" Expr` | 1084 |
+| `NamedUnfoldArgument` | `"**" Expr` | 1085 |
+| `AtomicCallArgument` | `Literal \| Identifier \| QualifiedStaticExpr \| ExpectedVariantExpr` | 1086 |
+| `TrailingClosureGroup` | `TrailingClosureArgument+` | 1090 |
+| `TrailingClosureArgument` | `ClosureExpr \| Identifier ":" ClosureExpr` | 1091 |
+| `IndexSuffix` | `"[" SliceAxisList "]"` | 1095 |
+| `SliceAxisList` | `SliceAxis (";" SliceAxis)*` | 1096 |
+| `SliceAxis` | `SliceRange \| SliceIndexExpr \| AxisWildcard` | 1097 |
+| `SliceRange` | `SliceBound (".." \| "..<") SliceBound` | 1100 |
+| `SliceBound` | `SliceIndexExpr \| "^" \| "$" \| "^" OffsetExpr \| "$" OffsetExpr` | 1101 |
+| `OffsetExpr` | `("+" \| "-") NumericLiteral` | 1102 |
+| `AxisWildcard` | `"*"` | 1103 |
+| `TupleOrdinalSuffix` | `"." StaticIntLiteral` | 1105 |
+| `MemberSuffix` | `"." Identifier \| "." "\\\\" NAME_TOKEN` | 1106 |
+| `TildeCallLed` | `TildeCallToken MessageSelector TildeArgumentSequence? TrailingClosureGroup?` | 1112 |
+| `TildeCallToken` | `"~" \| ":~"` | 1114 |
+| `MessageSelector` | `Identifier \| QualifiedMessageSelector` | 1115 |
+| `QualifiedMessageSelector` | `TypeRef "::" Identifier ("::" Identifier)?` | 1116 |
+| `QualifiedExtensionSelector` | `TypeRef "::" Identifier "::" Identifier` | 1117 |
+| `TildeArgumentSequence` | `TildeArgument ("," TildeArgument)*` | 1118 |
+| `TildeArgument` | `ContextArgument \| WitnessArgument \| NamedArgument \| PositionalUnfoldArgument \| NamedUnfoldArgument \| Expr` | 1119 |
+| `NumericArrayTransposeSuffix` | `"^"` | 1126 |
+| `ConstructorCallSuffix` | `"!" ArgumentList` | 1127 |
+| `NamedConstructorCallSuffix` | `"!" Identifier ArgumentList` | 1128 |
+| `PrototypeDerivationSuffix` | `("!" \| "!!") DerivationBody` | 1129 |
+| `DerivationBody` | `"{" MaterializationEntryList? "}"` | 1130 |
+| `CastSuffix` | `"as" "?" TypeRef \| "as" "!" TypeRef` | 1132 |
+| `QualifiedStaticExpr` | `StaticQualifier "::" Identifier \| TraitQualifiedAssociatedSelector` | 1134 |
+| `StaticQualifier` | `QualifiedTypeReference \| AssociatedProjection` | 1136 |
+| `TraitQualifiedAssociatedSelector` | `"<" TypeRef "as" QualifiedTypeReference ">" "::" Identifier` | 1137 |
+| `AtControlExpr` | `AtIfExpr \| AtTryExpr \| AtScopeExpr` | 1143 |
+| `AtIfExpr` | `"@" "if" Expr ValueBody "else" ValueBody` | 1145 |
+| `AtTryExpr` | `"@" "try" ValueBody (ValueCatchClause+ FinallyClause? \| FinallyClause)` | 1146 |
+| `AtScopeExpr` | `"@" "scope" ScopeModifier* ValueBody` | 1147 |
+| `ScopeModifier` | `"isolated" \| "cancellable" \| "shielded"` | 1148 |
+| `MatchExpr` | `"@" "match" MatchCore` | 1150 |
+| `ClosureExpr` | `CaptureList? HashTag* "{" ClosureContent "}"` | 1154 |
+| `ClosureContent` | `ExplicitLambdaContent \| LambdaBody?` | 1159 |
+| `ExplicitLambdaContent` | `LambdaParameterList? "=>" LambdaBody` | 1160 |
+| `LambdaParameterList` | `LambdaParameter ("," LambdaParameter)* ","?` | 1161 |
+| `LambdaParameter` | `ParameterMode? LambdaParameterPattern TypeAnnotation?` | 1162 |
+| `LambdaParameterPattern` | `Identifier \| IrrefutableParameterPattern` | 1163 |
+| `LambdaBody` | `ReturnValueSurface \| LineBreakBoundary LambdaBlockContent` | 1164 |
+| `LambdaBlockContent` | `BlockItem* LambdaFinalItem?` | 1165 |
+| `LambdaFinalItem` | `RetTransfer \| Expr` | 1166 |
+| `CaptureList` | `"[" CaptureItemList? "]"` | 1168 |
+| `CaptureItemList` | `CaptureItem ("," CaptureItem)* ","?` | 1169 |
+| `CaptureItem` | `("let" \| "var") Identifier "=" Expr \| CaptureMode Identifier \| Identifier` | 1170 |
+| `CaptureMode` | `"borrow" \| "inout" \| "move" \| "clone" \| "deep" \| "copy" \| "once"` | 1173 |
+| `GeneratorExpr` | `CaptureList? GeneratorCore` | 1186 |
+| `GeneratorCore` | `"@" "for" Pattern "in" Expr Block \| "@" "while" Expr Block \| "@" "repeat" Block "while" Expr` | 1187 |
+| `SpawnExpr` | `"spawn" (SpawnBody \| SpawnOperandSlot)` | 1195 |
+| `SpawnBody` | `"{" "=>" SpawnBodySequence "}"` | 1196 |
+| `SpawnBodySequence` | `LineBreakBoundary? BlockSequence` | 1197 |
+| `SpawnOperandSlot` | `SPAWN_OPERAND_BY_PREFIX_PARSER` | 1198 |
+| `ConcurExpr` | `"concur" Block` | 1199 |
+| `UnsafeBlockExpr` | `"unsafe" Block` | 1200 |
+| `FacetExpr` | `"facet" "[" "borrow" Expr "as" QualifiedTypeReference AssociatedTypeConstraintList? "]"` | 1203 |
+| `ConformanceEvidenceSelector` | `"conformance" "(" TypeRef "conforms" QualifiedTypeReference ")"` | 1205 |
+| `NamedConformanceEvidenceSelector` | `ConformanceEvidenceSelector "::" Identifier` | 1206 |
+| `PrattExpr` | `EXPRESSION_PRATT_ENTRY` | 1209 |
+| `PrattPredicateExpr` | `PREDICATE_PRATT_ENTRY` | 1210 |
+| `PrattSliceIndexExpr` | `SLICE_INDEX_PRATT_ENTRY` | 1211 |
+| `Literal` | `BoolLiteral \| NumericLiteral \| ImaginaryLiteralExpr \| RationalLiteralExpr \| StringLiteralExpr \| CharLiteralExpr \| BytesLiteral` | 1219 |
+| `BoolLiteral` | `"true" \| "false"` | 1226 |
+| `NumericLiteral` | `NUMERIC_LITERAL` | 1227 |
+| `ImaginaryLiteralExpr` | `IMAGINARY_LITERAL` | 1228 |
+| `RationalLiteralExpr` | `RATIONAL_LITERAL` | 1229 |
+| `CharLiteralExpr` | `CHAR_LITERAL` | 1230 |
+| `BytesLiteral` | `BYTES_LITERAL` | 1231 |
+| `StringLiteralExpr` | `PLAIN_STRING_LITERAL \| RAW_STRING_LITERAL \| MULTILINE_STRING_LITERAL \| InterpolatedString` | 1234 |
+| `InterpolatedString` | `STRING_START InterpolatedStringPart* STRING_END` | 1235 |
+| `InterpolatedStringPart` | `STRING_TEXT \| STRING_ESCAPE \| InterpolationExpr \| InterpolationPath` | 1236 |
+| `InterpolationExpr` | `INTERPOLATION_OPEN Expr InterpolationFormat? INTERPOLATION_CLOSE` | 1240 |
+| `InterpolationFormat` | `":" INTERPOLATION_FORMAT_TEXT` | 1241 |
+| `InterpolationPath` | `"$" InterpolationPathRoot InterpolationPathSelector* INTERPOLATION_BOUNDARY?` | 1246 |
+| `InterpolationPathRoot` | `Identifier \| "@"` | 1247 |
+| `InterpolationPathSelector` | `"." Identifier \| "." StaticIntLiteral \| "[" InterpolationIndex "]"` | 1248 |
+| `InterpolationIndex` | `StaticIntLiteral \| Identifier` | 1251 |
+| `ListLiteral` | `"[" ExpressionList? "]"` | 1256 |
+| `BoundedListLiteral` | `"[" StaticIntLiteral ".." StaticIntLiteral ":" ExpressionList? "]"` | 1257 |
+| `ComprehensionExpr` | `"[" Expr ComprehensionClause+ "]"` | 1259 |
+| `TypedMaterializationExpr` | `TypeRef MaterializationBody` | 1262 |
+| `MaterializationBody` | `"${" MaterializationEntryList? "}"` | 1263 |
+| `MaterializationEntryList` | `MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?` | 1264 |
+| `MaterializationEntry` | `Identifier \| Identifier ":" Expr \| StringLiteralExpr ":" Expr \| NamedUnfoldArgument` | 1265 |
+| `MaterializationSeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 1269 |
+| `MapLiteral` | `"#" "map" "{" MapEntryList? "}"` | 1272 |
+| `MapEntryList` | `MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?` | 1273 |
+| `MapEntry` | `Expr ":" Expr \| NamedUnfoldArgument` | 1274 |
+| `SetLiteral` | `"#" "set" "{" ExpressionList? "}"` | 1275 |
+| `MutListLiteral` | `"#" "mut" "[" ExpressionList? "]"` | 1276 |
+| `MapComprehensionExpr` | `"#" "map" "{" MapEntry ComprehensionClause+ "}"` | 1277 |
+| `SetComprehensionExpr` | `"#" "set" "{" Expr ComprehensionClause+ "}"` | 1278 |
+| `ComprehensionClause` | `ForClause \| PositiveGuard \| IfLetClause \| UnfoldClause` | 1280 |
+| `ForClause` | `"for" Pattern "in" Expr` | 1281 |
+| `IfLetClause` | `"if" "let" Pattern "=" Expr` | 1282 |
+| `UnfoldClause` | `"for" "..." Pattern "in" Expr` | 1283 |
+| `NumericArrayLiteral` | `ShapeInferredArrayLiteral \| ShapeInferredColumnVectorLiteral \| ExactShapeArrayLiteral` | 1286 |
+| `ShapeInferredArrayLiteral` | `"#" "[" ExpressionList? "]"` | 1289 |
+| `ShapeInferredColumnVectorLiteral` | `"#" "[" Expr (";" Expr)+ "]"` | 1290 |
+| `ExactShapeArrayLiteral` | `"#" StaticDimensionList "[" ArrayInitializer? "]"` | 1291 |
+| `ArrayInitializer` | `ShapedRepeatInitializer \| ShapedGeneratorInitializer \| ShapedElementSequence` | 1292 |
+| `ShapedRepeatInitializer` | `"repeat" ":" Expr` | 1295 |
+| `ShapedGeneratorInitializer` | `"generate" ":" Expr` | 1296 |
+| `ShapedElementSequence` | `Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?` | 1297 |
+| `ShapedElementSeparator` | `"," \| ShapedAxisBoundary` | 1298 |
+| `ShapedAxisBoundary` | `";" ";"*` | 1299 |
+| `MeasureLiteralExpr` | `NumericLiteral "[" UnitExpr "]"` | 1302 |
+| `UnitExpr` | `PrattUnitExpr` | 1303 |
+| `UnitPrimary` | `Identifier \| QualifiedPath \| "(" UnitExpr ")"` | 1304 |
+| `UnitPostfixParselet` | `"^" SignedStaticInt` | 1305 |
+| `UnitInfixOperator` | `"*" \| "/"` | 1306 |
+| `PrattUnitExpr` | `UNIT_PRATT_ENTRY` | 1307 |
 
 ## `PREVIEW` 프로파일 — 13개
 
 | 문법 production | 정확한 EBNF 오른쪽 항 | 원천 줄 |
 |---|---|---:|
-| `DeeplusPreview` | `PreviewLibrarySourceFile \| PreviewExecutableSourceFile \| PreviewScriptSourceFile` | 1293 |
-| `PreviewLibrarySourceFile` | `PreviewGate ModuleDecl? PreviewLibraryItem*` | 1294 |
-| `PreviewExecutableSourceFile` | `PreviewGate ModuleDecl? PreviewExecutableItem*` | 1295 |
-| `PreviewScriptSourceFile` | `Shebang? PreviewGate ModuleDecl? PreviewScriptItem*` | 1296 |
-| `PreviewLibraryItem` | `LibrarySourceItem \| PreviewFfiDecl` | 1298 |
-| `PreviewExecutableItem` | `ExecutableSourceItem \| PreviewFfiDecl` | 1299 |
-| `PreviewScriptItem` | `ScriptSourceItem \| PreviewFfiDecl` | 1300 |
-| `PreviewGate` | `"#" "preview" "(" PreviewFeatureList ")" LineBreakBoundary` | 1302 |
-| `PreviewFeatureList` | `Identifier ("," Identifier)*` | 1303 |
-| `PreviewFfiDecl` | `PreviewFfiFunctionDecl \| PreviewFfiBlockDecl` | 1306 |
-| `PreviewFfiFunctionDecl` | `"extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1307 |
-| `PreviewFfiBlockDecl` | `"extern" "c" "(" PLAIN_STRING_LITERAL ")" "{" PreviewFfiBlockMember* "}"` | 1309 |
-| `PreviewFfiBlockMember` | `"unsafe" "def" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1311 |
+| `DeeplusPreview` | `PreviewLibrarySourceFile \| PreviewExecutableSourceFile \| PreviewScriptSourceFile` | 1316 |
+| `PreviewLibrarySourceFile` | `PreviewGate ModuleDecl? PreviewLibraryItem*` | 1317 |
+| `PreviewExecutableSourceFile` | `PreviewGate ModuleDecl? PreviewExecutableItem*` | 1318 |
+| `PreviewScriptSourceFile` | `Shebang? PreviewGate ModuleDecl? PreviewScriptItem*` | 1319 |
+| `PreviewLibraryItem` | `LibrarySourceItem \| PreviewFfiDecl` | 1321 |
+| `PreviewExecutableItem` | `ExecutableSourceItem \| PreviewFfiDecl` | 1322 |
+| `PreviewScriptItem` | `ScriptSourceItem \| PreviewFfiDecl` | 1323 |
+| `PreviewGate` | `"#" "preview" "(" PreviewFeatureList ")" LineBreakBoundary` | 1325 |
+| `PreviewFeatureList` | `Identifier ("," Identifier)*` | 1326 |
+| `PreviewFfiDecl` | `PreviewFfiFunctionDecl \| PreviewFfiBlockDecl` | 1329 |
+| `PreviewFfiFunctionDecl` | `"extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1330 |
+| `PreviewFfiBlockDecl` | `"extern" "c" "(" PLAIN_STRING_LITERAL ")" "{" PreviewFfiBlockMember* "}"` | 1332 |
+| `PreviewFfiBlockMember` | `"unsafe" "def" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1334 |

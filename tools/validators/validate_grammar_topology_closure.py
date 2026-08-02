@@ -22,7 +22,7 @@ REFERENCE_CONTRACT_REL = "spec/contracts/grammar-reference-r1.json"
 
 CHECK_IDS = [
     "R27_CONTRACT_EXACT",
-    "R27_RHS_REFERENCE_BINDING_638",
+    "R27_RHS_REFERENCE_BINDING_643",
     "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40",
     "R27_SIX_ROOT_REACHABILITY_EXACT",
     "R27_UNOWNED_ORPHAN_COUNT_ZERO",
@@ -79,7 +79,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         "CONTRACT_STATUS",
     )
     require(
-        contract.get("production_set", {}).get("count") == 638,
+        contract.get("production_set", {}).get("count") == 643,
         "CONTRACT_PRODUCTION_COUNT",
     )
     require(
@@ -104,7 +104,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             "contract": CONTRACT_REL,
             "disposition_registry": DISPOSITION_REL,
             "source_root_count": 6,
-            "production_count": 638,
+            "production_count": 643,
             "closed_external_symbol_count": 40,
             "unowned_orphan_count": 0,
             "illegal_cross_profile_edge_count": 0,
@@ -168,7 +168,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         == {
             "case_count": 3,
             "mutation_count": 6,
-            "production_count": 638,
+            "production_count": 643,
             "external_symbol_count": 40,
             "source_root_count": 6,
             "unowned_orphan_count": 0,
@@ -306,7 +306,7 @@ def main() -> int:
     )
     prefix_groups = {
         "R27_CONTRACT_EXACT": ("CONTRACT_",),
-        "R27_RHS_REFERENCE_BINDING_638": (
+        "R27_RHS_REFERENCE_BINDING_643": (
             "GRAMMAR_TOPOLOGY_PRODUCTION_SET",
             "GRAMMAR_TOPOLOGY_DISPOSITION",
             "GRAMMAR_TOPOLOGY_REFERENCE_BINDING",
@@ -353,12 +353,12 @@ def main() -> int:
         "check_count": len(checks),
         "passed_check_count": sum(row["pass"] for row in checks),
         "checks": checks,
-        "production_count": 638,
-        "declared_reference_binding_count": 638,
+        "production_count": 643,
+        "declared_reference_binding_count": 643,
         "external_symbol_count": 40,
         "source_root_count": 6,
-        "six_root_union_count": 487,
-        "six_root_shared_count": 460,
+        "six_root_union_count": 492,
+        "six_root_shared_count": 465,
         "six_root_unreachable_count": 151,
         "aggregate_entry_root_count": 2,
         "unowned_orphan_count": 0,

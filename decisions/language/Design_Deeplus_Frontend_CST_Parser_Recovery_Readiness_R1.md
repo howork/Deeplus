@@ -18,7 +18,7 @@ The canonical machine sources are:
 
 ## R12: lossless CST and normalized AST
 
-Every production in the exact 638-production Grammar has one disposition:
+Every production in the exact 643-production Grammar has one disposition:
 `cst_only`, `ast_node`, `normalize_to`, or `external_parser_entry`. Recovery
 kinds are separate `reject_before_ast` records. The projection is total over
 the grammar digest bound by the machine contract. Ten source-sugar families

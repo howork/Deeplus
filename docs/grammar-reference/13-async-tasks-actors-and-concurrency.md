@@ -75,10 +75,17 @@ owner-bound `Run<T>`를 만들며 별도 owner-transfer authority 없이
 
 ```ebnf
 ActorDecl ::= TopLevelVisibility? "actor" MailboxClause?
-              Identifier ActorBody ;
+              Identifier ActorProtocolConformanceClause* ActorBody ;
+ActorProtocolConformanceClause ::= LineBreakBoundary "conforms"
+                                   QualifiedTypeReference WhereClause? ;
 MailboxClause ::= HashTag "(" "capacity" ":" StaticIntLiteral ")" ;
 ActorBody ::= "{" ActorItem* "}" ;
-ActorItem ::= ActorOnDecl | ActorRequestDecl | MemberDecl ;
+ActorItem ::= ActorOnDecl | ActorRequestDecl | ActorMemberDecl
+            | ActorProtocolConformBlock ;
+ActorProtocolConformBlock ::= "conform" QualifiedTypeReference
+                              ActorProtocolConformanceBody ;
+ActorProtocolConformanceBody ::= "{" ActorProtocolConformanceItem* "}" ;
+ActorProtocolConformanceItem ::= ActorOnDecl | ActorRequestDecl ;
 ActorOnDecl ::= MemberVisibility? "on" Identifier
                 ParameterList? ThrowsClause* EffectsClause*
                 FunctionBody ;
@@ -103,6 +110,21 @@ ActorProtocolRequestRequirement ::= "request" Identifier ParameterList?
 `capacity`는 양의 `StaticIntLiteral`이어야 한다. actor 안의 `on`은
 one-way handler이고 `request`는 응답형을 갖는 handler다. protocol의
 `send`와 `request`는 각각 이 두 handler 계열의 요구 사항이다.
+
+Actor Protocol 적합성은 handler 이름이 우연히 같은지로 추론하지 않는다.
+actor header의 각 `conforms Protocol`은 하나의 직접 적합성 관계를 만들고,
+body에는 같은 Protocol을 대상으로 하는 `conform Protocol { ... }` block이
+정확히 하나 있어야 한다. 이 block 안에서는 protocol의 `send` 요구 사항을
+`on`으로, `request` 요구 사항을 `request`로 구현한다. 다른 actor member는
+block 바깥에 둔다.
+
+checker는 먼저 header 관계와 block owner를 결합한 뒤, 각 protocol
+requirement에 정확히 하나의 handler를 연결한다. source/import 순서,
+runtime lookup, structural fallback, `via`/`auto` 합성은 후보 선택에
+참여하지 않는다. one-way `send`/`on`의 정규화된 recoverable error set은
+비어 있어야 하며, 실패 가능한 acknowledged command는 `request ... -> Unit`
+으로 모델링한다. `request` 구현의 error/effect row는 requirement보다 좁을
+수 있지만 parameter와 result type은 정확히 같아야 한다.
 
 ### 통합 message와 actor-transport 구문
 

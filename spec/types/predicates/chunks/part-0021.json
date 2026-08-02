@@ -1,0 +1,81 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "BitfieldRawAdmitted",
+    "source_name": "BitfieldRawAdmitted",
+    "summary": "Checked conversion accepts an exact backing value whose reserved mask is canonical.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "failure",
+      "authority",
+      "evidence",
+      "flow",
+      "api_digest"
+    ],
+    "feature_refs": [
+      "bitfield_checked_raw_codec_msp"
+    ],
+    "diagnostic_refs": [
+      "BITFIELD_RESERVED_BITS_NONZERO",
+      "BITFIELD_IMPLICIT_RAW_CONVERSION_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "require exact backing type",
+      "apply reserved mask",
+      "require reserved bits zero",
+      "run active invariants",
+      "wrap nominal value"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence"
+    ],
+    "formal_judgment_id": "J-BitfieldRawAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "require exact backing type",
+      "apply reserved mask"
+    ],
+    "normalization": "require exact backing type",
+    "decision_procedure": [
+      "require exact backing type",
+      "apply reserved mask",
+      "require reserved bits zero",
+      "run active invariants",
+      "wrap nominal value"
+    ],
+    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "success_result": "admit with normalized output",
+    "active_primary_diagnostic": "BITFIELD_RESERVED_BITS_NONZERO",
+    "secondary_diagnostics": [
+      "BITFIELD_IMPLICIT_RAW_CONVERSION_FORBIDDEN"
+    ],
+    "positive_fixture_ids": [
+      "PF-BitfieldRawAdmitted-POS",
+      "PF-BitfieldRawAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-BitfieldRawAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  }
+]

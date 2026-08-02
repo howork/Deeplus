@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/actor-protocol-direct-conformance-descriptor-r1.json",
+  "title": "Deeplus Actor Protocol Direct Conformance Descriptor R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "actor_id",
+    "protocol_id",
+    "target_kind",
+    "route",
+    "header_relation_count",
+    "matching_block_count",
+    "requirements",
+    "implementations",
+    "selection",
+    "order_evidence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.actor-protocol-direct-conformance-descriptor/r1"
+    },
+    "actor_id": {"type": "string", "minLength": 1},
+    "protocol_id": {"type": "string", "minLength": 1},
+    "target_kind": {
+      "enum": ["ACTOR_PROTOCOL", "TRAIT", "OTHER"]
+    },
+    "route": {
+      "enum": ["DIRECT", "VIA", "AUTO", "EXTERNAL", "RUNTIME"]
+    },
+    "header_relation_count": {"type": "integer", "minimum": 0},
+    "matching_block_count": {"type": "integer", "minimum": 0},
+    "requirements": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/requirement"}
+    },
+    "implementations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/implementation"}
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "qualification_protocol_id_or_null",
+        "visible_binding_ids"
+      ],
+      "properties": {
+        "qualification_protocol_id_or_null": {
+          "type": ["string", "null"]
+        },
+        "visible_binding_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "order_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_order_winner_count",
+        "import_order_winner_count",
+        "runtime_lookup_count"
+      ],
+      "properties": {
+        "source_order_winner_count": {"const": 0},
+        "import_order_winner_count": {"const": 0},
+        "runtime_lookup_count": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "label_or_null", "type_id", "transfer_mode"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 0},
+        "label_or_null": {"type": ["string", "null"]},
+        "type_id": {"type": "string", "minLength": 1},
+        "transfer_mode": {
+          "enum": ["REUSABLE", "MOVE", "SHARED"]
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "origin_protocol_id",
+        "kind",
+        "selector",
+        "parameters",
+        "result_type_or_null",
+        "normalized_error_set",
+        "normalized_effect_row"
+      ],
+      "properties": {
+        "requirement_id": {"type": "string", "minLength": 1},
+        "origin_protocol_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["SEND", "REQUEST"]},
+        "selector": {"type": "string", "minLength": 1},
+        "parameters": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/parameter"}
+        },
+        "result_type_or_null": {"type": ["string", "null"]},
+        "normalized_error_set": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "normalized_effect_row": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation_id",
+        "block_protocol_id",
+        "kind",
+        "selector",
+        "parameters",
+        "result_type_or_null",
+        "normalized_error_set",
+        "normalized_effect_row"
+      ],
+      "properties": {
+        "implementation_id": {"type": "string", "minLength": 1},
+        "block_protocol_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["ON", "REQUEST"]},
+        "selector": {"type": "string", "minLength": 1},
+        "parameters": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/parameter"}
+        },
+        "result_type_or_null": {"type": ["string", "null"]},
+        "normalized_error_set": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "normalized_effect_row": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

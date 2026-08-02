@@ -1,0 +1,651 @@
+[
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-BOUNDARY",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "admitted",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "none",
+    "fixture_kind": "concrete_positive",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [],
+      "implementations": [],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": []
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "admitted_condition": "empty direct Actor Protocol relation has an exact zero-length binding vector"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-AMBIGUOUS",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": null,
+        "visible_binding_ids": [
+          "A::P::ping",
+          "A::Q::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-AMBIGUOUS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_IMPLEMENTATION_AMBIGUOUS"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-DUPLICATE",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        },
+        {
+          "implementation_id": "A::P::ping::2",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-DUPLICATE"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-KIND",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "REQUEST",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": "Unit",
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-KIND"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-MISSING",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-MISSING"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-OWNER",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 0,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-OWNER"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_CONFORM_BLOCK_OWNER_MISMATCH"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-SEND-ERROR",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [
+            "StoreError"
+          ],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-SEND-ERROR"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-SIGNATURE",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::get",
+          "origin_protocol_id": "P",
+          "kind": "REQUEST",
+          "selector": "get",
+          "parameters": [
+            {
+              "ordinal": 0,
+              "label_or_null": "value",
+              "type_id": "Int",
+              "transfer_mode": "REUSABLE"
+            }
+          ],
+          "result_type_or_null": "Int",
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::get::1",
+          "block_protocol_id": "P",
+          "kind": "REQUEST",
+          "selector": "get",
+          "parameters": [
+            {
+              "ordinal": 0,
+              "label_or_null": "value",
+              "type_id": "Int",
+              "transfer_mode": "REUSABLE"
+            }
+          ],
+          "result_type_or_null": "String",
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-SIGNATURE"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"
+  },
+  {
+    "fixture_id": "PF-ActorProtocolGateAdmitted-NEG-TARGET",
+    "predicate_id": "ActorProtocolGateAdmitted",
+    "expected": "rejected",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "TRAIT",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ActorProtocolGateAdmitted-NEG-TARGET"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_TARGET_KIND_MISMATCH"
+  }
+]

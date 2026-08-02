@@ -1,0 +1,52 @@
+{
+  "schema": "deeplus.actor-protocol-direct-conformance-fixtures/r1",
+  "contract": "spec/contracts/actor-protocol-direct-conformance-r1.json",
+  "status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "cases": [
+    {"id": "R21-POS-001-DIRECT-SEND", "category": "positive", "expected": "ADMIT_ONE_BINDING"},
+    {"id": "R21-POS-002-DIRECT-REQUEST", "category": "positive", "expected": "ADMIT_ONE_BINDING"},
+    {"id": "R21-POS-003-TWO-PROTOCOLS-QUALIFIED", "category": "positive", "expected": "ADMIT_TWO_DISTINCT_BINDINGS"},
+    {"id": "R21-POS-004-REQUEST-UNIT-THROWS", "category": "positive", "expected": "ADMIT_ACKNOWLEDGED_FALLIBLE_COMMAND"},
+    {"id": "R21-POS-005-SEND-THROWS-NEVER", "category": "positive", "expected": "ADMIT_EMPTY_ERRORSET"},
+    {"id": "R21-POS-006-REQUEST-SUBSET-ROWS", "category": "positive", "expected": "ADMIT_ROW_SUBSUMPTION"},
+    {"id": "R21-BOUNDARY-001-EMPTY-PROTOCOL", "category": "boundary", "expected": "ADMIT_ZERO_REQUIREMENT_BINDINGS"},
+    {"id": "R21-BOUNDARY-002-OMITTED-SEND-THROWS", "category": "boundary", "expected": "NORMALIZE_BOTH_TO_NEVER"},
+    {"id": "R21-BOUNDARY-003-CONCRETE-HANDLER-NOT-CANDIDATE", "category": "boundary", "expected": "ADMIT_ONE_BLOCK_LOCAL_BINDING"},
+    {"id": "R21-BOUNDARY-004-UNQUALIFIED-UNIQUE", "category": "boundary", "expected": "ADMIT_UNQUALIFIED_SELECTION"},
+    {"id": "R21-BOUNDARY-005-IDENTITY-ORDER-INVARIANT", "category": "boundary", "expected": "EXACT_BINDING_DIGEST_EQUAL"},
+    {"id": "R21-NEG-001-STRUCTURAL-MATCH", "category": "negative", "expected": "ACTOR_PROTOCOL_CONFORMANCE_REQUIRED"},
+    {"id": "R21-NEG-002-HEADER-WITHOUT-BLOCK", "category": "negative", "expected": "ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED"},
+    {"id": "R21-NEG-003-BLOCK-WITHOUT-HEADER", "category": "negative", "expected": "ACTOR_PROTOCOL_CONFORM_BLOCK_OWNER_MISMATCH"},
+    {"id": "R21-NEG-004-ACTOR-CLAUSE-TARGETS-TRAIT", "category": "negative", "expected": "ACTOR_PROTOCOL_TARGET_KIND_MISMATCH"},
+    {"id": "R21-NEG-005-SEND-REQUIREMENT-THROWS", "category": "negative", "expected": "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN"},
+    {"id": "R21-NEG-006-ON-HANDLER-THROWS", "category": "negative", "expected": "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN"},
+    {"id": "R21-NEG-007-SEND-TO-REQUEST-KIND", "category": "negative", "expected": "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH"},
+    {"id": "R21-NEG-008-REQUEST-TO-ON-KIND", "category": "negative", "expected": "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH"},
+    {"id": "R21-NEG-009-PARAMETER-MISMATCH", "category": "negative", "expected": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"},
+    {"id": "R21-NEG-010-RESULT-MISMATCH", "category": "negative", "expected": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"},
+    {"id": "R21-NEG-011-BROADER-ERRORSET", "category": "negative", "expected": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"},
+    {"id": "R21-NEG-012-BROADER-EFFECTROW", "category": "negative", "expected": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"},
+    {"id": "R21-NEG-013-DUPLICATE-IMPLEMENTATION", "category": "negative", "expected": "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE"},
+    {"id": "R21-NEG-014-DUPLICATE-BLOCK", "category": "negative", "expected": "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE"},
+    {"id": "R21-NEG-015-UNQUALIFIED-AMBIGUOUS", "category": "negative", "expected": "ACTOR_PROTOCOL_IMPLEMENTATION_AMBIGUOUS"}
+  ],
+  "mutation_controls": [
+    {"id": "R21-MUT-001-REMOVE-HEADER", "must_reject": "ACTOR_PROTOCOL_CONFORMANCE_REQUIRED"},
+    {"id": "R21-MUT-002-CHANGE-TARGET-KIND", "must_reject": "ACTOR_PROTOCOL_TARGET_KIND_MISMATCH"},
+    {"id": "R21-MUT-003-ADD-SEND-ERROR", "must_reject": "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN"},
+    {"id": "R21-MUT-004-DUPLICATE-CANDIDATE", "must_reject": "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE"},
+    {"id": "R21-MUT-005-DROP-CANDIDATE", "must_reject": "ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED"},
+    {"id": "R21-MUT-006-FLIP-KIND", "must_reject": "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH"},
+    {"id": "R21-MUT-007-BROADEN-ROW", "must_reject": "ACTOR_PROTOCOL_SIGNATURE_MISMATCH"},
+    {"id": "R21-MUT-008-SHUFFLE-SOURCE-ORDER", "must_preserve": "EXACT_BINDING_DIGEST_EQUAL"}
+  ],
+  "expected_counts": {
+    "positive": 6,
+    "boundary": 5,
+    "negative": 15,
+    "total": 26,
+    "mutations": 8,
+    "product_executed": 0
+  }
+}

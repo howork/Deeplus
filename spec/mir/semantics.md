@@ -246,6 +246,17 @@ For `lhs ?: fallback`, `lhs` is evaluated first. When it is `some(v)`, `v` is re
 
 ## 7. Actors and messages
 
+Actor Protocol binding is completed before MIR. Each admitted transport plan
+carries exact `ActorProtocolConformanceId`, `ActorProtocolRequirementId`,
+`ActorProtocolBindingId`, and `ActorHandlerId` or `ActorRequestId` residue.
+MIR performs no selector-string, provider, registration-order, or fallback
+lookup. A `send` binding always targets `on`; a `request` binding always targets
+`request`. The bound implementation ErrorSet and EffectRow have already been
+proven subsets of the requirement rows, and a one-way send/on binding always
+has an empty recoverable ErrorSet. A fallible acknowledged command therefore
+enters MIR as a request returning Unit with its ErrorSet preserved in the
+correlated `ReplyResponsibility`.
+
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
 Actor transport is not a method call. The Stable `:~` surface selects one

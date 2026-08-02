@@ -1,0 +1,178 @@
+{
+  "schema": "deeplus.actor-protocol-direct-conformance-contract/r1",
+  "revision": "R41-REBASED-DESIGN-R1",
+  "status": "CURRENT_STABLE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "grammar_owner": "spec/grammar/deeplus.ebnf",
+  "descriptor_schema": "schemas/language/actor-protocol-direct-conformance-descriptor.schema.json",
+  "predicate_id": "ActorProtocolGateAdmitted",
+  "fixture_owner": "tests/fixtures/current/actor-protocol-direct-conformance-r1.json",
+  "authority": {
+    "gap_ids": [
+      "IR-ACTOR-P0-001",
+      "IR-ACTOR-P0-002",
+      "IR-ACTOR-P0-004",
+      "IR-ACTOR-P1-003"
+    ],
+    "decision": "R41_ACTOR_PROTOCOL_DIRECT_CONFORMANCE_REBASE",
+    "predecessor_decision": "R21_ACTOR_PROTOCOL_DIRECT_CONFORMANCE",
+    "baseline_commit": "b6ff0f80d74e93bc7b25c54cfde08f8b40ca54e3",
+    "baseline_tree": "6ffe1dccce5e8557244b316f129f9ddc9634c1c2",
+    "predecessor_candidate_commit": "2e511cede2e1bfca4a60aa124fc55b650f68ba30",
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED"
+  },
+  "surface": {
+    "actor_header_relation": "conforms QualifiedTypeReference WhereClause?",
+    "relation_boundary": "PHYSICAL_LINE",
+    "route": "DIRECT",
+    "relation_cardinality": "ZERO_OR_MORE",
+    "target_kind": "ActorProtocolId",
+    "actor_block": "conform QualifiedTypeReference { ActorOnDecl | ActorRequestDecl }",
+    "lexical_target": "enclosing ActorId",
+    "matching_block_per_relation": 1,
+    "matching_relation_per_block": 1,
+    "for_clause_count": 0,
+    "structural_candidate_count": 0,
+    "via_route_count": 0,
+    "auto_route_count": 0,
+    "external_route_count": 0,
+    "runtime_attachment_count": 0,
+    "actor_trait_route_count": 0,
+    "class_enum_trait_surface_changed": false,
+    "handler_mapping": {
+      "SEND": "ON",
+      "REQUEST": "REQUEST"
+    }
+  },
+  "identity_contract": {
+    "required_static_identities": [
+      "ActorId",
+      "ActorProtocolId",
+      "ActorProtocolConformanceId",
+      "ActorProtocolRequirementId",
+      "ActorProtocolBindingId",
+      "ActorHandlerId",
+      "ActorRequestId",
+      "SubstitutionId",
+      "AuthorityId",
+      "ResponsibilityId"
+    ],
+    "conformance_key": [
+      "ActorId",
+      "ActorProtocolId",
+      "SubstitutionId",
+      "AuthorityId"
+    ],
+    "binding_key": [
+      "ActorProtocolConformanceId",
+      "ActorProtocolRequirementId"
+    ],
+    "implementation_identity_by_kind": {
+      "SEND_TO_ON": "ActorHandlerId",
+      "REQUEST_TO_REQUEST": "ActorRequestId"
+    },
+    "hir_union_field_role": "actor_handler_or_request_id",
+    "value_level_runtime_identity_in_module_api_count": 0,
+    "runtime_string_identity_count": 0
+  },
+  "algorithm": {
+    "steps": [
+      "resolve lexical ActorId and relation target ActorProtocolId",
+      "reject non-ActorProtocol target kind",
+      "require exactly one header relation and matching lexical block per normalized relation",
+      "intern ActorProtocolConformanceId",
+      "enumerate finite direct ActorProtocolRequirementId set in stable identity order",
+      "enumerate matching-selector candidates only inside the matching block",
+      "require exactly one candidate for every requirement",
+      "check operation kind, ordered channels, labels, ownership modes and normalized parameter types",
+      "check exact request result and implementation ErrorSet/EffectRow subset relations",
+      "require empty ErrorSet for send and on",
+      "emit one ActorProtocolBindingId per requirement",
+      "sort HIR/API/MIR residue by stable identity"
+    ],
+    "termination_metric": "one finite relation, requirement and block-local implementation vector",
+    "candidate_cardinality": "EXACTLY_ONE",
+    "fallback_count": 0,
+    "source_order_winner_count": 0,
+    "import_order_winner_count": 0,
+    "provider_order_winner_count": 0,
+    "runtime_lookup_count": 0,
+    "requirement_origin_preserved": true,
+    "qualification": {
+      "unqualified": "exactly one visible normalized binding",
+      "qualified": "Protocol::selector restricts to exact ActorProtocolId before cardinality",
+      "creates_conformance": false
+    }
+  },
+  "compatibility": {
+    "send_requirement_to": "ActorOnDecl",
+    "request_requirement_to": "ActorRequestDecl",
+    "parameters": "exact normalized ordered channels, labels, ownership modes and types",
+    "request_result": "exact normalized type",
+    "implementation_error_set": "subset_of requirement ErrorSet",
+    "implementation_effect_row": "subset_of requirement EffectRow",
+    "send_requirement_error_set": [],
+    "on_implementation_error_set": [],
+    "omitted_throws": "Never",
+    "explicit_empty_throws": "Never"
+  },
+  "failure_observation": {
+    "one_way_call_type": "Result<Unit, error ActorMessageError>",
+    "one_way_success_observes": "enqueue commit only",
+    "handler_completion_channel": false,
+    "recoverable_send_error": "REJECT",
+    "acknowledged_fallible_command": "request returning Unit",
+    "request_error_residue": "ReplyResponsibility.normalized_handler_error_set",
+    "defect_axis": "Actor lifecycle"
+  },
+  "lowering": {
+    "typed_hir_binding_residue_required": true,
+    "module_api_binding_table": "FINITE_STATIC_STABLE_IDENTITY_SORTED",
+    "mir_actor_transport_binding_id_required": true,
+    "mir_selector_lookup_count": 0,
+    "runtime_dispatch": "STATIC_BINDING_SLOT_OR_TABLE_ID",
+    "runtime_lookup_count": 0
+  },
+  "diagnostic_precedence": [
+    "ACTOR_PROTOCOL_TARGET_KIND_MISMATCH",
+    "ACTOR_PROTOCOL_CONFORMANCE_REQUIRED",
+    "ACTOR_PROTOCOL_CONFORM_BLOCK_OWNER_MISMATCH",
+    "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN",
+    "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE",
+    "ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED",
+    "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH",
+    "ACTOR_PROTOCOL_SIGNATURE_MISMATCH",
+    "ACTOR_PROTOCOL_IMPLEMENTATION_AMBIGUOUS"
+  ],
+  "exclusions": {
+    "plain_def_handler": false,
+    "def_send_or_request_roles": false,
+    "protocol_generics_associated_defaults_derives": false,
+    "protocol_capability_existential": false,
+    "interleaved_lifecycle_supervision_change": false,
+    "production_execution": false
+  },
+  "machine_acceptance": {
+    "case_count": 26,
+    "positive_count": 6,
+    "boundary_count": 5,
+    "negative_count": 15,
+    "mutation_count": 8,
+    "product_executed": 0
+  },
+  "artifact_binding": {
+    "descriptor_schema": {
+      "path": "schemas/language/actor-protocol-direct-conformance-descriptor.schema.json",
+      "bytes": 4736,
+      "sha256": "0b32a60a08235b184397ce8bfbef970b281d904bfeb4a06f5f09033549fe0605"
+    },
+    "fixture": {
+      "path": "tests/fixtures/current/actor-protocol-direct-conformance-r1.json",
+      "bytes": 4304,
+      "sha256": "d6f8d920f78194450545715c2b5587a887db411a11504f1bda2dd940d57d70f9"
+    }
+  }
+}

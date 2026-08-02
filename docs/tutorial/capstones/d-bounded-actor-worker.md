@@ -41,10 +41,11 @@ send는 enqueue 후 reply를 요구하지 않는 메시지이고, request는 typ
 `Reply<T>`와 correlation을 갖는다. ordinary method 호출과 actor
 message resolution은 서로 fallback하지 않는다.
 
-이 선언은 requirement 집합을 보여 준다. 아래 `Worker`의 handler 철자가
-같다는 사실만으로 `WorkerProtocol` conformance가 생기지는 않는다.
-실제 결합에는 checker가 검증한 별도 conformance evidence가 필요하며,
-그 제품 증거는 이 프로젝트에서 `NOT_RUN`이다.
+이 선언은 requirement 집합을 보여 준다. 아래 `Worker`는 header의
+`conforms WorkerProtocol`로 직접 관계를 선언하고, 같은 이름의
+`conform WorkerProtocol` block 안에서 requirement를 구현한다. handler
+철자가 같다는 사실만으로 conformance가 생기지는 않는다. 제품 checker의
+실행 증거는 이 프로젝트에서 `NOT_RUN`이다.
 
 ## 3. actor와 mailbox
 
@@ -53,16 +54,20 @@ mailbox capacity는 양의 `StaticIntLiteral`이어야 한다. `0`이나 runtime
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public actor #mailbox(capacity: 8) Worker {
+public actor #mailbox(capacity: 8) Worker
+    conforms WorkerProtocol
+{
     -var completed: Int = 0
 
-    on submit(job: Job) = {
-        accept(job)
-        completed += 1
-    }
+    conform WorkerProtocol {
+        on submit(job: Job) = {
+            accept(job)
+            completed += 1
+        }
 
-    request processedCount() -> Int = {
-        return completed
+        request processedCount() -> Int = {
+            return completed
+        }
     }
 }
 ```

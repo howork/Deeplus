@@ -19,7 +19,7 @@ Pratt, CST/AST 계약은 `spec/frontend/frontend-model.json`이다. 이 문서�
 
 ## 2. Grammar와 lossless CST
 
-Grammar의 638 production은
+Grammar의 643 production은
 `spec/contracts/grammar-production-disposition-registry-r1.json`에 정확히 한
 번씩 등록된다. disposition은 CST-only, AST-node, normalization, external
 parser entry 중 하나이며 recovery residue는 별도의 reject-before-AST

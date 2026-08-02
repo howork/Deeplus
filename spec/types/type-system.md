@@ -373,6 +373,26 @@ bindings, and lowercase `via` retain their existing identities. Conformance is
 not admitted in a function/block scope, and it cannot create storage, layout,
 constructors, general extension members, or private construction authority.
 
+Actor Protocol conformance uses a separate direct-only relation. An Actor may
+repeat `conforms Protocol` header clauses, each resolving to exactly one
+`ActorProtocolId`, and each relation requires exactly one lexical
+`conform Protocol { ... }` block in that Actor body. The Actor-specific block
+contains only `ActorOnDecl` and `ActorRequestDecl`; it is not the Class/Enum
+Trait witness block. Matching declarations outside the block are concrete Actor
+operations and create no structural evidence. `via`, `by auto`, external or
+runtime conformance, ordinary Trait targets, specialization, priority, and
+source/import-order selection are not admitted by this profile.
+
+The terminating predicate `ActorProtocolGateAdmitted` interns one
+`ActorProtocolConformanceId`, enumerates the finite direct requirement set, and
+maps every exact `ActorProtocolRequirementId` to exactly one block-local
+`ActorHandlerId` or `ActorRequestId`, producing one
+`ActorProtocolBindingId`. `send` binds only `on`; `request` binds only
+`request`. Parameter channels, labels, transfer modes, and types are exact after
+normalization; request result type is exact; implementation ErrorSet and
+EffectRow are subsets of the requirement rows. A zero or multiple candidate
+set is terminal and has no fallback or order winner.
+
 Inherited parent evidence retains its original owner and is interned when the
 normalized instantiation is equal. A child-local replacement, specialization,
 priority, import/source-order winner, fallback, and runtime witness lookup are
@@ -545,6 +565,14 @@ lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering,
 actor transferability, or hidden cleanup.
 
 Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Reply<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting that `Reply<T>`. Each successfully admitted request carries a non-forgeable `ReplyResponsibility` descriptor in typed HIR, module API digest, and MIR. Its exact fields are normalized result type, handler ErrorSet, cancellation axis, isolation owner, `ReplyId`, request correlation identity, and terminal transport failure. Module API identity stores static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers, while each committed request keeps its concrete identities only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second `Reply` type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted reply and does not retroactively change the successful admission Result.
+
+A one-way protocol `send` requirement and its bound `on` implementation must
+both normalize to the empty recoverable ErrorSet; omission and explicit
+`throws Never` are equal. Any nonempty recoverable ErrorSet is rejected before
+HIR binding because the admission result observes enqueue only, not handler
+completion. A fallible acknowledged command is a `request` returning `Unit`,
+and its admitted ErrorSet is preserved in `ReplyResponsibility`. Defect remains
+a distinct lifecycle outcome.
 
 Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur { ... }` is its only lexical owner; each successfully admitted `spawn` creates one owner-bound `ConcurRunId` and child `ExecutionId`. `Run<T>` and `Reply<T>` are both one-shot awaitable values, but neither converts to, substitutes for, or joins with the other. A `Run<T>` cannot escape, be exported, or enter unowned storage without a separately admitted owner-transfer contract. A bounded `#async` lambda is admitted only inside its nearest `concur`, only with no capture or an explicitly proven reusable copy-only capture plan, and only for nonescaping inward use. General escaping async callable literals remain nonactivatable.
 
