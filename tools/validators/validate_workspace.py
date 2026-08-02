@@ -24,7 +24,17 @@ POST_PR16_REVISION = "r51f3-post-pr16-preview-design-r4-cma-r1"
 LANGUAGE_COHERENCE_REVISION = "r51f3-current-trait-operator-refinement-r1"
 R10_HIR_MIR_REVISION = "r51f3-current-hir-mir-machine-contract-r1"
 R11_R19_FRONTEND_REVISION = "r51f3-current-frontend-readiness-r11-r19-r1"
-CURRENT_MACHINE_REVISIONS = {R10_HIR_MIR_REVISION, R11_R19_FRONTEND_REVISION}
+R41_ACTOR_PROTOCOL_REVISION = (
+    "r51f3-current-actor-protocol-direct-conformance-r1"
+)
+FRONTEND_SUCCESSOR_REVISIONS = {
+    R11_R19_FRONTEND_REVISION,
+    R41_ACTOR_PROTOCOL_REVISION,
+}
+CURRENT_MACHINE_REVISIONS = {
+    R10_HIR_MIR_REVISION,
+    *FRONTEND_SUCCESSOR_REVISIONS,
+}
 TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
@@ -41,7 +51,10 @@ R11_R19_SEMANTIC_PUBLICATION_COMMIT = "0f3fa1e145d38725ad22f929d5100fda9584ac10"
 R25_R27_SEMANTIC_SOURCE_COMMIT = "75474ed4a03cd5cb3a424509694c70831b512b59"
 R25_R27_SEMANTIC_PUBLICATION_COMMIT = "2feba9e077ffdf35403c3b8467c17ddcfcf142f6"
 R25_R27_SEMANTIC_PUBLICATION_TREE = "7118be15102e259d916874612423fa208e8e2c5b"
-CURRENT_PUBLICATION_TARGET_COMMIT = R25_R27_SEMANTIC_PUBLICATION_COMMIT
+R41_SEMANTIC_SOURCE_COMMIT = "f9530ba7672172253a7ebe1bfdfcbe3dd4403a0a"
+R41_SEMANTIC_PUBLICATION_COMMIT = "fae105020a7b1ebc32a8fe85e80412d8ea10a803"
+R41_SEMANTIC_PUBLICATION_TREE = "d949864bf9500ac6c7d40b81e5b56848517bad15"
+CURRENT_PUBLICATION_TARGET_COMMIT = R41_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -273,6 +286,28 @@ R25_R27_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-TRACE-P2-011",
     "IR-FE-P1-035",
     "IR-FE-P1-039",
+]
+R41_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R41_Actor_Protocol_Direct_Conformance_"
+    "Publication_Closure_R1.md"
+)
+R41_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r41-actor-protocol-direct-conformance-publication-closure-receipt.json"
+)
+R41_INDEPENDENT_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r41-actor-protocol-direct-conformance-independent-verification.json"
+)
+R41_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R41-ACTOR-PROTOCOL-DIRECT-CONFORMANCE-PUBLICATION-CLOSURE"
+)
+R41_PUBLICATION_CLOSURE_GAP_IDS = [
+    "IR-ACTOR-P0-001",
+    "IR-ACTOR-P0-002",
+    "IR-ACTOR-P0-004",
+    "IR-ACTOR-P1-003",
 ]
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
@@ -13117,7 +13152,7 @@ def main() -> int:
     hir_counts = hir_fixture.get("expected_counts", {})
     hir_bridge_component_revision = (
         R10_HIR_MIR_REVISION
-        if revision == R11_R19_FRONTEND_REVISION
+        if revision in FRONTEND_SUCCESSOR_REVISIONS
         else revision
     )
     check(
@@ -15641,7 +15676,7 @@ def main() -> int:
         )
         for relative in CURRENT_DECISION_INDEX_PATHS
         + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
-        + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else [])
+        + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -15665,17 +15700,21 @@ def main() -> int:
             "Publication_Closure_R1.md",
             R25_R27_PUBLICATION_CLOSURE_REPORT,
         ]
-        if revision == R11_R19_FRONTEND_REVISION
+        if revision in FRONTEND_SUCCESSOR_REVISIONS
+        else []
+    ) + (
+        [R41_PUBLICATION_CLOSURE_REPORT]
+        if revision == R41_ACTOR_PROTOCOL_REVISION
         else []
     )
     check(
         indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
         + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
-        + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else [])
+        + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else [])
         and indexed_decision_rows == expected_decision_rows
         and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
                 + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
-                + (R11_R19_DECISION_PATHS if revision == R11_R19_FRONTEND_REVISION else []))
+                + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else []))
         and indexed_governance_paths == expected_governance_paths
         and all(
             (root / relative).is_file()
@@ -16824,6 +16863,159 @@ def main() -> int:
             }
         ),
     )
+    r41_report_path = root / R41_PUBLICATION_CLOSURE_REPORT
+    r41_receipt_path = root / R41_PUBLICATION_CLOSURE_RECEIPT
+    r41_independent_path = root / R41_INDEPENDENT_VERIFICATION_RECEIPT
+    r41_receipt = parsed.get(r41_receipt_path, {})
+    r41_semantic_publication = r41_receipt.get("semantic_publication", {})
+    r41_pr_ci = r41_receipt.get("semantic_pr_github_ci", [])
+    r41_main_ci = r41_receipt.get("semantic_merge_main_ci", [])
+    r41_validation = r41_receipt.get("semantic_validation", {})
+    r41_gap_transition = r41_receipt.get("gap_transition", {})
+    r41_governance = r41_receipt.get("governance", {})
+    r41_pointer_target = r41_receipt.get("pointer_target", {})
+    r41_independent = parsed.get(r41_independent_path, {})
+    check(
+        r41_report_path.is_file()
+        and r41_receipt_path.is_file()
+        and r41_independent_path.is_file()
+        and r41_receipt.get("schema")
+        == (
+            "deeplus.r41-actor-protocol-direct-conformance-"
+            "publication-closure-receipt/v1"
+        )
+        and r41_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r41_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r41_semantic_publication
+        == {
+            "pull_request": 59,
+            "url": "https://github.com/howork/Deeplus/pull/59",
+            "branch": "codex/r41-actor-direct-conformance-rebase",
+            "source_commit": R41_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": R41_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": R41_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R41_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "b6ff0f80d74e93bc7b25c54cfde08f8b40ca54e3",
+                R41_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-02T03:22:14Z",
+            "post_merge_readback": "PASS",
+        }
+        and len(r41_pr_ci) == 2
+        and {row.get("workflow") for row in r41_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R41_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r41_pr_ci
+        )
+        and len(r41_main_ci) == 2
+        and {row.get("workflow") for row in r41_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R41_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r41_main_ci
+        )
+        and r41_receipt.get("closure_pr_evidence")
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R41_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r41_semantic_publication,
+                "semantic_pr_github_ci": r41_pr_ci,
+                "semantic_merge_main_ci": r41_main_ci,
+            }
+        ),
+    )
+    check(
+        r41_validation.get("change_scope")
+        == {
+            "changed_file_count": 68,
+            "production_crate_change_count": 0,
+            "grammar_production_change_count": 5,
+            "source_spelling_change_count": 0,
+            "semantic_change_count": 1,
+            "new_diagnostic_id_count": 9,
+        }
+        and r41_validation.get("focused", {}).get("actor_protocol_checks")
+        == "10_OF_10_PASS"
+        and r41_validation.get("focused", {}).get(
+            "actor_protocol_predicate_fixtures"
+        ) == "11_OF_11_PASS"
+        and r41_validation.get("focused", {}).get(
+            "actor_protocol_acceptance_cases"
+        ) == "26_OF_26_PASS"
+        and r41_validation.get("focused", {}).get("actor_protocol_mutations")
+        == "10_OF_10_REJECTED"
+        and r41_validation.get("workspace", {}).get("result") == "PASS"
+        and r41_validation.get("workspace", {}).get("checks")
+        == "6051_OF_6051_PASS"
+        and r41_validation.get("source_manifest", {}).get(
+            "file_count_excluding_manifest"
+        ) == 720
+        and r41_validation.get("source_manifest", {}).get("tree_sha256")
+        == "fc317635d5fa7555a0c352520cc9d2a40aadb8923ed6786d87d2832b78f939df"
+        and r41_validation.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r41_validation.get("production_execution") == "NOT_RUN"
+        and r41_gap_transition
+        == {
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 4,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 4,
+            "gap_ids": R41_PUBLICATION_CLOSURE_GAP_IDS,
+        }
+        and r41_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r41_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "revision": R41_ACTOR_PROTOCOL_REVISION,
+            "semantic_merge_commit": R41_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r41_independent.get("schema")
+        == (
+            "deeplus.r41-actor-protocol-direct-conformance-"
+            "independent-verification/v1"
+        )
+        and r41_independent.get("semantic_merge_commit")
+        == R41_SEMANTIC_PUBLICATION_COMMIT
+        and r41_independent.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r41_independent.get("product_execution") == "NOT_RUN"
+        and r41_independent.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R41_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "validation": r41_validation,
+                "gap_transition": r41_gap_transition,
+                "governance": r41_governance,
+                "pointer_target": r41_pointer_target,
+                "independent": r41_independent,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -16838,6 +17030,33 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R25_R27_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    r41_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R41_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(r41_closure_laws) == 1
+        and r41_closure_laws[0].get("status") == "CURRENT"
+        and r41_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and r41_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and r41_closure_laws[0].get("effective_revision")
+        == R41_ACTOR_PROTOCOL_REVISION
+        and R41_PUBLICATION_CLOSURE_REPORT
+        in r41_closure_laws[0].get("source_evidence", "")
+        and R41_PUBLICATION_CLOSURE_RECEIPT
+        in r41_closure_laws[0].get("source_evidence", "")
+        and R41_INDEPENDENT_VERIFICATION_RECEIPT
+        in r41_closure_laws[0].get("source_evidence", "")
+        and all(
+            gap_id in r41_closure_laws[0].get("law", "")
+            for gap_id in R41_PUBLICATION_CLOSURE_GAP_IDS
+        ),
+        "R41_PUBLICATION_CLOSURE_DECISION",
+        repr(r41_closure_laws),
+    )
     check(
         len(r25_r27_closure_laws) == 1
         and r25_r27_closure_laws[0].get("status") == "CURRENT"
@@ -16861,7 +17080,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            58
+            59
+            if revision == R41_ACTOR_PROTOCOL_REVISION
+            else 58
             if revision == R11_R19_FRONTEND_REVISION
             else 46
             if revision == R10_HIR_MIR_REVISION
@@ -17686,7 +17907,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R11_R19_FRONTEND_REVISION:
+        if revision == R41_ACTOR_PROTOCOL_REVISION:
+            expected_predecessor = R11_R19_FRONTEND_REVISION
+        elif revision == R11_R19_FRONTEND_REVISION:
             expected_predecessor = R10_HIR_MIR_REVISION
         elif revision == R10_HIR_MIR_REVISION:
             expected_predecessor = LANGUAGE_COHERENCE_REVISION
