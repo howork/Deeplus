@@ -236,7 +236,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Protocol on and request requirements remain distinct. :~ statically selects one actor operation, never falls back to ordinary/message dispatch, and immediately returns the exact admission Result fixed by the actor coherence contract.",
+    "notes": "Actor Protocol conformance is one explicit direct header relation plus one matching lexical Actor block. send binds on, request binds request, one-way ErrorSet is empty, and :~ selection preserves exact binding identity without structural or order-based lookup.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -252,7 +252,16 @@
         "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN",
         "ACTOR_OPERATION_KIND_COLLISION",
         "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
-        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+        "ACTOR_PROTOCOL_TARGET_KIND_MISMATCH",
+        "ACTOR_PROTOCOL_CONFORMANCE_REQUIRED",
+        "ACTOR_PROTOCOL_CONFORM_BLOCK_OWNER_MISMATCH",
+        "ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN",
+        "ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE",
+        "ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED",
+        "ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH",
+        "ACTOR_PROTOCOL_SIGNATURE_MISMATCH",
+        "ACTOR_PROTOCOL_IMPLEMENTATION_AMBIGUOUS"
       ],
       "predicates": [
         "ActorProtocolGateAdmitted",
@@ -270,11 +279,19 @@
         "ActorProtocolRequestRequirement",
         "ActorProtocolSendRequirement",
         "TildeCallLed",
-        "TildeCallToken"
+        "TildeCallToken",
+        "ActorProtocolConformanceClause",
+        "ActorProtocolConformBlock",
+        "ActorProtocolConformanceBody",
+        "ActorProtocolConformanceItem"
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/actor-protocol-direct-conformance-r1.json",
+      "schemas/language/actor-protocol-direct-conformance-descriptor.schema.json",
+      "tests/fixtures/current/actor-protocol-direct-conformance-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1720,62 +1737,5 @@
     "language_status": "Stdlib profile",
     "source_activation": "stdlib",
     "notes": "Stable-layout stdlib profile for explicit .raw, checked fromRaw and explicit-endian byte codecs; no implicit conversion or C ABI equivalence. Product runtime NOT_RUN."
-  },
-  {
-    "feature_id": "bitfield_flags_specialization_msp",
-    "display_name": "Finite-universe bitfield flags",
-    "baseline": "0.1.2-baseline.r51f3",
-    "feature_kind": "canonical_feature",
-    "authority_set": [
-      "LANGUAGE",
-      "PARSER",
-      "TYPE_SYSTEM",
-      "CHECKER",
-      "RUNTIME"
-    ],
-    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / CHECKER / RUNTIME",
-    "primary_source": "spec/language.md",
-    "trace_class": "syntax",
-    "depends_on": [
-      "bitfield_unsigned_strict_layout_msp"
-    ],
-    "artifact_trace_refs": [],
-    "normative_trace_refs": {
-      "productions": [
-        "BitfieldDecl",
-        "FlagSlotDecl"
-      ],
-      "semantic_reference_productions": [],
-      "diagnostics": [
-        "FLAGS_OPERATION_REQUIRES_SAME_NOMINAL_TYPE",
-        "FLAGS_RESULT_IS_NOT_BOOL",
-        "FLAGS_SHIFT_OPERATOR_FORBIDDEN"
-      ],
-      "predicates": [
-        "FlagsOperationAdmitted",
-        "BitfieldLayoutClosed"
-      ],
-      "examples": [
-        "EX-R51a1-FLAGS-NG-001",
-        "EX-R51a1-FLAGS-P-001",
-        "EX-R51a1-FLAGS-P-002"
-      ]
-    },
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "product_support": "NOT_RUN",
-    "production_lexer": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "formatter_lsp": "NOT_RUN",
-    "runtime_xvm": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "actual_user_team_study": "NOT_RUN",
-    "independent_conformance": "NOT_RUN",
-    "status_enum": "STABLE_DESIGN",
-    "status_display": "Stable design",
-    "language_status": "Stable design",
-    "source_activation": "none",
-    "notes": "Stable finite-universe flags specialization; same-nominal &&, ||, ^^ and ~~ return the flags type and mask to the known universe. Product implementation NOT_RUN."
   }
 ]

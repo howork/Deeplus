@@ -213,6 +213,22 @@
     },
     "product_support": {
       "const": "NOT_RUN"
+    },
+    "actor_protocol_binding_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_cardinality",
+        "source_or_import_order_winner_count",
+        "mir_selector_lookup_count",
+        "runtime_lookup_count"
+      ],
+      "properties": {
+        "binding_cardinality": { "const": "EXACTLY_ONE" },
+        "source_or_import_order_winner_count": { "const": 0 },
+        "mir_selector_lookup_count": { "const": 0 },
+        "runtime_lookup_count": { "const": 0 }
+      }
     }
   },
   "allOf": [
@@ -457,6 +473,30 @@
           "suspension_effect": {
             "const": "NONE"
           }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "row_id": {
+            "const": "HM-LR-CALL-010"
+          }
+        },
+        "required": [
+          "row_id"
+        ]
+      },
+      "then": {
+        "required": [
+          "actor_protocol_binding_projection"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "actor_protocol_binding_projection"
+          ]
         }
       }
     }
@@ -982,7 +1022,8 @@
             "ON_ERROR",
             "ON_DEFECT",
             "ON_CANCEL",
-            "ON_SUSPEND"
+            "ON_SUSPEND",
+            "ALWAYS_AFTER_EXACT_ACTOR_PROTOCOL_BINDING"
           ]
         }
       }

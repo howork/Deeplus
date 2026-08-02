@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 57,
+  "law_count": 58,
   "laws": [
     {
       "id": "DSGN-CURRENT-R25-R27-FRONTEND-TRACE-DIAGNOSTIC-GRAMMAR-TOPOLOGY-PUBLICATION-CLOSURE",
@@ -33,7 +33,7 @@
     },
     {
       "id": "DSGN-CURRENT-CST-AST-GRAMMAR-NORMALIZATION",
-      "law": "Every one of the exact 638 Grammar productions has exactly one canonical disposition. Lossless CST retains tokens, trivia, recovery residue and production ownership; normalization to canonical AST is deterministic and receipt-bound; recovery nodes never enter canonical AST or HIR.",
+      "law": "Every one of the exact 643 Grammar productions has exactly one canonical disposition. Lossless CST retains tokens, trivia, recovery residue and production ownership; normalization to canonical AST is deterministic and receipt-bound; recovery nodes never enter canonical AST or HIR.",
       "status": "CURRENT",
       "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
@@ -345,6 +345,15 @@
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "Issue #28 cross-role audit; five Supp concurrency/role/shared-state reviews; decisions/language/Design_Deeplus_Owner_Roles_Concur_Run_And_Shared_State_Adoption_R1.md",
       "effective_revision": "r51f3-current-concur-role-coherence-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-ACTOR-PROTOCOL-DIRECT-CONFORMANCE",
+      "law": "An actor admits an Actor Protocol only through a repeated direct `conforms ActorProtocol` header relation and exactly one matching body-local `conform ActorProtocol { ... }` block. Every protocol `send` requirement binds to exactly one `on` handler and every protocol `request` requirement binds to exactly one `request` handler by selector, canonical parameter shape, result type, normalized error set and normalized effect row. The route is DIRECT only: structural inference, fallback, source/import-order winners, runtime lookup, VIA, AUTO and specialization are rejected. Successful binding preserves ActorProtocolConformanceId, ActorProtocolRequirementId and ActorProtocolBindingId together with ActorHandlerId for SEND or ActorRequestId for REQUEST in typed HIR and the HM-LR-CALL-010 lowering projection. One-way send and its on handler normalize to `throws Never`; an acknowledged fallible command is modeled as request returning Unit. This Stable design changes no feature P1, performs no production implementation, and leaves all 15 product lanes NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "spec/contracts/actor-protocol-direct-conformance-r1.json; schemas/language/actor-protocol-direct-conformance-descriptor.schema.json; tests/fixtures/current/actor-protocol-direct-conformance-r1.json",
+      "effective_revision": "r51f3-current-actor-protocol-direct-conformance-r1"
     },
     {
       "id": "DSGN-CURRENT-OWNER-ATTACHED-ROLE-COHERENCE",

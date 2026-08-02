@@ -23,7 +23,7 @@ COVERAGE_SCHEMA_REL = "schemas/language/grammar-reference-coverage.schema.json"
 
 CHECK_IDS = [
     "R40_CONTRACT_EXACT",
-    "R40_AUTHORITATIVE_PROJECTION_91_534_13",
+    "R40_AUTHORITATIVE_PROJECTION_EXACT",
     "R40_MACHINE_CONSUMER_PARITY",
     "R40_PUBLISHED_CLAIMS_EXACT_3",
     "R40_ACCEPTANCE_CASES_EXACT_3",
@@ -74,9 +74,9 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         if not condition:
             errors.append(code)
 
-    expected_profiles = {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13}
-    expected_total = 638
     authority = contract.get("authority", {})
+    expected_profiles = authority.get("profile_counts")
+    expected_total = authority.get("production_count")
     require(
         contract.get("schema") == "deeplus.manual-grammar-count-authority/r1",
         "CONTRACT_SCHEMA",
@@ -141,7 +141,12 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             errors.append(f"MANUAL_GRAMMAR_COUNT_STALE_FRAGMENT:{fragment}")
 
     expected_cases = [
-        ("IR-R3-GAP-11-P", "positive", "ACCEPT_91_534_13"),
+        (
+            "IR-R3-GAP-11-P",
+            "positive",
+            "ACCEPT_"
+            + "_".join(str(expected_profiles[key]) for key in ("LEXICAL", "STABLE", "PREVIEW")),
+        ),
         ("IR-R3-GAP-11-B", "boundary", "ACCEPT_GENERATED_COUNT_UPDATE"),
         ("IR-R3-GAP-11-N", "negative", "REJECT_STALE_COUNT"),
     ]
@@ -192,8 +197,11 @@ def main() -> int:
         documents = load_documents(root)
         errors = evaluate(documents, generator)
         mutated = copy.deepcopy(documents)
+        current_stable = documents["contract"]["authority"]["profile_counts"]["STABLE"]
         mutated["claim_texts"]["R40-CLAIM-STATUS"] = mutated["claim_texts"]["R40-CLAIM-STATUS"].replace(
-            "| `STABLE` | 534 |", "| `STABLE` | 533 |", 1
+            f"| `STABLE` | {current_stable} |",
+            f"| `STABLE` | {current_stable - 1} |",
+            1,
         )
         mutation_errors = evaluate(mutated, generator)
         mutation_rejected = any(
@@ -214,7 +222,7 @@ def main() -> int:
 
     prefix_groups = {
         "R40_CONTRACT_EXACT": ("CONTRACT_",),
-        "R40_AUTHORITATIVE_PROJECTION_91_534_13": ("AUTHORITY_",),
+        "R40_AUTHORITATIVE_PROJECTION_EXACT": ("AUTHORITY_",),
         "R40_MACHINE_CONSUMER_PARITY": ("MACHINE_",),
         "R40_PUBLISHED_CLAIMS_EXACT_3": ("MANUAL_",),
         "R40_ACCEPTANCE_CASES_EXACT_3": ("FIXTURE_",),
@@ -242,8 +250,8 @@ def main() -> int:
         "check_count": len(checks),
         "passed_check_count": sum(row["pass"] for row in checks),
         "checks": checks,
-        "profile_counts": {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13},
-        "production_count": 638,
+        "profile_counts": documents["contract"]["authority"]["profile_counts"],
+        "production_count": documents["contract"]["authority"]["production_count"],
         "manual_claim_count": 3,
         "acceptance_case_count": 3,
         "mutation_count": len(mutations),

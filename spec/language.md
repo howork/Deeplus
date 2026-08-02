@@ -612,6 +612,16 @@ may use `Trait::member` to identify the implemented requirement explicitly.
 This qualification chooses a requirement; it does not perform runtime lookup
 or create a second conformance.
 
+Actor Protocol conformance is a separate direct-only nominal relation. An
+Actor header may repeat `conforms Protocol` at physical line boundaries, and
+each relation owns exactly one lexical `conform Protocol { ... }` block in the
+same Actor body. That Actor-specific block contains only `on` and `request`
+handlers and cannot target an ordinary Trait; the Class/Enum Trait block cannot
+target an Actor Protocol. Lexical containment supplies the Actor target, so no
+`for Type` clause exists. Matching handler spelling outside the block creates
+no structural conformance, and the current profile admits no Actor Protocol
+`via`, `by auto`, external, runtime, specialization, or priority route.
+
 Trait requirements and concrete witnesses use exactly the witness marker set
 `.`, `+`, `*.`, and `*+`. Associated types, associated values, and associated
 non-method functions do not acquire a method marker. A conformance may bind
@@ -1319,6 +1329,30 @@ The bounded Stable `#async { ... }` lambda profile is admitted only inside a `co
 
 ## 38. Actors and messages
 
+Actor Protocol conformance is explicit and origin preserving. For each direct
+header relation, the checker interns one `ActorProtocolConformanceId`, requires
+one matching lexical block, enumerates only that Protocol's finite declared
+requirements, and binds every exact `ActorProtocolRequirementId` to exactly one
+block-local `ActorHandlerId` or `ActorRequestId` through an
+`ActorProtocolBindingId`. A `send` requirement binds only `on`; a `request`
+requirement binds only `request`. Ordered parameter channels, labels, transfer
+modes, and parameter types are exact after normalization. A request result is
+exact, while implementation ErrorSet and EffectRow may be subsets of the
+requirement rows. Zero or multiple candidates are terminal; source, import,
+provider, and runtime registration order never choose a winner. An unqualified
+actor-message selector requires one visible normalized binding, while
+`Protocol::selector` restricts the domain before the same cardinality test and
+does not create conformance.
+
+A one-way `send` requirement and its `on` implementation both normalize to
+`throws Never`: omission and explicit `throws Never` are equivalent, and a
+nonempty recoverable ErrorSet is rejected because no completion channel exists.
+When completion or a recoverable application error must be observed, the
+operation is a `request` returning `Unit`; its declared ErrorSet remains in the
+correlated `ReplyResponsibility`. Defect and lifecycle disposition stay on the
+separate Actor lifecycle axis and are not converted into a recoverable send
+error.
+
 An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. `:~` is the Stable actor-transport call mode; it statically selects an `on` or `request` operation and never falls back to an ordinary message or method. It evaluates the actor receiver and every ordinary call argument left-to-right exactly once, binds the selected formals, proves transfer and isolation, stages one compiler-internal envelope, and commits ownership plus one channel sequence only after all preconditions succeed. A precommit failure publishes no envelope or sequence and retains every sender owner. `:~` itself neither suspends nor retries. Trailing closures are separate call channels: the shared surface does not make a closure transferable. Any closure crossing actor isolation must independently satisfy capture, transfer, suspension, effect, error, and cleanup admission. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
 
 `ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way `:~` expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Reply<T>, error ActorMessageError>`; source extracts the admitted reply handle and only then applies one-shot explicit `await`. If an `on` and a `request` have the same selector and canonical call shape, the declaration, protocol composition, or link is rejected rather than using the expected result type to choose. Every successfully admitted actor request carries in typed HIR, module API digest, and MIR a non-forgeable `ReplyResponsibility` descriptor containing exactly the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, reply identity, request correlation identity, and terminal transport failure. `Reply<T>` is the only source handle for that responsibility; it neither converts to `Run<T>` nor shares a spawned run's responsibility descriptor. The module API digest records static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers rather than concrete runtime identities; each committed request obtains its distinct value-level reply and correlation identities in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Reply` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that reply handle terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family. An actor `:~` call is not admitted in `defer`, because its immediate admission result cannot be silently discarded.
@@ -1554,7 +1588,7 @@ its dependency closure atomically. It cannot select or rewrite a role, profile,
 or root. A mismatch produces no activated feature and no canonical source-unit
 AST.
 
-The exact 638 Grammar productions are bound by the canonical production-
+The exact 643 Grammar productions are bound by the canonical production-
 disposition registry. Every production has exactly one disposition: lossless
 CST-only, canonical AST node, deterministic normalization, external parser
 entry, or reject-before-AST recovery. The lossless CST preserves every source

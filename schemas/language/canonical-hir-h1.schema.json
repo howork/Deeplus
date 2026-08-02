@@ -3318,8 +3318,87 @@
         },
         "outcome_responsibility_profile_id": {
           "$ref": "#/$defs/Id"
+        },
+        "actor_id": { "$ref": "#/$defs/Id" },
+        "actor_protocol_id": { "$ref": "#/$defs/Id" },
+        "operation_kind": { "enum": ["SEND", "REQUEST"] },
+        "selector_id": { "$ref": "#/$defs/Id" },
+        "canonical_call_shape_id": { "$ref": "#/$defs/Id" },
+        "mailbox_profile_id": { "$ref": "#/$defs/Id" },
+        "argument_binding_plan": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Id" }
+        },
+        "transfer_plan": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Id" }
+        },
+        "admission_error_set": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Id" }
+        },
+        "request_responsibility_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/Id" },
+            { "type": "null" }
+          ]
+        },
+        "actor_protocol_conformance_id": { "$ref": "#/$defs/Id" },
+        "actor_protocol_requirement_id": { "$ref": "#/$defs/Id" },
+        "actor_protocol_binding_id": { "$ref": "#/$defs/Id" },
+        "actor_handler_or_request_id": { "$ref": "#/$defs/Id" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode_target_pair": {
+                "const": "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+              }
+            },
+            "required": ["mode_target_pair"]
+          },
+          "then": {
+            "required": [
+              "actor_id",
+              "actor_protocol_id",
+              "operation_kind",
+              "selector_id",
+              "canonical_call_shape_id",
+              "mailbox_profile_id",
+              "argument_binding_plan",
+              "transfer_plan",
+              "admission_error_set",
+              "request_responsibility_or_null",
+              "actor_protocol_conformance_id",
+              "actor_protocol_requirement_id",
+              "actor_protocol_binding_id",
+              "actor_handler_or_request_id"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["actor_id"] },
+                { "required": ["actor_protocol_id"] },
+                { "required": ["operation_kind"] },
+                { "required": ["selector_id"] },
+                { "required": ["canonical_call_shape_id"] },
+                { "required": ["mailbox_profile_id"] },
+                { "required": ["argument_binding_plan"] },
+                { "required": ["transfer_plan"] },
+                { "required": ["admission_error_set"] },
+                { "required": ["request_responsibility_or_null"] },
+                { "required": ["actor_protocol_conformance_id"] },
+                { "required": ["actor_protocol_requirement_id"] },
+                { "required": ["actor_protocol_binding_id"] },
+                { "required": ["actor_handler_or_request_id"] }
+              ]
+            }
+          }
         }
-      }
+      ]
     },
     "UnaryFixedOperatorId": {
       "enum": [

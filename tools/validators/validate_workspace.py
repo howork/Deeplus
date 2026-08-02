@@ -10772,7 +10772,7 @@ R26_PRIMARY_DIAGNOSTIC_CHECK_IDS = (
 )
 R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
     "R27_CONTRACT_EXACT",
-    "R27_RHS_REFERENCE_BINDING_638",
+    "R27_RHS_REFERENCE_BINDING_643",
     "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40",
     "R27_SIX_ROOT_REACHABILITY_EXACT",
     "R27_UNOWNED_ORPHAN_COUNT_ZERO",
@@ -10784,7 +10784,7 @@ R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
 )
 R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS = (
     "R40_CONTRACT_EXACT",
-    "R40_AUTHORITATIVE_PROJECTION_91_534_13",
+    "R40_AUTHORITATIVE_PROJECTION_EXACT",
     "R40_MACHINE_CONSUMER_PARITY",
     "R40_PUBLISHED_CLAIMS_EXACT_3",
     "R40_ACCEPTANCE_CASES_EXACT_3",
@@ -10792,6 +10792,19 @@ R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS = (
     "R40_NO_SOURCE_OR_FEATURE_DRIFT",
     "R40_GOVERNANCE_FENCE",
 )
+R41_ACTOR_PROTOCOL_CHECK_ID = "R41_ACTOR_PROTOCOL_DIRECT_CONFORMANCE"
+R41_ACTOR_PROTOCOL_FOCUSED_CHECKS = [
+    "contract and schema",
+    "root-connected grammar and leak closure",
+    "frontend identity residue",
+    "actor coherence binding",
+    "11 predicate fixture oracles",
+    "diagnostic and feature trace",
+    "HIR/MIR lowering residue",
+    "26 cases and 8 mutation controls",
+    "9 diagnostic mutations plus order permutation",
+    "semantic text and governance fence",
+]
 
 
 def _r5_strict_receipt_json(payload: str) -> dict[str, Any]:
@@ -11027,23 +11040,89 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         grammar_bytes = grammar_path.read_bytes()
         grammar_text = grammar_bytes.decode("utf-8")
         grammar_sha = hashlib.sha256(grammar_bytes).hexdigest()
-        without_comments = re.sub(
-            r"\(\*.*?\*\)",
-            lambda match: "\n" * match.group(0).count("\n"),
-            grammar_text,
-            flags=re.DOTALL,
-        )
-        production_matches = list(
+        output = list(grammar_text)
+        comment_depth = 0
+        quoted = False
+        escaped = False
+        index = 0
+        while index < len(grammar_text):
+            pair = grammar_text[index : index + 2]
+            char = grammar_text[index]
+            if comment_depth:
+                if pair == "(*":
+                    output[index] = output[index + 1] = " "
+                    comment_depth += 1
+                    index += 2
+                    continue
+                if pair == "*)":
+                    output[index] = output[index + 1] = " "
+                    comment_depth -= 1
+                    index += 2
+                    continue
+                if char not in "\r\n":
+                    output[index] = " "
+                index += 1
+                continue
+            if quoted:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    quoted = False
+                index += 1
+                continue
+            if char == '"':
+                quoted = True
+                index += 1
+                continue
+            if pair == "(*":
+                output[index] = output[index + 1] = " "
+                comment_depth = 1
+                index += 2
+                continue
+            index += 1
+        without_comments = "".join(output)
+        production_starts = list(
             re.finditer(
-                r"(?ms)^([A-Za-z_][A-Za-z0-9_]*)\s*::=\s*(.*?);\s*",
+                r"(?m)^([A-Za-z_][A-Za-z0-9_]*)[ \t]*::=",
                 without_comments,
             )
         )
-        production_names = [match.group(1) for match in production_matches]
-        production_rhs = {
-            match.group(1): re.sub(r"\s+", " ", match.group(2)).strip()
-            for match in production_matches
-        }
+        production_names = []
+        production_rhs: dict[str, str] = {}
+        for match_index, match in enumerate(production_starts):
+            next_start = (
+                production_starts[match_index + 1].start()
+                if match_index + 1 < len(production_starts)
+                else len(without_comments)
+            )
+            tail = without_comments[match.end() : next_start]
+            tail_quoted = False
+            tail_escaped = False
+            terminator = None
+            for offset, char in enumerate(tail):
+                if tail_quoted:
+                    if tail_escaped:
+                        tail_escaped = False
+                    elif char == "\\":
+                        tail_escaped = True
+                    elif char == '"':
+                        tail_quoted = False
+                    continue
+                if char == '"':
+                    tail_quoted = True
+                elif char == ";":
+                    terminator = offset
+                    break
+            if terminator is None:
+                raise ValueError(
+                    f"unterminated grammar production {match.group(1)}"
+                )
+            production_names.append(match.group(1))
+            production_rhs[match.group(1)] = re.sub(
+                r"\s+", " ", tail[:terminator].strip()
+            )
 
         registry = json.loads(
             (
@@ -11141,9 +11220,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
-            and len(grammar_bytes) == 66033
-            and len(production_names) == 638
+            == "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
+            and len(grammar_bytes) == 67229
+            and len(production_names) == 643
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
                 "sha256": grammar_sha,
@@ -11153,9 +11232,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         )
         emit(
             "FRONTEND_R12_DISPOSITION_TOTALITY",
-            len(production_rows) == 638
+            len(production_rows) == 643
             and [row.get("ordinal") for row in production_rows]
-            == list(range(1, 639))
+            == list(range(1, 644))
             and [row.get("production_id") for row in production_rows]
             == production_names
             and all(
@@ -11172,8 +11251,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and disposition_counts
             == Counter(
                 {
-                    "ast_node": 202,
-                    "cst_only": 407,
+                    "ast_node": 204,
+                    "cst_only": 410,
                     "external_parser_entry": 19,
                     "normalize_to": 10,
                 }
@@ -11195,7 +11274,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and contract.get("r12_cst_ast_normalization", {}).get(
                 "production_count"
             )
-            == 638,
+            == 643,
             {
                 "normalizations": len(registry.get("normalization_rules", [])),
                 "recovery_kinds": len(registry.get("recovery_kinds", [])),
@@ -11589,12 +11668,12 @@ def r27_grammar_topology_workspace_checks(
             != "R27_GRAMMAR_TOPOLOGY_CLOSURE_EXACT"
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
-            or receipt.get("production_count") != 638
-            or receipt.get("declared_reference_binding_count") != 638
+            or receipt.get("production_count") != 643
+            or receipt.get("declared_reference_binding_count") != 643
             or receipt.get("external_symbol_count") != 40
             or receipt.get("source_root_count") != 6
-            or receipt.get("six_root_union_count") != 487
-            or receipt.get("six_root_shared_count") != 460
+            or receipt.get("six_root_union_count") != 492
+            or receipt.get("six_root_shared_count") != 465
             or receipt.get("six_root_unreachable_count") != 151
             or receipt.get("aggregate_entry_root_count") != 2
             or receipt.get("unowned_orphan_count") != 0
@@ -11619,11 +11698,11 @@ def r27_grammar_topology_workspace_checks(
             return failed_rows("R27 grammar-topology receipt-contract drift")
         detail = json.dumps(
             {
-                "productions": 638,
+                "productions": 643,
                 "external_symbols": 40,
                 "source_roots": 6,
-                "six_root_union": 487,
-                "six_root_shared": 460,
+                "six_root_union": 492,
+                "six_root_shared": 465,
                 "unowned_orphans": 0,
                 "illegal_profile_edges": 0,
                 "mutations_rejected": 6,
@@ -11688,8 +11767,8 @@ def r40_manual_grammar_count_workspace_checks(
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
             or receipt.get("profile_counts")
-            != {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13}
-            or receipt.get("production_count") != 638
+            != {"LEXICAL": 91, "STABLE": 539, "PREVIEW": 13}
+            or receipt.get("production_count") != 643
             or receipt.get("manual_claim_count") != 3
             or receipt.get("acceptance_case_count") != 3
             or receipt.get("mutation_count") != 1
@@ -11715,8 +11794,8 @@ def r40_manual_grammar_count_workspace_checks(
             )
         detail = json.dumps(
             {
-                "profiles": {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13},
-                "productions": 638,
+                "profiles": {"LEXICAL": 91, "STABLE": 539, "PREVIEW": 13},
+                "productions": 643,
                 "manual_claims": 3,
                 "mutations_rejected": 1,
                 "semantic_changes": 0,
@@ -11732,6 +11811,63 @@ def r40_manual_grammar_count_workspace_checks(
         return failed_rows(
             f"R40 manual grammar-count runner integration failure: {exc}"
         )
+
+
+def r41_actor_protocol_workspace_check(root: Path) -> dict[str, Any]:
+    """Bind the focused R41 design-static receipt without product claims."""
+
+    runner = root / "tools/validators/validate_actor_protocol_direct_conformance.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                "focused validator nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            raise ValueError("focused validator emitted unexpected stderr")
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        if (
+            set(receipt)
+            != {
+                "result",
+                "checks",
+                "predicate_fixtures",
+                "acceptance_cases",
+                "mutation_oracles",
+                "diagnostics",
+                "product_support",
+            }
+            or receipt.get("result") != "PASS"
+            or receipt.get("checks") != R41_ACTOR_PROTOCOL_FOCUSED_CHECKS
+            or receipt.get("predicate_fixtures") != 11
+            or receipt.get("acceptance_cases") != 26
+            or receipt.get("mutation_oracles") != 10
+            or receipt.get("diagnostics") != 9
+            or receipt.get("product_support") != "NOT_RUN"
+        ):
+            raise ValueError("focused receipt-contract drift")
+        return {
+            "check_id": R41_ACTOR_PROTOCOL_CHECK_ID,
+            "pass": True,
+            "detail": json.dumps(receipt, ensure_ascii=False, sort_keys=True),
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": R41_ACTOR_PROTOCOL_CHECK_ID,
+            "pass": False,
+            "detail": f"R41 Actor Protocol integration failure: {exc}",
+        }
 
 
 def main() -> int:
@@ -11779,6 +11915,12 @@ def main() -> int:
     )
     for row in r40_manual_grammar_count_check_results:
         check(row["pass"], row["check_id"], row["detail"])
+    r41_actor_protocol_check_result = r41_actor_protocol_workspace_check(root)
+    check(
+        r41_actor_protocol_check_result["pass"],
+        r41_actor_protocol_check_result["check_id"],
+        r41_actor_protocol_check_result["detail"],
+    )
 
     try:
         revision = tomllib.loads(
@@ -11821,7 +11963,7 @@ def main() -> int:
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 719
                 and fixed_counts.get("predicates") == 277
-                and fixed_counts.get("predicate_fixtures") == 846
+                and fixed_counts.get("predicate_fixtures") == 855
                 and fixed_counts.get("no_go") == 155
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -11853,6 +11995,13 @@ def main() -> int:
         "spec/contracts/manual-grammar-count-authority-r1.json",
         "tests/fixtures/current/manual-grammar-count-authority-r1.json",
         "tools/validators/validate_manual_grammar_count_authority.py",
+        "schemas/language/actor-protocol-direct-conformance-descriptor.schema.json",
+        "spec/contracts/actor-protocol-direct-conformance-r1.json",
+        "tests/fixtures/current/actor-protocol-direct-conformance-r1.json",
+        "spec/diagnostics/catalog/chunks/part-0029.json",
+        "spec/diagnostics/relations/chunks/part-0009.json",
+        "tests/conformance/checker-predicates/chunks/part-0031.json",
+        "tools/validators/validate_actor_protocol_direct_conformance.py",
         "docs/tutorial/README.md",
         "docs/tutorial/SUMMARY.md",
         "docs/tutorial/coverage-manifest.json",
@@ -16712,7 +16861,7 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            57
+            58
             if revision == R11_R19_FRONTEND_REVISION
             else 46
             if revision == R10_HIR_MIR_REVISION
@@ -18371,6 +18520,10 @@ def main() -> int:
         ],
         "r40_manual_grammar_count_check_results":
             r40_manual_grammar_count_check_results,
+        "r41_actor_protocol_check_scope":
+            "R41_ACTOR_PROTOCOL_DIRECT_CONFORMANCE_EXACT",
+        "r41_actor_protocol_check_result":
+            r41_actor_protocol_check_result,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,

@@ -200,6 +200,11 @@ INSTALLED_OVERRIDE_IDS = [
     *OWNERSHIP_OVERRIDE_IDS,
     *R9_DIAGNOSTIC_OVERRIDE_IDS,
 ]
+R41_ACTOR_PROTOCOL_OVERRIDE_IDS = ["ActorProtocolGateAdmitted"]
+R41_INSTALLED_OVERRIDE_IDS = [
+    *INSTALLED_OVERRIDE_IDS,
+    *R41_ACTOR_PROTOCOL_OVERRIDE_IDS,
+]
 # Historical authoring-bundle checks still bind the original three ownership
 # overrides. Installed-current checks below bind all six exact overrides.
 OVERRIDE_IDS = OWNERSHIP_OVERRIDE_IDS
@@ -1055,7 +1060,12 @@ def _check_hir_h1_fence(
             errors.append(f"{relative}: missing or nonregular")
             continue
         observed[relative] = _sha256(path.read_bytes())
-        if observed[relative] != expected_sha256:
+        active_expected_sha256 = (
+            R41_HIR_H1_BRIDGE_SHA256
+            if relative == "spec/contracts/hir-h1-current-mir-bridge.json"
+            else expected_sha256
+        )
+        if observed[relative] != active_expected_sha256:
             errors.append(f"{relative}: byte fence mismatch")
     fixture_path = (
         environment.root
@@ -2344,6 +2354,12 @@ R8_REASSEMBLY = "migration/catalog-reassembly.json"
 R8_GRAMMAR_SHA256 = (
     "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
 )
+R41_GRAMMAR_SHA256 = (
+    "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
+)
+R41_HIR_H1_BRIDGE_SHA256 = (
+    "6823b757662b3b6144a7f360d5e792e2f20647feb1753a3dfe057338b54464f6"
+)
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
 )
@@ -2369,6 +2385,10 @@ R8_014_BYTE_FENCE = {
         "062a32da9dad1f5c6481a83963ad1b1f0b713636b7ed11b283b4312973fa399e",
     ),
 }
+R41_014_RELATION_PART_0001_FENCE = (
+    61154,
+    "b017b716e38901919505985a2e293d6ed385cbcf63cef50965bf387dc2d96790",
+)
 R8_014_EXACT_MUTATION_PROBES = [
     {
         "mutation_id": (
@@ -3304,7 +3324,7 @@ def _check_context_exact_7(
         (
             grammar_path.is_file()
             and not grammar_path.is_symlink()
-            and _sha256(grammar_path.read_bytes()) == R8_GRAMMAR_SHA256,
+            and _sha256(grammar_path.read_bytes()) == R41_GRAMMAR_SHA256,
             "grammar byte fence changed",
         ),
         (
@@ -3397,6 +3417,13 @@ def _check_overrides_exact_3(
             "diagnostic-dispatch-closure-input-r1.schema.json"
         ),
     }
+    actor_protocol_expected_row = {
+        "input_descriptor": "ActorProtocolDirectConformanceDescriptorR1",
+        "input_descriptor_schema": (
+            "schemas/language/"
+            "actor-protocol-direct-conformance-descriptor.schema.json"
+        ),
+    }
     expected_rows = {
         **{
             predicate_id: ownership_expected_row
@@ -3405,6 +3432,10 @@ def _check_overrides_exact_3(
         **{
             predicate_id: diagnostic_expected_row
             for predicate_id in R9_DIAGNOSTIC_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: actor_protocol_expected_row
+            for predicate_id in R41_ACTOR_PROTOCOL_OVERRIDE_IDS
         },
     }
     overrides = metadata.get("input_descriptor_overrides")
@@ -3415,7 +3446,7 @@ def _check_overrides_exact_3(
             predicate_id,
             "predicate catalog",
         )
-        for predicate_id in INSTALLED_OVERRIDE_IDS
+        for predicate_id in R41_INSTALLED_OVERRIDE_IDS
     }
     checker_schema = (
         environment.root
@@ -3473,10 +3504,11 @@ def _check_overrides_exact_3(
         ),
         (
             isinstance(overrides, dict)
-            and list(overrides) == INSTALLED_OVERRIDE_IDS
+            and list(overrides) == R41_INSTALLED_OVERRIDE_IDS
             and overrides == expected_rows
-            and metadata.get("override_count") == 6,
-            "installed predicate metadata override set is not exact six",
+            and metadata.get("override_count")
+            == len(R41_INSTALLED_OVERRIDE_IDS),
+            "installed predicate metadata override set is not exact R41",
         ),
         (
             all(
@@ -3562,9 +3594,9 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1443
-            and relation_metadata_doc.value.get("relation_count") == 559,
-            "diagnostic/relation canonical counts changed",
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1452
+            and relation_metadata_doc.value.get("relation_count") == 568,
+            "diagnostic/relation canonical counts are not exact R41",
         ),
         (
             set(active_diagnostics)
@@ -3640,7 +3672,7 @@ def _check_overrides_exact_3(
             reassembly_doc.locator,
         ],
         "canonical_implementation_validation": True,
-        "expected_override_ids": INSTALLED_OVERRIDE_IDS,
+        "expected_override_ids": R41_INSTALLED_OVERRIDE_IDS,
         "observed_override_ids": (
             list(overrides) if isinstance(overrides, dict) else None
         ),
@@ -3816,12 +3848,18 @@ def _check_reason_routes(
     for relative, (expected_bytes, expected_sha256) in (
         R8_014_BYTE_FENCE.items()
     ):
+        active_expected = (
+            R41_014_RELATION_PART_0001_FENCE
+            if relative
+            == "spec/diagnostics/relations/chunks/part-0001.json"
+            else (expected_bytes, expected_sha256)
+        )
         path = environment.root / relative
         if (
             not path.is_file()
             or path.is_symlink()
-            or path.stat().st_size != expected_bytes
-            or _sha256(path.read_bytes()) != expected_sha256
+            or path.stat().st_size != active_expected[0]
+            or _sha256(path.read_bytes()) != active_expected[1]
         ):
             byte_fence_errors.append(relative)
     escape_canonical_errors = _r8_byte_fence_errors(

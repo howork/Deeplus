@@ -526,6 +526,7 @@ def check_schema_and_bindings(
         "capability_gate_contract",
         "rows",
         "status_fence",
+        "actor_protocol_binding_contract",
     }
     report.require(
         set(registry) == expected_top_keys,

@@ -3,13 +3,53 @@
     "fixture_id": "PF-ActorProtocolGateAdmitted-NEG",
     "predicate_id": "ActorProtocolGateAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "ActorProtocolGateAdmitted"
+    "diagnostic_disposition": "active_expected",
+    "fixture_kind": "concrete_negative",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 0,
+      "matching_block_count": 0,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
     },
-    "fixture_kind": "mutation_recipe",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -29,56 +69,60 @@
       }
     },
     "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "expected_primary_diagnostic": "ACTOR_PROTOCOL_CONFORMANCE_REQUIRED"
   },
   {
     "fixture_id": "PF-ActorProtocolGateAdmitted-POS",
     "predicate_id": "ActorProtocolGateAdmitted",
     "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "none",
     "fixture_kind": "concrete_positive",
+    "descriptor": {
+      "schema": "deeplus.actor-protocol-direct-conformance-descriptor/r1",
+      "actor_id": "A",
+      "protocol_id": "P",
+      "target_kind": "ACTOR_PROTOCOL",
+      "route": "DIRECT",
+      "header_relation_count": 1,
+      "matching_block_count": 1,
+      "requirements": [
+        {
+          "requirement_id": "P::ping",
+          "origin_protocol_id": "P",
+          "kind": "SEND",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "implementations": [
+        {
+          "implementation_id": "A::P::ping::1",
+          "block_protocol_id": "P",
+          "kind": "ON",
+          "selector": "ping",
+          "parameters": [],
+          "result_type_or_null": null,
+          "normalized_error_set": [],
+          "normalized_effect_row": []
+        }
+      ],
+      "selection": {
+        "qualification_protocol_id_or_null": "P",
+        "visible_binding_ids": [
+          "A::P::ping"
+        ]
+      },
+      "order_evidence": {
+        "source_order_winner_count": 0,
+        "import_order_winner_count": 0,
+        "runtime_lookup_count": 0
+      }
+    },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -1856,36 +1900,6 @@
     "fixture_kind": "concrete_negative",
     "expected_primary_diagnostic": "AUTHORITY_TOKEN_NOT_IN_SCOPE",
     "violated_condition": "local rule of AuthorityRelationAdmitted",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-AuthorityRelationAdmitted-POS",
-    "predicate_id": "AuthorityRelationAdmitted",
-    "expected": "admitted",
-    "descriptor": {},
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-AuthorityRelationAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "rule_seed": "R51a1 AuthorityRelationAdmitted discriminating design fixture; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "active design algorithm",
-    "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }

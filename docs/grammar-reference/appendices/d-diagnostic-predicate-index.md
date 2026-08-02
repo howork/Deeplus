@@ -15,6 +15,15 @@
 | `ACTOR_CHANNEL_FIFO_ORDER_VIOLATION` | `runtime` | `error` | `active` | Actor dequeue order does not preserve channel_sequence within one sender/receiver/mailbox-profile channel. |
 | `ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT` | `checker` | `error` | `active` | actor mailbox capacity must be a statically known positive integer in the minimum profile. |
 | `ACTOR_OPERATION_KIND_COLLISION` | `checker` | `error` | `active` | Actor on and request operations cannot share the same selector and canonical call shape. |
+| `ACTOR_PROTOCOL_CONFORMANCE_REQUIRED` | `checker` | `error` | `active` | A protocol handler or protocol-qualified selection has no matching explicit Actor conformance relation. |
+| `ACTOR_PROTOCOL_CONFORM_BLOCK_OWNER_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conform block must have exactly one matching relation on its lexical Actor owner. |
+| `ACTOR_PROTOCOL_IMPLEMENTATION_AMBIGUOUS` | `checker` | `error` | `active` | Actor-message selection found more than one visible compatible protocol binding. |
+| `ACTOR_PROTOCOL_IMPLEMENTATION_KIND_MISMATCH` | `checker` | `error` | `active` | A send requirement must bind on and a request requirement must bind request. |
+| `ACTOR_PROTOCOL_REQUIREMENT_DUPLICATE` | `checker` | `error` | `active` | An Actor protocol requirement or matching lexical implementation is duplicated in one conformance relation. |
+| `ACTOR_PROTOCOL_REQUIREMENT_UNIMPLEMENTED` | `checker` | `error` | `active` | An explicit Actor protocol conformance has no implementation for a required operation. |
+| `ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN` | `checker` | `error` | `active` | A one-way send/on operation cannot declare a recoverable ErrorSet; use request returning Unit for an acknowledged fallible command. |
+| `ACTOR_PROTOCOL_SIGNATURE_MISMATCH` | `checker` | `error` | `active` | The Actor protocol implementation is incompatible with the requirement's normalized channels, result, ErrorSet, or EffectRow. |
+| `ACTOR_PROTOCOL_TARGET_KIND_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conformance target must resolve to an Actor Protocol. |
 | `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
 | `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `checker` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
 | `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` | `checker` | `error` | `active` | An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress. |
@@ -1264,7 +1273,7 @@
 
 | 술어 ID | 원천 이름 | 요약 | 증거 |
 |---|---|---|---|
-| `ActorProtocolGateAdmitted` | Actor protocol | Current actor protocol and message-admission design predicate; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ActorProtocolGateAdmitted` | Actor Protocol direct conformance | Admit one explicit direct Actor-to-ActorProtocol relation and bind every exact requirement origin to exactly one compatible block-local on/request implementation without structural or order-based fallback. | `DESIGN_STATIC_NOT_RUN` |
 | `AllNamedArgumentLayoutOnlyAllNamed` | AllNamedArgumentLayoutOnlyAllNamed | the layout has at least two arguments; every argument is named or named-unfold; no positional, context, or witness argument occurs | `DESIGN_STATIC_NOT_RUN` |
 | `ApiContractDigestProjection` | ApiContractDigestProjection | Project normalized public type and responsibility data into a deterministic API digest. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AsQueryReturnsOption` | AsQueryReturnsOption | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |

@@ -498,10 +498,11 @@ ConformanceBody ::= "{" ConformanceItem* "}" ;
 ConformanceMethodDecl ::= MemberVisibility? DefIntroducer ConformanceMethodName
                           TraitWitnessMarker FunctionRest ;
 ConformanceMethodName ::= Identifier | QualifiedTypeReference "::" Identifier ;
-(* A conform block is admitted only as a ClassBody or EnumBody item. The
-   lexically enclosing nominal declaration is the target and must already
+(* This Trait conform block is admitted only as a ClassBody or EnumBody item.
+   The lexically enclosing nominal declaration is the target and must already
    carry a matching `conforms Trait` header clause; there is deliberately no
-   `for Type` production. *)
+   `for Type` production. Actor Protocol conformance owns the separate
+   ActorProtocolConformBlock production below. *)
 ConformBlockDecl ::= "conform" QualifiedTypeReference ConformanceBody ;
 ConformanceItem ::= ConformanceMethodDecl
                   | TypeSideMemberFunctionDecl
@@ -569,12 +570,34 @@ NamedEffectCapabilityDecl ::= TopLevelVisibility? "capability" Identifier "for" 
 
 (* ---------- Actors and actor protocols ---------- *)
 
-ActorDecl ::= TopLevelVisibility? "actor" MailboxClause? Identifier ActorBody ;
+ActorDecl ::= TopLevelVisibility? "actor" MailboxClause? Identifier
+              ActorProtocolConformanceClause* ActorBody ;
 MailboxClause ::= HashTag "(" "capacity" ":" StaticIntLiteral ")" ;
 ActorBody ::= "{" ActorItem* "}" ;
-ActorItem ::= ActorOnDecl | ActorRequestDecl | MemberDecl ;
+ActorProtocolConformanceClause ::= LineBreakBoundary "conforms" QualifiedTypeReference
+                                   WhereClause? ;
+ActorItem ::= ActorOnDecl
+            | ActorRequestDecl
+            | ActorMemberDecl
+            | ActorProtocolConformBlock ;
+ActorMemberDecl ::= FieldDecl
+                  | MemberFunctionDecl
+                  | ConstructorDecl
+                  | CleanupDecl
+                  | TypeSideFieldDecl
+                  | TypeSideMemberFunctionDecl
+                  | AccessorPropertyDecl
+                  | ForwardDecl ;
 ActorOnDecl ::= MemberVisibility? "on" Identifier ParameterList? ThrowsClause* EffectsClause* FunctionBody ;
 ActorRequestDecl ::= MemberVisibility? "request" Identifier ParameterList? ReturnClause ThrowsClause* EffectsClause* FunctionBody ;
+
+(* An Actor Protocol block is direct-only in the current profile. Its lexical
+   Actor must carry exactly one matching ActorProtocolConformanceClause. The
+   target must resolve to ActorProtocolId, not TraitId, and no `for`, `via`,
+   `by auto`, structural, external, or runtime-attachment route is admitted. *)
+ActorProtocolConformBlock ::= "conform" QualifiedTypeReference ActorProtocolConformanceBody ;
+ActorProtocolConformanceBody ::= "{" ActorProtocolConformanceItem* "}" ;
+ActorProtocolConformanceItem ::= ActorOnDecl | ActorRequestDecl ;
 
 ActorProtocolDecl ::= TopLevelVisibility? "protocol" Identifier ActorProtocolBody ;
 ActorProtocolBody ::= "{" ActorProtocolItem* "}" ;
