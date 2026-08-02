@@ -1,0 +1,46 @@
+{
+  "schema": "deeplus.manual-grammar-count-authority-fixtures/r1",
+  "contract": "spec/contracts/manual-grammar-count-authority-r1.json",
+  "acceptance_cases": [
+    {
+      "test_id": "IR-R3-GAP-11-P",
+      "kind": "positive",
+      "scenario": "project the extracted 91 LEXICAL, 534 STABLE, and 13 PREVIEW productions as total 638 into every declared manual claim",
+      "expected_outcome": "ACCEPT_91_534_13"
+    },
+    {
+      "test_id": "IR-R3-GAP-11-B",
+      "kind": "boundary",
+      "scenario": "synthetically add one STABLE production and update all declared consumers atomically to 91, 535, 13, total 639",
+      "expected_outcome": "ACCEPT_GENERATED_COUNT_UPDATE"
+    },
+    {
+      "test_id": "IR-R3-GAP-11-N",
+      "kind": "negative",
+      "scenario": "leave one declared manual claim at a stale 562, 578, or 620-era projection",
+      "expected_outcome": "REJECT_STALE_COUNT"
+    }
+  ],
+  "mutation_specs": [
+    {
+      "mutation_id": "R40-MUT-001",
+      "target_claim_id": "R40-CLAIM-STATUS",
+      "change": "replace the published STABLE count 534 with stale value 533",
+      "expected_error_prefix": "MANUAL_GRAMMAR_COUNT_CLAIM_STALE"
+    }
+  ],
+  "acceptance": {
+    "case_count": 3,
+    "mutation_count": 1,
+    "manual_claim_count": 3,
+    "profile_counts": {
+      "LEXICAL": 91,
+      "STABLE": 534,
+      "PREVIEW": 13
+    },
+    "production_count": 638,
+    "semantic_change_count": 0,
+    "grammar_production_change_count": 0,
+    "product_execution": "NOT_RUN"
+  }
+}
