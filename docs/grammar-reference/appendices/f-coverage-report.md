@@ -1,7 +1,7 @@
 <!-- tools/generators/generate_grammar_reference.py가 생성함; 직접 수정하지 마십시오. -->
 # 부록 F — 커버리지 보고서
 
-- 리비전: `r51f3-current-actor-protocol-direct-conformance-r1`
+- 리비전: `r51f3-current-actor-protocol-binding-descriptor-r1`
 - 투영 상태: `CURRENT_CANONICAL_DOCUMENTATION_PROJECTION`
 - 의미론 권위: `false`
 - 제품 지원: `NOT_RUN`
@@ -36,7 +36,7 @@
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `6b7d2db6e3110667a4d431889245e94a1195afd9d34ee751a38e936ad314be5d` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `56f42fd6b7668c6cdd13c5461d8d51401e38b80474761b6b3209420dd9cd0c27` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `874fb57016634f7a6bc1f86fbd52b318b1cc87338d506f52a0ff7f446c23a5f0` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `8dea136713ba07bc09b2c1c64db236b20c353f04349bf70be57cb15bde210c09` |
 | `type_system` | `spec/types/type-system.md` | `b2ff2052b203d2df426ffcdae54e64f7acbf06835fbd90024d08232b945262d9` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `0d66bcc5b85232082a4478f1f5217487270b04d6054cccf856f4367058a991cf` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `e68a4237fd8e231ce74601295e5cb9975fc60afa03bbe81500e5368183d96efe` |
@@ -48,5 +48,5 @@
 | `enum_derived_capabilities` | `spec/contracts/enum-derived-capabilities.json` | `3cd9f28d0483090d6558e24ce7f50fc0d0dbdb2299ad4d0b3ff51d0a035cfe39` |
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `4327168a3dc9d79391237b20af8d8ac48d4c11b50803a129a8b6534187026366` |
 | `prelude` | `library/prelude/prelude.md` | `699f06e8ce8a367b108f08d51060d01b41e69318a867f2eb15ce655735ce9c41` |
-| `current_decisions` | `decisions/language/current-decisions.json` | `6d8011e3e2654ee9a1f04a405166f75011cfff1686244d92a250b4a92d98bc69` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `fcca8c6ebc538878cffb2e011ac681b24f4e13b29e5216e409a7173bb953b9b2` |
+| `current_decisions` | `decisions/language/current-decisions.json` | `1983c97c46e50f228c5af14ce6fa233420636e466b85519647660140d25cb632` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `b567284afb2156d6a5ba30404f2e56f6c4dcafaacafd95217cbb7d43507448e6` |

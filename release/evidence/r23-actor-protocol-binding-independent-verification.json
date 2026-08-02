@@ -1,0 +1,50 @@
+{
+  "schema": "deeplus.r23-actor-protocol-binding-independent-verification/v1",
+  "recorded_at": "2026-08-02T13:55:37+09:00",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_merge_commit": "b4a4ff8fa183c65577b18e6b7001c4ccab52befa",
+  "scope": "READ_ONLY_DESIGN_STATIC_REVIEW",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "review_results": [
+    {
+      "review": "IR_BACKEND_TRACEABILITY",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "Canonical R41 remains the sole source of ActorProtocolConformanceId, ActorProtocolRequirementId, ActorProtocolBindingId, and SEND_TO_ON or REQUEST_TO_REQUEST mapping.",
+        "ActorProtocolBindingId remains the stable requirement-slot identity; implementation content changes only row and table digests.",
+        "MIR preserves the complete R41 tuple and permits only backend-private post-verification slot or address projection."
+      ]
+    },
+    {
+      "review": "RUNTIME_MEMORY_AND_ARTIFACT_SOUNDNESS",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "The successor artifact profile avoids changing legacy R4 bytes under the old profile.",
+        "Executable projection uses ExecutableImageId and exactly one receipt-bound origin per table.",
+        "Send, request, admission Error, Cancellation, Defect, reply responsibility, and concrete runtime identity axes remain separated."
+      ]
+    },
+    {
+      "review": "VALIDATION_AND_REBASE",
+      "verdict": "PASS",
+      "observations": [
+        "Focused descriptor validation passes 55 of 55 checks.",
+        "The legacy module baseline passes and all 73 mutations are rejected.",
+        "The final semantic source manifest binds 729 files and the workspace passes 6129 of 6129 checks."
+      ]
+    },
+    {
+      "review": "PROMOTION_AND_PUBLICATION_BOUNDARY",
+      "verdict": "TWO_STAGE_PUBLICATION_REQUIRED_AND_FOLLOWED",
+      "observations": [
+        "Semantic PR #61 was merged and read back before this closure candidate was created.",
+        "IR-ACTOR-P1-006 remains INTEGRATED_UNVERIFIED until closure merge readback.",
+        "The pointer binds the semantic merge commit and does not predict the closure merge commit."
+      ]
+    }
+  ],
+  "canonical_source_mutation_by_independent_review": 0,
+  "github_mutation_by_independent_review": 0,
+  "product_execution": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+}

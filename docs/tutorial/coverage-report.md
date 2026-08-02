@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-actor-protocol-direct-conformance-r1`
+- revision: `r51f3-current-actor-protocol-binding-descriptor-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -14,8 +14,8 @@
 - Deeplus 코드 블록: 367
 - 연습 prompt 표식: 261
 - 로컬 링크 오류: 0
-- contract SHA-256: `89f20fe5a45146d7200fb61b9d58e138b64085e7f5bba27c4904e6013ae77856`
-- coverage schema SHA-256: `f63c82a61d1214720bfbff9082f6e43c13247c6e973d21925c9b66587a515efd`
+- contract SHA-256: `769dbdf9dc8e400c8e1351d02c14303bb092ad0890950963d1fb4e29c94441e6`
+- coverage schema SHA-256: `75dde626d2efbc619d3bad37428d43eec79ec8f0c35c7315fd500c133559841d`
 
 ## authority 울타리
 

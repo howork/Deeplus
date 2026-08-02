@@ -27,9 +27,13 @@ R11_R19_FRONTEND_REVISION = "r51f3-current-frontend-readiness-r11-r19-r1"
 R41_ACTOR_PROTOCOL_REVISION = (
     "r51f3-current-actor-protocol-direct-conformance-r1"
 )
+R23_ACTOR_PROTOCOL_BINDING_REVISION = (
+    "r51f3-current-actor-protocol-binding-descriptor-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
+    R23_ACTOR_PROTOCOL_BINDING_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -54,7 +58,10 @@ R25_R27_SEMANTIC_PUBLICATION_TREE = "7118be15102e259d916874612423fa208e8e2c5b"
 R41_SEMANTIC_SOURCE_COMMIT = "f9530ba7672172253a7ebe1bfdfcbe3dd4403a0a"
 R41_SEMANTIC_PUBLICATION_COMMIT = "fae105020a7b1ebc32a8fe85e80412d8ea10a803"
 R41_SEMANTIC_PUBLICATION_TREE = "d949864bf9500ac6c7d40b81e5b56848517bad15"
-CURRENT_PUBLICATION_TARGET_COMMIT = R41_SEMANTIC_PUBLICATION_COMMIT
+R23_SEMANTIC_SOURCE_COMMIT = "212dd8c0b8ac1541d89ec0f8d4f555fc04fe00c6"
+R23_SEMANTIC_PUBLICATION_COMMIT = "b4a4ff8fa183c65577b18e6b7001c4ccab52befa"
+R23_SEMANTIC_PUBLICATION_TREE = "bf273631afecdbe68e86a264d0e1a01e27229fe7"
+CURRENT_PUBLICATION_TARGET_COMMIT = R23_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -309,6 +316,23 @@ R41_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-ACTOR-P0-004",
     "IR-ACTOR-P1-003",
 ]
+R23_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R43_R23_Actor_Protocol_Binding_Descriptor_"
+    "Publication_Closure_R1.md"
+)
+R23_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r23-actor-protocol-binding-publication-closure-receipt.json"
+)
+R23_INDEPENDENT_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r23-actor-protocol-binding-independent-verification.json"
+)
+R23_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R43-R23-ACTOR-PROTOCOL-BINDING-PUBLICATION-CLOSURE"
+)
+R23_PUBLICATION_CLOSURE_GAP_IDS = ["IR-ACTOR-P1-006"]
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
     "IR-RES-P0-041",
@@ -15773,7 +15797,14 @@ def main() -> int:
         else []
     ) + (
         [R41_PUBLICATION_CLOSURE_REPORT]
-        if revision == R41_ACTOR_PROTOCOL_REVISION
+        if revision in {
+            R41_ACTOR_PROTOCOL_REVISION,
+            R23_ACTOR_PROTOCOL_BINDING_REVISION,
+        }
+        else []
+    ) + (
+        [R23_PUBLICATION_CLOSURE_REPORT]
+        if revision == R23_ACTOR_PROTOCOL_BINDING_REVISION
         else []
     )
     check(
@@ -17085,6 +17116,158 @@ def main() -> int:
             }
         ),
     )
+    r23_report_path = root / R23_PUBLICATION_CLOSURE_REPORT
+    r23_receipt_path = root / R23_PUBLICATION_CLOSURE_RECEIPT
+    r23_independent_path = root / R23_INDEPENDENT_VERIFICATION_RECEIPT
+    r23_receipt = parsed.get(r23_receipt_path, {})
+    r23_semantic_publication = r23_receipt.get(
+        "semantic_publication", {}
+    )
+    r23_pr_ci = r23_receipt.get("semantic_pr_github_ci", [])
+    r23_main_ci = r23_receipt.get("semantic_merge_main_ci", [])
+    r23_validation = r23_receipt.get("semantic_validation", {})
+    r23_gap_transition = r23_receipt.get("gap_transition", {})
+    r23_governance = r23_receipt.get("governance", {})
+    r23_pointer_target = r23_receipt.get("pointer_target", {})
+    r23_independent = parsed.get(r23_independent_path, {})
+    check(
+        r23_report_path.is_file()
+        and r23_receipt_path.is_file()
+        and r23_independent_path.is_file()
+        and r23_receipt.get("schema")
+        == (
+            "deeplus.r23-actor-protocol-binding-"
+            "publication-closure-receipt/v1"
+        )
+        and r23_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r23_receipt.get("repository")
+        == "https://github.com/howork/Deeplus.git"
+        and r23_semantic_publication
+        == {
+            "pull_request": 61,
+            "url": "https://github.com/howork/Deeplus/pull/61",
+            "branch": "codex/r43-actor-protocol-binding-rebase",
+            "source_commit": R23_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": R23_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": R23_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R23_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "53bbc11cf4b4b5980ae07c04f97a41d7bdd12012",
+                R23_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-02T04:53:26Z",
+            "post_merge_readback": "PASS",
+        }
+        and len(r23_pr_ci) == 2
+        and {row.get("workflow") for row in r23_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R23_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r23_pr_ci
+        )
+        and len(r23_main_ci) == 2
+        and {row.get("workflow") for row in r23_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R23_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r23_main_ci
+        )
+        and r23_receipt.get("closure_pr_evidence")
+        == {
+            "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+            "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        },
+        "R23_PUBLICATION_CLOSURE_IDENTITY",
+        repr(
+            {
+                "semantic_publication": r23_semantic_publication,
+                "semantic_pr_github_ci": r23_pr_ci,
+                "semantic_merge_main_ci": r23_main_ci,
+            }
+        ),
+    )
+    check(
+        r23_validation.get("change_scope")
+        == {
+            "changed_file_count": 23,
+            "production_crate_change_count": 0,
+            "grammar_production_change_count": 0,
+            "source_spelling_change_count": 0,
+            "semantic_change_count": 1,
+            "new_diagnostic_id_count": 0,
+        }
+        and r23_validation.get("focused", {}).get(
+            "actor_protocol_binding_checks"
+        ) == "55_OF_55_PASS"
+        and r23_validation.get("focused", {}).get(
+            "legacy_module_mutations"
+        ) == "73_OF_73_REJECTED"
+        and r23_validation.get("workspace", {}).get("result") == "PASS"
+        and r23_validation.get("workspace", {}).get("checks")
+        == "6129_OF_6129_PASS"
+        and r23_validation.get("source_manifest", {}).get(
+            "file_count_excluding_manifest"
+        ) == 729
+        and r23_validation.get("source_manifest", {}).get("tree_sha256")
+        == "4c6a2e9ee6ca8193e96d796a7b509c57ea03a99bcac3600e711657bf14ec0107"
+        and r23_validation.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r23_validation.get("production_execution") == "NOT_RUN"
+        and r23_gap_transition
+        == {
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "transition_candidate_count": 1,
+            "closed_count_before_closure_readback": 0,
+            "eligible_closed_count_after_readback": 1,
+            "gap_ids": R23_PUBLICATION_CLOSURE_GAP_IDS,
+        }
+        and r23_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "candidate_binding": False,
+            "source_snapshot": None,
+            "closed_by_candidate": 0,
+            "new_feature_p1": 0,
+        }
+        and r23_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "revision": R23_ACTOR_PROTOCOL_BINDING_REVISION,
+            "semantic_merge_commit": R23_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit":
+                "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r23_independent.get("schema")
+        == (
+            "deeplus.r23-actor-protocol-binding-"
+            "independent-verification/v1"
+        )
+        and r23_independent.get("semantic_merge_commit")
+        == R23_SEMANTIC_PUBLICATION_COMMIT
+        and r23_independent.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r23_independent.get("product_execution") == "NOT_RUN"
+        and r23_independent.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R23_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "validation": r23_validation,
+                "gap_transition": r23_gap_transition,
+                "governance": r23_governance,
+                "pointer_target": r23_pointer_target,
+                "independent": r23_independent,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -17104,6 +17287,33 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R41_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    r23_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R23_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(r23_closure_laws) == 1
+        and r23_closure_laws[0].get("status") == "CURRENT"
+        and r23_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and r23_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and r23_closure_laws[0].get("effective_revision")
+        == R23_ACTOR_PROTOCOL_BINDING_REVISION
+        and R23_PUBLICATION_CLOSURE_REPORT
+        in r23_closure_laws[0].get("source_evidence", "")
+        and R23_PUBLICATION_CLOSURE_RECEIPT
+        in r23_closure_laws[0].get("source_evidence", "")
+        and R23_INDEPENDENT_VERIFICATION_RECEIPT
+        in r23_closure_laws[0].get("source_evidence", "")
+        and all(
+            gap_id in r23_closure_laws[0].get("law", "")
+            for gap_id in R23_PUBLICATION_CLOSURE_GAP_IDS
+        ),
+        "R23_PUBLICATION_CLOSURE_DECISION",
+        repr(r23_closure_laws),
+    )
     check(
         len(r41_closure_laws) == 1
         and r41_closure_laws[0].get("status") == "CURRENT"
@@ -17149,7 +17359,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            59
+            60
+            if revision == R23_ACTOR_PROTOCOL_BINDING_REVISION
+            else 59
             if revision == R41_ACTOR_PROTOCOL_REVISION
             else 58
             if revision == R11_R19_FRONTEND_REVISION
@@ -17976,7 +18188,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R41_ACTOR_PROTOCOL_REVISION:
+        if revision == R23_ACTOR_PROTOCOL_BINDING_REVISION:
+            expected_predecessor = R41_ACTOR_PROTOCOL_REVISION
+        elif revision == R41_ACTOR_PROTOCOL_REVISION:
             expected_predecessor = R11_R19_FRONTEND_REVISION
         elif revision == R11_R19_FRONTEND_REVISION:
             expected_predecessor = R10_HIR_MIR_REVISION
