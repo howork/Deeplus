@@ -1,0 +1,41 @@
+{
+  "schema": "deeplus.r46-managed-root-runtime-fusion-independent-verification/v1",
+  "recorded_at": "2026-08-03T04:04:10+09:00",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_merge_commit": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
+  "scope": "READ_ONLY_DESIGN_STATIC_REVIEW",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "review_results": [
+    {
+      "review": "RUNTIME_HELPER_TRUTH_AND_IDENTITY",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "All normative, explanatory, and machine-readable surfaces bind 22 base helpers plus three conditionally admitted managed-memory helpers.",
+        "Continuation, managed-reference, helper-registry, and runtime-ABI digests are exact and remain in their declared hash domains.",
+        "No unbound, excluded, 16-helper, or 17-helper current-authority claim remains in reviewed current surfaces."
+      ]
+    },
+    {
+      "review": "CI_ISOLATION_AND_EXPORT_VALIDATION",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "Git worktrees retain the exact ancestry check.",
+        "Git-less clean exports bind required files and validator bytes to the source manifest without fabricating commit ancestry.",
+        "The isolated failure matrix passed 7 of 7 cases."
+      ]
+    },
+    {
+      "review": "PROMOTION_AND_PUBLICATION_BOUNDARY",
+      "verdict": "TWO_STAGE_PUBLICATION_REQUIRED_AND_FOLLOWED",
+      "observations": [
+        "Semantic PR #63 was merged and read back before this closure candidate was created.",
+        "The three gaps remain INTEGRATED_UNVERIFIED until closure merge readback.",
+        "The pointer binds the semantic merge commit and does not predict the closure merge commit."
+      ]
+    }
+  ],
+  "canonical_source_mutation_by_independent_review": 0,
+  "github_mutation_by_independent_review": 0,
+  "product_execution": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+}
