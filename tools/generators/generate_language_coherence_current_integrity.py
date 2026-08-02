@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-actor-protocol-binding-descriptor-r1"
-PREVIOUS_REVISION = "r51f3-current-actor-protocol-direct-conformance-r1"
+REVISION = "r51f3-current-managed-root-runtime-fusion-r1"
+PREVIOUS_REVISION = "r51f3-current-actor-protocol-binding-descriptor-r1"
 INHERITED_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"

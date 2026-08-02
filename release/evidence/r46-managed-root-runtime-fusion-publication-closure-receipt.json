@@ -1,0 +1,151 @@
+{
+  "schema": "deeplus.r46-managed-root-runtime-fusion-publication-closure-receipt/v1",
+  "recorded_at": "2026-08-03T04:04:10+09:00",
+  "candidate_verdict": "READY_FOR_PUBLICATION_CLOSURE_MERGE",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_publication": {
+    "pull_request": 63,
+    "url": "https://github.com/howork/Deeplus/pull/63",
+    "branch": "codex/r46-managed-root-runtime-fusion",
+    "source_commit": "2ad1e1967dd67d928f06aabb3c98cf44081ec4da",
+    "source_tree": "d13a15af71c717c2145ce28a39e7dd1f6501c99f",
+    "merge_commit": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
+    "tree": "d13a15af71c717c2145ce28a39e7dd1f6501c99f",
+    "parents": [
+      "e680568057ec9c6b02218dbe153758471734cf44",
+      "2ad1e1967dd67d928f06aabb3c98cf44081ec4da"
+    ],
+    "merged_at": "2026-08-02T18:52:47Z",
+    "post_merge_readback": "PASS"
+  },
+  "semantic_pr_github_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30761692029,
+      "job": "validate",
+      "job_id": 91533290934,
+      "head_sha": "2ad1e1967dd67d928f06aabb3c98cf44081ec4da",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30761692029/job/91533290934",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30761692034,
+      "job": "scaffold",
+      "job_id": 91533290889,
+      "head_sha": "2ad1e1967dd67d928f06aabb3c98cf44081ec4da",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30761692034/job/91533290889",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "semantic_merge_main_ci": [
+    {
+      "workflow": "Canonical integrity",
+      "run_id": 30762118170,
+      "job": "validate",
+      "job_id": 91534411469,
+      "head_sha": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30762118170/job/91534411469",
+      "conclusion": "SUCCESS"
+    },
+    {
+      "workflow": "Rust workspace",
+      "run_id": 30762118196,
+      "job": "scaffold",
+      "job_id": 91534411622,
+      "head_sha": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
+      "url": "https://github.com/howork/Deeplus/actions/runs/30762118196/job/91534411622",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "semantic_validation": {
+    "change_scope": {
+      "changed_file_count": 89,
+      "production_crate_change_count": 0,
+      "grammar_production_change_count": 0,
+      "source_spelling_change_count": 0,
+      "semantic_change_count": 1,
+      "new_diagnostic_id_count": 0
+    },
+    "fused_identity": {
+      "continuation_interface_sha256": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "managed_reference_profile_sha256": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+      "runtime_helper_registry_sha256": "622c8bdbe71d27709b69b544cba556dc256e5eda0083b3c22ceb7884ccd4c5e2",
+      "runtime_abi_sha256": "26206926f0b6033ed520f4acd0277445bf583d32ae6d678e8281d6734539bf1c",
+      "base_helper_count": 22,
+      "managed_helper_count": 3,
+      "active_helper_count": 25
+    },
+    "focused": {
+      "internal_runtime_abi_checks": "19_OF_19_PASS",
+      "internal_runtime_abi_semantic_cases": "31_OF_31_PASS",
+      "internal_runtime_abi_mutations": "20_OF_20_REJECTED",
+      "hir_mir_identities": 130,
+      "hir_mir_lowering_rows": 111,
+      "hir_mir_operations": 48,
+      "hir_mir_terminators": 17,
+      "continuation_tokens": 12,
+      "capabilities": 26,
+      "construction_cleanup_plans": "14_PLUS_1_TERMINAL_PASS",
+      "suspension_continuation_checks": "17_OF_17_PASS",
+      "suspension_continuation_mutations": "12_OF_12_REJECTED",
+      "r5_successor_checks": "13_OF_13_PASS",
+      "language_projection_generation": "PASS"
+    },
+    "workspace": {
+      "command": "py -3 tools/validators/validate_workspace.py --root .",
+      "result": "PASS",
+      "checks": "6820_OF_6820_PASS"
+    },
+    "source_manifest": {
+      "path": "release/source-tree-manifest.json",
+      "file_count_excluding_manifest": 770,
+      "total_bytes_excluding_manifest": 23780120,
+      "tree_sha256": "1467ff62e7e787ef34a96bb39093d08190ebe52e44ed6cc32d3ea5f374e934b1",
+      "binding": "WORKTREE_AND_INDEX_BOUND"
+    },
+    "evidence_level": "E2_DESIGN_STATIC",
+    "production_execution": "NOT_RUN"
+  },
+  "gap_transition": {
+    "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+    "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+    "transition_candidate_count": 3,
+    "closed_count_before_closure_readback": 0,
+    "eligible_closed_count_after_readback": 3,
+    "gap_ids": [
+      "IR-OWN-P0-017",
+      "IR-OWN-P1-025",
+      "IR-OWN-P1-026"
+    ]
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "candidate_binding": false,
+    "source_snapshot": null,
+    "closed_by_candidate": 0,
+    "new_feature_p1": 0
+  },
+  "pointer_target": {
+    "role": "publication_authority_source",
+    "revision": "r51f3-current-managed-root-runtime-fusion-r1",
+    "semantic_merge_commit": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
+    "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "self_binding_forbidden": true
+  },
+  "closure_pr_evidence": {
+    "status": "PENDING_THIS_PUBLICATION_CLOSURE_PR",
+    "merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+    "ci": "TO_BE_BOUND_IN_EXTERNAL_POST_MERGE_READBACK_RECEIPT"
+  },
+  "next_checkpoint": {
+    "baseline": "CLOSURE_MERGE_SHA_FROM_POST_MERGE_READBACK",
+    "candidate_cluster": "R47_OWNERSHIP_CONTRACT_FUSION",
+    "github_publication": "AUTHORIZED_FOR_THIS_R46_CLOSURE",
+    "activation": "AFTER_CLOSURE_READBACK_AND_STANDARD_CLUSTER_BASELINE_OBSERVATION"
+  }
+}
