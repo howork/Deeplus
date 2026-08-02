@@ -1275,7 +1275,9 @@ source-root commitment를 위반한다.
 | lowering | CST/AST/HIR/MIR 중 책임 단계와 관측 순서 |
 
 이 표를 채우지 않은 설명은 대개 “token이 보인다”는 수준에 머문다.
-반대로 표를 채우면 562개 production을 복제하지 않고도 독자가 정확한
+<!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
+
+반대로 표를 채우면 638개 production을 복제하지 않고도 독자가 정확한
 권위 source로 이동하고, parse 가능성과 현행 언어 허용을 구별하며,
 부착·입력 공급·평가 순서의 빈틈을 찾을 수 있다.
 

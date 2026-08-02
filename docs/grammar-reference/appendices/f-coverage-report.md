@@ -49,4 +49,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `4327168a3dc9d79391237b20af8d8ac48d4c11b50803a129a8b6534187026366` |
 | `prelude` | `library/prelude/prelude.md` | `699f06e8ce8a367b108f08d51060d01b41e69318a867f2eb15ce655735ce9c41` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `35fcab0541253bd9dc37335a782613fa6eb47be650563fe7b428da84457d04a6` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `1f2a54974cafe8c62b81f843af0a7c420da23d6f8fbd588fc1559e06cf30541f` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `e9464794e9da0690a4b106c98d8a106b7f248497883aa16f59706a97cccda238` |

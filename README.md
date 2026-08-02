@@ -36,11 +36,13 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 ## 현재 검증 경계
 
-- 문법 생성 규칙: `578`
+<!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
+
+- 문법 생성 규칙: `638`
   - `LEXICAL 91`
-  - `STABLE 459`
+  - `STABLE 534`
   - `PREVIEW 13`
-  - `RECOVERY 15`
+  - recovery는 production profile이 아니라 별도의 CST/parser 복구 정책
 - 기능 레지스트리: `705`
 - 진단 레지스트리: `1,367`
 - 타입 predicate: `255`

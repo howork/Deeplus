@@ -10782,6 +10782,16 @@ R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
     "R27_MUTATIONS_EXACT_6",
     "R27_GOVERNANCE_FENCE",
 )
+R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS = (
+    "R40_CONTRACT_EXACT",
+    "R40_AUTHORITATIVE_PROJECTION_91_534_13",
+    "R40_MACHINE_CONSUMER_PARITY",
+    "R40_PUBLISHED_CLAIMS_EXACT_3",
+    "R40_ACCEPTANCE_CASES_EXACT_3",
+    "R40_STALE_COUNT_MUTATION_REJECTED_1",
+    "R40_NO_SOURCE_OR_FEATURE_DRIFT",
+    "R40_GOVERNANCE_FENCE",
+)
 
 
 def _r5_strict_receipt_json(payload: str) -> dict[str, Any]:
@@ -11632,6 +11642,98 @@ def r27_grammar_topology_workspace_checks(
         )
 
 
+def r40_manual_grammar_count_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact R40 manual grammar-count receipt without product claims."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_manual_grammar_count_authority.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R40 manual grammar-count runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R40 manual grammar-count runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.r40-manual-grammar-count-validation-receipt/r1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("evidence_level") != "E2_STATIC_CLOSURE"
+            or receipt.get("check_scope")
+            != "R40_MANUAL_GRAMMAR_COUNT_AUTHORITY_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(expected_ids)
+            or receipt.get("profile_counts")
+            != {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13}
+            or receipt.get("production_count") != 638
+            or receipt.get("manual_claim_count") != 3
+            or receipt.get("acceptance_case_count") != 3
+            or receipt.get("mutation_count") != 1
+            or receipt.get("rejected_mutation_count") != 1
+            or receipt.get("grammar_production_change_count") != 0
+            or receipt.get("new_source_spelling_count") != 0
+            or receipt.get("semantic_change_count") != 0
+            or receipt.get("feature_p1") != "22_OPEN_UNCHANGED"
+            or receipt.get("m13_actions") != "4_OPEN_UNCHANGED"
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("errors") != []
+            or not isinstance(rows, list)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass"}
+                or row.get("pass") is not True
+                for row in rows
+            )
+        ):
+            return failed_rows(
+                "R40 manual grammar-count receipt-contract drift"
+            )
+        detail = json.dumps(
+            {
+                "profiles": {"LEXICAL": 91, "STABLE": 534, "PREVIEW": 13},
+                "productions": 638,
+                "manual_claims": 3,
+                "mutations_rejected": 1,
+                "semantic_changes": 0,
+                "product_execution": "NOT_RUN",
+            },
+            sort_keys=True,
+        )
+        return [
+            {"check_id": row["check_id"], "pass": True, "detail": detail}
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R40 manual grammar-count runner integration failure: {exc}"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -11671,6 +11773,11 @@ def main() -> int:
         r27_grammar_topology_workspace_checks(root)
     )
     for row in r27_grammar_topology_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
+    r40_manual_grammar_count_check_results = (
+        r40_manual_grammar_count_workspace_checks(root)
+    )
+    for row in r40_manual_grammar_count_check_results:
         check(row["pass"], row["check_id"], row["detail"])
 
     try:
@@ -11743,6 +11850,9 @@ def main() -> int:
         "schemas/language/grammar-reference-coverage.schema.json",
         "tools/generators/generate_grammar_reference.py",
         "tools/validators/run_grammar_reference_generator_tests.py",
+        "spec/contracts/manual-grammar-count-authority-r1.json",
+        "tests/fixtures/current/manual-grammar-count-authority-r1.json",
+        "tools/validators/validate_manual_grammar_count_authority.py",
         "docs/tutorial/README.md",
         "docs/tutorial/SUMMARY.md",
         "docs/tutorial/coverage-manifest.json",
@@ -18250,6 +18360,17 @@ def main() -> int:
         ],
         "r27_grammar_topology_check_results":
             r27_grammar_topology_check_results,
+        "r40_manual_grammar_count_check_scope":
+            "R40_MANUAL_GRAMMAR_COUNT_AUTHORITY_EXACT",
+        "r40_manual_grammar_count_check_count":
+            len(R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS),
+        "r40_manual_grammar_count_passed_check_ids": [
+            row["check_id"]
+            for row in r40_manual_grammar_count_check_results
+            if row["pass"]
+        ],
+        "r40_manual_grammar_count_check_results":
+            r40_manual_grammar_count_check_results,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,
