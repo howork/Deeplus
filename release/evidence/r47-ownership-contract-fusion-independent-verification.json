@@ -1,0 +1,41 @@
+{
+  "schema": "deeplus.r47-ownership-contract-fusion-independent-verification/v1",
+  "recorded_at": "2026-08-03T05:29:57+09:00",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_merge_commit": "ee7d1833dcc9156070c1071f96fc55b3e19ae967",
+  "scope": "READ_ONLY_DESIGN_STATIC_REVIEW",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "review_results": [
+    {
+      "review": "REBASE_CONFLICT_AND_PROJECTION_CLASSIFICATION",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "The frozen candidate was replayed from its exact common ancestor onto the R46 closure baseline.",
+        "Textual conflicts were resolved by preserving the current baseline and regenerating deterministic projections.",
+        "No unrelated user worktree content was modified."
+      ]
+    },
+    {
+      "review": "RUNTIME_SEAM_AND_IDENTITY_BINDING",
+      "verdict": "PASS_AFTER_BOUNDED_REPAIR",
+      "observations": [
+        "The continuation interface, managed-reference profile, helper registry, and runtime ABI form one exact digest chain.",
+        "The runtime rebinder now deterministically updates the managed-reference digest in the continuation seam.",
+        "The helper registry binds 22 base helpers plus three managed helpers without changing helper identity domains."
+      ]
+    },
+    {
+      "review": "FINAL_SEMANTIC_CANDIDATE",
+      "verdict": "PASS",
+      "observations": [
+        "The exact semantic source commit and tree are clean and independently reviewed.",
+        "All seven bound ownership gaps remain INTEGRATED_UNVERIFIED until closure merge readback.",
+        "The two-stage semantic-publication and publication-closure boundary is preserved."
+      ]
+    }
+  ],
+  "canonical_source_mutation_by_independent_review": 0,
+  "github_mutation_by_independent_review": 0,
+  "product_execution": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+}
