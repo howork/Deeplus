@@ -1,0 +1,223 @@
+{
+  "schema": "deeplus.actor-protocol-binding-descriptor-contract/r1",
+  "revision": "R43-R23-REBASED-DESIGN-R1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "source_syntax_change_count": 0,
+  "authority": {
+    "gap_id": "IR-ACTOR-P1-006",
+    "baseline_commit": "53bbc11cf4b4b5980ae07c04f97a41d7bdd12012",
+    "baseline_tree": "3c9b282149489630df73736a2800530b8135aa13",
+    "controlling_contract": "spec/contracts/actor-protocol-direct-conformance-r1.json",
+    "controlling_revision": "R41-REBASED-DESIGN-R1",
+    "predecessor_candidate": "R23-LOCAL-CANONICAL-PROJECTION-FREEZE-R1",
+    "predecessor_status": "IMMUTABLE_HISTORICAL_REBASED_WITH_IDENTITY_REPAIR",
+    "r22_byte_contribution_count": 0,
+    "r24_scope_absorbed_count": 0
+  },
+  "identity": {
+    "canonical_byte_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "actor_id_domain": "STATIC_ACTOR_DECLARATION_ID",
+    "table_id": "ActorProtocolBindingTableId",
+    "table_id_domain_separator": "deeplus.actor-protocol-binding-table/v1",
+    "table_owner_tuple": [
+      "ActorId",
+      "ActorProtocolId",
+      "SubstitutionId",
+      "AuthorityId"
+    ],
+    "current_substitution_id": "SubstitutionId:empty",
+    "conformance_id": "ActorProtocolConformanceId",
+    "binding_id": "ActorProtocolBindingId",
+    "binding_id_domain_separator": "deeplus.actor-protocol-binding/v1",
+    "binding_key": [
+      "ActorProtocolConformanceId",
+      "ActorProtocolRequirementId"
+    ],
+    "binding_id_changes_on_content_only_rebind": false,
+    "binding_row_sha256_changes_on_content_only_rebind": true,
+    "table_id_changes_on_content_only_rebind": false,
+    "table_sha256_changes_on_content_only_rebind": true,
+    "runtime_actor_instance_identity_in_serialized_bytes_count": 0
+  },
+  "binding_row": {
+    "required_fields": [
+      "binding_id",
+      "binding_row_sha256",
+      "requirement_id",
+      "requirement_origin_protocol_id",
+      "implementation_id",
+      "implementation_kind",
+      "normalized_selector",
+      "requirement_contract_sha256",
+      "implementation_contract_sha256",
+      "compatibility_proof_sha256",
+      "normalized_implementation_error_set",
+      "normalized_implementation_effect_row",
+      "responsibility_id",
+      "reply_responsibility_sha256_or_null",
+      "effective_transport_visibility"
+    ],
+    "implementation_kinds": [
+      "SEND_TO_ON",
+      "REQUEST_TO_REQUEST"
+    ],
+    "sort_key": [
+      "ActorProtocolRequirementId",
+      "ActorProtocolBindingId"
+    ],
+    "candidate_cardinality_per_requirement": 1,
+    "handler_independent_visibility_field_count": 0,
+    "runtime_selector_lookup_count": 0,
+    "fallback_count": 0
+  },
+  "failure_axes": {
+    "SEND_TO_ON": {
+      "implementation_error_set": [],
+      "reply_responsibility": null,
+      "admission_errors_outside_handler_error_set": [
+        "mailboxFull",
+        "receiverClosedBeforeAdmission"
+      ]
+    },
+    "REQUEST_TO_REQUEST": {
+      "reply_responsibility_required": true,
+      "terminal_transport_failure": [
+        "receiverClosedBeforeReply"
+      ],
+      "admission_errors_outside_handler_error_set": [
+        "mailboxFull",
+        "receiverClosedBeforeAdmission"
+      ]
+    },
+    "cancellation_in_error_set_count": 0,
+    "defect_in_error_set_count": 0,
+    "concrete_reply_id_in_module_api_count": 0,
+    "concrete_correlation_id_in_module_api_count": 0
+  },
+  "visibility": {
+    "ordered_lattice": ["private", "common", "public"],
+    "effective_transport_visibility": "meet(ActorDecl.visibility, ActorProtocolDecl.visibility)",
+    "handler_visibility_axis": "ABSENT",
+    "private_api_export_count": 0,
+    "common_export_scope": "SAME_PACKAGE_ONLY",
+    "reexport_can_widen": false
+  },
+  "artifact_profiles": {
+    "legacy_profile": "R4_NAME_RESOLUTION_MODULES",
+    "binding_profile": "R41_ACTOR_PROTOCOL_BINDINGS",
+    "legacy_profile_requires_binding_fields": false,
+    "binding_profile_requires_binding_fields": true,
+    "binding_profile_empty_api_encoding": [],
+    "binding_profile_absent_api_field_accepted": false
+  },
+  "projections": {
+    "MODULE_API": {
+      "owner_domain": "ModuleId",
+      "field": "actor_protocol_binding_tables",
+      "included_visibility": ["common", "public"],
+      "relation_to_implementation": "EXACT_BYTE_IDENTICAL_VISIBILITY_FILTER"
+    },
+    "MODULE_IMPLEMENTATION": {
+      "owner_domain": "ModuleId",
+      "field": "actor_protocol_binding_tables_sha256",
+      "includes_private_rows": true
+    },
+    "COMPILATION_RECEIPT": {
+      "field": "actor_protocol_binding_tables_sha256",
+      "binds": "module-implementation-digest.actor_protocol_binding_tables_sha256"
+    },
+    "EXECUTABLE_IMAGE": {
+      "owner_domain": "ExecutableImageId",
+      "field": "actor_protocol_binding_table_set_sha256",
+      "origin_receipt_required_per_table": true,
+      "loader_recomputes_before_acceptance": true
+    },
+    "MIR": {
+      "required_fields": [
+        "actor_protocol_binding_table_id",
+        "actor_protocol_conformance_id",
+        "actor_protocol_requirement_id",
+        "actor_protocol_binding_id",
+        "implementation_kind",
+        "actor_handler_id_or_null",
+        "actor_request_id_or_null",
+        "responsibility_id",
+        "binding_row_sha256"
+      ],
+      "runtime_lookup": false
+    }
+  },
+  "typed_hir_binding_proof": {
+    "row_bijection": "one proof row per exact R41 requirement and one table row per proof row",
+    "binds": [
+      "ActorProtocolConformanceId",
+      "ActorProtocolRequirementId",
+      "ActorProtocolBindingId",
+      "ActorHandlerId or ActorRequestId",
+      "ResponsibilityId",
+      "requirement_contract_sha256",
+      "implementation_contract_sha256",
+      "compatibility_proof_sha256"
+    ],
+    "linker_rechecks_source_semantics": false
+  },
+  "link_verification": {
+    "stages": [
+      "shape and canonical-order validation",
+      "R41 typed identity and owner proof validation",
+      "requirement totality and implementation-kind validation",
+      "visibility and same-package common-use validation",
+      "sealed compatibility-proof and implementation-symbol validation",
+      "origin receipt and table digest validation",
+      "executable image digest validation"
+    ],
+    "deduplicate": "BYTE_IDENTICAL_EQUAL_AUTHORITY_EQUAL_DIGEST_ONLY",
+    "missing_binding": "REJECT",
+    "duplicate_binding": "REJECT",
+    "identity_mismatch": "REJECT",
+    "implementation_symbol_resolution_cardinality": 1,
+    "visibility_widening": "REJECT",
+    "common_cross_package_use": "REJECT",
+    "orphan_origin_receipt": "REJECT",
+    "link_order_winner_count": 0,
+    "runtime_registration_order_winner_count": 0
+  },
+  "diagnostic_families_not_final_registry_codes": [
+    "ACTOR_PROTOCOL_BINDING_TABLE_SHAPE_INVALID",
+    "ACTOR_PROTOCOL_BINDING_IDENTITY_MISMATCH",
+    "ACTOR_PROTOCOL_BINDING_VISIBILITY_INVALID",
+    "ACTOR_PROTOCOL_BINDING_REQUIREMENT_MISSING",
+    "ACTOR_PROTOCOL_BINDING_REQUIREMENT_DUPLICATE",
+    "ACTOR_PROTOCOL_BINDING_IMPLEMENTATION_KIND_MISMATCH",
+    "ACTOR_PROTOCOL_BINDING_AUTHORITY_MISMATCH",
+    "ACTOR_PROTOCOL_BINDING_TABLE_DIGEST_MISMATCH",
+    "ACTOR_PROTOCOL_BINDING_API_DIGEST_STALE",
+    "ACTOR_PROTOCOL_BINDING_RUNTIME_LOOKUP_FORBIDDEN"
+  ],
+  "excluded": [
+    "new Actor protocol source spelling",
+    "protocol generics or nonempty SubstitutionId",
+    "handler independent visibility",
+    "runtime selector lookup",
+    "runtime registration-order selection",
+    "R22 lifecycle identity or event generation",
+    "R24 native layout, relocation or code-generation lifetime",
+    "production linker, loader, xVM or Cranelift implementation"
+  ],
+  "machine_acceptance": {
+    "projection_kind_count": 3,
+    "binding_key_field_count": 2,
+    "table_owner_identity_count": 4,
+    "handler_visibility_field_count": 0,
+    "runtime_lookup_count": 0,
+    "runtime_fallback_count": 0,
+    "link_order_winner_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

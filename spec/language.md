@@ -1353,6 +1353,33 @@ correlated `ReplyResponsibility`. Defect and lifecycle disposition stay on the
 separate Actor lifecycle axis and are not converted into a recoverable send
 error.
 
+Cross-module Actor Protocol use consumes a closed static binding descriptor;
+it never repeats selector search. The stable
+`ActorProtocolBindingId` is keyed only by the already admitted
+`(ActorProtocolConformanceId, ActorProtocolRequirementId)` pair. A change to
+the selected handler, request signature, ErrorSet, EffectRow, responsibility,
+or visibility therefore preserves that slot identity but changes the sealed
+binding-row and table digests. One `ActorProtocolBindingTableId` owns the
+finite requirement set for the exact
+`(ActorId, ActorProtocolId, SubstitutionId:empty, AuthorityId)` tuple. The
+current profile admits only a static Actor declaration identity and the empty
+substitution; runtime actor instances and protocol generics do not enter these
+bytes.
+
+The module API always serializes the table field in the
+`R41_ACTOR_PROTOCOL_BINDINGS` profile; `[]` is its only empty encoding. Its
+tables are the exact byte-identical `common`/`public` filter of the complete
+module-implementation tables. `common` remains package-only and a re-export
+cannot widen it. An executable image is owned by `ExecutableImageId`, not by
+one arbitrary module, and each included table is bound to exactly one
+declaring package/module compilation receipt. Typed HIR supplies the exact
+R41 conformance, requirement, binding, typed handler-or-request,
+`ResponsibilityId`, and compatibility-proof identities. Link and load verify
+that sealed residue and the compiled symbol; they do not reconstruct source
+semantics. Runtime lookup, fallback, registration-order winners, and selector
+strings remain forbidden. This is a Stable design contract only; compiler,
+linker, loader, xVM, and Cranelift execution remain `NOT_RUN`.
+
 An actor owns one isolated mutable state region and one mailbox. Exactly one admitted message turn mutates that state at a time. An actor turn is non-reentrant across `await`: while the turn is suspended, another message may be accepted into the mailbox but cannot observe or mutate the actor state until the suspended turn terminates. A request await whose statically proven dependency cycle requires that same active turn to progress is rejected; the checker does not add reentrancy or release actor authority to break the cycle. `:~` is the Stable actor-transport call mode; it statically selects an `on` or `request` operation and never falls back to an ordinary message or method. It evaluates the actor receiver and every ordinary call argument left-to-right exactly once, binds the selected formals, proves transfer and isolation, stages one compiler-internal envelope, and commits ownership plus one channel sequence only after all preconditions succeed. A precommit failure publishes no envelope or sequence and retains every sender owner. `:~` itself neither suspends nor retries. Trailing closures are separate call channels: the shared surface does not make a closure transferable. Any closure crossing actor isolation must independently satisfy capture, transfer, suspension, effect, error, and cleanup admission. An omitted mailbox clause selects `logical_unbounded_v1`, which has no language-level capacity rejection. `#mailbox(capacity: N)` requires a positive static integer and selects `bounded_reject_v1`: a full mailbox rejects immediately without blocking, retrying, suspending, or dropping. Because the intended bound is semantic input, diagnostics never guess or synthesize `N`; the programmer chooses the positive `StaticInt` value.
 
 `ActorMessageError` is the closed current error family `{ mailboxFull, receiverClosedBeforeAdmission, receiverClosedBeforeReply }`. A one-way `:~` expression has exact type `Result<Unit, error ActorMessageError>`. A request for reply type `T` has exact immediate type `Result<Reply<T>, error ActorMessageError>`; source extracts the admitted reply handle and only then applies one-shot explicit `await`. If an `on` and a `request` have the same selector and canonical call shape, the declaration, protocol composition, or link is rejected rather than using the expected result type to choose. Every successfully admitted actor request carries in typed HIR, module API digest, and MIR a non-forgeable `ReplyResponsibility` descriptor containing exactly the normalized result type, exact handler ErrorSet, cancellation axis, isolation owner, reply identity, request correlation identity, and terminal transport failure. `Reply<T>` is the only source handle for that responsibility; it neither converts to `Run<T>` nor shares a spawned run's responsibility descriptor. The module API digest records static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers rather than concrete runtime identities; each committed request obtains its distinct value-level reply and correlation identities in typed HIR/MIR. Consequently awaiting a request declared `throws E` exposes exactly normalized `E | ActorMessageError::receiverClosedBeforeReply`; the error set is not erased merely because it is not a second visible `Reply` type parameter. `mailboxFull` and `receiverClosedBeforeAdmission` are precommit admission errors. If the receiver closes after an admitted request but before reply, that reply handle terminates through its declared `ActorMessageError::receiverClosedBeforeReply` failure axis. Cancellation is never converted into this error family. An actor `:~` call is not admitted in `defer`, because its immediate admission result cannot be silently discarded.

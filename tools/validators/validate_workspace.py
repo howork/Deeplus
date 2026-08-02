@@ -9715,7 +9715,11 @@ def r4_nrm_integrated_contract_results(
     )
     record(
         module_api_profile.get("enum")
-        == ["LEGACY_R51F3", "R4_NAME_RESOLUTION_MODULES"],
+        == [
+            "LEGACY_R51F3",
+            "R4_NAME_RESOLUTION_MODULES",
+            "R41_ACTOR_PROTOCOL_BINDINGS",
+        ],
         "R4_NRM_INTERFACE_PROFILE_DOMAIN",
         f"profile={module_api_profile.get('enum')}",
     )
@@ -9902,6 +9906,7 @@ def r4_nrm_integrated_contract_results(
             "visibility_closure_sha256",
             "initialization_plan_sha256",
             "interface_sha256",
+            "actor_protocol_binding_tables_sha256",
             "implementation_sha256",
         }
         and canonical_algorithm_ids
@@ -11905,6 +11910,57 @@ def r41_actor_protocol_workspace_check(root: Path) -> dict[str, Any]:
         }
 
 
+def r23_actor_protocol_binding_workspace_check(root: Path) -> dict[str, Any]:
+    """Bind the focused R23 design-static descriptor receipt."""
+
+    runner = (
+        root
+        / "tools/validators/validate_actor_protocol_binding_descriptors.py"
+    )
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                "focused validator nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            raise ValueError("focused validator emitted unexpected stderr")
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        if (
+            receipt.get("result") != "PASS"
+            or receipt.get("check_count") != 55
+            or receipt.get("failed") != []
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("canonical_source_status")
+            != "LOCAL_REBASED_PROJECTION"
+        ):
+            raise ValueError("focused receipt-contract drift")
+        return {
+            "check_id": "R23_ACTOR_PROTOCOL_BINDING_DESCRIPTOR",
+            "pass": True,
+            "detail": json.dumps(
+                receipt, ensure_ascii=False, sort_keys=True
+            ),
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R23_ACTOR_PROTOCOL_BINDING_DESCRIPTOR",
+            "pass": False,
+            "detail": f"R23 Actor Protocol binding failure: {exc}",
+        }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -11955,6 +12011,14 @@ def main() -> int:
         r41_actor_protocol_check_result["pass"],
         r41_actor_protocol_check_result["check_id"],
         r41_actor_protocol_check_result["detail"],
+    )
+    r23_actor_protocol_binding_check_result = (
+        r23_actor_protocol_binding_workspace_check(root)
+    )
+    check(
+        r23_actor_protocol_binding_check_result["pass"],
+        r23_actor_protocol_binding_check_result["check_id"],
+        r23_actor_protocol_binding_check_result["detail"],
     )
 
     try:
@@ -12033,6 +12097,11 @@ def main() -> int:
         "schemas/language/actor-protocol-direct-conformance-descriptor.schema.json",
         "spec/contracts/actor-protocol-direct-conformance-r1.json",
         "tests/fixtures/current/actor-protocol-direct-conformance-r1.json",
+        "schemas/language/actor-protocol-binding-table.schema.json",
+        "spec/contracts/actor-protocol-binding-descriptor.json",
+        "tests/fixtures/current/actor-protocol-binding-table-r1.json",
+        "tools/generators/bind_actor_protocol_binding_tables.py",
+        "tools/validators/validate_actor_protocol_binding_descriptors.py",
         "spec/diagnostics/catalog/chunks/part-0029.json",
         "spec/diagnostics/relations/chunks/part-0009.json",
         "tests/conformance/checker-predicates/chunks/part-0031.json",
@@ -18747,6 +18816,10 @@ def main() -> int:
             "R41_ACTOR_PROTOCOL_DIRECT_CONFORMANCE_EXACT",
         "r41_actor_protocol_check_result":
             r41_actor_protocol_check_result,
+        "r23_actor_protocol_binding_check_scope":
+            "R23_REBASED_CLOSED_STATIC_BINDING_TABLE",
+        "r23_actor_protocol_binding_check_result":
+            r23_actor_protocol_binding_check_result,
         "json_files_parsed": len(parsed), "legacy_files_accounted": len(legacy),
         "catalogs_reassembled": len(reconstructed), "rust_scaffold_crates": len(crates),
         "product_execution": "NOT_RUN", "warnings": warnings, "errors": errors,
