@@ -33,11 +33,20 @@
     "interface_profile": {
       "enum": [
         "LEGACY_R51F3",
-        "R4_NAME_RESOLUTION_MODULES"
+        "R4_NAME_RESOLUTION_MODULES",
+        "R41_ACTOR_PROTOCOL_BINDINGS"
       ]
     },
     "r4_interface_envelope": {
       "$ref": "#/$defs/r4ModuleInterfaceEnvelope"
+    },
+    "actor_protocol_binding_tables": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "actor-protocol-binding-table.schema.json#/$defs/bindingTable"
+      },
+      "description": "Sorted common/public Actor Protocol binding tables. Private tables are implementation-only."
     },
     "symbols": {
       "type": "array",
@@ -568,14 +577,24 @@
   "allOf": [
     {
       "if": {
-        "required": [
-          "interface_profile"
-        ],
-        "properties": {
-          "interface_profile": {
-            "const": "R4_NAME_RESOLUTION_MODULES"
+        "anyOf": [
+          {
+            "required": ["interface_profile"],
+            "properties": {
+              "interface_profile": {
+                "const": "R4_NAME_RESOLUTION_MODULES"
+              }
+            }
+          },
+          {
+            "required": ["interface_profile"],
+            "properties": {
+              "interface_profile": {
+                "const": "R41_ACTOR_PROTOCOL_BINDINGS"
+              }
+            }
           }
-        }
+        ]
       },
       "then": {
         "required": [
@@ -594,6 +613,24 @@
             "r4_interface_envelope"
           ]
         }
+      }
+    }
+    ,
+    {
+      "if": {
+        "required": [
+          "interface_profile"
+        ],
+        "properties": {
+          "interface_profile": {
+            "const": "R41_ACTOR_PROTOCOL_BINDINGS"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "actor_protocol_binding_tables"
+        ]
       }
     }
   ],
@@ -1498,7 +1535,10 @@
       "r4_interface_envelope.public_export_rows",
       "r4_interface_envelope.public_activation_reexport_rows",
       "r4_interface_envelope.opaque_facade_rows",
-      "r4_interface_envelope.opaque_facade_rows.facade_public_residue_identity_ids"
+      "r4_interface_envelope.opaque_facade_rows.facade_public_residue_identity_ids",
+      "actor_protocol_binding_tables.requirement_ids",
+      "actor_protocol_binding_tables.bindings.normalized_implementation_error_set",
+      "actor_protocol_binding_tables.bindings.normalized_implementation_effect_row"
     ],
     "set_order": "strict ascending Unicode scalar sequence with no duplicates",
     "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
@@ -1509,9 +1549,17 @@
       "deep-copy the validated digest object",
       "remove exactly the top-level canonical_sha256 member",
       "sort symbols by symbol_id and each declared set-like row by Unicode scalar sequence",
+      "sort actor_protocol_binding_tables by table_id and each binding row by (requirement_id, binding_id)",
       "serialize object members in Unicode-scalar key order using comma and colon separators without spaces",
       "encode the resulting JSON text as UTF-8 and SHA-256 those bytes"
     ]
+  },
+  "x-deeplus-actor-protocol-binding-profile": {
+    "profile": "R41_ACTOR_PROTOCOL_BINDINGS",
+    "legacy_profile_accepts_absent_field": true,
+    "binding_profile_requires_present_field": true,
+    "binding_profile_empty_encoding": [],
+    "api_projection_relation": "exact byte-identical common/public filter of the MODULE_IMPLEMENTATION table set"
   },
   "x-deeplus-r4-module-interface-contract": {
     "r4_interface_envelope_required_for_r4_provider_api": true,
@@ -1538,6 +1586,16 @@
     "dependency_receipt_schema": "schemas/language/module-compilation-dependency-receipt.schema.json",
     "implementation_digest_schema": "schemas/language/module-implementation-digest.schema.json",
     "compilation_receipt_schema": "schemas/language/module-compilation-receipt.schema.json"
+  },
+  "x-deeplus-actor-protocol-binding-contract": {
+    "schema": "schemas/language/actor-protocol-binding-table.schema.json",
+    "projection_kind": "MODULE_API",
+    "included_visibility": ["common", "public"],
+    "private_table_count": 0,
+    "canonical_sha256_includes_exact_table_bytes": true,
+    "table_order": "strict ascending Unicode scalar sequence by table_id",
+    "runtime_lookup_count": 0,
+    "product_linker": "NOT_RUN"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/module-api-digest-fixtures.json",
   "x-product-compiler": "NOT_RUN",

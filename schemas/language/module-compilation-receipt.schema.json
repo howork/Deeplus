@@ -25,7 +25,10 @@
       "const": "deeplus.module-compilation-receipt/r1"
     },
     "profile": {
-      "const": "R4_NAME_RESOLUTION_MODULES"
+      "enum": [
+        "R4_NAME_RESOLUTION_MODULES",
+        "R41_ACTOR_PROTOCOL_BINDINGS"
+      ]
     },
     "target_id": {
       "type": "string",
@@ -70,6 +73,9 @@
         }
       ]
     },
+    "actor_protocol_binding_tables_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
     "implementation_sha256": {
       "$ref": "#/$defs/sha256"
     },
@@ -78,6 +84,23 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "profile": {
+            "const": "R41_ACTOR_PROTOCOL_BINDINGS"
+          }
+        },
+        "required": [
+          "profile"
+        ]
+      },
+      "then": {
+        "required": [
+          "actor_protocol_binding_tables_sha256"
+        ]
+      }
+    },
     {
       "if": {
         "properties": {
@@ -119,12 +142,18 @@
     "visibility_closure_sha256": "module-visibility-closure.closure_sha256",
     "initialization_plan_sha256": "module-initialization-plan.plan_sha256",
     "interface_sha256": "module-api-digest.canonical_sha256",
+    "actor_protocol_binding_tables_sha256": "module-implementation-digest.actor_protocol_binding_tables_sha256",
     "implementation_sha256": "module-implementation-digest.implementation_sha256"
   },
   "x-deeplus-digest-canonicalization": {
     "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
     "self_hash_field_excluded": "compilation_receipt_sha256",
     "identity_domain": "PROVENANCE_BUILD_CLOSURE_NOT_PUBLIC_INTERFACE"
+  },
+  "x-deeplus-actor-protocol-binding-profile": {
+    "profile": "R41_ACTOR_PROTOCOL_BINDINGS",
+    "legacy_profile_accepts_absent_field": true,
+    "binding_profile_requires_present_field": true
   },
   "x-product-compiler": "NOT_RUN",
   "x-deeplus-product-compiler": "NOT_RUN"

@@ -257,6 +257,27 @@ has an empty recoverable ErrorSet. A fallible acknowledged command therefore
 enters MIR as a request returning Unit with its ErrorSet preserved in the
 correlated `ReplyResponsibility`.
 
+The cross-module projection adds `ActorProtocolBindingTableId` without
+replacing that R41 tuple. Every selected MIR row therefore carries the table,
+conformance, requirement, stable binding, typed handler-or-request,
+`ResponsibilityId`, and binding-row digest together. The binding ID remains
+stable across a content-only implementation rebind; the row and table digests
+change. A send/on row has an empty implementation ErrorSet and no reply
+responsibility digest. A request/request row carries the exact static
+`ReplyResponsibility` digest. Admission errors, Cancellation, Defect, concrete
+`ReplyId`, concrete `CorrelationId`, and runtime Actor instance identities do
+not enter module API binding rows.
+
+`MODULE_API` is the byte-identical common/public filter of
+`MODULE_IMPLEMENTATION`; present `[]` is the unique empty encoding in the
+binding profile. Link input verifies the receipt-bound typed-HIR proof and one
+compiled symbol for each implementation identity. An executable union is
+owned by `ExecutableImageId` and retains one exact origin receipt for every
+table. xVM or Cranelift may derive a backend-private slot or address only after
+this verification. Neither backend may replace the semantic identities,
+reselect a handler, widen visibility, or use selector, registration, import,
+or link order.
+
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
 Actor transport is not a method call. The Stable `:~` surface selects one

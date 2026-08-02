@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/actor-protocol-binding-table.schema.json",
+  "title": "Deeplus R41/R23 Actor Protocol binding table set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "profile",
+    "projection_kind",
+    "projection_owner_id",
+    "tables",
+    "origin_receipts",
+    "table_set_sha256",
+    "runtime_lookup_count",
+    "runtime_fallback_count",
+    "link_order_winner_count"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.actor-protocol-binding-table-set/r1"},
+    "profile": {"const": "R41_DIRECT_CONFORMANCE_R23_BINDING"},
+    "projection_kind": {
+      "enum": ["MODULE_API", "MODULE_IMPLEMENTATION", "EXECUTABLE_IMAGE"]
+    },
+    "projection_owner_id": {"type": "string", "minLength": 1},
+    "tables": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/bindingTable"}
+    },
+    "origin_receipts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/originReceipt"}
+    },
+    "table_set_sha256": {"$ref": "#/$defs/sha256"},
+    "runtime_lookup_count": {"const": 0},
+    "runtime_fallback_count": {"const": 0},
+    "link_order_winner_count": {"const": 0}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "projection_kind": {
+            "enum": ["MODULE_API", "MODULE_IMPLEMENTATION"]
+          }
+        },
+        "required": ["projection_kind"]
+      },
+      "then": {
+        "properties": {
+          "projection_owner_id": {"pattern": "^ModuleId:[^\\s]+$"},
+          "origin_receipts": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"projection_kind": {"const": "EXECUTABLE_IMAGE"}},
+        "required": ["projection_kind"]
+      },
+      "then": {
+        "properties": {
+          "projection_owner_id": {"pattern": "^ExecutableImageId:[^\\s]+$"},
+          "origin_receipts": {"minItems": 1}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"projection_kind": {"const": "MODULE_API"}},
+        "required": ["projection_kind"]
+      },
+      "then": {
+        "properties": {
+          "tables": {
+            "items": {
+              "properties": {
+                "effective_transport_visibility": {
+                  "enum": ["common", "public"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "identity": {"type": "string", "minLength": 1},
+    "visibility": {"enum": ["private", "common", "public"]},
+    "bindingRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "binding_row_sha256",
+        "requirement_id",
+        "requirement_origin_protocol_id",
+        "implementation_id",
+        "implementation_kind",
+        "normalized_selector",
+        "requirement_contract_sha256",
+        "implementation_contract_sha256",
+        "compatibility_proof_sha256",
+        "normalized_implementation_error_set",
+        "normalized_implementation_effect_row",
+        "responsibility_id",
+        "reply_responsibility_sha256_or_null",
+        "effective_transport_visibility"
+      ],
+      "properties": {
+        "binding_id": {"$ref": "#/$defs/identity"},
+        "binding_row_sha256": {"$ref": "#/$defs/sha256"},
+        "requirement_id": {"$ref": "#/$defs/identity"},
+        "requirement_origin_protocol_id": {"$ref": "#/$defs/identity"},
+        "implementation_id": {"$ref": "#/$defs/identity"},
+        "implementation_kind": {"enum": ["SEND_TO_ON", "REQUEST_TO_REQUEST"]},
+        "normalized_selector": {"type": "string", "minLength": 1},
+        "requirement_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "implementation_contract_sha256": {"$ref": "#/$defs/sha256"},
+        "compatibility_proof_sha256": {"$ref": "#/$defs/sha256"},
+        "normalized_implementation_error_set": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "normalized_implementation_effect_row": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "responsibility_id": {"$ref": "#/$defs/identity"},
+        "reply_responsibility_sha256_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "effective_transport_visibility": {"$ref": "#/$defs/visibility"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"implementation_kind": {"const": "SEND_TO_ON"}},
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "implementation_id": {"pattern": "^ActorHandlerId:[^\\s]+$"},
+              "normalized_implementation_error_set": {"maxItems": 0},
+              "reply_responsibility_sha256_or_null": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "implementation_kind": {"const": "REQUEST_TO_REQUEST"}
+            },
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "implementation_id": {"pattern": "^ActorRequestId:[^\\s]+$"},
+              "reply_responsibility_sha256_or_null": {
+                "$ref": "#/$defs/sha256"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bindingTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "table_id",
+        "declaring_package_id",
+        "declaring_module_id",
+        "actor_id",
+        "actor_identity_domain",
+        "actor_protocol_id",
+        "conformance_id",
+        "substitution_id",
+        "authority_id",
+        "actor_visibility",
+        "actor_protocol_visibility",
+        "effective_transport_visibility",
+        "requirement_ids",
+        "bindings",
+        "table_sha256"
+      ],
+      "properties": {
+        "table_id": {"$ref": "#/$defs/identity"},
+        "declaring_package_id": {
+          "type": "string",
+          "pattern": "^PackageId:[^\\s]+$"
+        },
+        "declaring_module_id": {
+          "type": "string",
+          "pattern": "^ModuleId:[^\\s]+$"
+        },
+        "actor_id": {"type": "string", "pattern": "^ActorId:[^\\s]+$"},
+        "actor_identity_domain": {"const": "STATIC_ACTOR_DECLARATION_ID"},
+        "actor_protocol_id": {
+          "type": "string",
+          "pattern": "^ActorProtocolId:[^\\s]+$"
+        },
+        "conformance_id": {
+          "type": "string",
+          "pattern": "^ActorProtocolConformanceId:[^\\s]+$"
+        },
+        "substitution_id": {"const": "SubstitutionId:empty"},
+        "authority_id": {
+          "type": "string",
+          "pattern": "^AuthorityId:[^\\s]+$"
+        },
+        "actor_visibility": {"$ref": "#/$defs/visibility"},
+        "actor_protocol_visibility": {"$ref": "#/$defs/visibility"},
+        "effective_transport_visibility": {"$ref": "#/$defs/visibility"},
+        "requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ActorProtocolRequirementId:[^\\s]+$"
+          },
+          "uniqueItems": true
+        },
+        "bindings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/bindingRow"}
+        },
+        "table_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "originReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declaring_package_id",
+        "declaring_module_id",
+        "interface_sha256",
+        "implementation_sha256",
+        "compilation_receipt_sha256",
+        "visibility_closure_sha256",
+        "table_ids"
+      ],
+      "properties": {
+        "declaring_package_id": {
+          "type": "string",
+          "pattern": "^PackageId:[^\\s]+$"
+        },
+        "declaring_module_id": {
+          "type": "string",
+          "pattern": "^ModuleId:[^\\s]+$"
+        },
+        "interface_sha256": {"$ref": "#/$defs/sha256"},
+        "implementation_sha256": {"$ref": "#/$defs/sha256"},
+        "compilation_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "visibility_closure_sha256": {"$ref": "#/$defs/sha256"},
+        "table_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/identity"},
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    }
+  },
+  "x-deeplus-identity-contract": {
+    "canonical_bytes": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "table_id_preimage": ["ActorId", "ActorProtocolId", "SubstitutionId", "AuthorityId"],
+    "table_id_domain_separator": "deeplus.actor-protocol-binding-table/v1",
+    "conformance_id_preimage": ["ActorId", "ActorProtocolId", "SubstitutionId", "AuthorityId"],
+    "binding_id_preimage": ["ActorProtocolConformanceId", "ActorProtocolRequirementId"],
+    "binding_id_domain_separator": "deeplus.actor-protocol-binding/v1",
+    "binding_row_sha256_excludes": ["binding_row_sha256"],
+    "table_sha256_excludes": ["table_sha256"],
+    "table_set_sha256_excludes": ["table_set_sha256"],
+    "table_sort_key": "table_id",
+    "binding_sort_key": ["requirement_id", "binding_id"],
+    "origin_receipt_sort_key": ["declaring_module_id", "compilation_receipt_sha256"]
+  },
+  "x-deeplus-semantic-contract": {
+    "r41_source": "spec/contracts/actor-protocol-direct-conformance-r1.json",
+    "visibility": "effective_transport_visibility is meet(ActorDecl.visibility, ActorProtocolDecl.visibility); handlers have no independent visibility",
+    "api_projection": "MODULE_API tables are the byte-identical common/public filter of MODULE_IMPLEMENTATION tables; [] is the only empty encoding in the R41_ACTOR_PROTOCOL_BINDINGS profile",
+    "common_scope": "common rows are consumable only when importer PackageId equals declaring_package_id; re-export never widens",
+    "requirement_totality": "requirement_ids and binding requirement_id values form the same one-to-one set",
+    "compatibility": "compiler-issued typed-HIR proof binds requirement and implementation contract digests; link/load verify the sealed proof and do not re-run source selection",
+    "link_deduplication": "only byte-identical tables with equal authority and digest deduplicate",
+    "executable_owner": "EXECUTABLE_IMAGE is owned by ExecutableImageId and every table is covered by exactly one receipt-bound origin",
+    "loader": "recompute every identity and digest before accepting an executable image",
+    "runtime_lookup": "runtime strings, selector lookup, fallback and registration order are forbidden"
+  },
+  "x-product-linker": "NOT_RUN",
+  "x-product-loader": "NOT_RUN"
+}

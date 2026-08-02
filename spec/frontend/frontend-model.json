@@ -3688,7 +3688,8 @@
       "FailureId",
       "ActorProtocolConformanceId",
       "ActorProtocolRequirementId",
-      "ActorProtocolBindingId"
+      "ActorProtocolBindingId",
+      "ActorProtocolBindingTableId"
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
@@ -3833,6 +3834,48 @@
       "one_way_normalized_error_set": [],
       "acknowledged_fallible_command": "request returning Unit",
       "product_support": "NOT_RUN"
+    },
+    "actor_protocol_binding_contract": {
+      "contract": "spec/contracts/actor-protocol-binding-descriptor.json",
+      "schema": "schemas/language/actor-protocol-binding-table.schema.json",
+      "profile": "R41_ACTOR_PROTOCOL_BINDINGS",
+      "r41_binding_key": [
+        "ActorProtocolConformanceId",
+        "ActorProtocolRequirementId"
+      ],
+      "table_owner_tuple": [
+        "ActorId",
+        "ActorProtocolId",
+        "SubstitutionId",
+        "AuthorityId"
+      ],
+      "current_substitution_id": "SubstitutionId:empty",
+      "actor_identity_domain": "STATIC_ACTOR_DECLARATION_ID",
+      "effective_transport_visibility": "meet(ActorDecl.visibility, ActorProtocolDecl.visibility)",
+      "handler_independent_visibility_axis": false,
+      "module_api_projection": "exact byte-identical common/public filter; present [] is the sole empty encoding",
+      "module_implementation_projection": "complete table set including private rows",
+      "executable_projection_owner": "ExecutableImageId",
+      "row_sort_key": [
+        "ActorProtocolRequirementId",
+        "ActorProtocolBindingId"
+      ],
+      "table_sort_key": "ActorProtocolBindingTableId",
+      "typed_hir_selection_residue": [
+        "ActorProtocolBindingTableId",
+        "ActorProtocolConformanceId",
+        "ActorProtocolRequirementId",
+        "ActorProtocolBindingId",
+        "ActorHandlerId or ActorRequestId",
+        "ResponsibilityId",
+        "BindingRowSha256"
+      ],
+      "binding_id_changes_on_content_only_rebind": false,
+      "binding_row_digest_changes_on_content_only_rebind": true,
+      "mir_runtime_selector_lookup_count": 0,
+      "runtime_fallback_count": 0,
+      "link_order_winner_count": 0,
+      "product_linker_loader_execution": "NOT_RUN"
     }
   },
   "control_frontend_contract": {

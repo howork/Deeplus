@@ -31,14 +31,14 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `93c18f2b35ab850bdc99861ad8388d703be28552f9a4bf1fc7c18c88444db886` |
+| `human_language` | `spec/language.md` | `07ba845de661a3f98fbfb0633db9a2feab9a73d2495ea2c0996798c2e19b5782` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276` |
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `6b7d2db6e3110667a4d431889245e94a1195afd9d34ee751a38e936ad314be5d` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `56f42fd6b7668c6cdd13c5461d8d51401e38b80474761b6b3209420dd9cd0c27` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `5e5a898c49d3bb9fbf182768bb52d4d3952a0fb29e9368db169bad52bd6f60ab` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `874fb57016634f7a6bc1f86fbd52b318b1cc87338d506f52a0ff7f446c23a5f0` |
 | `type_system` | `spec/types/type-system.md` | `b2ff2052b203d2df426ffcdae54e64f7acbf06835fbd90024d08232b945262d9` |
-| `mir_observable_semantics` | `spec/mir/semantics.md` | `158c1e69433c417af5ffb8dbe76c5853c554ba360ea64e5550d6c47b9482ea4a` |
+| `mir_observable_semantics` | `spec/mir/semantics.md` | `0d66bcc5b85232082a4478f1f5217487270b04d6054cccf856f4367058a991cf` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `e68a4237fd8e231ce74601295e5cb9975fc60afa03bbe81500e5368183d96efe` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `35c20cccef65dcb19c0477b4470a11c8f97a08f8a0dde4cef1098b573df998f1` |
 | `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `dead650e9307bbd51c3cb70916ce26ef31a995f54ab3e537fb33cb625b83a2b2` |

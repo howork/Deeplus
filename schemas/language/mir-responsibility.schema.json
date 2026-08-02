@@ -217,6 +217,13 @@
         "$ref": "#/$defs/fixedOperatorConformanceDispatch"
       }
     },
+    "actor_protocol_binding_selections": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/actorProtocolBindingSelection"
+      }
+    },
     "effect_row": {
       "type": "array",
       "items": {
@@ -307,6 +314,70 @@
     }
   ],
   "$defs": {
+    "actorProtocolBindingSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_protocol_binding_table_id",
+        "actor_protocol_conformance_id",
+        "actor_protocol_requirement_id",
+        "actor_protocol_binding_id",
+        "implementation_kind",
+        "actor_handler_id_or_null",
+        "actor_request_id_or_null",
+        "responsibility_id",
+        "binding_row_sha256",
+        "runtime_lookup_count"
+      ],
+      "properties": {
+        "actor_protocol_binding_table_id": {"type": "string", "minLength": 1},
+        "actor_protocol_conformance_id": {"type": "string", "pattern": "^ActorProtocolConformanceId:[^\\s]+$"},
+        "actor_protocol_requirement_id": {"type": "string", "pattern": "^ActorProtocolRequirementId:[^\\s]+$"},
+        "actor_protocol_binding_id": {"type": "string", "minLength": 1},
+        "implementation_kind": {"enum": ["SEND_TO_ON", "REQUEST_TO_REQUEST"]},
+        "actor_handler_id_or_null": {
+          "oneOf": [
+            {"type": "string", "pattern": "^ActorHandlerId:[^\\s]+$"},
+            {"type": "null"}
+          ]
+        },
+        "actor_request_id_or_null": {
+          "oneOf": [
+            {"type": "string", "pattern": "^ActorRequestId:[^\\s]+$"},
+            {"type": "null"}
+          ]
+        },
+        "responsibility_id": {"type": "string", "pattern": "^ResponsibilityId:[^\\s]+$"},
+        "binding_row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "runtime_lookup_count": {"const": 0}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"implementation_kind": {"const": "SEND_TO_ON"}},
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "actor_handler_id_or_null": {"type": "string"},
+              "actor_request_id_or_null": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"implementation_kind": {"const": "REQUEST_TO_REQUEST"}},
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "actor_handler_id_or_null": {"type": "null"},
+              "actor_request_id_or_null": {"type": "string"}
+            }
+          }
+        }
+      ]
+    },
     "fixedOperatorConformanceDispatch": {
       "type": "object",
       "additionalProperties": false,
@@ -3282,6 +3353,7 @@
     "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
     "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id",
     "fixed_operator_conformance": "an intrinsic-reserved operand domain has no fixed_operator_dispatches row; each admitted non-intrinsic exact unary +/-, arithmetic +,-,*,/,% or equality/order glyph has one statically selected row whose identity fields survive HIR/MIR/API lowering; != and the four order projections share Eq/Ord evidence, compound assignment and range have no independent hook, and route, responsibility, ArithmeticDefect precommit, runtime lookup and fallback constants are exact",
+    "actor_protocol_binding": "each statically selected Actor Protocol transport operation carries exactly one ActorProtocolBindingTableId plus the complete canonical R41 tuple ActorProtocolConformanceId, ActorProtocolRequirementId, ActorProtocolBindingId, typed ActorHandlerId-or-ActorRequestId, ResponsibilityId and binding-row digest through MIR; requirement and implementation identities agree with the receipt-bound serialized row, while runtime selector lookup, reselection, fallback and registration-order selection are forbidden",
     "nonescaping_lexical_access": "callable_residence_descriptors use unique callable_id values and keep residence and explicit environment as orthogonal axes; only a non-closed RegionBound callable may carry shared-read call-duration lexical dependencies, present-empty [] is represented by closed_ancestor_frame_assertion=true with zero dependencies, RegionId remains internal proof metadata and no lexical read creates a new observable event"
   },
   "x-deeplus-fixed-operator-conformance-contract": {

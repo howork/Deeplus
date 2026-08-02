@@ -20,7 +20,10 @@
       "const": "deeplus.module-implementation-digest/r1"
     },
     "interface_profile": {
-      "const": "R4_NAME_RESOLUTION_MODULES"
+      "enum": [
+        "R4_NAME_RESOLUTION_MODULES",
+        "R41_ACTOR_PROTOCOL_BINDINGS"
+      ]
     },
     "target_id": {
       "type": "string",
@@ -50,6 +53,10 @@
     "hir_semantic_sha256": {
       "$ref": "#/$defs/sha256"
     },
+    "actor_protocol_binding_tables_sha256": {
+      "$ref": "#/$defs/sha256",
+      "description": "Exact MODULE_IMPLEMENTATION table-set digest, including private Actor Protocol binding rows; the canonical empty table set is used when none exist."
+    },
     "external_compatibility_identity": {
       "const": false
     },
@@ -58,6 +65,23 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "interface_profile": {
+            "const": "R41_ACTOR_PROTOCOL_BINDINGS"
+          }
+        },
+        "required": [
+          "interface_profile"
+        ]
+      },
+      "then": {
+        "required": [
+          "actor_protocol_binding_tables_sha256"
+        ]
+      }
+    },
     {
       "if": {
         "properties": {
@@ -101,11 +125,18 @@
       "debug_span"
     ],
     "interface_sha256_in_implementation_preimage": true,
+    "actor_protocol_binding_tables_sha256_in_implementation_preimage": true,
     "private_implementation_changes_public_interface_identity": false
   },
   "x-deeplus-artifact-bindings": {
     "interface_sha256": "module-api-digest.canonical_sha256",
-    "hir_semantic_sha256": "rfcs/DP-RFC-0002-current-hir-h1.md#23.3 hir_semantic_digest"
+    "hir_semantic_sha256": "rfcs/DP-RFC-0002-current-hir-h1.md#23.3 hir_semantic_digest",
+    "actor_protocol_binding_tables_sha256": "actor-protocol-binding-table(MODULE_IMPLEMENTATION).table_set_sha256"
+  },
+  "x-deeplus-actor-protocol-binding-profile": {
+    "profile": "R41_ACTOR_PROTOCOL_BINDINGS",
+    "legacy_profile_accepts_absent_field": true,
+    "binding_profile_requires_present_field": true
   },
   "x-product-compiler": "NOT_RUN",
   "x-deeplus-product-compiler": "NOT_RUN"
