@@ -103,13 +103,13 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "75defdb2f1d8dbee001afca432543a7322eab8e278d2cfa02fe9f23109018d6a"
+        "64778b8ab2be1fe9e04f54e2878f9a1784eda76620c8a957793ede5499949bde"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
     ),
     "tests/fixtures/current/hir-h1-current-mir-bridge-r1.json": (
-        "137c810edbfc7100a67b8f5f3b34a1ce43feeefd2e08f32a373407f023d5f048"
+        "8f3bb9e9fc304590223d17210a5e39dd46767399c0dbe91dd38e501b32714b1f"
     ),
 }
 
@@ -2358,7 +2358,7 @@ R41_GRAMMAR_SHA256 = (
     "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
 )
 R41_HIR_H1_BRIDGE_SHA256 = (
-    "6823b757662b3b6144a7f360d5e792e2f20647feb1753a3dfe057338b54464f6"
+    "64778b8ab2be1fe9e04f54e2878f9a1784eda76620c8a957793ede5499949bde"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -3594,9 +3594,9 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1452
-            and relation_metadata_doc.value.get("relation_count") == 568,
-            "diagnostic/relation canonical counts are not exact R41",
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1476
+            and relation_metadata_doc.value.get("relation_count") == 570,
+            "diagnostic/relation canonical counts are not exact R46 fusion",
         ),
         (
             set(active_diagnostics)

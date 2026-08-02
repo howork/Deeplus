@@ -99,6 +99,7 @@
 | `BLOCK_COMMENT_NESTING_UNCLOSED` | `lexer` | `error` | `active` | Nested block comment was not completely closed. |
 | `BODYLESS_MEMBER_MUST_BE_OPEN` | `checker` | `error` | `active` | Body-less member declaration must be an open slot and use the + suffix. |
 | `BODYLESS_ORDINARY_FUNCTION_NOT_CURRENT` | `parser` | `error` | `active` | Only a trait requirement or declared signature context may omit a function body. |
+| `BORROW_CROSSES_SUSPENSION` | `checker` | `error` | `active` | A non-static loan remains live across a suspension point. |
 | `BORROW_ESCAPE_OWNER_REGION` | `checker` | `error` | `active` | Borrowed view escapes the owner region. |
 | `BOUNDED_INDEX_LENGTH_MISMATCH` | `checker` | `error` | `active` | The bounded list element count must equal the asserted closed logical-domain cardinality. |
 | `BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN` | `parser` | `error` | `active` | A bounded list contains expressions only; call labels, evidence arguments and unfolding are forbidden. |
@@ -245,6 +246,10 @@
 | `CONTEXT_PARAMETER_NOT_APPLIED_AUTOMATICALLY` | `checker` | `error` | `active` | A context parameter is not automatically applied to body operations. |
 | `CONTEXT_ROLE_MISMATCH_IN_OVERRIDE` | `checker` | `error` | `active` | Override or witness parameter role does not match the requirement. |
 | `CONTEXT_VALUE_REQUIRES_REUSABLE_SHAREABLE` | `checker` | `error` | `active` | Context value must be reusable, Shareable, no-drop, and authority-free in the minimum profile. |
+| `CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID` | `checker` | `error` | `active` | A continuation-frame terminal path does not discharge cleanup exactly once in the required order. |
+| `CONTINUATION_FRAME_OWNER_PARTITION_INVALID` | `checker` | `error` | `active` | A continuation frame duplicates, loses, partially transfers, or invents a partition identity. |
+| `CONTINUATION_FRAME_ROOT_SET_INVALID` | `checker` | `error` | `active` | A continuation frame has an invalid managed-root rebind, descriptor, generation, or provenance binding. |
+| `CONTINUATION_FRAME_TRANSITION_INVALID` | `checker` | `error` | `active` | A continuation frame or suspension epoch uses an invalid transition. |
 | `CONTRAVARIANT_TYPE_PARAM_USED_IN_PRODUCER_POSITION` | `checker` | `error` | `active` | A contravariant type parameter cannot be used in a producer/output/read position. |
 | `COPYABLE_REMOVED_USE_PLAIN_OR_SHARED` | `checker` | `error` | `active` | Copyable is not current-canonical public vocabulary. Choose Plain, Shared<T>, explicit clone/derivation, or explicit move according to the responsibility you need. |
 | `COVARIANT_TYPE_PARAM_USED_IN_CONSUMER_POSITION` | `checker` | `error` | `active` | A covariant type parameter cannot be used in a consumer/input/write position. |
@@ -610,6 +615,12 @@
 | `LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE` | `checker` | `error` | `active` | Loop outcome match arms must use \`::break(...)\` or \`::completed\` patterns. |
 | `MALFORMED_NUMERIC_EXPONENT` | `lexer` | `error` | `active` | A decimal exponent requires one or more digits after its optional sign. |
 | `MALFORMED_NUMERIC_RADIX_PREFIX` | `lexer` | `error` | `active` | A 0b, 0o, or 0x radix prefix must be followed by at least one digit candidate before a suffix or delimiter. |
+| `MANAGED_REFERENCE_JIT_RETIREMENT_LEASE_VIOLATION` | `runtime` | `error` | `active` | A JIT image retirement violates the managed-reference generation lease gate. |
+| `MANAGED_REFERENCE_PROJECTION_PARITY_MISMATCH` | `runtime` | `error` | `active` | xVM, Object AOT and JIT disagree on a managed-reference semantic projection. |
+| `MANAGED_REFERENCE_ROOT_RECEIPT_DIGEST_MISMATCH` | `runtime` | `error` | `active` | A managed root receipt digest does not match its canonical root set and safepoint binding. |
+| `MANAGED_REFERENCE_ROOT_SET_INVALID` | `runtime` | `error` | `active` | A managed root set is missing, extra, duplicate, unordered, stale or not equal to its partition union. |
+| `MANAGED_REFERENCE_SAFEPOINT_ORDER_INVALID` | `runtime` | `error` | `active` | Managed root publication, operation entry, outcome commit or receipt release is out of order. |
+| `MANAGED_REFERENCE_SAFEPOINT_SET_INVALID` | `runtime` | `error` | `active` | The managed-memory plan has a missing, extra, implicit or wrongly bound safepoint. |
 | `MAP_DOT_LOOKUP_REQUIRES_SCHEMA_KNOWN_KEY` | `checker` | `error` | `seed` | Map dot lookup requires schema known key |
 | `MAP_ENTRY_EQUALS_REMOVED_USE_COLON` | `checker` | `error` | `seed` | Map entry equals removed use colon |
 | `MAP_IS_NOT_NAMED_UNFOLD_SOURCE` | `checker` | `error` | `active` | Map keys are runtime values and cannot provide the static labels required by named unfolding. |
@@ -899,6 +910,7 @@
 | `RATIONAL_OVER_REQUIRES_EXACT_INTEGERS` | `checker` | `error` | `active` | Rational construction through over requires two exact integer operands. |
 | `RAW_MULTILINE_STRING_NOT_CURRENT` | `lexer` | `error` | `active` | Raw multiline String syntax is not current; use the Unicode multiline String or \`#raw"..."\`. |
 | `RAW_POINTER_ARITHMETIC_OPERATOR_FORBIDDEN` | `checker` | `error` | `active` | Use named unsafe pointer operations instead of ordinary arithmetic operators. |
+| `RAW_POINTER_PROVENANCE_ACROSS_SAFEPOINT` | `runtime` | `error` | `active` | A managed-derived raw or interior pointer remains live across a safepoint or FFI boundary. |
 | `RAW_STRING_DELIMITER_INVALID` | `lexer` | `error` | `active` | Stable raw String uses exactly the attached \`#raw"..."\` delimiter family. |
 | `RAW_STRING_UNTERMINATED` | `lexer` | `error` | `active` | A raw String literal must end with its closing double quote. |
 | `RAW_WITNESS_VALUE_NOT_CURRENT` | `checker` | `error` | `active` | Witness evidence is not an ordinary first-class type or value; the only source binding is an explicit borrowed \`using name: witness Trait\` parameter. |
@@ -977,6 +989,18 @@
 | `RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN` | `checker` | `error` | `active` | The expected result type cannot create, distinguish, or rank a fixed-operator conformance candidate. |
 | `RET_OUTSIDE_LAMBDA` | `checker` | `error` | `active` | \`ret\` is a local-result terminator only in a lambda block, a value match arm or declarative value-clause arm, or an \`@if\`/\`@try\`/\`@scope\` local-value block; it is not a named-function return. |
 | `RIGHTWARD_BINDING_SEMANTIC_NODE_FORBIDDEN` | `design_static` | `error` | `active` | Rightward local binding must normalize to an ordinary local binding before semantic AST/HIR and MIR. |
+| `RUNTIME_ABI_ARTIFACT_BINDING_MISMATCH` | `runtime` | `error` | `active` | A runtime artifact receipt does not bind the exact ABI, target projection, helper map, or image identity. |
+| `RUNTIME_ABI_CHANNEL_PROJECTION_INVALID` | `runtime` | `error` | `active` | An internal ABI argument or result uses an invalid direct, indirect, alignment, or sret projection. |
+| `RUNTIME_ABI_CROSS_PATH_PARITY_MISMATCH` | `runtime` | `error` | `active` | xVM, Object AOT, and JIT disagree on an internal runtime ABI logical trace. |
+| `RUNTIME_ABI_DIGEST_MISMATCH` | `runtime` | `error` | `active` | The internal runtime ABI identity or canonical digest does not match. |
+| `RUNTIME_ABI_HELPER_SET_INVALID` | `runtime` | `error` | `active` | The internal runtime helper set is missing, extra, duplicate, unordered, or unlisted. |
+| `RUNTIME_ABI_HELPER_SIGNATURE_MISMATCH` | `runtime` | `error` | `active` | A runtime helper identity is bound to the wrong signature or version. |
+| `RUNTIME_ABI_HOST_UNWIND_FORBIDDEN` | `runtime` | `error` | `active` | Host unwind or a native exception crosses the Deeplus internal runtime ABI boundary. |
+| `RUNTIME_ABI_JIT_IMPORT_INVALID` | `runtime` | `error` | `active` | A JIT import is unlisted, missing, duplicate, or signature/provider mismatched. |
+| `RUNTIME_ABI_JIT_RETIREMENT_LEASE_VIOLATION` | `runtime` | `error` | `active` | A JIT image retires while it is published or still has an active ABI lease. |
+| `RUNTIME_ABI_OUTCOME_TRANSPORT_INVALID` | `runtime` | `error` | `active` | The runtime ABI outcome tag and payload-slot commitment are inconsistent. |
+| `RUNTIME_ABI_OWNERSHIP_COMMIT_INVALID` | `runtime` | `error` | `active` | The internal ABI commits ownership too early, more than once, or rolls it back after callee entry. |
+| `RUNTIME_ABI_TARGET_PROJECTION_MISMATCH` | `runtime` | `error` | `active` | The runtime ABI target projection is missing, stale, or inconsistent with its digest. |
 | `RUN_ALREADY_CONSUMED` | `checker` | `error` | `active` | A Run<T> is a one-shot concur child responsibility and has already been consumed. |
 | `RUN_GROUP_NOT_ACTIVATABLE` | `checker` | `error` | `active` | RunGroup<T> is Preview Design and nonactivatable; concur remains the sole lexical structured owner. |
 | `RUN_REPLY_TYPE_MISMATCH` | `checker` | `error` | `active` | Run<T> and Reply<T> are distinct one-shot responsibilities and cannot be converted or substituted for one another. |
@@ -1297,6 +1321,7 @@
 | `BitwiseDomainAdmitted` | BitwiseDomainAdmitted | Historical predicate identity for the Stable built-in pointwise logical family. It preserves packed known-width integer and finite bitfield/#flags behavior and additionally admits exact same-shape NumericArray operands over one exact known-width integer element domain. Scalar Bool, NumericArray<Bool>, generic collections, dynamic/heterogeneous shapes, implicit broadcast or conversion, user-defined carriers, and result-as-control use reject deterministically. Binary operands evaluate left-to-right once with zero short circuit or flow narrowing. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalImportAdmitted` | BlockLocalImportAdmitted | Admits current block-prologue compile-time name visibility with no runtime load or extension activation. | `DESIGN_STATIC_NOT_RUN` |
 | `BlockLocalUseAdmitted` | BlockLocalUseAdmitted | Admits a block-prologue lexical use frame without name import, authority, evidence, or source-order priority. | `DESIGN_STATIC_NOT_RUN` |
+| `BorrowAcrossSuspensionAdmitted` | BorrowAcrossSuspensionAdmitted | Admit a live value across suspension only when its continuation-frame disposition and loan lifetime are statically closed. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BorrowEscapeAdmitted` | borrow/view escape | Closed borrow-escape decision with four exact local reason keys and one current public primary diagnostic; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `BoundedIndexDomainAdmitted` | BoundedIndexDomainAdmitted | Construct an exact bounded logical index domain from StaticInt bounds and expression-only elements. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BoundedLogicalIndexDomainAdmitted` | BoundedLogicalIndexDomainAdmitted | Admits StaticInt closed logical bounds whose cardinality equals the literal element count. | `DESIGN_STATIC_NOT_RUN` |

@@ -12133,9 +12133,9 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 720
-                and fixed_counts.get("predicates") == 277
-                and fixed_counts.get("predicate_fixtures") == 855
+                and fixed_counts.get("features") == 721
+                and fixed_counts.get("predicates") == 278
+                and fixed_counts.get("predicate_fixtures") == 858
                 and fixed_counts.get("no_go") == 155
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13500,7 +13500,7 @@ def main() -> int:
         is False
         and cranelift_projection.get("symbol_or_link_order_selects_semantics")
         is False
-        and len(cranelift_contract.get("required_receipt_inputs", [])) == 17
+        and len(cranelift_contract.get("required_receipt_inputs", [])) == 22
         and cranelift_outcomes.get("native_exception_semantic_authority")
         is False
         and cranelift_outcomes.get("host_unwind_semantic_authority") is False
@@ -13553,7 +13553,7 @@ def main() -> int:
         ) is False
         and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
             "canonical_promotion_ready"
-        ) is False
+        ) is True
         and (root / "crates/deeplus-codegen-cranelift/Cargo.toml").is_file(),
         "CRANELIFT_HIR_MIR_PROJECTION_BOUNDARY",
         (
