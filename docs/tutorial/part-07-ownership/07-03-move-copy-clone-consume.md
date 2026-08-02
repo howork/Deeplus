@@ -4,9 +4,10 @@
 
 ## 1. 상태와 읽는 법
 
-move와 capture의 `copy`/`clone`/`deep`/`once` mode는 현행 설계다. 이
-단어들은 성능 hint가 아니라 source validity, witness, effect/error와
-cleanup을 바꾸는 책임이다.
+move와 capture의 `copy`/`clone`/`once` mode는 현행 설계다. `deep`은
+그래프·alias·cycle 정책이 닫히기 전까지 사용할 수 없는 Preview
+Design이다. 이 단어들은 성능 hint가 아니라 source validity, witness,
+effect/error와 cleanup을 바꾸는 책임이다.
 
 ## 2. 학습 목표
 
@@ -28,11 +29,13 @@ owner/place와 Trait conformance, closure의 기초를 알고 있어야 한다.
 ## 5. 핵심 모델
 
 - `move`: owner와 cleanup responsibility를 이전한다.
-- `copy`: admitted reusable value/bit-copy 책임을 요구하고 source를
-  valid하게 둔다.
+- `copy`: sealed `CopyValue` 규칙이 증명한 cleanup-free semantic
+  duplication을 요구하고 source를 valid하게 둔다. 메모리 byte 복사를
+  뜻하지 않는다.
 - `clone`: exact `Clone` witness를 한 번 호출하며 그 effect/error를
   노출한다.
-- `deep`: 별도 deep-copy profile과 graph identity/cycle 법칙이 필요하다.
+- `deep`: 별도 `DeepClone` profile과 graph identity/cycle 법칙이 필요한
+  비활성 Preview Design이다. 현행 프로그램에서는 거부된다.
 - `once`: captured environment field를 한 번만 소비하게 한다.
 
 consuming receiver/API가 owner를 계속 보존한다면 모든 성공 경로에서

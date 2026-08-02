@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r29/ownership-type-qualifier-r1.schema.json",
+  "title": "Deeplus ownership type qualifier contract R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "status",
+    "repository",
+    "branch",
+    "baseline_commit",
+    "baseline_tree",
+    "gap_id",
+    "dependencies",
+    "source_surface",
+    "identity_separation",
+    "normalization",
+    "qualifier_semantics",
+    "context_legality",
+    "api_residue",
+    "hir_mapping",
+    "mir_mapping",
+    "diagnostic_dispatch",
+    "status_fence"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/ownership-type-qualifier-r1.schema.json"},
+    "schema": {"const": "deeplus.ownership-type-qualifier/r1"},
+    "revision": {"const": "R29-LOCAL-CANDIDATE-R1"},
+    "status": {"const": "APPROVED_NOT_INTEGRATED_DESIGN_STATIC"},
+    "repository": {"const": "https://github.com/howork/Deeplus.git"},
+    "branch": {"const": "main"},
+    "baseline_commit": {"const": "87115776365fcbe8870d2f631050db3e23194c9b"},
+    "baseline_tree": {"const": "2452f0a6be1e1391b3678dafa86987059b115ec7"},
+    "gap_id": {"const": "IR-OWN-P1-018"},
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["IR-OWN-P0-013"],
+      "properties": {"IR-OWN-P0-013": {"const": "VERIFIED_CLOSED"}}
+    },
+    "source_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grammar_change_required", "grammar_repair", "new_surface_count", "exact_qualifier_spellings", "ast_target", "maximum_qualifier_count_after_alias_expansion", "function_type_item_rule", "preserved_parameter_mode_spellings"],
+      "properties": {
+        "grammar_change_required": {"const": true},
+        "grammar_repair": {"const": "ROOT_CONNECTION_ONLY_EXISTING_STABLE_SURFACE"},
+        "new_surface_count": {"const": 0},
+        "exact_qualifier_spellings": {"const": ["owned", "borrowed", "mut", "inout"]},
+        "ast_target": {"const": "OwnershipQualifiedType"},
+        "maximum_qualifier_count_after_alias_expansion": {"const": 1},
+        "function_type_item_rule": {"type": "string", "minLength": 20},
+        "preserved_parameter_mode_spellings": {"const": ["borrow", "mut", "move", "inout"]}
+      }
+    },
+    "identity_separation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parameter_mode_domain", "type_ownership_qualifier_domain", "cross_product_is_explicit", "implicit_conversion_between_domains", "examples", "function_type_disambiguation"],
+      "properties": {
+        "parameter_mode_domain": {"$ref": "#/$defs/identityDomain"},
+        "type_ownership_qualifier_domain": {"$ref": "#/$defs/identityDomain"},
+        "cross_product_is_explicit": {"const": true},
+        "implicit_conversion_between_domains": {"const": false},
+        "examples": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "object"}},
+        "function_type_disambiguation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commit_lookahead", "direct_channel_tokens", "direct_channel_normalization", "inner_grouped_qualifier_tokens", "non_function_parenthesized_type_rule", "new_spelling_count"],
+          "properties": {
+            "commit_lookahead": {"const": "CLOSING_PAREN_FOLLOWED_BY_ARROW"},
+            "direct_channel_tokens": {"const": ["borrow", "mut", "move", "inout"]},
+            "direct_channel_normalization": {"const": ["BORROW", "MUT_LOCAL", "MOVE", "INOUT"]},
+            "inner_grouped_qualifier_tokens": {"const": ["owned", "borrowed", "mut", "inout"]},
+            "non_function_parenthesized_type_rule": {"const": "NORMAL_TYPE_REF_QUALIFIER"},
+            "new_spelling_count": {"const": 0}
+          }
+        }
+      }
+    },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordered_steps", "alias_expansion_precedes_uniqueness_check", "duplicate_same_qualifier_is_idempotent", "conflicting_qualifiers_are_rejected", "unqualified_is_not_owned", "qualifier_distribution_over_union_or_intersection", "outer_qualifier_requires_parentheses_for_composite_base", "canonical_emission"],
+      "properties": {
+        "ordered_steps": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}},
+        "alias_expansion_precedes_uniqueness_check": {"const": true},
+        "duplicate_same_qualifier_is_idempotent": {"const": false},
+        "conflicting_qualifiers_are_rejected": {"const": true},
+        "unqualified_is_not_owned": {"const": true},
+        "qualifier_distribution_over_union_or_intersection": {"const": false},
+        "outer_qualifier_requires_parentheses_for_composite_base": {"const": true},
+        "canonical_emission": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["UNQUALIFIED", "OWNED", "BORROWED", "MUT", "INOUT"],
+          "properties": {
+            "UNQUALIFIED": {"type": "null"},
+            "OWNED": {"const": "owned"},
+            "BORROWED": {"const": "borrowed"},
+            "MUT": {"const": "mut"},
+            "INOUT": {"const": "inout"}
+          }
+        }
+      }
+    },
+    "qualifier_semantics": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/qualifierSemantic"}
+    },
+    "context_legality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contexts", "rows", "generic_argument_rule", "nested_qualifier_rule", "implicit_conversion_rule"],
+      "properties": {
+        "contexts": {"type": "array", "minItems": 9, "maxItems": 9, "uniqueItems": true, "items": {"type": "string"}},
+        "rows": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/contextRow"}},
+        "generic_argument_rule": {"type": "string", "minLength": 20},
+        "nested_qualifier_rule": {"const": "REJECT_AFTER_ALIAS_EXPANSION"},
+        "implicit_conversion_rule": {"const": "NO_QUALIFIER_WIDENING_NARROWING_OR_ERASURE"}
+      }
+    },
+    "api_residue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_fields", "public_qualifier_erasure_allowed", "parameter_mode_erasure_allowed", "borrowed_public_return_requires_declared_origin_relation", "inout_public_return_allowed", "serialization_order"],
+      "properties": {
+        "required_fields": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}},
+        "public_qualifier_erasure_allowed": {"const": false},
+        "parameter_mode_erasure_allowed": {"const": false},
+        "borrowed_public_return_requires_declared_origin_relation": {"const": true},
+        "inout_public_return_allowed": {"const": false},
+        "serialization_order": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "hir_mapping": {"$ref": "#/$defs/mappingObject"},
+    "mir_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownership_mode_universe", "rows", "new_mir_operation_count", "backend_specific_semantic_count"],
+      "properties": {
+        "ownership_mode_universe": {"const": ["REUSABLE", "OWNED", "BORROWED", "INOUT"]},
+        "rows": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/mirRow"}},
+        "new_mir_operation_count": {"const": 0},
+        "backend_specific_semantic_count": {"const": 0}
+      }
+    },
+    "diagnostic_dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["borrowed_or_inout_unbound_escape", "other_illegal_context_or_qualifier_combination", "new_diagnostic_id_count", "priority"],
+      "properties": {
+        "borrowed_or_inout_unbound_escape": {"const": "BORROW_ESCAPE_OWNER_REGION"},
+        "other_illegal_context_or_qualifier_combination": {"const": "OWNERSHIP_MODE_ADMISSION_FAILED"},
+        "new_diagnostic_id_count": {"const": 0},
+        "priority": {"const": ["BORROW_ESCAPE_OWNER_REGION", "OWNERSHIP_MODE_ADMISSION_FAILED"]}
+      }
+    },
+    "status_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "gap_state", "canonical_feature_p1", "m13_actions", "product_lanes", "production_implementation", "github_mutation"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "gap_state": {"const": "APPROVED_NOT_INTEGRATED"},
+        "canonical_feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_mutation": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "identityDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "normalized_values", "source_values", "law"],
+      "properties": {
+        "identity": {"enum": ["ParameterMode", "TypeOwnershipQualifier"]},
+        "normalized_values": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true},
+        "source_values": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true},
+        "law": {"type": "string", "minLength": 20}
+      }
+    },
+    "qualifierSemantic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualifier", "surface", "responsibility", "region_requirement", "mutability", "variance", "implicit_subtyping", "mir_ownership_mode"],
+      "properties": {
+        "qualifier": {"enum": ["UNQUALIFIED", "OWNED", "BORROWED", "MUT", "INOUT"]},
+        "surface": {"type": ["string", "null"]},
+        "responsibility": {"type": "string"},
+        "region_requirement": {"type": "string"},
+        "mutability": {"type": "string"},
+        "variance": {"enum": ["BASE_TYPE_RULE", "INVARIANT"]},
+        "implicit_subtyping": {"const": false},
+        "mir_ownership_mode": {"enum": ["BASE_TYPE_DERIVED", "BASE_REUSABLE_OR_OWNED", "OWNED", "BORROWED", "INOUT"]}
+      }
+    },
+    "contextRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualifier", "admission"],
+      "properties": {
+        "qualifier": {"enum": ["UNQUALIFIED", "OWNED", "BORROWED", "MUT", "INOUT"]},
+        "admission": {"type": "object", "minProperties": 9, "maxProperties": 9, "additionalProperties": {"type": "string"}}
+      }
+    },
+    "mappingObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "required_fields", "callable_parameter_fields", "unqualified_wrapper_materialization", "backend_neutral"],
+      "properties": {
+        "node": {"const": "HirOwnershipQualifiedType"},
+        "required_fields": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true},
+        "callable_parameter_fields": {"const": ["parameter_mode", "normalized_type_id", "type_ownership_qualifier"]},
+        "unqualified_wrapper_materialization": {"const": "OPTIONAL_BUT_API_RESIDUE_FIELD_REQUIRED"},
+        "backend_neutral": {"const": true}
+      }
+    },
+    "mirRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["qualifier", "ownership_mode", "additional_proof"],
+      "properties": {
+        "qualifier": {"enum": ["UNQUALIFIED", "OWNED", "BORROWED", "MUT", "INOUT"]},
+        "ownership_mode": {"enum": ["BASE_TYPE_DERIVED", "BASE_REUSABLE_OR_OWNED", "OWNED", "BORROWED", "INOUT"]},
+        "additional_proof": {"type": "string"}
+      }
+    }
+  }
+}

@@ -234,6 +234,7 @@ def recompute(root: Path) -> dict[str, str]:
         owner["canonical_promotion_ready"] = True
 
     continuation["seam_status"].update({
+        "r36_managed_reference_profile_digest": memory_digest,
         "r37_helpers_remain_dependency_unbound": False,
         "r37_dependency_binding": "EXACT_LOCAL_FUSION_BOUND",
         "r37_runtime_abi_digest": runtime_abi_digest,

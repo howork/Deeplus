@@ -187,7 +187,8 @@
       "ProofId",
       "TraitWitnessId",
       "ReservationId",
-      "JoinConflictId"
+      "JoinConflictId",
+      "ResponsibilityEvidenceId"
     ],
     "referenced_canonical_identity_domains": [
       "StableSymbolKey",
@@ -390,13 +391,13 @@
             "domain": "IsolationDomainId"
           },
           {
-            "role": "witness",
-            "domain": "TraitWitnessId"
+            "role": "evidence",
+            "domain": "ResponsibilityEvidenceId"
           }
         ],
         "cardinality": 4,
-        "required_binding": "normalized Shareable conformance and exact TraitWitnessId",
-        "recompute": "the witness resolves to the bound TypeId, the current conformance registry admits Shareable, and the OwnerId plus destination domain are exactly the transfer context"
+        "required_binding": "exact sealed Shareable ResponsibilityEvidenceId",
+        "recompute": "the responsibility evidence resolves to the bound TypeId, the current responsibility registry admits Shareable, and the OwnerId plus destination domain are exactly the transfer context"
       },
       "Transferable": {
         "subjects": [
@@ -413,13 +414,13 @@
             "domain": "IsolationDomainId"
           },
           {
-            "role": "witness",
-            "domain": "TraitWitnessId"
+            "role": "evidence",
+            "domain": "ResponsibilityEvidenceId"
           }
         ],
         "cardinality": 4,
-        "required_binding": "normalized Transferable conformance and exact TraitWitnessId",
-        "recompute": "the witness resolves to the bound TypeId, the current conformance registry admits Transferable, and the OwnerId plus destination domain are exactly the transfer context"
+        "required_binding": "exact sealed Transferable ResponsibilityEvidenceId",
+        "recompute": "the responsibility evidence resolves to the bound TypeId, the current responsibility registry admits Transferable, and the OwnerId plus destination domain are exactly the transfer context"
       }
     },
     "proof_verifier": {
@@ -431,7 +432,7 @@
         "canonicalize the consumed typed facts and compare their SHA-256 with derivation_input_digest",
         "reject missing, stale, out-of-scope, witness-mismatched or non-recomputable proof as INPUT_INVALID"
       ],
-      "shareable_transferable_witness_rule": "TraitWitnessId must resolve to the exact normalized TypeId and active Shareable or Transferable conformance; name equality or issuer_feature_id alone is insufficient",
+      "shareable_transferable_witness_rule": "ResponsibilityEvidenceId must resolve to the exact normalized TypeId and active sealed Shareable or Transferable registry derivation; name equality or issuer_feature_id alone is insufficient",
       "external_no_alias_rule": "binding_identity_or_null must resolve to one registered external contract with an active platform profile and exact no-alias clause",
       "forged_proof_admission_count": 0
     },
@@ -690,7 +691,7 @@
         ],
         "fields": {
           "role": "proof-kind-specific closed role key",
-          "domain": "TypeId|PlaceId|MovePathId|OwnerId|LoanId|RegionId|IsolationDomainId|VariantId|TraitWitnessId",
+          "domain": "TypeId|PlaceId|MovePathId|OwnerId|LoanId|RegionId|IsolationDomainId|VariantId|TraitWitnessId|ResponsibilityEvidenceId",
           "id": "identity matching the selected domain"
         },
         "additional_properties": false

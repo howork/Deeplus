@@ -79,7 +79,26 @@ obligation that exists on either incoming edge.
 
 An assignment evaluates its target place once and its right operand once. A compound assignment evaluates the place, reads the original value, evaluates the right operand, completes one intrinsic operation, and commits at most one write, in that order. Every assignment returns `Unit`. Any failure before commit preserves the original owner and value; no compound-assignment MIR opcode may hide a second place evaluation or partial write.
 
-An ordinary `mut` parameter is lowered as one callee-owned mutable local place. The argument is evaluated and acquired once before that place is committed; an affine argument moves into it, no caller-place alias or write-back edge is created, and the callee owns its exactly-once cleanup. This is distinct from `inout`, which borrows one caller place exclusively and commits writes to that same place, and from a `mut T` responsibility, which denotes a unique mutable owner or view rather than a call channel. A failure before parameter commit retains the caller owner and publishes no callee local.
+An ordinary `mut` parameter is lowered as one callee-owned mutable local place. The argument is evaluated and acquired once before that place is committed; an affine argument moves into it, no caller-place alias or write-back edge is created, and the callee owns its exactly-once cleanup. This is distinct from `inout`, which borrows one caller place exclusively and commits writes to that same place, and from a `mut T` responsibility, which denotes a unique mutable owner rather than a call channel. A failure before parameter commit retains the caller owner and publishes no callee local.
+
+Type ownership qualifiers are closed before MIR sealing. `UNQUALIFIED`
+delegates to the already checked base-type responsibility; `OWNED` retains the
+base type's `REUSABLE` or `OWNED` value class with null region and loan;
+`BORROWED` produces a `BORROWED` value
+with one exact `RegionId` and `LoanId`; `MUT` produces an `OWNED` value whose
+admitted place capability is mutable; and `INOUT` produces an `INOUT` value
+with one exact region and exclusive loan. The source qualifier remains HIR and
+module-API identity even where two variants share the same MIR ownership enum.
+
+The HIR-to-MIR verifier rejects a missing required region, a region on an
+owner qualifier, qualifier stacking after alias expansion, public residue
+that erased the qualifier, and every mapping other than the exact table above.
+Borrowed and inout values may not cross a return, storage, capture,
+suspension, isolation, actor, concur, or FFI boundary unless the exact
+qualifier contract admits and records the corresponding origin relation.
+Cranelift receives only the verified MIR ownership, place, region, loan, and
+cleanup plan. It cannot infer qualifier legality from address shape or choose
+a different responsibility in AOT or JIT lowering.
 
 ### 2.1 Function static activation
 
@@ -169,8 +188,12 @@ formatter/LSP, and executable concurrency evidence remain `NOT_RUN`.
 
 Closure environments are built by one ordered capture plan. `borrow` and
 `inout` create bounded nonescaping observations, `move` transfers one owner,
-`copy` requires admitted value-copy responsibility, and `clone`/`deep` retain
-the selected witness operation's declared Error and EffectRow. A capture-level
+and `copy` requires the sealed `CopyValue` responsibility while preserving a
+null Trait witness. `clone` retains one exact `Clone` witness together with its
+normalized ErrorSet, EffectRow, result acquisition, and cleanup plan. `deep`
+requires the distinct nonactivatable `DeepClone` profile and never falls back
+to Clone. The backend receives the already selected responsibility/evidence
+identities and performs no runtime lookup. A capture-level
 `once` field is one-shot but does not consume the closure's callable right
 unless the closure independently has `#once`. Before environment commit, a
 failed capture acquisition cleans acquired temporaries in reverse order and
@@ -237,6 +260,24 @@ foreign ABI follows from the semantic pair.
 ## 5. Failure and cleanup
 
 Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one `concur` terminal barrier, the failed run with the lowest lexical `spawn_index` becomes primary and the remaining run failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
+
+Cleanup-budget checking is completed before verified MIR. Canonical HIR binds
+each construction lifecycle plan to one `CleanupBudgetId`; the module table
+retains declaration mode, family-root identity, normalized effective error and
+effect rows, ordered compiler-local base/field/hook contributions, and their
+subset proofs. The HIR-to-MIR verifier recomputes both unions and rejects a
+forged envelope, missing contribution, widened child, unresolved identity, or
+digest mismatch.
+
+Verified MIR carries the normalized envelope table and references its existing
+`cleanup_budget_id` from construction-lifecycle payloads. No cleanup-budget
+evaluation, branch, or new MIR operation is introduced. Existing cleanup
+operations preserve the closed live-object order (hook, reverse-acquisition
+fields, recursive base) and construction-abort order (live fields, committed
+base, no whole-object hook). A budget neither authorizes an effect nor changes
+which failure is primary or suppressed. xVM and Cranelift consume only the
+already-verified lifecycle operations; backend policy cannot reinterpret the
+envelope.
 
 ## 6. Option coalescing and lazy evaluation
 
@@ -930,6 +971,41 @@ Moves preserve immutable origin provenance, reservations use exact
 divergent global loan/token/reservation/conflict state is terminal without an
 output state.  Static execution of the contract does not claim a production
 MIR, xVM, runtime, or Cranelift implementation.
+
+### Path-sensitive loan closing
+
+Source keeps loan closing implicit. MIR makes it explicit with the existing
+`LOAN_BEGIN_SHARED`, `LOAN_BEGIN_EXCLUSIVE`, `LOAN_BEGIN_REBORROW`, `LOAN_END`,
+and linear `ACCESS(LoanId)` identities. Each loan-table row binds one static
+begin operation, one optional parent loan, and a nonempty canonical set of
+static end operations. The lowerer derives the earliest close frontier after
+all authorized uses and children and before every conflicting owner mutation,
+move, replacement, cleanup, region exit, or unadmitted suspension. Critical
+edges are split when only part of a successor frontier closes the loan.
+
+Every dynamic begin executes exactly one matching end on every reachable
+normal, Error, Defect, Cancellation, early-exit, and terminal path. Multiple
+static ends are legal only on mutually exclusive paths. A loop iteration must
+return the static loan site to inactive before its backedge; a later iteration
+creates a fresh dynamic activation of that same site. Predecessors at a join
+must have identical loan and ACCESS-token states.
+
+Reborrows close leaf-first. Beginning a child suspends its immediate parent;
+ending that child resumes only that parent, and a parent cannot end while any
+child is live. `LOAN_END` is infallible and nonsuspending. It consumes exactly
+the ACCESS token bound to its LoanId, invalidates the activation's borrowed or
+inout views, and discharges ViewRelease. It creates no value, effect, Error,
+Defect, Cancellation, cleanup token, user cleanup call, or failure-order event.
+A malformed table, token binding, close order, join, suspension, owner barrier,
+or terminal balance is rejected by the release verifier as
+`MIR_LOAN_UNBALANCED`; the original source diagnostic remains primary when
+source itself was inadmissible.
+
+A deferred call that uses a loan is a final authorized use: invoke it, close
+the loan, then begin overlapping owner cleanup. This ordering rule does not
+activate or import any separate defer candidate. Existing primary outcomes
+remain primary, while later cleanup failures retain the deterministic LIFO
+suppression law in §5. Loan closing contributes no cleanup budget row.
 
 ## 15. Current HIR-H1/MIR R1 machine contract
 

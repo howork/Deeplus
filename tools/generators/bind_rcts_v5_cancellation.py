@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Bind the explicit cancellation axis into every canonical RCTS-V5 projection.
+"""Bind closed default axes into every canonical RCTS-V5 projection.
 
 Existing generated fixtures predate the required axis.  The default is
 ``forbidden`` as a structurally closed migration projection; predicates that
 exercise cancellation must override it in their own discriminating fixture.
 The default does not override predicate-specific semantic fixture authority.
+R29 also requires every callable parameter channel to carry a parallel
+TypeOwnershipQualifier residue.  Existing rows are projected to ``unqualified``
+without changing their already-reviewed parameter-mode semantics.
 """
 
 from __future__ import annotations
@@ -44,6 +47,17 @@ def bind(node: Any, preserve_missing_cancellation: bool = False) -> tuple[Any, i
         bound, count = bind(value, child_preserves_missing)
         output[key] = bound
         changed += count
+        if (
+            key == "parameter_modes"
+            and is_descriptor
+            and node.get("variant") == "callable"
+            and isinstance(bound, list)
+            and "type_ownership_qualifiers" not in node
+        ):
+            output["type_ownership_qualifiers"] = [
+                "unqualified" for _ in bound
+            ]
+            changed += 1
         if key == "responsibility" and is_descriptor and isinstance(bound, dict):
             if "cancellation" not in bound and not child_preserves_missing:
                 responsibility: dict[str, Any] = {}

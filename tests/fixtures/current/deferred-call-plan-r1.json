@@ -1,0 +1,289 @@
+{
+  "schema": "deeplus.deferred-call-plan-fixtures/r1",
+  "revision": "R32-DEFERRED-CALL-PLAN-R1",
+  "contract": "spec/contracts/deferred-call-plan-r1.json",
+  "input_schema": "schemas/language/deferred-call-plan-input-r1.schema.json",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "typed_inputs": [
+    {
+      "case_id": "R32-DCP-IN-POS-001",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "input": {
+        "schema": "deeplus.deferred-call-plan-input/r1",
+        "predicate_id": "SingleActionDeferAdmitted",
+        "variant": "TYPED_PLAN",
+        "plan_id": "dcp:scope-main:0",
+        "cleanup_scope_id": "cleanup-scope:main",
+        "registration_site_id": "hir-stmt:defer-0",
+        "source_registration_ordinal": 0,
+        "surface": {
+          "form": "MESSAGE_CALL",
+          "invocation_count": 1,
+          "contains_block": false,
+          "contains_inline_callable": false,
+          "contains_trailing_closure": false,
+          "contains_guard": false,
+          "contains_await": false,
+          "contains_spawn": false,
+          "contains_actor_transport": false
+        },
+        "selected_call": {
+          "mode_target_pair": "MESSAGE::DIRECT_IMPLEMENTATION",
+          "call_head_id": "call-head:file-close",
+          "selected_declaration_id": "decl:File.close",
+          "selected_implementation_id_or_null": "impl:File.close",
+          "virtual_slot_id_or_null": null,
+          "canonical_call_shape_id": "call-shape:File.close(context,default)",
+          "formal_binding_ids": ["formal:self", "formal:context", "formal:reason"],
+          "default_value_refs": [
+            {
+              "formal_binding_id": "formal:reason",
+              "default_value_ref_id": "default:File.close.reason",
+              "body_semantic_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+            }
+          ],
+          "selected_evidence_ids": ["evidence:Closeable:File"],
+          "normalized_result_type_id": "type:Unit",
+          "result_responsibility_profile_id": "responsibility:Unit",
+          "result_disposition": "UNIT_NO_VALUE",
+          "result_cleanup_obligation_id_or_null": null,
+          "execution_error_set_id": "errors:CloseError",
+          "execution_effect_row_id": "effects:io",
+          "execution_responsibility_profile_id": "responsibility:File.close",
+          "execution_suspension": "NONE",
+          "execution_cancellation": "FORBIDDEN",
+          "selection_time": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION",
+          "exit_time_selection_count": 0
+        },
+        "dynamic_operands_in_evaluation_order": [
+          {
+            "operand_id": "operand:0:receiver",
+            "evaluation_ordinal": 0,
+            "role": "CALLEE_OR_RECEIVER",
+            "argument_kind_or_null": null,
+            "source_argument_ordinal_or_null": null,
+            "label_id_or_null": null,
+            "source_expr_id_or_null": "hir-expr:file",
+            "default_value_ref_id_or_null": null,
+            "formal_binding_id_or_null": null,
+            "result_eval_id": "eval:file",
+            "prepared_value_id": "prepared:file-borrow",
+            "normalized_type_id": "type:File",
+            "responsibility_profile_id": "responsibility:borrow-File",
+            "evaluation_count": 1,
+            "acquisition": {
+              "kind": "SHARED_LOAN",
+              "source_place_id_or_null": "place:file",
+              "owner_id_or_null": "owner:file",
+              "region_id_or_null": "region:cleanup-scope-main",
+              "loan_id_or_null": "loan:file-close",
+              "reservation_id_or_null": null,
+              "cleanup_obligation_id_or_null": null
+            },
+            "registration_error_set_id": "errors:Never",
+            "registration_effect_row_id": "effects:empty"
+          },
+          {
+            "operand_id": "operand:1:context",
+            "evaluation_ordinal": 1,
+            "role": "EXPLICIT_ARGUMENT",
+            "argument_kind_or_null": "CONTEXT",
+            "source_argument_ordinal_or_null": 0,
+            "label_id_or_null": "label:context",
+            "source_expr_id_or_null": "hir-expr:file-io-context",
+            "default_value_ref_id_or_null": null,
+            "formal_binding_id_or_null": "formal:context",
+            "result_eval_id": "eval:file-io-context",
+            "prepared_value_id": "prepared:file-io-context",
+            "normalized_type_id": "type:FileIOContext",
+            "responsibility_profile_id": "responsibility:plain-context",
+            "evaluation_count": 1,
+            "acquisition": {
+              "kind": "SNAPSHOT_VALUE",
+              "source_place_id_or_null": "place:file-io-context",
+              "owner_id_or_null": null,
+              "region_id_or_null": null,
+              "loan_id_or_null": null,
+              "reservation_id_or_null": null,
+              "cleanup_obligation_id_or_null": null
+            },
+            "registration_error_set_id": "errors:Never",
+            "registration_effect_row_id": "effects:empty"
+          },
+          {
+            "operand_id": "operand:2:default-reason",
+            "evaluation_ordinal": 2,
+            "role": "DEFAULT_ARGUMENT",
+            "argument_kind_or_null": null,
+            "source_argument_ordinal_or_null": null,
+            "label_id_or_null": "label:reason",
+            "source_expr_id_or_null": null,
+            "default_value_ref_id_or_null": "default:File.close.reason",
+            "formal_binding_id_or_null": "formal:reason",
+            "result_eval_id": "eval:default-reason",
+            "prepared_value_id": "prepared:default-reason",
+            "normalized_type_id": "type:String",
+            "responsibility_profile_id": "responsibility:String",
+            "evaluation_count": 1,
+            "acquisition": {
+              "kind": "OWNED_TEMPORARY",
+              "source_place_id_or_null": null,
+              "owner_id_or_null": "owner:default-reason",
+              "region_id_or_null": "region:cleanup-scope-main",
+              "loan_id_or_null": null,
+              "reservation_id_or_null": null,
+              "cleanup_obligation_id_or_null": "cleanup:default-reason"
+            },
+            "registration_error_set_id": "errors:Never",
+            "registration_effect_row_id": "effects:empty"
+          }
+        ],
+        "static_evidence_bindings": [
+          {
+            "formal_binding_id": "formal:closeable-evidence",
+            "evidence_id": "evidence:Closeable:File",
+            "responsibility_profile_id": "responsibility:static-evidence"
+          }
+        ],
+        "registration_transaction": {
+          "evaluation_order_ordinals": [0, 1, 2],
+          "rollback_order_ordinals": [2, 1, 0],
+          "registration_responsibility_profile_id": "responsibility:defer-registration",
+          "registration_error_set_id": "errors:Never",
+          "registration_effect_row_id": "effects:empty",
+          "move_reservations_cancelled_on_failure": true,
+          "loans_ended_on_failure": true,
+          "owned_temporaries_cleaned_on_failure": true,
+          "external_effects_undone": false,
+          "partial_publication_count": 0,
+          "commit_sequence": ["CLEANUP_REGISTER", "CLEANUP_PIN", "CLEANUP_SEAL"],
+          "sealed_state": "SEALED_IMMUTABLE"
+        },
+        "execution_policy": {
+          "scope_execution_order": "LIFO",
+          "execution_count": 1,
+          "exit_time_operand_evaluation_count": 0,
+          "retry_count": 0,
+          "suspension_disposition": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION",
+          "terminal_paths": [
+            "FALLTHROUGH",
+            "RETURN",
+            "EXITING_BREAK",
+            "EXITING_CONTINUE",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ],
+          "body_failure_precedence": "BODY_FAILURE_REMAINS_PRIMARY",
+          "normal_body_first_cleanup_failure": "BECOMES_PRIMARY",
+          "later_cleanup_failure_order": "SUPPRESSED_IN_ACTUAL_LIFO_ORDER",
+          "defect_or_cancellation_reclassified_as_error": false
+        },
+        "scope_profile": {
+          "may_suspend": true,
+          "plan_residence": "ACTIVE_CLEANUP_SCOPE",
+          "suspension_action": "PRESERVE_NO_EXECUTION"
+        },
+        "post_registration_place_actions": [
+          {
+            "place_id": "place:file",
+            "action": "READ_THROUGH_ADMITTED_BORROW"
+          }
+        ],
+        "product_support": "NOT_RUN"
+      }
+    },
+    {
+      "case_id": "R32-DCP-IN-NEG-001",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+      "input": {
+        "schema": "deeplus.deferred-call-plan-input/r1",
+        "predicate_id": "SingleActionDeferAdmitted",
+        "variant": "SOURCE_REJECTION",
+        "surface": {
+          "form": "BLOCK",
+          "invocation_count": 0,
+          "contains_block": true,
+          "contains_inline_callable": false,
+          "contains_trailing_closure": false,
+          "contains_guard": false,
+          "contains_await": false,
+          "contains_spawn": false,
+          "contains_actor_transport": false
+        },
+        "expected_parser_diagnostic": "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+        "product_support": "NOT_RUN"
+      }
+    },
+    {
+      "case_id": "R32-DCP-IN-NEG-002",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+      "input": {
+        "schema": "deeplus.deferred-call-plan-input/r1",
+        "predicate_id": "SingleActionDeferAdmitted",
+        "variant": "SOURCE_REJECTION",
+        "surface": {
+          "form": "ACTOR_TRANSPORT",
+          "invocation_count": 1,
+          "contains_block": false,
+          "contains_inline_callable": false,
+          "contains_trailing_closure": false,
+          "contains_guard": false,
+          "contains_await": false,
+          "contains_spawn": false,
+          "contains_actor_transport": true
+        },
+        "expected_parser_diagnostic": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+        "product_support": "NOT_RUN"
+      }
+    }
+  ],
+  "cases": [
+    {"case_id":"R32-DCP-POS-001","class":"positive","scenario":"direct cleanup call fixes target and evaluates callee and arguments at registration","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-002","class":"positive","scenario":"message cleanup call fixes receiver and ordinary message dispatch route","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-003","class":"positive","scenario":"runtime context argument remains in explicit source order","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-004","class":"positive","scenario":"selected default evaluates once at registration","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-005","class":"positive","scenario":"static evidence binds by identity with zero runtime evaluation","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-006","class":"positive","scenario":"multiple reached registrations execute in strict reverse registration order","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-007","class":"positive","scenario":"plain non-Unit result uses ordinary cleanup-free expression-statement discard","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-POS-008","class":"positive","scenario":"owned result temporary has one exact cleanup obligation","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-001","class":"boundary","scenario":"receiver then explicit arguments including context then defaults evaluate once","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-002","class":"boundary","scenario":"unfold aggregate evaluates once before formal expansion","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-003","class":"boundary","scenario":"registration failure cleans only prepared prefix in reverse and publishes zero plans","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-004","class":"boundary","scenario":"suspension preserves plan without invocation; terminal exit later invokes once","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-005","class":"boundary","scenario":"body failure remains primary and cleanup failures append in LIFO order","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-BND-006","class":"boundary","scenario":"consuming operand moves into sealed plan at registration commit","expected_outcome":"ADMIT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-NEG-001","class":"negative","scenario":"defer block is rejected pre-AST","expected_outcome":"REJECT","expected_diagnostic_or_null":"DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL"},
+    {"case_id":"R32-DCP-NEG-002","class":"negative","scenario":"defer await is rejected pre-AST","expected_outcome":"REJECT","expected_diagnostic_or_null":"DEFER_REQUIRES_SINGLE_INVOCATION"},
+    {"case_id":"R32-DCP-NEG-003","class":"negative","scenario":"defer spawn is rejected pre-AST","expected_outcome":"REJECT","expected_diagnostic_or_null":"DEFER_REQUIRES_SINGLE_INVOCATION"},
+    {"case_id":"R32-DCP-NEG-004","class":"negative","scenario":"defer actor transport is rejected pre-AST","expected_outcome":"REJECT","expected_diagnostic_or_null":"ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"},
+    {"case_id":"R32-DCP-NEG-005","class":"negative","scenario":"move or rebind of pinned cleanup place is rejected","expected_outcome":"REJECT","expected_diagnostic_or_null":"DEFER_CLEANUP_RESERVED_PLACE_MOVED"},
+    {"case_id":"R32-DCP-NEG-006","class":"negative","scenario":"unresolved or ambiguous cleanup call propagates ordinary call diagnostic before evaluation","expected_outcome":"REJECT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-NEG-007","class":"negative","scenario":"cleanup action with suspension is rejected by ordinary callable admission","expected_outcome":"REJECT","expected_diagnostic_or_null":null},
+    {"case_id":"R32-DCP-NEG-008","class":"negative","scenario":"result without an ordinary expression-statement disposition is rejected before registration","expected_outcome":"REJECT","expected_diagnostic_or_null":null}
+  ],
+  "mutations": [
+    {"mutation_id":"R32-DCP-MUT-001","mutation":"REORDER_OPERANDS","expected_rejection":"OPERAND_ORDER"},
+    {"mutation_id":"R32-DCP-MUT-002","mutation":"DELAY_TO_EXIT","expected_rejection":"EXIT_TIME_EVALUATION"},
+    {"mutation_id":"R32-DCP-MUT-003","mutation":"EVALUATE_TWICE","expected_rejection":"EVALUATION_COUNT"},
+    {"mutation_id":"R32-DCP-MUT-004","mutation":"ORDINAL_GAP","expected_rejection":"OPERAND_ORDINAL"},
+    {"mutation_id":"R32-DCP-MUT-005","mutation":"PARTIAL_PUBLICATION","expected_rejection":"PARTIAL_PUBLICATION"},
+    {"mutation_id":"R32-DCP-MUT-006","mutation":"FORWARD_ROLLBACK","expected_rejection":"ROLLBACK_ORDER"},
+    {"mutation_id":"R32-DCP-MUT-007","mutation":"MUTABLE_PLAN","expected_rejection":"PLAN_SEAL"},
+    {"mutation_id":"R32-DCP-MUT-008","mutation":"EXECUTE_TWICE_OR_RETRY","expected_rejection":"EXECUTION_COUNT"},
+    {"mutation_id":"R32-DCP-MUT-009","mutation":"FIFO_DRAIN","expected_rejection":"LIFO_ORDER"},
+    {"mutation_id":"R32-DCP-MUT-010","mutation":"IDENTITY_SUBSTITUTION","expected_rejection":"PLAN_IDENTITY"},
+    {"mutation_id":"R32-DCP-MUT-011","mutation":"SUSPENSION_DRAINS","expected_rejection":"SUSPENSION_PRESERVATION"},
+    {"mutation_id":"R32-DCP-MUT-012","mutation":"PRODUCT_LANE_FLIP","expected_rejection":"PRODUCT_SUPPORT"}
+  ],
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "separate_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

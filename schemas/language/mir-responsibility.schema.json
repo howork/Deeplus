@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus-lang.org/schema/r51f3/mir-responsibility.schema.json",
-  "title": "Deeplus R51f3 MIR responsibility record",
+  "$id": "https://deeplus-lang.org/schema/r31/closure-capture-plan/mir-responsibility.schema.json",
+  "title": "Deeplus R31 closure-capture-plan MIR responsibility record",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -196,12 +196,28 @@
         "$ref": "#/$defs/callResponsibilityDescriptor"
       }
     },
+    "deferred_call_plan_responsibilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "x-deeplus-unique-by": "cleanup_registration_id",
+      "items": {
+        "$ref": "#/$defs/deferredCallPlanResponsibilityDescriptor"
+      }
+    },
     "callable_residence_descriptors": {
       "type": "array",
       "uniqueItems": true,
       "x-deeplus-unique-by": "callable_id",
       "items": {
         "$ref": "#/$defs/callableResidenceDescriptor"
+      }
+    },
+    "closure_capture_plans": {
+      "type": "array",
+      "uniqueItems": true,
+      "x-deeplus-unique-by": "closure_environment_plan_id",
+      "items": {
+        "$ref": "#/$defs/closureCapturePlanResponsibility"
       }
     },
     "evidence_events": {
@@ -330,49 +346,104 @@
         "runtime_lookup_count"
       ],
       "properties": {
-        "actor_protocol_binding_table_id": {"type": "string", "minLength": 1},
-        "actor_protocol_conformance_id": {"type": "string", "pattern": "^ActorProtocolConformanceId:[^\\s]+$"},
-        "actor_protocol_requirement_id": {"type": "string", "pattern": "^ActorProtocolRequirementId:[^\\s]+$"},
-        "actor_protocol_binding_id": {"type": "string", "minLength": 1},
-        "implementation_kind": {"enum": ["SEND_TO_ON", "REQUEST_TO_REQUEST"]},
+        "actor_protocol_binding_table_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor_protocol_conformance_id": {
+          "type": "string",
+          "pattern": "^ActorProtocolConformanceId:[^\\s]+$"
+        },
+        "actor_protocol_requirement_id": {
+          "type": "string",
+          "pattern": "^ActorProtocolRequirementId:[^\\s]+$"
+        },
+        "actor_protocol_binding_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "implementation_kind": {
+          "enum": [
+            "SEND_TO_ON",
+            "REQUEST_TO_REQUEST"
+          ]
+        },
         "actor_handler_id_or_null": {
           "oneOf": [
-            {"type": "string", "pattern": "^ActorHandlerId:[^\\s]+$"},
-            {"type": "null"}
+            {
+              "type": "string",
+              "pattern": "^ActorHandlerId:[^\\s]+$"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "actor_request_id_or_null": {
           "oneOf": [
-            {"type": "string", "pattern": "^ActorRequestId:[^\\s]+$"},
-            {"type": "null"}
+            {
+              "type": "string",
+              "pattern": "^ActorRequestId:[^\\s]+$"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "responsibility_id": {"type": "string", "pattern": "^ResponsibilityId:[^\\s]+$"},
-        "binding_row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "runtime_lookup_count": {"const": 0}
+        "responsibility_id": {
+          "type": "string",
+          "pattern": "^ResponsibilityId:[^\\s]+$"
+        },
+        "binding_row_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "runtime_lookup_count": {
+          "const": 0
+        }
       },
       "allOf": [
         {
           "if": {
-            "properties": {"implementation_kind": {"const": "SEND_TO_ON"}},
-            "required": ["implementation_kind"]
+            "properties": {
+              "implementation_kind": {
+                "const": "SEND_TO_ON"
+              }
+            },
+            "required": [
+              "implementation_kind"
+            ]
           },
           "then": {
             "properties": {
-              "actor_handler_id_or_null": {"type": "string"},
-              "actor_request_id_or_null": {"type": "null"}
+              "actor_handler_id_or_null": {
+                "type": "string"
+              },
+              "actor_request_id_or_null": {
+                "type": "null"
+              }
             }
           }
         },
         {
           "if": {
-            "properties": {"implementation_kind": {"const": "REQUEST_TO_REQUEST"}},
-            "required": ["implementation_kind"]
+            "properties": {
+              "implementation_kind": {
+                "const": "REQUEST_TO_REQUEST"
+              }
+            },
+            "required": [
+              "implementation_kind"
+            ]
           },
           "then": {
             "properties": {
-              "actor_handler_id_or_null": {"type": "null"},
-              "actor_request_id_or_null": {"type": "string"}
+              "actor_handler_id_or_null": {
+                "type": "null"
+              },
+              "actor_request_id_or_null": {
+                "type": "string"
+              }
             }
           }
         }
@@ -414,35 +485,79 @@
             "BinaryGreaterThanOrEqual"
           ]
         },
-        "operand_arity": {"enum": [1, 2]},
-        "normalized_left_type_id": {"type": "string", "minLength": 1},
-        "normalized_right_type_id": {
-          "type": ["string", "null"],
+        "operand_arity": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "normalized_left_type_id": {
+          "type": "string",
           "minLength": 1
         },
-        "conformance_id": {"type": "string", "minLength": 1},
-        "witness_id": {"type": "string", "minLength": 1},
-        "method_id": {"type": "string", "minLength": 1},
-        "substitution_id": {"type": "string", "minLength": 1},
-        "output_type_id": {"type": "string", "minLength": 1},
+        "normalized_right_type_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "conformance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "witness_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "substitution_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output_type_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "responsibility_profile_id": {
           "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
         },
-        "dispatch_route": {"const": "DIRECT_GLOBAL"},
-        "runtime_relookup_count": {"const": 0},
-        "fallback_count": {"const": 0}
+        "dispatch_route": {
+          "const": "DIRECT_GLOBAL"
+        },
+        "runtime_relookup_count": {
+          "const": 0
+        },
+        "fallback_count": {
+          "const": 0
+        }
       },
       "allOf": [
         {
           "if": {
-            "properties": {"operator_id": {"const": "UnaryPlus"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "UnaryPlus"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 1},
-              "normalized_right_type_id": {"const": null},
-              "method_id": {"const": "UnaryPlus.positive"},
+              "operand_arity": {
+                "const": 1
+              },
+              "normalized_right_type_id": {
+                "const": null
+              },
+              "method_id": {
+                "const": "UnaryPlus.positive"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -451,14 +566,26 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "UnaryMinus"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "UnaryMinus"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 1},
-              "normalized_right_type_id": {"const": null},
-              "method_id": {"const": "UnaryMinus.negate"},
+              "operand_arity": {
+                "const": 1
+              },
+              "normalized_right_type_id": {
+                "const": null
+              },
+              "method_id": {
+                "const": "UnaryMinus.negate"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -467,14 +594,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryAdd"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryAdd"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Add.add"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Add.add"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -483,14 +623,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinarySubtract"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinarySubtract"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Subtract.subtract"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Subtract.subtract"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -499,14 +652,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryMultiply"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryMultiply"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Multiply.multiply"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Multiply.multiply"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -515,14 +681,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryDivide"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryDivide"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Divide.divide"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Divide.divide"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -531,14 +710,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryRemainder"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryRemainder"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Remainder.remainder"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Remainder.remainder"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -547,15 +739,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Eq.equals"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Eq.equals"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -564,15 +771,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryNotEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryNotEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Eq.equals"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Eq.equals"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -581,15 +803,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryLessThan"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryLessThan"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -598,15 +835,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryLessThanOrEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryLessThanOrEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -615,15 +867,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryGreaterThan"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryGreaterThan"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -632,15 +899,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryGreaterThanOrEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryGreaterThanOrEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -952,6 +1234,378 @@
                 "required": [
                   "kind"
                 ]
+              },
+              "closed_ancestor_frame_assertion": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "closureCaptureFieldResponsibility": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capture_kind",
+            "capture_field_id",
+            "source_ordinal",
+            "normalized_type_id",
+            "capture_mode",
+            "responsibility_profile_id"
+          ],
+          "properties": {
+            "capture_kind": {
+              "const": "ReferenceCapture"
+            },
+            "capture_field_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_ordinal": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "normalized_type_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "capture_mode": {
+              "enum": [
+                "BORROW",
+                "INOUT",
+                "MOVE",
+                "COPY",
+                "CLONE",
+                "DEEP",
+                "ONCE"
+              ]
+            },
+            "responsibility_profile_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capture_kind",
+            "capture_field_id",
+            "source_ordinal",
+            "normalized_type_id",
+            "initializer_binding_kind",
+            "responsibility_profile_id"
+          ],
+          "properties": {
+            "capture_kind": {
+              "const": "InitializerCapture"
+            },
+            "capture_field_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_ordinal": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "normalized_type_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "initializer_binding_kind": {
+              "enum": [
+                "LET",
+                "VAR"
+              ]
+            },
+            "responsibility_profile_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "closureCapturePlanResponsibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closure_environment_plan_id",
+        "hir_capture_plan_id",
+        "capture_list_state",
+        "captures_in_source_order",
+        "residence",
+        "closed_ancestor_frame_assertion",
+        "lexical_dependencies",
+        "evaluation_order",
+        "rollback_order",
+        "commit_order",
+        "closure_make_after_commit",
+        "publication",
+        "reused_operation_kinds",
+        "reused_terminator_kinds"
+      ],
+      "properties": {
+        "closure_environment_plan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hir_capture_plan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capture_list_state": {
+          "enum": [
+            "ABSENT",
+            "PRESENT_EMPTY",
+            "PRESENT_NONEMPTY"
+          ]
+        },
+        "captures_in_source_order": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/closureCaptureFieldResponsibility"
+          }
+        },
+        "residence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "region_id"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "FrameIndependent",
+                "RegionBound"
+              ]
+            },
+            "region_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "FrameIndependent"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "region_id": {
+                    "type": "null"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "region_id": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "closed_ancestor_frame_assertion": {
+          "type": "boolean"
+        },
+        "lexical_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "ancestor_callable_body_id",
+              "ancestor_place_id",
+              "ancestor_depth",
+              "region_id",
+              "access",
+              "required_state"
+            ],
+            "properties": {
+              "ancestor_callable_body_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ancestor_place_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ancestor_depth": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "region_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "access": {
+                "const": "Read"
+              },
+              "required_state": {
+                "const": "LiveReadable"
+              }
+            }
+          }
+        },
+        "evaluation_order": {
+          "const": "LEFT_TO_RIGHT_EXACTLY_ONCE"
+        },
+        "rollback_order": {
+          "const": "REVERSE_ACQUISITION_ORDER"
+        },
+        "commit_order": {
+          "const": "BUILDER_COMMIT_BEFORE_CLOSURE_MAKE"
+        },
+        "closure_make_after_commit": {
+          "const": "INFALLIBLE"
+        },
+        "publication": {
+          "const": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
+        },
+        "reused_operation_kinds": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "BUILDER_BEGIN"
+            },
+            {
+              "const": "BUILDER_STAGE"
+            },
+            {
+              "const": "BUILDER_COMMIT"
+            }
+          ],
+          "contains": {
+            "const": "CLOSURE_MAKE"
+          },
+          "items": {
+            "enum": [
+              "BUILDER_BEGIN",
+              "BUILDER_STAGE",
+              "BUILDER_COMMIT",
+              "PLACE_MOVE",
+              "MOVE_RESERVE",
+              "MOVE_CANCEL",
+              "LOAN_BEGIN_SHARED",
+              "LOAN_BEGIN_EXCLUSIVE",
+              "LOAN_END",
+              "CLEANUP_REGION_ENTER",
+              "CLEANUP_REGISTER",
+              "CLEANUP_DISARM",
+              "CLOSURE_MAKE"
+            ]
+          }
+        },
+        "reused_terminator_kinds": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "CHECKED"
+            },
+            {
+              "const": "LEAVE"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "capture_list_state": {
+                "const": "PRESENT_EMPTY"
+              }
+            },
+            "required": [
+              "capture_list_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "captures_in_source_order": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "capture_list_state": {
+                "const": "PRESENT_NONEMPTY"
+              }
+            },
+            "required": [
+              "capture_list_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "captures_in_source_order": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "closed_ancestor_frame_assertion": {
+                "const": true
+              }
+            },
+            "required": [
+              "closed_ancestor_frame_assertion"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lexical_dependencies": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lexical_dependencies": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "lexical_dependencies"
+            ]
+          },
+          "then": {
+            "properties": {
+              "residence": {
+                "properties": {
+                  "kind": {
+                    "const": "RegionBound"
+                  }
+                }
               },
               "closed_ancestor_frame_assertion": {
                 "const": false
@@ -1696,10 +2350,26 @@
           "type": "string",
           "minLength": 1
         },
-        "concur_id": {"type": "string", "minLength": 1},
-        "parent_execution_id": {"type": ["string", "null"]},
-        "cancellation_id": {"type": ["string", "null"]},
-        "cleanup_barrier_id": {"type": "string", "minLength": 1},
+        "concur_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_execution_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cancellation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cleanup_barrier_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "spawn_index": {
           "type": "integer",
           "minimum": 0
@@ -1775,11 +2445,30 @@
           "type": "string",
           "minLength": 1
         },
-        "concur_id": {"type": "string", "minLength": 1},
-        "parent_execution_id": {"type": ["string", "null"]},
-        "spawn_index": {"type": "integer", "minimum": 0},
-        "cancellation_id": {"type": ["string", "null"]},
-        "cleanup_barrier_id": {"type": "string", "minLength": 1},
+        "concur_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_execution_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "spawn_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cancellation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cleanup_barrier_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "join_index": {
           "type": "integer",
           "minimum": 0
@@ -1791,14 +2480,30 @@
             "cancelled"
           ]
         },
-        "failure_id": {"type": ["string", "null"]},
+        "failure_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "failure_role": {
-          "enum": ["none", "body_primary", "child_primary", "child_suppressed", "cleanup_suppressed"]
+          "enum": [
+            "none",
+            "body_primary",
+            "child_primary",
+            "child_suppressed",
+            "cleanup_suppressed"
+          ]
         },
         "suppression_index": {
           "oneOf": [
-            {"type": "integer", "minimum": 0},
-            {"type": "null"}
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       }
@@ -1869,20 +2574,38 @@
           "type": "string",
           "minLength": 1
         },
-        "receiver_id": {"type": "string", "minLength": 1},
+        "receiver_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "sender_id": {
           "type": "string",
           "minLength": 1
         },
-        "channel_id": {"type": "string", "minLength": 1},
-        "mailbox_id": {"type": "string", "minLength": 1},
-        "mailbox_profile_id": {"type": "string", "minLength": 1},
+        "channel_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mailbox_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mailbox_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "message_id": {
           "type": "string",
           "minLength": 1
         },
-        "transfer_id": {"type": "string", "minLength": 1},
-        "channel_sequence": {"type": "integer", "minimum": 0},
+        "transfer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
         "enqueue_index": {
           "type": "integer",
           "minimum": 0
@@ -1890,9 +2613,14 @@
         "capacity_outcome": {
           "const": "admitted"
         },
-        "ownership_commit_count": {"const": 1},
+        "ownership_commit_count": {
+          "const": 1
+        },
         "transfer_disposition": {
-          "enum": ["receiver_owned", "shared_evidence"]
+          "enum": [
+            "receiver_owned",
+            "shared_evidence"
+          ]
         }
       }
     },
@@ -1959,20 +2687,38 @@
           "type": "string",
           "minLength": 1
         },
-        "receiver_id": {"type": "string", "minLength": 1},
+        "receiver_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "sender_id": {
           "type": "string",
           "minLength": 1
         },
-        "channel_id": {"type": "string", "minLength": 1},
-        "mailbox_id": {"type": "string", "minLength": 1},
-        "mailbox_profile_id": {"type": "string", "minLength": 1},
+        "channel_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mailbox_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mailbox_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "message_id": {
           "type": "string",
           "minLength": 1
         },
-        "transfer_id": {"type": "string", "minLength": 1},
-        "channel_sequence": {"type": "integer", "minimum": 0},
+        "transfer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
         "dequeue_index": {
           "type": "integer",
           "minimum": 0
@@ -2385,11 +3131,24 @@
         "source_span": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["file", "start", "end"],
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
           "properties": {
-            "file": {"type": "string", "minLength": 1},
-            "start": {"type": "integer", "minimum": 0},
-            "end": {"type": "integer", "minimum": 0}
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         },
         "pattern_id": {
@@ -2428,7 +3187,10 @@
         },
         "probe_binder_ids": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "uniqueItems": true
         },
         "probe_binder_set_id": {
@@ -2437,7 +3199,10 @@
         },
         "final_binder_ids": {
           "type": "array",
-          "items": {"type": "string", "minLength": 1},
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "uniqueItems": true
         },
         "final_binder_set_id": {
@@ -2445,7 +3210,10 @@
           "minLength": 1
         },
         "commit_plan_id": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "failure_disposition": {
@@ -2468,12 +3236,30 @@
             "failure_disposition_plan_id"
           ],
           "properties": {
-            "payload_drop_plan_id": {"type": "string", "minLength": 1},
-            "user_cleanup_plan_id": {"type": "string", "minLength": 1},
-            "storage_disposition_plan_id": {"type": "string", "minLength": 1},
-            "allocator_or_domain_id": {"type": "string", "minLength": 1},
-            "foreign_release_plan_id": {"type": "string", "minLength": 1},
-            "failure_disposition_plan_id": {"type": "string", "minLength": 1}
+            "payload_drop_plan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "user_cleanup_plan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "storage_disposition_plan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "allocator_or_domain_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "foreign_release_plan_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "failure_disposition_plan_id": {
+              "type": "string",
+              "minLength": 1
+            }
           }
         },
         "precommit_zero_counts": {
@@ -2488,12 +3274,24 @@
             "partial_binding"
           ],
           "properties": {
-            "ownership_commit": {"const": 0},
-            "irreversible_borrow": {"const": 0},
-            "authority_acquisition": {"const": 0},
-            "escape": {"const": 0},
-            "suspension": {"const": 0},
-            "partial_binding": {"const": 0}
+            "ownership_commit": {
+              "const": 0
+            },
+            "irreversible_borrow": {
+              "const": 0
+            },
+            "authority_acquisition": {
+              "const": 0
+            },
+            "escape": {
+              "const": 0
+            },
+            "suspension": {
+              "const": 0
+            },
+            "partial_binding": {
+              "const": 0
+            }
           }
         },
         "phase": {
@@ -2541,9 +3339,17 @@
                 ]
               }
             },
-            "required": ["phase"]
+            "required": [
+              "phase"
+            ]
           },
-          "then": {"properties": {"consuming": {"const": false}}}
+          "then": {
+            "properties": {
+              "consuming": {
+                "const": false
+              }
+            }
+          }
         },
         {
           "if": {
@@ -2557,13 +3363,21 @@
                 ]
               }
             },
-            "required": ["attempt_disposition"]
+            "required": [
+              "attempt_disposition"
+            ]
           },
           "then": {
             "properties": {
-              "pattern_move_count": {"const": 0},
-              "final_binder_ids": {"maxItems": 0},
-              "consuming": {"const": false}
+              "pattern_move_count": {
+                "const": 0
+              },
+              "final_binder_ids": {
+                "maxItems": 0
+              },
+              "consuming": {
+                "const": false
+              }
             }
           }
         }
@@ -2655,28 +3469,80 @@
         "suppression_index"
       ],
       "properties": {
-        "kind": {"const": "concur_run_lifecycle"},
-        "event_id": {"type": "string", "minLength": 1},
-        "sequence": {"type": "integer", "minimum": 0},
-        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "kind": {
+          "const": "concur_run_lifecycle"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
         "source_span": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["file", "start", "end"],
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
           "properties": {
-            "file": {"type": "string", "minLength": 1},
-            "start": {"type": "integer", "minimum": 0},
-            "end": {"type": "integer", "minimum": 0}
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         },
-        "concur_run_id": {"type": "string", "minLength": 1},
-        "execution_id": {"type": "string", "minLength": 1},
-        "concur_id": {"type": "string", "minLength": 1},
-        "parent_execution_id": {"type": ["string", "null"]},
-        "spawn_index": {"type": "integer", "minimum": 0},
-        "aggregation_concur_id": {"type": "string", "minLength": 1},
-        "cancellation_id": {"type": ["string", "null"]},
-        "cleanup_barrier_id": {"type": "string", "minLength": 1},
+        "concur_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "concur_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parent_execution_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "spawn_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "aggregation_concur_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cancellation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cleanup_barrier_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "phase": {
           "enum": [
             "concur_enter",
@@ -2692,18 +3558,50 @@
           ]
         },
         "outcome": {
-          "enum": ["pending", "success", "error", "defect", "cancelled"]
+          "enum": [
+            "pending",
+            "success",
+            "error",
+            "defect",
+            "cancelled"
+          ]
         },
-        "failure_id": {"type": ["string", "null"]},
-        "child_failure_id": {"type": ["string", "null"]},
-        "primary_failure_id": {"type": ["string", "null"]},
+        "failure_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "child_failure_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "primary_failure_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "failure_role": {
-          "enum": ["none", "body_primary", "child_primary", "child_suppressed", "cleanup_suppressed"]
+          "enum": [
+            "none",
+            "body_primary",
+            "child_primary",
+            "child_suppressed",
+            "cleanup_suppressed"
+          ]
         },
         "suppression_index": {
           "oneOf": [
-            {"type": "integer", "minimum": 0},
-            {"type": "null"}
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       }
@@ -2743,46 +3641,123 @@
         "transfer_disposition"
       ],
       "properties": {
-        "kind": {"const": "actor_lifecycle"},
-        "event_id": {"type": "string", "minLength": 1},
-        "sequence": {"type": "integer", "minimum": 0},
-        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "kind": {
+          "const": "actor_lifecycle"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
         "source_span": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["file", "start", "end"],
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
           "properties": {
-            "file": {"type": "string", "minLength": 1},
-            "start": {"type": "integer", "minimum": 0},
-            "end": {"type": "integer", "minimum": 0}
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         },
-        "actor_id": {"type": "string", "minLength": 1},
-        "receiver_id": {"type": "string", "minLength": 1},
-        "sender_id": {"type": "string", "minLength": 1},
-        "mailbox_id": {"type": "string", "minLength": 1},
-        "channel_id": {"type": "string", "minLength": 1},
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receiver_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sender_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mailbox_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "channel_sequence": {
           "oneOf": [
-            {"type": "integer", "minimum": 0},
-            {"type": "null"}
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "mailbox_profile_id": {"type": "string", "minLength": 1},
-        "state_region_id": {"type": "string", "minLength": 1},
-        "state_region_authority": {
-          "enum": ["held", "released", "not_applicable"]
+        "mailbox_profile_id": {
+          "type": "string",
+          "minLength": 1
         },
-        "handler_id": {"type": ["string", "null"]},
-        "supervisor_id": {"type": ["string", "null"]},
-        "turn_id": {"type": ["string", "null"]},
+        "state_region_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state_region_authority": {
+          "enum": [
+            "held",
+            "released",
+            "not_applicable"
+          ]
+        },
+        "handler_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "supervisor_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "turn_index": {
           "oneOf": [
-            {"type": "integer", "minimum": 0},
-            {"type": "null"}
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "message_id": {"type": "string", "minLength": 1},
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "phase": {
           "enum": [
             "prepare_send",
@@ -2809,15 +3784,45 @@
             "cancelled"
           ]
         },
-        "correlation_id": {"type": ["string", "null"]},
-        "reply_id": {"type": ["string", "null"]},
-        "transfer_id": {"type": ["string", "null"]},
-        "failure_id": {"type": ["string", "null"]},
+        "correlation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reply_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "transfer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failure_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "capacity_outcome": {
-          "enum": ["admitted", "capacity_rejected", "receiver_closed", "protocol_rejected", "not_applicable"]
+          "enum": [
+            "admitted",
+            "capacity_rejected",
+            "receiver_closed",
+            "protocol_rejected",
+            "not_applicable"
+          ]
         },
         "ownership_commit_state": {
-          "enum": ["precommit", "committed", "not_applicable"]
+          "enum": [
+            "precommit",
+            "committed",
+            "not_applicable"
+          ]
         },
         "ownership_commit_count": {
           "type": "integer",
@@ -2825,28 +3830,59 @@
           "maximum": 1
         },
         "transfer_disposition": {
-          "enum": ["sender_retained", "receiver_owned", "shared_evidence", "not_applicable"]
+          "enum": [
+            "sender_retained",
+            "receiver_owned",
+            "shared_evidence",
+            "not_applicable"
+          ]
         }
       },
       "allOf": [
         {
           "if": {
-            "properties": {"phase": {"const": "admission_rejected"}},
-            "required": ["phase"]
+            "properties": {
+              "phase": {
+                "const": "admission_rejected"
+              }
+            },
+            "required": [
+              "phase"
+            ]
           },
           "then": {
             "properties": {
-              "channel_sequence": {"type": "null"},
-              "turn_id": {"type": "null"},
-              "turn_index": {"type": "null"},
-              "handler_id": {"type": "null"},
-              "capacity_outcome": {
-                "enum": ["capacity_rejected", "receiver_closed", "protocol_rejected"]
+              "channel_sequence": {
+                "type": "null"
               },
-              "ownership_commit_state": {"const": "precommit"},
-              "ownership_commit_count": {"const": 0},
-              "transfer_disposition": {"const": "sender_retained"},
-              "state_region_authority": {"const": "not_applicable"}
+              "turn_id": {
+                "type": "null"
+              },
+              "turn_index": {
+                "type": "null"
+              },
+              "handler_id": {
+                "type": "null"
+              },
+              "capacity_outcome": {
+                "enum": [
+                  "capacity_rejected",
+                  "receiver_closed",
+                  "protocol_rejected"
+                ]
+              },
+              "ownership_commit_state": {
+                "const": "precommit"
+              },
+              "ownership_commit_count": {
+                "const": 0
+              },
+              "transfer_disposition": {
+                "const": "sender_retained"
+              },
+              "state_region_authority": {
+                "const": "not_applicable"
+              }
             }
           }
         },
@@ -2854,22 +3890,50 @@
           "if": {
             "properties": {
               "phase": {
-                "enum": ["turn_start", "turn_suspend", "turn_resume", "turn_finish"]
+                "enum": [
+                  "turn_start",
+                  "turn_suspend",
+                  "turn_resume",
+                  "turn_finish"
+                ]
               }
             },
-            "required": ["phase"]
+            "required": [
+              "phase"
+            ]
           },
           "then": {
             "properties": {
-              "channel_sequence": {"type": "integer", "minimum": 0},
-              "turn_id": {"type": "string", "minLength": 1},
-              "turn_index": {"type": "integer", "minimum": 0},
-              "handler_id": {"type": "string", "minLength": 1},
-              "capacity_outcome": {"const": "admitted"},
-              "ownership_commit_state": {"const": "committed"},
-              "ownership_commit_count": {"const": 1},
+              "channel_sequence": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "turn_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "turn_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "handler_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "capacity_outcome": {
+                "const": "admitted"
+              },
+              "ownership_commit_state": {
+                "const": "committed"
+              },
+              "ownership_commit_count": {
+                "const": 1
+              },
               "transfer_disposition": {
-                "enum": ["receiver_owned", "shared_evidence"]
+                "enum": [
+                  "receiver_owned",
+                  "shared_evidence"
+                ]
               }
             }
           }
@@ -2877,21 +3941,43 @@
         {
           "if": {
             "properties": {
-              "phase": {"enum": ["turn_start", "turn_suspend", "turn_resume"]}
+              "phase": {
+                "enum": [
+                  "turn_start",
+                  "turn_suspend",
+                  "turn_resume"
+                ]
+              }
             },
-            "required": ["phase"]
+            "required": [
+              "phase"
+            ]
           },
           "then": {
-            "properties": {"state_region_authority": {"const": "held"}}
+            "properties": {
+              "state_region_authority": {
+                "const": "held"
+              }
+            }
           }
         },
         {
           "if": {
-            "properties": {"phase": {"const": "turn_finish"}},
-            "required": ["phase"]
+            "properties": {
+              "phase": {
+                "const": "turn_finish"
+              }
+            },
+            "required": [
+              "phase"
+            ]
           },
           "then": {
-            "properties": {"state_region_authority": {"const": "released"}}
+            "properties": {
+              "state_region_authority": {
+                "const": "released"
+              }
+            }
           }
         }
       ]
@@ -2919,34 +4005,114 @@
         "consuming"
       ],
       "properties": {
-        "kind": {"const": "synchronization"},
-        "event_id": {"type": "string", "minLength": 1},
-        "sequence": {"type": "integer", "minimum": 0},
-        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "kind": {
+          "const": "synchronization"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "law_id": {
+          "type": "string",
+          "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"
+        },
         "source_span": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["file", "start", "end"],
+          "required": [
+            "file",
+            "start",
+            "end"
+          ],
           "properties": {
-            "file": {"type": "string", "minLength": 1},
-            "start": {"type": "integer", "minimum": 0},
-            "end": {"type": "integer", "minimum": 0}
+            "file": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         },
-        "sync_id": {"type": "string", "minLength": 1},
-        "operation_id": {"type": "string", "minLength": 1},
-        "profile": {"enum": ["shared_cell", "shared_mutex"]},
-        "operation": {
-          "enum": ["observe_begin", "observe_end", "replace_commit", "lock_acquire", "lock_release"]
+        "sync_id": {
+          "type": "string",
+          "minLength": 1
         },
-        "owner_id": {"type": "string", "minLength": 1},
-        "value_id": {"type": ["string", "null"]},
-        "outcome": {"enum": ["entered", "completed", "committed", "acquired", "released", "error", "defect", "cancelled"]},
-        "ordering": {"enum": ["sequentially_consistent", "mutex_handoff"]},
-        "cleanup_region_id": {"type": ["string", "null"]},
-        "handoff_index": {"type": "integer", "minimum": 0},
-        "cancellation_id": {"type": ["string", "null"]},
-        "consuming": {"type": "boolean"}
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "enum": [
+            "shared_cell",
+            "shared_mutex"
+          ]
+        },
+        "operation": {
+          "enum": [
+            "observe_begin",
+            "observe_end",
+            "replace_commit",
+            "lock_acquire",
+            "lock_release"
+          ]
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "entered",
+            "completed",
+            "committed",
+            "acquired",
+            "released",
+            "error",
+            "defect",
+            "cancelled"
+          ]
+        },
+        "ordering": {
+          "enum": [
+            "sequentially_consistent",
+            "mutex_handoff"
+          ]
+        },
+        "cleanup_region_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "handoff_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cancellation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "consuming": {
+          "type": "boolean"
+        }
       }
     },
     "event": {
@@ -3021,6 +4187,147 @@
           "$ref": "#/$defs/synchronizationEvent"
         }
       ]
+    },
+    "deferredCallPlanResponsibilityDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deferred_call_plan_id",
+        "cleanup_registration_id",
+        "cleanup_scope_id",
+        "source_registration_ordinal",
+        "dynamic_operand_responsibility_profile_ids_in_evaluation_order",
+        "static_evidence_responsibility_profile_ids",
+        "registration_responsibility_profile_id",
+        "execution_responsibility_profile_id",
+        "result_responsibility_profile_id",
+        "result_disposition",
+        "publication_sequence",
+        "rollback_sequence",
+        "suspension_disposition",
+        "terminal_leave_roles",
+        "owner_move_commit",
+        "execution_count",
+        "external_effect_rollback_claim"
+      ],
+      "properties": {
+        "deferred_call_plan_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup_registration_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup_scope_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_registration_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dynamic_operand_responsibility_profile_ids_in_evaluation_order": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "static_evidence_responsibility_profile_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "registration_responsibility_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_responsibility_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_responsibility_profile_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result_disposition": {
+          "enum": [
+            "UNIT_NO_VALUE",
+            "DISCARD_CLEANUP_FREE_VALUE",
+            "CLEAN_OWNED_TEMPORARY"
+          ]
+        },
+        "publication_sequence": {
+          "prefixItems": [
+            {
+              "const": "CLEANUP_REGISTER"
+            },
+            {
+              "const": "CLEANUP_PIN_ZERO_OR_MORE"
+            },
+            {
+              "const": "CLEANUP_SEAL"
+            }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "rollback_sequence": {
+          "prefixItems": [
+            {
+              "const": "CLEANUP_DISARM"
+            },
+            {
+              "const": "LOAN_END_REVERSE_ACQUISITION_ORDER"
+            },
+            {
+              "const": "MOVE_CANCEL_REVERSE_ACQUISITION_ORDER"
+            },
+            {
+              "const": "OWNED_TEMPORARY_CLEANUP_REVERSE_ACQUISITION_ORDER"
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "suspension_disposition": {
+          "const": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION"
+        },
+        "terminal_leave_roles": {
+          "prefixItems": [
+            {
+              "const": "SUCCESS"
+            },
+            {
+              "const": "ERROR"
+            },
+            {
+              "const": "DEFECT"
+            },
+            {
+              "const": "CANCEL"
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "owner_move_commit": {
+          "const": "RESERVATION_CONSUMED_AT_CLEANUP_SEAL"
+        },
+        "execution_count": {
+          "const": 1
+        },
+        "external_effect_rollback_claim": {
+          "const": false
+        }
+      }
     }
   },
   "x-deeplus-event-kind-contracts": {
@@ -3354,7 +4661,11 @@
     "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id",
     "fixed_operator_conformance": "an intrinsic-reserved operand domain has no fixed_operator_dispatches row; each admitted non-intrinsic exact unary +/-, arithmetic +,-,*,/,% or equality/order glyph has one statically selected row whose identity fields survive HIR/MIR/API lowering; != and the four order projections share Eq/Ord evidence, compound assignment and range have no independent hook, and route, responsibility, ArithmeticDefect precommit, runtime lookup and fallback constants are exact",
     "actor_protocol_binding": "each statically selected Actor Protocol transport operation carries exactly one ActorProtocolBindingTableId plus the complete canonical R41 tuple ActorProtocolConformanceId, ActorProtocolRequirementId, ActorProtocolBindingId, typed ActorHandlerId-or-ActorRequestId, ResponsibilityId and binding-row digest through MIR; requirement and implementation identities agree with the receipt-bound serialized row, while runtime selector lookup, reselection, fallback and registration-order selection are forbidden",
-    "nonescaping_lexical_access": "callable_residence_descriptors use unique callable_id values and keep residence and explicit environment as orthogonal axes; only a non-closed RegionBound callable may carry shared-read call-duration lexical dependencies, present-empty [] is represented by closed_ancestor_frame_assertion=true with zero dependencies, RegionId remains internal proof metadata and no lexical read creates a new observable event"
+    "nonescaping_lexical_access": "callable_residence_descriptors use unique callable_id values and keep residence and explicit environment as orthogonal axes; only a non-closed RegionBound callable may carry shared-read call-duration lexical dependencies, present-empty [] is represented by closed_ancestor_frame_assertion=true with zero dependencies, RegionId remains internal proof metadata and no lexical read creates a new observable event",
+    "closure_capture_plan": "closure_capture_plans preserve one unique HIR/MIR plan identity, ABSENT versus PRESENT_EMPTY versus PRESENT_NONEMPTY list state, exact FrameIndependent or RegionBound residence, closed-ancestor assertion, sorted unique lexical dependencies, and source-ordered tagged ReferenceCapture or InitializerCapture fields with unique CaptureFieldId, contiguous source ordinal, exact normalized type, and LET or VAR initializer kind",
+    "closure_capture_transaction": "capture sources evaluate left-to-right exactly once; existing CHECKED and LEAVE edges roll back move, loan, cleanup, and builder acquisition in reverse order; BUILDER_COMMIT precedes infallible CLOSURE_MAKE; no partial environment or closure is published; no new MIR operation kind is admitted",
+    "closure_capture_api_fence": "CapturePlanId, CaptureFieldId, EvalId, MirValueId, MirPlaceId, RegionId, LoanId, MoveReservationId, CleanupRegistrationId, ConstructionId, and ClosureId are value-level identities and never enter a module API digest",
+    "deferred_call_plan": "deferred_call_plan_responsibilities preserves registration, execution, result, every dynamic operand, and every static-evidence responsibility profile without dropping any of the eleven canonical axes; publication is CLEANUP_REGISTER then CLEANUP_PIN* then CLEANUP_SEAL, MOVE_INTO_PLAN ownership commits exactly at seal, pre-seal rollback is reverse-acquisition DISARM/LOAN_END/MOVE_CANCEL/temporary cleanup without external-effect rollback, SUSPEND preserves the active plan, and terminal SUCCESS/ERROR/DEFECT/CANCEL leaves execute internal LIFO cleanup exactly once"
   },
   "x-deeplus-fixed-operator-conformance-contract": {
     "schema_stage": "MIR",

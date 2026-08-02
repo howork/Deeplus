@@ -1,0 +1,158 @@
+[
+  {
+    "fixture_id": "PF-ClosureCaptureDescriptorAdmittedCurrentGate-POS",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "canonical_case_id": "R31-CCP-POS-007",
+    "decision_input": {
+      "schema": "deeplus.closure-capture-plan-input/r1",
+      "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+      "capture_plan_id": "capture.plan",
+      "closure_owner_id": "closure.owner",
+      "creation_point_id": "expr.creation",
+      "owner_kind": "SYNC_CLOSURE",
+      "capture_list_state": "PRESENT_NONEMPTY",
+      "callable_profile": {
+        "lifetime": "ORDINARY",
+        "call_right": "ONCE",
+        "environment_receiver": "SHARED",
+        "behavior": "ORDINARY",
+        "suspension": "NONSUSPENDING",
+        "isolation": "SAME_ISOLATION"
+      },
+      "escaping": false,
+      "capture_items": [
+        {
+          "source_ordinal": 0,
+          "capture_field_id": "capture.plan:0:permit",
+          "binder_name": "permit",
+          "syntax_kind": "EXPLICIT_MODE",
+          "normalized_mode": "ONCE",
+          "normalized_type_id": "example::Value",
+          "source_resolved_ref_or_null": "ref::permit",
+          "source_place_id_or_null": "place::permit",
+          "initializer_expr_id_or_null": null,
+          "initializer_result_eval_id_or_null": null,
+          "owner_id_before_or_null": "owner::permit",
+          "owner_id_after_or_null": "env-owner::permit",
+          "region_id_or_null": null,
+          "loan_id_or_null": null,
+          "move_reservation_id_or_null": "move-reservation::permit",
+          "responsibility_rule_id_or_null": null,
+          "responsibility_evidence_id_or_null": null,
+          "trait_witness_id_or_null": null,
+          "construction_error_set": [],
+          "construction_effect_row": [],
+          "cleanup_obligation_id_or_null": null,
+          "cleanup_disposition": "CANCEL_MOVE_RESERVATION",
+          "body_access": "CONSUME_ONCE",
+          "evaluation_count": 1
+        }
+      ],
+      "lexical_dependencies": [],
+      "r30_dependency_state": "LOCAL_EVIDENCE_ONLY",
+      "product_support": "NOT_RUN"
+    },
+    "expected_decision": {
+      "outcome": "ADMIT",
+      "diagnostic_id_or_null": null
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "active_primary",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
+    "descriptor": {
+      "source_kind": "Type",
+      "normalized_type": "FixtureType",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": null,
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "R51a1 Stable closure capture descriptor admission design seed; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ClosureCaptureDescriptorAdmittedCurrentGate-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    }
+  },
+  {
+    "fixture_id": "PF-CollectionFreezeAdmitted-BOUNDARY",
+    "predicate_id": "CollectionFreezeAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-CollectionFreezeAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 CollectionFreezeAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

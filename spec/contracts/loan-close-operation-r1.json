@@ -1,0 +1,192 @@
+{
+  "schema": "deeplus.loan-close-operation/r1",
+  "revision": "R34-LOAN-CLOSE-OPERATION-R1",
+  "status": "CURRENT_DESIGN_STATIC_CONTRACT_LOCAL_CANDIDATE",
+  "authority": "CODEX_DESIGN_R34_LOAN_CLOSE_OPERATION",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "branch": "main",
+  "baseline": {
+    "canonical_commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+    "canonical_tree": "2452f0a6be1e1391b3678dafa86987059b115ec7",
+    "r32_defer_candidate": "047333dfdb3b4e37d4ab360c10a9b0a2b9b92825_FUSED_IN_R47",
+    "r33_cleanup_budget_candidate": "4f24d65c84b7b11ad5f979f7daf70f6708639389_FUSED_IN_R47"
+  },
+  "gap": {
+    "gap_id": "IR-OWN-P1-022",
+    "resolution": "CLOSED_LOAN_SITE_TABLE_PLUS_PATH_SENSITIVE_DERIVED_BEGIN_END_EVENTS",
+    "recommended_option": "OPTION_B_PLUS_DERIVED_A",
+    "semantic_p0_created": 0
+  },
+  "scope_fence": {
+    "new_source_surface_count": 0,
+    "grammar_production_change_count": 0,
+    "new_hir_expression_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_linear_token_kind_count": 0,
+    "new_runtime_observable_event_count": 0,
+    "new_checker_predicate_count": 0,
+    "production_execution_count": 0,
+    "r32_or_r33_content_imported": true
+  },
+  "existing_identity_bindings": {
+    "hir_borrow_owner": "HirExprKind::PlaceAccess with HirPlacePlan.access BORROW_SHARED or BORROW_INOUT",
+    "mir_loan_table": "DeeplusMirR1.loan_table",
+    "mir_begin_operations": [
+      "LOAN_BEGIN_SHARED",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "LOAN_BEGIN_REBORROW"
+    ],
+    "mir_end_operation": "LOAN_END",
+    "linear_token": "ACCESS bound by loan_id",
+    "ownership_definition": "OwnershipDecisionInputR1.LoanDef",
+    "source_diagnostics_reused": [
+      "BORROW_ESCAPE_OWNER_REGION",
+      "INOUT_ALIAS_CONFLICT",
+      "FACET_BORROW_CROSSES_SUSPENSION",
+      "OWNERSHIP_MODE_ADMISSION_FAILED"
+    ]
+  },
+  "loan_site_projection": {
+    "canonical_owner": "MIR_LOAN_TABLE",
+    "required_fields": [
+      "loan_id",
+      "kind",
+      "base_kind",
+      "base_id",
+      "projection_identity_id",
+      "region_id",
+      "parent_loan_id_or_null",
+      "begin_operation_id",
+      "end_operation_ids"
+    ],
+    "end_operation_ids": "nonempty canonical-sorted unique static LOAN_END operation identities",
+    "root_rule": "a Shared or Exclusive root has parent_loan_id_or_null null and one matching LOAN_BEGIN_SHARED or LOAN_BEGIN_EXCLUSIVE",
+    "reborrow_rule": "a reborrow has one parent LoanId, one LOAN_BEGIN_REBORROW whose payload names that parent, and a strictly contained region",
+    "view_release_rule": "the matching LOAN_END invalidates every borrowed or inout view value for the activation and discharges ViewRelease exactly once through its ACCESS token",
+    "module_api_export_count": 0
+  },
+  "close_frontier": {
+    "input": "verified HIR region constraints, OwnershipDecisionInputR1 LoanDef facts, and the complete MIR CFG",
+    "selection": "the earliest edge frontier after every authorized use and active child, before every conflicting owner barrier, region exit, or unadmitted suspension",
+    "critical_edge_policy": "split an edge when an end belongs to only part of the successor frontier",
+    "static_site_rule": "one loan site may name multiple static LOAN_END operations only when the corresponding paths are mutually exclusive",
+    "dynamic_balance_rule": "each dynamic begin activation executes exactly one matching end on every reachable normal, Error, Defect, Cancellation, early-exit, and terminal path",
+    "loop_rule": "a loop-carried path must return the site to INACTIVE before its backedge; a later iteration starts a fresh dynamic activation of the same static LoanId site",
+    "join_rule": "every predecessor presents byte-identical loan state and ACCESS-token state for every in-scope LoanId",
+    "backend_selection_count": 0
+  },
+  "state_machine": {
+    "abstract_states": [
+      "INACTIVE",
+      "ACTIVE",
+      "SUSPENDED_BY_CHILD"
+    ],
+    "begin": "INACTIVE to ACTIVE and produce exactly one ACCESS token bound to the LoanId",
+    "reborrow_begin": "ACTIVE parent to SUSPENDED_BY_CHILD parent plus ACTIVE child",
+    "child_end": "ACTIVE child to INACTIVE child; resume only its immediate SUSPENDED_BY_CHILD parent",
+    "root_end": "ACTIVE root to INACTIVE root and discharge exactly its ACCESS token",
+    "repeat_activation": "INACTIVE may begin again only through a later dynamic execution of the same static begin operation",
+    "forbidden": [
+      "begin while the same activation is ACTIVE or SUSPENDED_BY_CHILD",
+      "use unless ACTIVE",
+      "end unless ACTIVE",
+      "end a parent while any direct or transitive child is active",
+      "duplicate or unknown end",
+      "join unequal loan or ACCESS-token states"
+    ]
+  },
+  "owner_barriers": {
+    "barrier_kinds": [
+      "conflicting write",
+      "move",
+      "replace",
+      "owner cleanup",
+      "region exit"
+    ],
+    "law": "every overlapping active loan closes before the barrier; the barrier does not synthesize a missing LOAN_END",
+    "deferred_cleanup_use": "a deferred call that consumes a borrow is an authorized final use; invoke it, end the loan, then begin conflicting owner cleanup",
+    "r32_dependency": "future fusion revalidates prepared-call rollback ends in reverse acquisition order; this candidate imports no R32 bytes or decisions"
+  },
+  "suspension": {
+    "default": "ordinary active loans close before SUSPEND",
+    "admitted_crossing": "only an existing suspension proof may carry the exact ACCESS token in SuspensionSite.live_token_ids with matching region and isolation evidence",
+    "exclusive_crossing": "FORBIDDEN",
+    "process_static_shared_exception": "the already registered immutable process-static Shared profile remains the sole initial exception",
+    "generator_yield": "an ordinary borrowed element or view closes before yield, next advance, continue, break, or loop exit unless an existing proof admits the carried value",
+    "surface_activation_count": 0
+  },
+  "end_semantics": {
+    "operation": "LOAN_END",
+    "infallible": true,
+    "suspends": false,
+    "ordinary_value_input_count": 0,
+    "ordinary_value_output_count": 0,
+    "effect_count": 0,
+    "recoverable_error_count": 0,
+    "defect_count": 0,
+    "cancellation_count": 0,
+    "cleanup_token_input_count": 0,
+    "cleanup_token_output_count": 0,
+    "user_cleanup_invocation_count": 0,
+    "failure_order_delta_count": 0,
+    "token_flow": "consume exactly one ACCESS token bound to the ended LoanId"
+  },
+  "cleanup_and_failure_order": {
+    "loan_close_precedes_overlapping_cleanup": true,
+    "loan_close_can_fail": false,
+    "existing_primary_remains_primary": true,
+    "cleanup_failures_append_in_actual_deterministic_lifo_order": true,
+    "without_prior_primary_first_cleanup_failure_becomes_primary": true,
+    "later_cleanup_failures_are_suppressed": true,
+    "cleanup_budget_contribution_count": 0
+  },
+  "verifier": {
+    "diagnostic_id": "MIR_LOAN_UNBALANCED",
+    "diagnostic_class": "release_verifier",
+    "source_diagnostic": false,
+    "reason_priority": [
+      "TOKEN_BINDING_MISMATCH",
+      "BEGIN_DECLARATION_MISMATCH",
+      "BEGIN_STATE_INVALID",
+      "END_STATE_INVALID",
+      "ACTIVE_CHILD_BLOCKS_PARENT_END",
+      "OWNER_INVALIDATION_WHILE_LIVE",
+      "SUSPENSION_WHILE_LIVE",
+      "CFG_JOIN_LOAN_STATE_CONFLICT",
+      "TERMINAL_LIVE_LOAN"
+    ],
+    "primary_oracle_shape": [
+      "diagnostic",
+      "reason",
+      "loan_id",
+      "origin",
+      "emission_count",
+      "later_checks"
+    ],
+    "emission_count": 1,
+    "later_checks": "NOT_EVALUATED",
+    "verifier_synthesis_of_missing_end": false
+  },
+  "observability": {
+    "source_observable_event_count": 0,
+    "optional_debug_trace": "LOAN_BEGIN and LOAN_END may appear in verifier/debug receipts without becoming language I/O or failure observations",
+    "xvm_or_cranelift_erasure": "allowed only after verification and only when alias, owner-barrier, suspension, cleanup, and failure-order observations remain unchanged",
+    "backend_specific_identity_count": 0
+  },
+  "acceptance": {
+    "fixture_schema": "schemas/language/loan-close-operation-fixtures-r1.schema.json",
+    "fixtures": "tests/fixtures/current/loan-close-operation-r1.json",
+    "validator": "tools/validators/validate_loan_close_operation.py",
+    "case_count": 12,
+    "mutation_count": 12,
+    "normal_boundary_reject_counts": "3_3_6"
+  },
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "separate_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "canonical_github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

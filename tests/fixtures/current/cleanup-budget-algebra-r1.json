@@ -1,0 +1,342 @@
+{
+  "schema": "deeplus.cleanup-budget-algebra-fixtures/r1",
+  "revision": "R33-CLEANUP-BUDGET-ALGEBRA-R1",
+  "cases": [
+    {
+      "case_id": "R33-CBA-POS-001",
+      "class": "normal",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:FinalFile",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": false, "effects_item_count": 0, "errors_item_count": 0, "raw_effect_ids": [], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [
+          { "source_ordinal": 0, "source_kind": "OWNER_DEF_CLEANUP", "source_id": "decl:FinalFile.cleanup", "normalized_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] } }
+        ],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:FinalFile",
+          "declaration_mode": "IMPLICIT_EXACT_ROOT",
+          "family_root_type_id": "type:FinalFile",
+          "declared_envelope": null,
+          "computed_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "effective_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-POS-002",
+      "class": "normal",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:Tracked",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 1, "errors_item_count": 1, "raw_effect_ids": ["effect:audit", "effect:io"], "errors_type_kind": "ERROR_SET", "raw_recoverable_error_ids": ["error:CloseError", "error:FlushError"] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [
+          { "source_ordinal": 0, "source_kind": "FIELD_OWNER", "source_id": "field:Tracked.handle", "normalized_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] } },
+          { "source_ordinal": 1, "source_kind": "OWNER_DEF_CLEANUP", "source_id": "decl:Tracked.cleanup", "normalized_envelope": { "recoverable_error_ids": [], "effect_ids": ["effect:audit"] } }
+        ],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:Tracked",
+          "declaration_mode": "EXPLICIT_HEADER",
+          "family_root_type_id": "type:Tracked",
+          "declared_envelope": { "recoverable_error_ids": ["error:CloseError", "error:FlushError"], "effect_ids": ["effect:audit", "effect:io"] },
+          "computed_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:audit", "effect:io"] },
+          "effective_envelope": { "recoverable_error_ids": ["error:CloseError", "error:FlushError"], "effect_ids": ["effect:audit", "effect:io"] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-POS-003",
+      "class": "normal",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:ResourceRoot",
+        "resource_hierarchy_role": "SEALED_ROOT",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": true,
+        "header": { "present": true, "effects_item_count": 1, "errors_item_count": 1, "raw_effect_ids": ["effect:io"], "errors_type_kind": "ERROR_SET", "raw_recoverable_error_ids": ["error:CloseError"] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:ResourceRoot",
+          "declaration_mode": "EXPLICIT_HEADER",
+          "family_root_type_id": "type:ResourceRoot",
+          "declared_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] },
+          "effective_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-POS-004",
+      "class": "normal",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:ResourceChild",
+        "resource_hierarchy_role": "CHILD",
+        "base_owner_type_id_or_null": "type:ResourceRoot",
+        "same_module_sealed_root_proven": true,
+        "header": { "present": false, "effects_item_count": 0, "errors_item_count": 0, "raw_effect_ids": [], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": { "family_root_type_id": "type:ResourceRoot", "recoverable_error_ids": ["error:BaseError", "error:CloseError", "error:HookError"], "effect_ids": ["effect:audit", "effect:io"], "envelope_digest": "3333333333333333333333333333333333333333333333333333333333333333" },
+        "contributions_in_trace_order": [
+          { "source_ordinal": 0, "source_kind": "BASE_OWNER", "source_id": "type:ResourceRoot", "normalized_envelope": { "recoverable_error_ids": ["error:BaseError"], "effect_ids": ["effect:io"] } },
+          { "source_ordinal": 1, "source_kind": "FIELD_OWNER", "source_id": "field:ResourceChild.buffer", "normalized_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:audit"] } },
+          { "source_ordinal": 2, "source_kind": "OWNER_DEF_CLEANUP", "source_id": "decl:ResourceChild.cleanup", "normalized_envelope": { "recoverable_error_ids": ["error:HookError"], "effect_ids": ["effect:io"] } }
+        ],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:ResourceChild",
+          "declaration_mode": "INHERITED_SEALED_ROOT",
+          "family_root_type_id": "type:ResourceRoot",
+          "declared_envelope": null,
+          "computed_envelope": { "recoverable_error_ids": ["error:BaseError", "error:CloseError", "error:HookError"], "effect_ids": ["effect:audit", "effect:io"] },
+          "effective_envelope": { "recoverable_error_ids": ["error:BaseError", "error:CloseError", "error:HookError"], "effect_ids": ["effect:audit", "effect:io"] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-BND-001",
+      "class": "boundary",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:EmptyCleanup",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 0, "errors_item_count": 0, "raw_effect_ids": [], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:EmptyCleanup",
+          "declaration_mode": "EXPLICIT_HEADER",
+          "family_root_type_id": "type:EmptyCleanup",
+          "declared_envelope": { "recoverable_error_ids": [], "effect_ids": [] },
+          "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] },
+          "effective_envelope": { "recoverable_error_ids": [], "effect_ids": [] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-BND-002",
+      "class": "boundary",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:ExplicitChild",
+        "resource_hierarchy_role": "CHILD",
+        "base_owner_type_id_or_null": "type:ResourceRoot",
+        "same_module_sealed_root_proven": true,
+        "header": { "present": true, "effects_item_count": 1, "errors_item_count": 1, "raw_effect_ids": ["effect:io"], "errors_type_kind": "ERROR_SET", "raw_recoverable_error_ids": ["error:CloseError"] },
+        "family_root_envelope_or_null": { "family_root_type_id": "type:ResourceRoot", "recoverable_error_ids": ["error:CloseError", "error:FlushError"], "effect_ids": ["effect:audit", "effect:io"], "envelope_digest": "3333333333333333333333333333333333333333333333333333333333333333" },
+        "contributions_in_trace_order": [],
+        "claimed_projection": {
+          "cleanup_budget_id": "budget:ExplicitChild",
+          "declaration_mode": "EXPLICIT_HEADER",
+          "family_root_type_id": "type:ResourceRoot",
+          "declared_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] },
+          "effective_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"] },
+          "local_subset_proven": true,
+          "family_subset_proven": true,
+          "compatibility": "COMPATIBLE",
+          "envelope_digest": "6666666666666666666666666666666666666666666666666666666666666666"
+        },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null
+    },
+    {
+      "case_id": "R33-CBA-NG-001",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:DuplicateAxis",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 2, "errors_item_count": 0, "raw_effect_ids": ["effect:io"], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": { "cleanup_budget_id": "budget:DuplicateAxis", "declaration_mode": "EXPLICIT_HEADER", "family_root_type_id": "type:DuplicateAxis", "declared_envelope": { "recoverable_error_ids": [], "effect_ids": ["effect:io"] }, "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "effective_envelope": { "recoverable_error_ids": [], "effect_ids": ["effect:io"] }, "local_subset_proven": false, "family_subset_proven": true, "compatibility": "INCOMPATIBLE", "envelope_digest": "7777777777777777777777777777777777777777777777777777777777777777" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLEANUP_BUDGET_DUPLICATE"
+    },
+    {
+      "case_id": "R33-CBA-NG-002",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:DuplicateIdentity",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 1, "errors_item_count": 0, "raw_effect_ids": ["effect:io", "effect:io"], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": { "cleanup_budget_id": "budget:DuplicateIdentity", "declaration_mode": "EXPLICIT_HEADER", "family_root_type_id": "type:DuplicateIdentity", "declared_envelope": { "recoverable_error_ids": [], "effect_ids": ["effect:io"] }, "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "effective_envelope": { "recoverable_error_ids": [], "effect_ids": ["effect:io"] }, "local_subset_proven": false, "family_subset_proven": true, "compatibility": "INCOMPATIBLE", "envelope_digest": "8888888888888888888888888888888888888888888888888888888888888888" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLEANUP_BUDGET_DUPLICATE"
+    },
+    {
+      "case_id": "R33-CBA-NG-003",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:WrongErrorKind",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 0, "errors_item_count": 1, "raw_effect_ids": [], "errors_type_kind": "NON_ERROR_SET", "raw_recoverable_error_ids": ["type:String"] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": { "cleanup_budget_id": "budget:WrongErrorKind", "declaration_mode": "EXPLICIT_HEADER", "family_root_type_id": "type:WrongErrorKind", "declared_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "effective_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "local_subset_proven": false, "family_subset_proven": true, "compatibility": "INCOMPATIBLE", "envelope_digest": "9999999999999999999999999999999999999999999999999999999999999999" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET"
+    },
+    {
+      "case_id": "R33-CBA-NG-004",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:Exceeded",
+        "resource_hierarchy_role": "NONE",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": false,
+        "header": { "present": true, "effects_item_count": 0, "errors_item_count": 0, "raw_effect_ids": [], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [
+          { "source_ordinal": 0, "source_kind": "BASE_OWNER", "source_id": "type:ExceededBase", "normalized_envelope": { "recoverable_error_ids": ["error:BaseError"], "effect_ids": ["effect:io"] } },
+          { "source_ordinal": 1, "source_kind": "FIELD_OWNER", "source_id": "field:Exceeded.handle", "normalized_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:audit"] } },
+          { "source_ordinal": 2, "source_kind": "OWNER_DEF_CLEANUP", "source_id": "decl:Exceeded.cleanup", "normalized_envelope": { "recoverable_error_ids": ["error:HookError"], "effect_ids": ["effect:io"] } }
+        ],
+        "claimed_projection": { "cleanup_budget_id": "budget:Exceeded", "declaration_mode": "EXPLICIT_HEADER", "family_root_type_id": "type:Exceeded", "declared_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "computed_envelope": { "recoverable_error_ids": ["error:BaseError", "error:CloseError", "error:HookError"], "effect_ids": ["effect:audit", "effect:io"] }, "effective_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "local_subset_proven": false, "family_subset_proven": true, "compatibility": "INCOMPATIBLE", "envelope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLEANUP_BUDGET_EXCEEDED"
+    },
+    {
+      "case_id": "R33-CBA-NG-005",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:MissingRootBudget",
+        "resource_hierarchy_role": "SEALED_ROOT",
+        "base_owner_type_id_or_null": null,
+        "same_module_sealed_root_proven": true,
+        "header": { "present": false, "effects_item_count": 0, "errors_item_count": 0, "raw_effect_ids": [], "errors_type_kind": null, "raw_recoverable_error_ids": [] },
+        "family_root_envelope_or_null": null,
+        "contributions_in_trace_order": [],
+        "claimed_projection": { "cleanup_budget_id": "budget:MissingRootBudget", "declaration_mode": "IMPLICIT_EXACT_ROOT", "family_root_type_id": "type:MissingRootBudget", "declared_envelope": null, "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "effective_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "local_subset_proven": false, "family_subset_proven": false, "compatibility": "INCOMPATIBLE", "envelope_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+    },
+    {
+      "case_id": "R33-CBA-NG-006",
+      "class": "reject",
+      "input": {
+        "schema": "deeplus.cleanup-budget-envelope-input/r1",
+        "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+        "owner_type_id": "type:MismatchedChild",
+        "resource_hierarchy_role": "CHILD",
+        "base_owner_type_id_or_null": "type:ResourceRoot",
+        "same_module_sealed_root_proven": true,
+        "header": { "present": true, "effects_item_count": 1, "errors_item_count": 1, "raw_effect_ids": ["effect:audit", "effect:io"], "errors_type_kind": "ERROR_SET", "raw_recoverable_error_ids": ["error:CloseError"] },
+        "family_root_envelope_or_null": { "family_root_type_id": "type:ResourceRoot", "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:io"], "envelope_digest": "3333333333333333333333333333333333333333333333333333333333333333" },
+        "contributions_in_trace_order": [],
+        "claimed_projection": { "cleanup_budget_id": "budget:MismatchedChild", "declaration_mode": "EXPLICIT_HEADER", "family_root_type_id": "type:ResourceRoot", "declared_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:audit", "effect:io"] }, "computed_envelope": { "recoverable_error_ids": [], "effect_ids": [] }, "effective_envelope": { "recoverable_error_ids": ["error:CloseError"], "effect_ids": ["effect:audit", "effect:io"] }, "local_subset_proven": true, "family_subset_proven": false, "compatibility": "INCOMPATIBLE", "envelope_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+        "product_support": "NOT_RUN"
+      },
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLEANUP_BUDGET_EXCEEDED"
+    }
+  ],
+  "diagnostic_oracles": [
+    { "case_id": "R33-CBA-NG-001", "primary_diagnostic": "CLEANUP_BUDGET_DUPLICATE", "primary_reason": "DUPLICATE_AXIS_ITEM", "primary_origin": "header.effects[1]", "axis": "SURFACE_SHAPE", "emission_count": 1, "later_checks": "NOT_EVALUATED" },
+    { "case_id": "R33-CBA-NG-002", "primary_diagnostic": "CLEANUP_BUDGET_DUPLICATE", "primary_reason": "DUPLICATE_NORMALIZED_IDENTITY", "primary_origin": "header.effects.identities[1]", "axis": "EFFECT", "emission_count": 1, "later_checks": "NOT_EVALUATED" },
+    { "case_id": "R33-CBA-NG-003", "primary_diagnostic": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET", "primary_reason": "ERRORS_TYPE_NOT_ERROR_SET", "primary_origin": "header.errors", "axis": "ERROR_SET_KIND", "emission_count": 1, "later_checks": "NOT_EVALUATED" },
+    { "case_id": "R33-CBA-NG-004", "primary_diagnostic": "CLEANUP_BUDGET_EXCEEDED", "primary_reason": "LOCAL_RECOVERABLE_ERROR_EXCEEDED", "primary_origin": "type:ExceededBase", "axis": "RECOVERABLE_ERROR", "missing_identity": "error:BaseError", "emission_count": 1, "later_checks": "NOT_EVALUATED" },
+    { "case_id": "R33-CBA-NG-005", "primary_diagnostic": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT", "primary_reason": "RESOURCE_ROOT_OR_CHILD_INVALID", "primary_origin": "type:MissingRootBudget", "axis": "INHERITANCE", "emission_count": 1, "later_checks": "NOT_EVALUATED" },
+    { "case_id": "R33-CBA-NG-006", "primary_diagnostic": "CLEANUP_BUDGET_EXCEEDED", "primary_reason": "CHILD_EFFECT_WIDENED", "primary_origin": "type:MismatchedChild", "axis": "EFFECT", "missing_identity": "effect:audit", "emission_count": 1, "later_checks": "NOT_EVALUATED" }
+  ],
+  "mutations": [
+    { "mutation_id": "M01_ABSENCE_FORGED_NOT_EXACT", "expected_error": "ABSENCE_MODE" },
+    { "mutation_id": "M02_DUPLICATE_AXIS_ADMITTED", "expected_error": "ITEM_DUPLICATE" },
+    { "mutation_id": "M03_DUPLICATE_NORMALIZED_ID_ADMITTED", "expected_error": "IDENTITY_DUPLICATE" },
+    { "mutation_id": "M04_NON_ERROR_SET_ADMITTED", "expected_error": "ERROR_SET_KIND" },
+    { "mutation_id": "M05_DROP_BASE_CONTRIBUTION", "expected_error": "CONTRIBUTION_SET" },
+    { "mutation_id": "M06_DROP_FIELD_CONTRIBUTION", "expected_error": "CONTRIBUTION_SET" },
+    { "mutation_id": "M07_DROP_HOOK_CONTRIBUTION", "expected_error": "CONTRIBUTION_SET" },
+    { "mutation_id": "M08_REQUIRE_EQUALITY_INSTEAD_OF_SUBSET", "expected_error": "SUBSET_NOT_EQUALITY" },
+    { "mutation_id": "M09_ALLOW_CHILD_EFFECT_WIDEN", "expected_error": "FAMILY_SUBSET" },
+    { "mutation_id": "M10_ALLOW_CHILD_ERROR_WIDEN", "expected_error": "FAMILY_SUBSET" },
+    { "mutation_id": "M11_WRONG_FIRST_FAILURE_ORIGIN_ORDER", "expected_error": "FAILURE_ORIGIN_ORDER" },
+    { "mutation_id": "M12_BATCH_EMIT_OR_WRONG_WITHIN_ORIGIN_AXIS", "expected_error": "DIAGNOSTIC_EMISSION" }
+  ],
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "separate_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

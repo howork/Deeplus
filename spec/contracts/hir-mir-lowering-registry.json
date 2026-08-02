@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.hir-mir-lowering-registry/r1",
-  "draft_revision": "R11-INTEGRATED-R1",
+  "draft_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
   "status": "DESIGN_REGISTRY_NOT_IMPLEMENTATION_OR_EXECUTION_EVIDENCE",
   "artifact_context": {
     "repository": "https://github.com/howork/Deeplus.git",
@@ -13,22 +13,22 @@
     "hir_schema": {
       "schema_id": "deeplus.canonical-hir-h1/r1",
       "relative_path": "../../schemas/language/canonical-hir-h1.schema.json",
-      "sha256": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7"
+      "sha256": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796"
     },
     "hir_identity_catalog": {
       "schema_id": "deeplus.hir-h1-identity-catalog/r1",
       "relative_path": "hir-h1-identity-catalog.json",
-      "sha256": "1b37f7fdeb07858042f82757d66350ecc42d4bbd86dc1b926ea9cfbb576018d6"
+      "sha256": "29125ca37c032d8e339d68b3ab42912b4b6388c14906b41e652956fd603e4af6"
     },
     "mir_schema": {
       "schema_id": "deeplus.mir/r1",
       "relative_path": "../../schemas/language/deeplus-mir.schema.json",
-      "sha256": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07"
+      "sha256": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899"
     },
     "mir_machine_registry": {
       "schema_id": "deeplus.mir-machine-registry/r1",
       "relative_path": "mir-machine-registry.json",
-      "sha256": "d6034de24689c14dc2ac83809a963f5ae91d1cf82504bb57601c6079ead859ce"
+      "sha256": "876caf32e4e90fd6043c6cc5741f0f6ade9211b78ffab6949f2c2f8fab71713d"
     },
     "lowering_row_schema": {
       "schema_id": "deeplus.hir-mir-lowering-row/r1",
@@ -47,7 +47,7 @@
       "sha256": "235e093b78fb9d6ac23106ef3829cd6b1c438378d9f8a524d1fe5e3cabac7f0d"
     }
   },
-  "lowering_rules_revision": "R11-INTEGRATED-R1",
+  "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
   "profile_contract": {
     "machine_profile_ids": [
       "CURRENT",
@@ -55,7 +55,23 @@
     ],
     "current_profile": "CURRENT",
     "preview_profile": "EXPLICIT_PREVIEW",
-    "nested_profile_override": "FORBIDDEN"
+    "nested_profile_override": "FORBIDDEN",
+    "responsibility_evidence_projection_contract": {
+      "hir_descriptor": "ResponsibilityEvidenceDescriptor",
+      "api_descriptor": "responsibilityEvidenceApiDescriptor",
+      "mir_descriptor": "responsibilityEvidenceDescriptor",
+      "hir_identity_catalog_row_count_delta": 0,
+      "hir_descriptor_is_non_structural": true,
+      "responsibility_rule_identity_domain": "RESPONSIBILITY_RULE",
+      "responsibility_evidence_identity_domain": "RESPONSIBILITY_EVIDENCE",
+      "callable_responsibility_profile_identity_reuse": false,
+      "hir_to_mir_field_relation": "EXACT_EXCEPT_SOURCE_PROVENANCE_PROJECTS_TO_SOURCE_ORIGIN_ID",
+      "api_projection": "TYPE_LEVEL_POLICY_AND_SELECTED_WITNESS_ERROR_EFFECT_ONLY",
+      "runtime_relookup_count": 0,
+      "backend_relookup_count": 0,
+      "r31_capture_plan_change_count": 0,
+      "product_support": "NOT_RUN"
+    }
   },
   "coverage_contract": {
     "hir_identity_catalog_exact_count": 130,
@@ -90,6 +106,18 @@
       "PK-EFFECTFUL-EXTRACTOR",
       "PK-BACKTRACKING"
     ]
+  },
+  "loan_close_projection_contract": {
+    "contract": "spec/contracts/loan-close-operation-r1.json",
+    "source_owner": "HirExprKind::PlaceAccess plus verified region constraints",
+    "loan_id_creation_stage": "MIR_LOWERING",
+    "close_frontier": "EARLIEST_POST_USE_PATH_FRONTIER_BEFORE_OWNER_BARRIER_REGION_EXIT_OR_UNADMITTED_SUSPEND",
+    "static_end_site_cardinality": "ONE_OR_MORE_PATH_EXCLUSIVE",
+    "dynamic_end_cardinality": "EXACTLY_ONE_PER_BEGIN_PER_REACHABLE_PATH",
+    "new_lowering_row_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "product_execution": "NOT_RUN"
   },
   "semantic_operation_mapping": [
     {
@@ -291,6 +319,8 @@
     "schema_only_identity_has_independent_dispatch_row": false,
     "construction_token_kind": "BUILDER",
     "construction_token_specialization": "ConstructionTokenId",
+    "hir_budget_reference": "HirConstructionLifecyclePlan.cleanup_budget_id",
+    "mir_budget_reference": "constructionLifecyclePayload.cleanup_budget_id",
     "backend_neutral": true,
     "ordered_operation_family": [
       "OBJECT_CONSTRUCTION_BEGIN",
@@ -318,7 +348,7 @@
     "contract": "suspension-frame-responsibility-r1.json",
     "continuation_interface_contract": "continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "continuation_interface_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
     "continuation_receipt_schema": "../../schemas/language/continuation-receipt-r1.schema.json",
     "backend_neutral": true,
     "body_entry_operation": "FRAME_CREATE",
@@ -350,6 +380,53 @@
     "required_and_provided_capability_relation": "EXACT_SORTED_UNIQUE_EQUAL",
     "unsupported_reachable_key_count": 0
   },
+  "ownership_type_qualifier_projection": {
+    "contract": "spec/contracts/ownership-type-qualifier-r1.json",
+    "input_identity": "NormalizedTypeDescriptor(type_ownership_qualifier, base_normalized_type_id, region_id_or_null)",
+    "parameter_mode_separate": true,
+    "rows": [
+      {
+        "qualifier": "UNQUALIFIED",
+        "mir_ownership_mode": "BASE_RESPONSIBILITY",
+        "region_required": false,
+        "place_mutability": "BASE_OR_BINDING_DEFINED"
+      },
+      {
+        "qualifier": "OWNED",
+        "mir_ownership_mode": "BASE_REUSABLE_OR_OWNED",
+        "region_required": false,
+        "place_mutability": "BASE_OR_BINDING_DEFINED"
+      },
+      {
+        "qualifier": "BORROWED",
+        "mir_ownership_mode": "BORROWED",
+        "region_required": true,
+        "loan_required": true,
+        "place_mutability": "READ_ONLY"
+      },
+      {
+        "qualifier": "MUT",
+        "mir_ownership_mode": "OWNED",
+        "region_required": false,
+        "place_mutability": "MUTABLE"
+      },
+      {
+        "qualifier": "INOUT",
+        "mir_ownership_mode": "INOUT",
+        "region_required": true,
+        "loan_required": true,
+        "place_mutability": "MUTABLE_EXCLUSIVE_VIEW"
+      }
+    ],
+    "forbidden": [
+      "qualifier erasure",
+      "region synthesis or loss",
+      "parameter-mode and type-qualifier conflation",
+      "AOT or JIT ownership reselection",
+      "Cranelift address-shape inference"
+    ],
+    "product_support": "NOT_RUN"
+  },
   "rows": [
     {
       "row_schema_version": "deeplus.hir-mir-lowering-row/r1",
@@ -359,9 +436,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -468,7 +545,7 @@
         "NORMAL",
         "CANCELLATION"
       ],
-      "cleanup_effect": "RUN_LIFO",
+      "cleanup_effect": "NONE",
       "suspension_effect": "SUSPENDS",
       "ownership_effect": "FORWARD",
       "responsibility_projection": {
@@ -573,9 +650,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -717,9 +794,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -744,14 +821,12 @@
             "break_payload"
           ],
           "successor_roles": [
-            "NORMAL",
-            "CLEANUP"
+            "NORMAL"
           ]
         }
       ],
       "successor_roles": [
-        "NORMAL",
-        "CLEANUP"
+        "NORMAL"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -864,9 +939,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1012,9 +1087,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1039,14 +1114,12 @@
             "cancellation_value"
           ],
           "successor_roles": [
-            "CANCELLATION",
-            "CLEANUP"
+            "CANCELLATION"
           ]
         }
       ],
       "successor_roles": [
-        "CANCELLATION",
-        "CLEANUP"
+        "CANCELLATION"
       ],
       "token_inputs": [
         {
@@ -1171,9 +1244,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1200,42 +1273,6 @@
             "cleanup_region"
           ],
           "condition": "ALWAYS"
-        },
-        {
-          "ordinal": 2,
-          "operation_kind": "CLEANUP_PIN",
-          "semantic_operation_id": "DM-SEMOP-CLEANUP-PIN-R1",
-          "input_roles": [
-            "ordered_cleanup_registrations"
-          ],
-          "output_roles": [
-            "pinned_cleanup_registrations"
-          ],
-          "condition": "ALWAYS"
-        },
-        {
-          "ordinal": 3,
-          "operation_kind": "CLEANUP_SEAL",
-          "semantic_operation_id": "DM-SEMOP-CLEANUP-SEAL-R1",
-          "input_roles": [
-            "pinned_cleanup_registrations"
-          ],
-          "output_roles": [
-            "sealed_cleanup_registrations"
-          ],
-          "condition": "ALWAYS"
-        },
-        {
-          "ordinal": 4,
-          "operation_kind": "CLEANUP_DISARM",
-          "semantic_operation_id": "DM-SEMOP-CLEANUP-DISARM-R1",
-          "input_roles": [
-            "sealed_cleanup_registrations"
-          ],
-          "output_roles": [
-            "disarmed_cleanup_registrations"
-          ],
-          "condition": "ON_SUCCESS"
         }
       ],
       "terminator_plan": [
@@ -1250,8 +1287,7 @@
             "NORMAL",
             "ERROR",
             "DEFECT",
-            "CANCELLATION",
-            "CLEANUP"
+            "CANCELLATION"
           ]
         }
       ],
@@ -1259,8 +1295,7 @@
         "NORMAL",
         "ERROR",
         "DEFECT",
-        "CANCELLATION",
-        "CLEANUP"
+        "CANCELLATION"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -1376,9 +1411,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1391,25 +1426,102 @@
       ],
       "disposition": "LOWER",
       "required_capability_ids": [
-        "DM-CAP-CLOSURE-R1"
+        "DM-CAP-CLOSURE-R1",
+        "DM-CAP-BUILDER-TRANSACTION-R1",
+        "DM-CAP-CLEANUP-OUTCOME-R1",
+        "DM-CAP-PLACE-OWNERSHIP-R1"
       ],
       "operation_plan": [
         {
           "ordinal": 1,
+          "operation_kind": "BUILDER_BEGIN",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-BEGIN-R1",
+          "input_roles": [
+            "closure_environment_plan"
+          ],
+          "output_roles": [
+            "private_environment_construction"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "BUILDER_STAGE",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-STAGE-R1",
+          "input_roles": [
+            "private_environment_construction",
+            "tagged_capture_fields_left_to_right_exactly_once"
+          ],
+          "output_roles": [
+            "staged_capture_fields_in_source_order"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 3,
+          "operation_kind": "BUILDER_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-COMMIT-R1",
+          "input_roles": [
+            "complete_private_environment_construction"
+          ],
+          "output_roles": [
+            "committed_closure_environment"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 4,
           "operation_kind": "CLOSURE_MAKE",
           "semantic_operation_id": "DM-SEMOP-CLOSURE-MAKE-R1",
           "input_roles": [
             "closure_body",
-            "ordered_capture_sources"
+            "closure_environment_plan_id",
+            "committed_construction_id",
+            "committed_closure_environment",
+            "capture_field_ids_in_source_order"
           ],
           "output_roles": [
             "closure_value"
           ],
-          "condition": "ALWAYS"
+          "condition": "ON_SUCCESS"
         }
       ],
-      "terminator_plan": [],
-      "successor_roles": [],
+      "terminator_plan": [
+        {
+          "ordinal": 1,
+          "terminator_kind": "CHECKED",
+          "input_roles": [
+            "current_capture_evaluation_or_transfer"
+          ],
+          "successor_roles": [
+            "NORMAL",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        },
+        {
+          "ordinal": 2,
+          "terminator_kind": "LEAVE",
+          "input_roles": [
+            "precommit_failure",
+            "reverse_acquisition_rollback"
+          ],
+          "successor_roles": [
+            "CLEANUP",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        }
+      ],
+      "successor_roles": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION",
+        "CLEANUP"
+      ],
       "token_inputs": [
         {
           "token_kind": "ACCESS",
@@ -1426,11 +1538,14 @@
       ],
       "token_discharges": [],
       "outcome_families": [
-        "NORMAL"
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
       ],
-      "cleanup_effect": "NONE",
+      "cleanup_effect": "RUN_LIFO",
       "suspension_effect": "NONE",
-      "ownership_effect": "FORWARD",
+      "ownership_effect": "TRANSACTIONAL_COMMIT",
       "responsibility_projection": {
         "axis_order": [
           "value_mode",
@@ -1533,9 +1648,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1715,9 +1830,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1932,9 +2047,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -1958,14 +2073,12 @@
             "loop_continue_target"
           ],
           "successor_roles": [
-            "NORMAL",
-            "CLEANUP"
+            "NORMAL"
           ]
         }
       ],
       "successor_roles": [
-        "NORMAL",
-        "CLEANUP"
+        "NORMAL"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -2078,9 +2191,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -2222,9 +2335,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -2425,9 +2538,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -2569,9 +2682,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -2713,9 +2826,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -2867,9 +2980,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3070,9 +3183,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3228,9 +3341,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3386,9 +3499,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3557,9 +3670,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3714,9 +3827,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -3891,9 +4004,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4093,9 +4206,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4237,9 +4350,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4264,14 +4377,12 @@
             "return_payload"
           ],
           "successor_roles": [
-            "COMPLETE",
-            "CLEANUP"
+            "NORMAL"
           ]
         }
       ],
       "successor_roles": [
-        "COMPLETE",
-        "CLEANUP"
+        "NORMAL"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -4384,9 +4495,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4411,14 +4522,12 @@
             "ret_payload"
           ],
           "successor_roles": [
-            "NORMAL",
-            "CLEANUP"
+            "NORMAL"
           ]
         }
       ],
       "successor_roles": [
-        "NORMAL",
-        "CLEANUP"
+        "NORMAL"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -4531,9 +4640,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4675,9 +4784,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4820,9 +4929,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4964,9 +5073,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -4991,14 +5100,12 @@
             "error_payload"
           ],
           "successor_roles": [
-            "ERROR",
-            "CLEANUP"
+            "ERROR"
           ]
         }
       ],
       "successor_roles": [
-        "ERROR",
-        "CLEANUP"
+        "ERROR"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -5111,9 +5218,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -5126,6 +5233,8 @@
       ],
       "disposition": "LOWER",
       "required_capability_ids": [
+        "DM-CAP-CALL-CHANNELS-R1",
+        "DM-CAP-PLACE-OWNERSHIP-R1",
         "DM-CAP-CLEANUP-OUTCOME-R1"
       ],
       "operation_plan": [
@@ -5154,8 +5263,7 @@
             "NORMAL",
             "ERROR",
             "DEFECT",
-            "CANCELLATION",
-            "CLEANUP"
+            "CANCELLATION"
           ]
         }
       ],
@@ -5163,8 +5271,7 @@
         "NORMAL",
         "ERROR",
         "DEFECT",
-        "CANCELLATION",
-        "CLEANUP"
+        "CANCELLATION"
       ],
       "token_inputs": [],
       "token_outputs": [],
@@ -5280,9 +5387,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "EXPRESSION",
@@ -5389,7 +5496,7 @@
         "NORMAL",
         "CANCELLATION"
       ],
-      "cleanup_effect": "RUN_LIFO",
+      "cleanup_effect": "NONE",
       "suspension_effect": "SUSPENDS",
       "ownership_effect": "FORWARD",
       "responsibility_projection": {
@@ -5494,9 +5601,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "STATEMENT",
@@ -5621,9 +5728,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "STATEMENT",
@@ -5778,9 +5885,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "STATEMENT",
@@ -5905,9 +6012,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
         "node_category": "STATEMENT",
@@ -5920,6 +6027,7 @@
       ],
       "disposition": "LOWER",
       "required_capability_ids": [
+        "DM-CAP-PLACE-OWNERSHIP-R1",
         "DM-CAP-CLEANUP-OUTCOME-R1"
       ],
       "operation_plan": [
@@ -5929,12 +6037,74 @@
           "semantic_operation_id": "DM-SEMOP-CLEANUP-REGISTER-R1",
           "input_roles": [
             "cleanup_region",
-            "cleanup_action"
+            "deferred_call_registration_table_row"
           ],
           "output_roles": [
-            "cleanup_registration"
+            "unsealed_cleanup_registration"
           ],
           "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "CLEANUP_PIN",
+          "semantic_operation_id": "DM-SEMOP-CLEANUP-PIN-R1",
+          "input_roles": [
+            "unsealed_cleanup_registration",
+            "prepared_dynamic_operand_slots"
+          ],
+          "output_roles": [
+            "pinned_cleanup_registration"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 3,
+          "operation_kind": "CLEANUP_SEAL",
+          "semantic_operation_id": "DM-SEMOP-CLEANUP-SEAL-R1",
+          "input_roles": [
+            "pinned_cleanup_registration",
+            "move_reservations_to_consume"
+          ],
+          "output_roles": [
+            "sealed_cleanup_registration"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 4,
+          "operation_kind": "CLEANUP_DISARM",
+          "semantic_operation_id": "DM-SEMOP-CLEANUP-DISARM-R1",
+          "input_roles": [
+            "unsealed_cleanup_registration"
+          ],
+          "output_roles": [
+            "disarmed_cleanup_registration"
+          ],
+          "condition": "ON_ERROR"
+        },
+        {
+          "ordinal": 5,
+          "operation_kind": "LOAN_END",
+          "semantic_operation_id": "DM-SEMOP-LOAN-END-R1",
+          "input_roles": [
+            "prepared_live_loans_in_reverse_acquisition_order"
+          ],
+          "output_roles": [
+            "ended_prepared_loans"
+          ],
+          "condition": "ON_ERROR"
+        },
+        {
+          "ordinal": 6,
+          "operation_kind": "MOVE_CANCEL",
+          "semantic_operation_id": "DM-SEMOP-MOVE-CANCEL-R1",
+          "input_roles": [
+            "uncommitted_move_reservations_in_reverse_acquisition_order"
+          ],
+          "output_roles": [
+            "cancelled_move_reservations"
+          ],
+          "condition": "ON_ERROR"
         }
       ],
       "terminator_plan": [],
@@ -5951,7 +6121,7 @@
       "outcome_families": [
         "NORMAL"
       ],
-      "cleanup_effect": "REGISTER",
+      "cleanup_effect": "SEAL",
       "suspension_effect": "NONE",
       "ownership_effect": "FORWARD",
       "responsibility_projection": {
@@ -6056,9 +6226,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "RESOLVED_REF",
         "identity_id": "DIRECT_DECL"
@@ -6200,9 +6370,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "RESOLVED_REF",
         "identity_id": "LOCAL"
@@ -6356,9 +6526,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "ACTOR_MESSAGE::ACTOR_TRANSPORT"
@@ -6560,9 +6730,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "MESSAGE::DIRECT_IMPLEMENTATION"
@@ -6752,9 +6922,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "MESSAGE::EXTENSION_STATIC"
@@ -6945,9 +7115,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "MESSAGE::RESERVED_OPERATION"
@@ -7137,9 +7307,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "MESSAGE::TRAIT_WITNESS"
@@ -7329,9 +7499,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "MESSAGE::VIRTUAL_SLOT"
@@ -7522,9 +7692,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "ORDINARY::DIRECT_IMPLEMENTATION"
@@ -7702,9 +7872,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "ORDINARY::EXTENSION_STATIC"
@@ -7883,9 +8053,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "ORDINARY::TRAIT_WITNESS"
@@ -8063,9 +8233,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
         "pair_id": "ORDINARY::VIRTUAL_SLOT"
@@ -8244,9 +8414,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "CONTEXT"
@@ -8389,9 +8559,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "NAMED"
@@ -8534,9 +8704,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "NAMED_UNFOLD"
@@ -8678,9 +8848,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "POSITIONAL"
@@ -8823,9 +8993,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "POSITIONAL_UNFOLD"
@@ -8967,9 +9137,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "TRAILING_CLOSURE"
@@ -8982,34 +9152,114 @@
       ],
       "disposition": "LOWER",
       "required_capability_ids": [
-        "DM-CAP-CLOSURE-R1"
+        "DM-CAP-CLOSURE-R1",
+        "DM-CAP-BUILDER-TRANSACTION-R1",
+        "DM-CAP-CLEANUP-OUTCOME-R1",
+        "DM-CAP-PLACE-OWNERSHIP-R1"
       ],
       "operation_plan": [
         {
           "ordinal": 1,
+          "operation_kind": "BUILDER_BEGIN",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-BEGIN-R1",
+          "input_roles": [
+            "trailing_closure_environment_plan"
+          ],
+          "output_roles": [
+            "private_environment_construction"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "BUILDER_STAGE",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-STAGE-R1",
+          "input_roles": [
+            "private_environment_construction",
+            "tagged_capture_fields_left_to_right_exactly_once"
+          ],
+          "output_roles": [
+            "staged_capture_fields_in_source_order"
+          ],
+          "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 3,
+          "operation_kind": "BUILDER_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BUILDER-COMMIT-R1",
+          "input_roles": [
+            "complete_private_environment_construction"
+          ],
+          "output_roles": [
+            "committed_closure_environment"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 4,
           "operation_kind": "CLOSURE_MAKE",
           "semantic_operation_id": "DM-SEMOP-CLOSURE-MAKE-R1",
           "input_roles": [
             "trailing_closure_body",
-            "ordered_capture_sources"
+            "closure_environment_plan_id",
+            "committed_construction_id",
+            "committed_closure_environment",
+            "capture_field_ids_in_source_order"
           ],
           "output_roles": [
             "trailing_closure_channel"
           ],
-          "condition": "ALWAYS"
+          "condition": "ON_SUCCESS"
         }
       ],
-      "terminator_plan": [],
-      "successor_roles": [],
+      "terminator_plan": [
+        {
+          "ordinal": 1,
+          "terminator_kind": "CHECKED",
+          "input_roles": [
+            "current_capture_evaluation_or_transfer"
+          ],
+          "successor_roles": [
+            "NORMAL",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        },
+        {
+          "ordinal": 2,
+          "terminator_kind": "LEAVE",
+          "input_roles": [
+            "precommit_failure",
+            "reverse_acquisition_rollback"
+          ],
+          "successor_roles": [
+            "CLEANUP",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        }
+      ],
+      "successor_roles": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION",
+        "CLEANUP"
+      ],
       "token_inputs": [],
       "token_outputs": [],
       "token_discharges": [],
       "outcome_families": [
-        "NORMAL"
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
       ],
-      "cleanup_effect": "NONE",
+      "cleanup_effect": "RUN_LIFO",
       "suspension_effect": "NONE",
-      "ownership_effect": "FORWARD",
+      "ownership_effect": "TRANSACTIONAL_COMMIT",
       "responsibility_projection": {
         "axis_order": [
           "value_mode",
@@ -9112,9 +9362,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
         "identity_id": "WITNESS"
@@ -9256,9 +9506,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -9423,9 +9673,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -9590,9 +9840,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -9738,9 +9988,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -9886,9 +10136,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10034,9 +10284,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10182,9 +10432,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10330,9 +10580,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10497,9 +10747,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10645,9 +10895,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10812,9 +11062,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -10979,9 +11229,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -11145,9 +11395,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "FIXED_OPERATOR_CONFORMANCE",
@@ -11292,9 +11542,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -11459,9 +11709,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -11607,9 +11857,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -11755,9 +12005,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -11903,9 +12153,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -12051,9 +12301,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
         "intrinsic_family": "POWER",
@@ -12199,9 +12449,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -12358,9 +12608,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -12504,9 +12754,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -12663,9 +12913,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -12822,9 +13072,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -12968,9 +13218,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -13141,9 +13391,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -13301,9 +13551,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -13461,9 +13711,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -13634,9 +13884,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -13807,9 +14057,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -13980,9 +14230,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14126,9 +14376,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14286,9 +14536,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14459,9 +14709,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14619,9 +14869,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14815,9 +15065,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -14975,9 +15225,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -15121,9 +15371,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -15281,9 +15531,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -15427,9 +15677,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -15587,9 +15837,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -15733,9 +15983,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -15879,9 +16129,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16037,9 +16287,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16183,9 +16433,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16343,9 +16593,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16516,9 +16766,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16676,9 +16926,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -16822,9 +17072,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -16982,9 +17232,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -17142,9 +17392,9 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "EXPLICIT_PREVIEW",
@@ -17315,9 +17565,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -17474,9 +17724,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -17633,9 +17883,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -17779,9 +18029,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -17939,9 +18189,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -18099,9 +18349,9 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
-      "mir_schema_digest": "496763fea40d16e33fe4d3e834f817d39be052c7ff6f7a698a79f129e4be4b07",
-      "lowering_rules_revision": "R11-INTEGRATED-R1",
+      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
+      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
         "pattern_profile": "CURRENT",
@@ -18245,7 +18495,11 @@
     "product_lanes": "15_OF_15_NOT_RUN",
     "product_execution": "NOT_RUN",
     "canonical_source_mutation": 0,
-    "github_mutation": 0
+    "github_mutation": 0,
+    "r31_closure_capture_plan_projection": "DESIGN_ONLY_NOT_RUN",
+    "new_mir_operation_kind_count": 0,
+    "module_api_value_level_identity_export_count": 0,
+    "r32_deferred_call_plan_projection": "DESIGN_ONLY_NOT_RUN"
   },
   "actor_protocol_binding_contract": {
     "contract": "spec/contracts/actor-protocol-direct-conformance-r1.json",
@@ -18267,5 +18521,233 @@
     "fixture_sha256": "d6f8d920f78194450545715c2b5587a887db411a11504f1bda2dd940d57d70f9",
     "mir_reselection_count": 0,
     "runtime_lookup_count": 0
+  },
+  "closure_capture_plan_lowering_contract": {
+    "hir_plan": "HIR-H1/STRUCT/CLOSURE_PLAN",
+    "mir_table": "closure_environment_plan_table",
+    "mir_plan_schema_ref": "schemas/language/deeplus-mir.schema.json#/$defs/closureEnvironmentPlan",
+    "capture_projection": {
+      "tagged_variants": [
+        "ReferenceCapture",
+        "InitializerCapture"
+      ],
+      "identity": "CaptureFieldId_EXACTLY_PRESERVED",
+      "source_ordinal": "ZERO_BASED_CONTIGUOUS_EXACT_SOURCE_ORDER",
+      "normalized_type": "EXACTLY_PRESERVED",
+      "initializer_binding_kinds": [
+        "LET",
+        "VAR"
+      ],
+      "capture_list_state": "EXACTLY_PRESERVE_ABSENT_PRESENT_EMPTY_PRESENT_NONEMPTY"
+    },
+    "residence_projection": {
+      "residence": "EXACT_FrameIndependent_OR_RegionBound_RegionId",
+      "closed_ancestor_frame_assertion": "EXACT_BOOL",
+      "lexical_dependencies": "EXACT_SORTED_UNIQUE_ANCESTOR_BODY_PLACE_DEPTH_REGION_READ_LIVE_READABLE_ROWS"
+    },
+    "source_order_expansion": {
+      "evaluation": "LEFT_TO_RIGHT_EXACTLY_ONCE",
+      "reference_borrow_or_inout": [
+        "LOAN_BEGIN_SHARED_OR_EXCLUSIVE",
+        "BUILDER_STAGE"
+      ],
+      "reference_move": [
+        "MOVE_RESERVE",
+        "PLACE_MOVE",
+        "BUILDER_STAGE"
+      ],
+      "reference_copy_clone_deep_once": [
+        "RECURSIVELY_LOWER_PREPARATIONS",
+        "BUILDER_STAGE"
+      ],
+      "initializer_let_or_var": [
+        "RECURSIVELY_LOWER_INITIALIZER_ONCE",
+        "BUILDER_STAGE"
+      ],
+      "fallible_step": "CHECKED_TO_NEXT_SOURCE_ORDINAL_OR_FAILURE",
+      "failure": "LEAVE_THROUGH_REVERSE_ACQUISITION_CLEANUP",
+      "rollback": [
+        "MOVE_CANCEL_IF_RESERVED",
+        "LOAN_END_IF_LIVE",
+        "CLEANUP_LIFO",
+        "BUILDER_ABORT_BY_LEAVE"
+      ],
+      "rollback_order": "REVERSE_ACQUISITION_ORDER"
+    },
+    "commit_and_publish": {
+      "environment_commit": "BUILDER_COMMIT_AFTER_ALL_CAPTURE_FIELDS",
+      "closure_make": "INFALLIBLE_CLOSURE_MAKE_AFTER_BUILDER_COMMIT",
+      "closure_make_payload_fields": [
+        "closure_id",
+        "closure_body_callable_id",
+        "closure_environment_plan_id",
+        "committed_construction_id",
+        "environment_value_id",
+        "capture_field_ids_in_source_order"
+      ],
+      "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
+    },
+    "new_mir_operation_kind_count": 0,
+    "reused_operation_kinds": [
+      "BUILDER_BEGIN",
+      "BUILDER_STAGE",
+      "BUILDER_COMMIT",
+      "PLACE_MOVE",
+      "MOVE_RESERVE",
+      "MOVE_CANCEL",
+      "LOAN_BEGIN_SHARED",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "LOAN_END",
+      "CLEANUP_REGION_ENTER",
+      "CLEANUP_REGISTER",
+      "CLEANUP_DISARM",
+      "CLOSURE_MAKE"
+    ],
+    "reused_terminator_kinds": [
+      "CHECKED",
+      "LEAVE"
+    ],
+    "api_value_level_identity_export_count": 0,
+    "product_support": "NOT_RUN"
+  },
+  "deferred_call_plan_projection_contract": {
+    "hir_source": "CleanupRegistration.deferred_call_plan",
+    "mir_target": "MirBody.deferred_call_registration_table keyed by cleanup_registration_id",
+    "selected_call_reselection_count": 0,
+    "dynamic_operand_evaluation_count": 1,
+    "static_evidence_evaluation_count": 0,
+    "publication_sequence": [
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN_ZERO_OR_MORE",
+      "CLEANUP_SEAL"
+    ],
+    "owner_move_commit": "RESERVATION_CONSUMED_AT_CLEANUP_SEAL",
+    "preseal_rollback": [
+      "CLEANUP_DISARM",
+      "LOAN_END_REVERSE_ACQUISITION_ORDER",
+      "MOVE_CANCEL_REVERSE_ACQUISITION_ORDER",
+      "OWNED_TEMPORARY_CLEANUP_REVERSE_ACQUISITION_ORDER"
+    ],
+    "suspension": "PRESERVE_ACTIVE_PLAN_NO_EXECUTION",
+    "leave_cfg_roles": [
+      "SUCCESS",
+      "ERROR",
+      "DEFECT",
+      "CANCEL"
+    ],
+    "cleanup_is_internal_to_leave": true,
+    "cleanup_register_payload_expansion_count": 0,
+    "new_operation_kind_count": 0,
+    "product_support": "NOT_RUN"
+  },
+  "type_header_cleanup_budget_projection_contract": {
+    "hir_module_table": "CanonicalModuleBase.cleanup_budget_envelopes",
+    "mir_module_table": "cleanup_budget_envelope_table",
+    "projection": "EXACT_FIELD_FOR_FIELD_BACKEND_NEUTRAL",
+    "declaration_modes": [
+      "IMPLICIT_EXACT_ROOT",
+      "EXPLICIT_HEADER",
+      "INHERITED_SEALED_ROOT"
+    ],
+    "envelope_axes": [
+      "recoverable_error_ids",
+      "effect_ids"
+    ],
+    "envelope_ordering": "SORTED_UNIQUE_BY_ID",
+    "computed_contribution_sources": [
+      "BASE_OWNER",
+      "FIELD_OWNER",
+      "OWNER_DEF_CLEANUP"
+    ],
+    "local_compatibility_relation": "COMPUTED_SUBSET_OF_EFFECTIVE",
+    "family_subset_relation": "EFFECTIVE_SUBSET_OF_FAMILY_ROOT",
+    "implicit_exact_root_rule": "an absent non-resource root header computes the exact effective/exported envelope",
+    "resource_root_rule": "a sealed resource family root requires EXPLICIT_HEADER",
+    "explicit_child_rule": "an explicit child may equal or narrow the family-root envelope and must carry a family subset proof",
+    "contribution_trace_order": [
+      "BASE_OWNER",
+      "FIELD_OWNER_IN_DECLARATION_ORDER",
+      "OWNER_DEF_CLEANUP"
+    ],
+    "runtime_cleanup_order_unchanged": [
+      "OWNER_DEF_CLEANUP",
+      "OWN_FIELDS_REVERSE_SUCCESSFUL_ACQUISITION",
+      "BASE_OWNER"
+    ],
+    "diagnostic_failure_priority": [
+      "CLEANUP_BUDGET_DUPLICATE",
+      "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT",
+      "CLEANUP_BUDGET_EXCEEDED"
+    ],
+    "reused_lowering_rule_id": "DM-LR-STRUCT-CONSTRUCTION-LIFECYCLE-R1",
+    "reused_operation_kinds": [
+      "CLEANUP_REGION_ENTER",
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN",
+      "CLEANUP_SEAL",
+      "CLEANUP_DISARM",
+      "OBJECT_CLEANUP_BEGIN",
+      "OBJECT_CLEANUP_HOOK",
+      "OBJECT_FIELD_CLEANUP",
+      "OBJECT_BASE_CLEANUP",
+      "OBJECT_CLEANUP_END"
+    ],
+    "new_lowering_row_count": 0,
+    "new_operation_kind_count": 0,
+    "backend_neutral": true,
+    "overlap_fusion_dependency": "R33 is independently based on main; R32 scope/defer/loan-close content is not imported and any overlap requires a later explicit fusion decision.",
+    "p1_022_decided": false,
+    "product_support": "NOT_RUN"
+  },
+  "shared_mutex_with_lock_projection_contract": {
+    "refines_row_id": "HM-LR-CALL-009",
+    "selected_dispatch_key": "MESSAGE::RESERVED_OPERATION",
+    "selected_reserved_operation_identity": "SharedMutex::withLock",
+    "dedicated_dispatch_row_added": false,
+    "new_operation_or_terminator_kind_added": false,
+    "additional_required_capability_ids": [
+      "DM-CAP-CLEANUP-OUTCOME-R1",
+      "DM-CAP-PLACE-OWNERSHIP-R1",
+      "DM-CAP-SYNCHRONIZATION-R1"
+    ],
+    "preconditions": {
+      "payload_predicate_id": "SharedMutexPayloadAdmitted",
+      "payload_predicate_digest_matches_api_residue": true,
+      "callback_is_nonsuspending": true,
+      "callback_exclusive_view_is_scoped": true,
+      "same_active_mutex_reentry": "REJECT_BEFORE_CALLBACK"
+    },
+    "evaluation_order": [
+      "EVALUATE_RECEIVER_ONCE",
+      "EVALUATE_CALLBACK_ONCE",
+      "SYNC_OP:LOCK_ACQUIRE",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "INVOKE:CALLBACK",
+      "LOAN_END",
+      "SYNC_OP:LOCK_RELEASE"
+    ],
+    "outcome_projection": {
+      "roles": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "loan_end_before_release_on_every_role": true,
+      "release_exactly_once_on_every_role": true,
+      "release_failure_admitted": false,
+      "callback_failure_remains_primary": true
+    },
+    "token_projection": {
+      "lock_acquire_outputs": [
+        "ACCESS:exclusive_loan_id",
+        "CLEANUP:unlock_cleanup_registration_id"
+      ],
+      "loan_end_discharges": "ACCESS:exclusive_loan_id",
+      "lock_release_discharges": "CLEANUP:unlock_cleanup_registration_id"
+    },
+    "wrapper_unlock_excluded_from_payload_predicate": true,
+    "product_support": "NOT_RUN"
   }
 }

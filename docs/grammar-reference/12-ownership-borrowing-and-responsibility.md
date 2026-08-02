@@ -25,6 +25,45 @@ OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout"
 TypePrefixParselet ::= OwnershipQualifier
 ```
 
+type qualifier는 다음의 닫힌 책임 집합을 이룬다.
+
+| 표면 | 정규화 identity | 뜻 | region |
+|---|---|---|---|
+| 접두사 없음 | `UNQUALIFIED` | base type의 기본 책임을 그대로 사용 | 없음 |
+| `owned T` | `OWNED` | 명시적 단독 owner와 cleanup/transfer 책임 | 없음 |
+| `borrowed T` | `BORROWED` | 읽기 전용 shared view | 반드시 결속 |
+| `mut T` | `MUT` | 변경 가능한 단독 owner | 없음 |
+| `inout T` | `INOUT` | 변경 가능한 exclusive view | 반드시 결속 |
+
+`owned`가 representation이나 ABI를 뜻하는 것은 아니며, 접두사가 없는
+타입을 자동으로 `owned`로 바꾸지도 않는다. `mut T`는 mutable owner이고
+`inout T`는 region-bound view이므로 둘은 교환할 수 없다. 모든 qualified
+wrapper는 invariant이며 qualifier 사이의 암시적 subtype/coercion은 없다.
+
+alias를 펼친 뒤 qualifier는 정확히 하나 이하여야 한다. 따라서
+`owned borrowed T`, `mut inout T`처럼 겹친 형태는 앞의 qualifier가
+이긴다고 해석하지 않고 거부한다. postfix `?`가 qualifier보다 강하게
+결합하고 `&`, `|`는 약하게 결합한다. 예를 들어 `borrowed A?`는
+`borrowed (A?)`이고 `borrowed A | B`는 `(borrowed A) | B`다. 합성 타입
+전체를 qualify하려면 `borrowed (A | B)`처럼 괄호를 쓴다.
+
+함수 타입의 anonymous input에는 기존 parameter mode 표면을 그대로
+쓴다. 바깥 괄호 뒤의 `->`를 확인한 같은 `ParenTypeSyntax` owner만
+`(borrow T)`, `(mut T)`, `(move T)`, `(inout T)`의 첫 단어를 channel
+mode로 commit한다. 함수 입력 자체를 `mut T` 또는 `inout T` qualified
+type으로 쓰려면 `((mut T)) -> R`처럼 안쪽 TypeRef를 한 번 더 묶는다.
+parser와 formatter는 이 두 identity를 서로 바꾸지 않는다.
+
+`owned T`와 `mut T`는 base type이 허용하는 local/storage/result/public
+위치에 남을 수 있다. `borrowed T`는 정확한 owner region이 모든 use보다
+길 때만 허용한다. borrowed result는 invocation-bounded callable이며 HIR과
+module API residue가 정확히 하나의 input/receiver origin을 지목할 때만
+허용한다. `inout T`는 local 또는 private invocation-bounded exclusive
+view로만 허용하며 field/static/result/export/capture/suspension/actor/
+concur/FFI 경계를 넘을 수 없다. region 누락이나 escape는
+`BORROW_ESCAPE_OWNER_REGION`, 그 밖의 qualifier 조합·문맥 위반은
+`OWNERSHIP_MODE_ADMISSION_FAILED`가 primary다.
+
 parameter mode는 호출 경계의 책임이고 type qualifier는 normalized type
 책임이다. 같은 단어를 사용해도 문법 owner와 identity field는 보존된다.
 
@@ -33,7 +72,7 @@ place에 넣는다. affine owner는 callee로 이전되고 caller에는 write-ba
 alias가 없다. `inout x: T`는 caller의 정확한 place를 exclusive하게
 빌려 같은 place에 변경을 commit한다. `move x: T`는 transfer를 요구하되
 그 자체로 mutation 권한을 만들지 않는다. type-side `mut T`는 unique
-mutable owner/view 책임이며 `inout` channel의 다른 철자가 아니다.
+mutable owner 책임이며 `inout` channel의 다른 철자가 아니다.
 
 ### expression과 capture
 
@@ -52,13 +91,21 @@ CaptureMode ::= "borrow" | "inout" | "move" | "clone"
 만든다. closure capture descriptor는 lifetime, call-right, environment
 receiver, effect/error/isolation/suspension 책임의 일부다.
 
-capture `copy`는 admitted copy 책임, `clone`은 선택된 `Clone` witness,
-`deep`은 별도 deep-copy profile을 요구한다. `clone`/`deep`이 선언하는
-failure와 effect는 closure construction에 그대로 나타난다. capture
-`once`는 환경 field를 한 번만 소비하게 할 뿐 callable의 `#once`
-profile을 자동으로 만들지 않는다. 여러 capture는 왼쪽부터 얻고,
-environment publish 전 실패하면 temporary를 역순으로 정리해 partial
-closure가 escape하지 않게 한다.
+capture `copy`는 exact `CopyValue` responsibility evidence를 요구하고,
+`clone`은 선택된 `Clone` witness와 그 error/effect residue를 보존한다.
+`deep`은 별도 graph/cycle/alias profile이 닫히지 않았으므로 Preview
+Design으로 parse되지만 현행 gate에서 활성화되지 않는다. capture `once`와
+callable `#once`는 다른 identity이며 자동 추론하지 않는다. 현행 profile은
+one-shot field를 가진 callable에도 명시적 `#once`를 요구한다.
+
+각 capture는 `CaptureFieldId(CapturePlanId, source ordinal, canonical name)`로
+식별한다. reference capture와 `let`/`var` initializer capture는 별도 HIR
+variant다. initializer는 enclosing scope에서 왼쪽부터 정확히 한 번
+평가하고 capture binder는 body에서만 함께 보인다. 중복 binder·중복 source
+place·self/forward initializer reference는 평가 전에 거부한다. 실패하면
+준비된 prefix의 loan, move reservation, owned temporary만 역순 정리하고,
+성공하면 하나의 complete environment만 commit한다. 외부 effect 자체를
+rollback하거나 partial environment를 publish하지 않는다.
 
 ### nonescaping lexical access와 capture의 구분
 
@@ -162,8 +209,15 @@ binder mode다. invocation이 region을 소유하므로 borrow는
 escape/suspend할 수 없다. `replace`는 새 owner를 한 번 commit하고 이전
 owner를 반환한다.
 
-`SharedMutex<T>` 최소 프로필은 lifecycle/effectful-cleanup payload를
-받지 않는다. 생성은 ordinary qualified call
+`SharedMutex<T: SharedMutexPayload>` 최소 프로필은 sealed compiler-known
+constraint `SharedMutexPayload`로 payload를 제한한다. 이 constraint는
+Trait가 아니며 사용자가 `conform`하거나 annotation으로 증거를 만들 수
+없다. 내부 `SharedMutexPayloadAdmitted` predicate는 cleanup-free Reusable
+또는 Affine owner-closed graph를 허용하고 Resource lifecycle, cleanup
+token/hook/error/effect/authority, suspension/cancellation 책임, borrow/inout
+view, opaque 또는 unbounded generic을 거부한다. 이는 `Plain`, copy, clone,
+sharing, transfer, layout, ABI, serialization을 추가로 증명하지 않는다.
+생성은 이 판정을 move commit 전에 수행하는 ordinary qualified call
 `SharedMutex::new(move value)`이고 receiver access는
 `mutex ~ withLock { inout state => body }`다. `#scoped`는 callback
 callable profile, `inout`은 source binder mode이며 invocation이 region을
@@ -175,9 +229,11 @@ MIR 관찰은 API 이름만 남기지 않는다. `SharedCell`의 관찰은 같�
 `sync_id`, 고유한 `operation_id`, `owner_id`, `cleanup_region_id`를 가진
 `observe_begin`/`observe_end` 쌍이고, `replace` 성공은 그 사이의 단 하나
 `replace_commit`이다. `SharedMutex`는 같은 식별자 묶음의
-`lock_acquire`/`lock_release`를 남기며 release는 모든 terminal edge에서
-정확히 한 번이다. xVM과 Cranelift은 이 ordered trace와 owner/cleanup balance를
-같게 보존해야 하지만, 현재는 대상 실행 확인서가 없어 `NOT_RUN`이다.
+`lock_acquire`, exclusive `loan_begin`, callback, `loan_end`, `lock_release`
+순서를 남기며 release는 모든 terminal edge에서 정확히 한 번이다. wrapper가
+소유한 unlock cleanup은 payload predicate의 입력이 아니다. xVM과
+Cranelift은 이 ordered trace와 owner/cleanup balance를 같게 보존해야 하지만,
+현재는 대상 실행 확인서가 없어 `NOT_RUN`이다.
 
 이 두 API는 표준 라이브러리 프로필이며 core source syntax가 아니다.
 
@@ -379,6 +435,21 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
 
 
 <!-- IR-OWN-R8-REF-12 -->
+<!-- IR-OWN-R34-LOAN-CLOSE -->
+### 경로별 loan 종료
+
+`borrow`와 `inout`의 종료는 소스에 별도 close 문장으로 쓰지 않는다.
+checker가 typed use와 region 제약을 확정하면 MIR lowerer가 정상, Error,
+Defect, Cancellation 및 조기 종료 경로에 명시적인 `LOAN_END`를 둔다.
+하나의 정적 borrow site가 분기마다 다른 end site를 가질 수 있지만,
+실행 중인 한 activation은 반드시 정확히 하나의 end만 지난다.
+
+close frontier는 마지막 허용 사용 뒤이면서 충돌하는 mutation, move,
+replacement, owner cleanup, region exit 또는 증명되지 않은 suspension보다
+앞이다. 중첩 reborrow는 안쪽부터 닫으며 child가 끝난 뒤에만 parent가
+다시 활성화된다. 이는 새 소스 문법이 아니라 backend가 지워도 의미를
+보존해야 하는 MIR 검증 계약이다. 제품 실행 증거는 `NOT_RUN`이다.
+
 ### 일반 borrow와 문맥 증거의 책임 경계
 
 일반 공유 borrow의 정본 철자는 `borrow`다. 이것은 MIR에서 하나의 Shared

@@ -342,9 +342,29 @@
     ],
     "replacement_or_no_fix": "use the R51c canonical surface",
     "feature_gate_policy": "no current gate",
-    "recognition_stage": "checker",
-    "current_ast_created": true,
-    "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
+  },
+  {
+    "rejection_id": "NG-DEFER-ACTOR-TRANSPORT",
+    "feature_ids": [
+      "single_action_defer_msp",
+      "unified_call_expression_and_tilde_modes",
+      "actor_request_reply"
+    ],
+    "surface_family": "actor transport :~ used as a defer cleanup invocation",
+    "lexical_or_parse_recognition": "recognized_then_rejected",
+    "current_status": "FORBIDDEN",
+    "primary_diagnostic": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+    "negative_fixture_ids": [
+      "EX-R32-DCP-NG-001"
+    ],
+    "replacement_or_no_fix": "use an admitted direct or ordinary message cleanup invocation and handle actor admission explicitly",
+    "feature_gate_policy": "no current gate",
+    "recognition_stage": "parser",
+    "current_ast_created": false,
+    "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
   },
   {
     "rejection_id": "NG-DIAG-ABSTRACT_CLASS_INSTANTIATION_FORBIDDEN",
@@ -1440,24 +1460,5 @@
     "recognition_stage": "parser",
     "current_ast_created": false,
     "recognition_contract": "pre-AST exact-surface probe; emit the primary diagnostic without constructing a current AST"
-  },
-  {
-    "rejection_id": "NG-MAP-NAMED-UNFOLD",
-    "feature_ids": [
-      "map_named_argument_spread_forbidden_law",
-      "schema_named_unfolding"
-    ],
-    "surface_family": "Map as named-unfold source",
-    "lexical_or_parse_recognition": "recognized_then_rejected",
-    "current_status": "FORBIDDEN",
-    "primary_diagnostic": "MAP_IS_NOT_NAMED_UNFOLD_SOURCE",
-    "negative_fixture_ids": [
-      "EX-R49C-MAT-004"
-    ],
-    "replacement_or_no_fix": "use a typed ProjectionRow source",
-    "feature_gate_policy": "no current gate",
-    "recognition_stage": "checker",
-    "current_ast_created": true,
-    "recognition_contract": "Stable neutral AST reaches the checker; evaluate the cited semantic boundary before lowering"
   }
 ]

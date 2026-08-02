@@ -103,6 +103,9 @@
       "parameter_modes": [
         "borrow"
       ],
+      "type_ownership_qualifiers": [
+        "unqualified"
+      ],
       "result_type": "String"
     },
     "baseline": "0.1.2-baseline.r51f3",
@@ -214,6 +217,9 @@
       "parameter_modes": [
         "borrow"
       ],
+      "type_ownership_qualifiers": [
+        "unqualified"
+      ],
       "result_type": "String"
     },
     "baseline": "0.1.2-baseline.r51f3",
@@ -320,6 +326,9 @@
       "call_shape": "(value: T) -> String",
       "parameter_modes": [
         "borrow"
+      ],
+      "type_ownership_qualifiers": [
+        "unqualified"
       ],
       "result_type": "String"
     },
@@ -760,6 +769,254 @@
         "isolation": "local"
       }
     },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-CleanupBudgetEnvelopeAdmitted-POS",
+    "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "canonical_case_id": "R33-CBA-POS-001",
+    "decision_input": {
+      "schema": "deeplus.cleanup-budget-envelope-input/r1",
+      "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+      "owner_type_id": "type:FinalFile",
+      "resource_hierarchy_role": "NONE",
+      "base_owner_type_id_or_null": null,
+      "same_module_sealed_root_proven": false,
+      "header": {
+        "present": false,
+        "effects_item_count": 0,
+        "errors_item_count": 0,
+        "raw_effect_ids": [],
+        "errors_type_kind": null,
+        "raw_recoverable_error_ids": []
+      },
+      "family_root_envelope_or_null": null,
+      "contributions_in_trace_order": [
+        {
+          "source_ordinal": 0,
+          "source_kind": "OWNER_DEF_CLEANUP",
+          "source_id": "decl:FinalFile.cleanup",
+          "normalized_envelope": {
+            "recoverable_error_ids": [
+              "error:CloseError"
+            ],
+            "effect_ids": [
+              "effect:io"
+            ]
+          }
+        }
+      ],
+      "claimed_projection": {
+        "cleanup_budget_id": "budget:FinalFile",
+        "declaration_mode": "IMPLICIT_EXACT_ROOT",
+        "family_root_type_id": "type:FinalFile",
+        "declared_envelope": null,
+        "computed_envelope": {
+          "recoverable_error_ids": [
+            "error:CloseError"
+          ],
+          "effect_ids": [
+            "effect:io"
+          ]
+        },
+        "effective_envelope": {
+          "recoverable_error_ids": [
+            "error:CloseError"
+          ],
+          "effect_ids": [
+            "effect:io"
+          ]
+        },
+        "local_subset_proven": true,
+        "family_subset_proven": true,
+        "compatibility": "COMPATIBLE",
+        "envelope_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "product_support": "NOT_RUN"
+    },
+    "expected_decision": {
+      "outcome": "ADMIT",
+      "diagnostic_or_null": null,
+      "reason_key_or_null": null,
+      "first_failure_origin_or_null": null,
+      "emission_count": 0,
+      "not_evaluated_origin_ids": []
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "rule_seed": "R33 absent non-child budget exports the exact normalized computed envelope; product checker NOT_RUN.",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-CleanupBudgetEnvelopeAdmitted-BOUNDARY",
+    "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "canonical_case_id": "R33-CBA-BND-002",
+    "decision_input": {
+      "schema": "deeplus.cleanup-budget-envelope-input/r1",
+      "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+      "owner_type_id": "type:ExplicitChild",
+      "resource_hierarchy_role": "CHILD",
+      "base_owner_type_id_or_null": "type:ResourceRoot",
+      "same_module_sealed_root_proven": true,
+      "header": {
+        "present": true,
+        "effects_item_count": 1,
+        "errors_item_count": 1,
+        "raw_effect_ids": [
+          "effect:io"
+        ],
+        "errors_type_kind": "ERROR_SET",
+        "raw_recoverable_error_ids": [
+          "error:CloseError"
+        ]
+      },
+      "family_root_envelope_or_null": {
+        "family_root_type_id": "type:ResourceRoot",
+        "recoverable_error_ids": [
+          "error:CloseError",
+          "error:FlushError"
+        ],
+        "effect_ids": [
+          "effect:audit",
+          "effect:io"
+        ],
+        "envelope_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "contributions_in_trace_order": [],
+      "claimed_projection": {
+        "cleanup_budget_id": "budget:ExplicitChild",
+        "declaration_mode": "EXPLICIT_HEADER",
+        "family_root_type_id": "type:ResourceRoot",
+        "declared_envelope": {
+          "recoverable_error_ids": [
+            "error:CloseError"
+          ],
+          "effect_ids": [
+            "effect:io"
+          ]
+        },
+        "computed_envelope": {
+          "recoverable_error_ids": [],
+          "effect_ids": []
+        },
+        "effective_envelope": {
+          "recoverable_error_ids": [
+            "error:CloseError"
+          ],
+          "effect_ids": [
+            "effect:io"
+          ]
+        },
+        "local_subset_proven": true,
+        "family_subset_proven": true,
+        "compatibility": "COMPATIBLE",
+        "envelope_digest": "6666666666666666666666666666666666666666666666666666666666666666"
+      },
+      "product_support": "NOT_RUN"
+    },
+    "expected_decision": {
+      "outcome": "ADMIT",
+      "diagnostic_or_null": null,
+      "reason_key_or_null": null,
+      "first_failure_origin_or_null": null,
+      "emission_count": 0,
+      "not_evaluated_origin_ids": []
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "rule_seed": "R33 explicit child may strictly narrow the sealed family-root envelope while covering its local obligation; product checker NOT_RUN.",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-CleanupBudgetEnvelopeAdmitted-NEG",
+    "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "canonical_case_id": "R33-CBA-NG-004",
+    "decision_input": {
+      "schema": "deeplus.cleanup-budget-envelope-input/r1",
+      "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+      "owner_type_id": "type:Exceeded",
+      "resource_hierarchy_role": "NONE",
+      "base_owner_type_id_or_null": null,
+      "same_module_sealed_root_proven": false,
+      "header": {
+        "present": true,
+        "effects_item_count": 0,
+        "errors_item_count": 0,
+        "raw_effect_ids": [],
+        "errors_type_kind": null,
+        "raw_recoverable_error_ids": []
+      },
+      "family_root_envelope_or_null": null,
+      "contributions_in_trace_order": [
+        {
+          "source_ordinal": 0,
+          "source_kind": "OWNER_DEF_CLEANUP",
+          "source_id": "decl:Exceeded.cleanup",
+          "normalized_envelope": {
+            "recoverable_error_ids": [
+              "error:CloseError"
+            ],
+            "effect_ids": [
+              "effect:io"
+            ]
+          }
+        }
+      ],
+      "claimed_projection": {
+        "cleanup_budget_id": "budget:Exceeded",
+        "declaration_mode": "EXPLICIT_HEADER",
+        "family_root_type_id": "type:Exceeded",
+        "declared_envelope": {
+          "recoverable_error_ids": [],
+          "effect_ids": []
+        },
+        "computed_envelope": {
+          "recoverable_error_ids": [
+            "error:CloseError"
+          ],
+          "effect_ids": [
+            "effect:io"
+          ]
+        },
+        "effective_envelope": {
+          "recoverable_error_ids": [],
+          "effect_ids": []
+        },
+        "local_subset_proven": false,
+        "family_subset_proven": true,
+        "compatibility": "INCOMPATIBLE",
+        "envelope_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "product_support": "NOT_RUN"
+    },
+    "expected_decision": {
+      "outcome": "REJECT",
+      "diagnostic_or_null": "CLEANUP_BUDGET_EXCEEDED",
+      "reason_key_or_null": "LOCAL_EFFECT_OUTSIDE_EFFECTIVE",
+      "first_failure_origin_or_null": {
+        "source_ordinal": 0,
+        "source_kind": "OWNER_DEF_CLEANUP",
+        "source_id": "decl:Exceeded.cleanup",
+        "axis": "effect_ids",
+        "missing_identity_ids": [
+          "effect:io"
+        ]
+      },
+      "emission_count": 1,
+      "not_evaluated_origin_ids": []
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "active_primary",
+    "rule_seed": "R33 reports one origin-major effect-axis cleanup-budget failure; product checker NOT_RUN.",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1385,115 +1642,224 @@
   {
     "fixture_id": "PF-ClosureCaptureDescriptorAdmitted-NEG",
     "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "fixture_kind": "concrete_negative",
     "expected": "rejected",
-    "expected_primary_diagnostic": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "ClosureCaptureDescriptorAdmitted"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-ClosureCaptureDescriptorAdmitted-NEG"
+    "canonical_case_id": "R31-CCP-NEG-008",
+    "decision_input": {
+      "schema": "deeplus.closure-capture-plan-input/r1",
+      "predicate_id": "ClosureCaptureDescriptorAdmitted",
+      "capture_plan_id": "capture.plan",
+      "closure_owner_id": "closure.owner",
+      "creation_point_id": "expr.creation",
+      "owner_kind": "SYNC_CLOSURE",
+      "capture_list_state": "PRESENT_NONEMPTY",
+      "callable_profile": {
+        "lifetime": "ORDINARY",
+        "call_right": "REPEATABLE",
+        "environment_receiver": "SHARED",
+        "behavior": "ORDINARY",
+        "suspension": "NONSUSPENDING",
+        "isolation": "SAME_ISOLATION"
       },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+      "escaping": false,
+      "capture_items": [
+        {
+          "source_ordinal": 0,
+          "capture_field_id": "capture.plan:0:value",
+          "binder_name": "value",
+          "syntax_kind": "EXPLICIT_MODE",
+          "normalized_mode": "BORROW",
+          "normalized_type_id": "example::Value",
+          "source_resolved_ref_or_null": "ref::value",
+          "source_place_id_or_null": "place::value",
+          "initializer_expr_id_or_null": null,
+          "initializer_result_eval_id_or_null": null,
+          "owner_id_before_or_null": null,
+          "owner_id_after_or_null": null,
+          "region_id_or_null": "region::value",
+          "loan_id_or_null": "loan::value",
+          "move_reservation_id_or_null": null,
+          "responsibility_rule_id_or_null": null,
+          "responsibility_evidence_id_or_null": null,
+          "trait_witness_id_or_null": null,
+          "construction_error_set": [],
+          "construction_effect_row": [],
+          "cleanup_obligation_id_or_null": null,
+          "cleanup_disposition": "END_LOAN",
+          "body_access": "READ",
+          "evaluation_count": 1
+        },
+        {
+          "source_ordinal": 1,
+          "capture_field_id": "capture.plan:1:value",
+          "binder_name": "value",
+          "syntax_kind": "EXPLICIT_MODE",
+          "normalized_mode": "MOVE",
+          "normalized_type_id": "example::Value",
+          "source_resolved_ref_or_null": "ref::value",
+          "source_place_id_or_null": "place::value",
+          "initializer_expr_id_or_null": null,
+          "initializer_result_eval_id_or_null": null,
+          "owner_id_before_or_null": "owner::value",
+          "owner_id_after_or_null": "env-owner::value",
+          "region_id_or_null": null,
+          "loan_id_or_null": null,
+          "move_reservation_id_or_null": "move-reservation::value",
+          "responsibility_rule_id_or_null": null,
+          "responsibility_evidence_id_or_null": null,
+          "trait_witness_id_or_null": null,
+          "construction_error_set": [],
+          "construction_effect_row": [],
+          "cleanup_obligation_id_or_null": null,
+          "cleanup_disposition": "CANCEL_MOVE_RESERVATION",
+          "body_access": "READ",
+          "evaluation_count": 1
+        }
+      ],
+      "lexical_dependencies": [],
+      "r30_dependency_state": "LOCAL_EVIDENCE_ONLY",
+      "product_support": "NOT_RUN"
     },
+    "expected_decision": {
+      "outcome": "REJECT",
+      "diagnostic_id_or_null": "RESOLVER_SCOPE_TREE_INVALID"
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "active_primary",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
     "fixture_id": "PF-ClosureCaptureDescriptorAdmitted-POS",
     "predicate_id": "ClosureCaptureDescriptorAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
     "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-ClosureCaptureDescriptorAdmitted-POS"
+    "expected": "admitted",
+    "canonical_case_id": "R31-CCP-POS-003",
+    "decision_input": {
+      "schema": "deeplus.closure-capture-plan-input/r1",
+      "predicate_id": "ClosureCaptureDescriptorAdmitted",
+      "capture_plan_id": "capture.plan",
+      "closure_owner_id": "closure.owner",
+      "creation_point_id": "expr.creation",
+      "owner_kind": "SYNC_CLOSURE",
+      "capture_list_state": "PRESENT_NONEMPTY",
+      "callable_profile": {
+        "lifetime": "ORDINARY",
+        "call_right": "REPEATABLE",
+        "environment_receiver": "SHARED",
+        "behavior": "ORDINARY",
+        "suspension": "NONSUSPENDING",
+        "isolation": "SAME_ISOLATION"
       },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+      "escaping": false,
+      "capture_items": [
+        {
+          "source_ordinal": 0,
+          "capture_field_id": "capture.plan:0:snapshot",
+          "binder_name": "snapshot",
+          "syntax_kind": "EXPLICIT_MODE",
+          "normalized_mode": "COPY",
+          "normalized_type_id": "example::Value",
+          "source_resolved_ref_or_null": "ref::snapshot",
+          "source_place_id_or_null": "place::snapshot",
+          "initializer_expr_id_or_null": null,
+          "initializer_result_eval_id_or_null": null,
+          "owner_id_before_or_null": "owner::snapshot",
+          "owner_id_after_or_null": "env-owner::snapshot",
+          "region_id_or_null": null,
+          "loan_id_or_null": null,
+          "move_reservation_id_or_null": null,
+          "responsibility_rule_id_or_null": "CopyValue",
+          "responsibility_evidence_id_or_null": "evidence::snapshot",
+          "trait_witness_id_or_null": null,
+          "construction_error_set": [],
+          "construction_effect_row": [],
+          "cleanup_obligation_id_or_null": null,
+          "cleanup_disposition": "NONE",
+          "body_access": "READ",
+          "evaluation_count": 1
+        }
+      ],
+      "lexical_dependencies": [],
+      "r30_dependency_state": "LOCAL_EVIDENCE_ONLY",
+      "product_support": "NOT_RUN"
     },
+    "expected_decision": {
+      "outcome": "ADMIT",
+      "diagnostic_id_or_null": null
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "active_primary",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
     "fixture_id": "PF-ClosureCaptureDescriptorAdmittedCurrentGate-NEG",
     "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "fixture_kind": "concrete_negative",
     "expected": "rejected",
+    "canonical_case_id": "R31-CCP-NEG-001",
+    "decision_input": {
+      "schema": "deeplus.closure-capture-plan-input/r1",
+      "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+      "capture_plan_id": "capture.plan",
+      "closure_owner_id": "closure.owner",
+      "creation_point_id": "expr.creation",
+      "owner_kind": "SYNC_CLOSURE",
+      "capture_list_state": "PRESENT_NONEMPTY",
+      "callable_profile": {
+        "lifetime": "ORDINARY",
+        "call_right": "REPEATABLE",
+        "environment_receiver": "SHARED",
+        "behavior": "ORDINARY",
+        "suspension": "NONSUSPENDING",
+        "isolation": "SAME_ISOLATION"
+      },
+      "escaping": false,
+      "capture_items": [
+        {
+          "source_ordinal": 0,
+          "capture_field_id": "capture.plan:0:graph",
+          "binder_name": "graph",
+          "syntax_kind": "EXPLICIT_MODE",
+          "normalized_mode": "DEEP",
+          "normalized_type_id": "example::Value",
+          "source_resolved_ref_or_null": "ref::graph",
+          "source_place_id_or_null": "place::graph",
+          "initializer_expr_id_or_null": null,
+          "initializer_result_eval_id_or_null": null,
+          "owner_id_before_or_null": null,
+          "owner_id_after_or_null": null,
+          "region_id_or_null": null,
+          "loan_id_or_null": null,
+          "move_reservation_id_or_null": null,
+          "responsibility_rule_id_or_null": null,
+          "responsibility_evidence_id_or_null": null,
+          "trait_witness_id_or_null": null,
+          "construction_error_set": [],
+          "construction_effect_row": [],
+          "cleanup_obligation_id_or_null": null,
+          "cleanup_disposition": "NONE",
+          "body_access": "READ",
+          "evaluation_count": 1
+        }
+      ],
+      "lexical_dependencies": [],
+      "r30_dependency_state": "LOCAL_EVIDENCE_ONLY",
+      "product_support": "NOT_RUN"
+    },
+    "expected_decision": {
+      "outcome": "REJECT",
+      "diagnostic_id_or_null": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE"
+    },
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "active_primary",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3",
     "expected_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor_mutation": {
       "local_violation": "ClosureCaptureDescriptorAdmittedCurrentGate"
     },
-    "fixture_kind": "mutation_recipe",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -1511,372 +1877,6 @@
         "suspends": false,
         "isolation": "local"
       }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-ClosureCaptureDescriptorAdmittedCurrentGate-POS",
-    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "R51a1 Stable closure capture descriptor admission design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-ClosureCaptureDescriptorAdmittedCurrentGate-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-CollectionFreezeAdmitted-BOUNDARY",
-    "predicate_id": "CollectionFreezeAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-CollectionFreezeAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 CollectionFreezeAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-CollectionFreezeAdmitted-NEG",
-    "predicate_id": "CollectionFreezeAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "COLLECTION_FREEZE_TRANSITION_NOT_ADMITTED",
-    "diagnostic_disposition": "active_primary",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "List<Int>",
-      "ownership": "borrowed",
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": [],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": [],
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "stdlib_operation",
-        "freeze_exclusive_transition": false,
-        "frozen_representation_declared": false,
-        "source_invalidated": false
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "freeze lacks exclusive transition or a declared frozen representation",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-CollectionFreezeAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-CollectionFreezeAdmitted-POS",
-    "predicate_id": "CollectionFreezeAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FrozenList<Int>",
-      "ownership": "move",
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": [
-        "allocate"
-      ],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": [
-        "allocate"
-      ],
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "stdlib_operation",
-        "freeze_exclusive_transition": true,
-        "frozen_representation_declared": true,
-        "source_invalidated": true
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "rule_seed": "require exclusive mutable ownership; transition to a declared immutable/shareable representation; expose copy/allocation/effect residue and do not call this snapshot",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "fixture_kind": "concrete_positive",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-CollectionFreezeAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-CollectionSnapshotAdmitted-BOUNDARY",
-    "predicate_id": "CollectionSnapshotAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-CollectionSnapshotAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 CollectionSnapshotAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-CollectionSnapshotAdmitted-NEG",
-    "predicate_id": "CollectionSnapshotAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED",
-    "diagnostic_disposition": "active_primary",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "List<Int>",
-      "ownership": "borrowed",
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": [],
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "stdlib_operation",
-        "snapshot_independent": false,
-        "snapshot_cost_declared": false,
-        "source_invalidated": true
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "snapshot is neither independent nor cost-declared and invalidates the source",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-CollectionSnapshotAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+    }
   }
 ]

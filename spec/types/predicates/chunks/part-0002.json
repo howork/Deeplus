@@ -1213,6 +1213,98 @@
   {
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+    "source_name": "Cleanup budget envelope",
+    "summary": "Normalize the class-header cleanup budget, compose exact base, field and owner cleanup obligations, prove the local subset and sealed-family non-expansion laws, and select one deterministic diagnostic.",
+    "input_descriptor": "CleanupBudgetEnvelopeInputR1",
+    "descriptor_axes": [
+      "owner_type_id",
+      "resource_hierarchy_role",
+      "header",
+      "family_root_envelope",
+      "contributions_in_trace_order",
+      "claimed_projection"
+    ],
+    "feature_refs": [
+      "cleanup_budget_algebra",
+      "header_cleanup_budget_surface",
+      "resource_inheritance"
+    ],
+    "diagnostic_refs": [
+      "CLEANUP_BUDGET_DUPLICATE",
+      "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "CLEANUP_BUDGET_EXCEEDED",
+      "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(normalized cleanup envelope) | reject(diagnostic_id, reason_key, first_failure_origin)",
+    "requires": [
+      "an absent non-child header exports the exact normalized computed envelope",
+      "base, owned fields in declaration order, and owner def#cleanup form one finite normalized set union",
+      "the computed obligation is a subset of the effective envelope",
+      "a child effective envelope is a subset of its same-module sealed family-root envelope",
+      "failure selection is origin-major in base, field, hook trace order and effect-before-error within one origin"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "cleanup",
+      "error_set",
+      "effect_row",
+      "class_disposition",
+      "sealed_module_identity"
+    ],
+    "formal_judgment_id": "J-CleanupBudgetEnvelopeAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/cleanup-budget-envelope-input-r1.schema.json",
+    "preconditions": [
+      "the input validates as CleanupBudgetEnvelopeInputR1",
+      "the owner and every contribution identity resolve in one finite dependency DAG",
+      "resource inheritance has one same-module sealed family root"
+    ],
+    "normalization": "Resolve ErrorSet and effect identities, reject repeated axes or normalized identities, sort both rows by canonical identity, and union BASE_OWNER then FIELD_OWNER in declaration order then OWNER_DEF_CLEANUP without treating that diagnostic trace order as runtime cleanup order.",
+    "decision_procedure": [
+      "validate cleanup-budget item cardinality and ErrorSet kind",
+      "normalize the declared rows and choose IMPLICIT_EXACT_ROOT, EXPLICIT_HEADER, or INHERITED_SEALED_ROOT",
+      "normalize exact base, field, and owner-hook contributions in diagnostic trace order",
+      "recompute the transitive recoverable-error and effect set unions",
+      "prove the computed obligation is a subset of the effective envelope",
+      "for a child prove the effective envelope is a subset of the family-root envelope",
+      "seal the normalized HIR, MIR, and public module-API residue or emit exactly one first diagnostic"
+    ],
+    "termination_metric": "finite type dependency DAG rank plus finite contribution count plus finite normalized row cardinality",
+    "success_result": "CleanupBudgetEnvelopeAdmitted",
+    "active_primary_diagnostic": "CLEANUP_BUDGET_EXCEEDED",
+    "secondary_diagnostics": [
+      "CLEANUP_BUDGET_DUPLICATE",
+      "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+    ],
+    "positive_fixture_ids": [
+      "PF-CleanupBudgetEnvelopeAdmitted-POS",
+      "PF-CleanupBudgetEnvelopeAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-CleanupBudgetEnvelopeAdmitted-NEG"
+    ],
+    "evaluation_order": "shape -> ErrorSet kind -> normalization -> resource root -> base/field/hook union -> local subset -> family subset -> one diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_with_exact_secondary_dispatch",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null,
+    "diagnostic_dispatch": {
+      "duplicate_axis_or_normalized_identity": "CLEANUP_BUDGET_DUPLICATE",
+      "errors_target_not_error_set": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "resource_root_or_child_not_same_module_sealed": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT",
+      "local_or_family_subset_failure": "CLEANUP_BUDGET_EXCEEDED"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "CleanupDeclarationAdmitted",
     "source_name": "CleanupDeclarationAdmitted",
     "summary": "require exact def#cleanup() declaration shape; forbid direct call/value, suspension, dispatch, visibility, and parameters; execute exactly once for initialized nonmoved state while preserving partial construction and primary/suppressed failure order",
@@ -1281,82 +1373,5 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "input_adapter": null
-  },
-  {
-    "predicate_id": "ClosedAnonymousUnionAdmitted",
-    "formal_judgment_id": "J-ClosedAnonymousUnionAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "alternative_count >= 2 and finite",
-      "alternatives are normalized, unique, pairwise non-overlapping",
-      "direct operation requires narrowing"
-    ],
-    "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
-    "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and native conditional constraints",
-      "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
-      "check alternative_count >= 2 and finite",
-      "check alternatives are normalized, unique, pairwise non-overlapping",
-      "check direct operation requires narrowing",
-      "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
-    ],
-    "requires": [
-      "alternative_count >= 2 and finite",
-      "alternatives are normalized, unique, pairwise non-overlapping",
-      "direct operation requires narrowing"
-    ],
-    "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "UNION_VALUE_REQUIRES_NARROWING",
-    "secondary_diagnostics": [],
-    "positive_fixture_ids": [
-      "PF-ClosedAnonymousUnionAdmitted-POS",
-      "PF-ClosedAnonymousUnionAdmitted-BOUNDARY"
-    ],
-    "negative_fixture_ids": [
-      "PF-ClosedAnonymousUnionAdmitted-NEG"
-    ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "source_name": "ClosedAnonymousUnionAdmitted",
-    "summary": "Admits a finite closed tagged union of pairwise-disjoint normalized alternatives.",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
-    ],
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
-    ],
-    "feature_refs": [
-      "closed_anonymous_union_type_msp"
-    ],
-    "diagnostic_refs": [
-      "UNION_VALUE_REQUIRES_NARROWING"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_dispatch": {
-      "first_failed_condition": "UNION_VALUE_REQUIRES_NARROWING"
-    },
-    "diagnostic_disposition": "active_primary"
   }
 ]

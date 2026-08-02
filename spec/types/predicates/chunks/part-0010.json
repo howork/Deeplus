@@ -1109,88 +1109,108 @@
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "PlainValueAdmissible",
-    "source_name": "Plain / PlainValue",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "source_name": "Plain (internal formal identity PlainValue)",
+    "summary": "R30 closed deterministic admission algorithm for the sole public source spelling Plain and its internal formal PlainValue identity; production checker remains NOT_RUN.",
+    "input_descriptor": "ResponsibilityIdentityInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
+      "normalized_type_id",
+      "lifecycle",
+      "cleanup",
       "borrow_region",
+      "callable_environment",
+      "storage_kind",
+      "raw_or_provenance",
       "authority",
-      "source_role",
-      "element_types"
+      "ordered_component_type_ids"
     ],
     "feature_refs": [
       "plain_plainvalue_boundary_law",
-      "plain_public_alias_of_plainvalue"
+      "plain_public_alias_of_plainvalue",
+      "responsibility_identity_registry_r1"
     ],
     "diagnostic_refs": [
-      "PLAIN_IS_NOT_JSONVALUE",
-      "PLAIN_IS_NOT_LAYOUT_SAFE",
-      "PLAIN_IS_NOT_RAW_LAYOUT"
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "PLAIN_REJECTS_CALLABLE",
+      "PLAIN_REJECTS_LIFECYCLE_OWNER",
+      "PLAIN_REJECTS_META_AUTHORITY",
+      "PLAIN_REJECTS_RAW_POINTER",
+      "PLAIN_REJECTS_RESOURCE",
+      "PLAIN_REJECTS_SHARED_HANDLE",
+      "PLAIN_REJECTS_VIEW_OWNER_REGION"
     ],
-    "design_seed_diagnostic_refs": [
-      "PLAIN_IS_NOT_JSONVALUE",
-      "PLAIN_IS_NOT_LAYOUT_SAFE",
-      "PLAIN_IS_NOT_RAW_LAYOUT"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "no lifecycle owner",
-      "no raw/provenance authority",
-      "deterministic immutable projection"
+      "Plain resolves to the one sealed internal PlainValue ResponsibilityRuleId; PlainValue is not a source spelling",
+      "direct source conformance and annotation synthesis are forbidden",
+      "all fail-closed negative axes are absent",
+      "the finite owner-closed component graph passes deterministic immutable projection"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/responsibility-identity-registry-r1.json",
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
+      "normalized_type_id",
+      "lifecycle",
+      "cleanup",
       "borrow_region",
+      "callable_environment",
+      "storage_kind",
+      "raw_or_provenance",
       "authority",
-      "source_role",
-      "element_types"
+      "ordered_component_type_ids"
     ],
     "formal_judgment_id": "J-PlainValueAdmissible",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
     "preconditions": [
-      "no lifecycle owner",
-      "no raw/provenance authority",
-      "deterministic immutable projection"
+      "Plain resolves to the one sealed internal PlainValue ResponsibilityRuleId; PlainValue is not a source spelling",
+      "direct source conformance and annotation synthesis are forbidden",
+      "all fail-closed negative axes are absent",
+      "the finite owner-closed component graph passes deterministic immutable projection"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "expand transparent type aliases, resolve one exact ResponsibilityRuleId and TypeId, then evaluate the finite owner-closed type graph",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record PlainValueAdmissible requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "resolve the exact internal PlainValue ResponsibilityRuleId from the sole public source spelling Plain after alias normalization",
+      "reject lifecycle, cleanup, region view, callable, shared-handle, raw/provenance, meta/provider/actor authority",
+      "evaluate every ordered component under the finite memoized structural policy",
+      "emit one digest-bound intrinsic responsibility evidence row"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "PLAIN_IS_NOT_JSONVALUE",
+    "termination_metric": "finite normalized type graph plus finite registered law table and memoized SCC state",
+    "success_result": "one digest-bound ResponsibilityEvidenceDescriptor",
+    "active_primary_diagnostic": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
     "secondary_diagnostics": [
-      "PLAIN_IS_NOT_LAYOUT_SAFE",
-      "PLAIN_IS_NOT_RAW_LAYOUT"
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "PLAIN_REJECTS_CALLABLE",
+      "PLAIN_REJECTS_LIFECYCLE_OWNER",
+      "PLAIN_REJECTS_META_AUTHORITY",
+      "PLAIN_REJECTS_RAW_POINTER",
+      "PLAIN_REJECTS_RESOURCE",
+      "PLAIN_REJECTS_SHARED_HANDLE",
+      "PLAIN_REJECTS_VIEW_OWNER_REGION"
     ],
     "positive_fixture_ids": [
-      "PF-PlainValueAdmissible-POS"
+      "PF-PlainValueAdmissible-POS",
+      "PF-PlainValueAdmissible-BOUNDARY"
     ],
     "negative_fixture_ids": [
       "PF-PlainValueAdmissible-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "identity -> alias normalization -> negative gates -> finite derivation -> evidence digest -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "6445f14f30efa8576ec6215f4f77de9851b7a6bdf653c83c7c738d39d610e975",
       "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "unknown_or_stale_identity": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "known_identity_evidence_failure": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"
     }
   },
   {

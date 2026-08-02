@@ -180,8 +180,12 @@
           },
           "suspends": {
             "oneOf": [
-              {"type": "boolean"},
-              {"const": "not_applicable"}
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "not_applicable"
+              }
             ]
           },
           "authority": {
@@ -207,6 +211,13 @@
             },
             "uniqueItems": true
           },
+          "responsibility_evidence_descriptors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/responsibilityEvidenceApiDescriptor"
+            },
+            "uniqueItems": true
+          },
           "construction_row_sha256": {
             "oneOf": [
               {
@@ -229,6 +240,9 @@
               }
             ]
           },
+          "cleanup_budget_envelope": {
+            "$ref": "#/$defs/typeHeaderCleanupBudgetResidue"
+          },
           "function_static_activation": {
             "oneOf": [
               {
@@ -248,6 +262,13 @@
                 "type": "null"
               }
             ]
+          },
+          "type_parameter_predicate_bounds": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/typeParameterPredicateBoundResidue"
+            }
           }
         },
         "allOf": [
@@ -288,14 +309,30 @@
               },
               "properties": {
                 "responsibility_profile": {
-                  "properties": {"profile_kind": {"const": "type"}},
-                  "required": ["profile_kind"]
+                  "properties": {
+                    "profile_kind": {
+                      "const": "type"
+                    }
+                  },
+                  "required": [
+                    "profile_kind"
+                  ]
                 },
-                "ownership": {"const": "not_applicable"},
-                "cleanup": {"const": "not_applicable"},
-                "cancellation": {"const": "not_applicable"},
-                "suspends": {"const": "not_applicable"},
-                "isolation": {"const": "not_applicable"}
+                "ownership": {
+                  "const": "not_applicable"
+                },
+                "cleanup": {
+                  "const": "not_applicable"
+                },
+                "cancellation": {
+                  "const": "not_applicable"
+                },
+                "suspends": {
+                  "const": "not_applicable"
+                },
+                "isolation": {
+                  "const": "not_applicable"
+                }
               }
             }
           },
@@ -331,17 +368,39 @@
               },
               "properties": {
                 "responsibility_profile": {
-                  "properties": {"profile_kind": {"const": "callable"}},
-                  "required": ["profile_kind"]
+                  "properties": {
+                    "profile_kind": {
+                      "const": "callable"
+                    }
+                  },
+                  "required": [
+                    "profile_kind"
+                  ]
                 },
-                "ownership": {"const": "not_applicable"},
-                "cleanup": {"const": "not_applicable"},
+                "ownership": {
+                  "const": "not_applicable"
+                },
+                "cleanup": {
+                  "const": "not_applicable"
+                },
                 "cancellation": {
-                  "enum": ["forbidden", "propagate", "observe", "shielded_cleanup"]
+                  "enum": [
+                    "forbidden",
+                    "propagate",
+                    "observe",
+                    "shielded_cleanup"
+                  ]
                 },
-                "suspends": {"type": "boolean"},
+                "suspends": {
+                  "type": "boolean"
+                },
                 "isolation": {
-                  "enum": ["local", "task", "actor", "global"]
+                  "enum": [
+                    "local",
+                    "task",
+                    "actor",
+                    "global"
+                  ]
                 }
               }
             }
@@ -378,17 +437,39 @@
               },
               "properties": {
                 "responsibility_profile": {
-                  "properties": {"profile_kind": {"const": "callable"}},
-                  "required": ["profile_kind"]
+                  "properties": {
+                    "profile_kind": {
+                      "const": "callable"
+                    }
+                  },
+                  "required": [
+                    "profile_kind"
+                  ]
                 },
-                "ownership": {"const": "not_applicable"},
-                "cleanup": {"const": "not_applicable"},
+                "ownership": {
+                  "const": "not_applicable"
+                },
+                "cleanup": {
+                  "const": "not_applicable"
+                },
                 "cancellation": {
-                  "enum": ["forbidden", "propagate", "observe", "shielded_cleanup"]
+                  "enum": [
+                    "forbidden",
+                    "propagate",
+                    "observe",
+                    "shielded_cleanup"
+                  ]
                 },
-                "suspends": {"type": "boolean"},
+                "suspends": {
+                  "type": "boolean"
+                },
                 "isolation": {
-                  "enum": ["local", "task", "actor", "global"]
+                  "enum": [
+                    "local",
+                    "task",
+                    "actor",
+                    "global"
+                  ]
                 }
               }
             }
@@ -437,14 +518,30 @@
               },
               "properties": {
                 "responsibility_profile": {
-                  "properties": {"profile_kind": {"const": "conformance"}},
-                  "required": ["profile_kind"]
+                  "properties": {
+                    "profile_kind": {
+                      "const": "conformance"
+                    }
+                  },
+                  "required": [
+                    "profile_kind"
+                  ]
                 },
-                "ownership": {"const": "not_applicable"},
-                "cleanup": {"const": "not_applicable"},
-                "cancellation": {"const": "not_applicable"},
-                "suspends": {"const": "not_applicable"},
-                "isolation": {"const": "not_applicable"},
+                "ownership": {
+                  "const": "not_applicable"
+                },
+                "cleanup": {
+                  "const": "not_applicable"
+                },
+                "cancellation": {
+                  "const": "not_applicable"
+                },
+                "suspends": {
+                  "const": "not_applicable"
+                },
+                "isolation": {
+                  "const": "not_applicable"
+                },
                 "evidence_ids": {
                   "minItems": 1
                 }
@@ -495,14 +592,30 @@
               },
               "properties": {
                 "responsibility_profile": {
-                  "properties": {"profile_kind": {"const": "static_binding"}},
-                  "required": ["profile_kind"]
+                  "properties": {
+                    "profile_kind": {
+                      "const": "static_binding"
+                    }
+                  },
+                  "required": [
+                    "profile_kind"
+                  ]
                 },
-                "ownership": {"const": "not_applicable"},
-                "cleanup": {"const": "not_applicable"},
-                "cancellation": {"const": "not_applicable"},
-                "suspends": {"const": "not_applicable"},
-                "isolation": {"const": "not_applicable"}
+                "ownership": {
+                  "const": "not_applicable"
+                },
+                "cleanup": {
+                  "const": "not_applicable"
+                },
+                "cancellation": {
+                  "const": "not_applicable"
+                },
+                "suspends": {
+                  "const": "not_applicable"
+                },
+                "isolation": {
+                  "const": "not_applicable"
+                }
               }
             }
           },
@@ -565,6 +678,23 @@
                 }
               }
             }
+          },
+          {
+            "if": {
+              "required": [
+                "cleanup_budget_envelope"
+              ]
+            },
+            "then": {
+              "properties": {
+                "kind": {
+                  "const": "type"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
           }
         ]
       }
@@ -579,7 +709,9 @@
       "if": {
         "anyOf": [
           {
-            "required": ["interface_profile"],
+            "required": [
+              "interface_profile"
+            ],
             "properties": {
               "interface_profile": {
                 "const": "R4_NAME_RESOLUTION_MODULES"
@@ -587,7 +719,9 @@
             }
           },
           {
-            "required": ["interface_profile"],
+            "required": [
+              "interface_profile"
+            ],
             "properties": {
               "interface_profile": {
                 "const": "R41_ACTOR_PROTOCOL_BINDINGS"
@@ -614,8 +748,7 @@
           ]
         }
       }
-    }
-    ,
+    },
     {
       "if": {
         "required": [
@@ -635,6 +768,71 @@
     }
   ],
   "$defs": {
+    "responsibilityEvidenceKind": {
+      "enum": [
+        "INTRINSIC_PREDICATE_PROOF",
+        "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+        "EXACT_SELECTED_TRAIT_WITNESS",
+        "NONACTIVATABLE_RESERVED_IDENTITY"
+      ]
+    },
+    "responsibilityEvidenceApiDescriptor": {
+      "description": "Stable type-level responsibility policy and witness residue. Value-level evidence, owner, region, destination and source-origin identities are forbidden from the module API digest.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responsibility_rule_id",
+        "type_id",
+        "evidence_kind",
+        "registry_revision",
+        "derivation_digest",
+        "trait_witness_id_or_null",
+        "error_set_id_or_null",
+        "effect_row_id_or_null"
+      ],
+      "properties": {
+        "responsibility_rule_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_kind": {
+          "$ref": "#/$defs/responsibilityEvidenceKind"
+        },
+        "registry_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "derivation_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "trait_witness_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "error_set_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "effect_row_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
     "r4ModuleInterfaceEnvelope": {
       "type": "object",
       "additionalProperties": false,
@@ -826,35 +1024,79 @@
             "BinaryGreaterThanOrEqual"
           ]
         },
-        "operand_arity": {"enum": [1, 2]},
-        "normalized_left_type_id": {"type": "string", "minLength": 1},
-        "normalized_right_type_id": {
-          "type": ["string", "null"],
+        "operand_arity": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "normalized_left_type_id": {
+          "type": "string",
           "minLength": 1
         },
-        "conformance_id": {"type": "string", "minLength": 1},
-        "witness_id": {"type": "string", "minLength": 1},
-        "method_id": {"type": "string", "minLength": 1},
-        "substitution_id": {"type": "string", "minLength": 1},
-        "output_type_id": {"type": "string", "minLength": 1},
+        "normalized_right_type_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "conformance_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "witness_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "substitution_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "output_type_id": {
+          "type": "string",
+          "minLength": 1
+        },
         "responsibility_profile_id": {
           "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
         },
-        "dispatch_route": {"const": "DIRECT_GLOBAL"},
-        "runtime_relookup_count": {"const": 0},
-        "fallback_count": {"const": 0}
+        "dispatch_route": {
+          "const": "DIRECT_GLOBAL"
+        },
+        "runtime_relookup_count": {
+          "const": 0
+        },
+        "fallback_count": {
+          "const": 0
+        }
       },
       "allOf": [
         {
           "if": {
-            "properties": {"operator_id": {"const": "UnaryPlus"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "UnaryPlus"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 1},
-              "normalized_right_type_id": {"const": null},
-              "method_id": {"const": "UnaryPlus.positive"},
+              "operand_arity": {
+                "const": 1
+              },
+              "normalized_right_type_id": {
+                "const": null
+              },
+              "method_id": {
+                "const": "UnaryPlus.positive"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -863,14 +1105,26 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "UnaryMinus"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "UnaryMinus"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 1},
-              "normalized_right_type_id": {"const": null},
-              "method_id": {"const": "UnaryMinus.negate"},
+              "operand_arity": {
+                "const": 1
+              },
+              "normalized_right_type_id": {
+                "const": null
+              },
+              "method_id": {
+                "const": "UnaryMinus.negate"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -879,14 +1133,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryAdd"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryAdd"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Add.add"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Add.add"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -895,14 +1162,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinarySubtract"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinarySubtract"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Subtract.subtract"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Subtract.subtract"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -911,14 +1191,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryMultiply"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryMultiply"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Multiply.multiply"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Multiply.multiply"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -927,14 +1220,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryDivide"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryDivide"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Divide.divide"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Divide.divide"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -943,14 +1249,27 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryRemainder"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryRemainder"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Remainder.remainder"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Remainder.remainder"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
               }
@@ -959,15 +1278,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Eq.equals"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Eq.equals"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -976,15 +1310,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryNotEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryNotEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Eq.equals"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Eq.equals"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -993,15 +1342,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryLessThan"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryLessThan"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -1010,15 +1374,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryLessThanOrEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryLessThanOrEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -1027,15 +1406,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryGreaterThan"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryGreaterThan"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -1044,15 +1438,30 @@
         },
         {
           "if": {
-            "properties": {"operator_id": {"const": "BinaryGreaterThanOrEqual"}},
-            "required": ["operator_id"]
+            "properties": {
+              "operator_id": {
+                "const": "BinaryGreaterThanOrEqual"
+              }
+            },
+            "required": [
+              "operator_id"
+            ]
           },
           "then": {
             "properties": {
-              "operand_arity": {"const": 2},
-              "normalized_right_type_id": {"type": "string", "minLength": 1},
-              "method_id": {"const": "Ord.compare"},
-              "output_type_id": {"const": "Bool"},
+              "operand_arity": {
+                "const": 2
+              },
+              "normalized_right_type_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "method_id": {
+                "const": "Ord.compare"
+              },
+              "output_type_id": {
+                "const": "Bool"
+              },
               "responsibility_profile_id": {
                 "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
               }
@@ -1064,10 +1473,38 @@
     "responsibilityChannel": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["channel_id", "type_identity", "ownership", "cleanup"],
+      "required": [
+        "channel_id",
+        "type_identity",
+        "type_ownership_qualifier",
+        "region_origin_channel_id_or_null",
+        "ownership",
+        "cleanup"
+      ],
       "properties": {
-        "channel_id": {"type": "string", "minLength": 1},
-        "type_identity": {"type": "string", "minLength": 1},
+        "channel_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type_ownership_qualifier": {
+          "enum": [
+            "unqualified",
+            "owned",
+            "borrowed",
+            "mut",
+            "inout"
+          ]
+        },
+        "region_origin_channel_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "visible_label": {
           "type": [
             "string",
@@ -1088,16 +1525,56 @@
           ]
         },
         "ownership": {
-          "enum": ["reusable", "borrow", "inout", "move", "resource"]
+          "enum": [
+            "reusable",
+            "borrow",
+            "inout",
+            "move",
+            "resource"
+          ]
         },
         "cleanup": {
-          "enum": ["none", "view_release", "drop_exactly_once"]
+          "enum": [
+            "none",
+            "view_release",
+            "drop_exactly_once"
+          ]
         },
         "reply_responsibility": {
           "$ref": "#/$defs/replyResponsibilityDescriptor"
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type_ownership_qualifier": {
+                "enum": [
+                  "borrowed",
+                  "inout"
+                ]
+              }
+            },
+            "required": [
+              "type_ownership_qualifier"
+            ]
+          },
+          "then": {
+            "properties": {
+              "region_origin_channel_id_or_null": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "region_origin_channel_id_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -1296,61 +1773,187 @@
         }
       }
     },
+    "typeHeaderCleanupBudgetResidue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "declaration_mode",
+        "family_root_type_id",
+        "effective_recoverable_error_ids",
+        "effective_effect_ids",
+        "envelope_digest"
+      ],
+      "properties": {
+        "declaration_mode": {
+          "enum": [
+            "IMPLICIT_EXACT_ROOT",
+            "EXPLICIT_HEADER",
+            "INHERITED_SEALED_ROOT"
+          ]
+        },
+        "family_root_type_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "effective_recoverable_error_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x-deeplus-canonical-order": "SORTED_UNIQUE_BY_ID"
+        },
+        "effective_effect_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x-deeplus-canonical-order": "SORTED_UNIQUE_BY_ID"
+        },
+        "envelope_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
     "responsibilityProfile": {
       "oneOf": [
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profile_kind", "declaration_ownership"],
+          "required": [
+            "profile_kind",
+            "declaration_ownership"
+          ],
           "properties": {
-            "profile_kind": {"const": "type"},
-            "declaration_ownership": {"const": "not_applicable"}
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["profile_kind", "receiver", "parameters", "result", "captures"],
-          "properties": {
-            "profile_kind": {"const": "callable"},
-            "receiver": {
-              "oneOf": [
-                {"$ref": "#/$defs/responsibilityChannel"},
-                {"type": "null"}
-              ]
+            "profile_kind": {
+              "const": "type"
             },
-            "parameters": {
-              "type": "array",
-              "items": {"$ref": "#/$defs/responsibilityChannel"}
-            },
-            "result": {"$ref": "#/$defs/responsibilityChannel"},
-            "captures": {
-              "type": "array",
-              "items": {"$ref": "#/$defs/responsibilityChannel"}
+            "declaration_ownership": {
+              "const": "not_applicable"
             }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profile_kind", "evidence_ownership", "evidence_cleanup"],
+          "required": [
+            "profile_kind",
+            "receiver",
+            "parameters",
+            "result",
+            "captures"
+          ],
           "properties": {
-            "profile_kind": {"const": "conformance"},
-            "evidence_ownership": {"const": "reusable"},
-            "evidence_cleanup": {"const": "none"}
+            "profile_kind": {
+              "const": "callable"
+            },
+            "receiver": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/responsibilityChannel"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parameters": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/responsibilityChannel"
+              }
+            },
+            "result": {
+              "$ref": "#/$defs/responsibilityChannel"
+            },
+            "captures": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/responsibilityChannel"
+              }
+            }
           }
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profile_kind", "value"],
+          "required": [
+            "profile_kind",
+            "evidence_ownership",
+            "evidence_cleanup"
+          ],
           "properties": {
-            "profile_kind": {"const": "static_binding"},
-            "value": {"$ref": "#/$defs/responsibilityChannel"}
+            "profile_kind": {
+              "const": "conformance"
+            },
+            "evidence_ownership": {
+              "const": "reusable"
+            },
+            "evidence_cleanup": {
+              "const": "none"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "profile_kind",
+            "value"
+          ],
+          "properties": {
+            "profile_kind": {
+              "const": "static_binding"
+            },
+            "value": {
+              "$ref": "#/$defs/responsibilityChannel"
+            }
           }
         }
       ]
+    },
+    "typeParameterPredicateBoundResidue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parameter_id",
+        "predicate_id",
+        "predicate_contract_sha256"
+      ],
+      "properties": {
+        "parameter_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predicate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predicate_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
     }
+  },
+  "x-deeplus-shared-mutex-payload-bound-contract": {
+    "public_bound_spelling": "SharedMutex<T: SharedMutexPayload>",
+    "predicate_id": "SharedMutexPayloadAdmitted",
+    "bound_residue": "type_parameter_predicate_bounds contains exactly one row for parameter T and predicate SharedMutexPayloadAdmitted on the SharedMutex declaration; a generic public declaration that constructs or accepts an otherwise-unproven SharedMutex<T> retains the same bound row",
+    "canonical_order": "strict ascending Unicode scalar order by (parameter_id,predicate_id), with no duplicates",
+    "normalized_signature_binding": "the normalized signature and structured predicate-bound rows must agree exactly",
+    "compiler_local_fields_forbidden": [
+      "sync_plan_id",
+      "loan_id",
+      "region_id",
+      "cleanup_registration_id",
+      "runtime_mutex_identity"
+    ],
+    "product_support": "NOT_RUN"
   },
   "x-deeplus-symbol-id-contract": {
     "identity_key": "symbol_id",
@@ -1364,6 +1967,9 @@
       "required": [
         "construction_row_sha256",
         "projection_row_sha256"
+      ],
+      "optional": [
+        "cleanup_budget_envelope"
       ],
       "forbidden": [
         "callable_profile",
@@ -1380,6 +1986,7 @@
       "forbidden": [
         "construction_row_sha256",
         "projection_row_sha256",
+        "cleanup_budget_envelope",
         "fixed_operator_conformance"
       ],
       "optional": [
@@ -1399,6 +2006,7 @@
       "forbidden": [
         "construction_row_sha256",
         "projection_row_sha256",
+        "cleanup_budget_envelope",
         "fixed_operator_conformance"
       ],
       "optional": [
@@ -1417,6 +2025,7 @@
         "named_rest_residue",
         "construction_row_sha256",
         "projection_row_sha256",
+        "cleanup_budget_envelope",
         "function_static_activation"
       ],
       "optional": [
@@ -1433,10 +2042,37 @@
         "named_rest_residue",
         "construction_row_sha256",
         "projection_row_sha256",
+        "cleanup_budget_envelope",
         "function_static_activation",
         "fixed_operator_conformance"
       ]
     }
+  },
+  "x-deeplus-type-header-cleanup-budget-contract": {
+    "public_type_residue": [
+      "declaration_mode",
+      "family_root_type_id",
+      "effective_recoverable_error_ids",
+      "effective_effect_ids",
+      "envelope_digest"
+    ],
+    "compiler_local_fields_forbidden": [
+      "cleanup_budget_id",
+      "declared_envelope",
+      "computed_envelope",
+      "transitive_contributions_in_trace_order",
+      "source_ordinal",
+      "source_kind",
+      "source_owner_id",
+      "cleanup_plan_id",
+      "local_compatibility_proof",
+      "family_subset_proof_or_null"
+    ],
+    "effective_rows_ordering": "SORTED_UNIQUE_BY_ID",
+    "presence": "required for every cleanup-bearing public type; omitted for a public type with no cleanup residue",
+    "import_admission": "exact canonical envelope digest and effective rows must agree",
+    "p1_022_decided": false,
+    "product_support": "NOT_RUN"
   },
   "x-deeplus-function-static-activation-contract": {
     "absence": "an absent or null function_static_activation field means activation_present=false; existing callable canonical bytes need not add a null member",
@@ -1455,9 +2091,45 @@
     "product_support": "NOT_RUN"
   },
   "x-deeplus-nonescaping-lexical-access-contract": {
-    "public_identity": "RegionId and ancestor-place identities are local proof artifacts and never enter a module API digest.",
+    "public_identity": "RegionId, CapturePlanId, CaptureFieldId, EvalId, MIR value/place/loan/reservation/cleanup/construction/closure identities, and ancestor-place identities are local value/proof artifacts and never enter a module API digest.",
     "callable_signature": "A callable signature continues to expose its ordinary responsibility profile; nonescaping lexical residence does not become a public calling convention or an exported capture environment.",
     "export_rule": "An exported or escaping callable must be FrameIndependent. A RegionBound local callable is rejected before API digest construction.",
+    "product_support": "NOT_RUN"
+  },
+  "x-deeplus-closure-capture-plan-api-fence": {
+    "public_residue": "An exported callable exposes only its ordinary normalized signature/type and responsibility channels; closure capture plans and environment layout are private implementation semantics.",
+    "frame_rule": "Every exported or escaping callable is FrameIndependent; RegionBound capture environments are rejected before digest construction.",
+    "value_level_identity_export": "FORBIDDEN",
+    "value_level_identity_export_count": 0,
+    "forbidden_identity_domains": [
+      "CapturePlanId",
+      "CaptureFieldId",
+      "EvalId",
+      "MirValueId",
+      "MirPlaceId",
+      "RegionId",
+      "AncestorPlaceId",
+      "LoanId",
+      "MoveReservationId",
+      "CleanupRegistrationId",
+      "ConstructionId",
+      "ClosureId",
+      "ClosureEnvironmentPlanId"
+    ],
+    "forbidden_plan_residue": [
+      "capture_list_state",
+      "captures_in_source_order",
+      "initializer_binding_kind",
+      "residence",
+      "closed_ancestor_frame_assertion",
+      "lexical_dependencies",
+      "evaluation_order",
+      "rollback_order",
+      "commit_order",
+      "environment_value_id",
+      "capture_field_ids_in_source_order"
+    ],
+    "api_compatibility_input": "NORMALIZED_CALLABLE_TYPE_AND_RESPONSIBILITY_ONLY",
     "product_support": "NOT_RUN"
   },
   "x-deeplus-fixed-operator-conformance-contract": {
@@ -1516,6 +2188,31 @@
     "erasure_diagnostic": "RCTS_RESPONSIBILITY_AXIS_DROPPED",
     "incompatible_combination_diagnostic": "RCTS_RESPONSIBILITY_COMBINATION_INVALID"
   },
+  "x-deeplus-responsibility-evidence-contract": {
+    "schema_stage": "MODULE_API",
+    "descriptor_exact_fields": [
+      "responsibility_rule_id",
+      "type_id",
+      "evidence_kind",
+      "registry_revision",
+      "derivation_digest",
+      "trait_witness_id_or_null",
+      "error_set_id_or_null",
+      "effect_row_id_or_null"
+    ],
+    "identity_separation": "ResponsibilityRuleId is disjoint from callable ResponsibilityProfileId; value-level ResponsibilityEvidenceId is intentionally not exported",
+    "value_level_fields_forbidden": [
+      "responsibility_evidence_id",
+      "result_acquisition_plan_id_or_null",
+      "cleanup_plan_id_or_null",
+      "owner_id_or_null",
+      "region_id_or_null",
+      "destination_isolation_domain_id_or_null",
+      "source_origin_id"
+    ],
+    "selection_rule": "Export only the stable normalized type-level policy and exact selected Trait witness/error/effect residue; runtime or backend relookup is forbidden",
+    "product_support": "NOT_RUN"
+  },
   "x-deeplus-canonical-byte-algorithm": {
     "algorithm_id": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
     "hash_algorithm": "SHA-256",
@@ -1529,6 +2226,7 @@
       "effect_row",
       "error_set",
       "evidence_ids",
+      "responsibility_evidence_descriptors",
       "function_static_activation.used_witness_ids",
       "function_static_activation.used_conformance_ids",
       "function_static_activation.helper_dependencies",
@@ -1541,6 +2239,7 @@
       "actor_protocol_binding_tables.bindings.normalized_implementation_effect_row"
     ],
     "set_order": "strict ascending Unicode scalar sequence with no duplicates",
+    "responsibility_evidence_descriptor_order": "strict ascending tuple (responsibility_rule_id,type_id,evidence_kind,trait_witness_id_or_null with null before strings)",
     "object_member_order": "ascending Unicode scalar sequence by member name at every object depth",
     "string_encoding": "emit JSON mandatory escapes for quotation mark, reverse solidus, and U+0000..U+001F; emit every other Unicode scalar directly as UTF-8 without normalization",
     "whitespace": "none outside string values",
@@ -1581,7 +2280,20 @@
       "visibility_closure_sha256",
       "dependency_receipt_sha256",
       "private_hir_or_body_bytes",
-      "debug_spans"
+      "debug_spans",
+      "CapturePlanId",
+      "CaptureFieldId",
+      "EvalId",
+      "MirValueId",
+      "MirPlaceId",
+      "RegionId",
+      "AncestorPlaceId",
+      "LoanId",
+      "MoveReservationId",
+      "CleanupRegistrationId",
+      "ConstructionId",
+      "ClosureId",
+      "ClosureEnvironmentPlanId"
     ],
     "dependency_receipt_schema": "schemas/language/module-compilation-dependency-receipt.schema.json",
     "implementation_digest_schema": "schemas/language/module-implementation-digest.schema.json",
@@ -1590,7 +2302,10 @@
   "x-deeplus-actor-protocol-binding-contract": {
     "schema": "schemas/language/actor-protocol-binding-table.schema.json",
     "projection_kind": "MODULE_API",
-    "included_visibility": ["common", "public"],
+    "included_visibility": [
+      "common",
+      "public"
+    ],
     "private_table_count": 0,
     "canonical_sha256_includes_exact_table_bytes": true,
     "table_order": "strict ascending Unicode scalar sequence by table_id",
@@ -1599,5 +2314,27 @@
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/module-api-digest-fixtures.json",
   "x-product-compiler": "NOT_RUN",
-  "x-deeplus-product-compiler": "NOT_RUN"
+  "x-deeplus-product-compiler": "NOT_RUN",
+  "x-deeplus-deferred-call-plan-api-fence": {
+    "deferred_call_plan_is_body_local": true,
+    "cleanup_registration_is_body_local": true,
+    "value_level_deferred_plan_identity_export_count": 0,
+    "value_level_registration_operand_eval_place_owner_loan_reservation_export_count": 0,
+    "default_value_ref_body_semantic_digest_is_internal_dependency_evidence": true,
+    "public_signature_error_effect_residue_preserved": true,
+    "public_api_digest_adds_deferred_plan_field_count": 0
+  },
+  "x-deeplus-loan-close-private-residue": {
+    "contract": "spec/contracts/loan-close-operation-r1.json",
+    "compiler_private_fields": [
+      "LoanId",
+      "RegionId",
+      "parent_loan_id_or_null",
+      "begin_operation_id",
+      "end_operation_ids",
+      "ACCESS(LoanId)"
+    ],
+    "module_api_emission_count": 0,
+    "public_residue": "existing source-level borrow and inout responsibility only"
+  }
 }

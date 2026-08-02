@@ -628,6 +628,7 @@
         "responsibility",
         "call_shape",
         "parameter_modes",
+        "type_ownership_qualifiers",
         "result_type"
       ],
       "properties": {
@@ -799,6 +800,19 @@
               "move",
               "inout",
               "consume"
+            ]
+          },
+          "uniqueItems": false
+        },
+        "type_ownership_qualifiers": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "unqualified",
+              "owned",
+              "borrowed",
+              "mut",
+              "inout"
             ]
           },
           "uniqueItems": false

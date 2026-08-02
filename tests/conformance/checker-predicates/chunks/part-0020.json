@@ -99,6 +99,9 @@
       "parameter_modes": [
         "borrow"
       ],
+      "type_ownership_qualifiers": [
+        "unqualified"
+      ],
       "result_type": "String"
     },
     "baseline": "0.1.2-baseline.r51f3",
@@ -1137,29 +1140,135 @@
     "fixture_id": "PF-SingleActionDeferAdmitted-BOUNDARY",
     "predicate_id": "SingleActionDeferAdmitted",
     "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SingleActionDeferAdmitted-BOUNDARY"
+    "canonical_case_id": "R32-DCP-BND-004",
+    "decision_input": {
+      "schema": "deeplus.deferred-call-plan-input/r1",
+      "predicate_id": "SingleActionDeferAdmitted",
+      "variant": "TYPED_PLAN",
+      "plan_id": "dcp:scope-suspending:0",
+      "cleanup_scope_id": "cleanup-scope:suspending",
+      "registration_site_id": "hir-stmt:defer-suspending-0",
+      "source_registration_ordinal": 0,
+      "surface": {
+        "form": "DIRECT_CALL",
+        "invocation_count": 1,
+        "contains_block": false,
+        "contains_inline_callable": false,
+        "contains_trailing_closure": false,
+        "contains_guard": false,
+        "contains_await": false,
+        "contains_spawn": false,
+        "contains_actor_transport": false
       },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+      "selected_call": {
+        "mode_target_pair": "ORDINARY::DIRECT_IMPLEMENTATION",
+        "call_head_id": "call-head:lease-release",
+        "selected_declaration_id": "decl:Lease.release",
+        "selected_implementation_id_or_null": "impl:Lease.release",
+        "virtual_slot_id_or_null": null,
+        "canonical_call_shape_id": "call-shape:Lease.release",
+        "formal_binding_ids": [],
+        "default_value_refs": [],
+        "selected_evidence_ids": [],
+        "normalized_result_type_id": "type:Unit",
+        "result_responsibility_profile_id": "responsibility:Unit",
+        "result_disposition": "UNIT_NO_VALUE",
+        "result_cleanup_obligation_id_or_null": null,
+        "execution_error_set_id": "errors:ReleaseError",
+        "execution_effect_row_id": "effects:io",
+        "execution_responsibility_profile_id": "responsibility:Lease.release",
+        "execution_suspension": "NONE",
+        "execution_cancellation": "FORBIDDEN",
+        "selection_time": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION",
+        "exit_time_selection_count": 0
+      },
+      "dynamic_operands_in_evaluation_order": [
+        {
+          "operand_id": "operand:0:callee",
+          "evaluation_ordinal": 0,
+          "role": "CALLEE_OR_RECEIVER",
+          "argument_kind_or_null": null,
+          "source_argument_ordinal_or_null": null,
+          "label_id_or_null": null,
+          "source_expr_id_or_null": "hir-expr:lease-release",
+          "default_value_ref_id_or_null": null,
+          "formal_binding_id_or_null": null,
+          "result_eval_id": "eval:lease-release",
+          "prepared_value_id": "prepared:lease-release",
+          "normalized_type_id": "type:LeaseReleaseFunction",
+          "responsibility_profile_id": "responsibility:static-call-head",
+          "evaluation_count": 1,
+          "acquisition": {
+            "kind": "SNAPSHOT_VALUE",
+            "source_place_id_or_null": null,
+            "owner_id_or_null": null,
+            "region_id_or_null": null,
+            "loan_id_or_null": null,
+            "reservation_id_or_null": null,
+            "cleanup_obligation_id_or_null": null
+          },
+          "registration_error_set_id": "errors:Never",
+          "registration_effect_row_id": "effects:empty"
+        }
+      ],
+      "static_evidence_bindings": [],
+      "registration_transaction": {
+        "evaluation_order_ordinals": [
+          0
+        ],
+        "rollback_order_ordinals": [
+          0
+        ],
+        "registration_responsibility_profile_id": "responsibility:defer-registration",
+        "registration_error_set_id": "errors:Never",
+        "registration_effect_row_id": "effects:empty",
+        "move_reservations_cancelled_on_failure": true,
+        "loans_ended_on_failure": true,
+        "owned_temporaries_cleaned_on_failure": true,
+        "external_effects_undone": false,
+        "partial_publication_count": 0,
+        "commit_sequence": [
+          "CLEANUP_REGISTER",
+          "CLEANUP_PIN",
+          "CLEANUP_SEAL"
+        ],
+        "sealed_state": "SEALED_IMMUTABLE"
+      },
+      "execution_policy": {
+        "scope_execution_order": "LIFO",
+        "execution_count": 1,
+        "exit_time_operand_evaluation_count": 0,
+        "retry_count": 0,
+        "suspension_disposition": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION",
+        "terminal_paths": [
+          "FALLTHROUGH",
+          "RETURN",
+          "EXITING_BREAK",
+          "EXITING_CONTINUE",
+          "ERROR",
+          "DEFECT",
+          "CANCELLATION"
+        ],
+        "body_failure_precedence": "BODY_FAILURE_REMAINS_PRIMARY",
+        "normal_body_first_cleanup_failure": "BECOMES_PRIMARY",
+        "later_cleanup_failure_order": "SUPPRESSED_IN_ACTUAL_LIFO_ORDER",
+        "defect_or_cancellation_reclassified_as_error": false
+      },
+      "scope_profile": {
+        "may_suspend": true,
+        "plan_residence": "ACTIVE_CLEANUP_SCOPE",
+        "suspension_action": "PRESERVE_NO_EXECUTION"
+      },
+      "post_registration_place_actions": [],
+      "product_support": "NOT_RUN"
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 SingleActionDeferAdmitted boundary fixture; product checker NOT_RUN.",
+    "expected_decision": {
+      "variant": "ADMIT",
+      "diagnostic_id_or_null": null,
+      "emitted_primary_count": 0
+    },
+    "admitted_condition": "suspension preserves the sealed plan without executing it; the later terminal scope exit invokes it exactly once",
+    "rule_seed": "R32 typed DeferredCallPlanInputR1 suspension boundary; integrated product checker NOT_RUN.",
     "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
@@ -1172,77 +1281,34 @@
     "fixture_kind": "concrete_negative",
     "expected": "rejected",
     "expected_primary_diagnostic": "DEFER_REQUIRES_SINGLE_INVOCATION",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "SingleActionDefer",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "defer_invocation",
-        "invocation_count": 2,
+    "canonical_case_id": "R32-DCP-NEG-002",
+    "decision_input": {
+      "schema": "deeplus.deferred-call-plan-input/r1",
+      "predicate_id": "SingleActionDeferAdmitted",
+      "variant": "SOURCE_REJECTION",
+      "surface": {
+        "form": "AWAIT",
+        "invocation_count": 0,
         "contains_block": false,
-        "contains_callable_literal": false,
-        "contains_control": false,
-        "contains_await": false,
+        "contains_inline_callable": false,
+        "contains_trailing_closure": false,
         "contains_guard": false,
-        "reserved_place_moved": false
+        "contains_await": true,
+        "contains_spawn": false,
+        "contains_actor_transport": false
       },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "expected_parser_diagnostic": "DEFER_REQUIRES_SINGLE_INVOCATION",
+      "product_support": "NOT_RUN"
     },
-    "violated_condition": "invocation_count == 1",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SingleActionDeferAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+    "expected_decision": {
+      "variant": "REJECT",
+      "diagnostic_id_or_null": "DEFER_REQUIRES_SINGLE_INVOCATION",
+      "emitted_primary_count": 1
     },
+    "violated_condition": "await is not an admitted single cleanup invocation surface",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "DEFER_REQUIRES_SINGLE_INVOCATION",
+    "rule_seed": "R32 pre-AST generic defer-surface rejection; integrated product parser NOT_RUN.",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1251,76 +1317,173 @@
     "predicate_id": "SingleActionDeferAdmitted",
     "fixture_kind": "concrete_positive",
     "expected": "admitted",
-    "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "SingleActionDefer",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "kind": "defer_invocation",
+    "canonical_case_id": "R32-DCP-POS-001",
+    "decision_input": {
+      "schema": "deeplus.deferred-call-plan-input/r1",
+      "predicate_id": "SingleActionDeferAdmitted",
+      "variant": "TYPED_PLAN",
+      "plan_id": "dcp:scope-main:0",
+      "cleanup_scope_id": "cleanup-scope:main",
+      "registration_site_id": "hir-stmt:defer-0",
+      "source_registration_ordinal": 0,
+      "surface": {
+        "form": "DIRECT_CALL",
         "invocation_count": 1,
         "contains_block": false,
-        "contains_callable_literal": false,
-        "contains_control": false,
-        "contains_await": false,
+        "contains_inline_callable": false,
+        "contains_trailing_closure": false,
         "contains_guard": false,
-        "reserved_place_moved": false
+        "contains_await": false,
+        "contains_spawn": false,
+        "contains_actor_transport": false
       },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
+      "selected_call": {
+        "mode_target_pair": "ORDINARY::DIRECT_IMPLEMENTATION",
+        "call_head_id": "call-head:release",
+        "selected_declaration_id": "decl:release",
+        "selected_implementation_id_or_null": "impl:release",
+        "virtual_slot_id_or_null": null,
+        "canonical_call_shape_id": "call-shape:release(Resource)",
+        "formal_binding_ids": [
+          "formal:resource"
+        ],
+        "default_value_refs": [],
+        "selected_evidence_ids": [],
+        "normalized_result_type_id": "type:Unit",
+        "result_responsibility_profile_id": "responsibility:Unit",
+        "result_disposition": "UNIT_NO_VALUE",
+        "result_cleanup_obligation_id_or_null": null,
+        "execution_error_set_id": "errors:ReleaseError",
+        "execution_effect_row_id": "effects:io",
+        "execution_responsibility_profile_id": "responsibility:release",
+        "execution_suspension": "NONE",
+        "execution_cancellation": "FORBIDDEN",
+        "selection_time": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION",
+        "exit_time_selection_count": 0
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "dynamic_operands_in_evaluation_order": [
+        {
+          "operand_id": "operand:0:callee",
+          "evaluation_ordinal": 0,
+          "role": "CALLEE_OR_RECEIVER",
+          "argument_kind_or_null": null,
+          "source_argument_ordinal_or_null": null,
+          "label_id_or_null": null,
+          "source_expr_id_or_null": "hir-expr:release",
+          "default_value_ref_id_or_null": null,
+          "formal_binding_id_or_null": null,
+          "result_eval_id": "eval:release",
+          "prepared_value_id": "prepared:release",
+          "normalized_type_id": "type:ReleaseFunction",
+          "responsibility_profile_id": "responsibility:static-call-head",
+          "evaluation_count": 1,
+          "acquisition": {
+            "kind": "SNAPSHOT_VALUE",
+            "source_place_id_or_null": null,
+            "owner_id_or_null": null,
+            "region_id_or_null": null,
+            "loan_id_or_null": null,
+            "reservation_id_or_null": null,
+            "cleanup_obligation_id_or_null": null
+          },
+          "registration_error_set_id": "errors:Never",
+          "registration_effect_row_id": "effects:empty"
+        },
+        {
+          "operand_id": "operand:1:resource",
+          "evaluation_ordinal": 1,
+          "role": "EXPLICIT_ARGUMENT",
+          "argument_kind_or_null": "POSITIONAL",
+          "source_argument_ordinal_or_null": 0,
+          "label_id_or_null": null,
+          "source_expr_id_or_null": "hir-expr:resource",
+          "default_value_ref_id_or_null": null,
+          "formal_binding_id_or_null": "formal:resource",
+          "result_eval_id": "eval:resource",
+          "prepared_value_id": "prepared:resource",
+          "normalized_type_id": "type:Resource",
+          "responsibility_profile_id": "responsibility:borrow-Resource",
+          "evaluation_count": 1,
+          "acquisition": {
+            "kind": "SHARED_LOAN",
+            "source_place_id_or_null": "place:resource",
+            "owner_id_or_null": "owner:resource",
+            "region_id_or_null": "region:cleanup-scope-main",
+            "loan_id_or_null": "loan:resource",
+            "reservation_id_or_null": null,
+            "cleanup_obligation_id_or_null": null
+          },
+          "registration_error_set_id": "errors:Never",
+          "registration_effect_row_id": "effects:empty"
+        }
+      ],
+      "static_evidence_bindings": [],
+      "registration_transaction": {
+        "evaluation_order_ordinals": [
+          0,
+          1
+        ],
+        "rollback_order_ordinals": [
+          1,
+          0
+        ],
+        "registration_responsibility_profile_id": "responsibility:defer-registration",
+        "registration_error_set_id": "errors:Never",
+        "registration_effect_row_id": "effects:empty",
+        "move_reservations_cancelled_on_failure": true,
+        "loans_ended_on_failure": true,
+        "owned_temporaries_cleaned_on_failure": true,
+        "external_effects_undone": false,
+        "partial_publication_count": 0,
+        "commit_sequence": [
+          "CLEANUP_REGISTER",
+          "CLEANUP_PIN",
+          "CLEANUP_SEAL"
+        ],
+        "sealed_state": "SEALED_IMMUTABLE"
+      },
+      "execution_policy": {
+        "scope_execution_order": "LIFO",
+        "execution_count": 1,
+        "exit_time_operand_evaluation_count": 0,
+        "retry_count": 0,
+        "suspension_disposition": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION",
+        "terminal_paths": [
+          "FALLTHROUGH",
+          "RETURN",
+          "EXITING_BREAK",
+          "EXITING_CONTINUE",
+          "ERROR",
+          "DEFECT",
+          "CANCELLATION"
+        ],
+        "body_failure_precedence": "BODY_FAILURE_REMAINS_PRIMARY",
+        "normal_body_first_cleanup_failure": "BECOMES_PRIMARY",
+        "later_cleanup_failure_order": "SUPPRESSED_IN_ACTUAL_LIFO_ORDER",
+        "defect_or_cancellation_reclassified_as_error": false
+      },
+      "scope_profile": {
+        "may_suspend": false,
+        "plan_residence": "ACTIVE_CLEANUP_SCOPE",
+        "suspension_action": "PRESERVE_NO_EXECUTION"
+      },
+      "post_registration_place_actions": [
+        {
+          "place_id": "place:resource",
+          "action": "READ_THROUGH_ADMITTED_BORROW"
+        }
+      ],
+      "product_support": "NOT_RUN"
     },
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_algorithm_static_expected_result",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SingleActionDeferAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
+    "expected_decision": {
+      "variant": "ADMIT",
+      "diagnostic_id_or_null": null,
+      "emitted_primary_count": 0
     },
+    "admitted_condition": "the selected direct call and all dynamic operands are fixed and evaluated once before one sealed plan is published",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "rule_seed": "R32 typed DeferredCallPlanInputR1 positive fixture; integrated product checker NOT_RUN.",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1674,203 +1837,6 @@
       "semantic_type": {
         "kind": "nominal",
         "type_id": "PF-SliceViewLifetimeAdmitted-POS"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-SourceRoleAdmitted-BOUNDARY",
-    "predicate_id": "SourceRoleAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SourceRoleAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 SourceRoleAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-SourceRoleAdmitted-NEG",
-    "predicate_id": "SourceRoleAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "SOURCE_ROLE_CARRIER_CONFLICT",
-    "diagnostic_disposition": "active_primary",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor": {
-      "source_kind": "SourceRoot",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "top_level_statement_count": 0,
-        "top_level_binding_count": 0,
-        "explicit_entry_count": 0,
-        "selected_entry_target_count": 0,
-        "manifest_source_role": "library",
-        "external_source_role": "library",
-        "manifest_activation_profile": "stable",
-        "external_activation_profile": "stable",
-        "normalized_path_conflict": true,
-        "library_target_contains_script_root": false
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true,
-        "selected_root": "LibrarySourceFile",
-        "normalized_hir_source_profile": "CURRENT"
-      },
-      "source_role": "library",
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "the normalized project-relative path key occurs more than once before any source-root content is considered",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SourceRoleAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-SourceRoleAdmitted-NEG-ENTRY-COUNT-MISMATCH",
-    "predicate_id": "SourceRoleAdmitted",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "SOURCE_ROLE_ENTRY_COUNT_MISMATCH",
-    "diagnostic_disposition": "active_dispatched",
-    "descriptor": {
-      "source_kind": "SourceRoot",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "top_level_statement_count": 0,
-        "top_level_binding_count": 0,
-        "explicit_entry_count": 0,
-        "selected_entry_target_count": 1,
-        "manifest_source_role": "library",
-        "external_source_role": "library",
-        "normalized_path_conflict": false,
-        "library_target_contains_script_root": false
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": "library",
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "the parser declaration count and selected target count disagree for the same normalized root",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-SourceRoleAdmitted-NEG-ENTRY-COUNT-MISMATCH"
       },
       "responsibility": {
         "ownership": "reusable",

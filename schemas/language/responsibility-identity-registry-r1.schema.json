@@ -1,0 +1,625 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r30/responsibility-identity-registry-r1.schema.json",
+  "title": "Deeplus responsibility identity registry R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "contract_schema",
+    "revision",
+    "status",
+    "authority",
+    "date",
+    "baseline",
+    "gap",
+    "source_surface",
+    "axis_model",
+    "identities",
+    "implication_matrix",
+    "plain_boundary",
+    "lifecycle_boundary",
+    "shared_handle_boundary",
+    "predicate_input_contract",
+    "rejected_spellings",
+    "structural_resolution",
+    "evidence_residue",
+    "operator_boundary",
+    "diagnostics",
+    "governance"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.responsibility-identity-registry/r1"
+    },
+    "contract_schema": {
+      "const": "schemas/language/responsibility-identity-registry-r1.schema.json"
+    },
+    "revision": {
+      "const": "R30-RESPONSIBILITY-IDENTITY-REGISTRY-R1"
+    },
+    "status": {
+      "const": "CURRENT_DESIGN_STATIC_CONTRACT"
+    },
+    "authority": {
+      "const": "DESIGN_RESPONSIBILITY_IDENTITY_REGISTRY_R1"
+    },
+    "date": {
+      "const": "2026-08-02"
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree"],
+      "properties": {
+        "commit": {
+          "const": "87115776365fcbe8870d2f631050db3e23194c9b"
+        },
+        "tree": {
+          "const": "2452f0a6be1e1391b3678dafa86987059b115ec7"
+        }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gap_id", "resolution", "semantic_p0_created"],
+      "properties": {
+        "gap_id": {"const": "IR-OWN-P1-023"},
+        "resolution": {"const": "BOUNDED_IDENTITY_AND_EVIDENCE_PROJECTION"},
+        "semantic_p0_created": {"const": 0}
+      }
+    },
+    "source_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar_owner",
+        "grammar_change_required",
+        "grammar_production_change_count",
+        "new_source_spelling_count",
+        "existing_conformance_surface_reused",
+        "existing_capture_spellings"
+      ],
+      "properties": {
+        "grammar_owner": {"const": "spec/grammar/deeplus.ebnf"},
+        "grammar_change_required": {"const": false},
+        "grammar_production_change_count": {"const": 0},
+        "new_source_spelling_count": {"const": 0},
+        "existing_conformance_surface_reused": {"const": true},
+        "existing_capture_spellings": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["copy", "clone", "deep"]}
+        }
+      }
+    },
+    "axis_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_count",
+        "axis_count",
+        "axes_are_independent",
+        "implicit_cross_axis_derivation_count",
+        "identity_and_lifecycle_axes_are_distinct",
+        "identity_and_shared_handle_axes_are_distinct"
+      ],
+      "properties": {
+        "identity_count": {"const": 6},
+        "axis_count": {"const": 6},
+        "axes_are_independent": {"const": true},
+        "implicit_cross_axis_derivation_count": {"const": 0},
+        "identity_and_lifecycle_axes_are_distinct": {"const": true},
+        "identity_and_shared_handle_axes_are_distinct": {"const": true}
+      }
+    },
+    "identities": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {"$ref": "#/$defs/identity"}
+    },
+    "implication_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PlainValue",
+        "Shareable",
+        "Transferable",
+        "CopyValue",
+        "Clone",
+        "DeepClone"
+      ],
+      "properties": {
+        "PlainValue": {"$ref": "#/$defs/implicationRow"},
+        "Shareable": {"$ref": "#/$defs/implicationRow"},
+        "Transferable": {"$ref": "#/$defs/implicationRow"},
+        "CopyValue": {"$ref": "#/$defs/implicationRow"},
+        "Clone": {"$ref": "#/$defs/implicationRow"},
+        "DeepClone": {"$ref": "#/$defs/implicationRow"}
+      }
+    },
+    "plain_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public_spelling", "internal_formal_identity", "sole_public_spelling", "implies"],
+      "properties": {
+        "public_spelling": {"const": "Plain"},
+        "internal_formal_identity": {"const": "PlainValue"},
+        "sole_public_spelling": {"const": true},
+        "implies": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "CopyValue",
+            "Shareable",
+            "Transferable",
+            "layout_safe",
+            "abi_safe",
+            "json_value",
+            "dyn_value"
+          ],
+          "properties": {
+            "CopyValue": {"const": false},
+            "Shareable": {"const": false},
+            "Transferable": {"const": false},
+            "layout_safe": {"const": false},
+            "abi_safe": {"const": false},
+            "json_value": {"const": false},
+            "dyn_value": {"const": false}
+          }
+        }
+      }
+    },
+    "lifecycle_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "internal_lifecycle_classes",
+        "public_trait_identity_count",
+        "cleanup_trait_dispatch_count",
+        "cleanup_owner"
+      ],
+      "properties": {
+        "internal_lifecycle_classes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["Reusable", "Affine", "Resource"]}
+        },
+        "public_trait_identity_count": {"const": 0},
+        "cleanup_trait_dispatch_count": {"const": 0},
+        "cleanup_owner": {"const": "LANGUAGE_OWNED_DEF_HASH_CLEANUP"}
+      }
+    },
+    "shared_handle_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "spelling",
+        "kind",
+        "is_responsibility_identity",
+        "alias_creation_authority",
+        "shareable_observation_proof_is_separate",
+        "transferable_payload_proof_is_synthesized"
+      ],
+      "properties": {
+        "spelling": {"const": "Shared<T>"},
+        "kind": {"const": "SHARED_OWNER_HANDLE"},
+        "is_responsibility_identity": {"const": false},
+        "alias_creation_authority": {"const": true},
+        "shareable_observation_proof_is_separate": {"const": true},
+        "transferable_payload_proof_is_synthesized": {"const": false}
+      }
+    },
+    "predicate_input_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "descriptor",
+        "schema_path",
+        "fixture_path",
+        "closed_object",
+        "predicate_ids",
+        "case_count",
+        "classes_per_predicate"
+      ],
+      "properties": {
+        "descriptor": {"const": "ResponsibilityIdentityInputR1"},
+        "schema_path": {"const": "schemas/language/responsibility-identity-input-r1.schema.json"},
+        "fixture_path": {"const": "tests/fixtures/current/responsibility-identity-input-r1.json"},
+        "closed_object": {"const": true},
+        "predicate_ids": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "PlainValueAdmissible",
+              "ShareableObservationSafe",
+              "TransferableAcrossIsolation",
+              "CopyValueAdmissible"
+            ]
+          }
+        },
+        "case_count": {"const": 12},
+        "classes_per_predicate": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["positive", "boundary", "negative"]}
+        }
+      }
+    },
+    "rejected_spellings": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {"$ref": "#/$defs/rejectedSpelling"}
+    },
+    "structural_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm_id",
+        "candidate_identities",
+        "terminating",
+        "finite_nominal_graph_required",
+        "memoized_identity_subject_pairs",
+        "cycle_detection_required",
+        "import_order_independent",
+        "source_declaration_order_independent",
+        "runtime_or_provider_search_count",
+        "open_world_structural_search"
+      ],
+      "properties": {
+        "algorithm_id": {"const": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1"},
+        "candidate_identities": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["PlainValue", "Shareable", "Transferable", "CopyValue"]}
+        },
+        "terminating": {"const": true},
+        "finite_nominal_graph_required": {"const": true},
+        "memoized_identity_subject_pairs": {"const": true},
+        "cycle_detection_required": {"const": true},
+        "import_order_independent": {"const": true},
+        "source_declaration_order_independent": {"const": true},
+        "runtime_or_provider_search_count": {"const": 0},
+        "open_world_structural_search": {"const": false}
+      }
+    },
+    "evidence_residue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "descriptor_exact_fields",
+        "behavioral_descriptor_exact_fields",
+        "hir_exact_fields",
+        "api_exact_fields",
+        "mir_exact_fields",
+        "exact_identity_preservation",
+        "exact_selected_witness_preservation",
+        "clone_runtime_relookup_count",
+        "deep_clone_runtime_relookup_count"
+      ],
+      "properties": {
+        "descriptor_exact_fields": {"$ref": "#/$defs/nonemptyUniqueStringArray"},
+        "behavioral_descriptor_exact_fields": {"$ref": "#/$defs/nonemptyUniqueStringArray"},
+        "hir_exact_fields": {"$ref": "#/$defs/nonemptyUniqueStringArray"},
+        "api_exact_fields": {"$ref": "#/$defs/nonemptyUniqueStringArray"},
+        "mir_exact_fields": {"$ref": "#/$defs/nonemptyUniqueStringArray"},
+        "exact_identity_preservation": {"const": true},
+        "exact_selected_witness_preservation": {"const": true},
+        "clone_runtime_relookup_count": {"const": 0},
+        "deep_clone_runtime_relookup_count": {"const": 0}
+      }
+    },
+    "operator_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixed_operator_role_count",
+        "operator_trait_root_count",
+        "responsibility_identity_operator_mapping_count",
+        "responsibility_identity_operator_mappings",
+        "capture_operations_are_operator_dispatch"
+      ],
+      "properties": {
+        "fixed_operator_role_count": {"const": 13},
+        "operator_trait_root_count": {"const": 9},
+        "responsibility_identity_operator_mapping_count": {"const": 0},
+        "responsibility_identity_operator_mappings": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "capture_operations_are_operator_dispatch": {"const": false}
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "existing_active_ids",
+        "expected_new_ids",
+        "expected_new_id_count",
+        "diagnostic_catalog_mutation_count"
+      ],
+      "properties": {
+        "existing_active_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+        },
+        "expected_new_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/expectedDiagnostic"}
+        },
+        "expected_new_id_count": {"const": 2},
+        "diagnostic_catalog_mutation_count": {"const": 2}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semantic_p0",
+        "open_feature_p1",
+        "separate_open_m13_actions",
+        "product_lanes",
+        "product_execution",
+        "evidence_level",
+        "github_mutation"
+      ],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "open_feature_p1": {
+          "type": "array",
+          "minItems": 22,
+          "maxItems": 22,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z0-9-]+$"}
+        },
+        "separate_open_m13_actions": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {"enum": ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]}
+        },
+        "product_lanes": {"$ref": "#/$defs/productLanes"},
+        "product_execution": {"const": "NOT_RUN"},
+        "evidence_level": {"const": "E2_DESIGN_STATIC"},
+        "github_mutation": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "source_access_or_null",
+        "result_contract_or_null",
+        "maximum_throws",
+        "maximum_effects",
+        "suspension_or_null",
+        "cancellation_or_null",
+        "narrower_implementation_allowed",
+        "pending_policy_axes"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["NON_BEHAVIORAL", "CURRENT_BEHAVIORAL_CONTRACT", "RESERVED_PREVIEW_BLOCKED"]
+        },
+        "source_access_or_null": {
+          "type": ["string", "null"],
+          "enum": ["BORROWED", null]
+        },
+        "result_contract_or_null": {
+          "type": ["string", "null"],
+          "enum": ["SAME_TYPE_INDEPENDENT_RESULT", null]
+        },
+        "maximum_throws": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "maximum_effects": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "suspension_or_null": {
+          "type": ["string", "null"],
+          "enum": ["FORBIDDEN", null]
+        },
+        "cancellation_or_null": {
+          "type": ["string", "null"],
+          "enum": ["FORBIDDEN", null]
+        },
+        "narrower_implementation_allowed": {"type": "boolean"},
+        "pending_policy_axes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["GRAPH", "CYCLE", "ALIAS"]}
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_id",
+        "axis_id",
+        "kind",
+        "availability",
+        "public_spelling_or_null",
+        "public_aliases",
+        "capture_spelling_or_null",
+        "user_direct_conformance",
+        "auto_policy",
+        "trait_id_required",
+        "evidence_mode",
+        "runtime_relookup_count",
+        "behavior"
+      ],
+      "properties": {
+        "identity_id": {
+          "enum": ["PlainValue", "Shareable", "Transferable", "CopyValue", "Clone", "DeepClone"]
+        },
+        "axis_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+        "kind": {
+          "enum": [
+            "SEALED_INTRINSIC_PREDICATE",
+            "SEALED_COMPILER_GOVERNED_RESPONSIBILITY_TRAIT",
+            "INTERNAL_SEALED_COPY_PREDICATE",
+            "PUBLIC_BEHAVIORAL_TRAIT",
+            "RESERVED_PREVIEW_BEHAVIORAL_TRAIT"
+          ]
+        },
+        "availability": {
+          "enum": ["CURRENT", "CURRENT_INTERNAL", "RESERVED_PREVIEW_NONACTIVATABLE"]
+        },
+        "public_spelling_or_null": {"type": ["string", "null"]},
+        "public_aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "capture_spelling_or_null": {
+          "type": ["string", "null"],
+          "enum": ["copy", "clone", "deep", null]
+        },
+        "user_direct_conformance": {"enum": ["FORBIDDEN", "ADMITTED"]},
+        "auto_policy": {
+          "enum": [
+            "SEALED_TERMINATING_STRUCTURAL_PREDICATE",
+            "CLOSED_TERMINATING_STRUCTURAL_AUTO",
+            "NONE",
+            "NONE_PENDING_PREVIEW_POLICY"
+          ]
+        },
+        "trait_id_required": {"type": "boolean"},
+        "evidence_mode": {
+          "enum": [
+            "INTRINSIC_PREDICATE_PROOF",
+            "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+            "EXACT_SELECTED_TRAIT_WITNESS",
+            "NONACTIVATABLE_RESERVED_IDENTITY"
+          ]
+        },
+        "runtime_relookup_count": {"const": 0},
+        "behavior": {"$ref": "#/$defs/behavior"}
+      }
+    },
+    "implicationRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["PlainValue", "Shareable", "Transferable", "CopyValue", "Clone", "DeepClone"],
+      "properties": {
+        "PlainValue": {"type": "boolean"},
+        "Shareable": {"type": "boolean"},
+        "Transferable": {"type": "boolean"},
+        "CopyValue": {"type": "boolean"},
+        "Clone": {"type": "boolean"},
+        "DeepClone": {"type": "boolean"}
+      }
+    },
+    "rejectedSpelling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "spelling",
+        "accepted",
+        "alias_created",
+        "canonical_replacements",
+        "replacement_rule",
+        "diagnostic_id"
+      ],
+      "properties": {
+        "spelling": {"enum": ["PlainValue", "Sendable", "ShareSafe", "Copyable", "Duplicable", "Aliasable", "PlainData"]},
+        "accepted": {"const": false},
+        "alias_created": {"const": false},
+        "canonical_replacements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "replacement_rule": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+        "diagnostic_id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+      }
+    },
+    "expectedDiagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["diagnostic_id", "stage", "severity", "status"],
+      "properties": {
+        "diagnostic_id": {
+          "enum": ["RESPONSIBILITY_IDENTITY_UNRESOLVED", "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"]
+        },
+        "stage": {"const": "checker"},
+        "severity": {"const": "error"},
+        "status": {"const": "EXPECTED_REGISTRY_ADDITION"}
+      }
+    },
+    "nonemptyUniqueStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "productLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rust_frontend_lexer",
+        "rust_frontend_parser",
+        "rust_hir_lowering",
+        "rust_integrated_checker",
+        "deeplus_mir_lowering",
+        "xvm_bytecode_emitter",
+        "xvm_interpreter",
+        "cranelift_object_aot_backend",
+        "cranelift_jit_backend",
+        "formatter_lsp",
+        "stdlib_provider_runner",
+        "official_tooling",
+        "independent_conformance",
+        "cross_backend_conformance",
+        "actual_user_team_study"
+      ],
+      "properties": {
+        "rust_frontend_lexer": {"const": "NOT_RUN"},
+        "rust_frontend_parser": {"const": "NOT_RUN"},
+        "rust_hir_lowering": {"const": "NOT_RUN"},
+        "rust_integrated_checker": {"const": "NOT_RUN"},
+        "deeplus_mir_lowering": {"const": "NOT_RUN"},
+        "xvm_bytecode_emitter": {"const": "NOT_RUN"},
+        "xvm_interpreter": {"const": "NOT_RUN"},
+        "cranelift_object_aot_backend": {"const": "NOT_RUN"},
+        "cranelift_jit_backend": {"const": "NOT_RUN"},
+        "formatter_lsp": {"const": "NOT_RUN"},
+        "stdlib_provider_runner": {"const": "NOT_RUN"},
+        "official_tooling": {"const": "NOT_RUN"},
+        "independent_conformance": {"const": "NOT_RUN"},
+        "cross_backend_conformance": {"const": "NOT_RUN"},
+        "actual_user_team_study": {"const": "NOT_RUN"}
+      }
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

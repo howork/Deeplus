@@ -220,12 +220,104 @@ DeferredMessageCall ::= DeferredReceiver "~" MessageSelector
 CleanupDecl ::= DefIntroducer "(" ")" ThrowsClause* EffectsClause* FunctionBody
 ```
 
+### Class cleanup budget의 ErrorSet/EffectRow 대수
+
+`def#cleanup`의 `throws`와 `effects`는 실제 hook 책임을 선언한다. Class
+header의 `cleanup budget`은 hook만이 아니라 base와 소유 field의 자동
+정리까지 포함하는 정적 상한이다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+private data class Tracked
+cleanup budget {
+    effects { audit, io }
+    errors CloseError | FlushError
+}
+{
+    def#cleanup()
+        throws CloseError
+        effects audit
+        effects io
+    = {
+        auditHandle()
+        closeHandle()
+    }
+}
+```
+
+budget의 effect 이름과 recoverable Error identity는 alias를 푼 뒤 중복
+없는 정규 집합으로 만든다. 같은 axis를 두 번 쓰거나 정규화 결과가 같은
+identity를 반복하면 거부한다. `errors` 뒤의 `TypeRef`는 ErrorSet kind여야
+하며 `Never`는 빈 ErrorSet이다. Defect와 Cancellation은 recoverable
+ErrorSet에 들어가지 않고, suspension과 authority도 EffectRow에 숨기지
+않는다.
+
+checker는 다음 세 기여를 고정된 evidence 순서로 수집한다.
+
+1. 존재하면 base segment의 transitive computed obligation
+2. 소유 cleanup-bearing field의 effective envelope을 선언 순서대로
+3. 존재하면 현재 owner의 `def#cleanup` hook
+
+두 행의 의미 결합은 집합 합집합이고, 계산된 각 집합이 유효 budget의
+부분집합이어야 한다. evidence 순서는 진단과 검증을 위한 것이며 runtime
+순서는 아니다. live object는 hook, 역획득 field, base 재귀 순서로
+정리하고, construction abort는 whole-object hook 없이 live field와
+commit된 base만 정리한다.
+
+block 전체가 없는 비상속 Class는 계산 결과를 정확한 유효 budget으로
+사용한다. present block에서 빠진 축은 빈 축이므로 다음은 I/O나
+recoverable cleanup error가 조금이라도 있으면 거부된다.
+
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+private data class UnderBudget
+cleanup budget {}
+{
+    def#cleanup()
+        throws CloseError
+        effects io
+    = { closeHandle() }
+}
+// CLEANUP_BUDGET_EXCEEDED
+```
+
+`defer`는 별도의 Class header를 만들지 않는다. 등록된 호출의 error/effect
+행이 둘러싼 callable 책임 안에 있는지를 검사한다. budget은 실행 시
+평가되지 않고, effect 권한을 주거나 failure의 primary/suppressed 순서를
+바꾸지 않는다.
+
 `defer`는 direct/member/type-side/message cleanup invocation 하나만
 등록한다. block, trailing closure, inline callable, `await`, `spawn`,
 guard를 cleanup invocation으로 암시 변환하지 않는다. message cleanup도
 일반 message와 같은 ordered argument channel을 사용하지만, cleanup
 등록에는 `TrailingClosureGroup`을 허용하지 않는다. actor `:~`는
-admission `Result`를 버릴 수 있으므로 `defer`에 등록할 수 없다.
+admission `Result`의 책임을 조용히 버릴 수 없으므로 `defer`에 등록할 수
+없다.
+
+등록은 호출을 “나중에 다시 해석할 source text”로 저장하지 않는다.
+checker는 exact callable implementation, generic substitution, formal
+binding, result responsibility와 cleanup effect/error budget을 먼저 닫는다.
+그 뒤 다음 runtime 순서를 정확히 한 번 실행한다.
+
+1. runtime callee 또는 receiver가 있으면 먼저 평가한다. statically bound
+   direct/type-side callee identity 자체는 runtime evaluation이 0회다.
+2. `context`를 포함한 explicit runtime `CallArgument`를 source order로
+   평가한다.
+3. 빠진 formal의 default expression을 formal declaration order로
+   평가한다.
+4. `using` Witness/Conformance evidence는 static evidence이므로 runtime
+   evaluation이 0회다.
+5. 각 operand를 `SNAPSHOT_VALUE`, `SHARED_LOAN`, `EXCLUSIVE_LOAN`,
+   `MOVE_INTO_PLAN`, `OWNED_TEMPORARY`, `PINNED_PLACE_RESERVATION`, 또는
+   zero-evaluation `STATIC_EVIDENCE` 중 하나로 준비하고 등록 하나를
+   seal한다. affine `consume`은 이 seal에서만 plan owner로 이전된다.
+
+receiver, argument, default, owner/region 또는 budget 검사가 seal 전에
+실패하면 이미 얻은 temporary와 되돌릴 수 있는 reservation을 준비 역순으로
+정리하고 등록은 0개 publish한다. 이미 발생한 I/O·authority 같은 외부
+effect를 과거로 되돌린다는 뜻은 아니며, 등록이나 cleanup을 자동 retry하지
+않는다. seal 뒤에는 receiver/index/argument expression을 scope exit에서
+다시 평가하지 않는다.
 
 ## 허용과 정적 의미
 
@@ -250,6 +342,10 @@ admission `Result`를 버릴 수 있으므로 `defer`에 등록할 수 없다.
   Cancellation을 포함한 모든 terminal path에서 실행한다.
 - throwing cleanup은 body failure를 primary로 보존하고 cleanup failure를
   실제 deterministic LIFO 실행 순서로 suppressed list에 추가한다.
+- deferred invocation의 result는 ordinary expression statement와 같은
+  responsibility 검사를 받아 `UNIT_NO_VALUE`,
+  `DISCARD_CLEANUP_FREE_VALUE`, `CLEAN_OWNED_TEMPORARY` 중 하나로
+  봉인된다. 미처리 책임을 가진 result는 조용히 버릴 수 없다.
 
 ## 평가·소유권·효과
 
@@ -258,9 +354,19 @@ expression과 argument는 정본이 별도 short-circuit를 정하지 않는 한
 partial move가 없다. branch cleanup은 join 또는 exit 전에 완료된다.
 
 `defer`는 등록 역순의 deterministic LIFO로 정확히 한 번 실행된다.
-`return`, `break`, `continue`, `throw`, suspension, cancellation은 필요한
-cleanup을 건너뛸 수 없다. suspension은 live ownership, borrow, isolation,
-cleanup obligation을 그대로 보존한다.
+cleanup을 일으키는 일곱 scope exit는 normal fallthrough, `return`,
+`break`, `continue`, recoverable Error의 `throw` 전파, Defect,
+Cancellation이다. return/break/throw payload는 먼저 staging하고, inner
+cleanup region부터 outer region으로 나가며 같은 region에서는 실제 도달해
+등록된 action을 역순으로 실행한다. loop body는 도달한 iteration마다
+dynamic cleanup region을 가지므로 `continue`도 다음 iteration 전에 그
+iteration의 cleanup을 끝낸다.
+
+suspension은 scope exit가 아니므로 그 순간 cleanup을 실행하지 않는다.
+대신 live ownership, borrow, reservation, isolation, cleanup obligation을
+그대로 보존하고, 모두 suspension을 넘어 유효하다는 proof가 있을 때만
+허용한다. 따라서 `defer`가 있다는 이유만으로 `await`가 금지되는 것도,
+`await`가 cleanup을 미리 실행하는 것도 아니다.
 
 Cancellation은 cooperative boundary에서만 관측하며 Error로 바꾸거나
 버리지 않는다. `concur`는 owned child가 terminal이 되고
@@ -336,6 +442,59 @@ let handle = open(path)
 defer handle ~ close
 process(handle)
 ```
+
+등록 시점에 `handle` receiver를 한 번 준비하고 exact `close` target을
+고정한다. scope exit에서는 receiver lookup이나 overload selection을
+반복하지 않는다.
+
+### registration argument와 default 순서
+
+현행 예제 `EX-R32-DCP-001`, 원본 `examples/guide/review-corpus.md`:
+
+```deeplus
+defer closeWith(
+    acquireHandle(),
+    context currentCleanupContext(),
+    using closeEvidence,
+)
+```
+
+`closeWith`의 omitted formal에 default expression이 있다면 관찰 순서는
+`acquireHandle()` → `currentCleanupContext()` → default expression이다.
+호출 target과 explicit `using closeEvidence`는 static이므로 runtime evaluation을
+추가하지 않는다. 어느 준비가 실패해도 등록은 0개이고, 이미 얻은
+temporary만 역순 정리한다. 이미 관찰된 외부 effect는 되감지 않는다.
+
+### loop iteration cleanup
+
+현행 예제 `EX-R32-DCP-002`, 원본 `examples/guide/review-corpus.md`:
+
+```deeplus
+for item in items {
+    defer release(item)
+    if skip(item) {
+        continue
+    }
+    consume(item)
+}
+```
+
+`release(item)`은 `defer`에 도달한 iteration에만 등록된다. `continue`는
+그 iteration의 cleanup을 실행한 뒤 다음 iteration으로 넘어간다.
+
+### actor transport는 defer 대상이 아님
+
+현행 거부 예제 `EX-R32-DCP-NG-001`, 원본
+`examples/guide/review-corpus.md`:
+
+```deeplus
+defer worker :~ stop
+// ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER
+```
+
+`:~`의 admission `Result`와 전송 책임은 ordinary cleanup result처럼
+조용히 버릴 수 없다. 이 형식은 cleanup plan에 actor transport를 숨기는
+대신 명시적인 actor/concur control flow에서 처리해야 한다.
 
 현행 예제 `EX-R51a1-NEW-020`,
 원본 `examples/guide/review-corpus.md`:

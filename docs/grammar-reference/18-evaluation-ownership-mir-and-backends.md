@@ -404,6 +404,28 @@ cleanup registration은
 - failed pattern probe 뒤 payload를 다시 평가
 - named argument를 formal 순서로 재평가
 
+#### `defer` registration의 정확한 순서
+
+`defer`는 일반 호출의 선택과 argument binding을 재사용하지만 실행
+시점을 둘로 나눈다. exact call target, substitution, formal binding과
+result responsibility는 정적으로 닫힌다. 등록 시점 runtime 순서는
+runtime callee/receiver(있는 경우) → `context`를 포함한 explicit runtime
+argument의 source order → omitted-formal default expression의 formal
+declaration order다. statically bound direct/type-side callee identity와
+`using` evidence는 static이므로 runtime evaluation이 0회다.
+
+준비된 value/place에는 기존 call transfer mode가 붙고
+`SNAPSHOT_VALUE`, `SHARED_LOAN`, `EXCLUSIVE_LOAN`, `MOVE_INTO_PLAN`,
+`OWNED_TEMPORARY`, `PINNED_PLACE_RESERVATION`, zero-evaluation
+`STATIC_EVIDENCE` 중 하나로 acquisition된다. reusable value의 copy,
+exact view/borrow reservation, affine owner의 consume을 서로 바꾸지 않는다.
+consume은 준비 도중이 아니라 하나의 registration seal에서 plan owner로
+commit된다. seal 전에 실패하면 temporary와 reversible
+reservation을 준비 역순으로 정리하고 `CLEANUP_REGISTER` 관찰은 0개다.
+이미 실행된 I/O나 authority effect를 되감거나 실패한 준비를 retry하지는
+않는다. seal 뒤 cleanup 실행에서는 receiver, index, argument, default를
+다시 평가하거나 target을 다시 찾지 않는다.
+
 ### 4.2 strict와 sequential Bool
 
 `and`와 `or`는 strict Bool operator다.
@@ -1130,9 +1152,19 @@ resource owner는 정확히 하나의 cleanup path를 가진다.
 cleanup registration은 source order로 관찰되고
 실행은 deterministic LIFO region order다.
 
-return, throw, break, continue,
-Defect, Cancellation, suspension은
-필요한 cleanup을 건너뛸 수 없다.
+cleanup을 일으키는 일곱 exit는 normal fallthrough, `return`, `break`,
+`continue`, recoverable Error propagation, Defect, Cancellation이다.
+return/break/throw payload를 먼저 staging하고 inner region부터 outer
+region으로 나가며, 한 region 안에서는 실제 도달해 등록된 action을 역
+dynamic registration order로 실행한다. loop body에는 도달한 iteration별
+dynamic region이 있으므로 `continue`가 그 iteration의 cleanup을 먼저
+끝낸다.
+
+suspension은 exit가 아니며 cleanup action을 0개 실행한다. 대신 모든
+live owner, borrow, reservation, isolation fact와 cleanup obligation을
+그대로 보존한다. 이 상태가 suspension을 넘어 유효하다는 proof가 없으면
+suspension site를 거부하며, `defer` 자체를 blanket suspension 금지로
+해석하지 않는다.
 
 ### 14.2 primary와 suppressed failure
 
@@ -1141,6 +1173,14 @@ cleanup failure가 그것을 덮어쓰지 않는다.
 body failure는 primary로 남고,
 cleanup failure는 실제 LIFO execution order로
 suppressed list에 붙는다.
+
+body가 정상일 때 처음 실패한 cleanup은 primary가 되고 뒤 cleanup
+failure가 suppressed로 붙는다. cleanup을 retry하거나 Error, Defect,
+Cancellation identity를 다른 축으로 바꾸지 않는다. deferred call의
+정상 result는 ordinary expression statement와 같은 responsibility 검사를
+받아 `UNIT_NO_VALUE`, `DISCARD_CLEANUP_FREE_VALUE`,
+`CLEAN_OWNED_TEMPORARY` 중 하나로 봉인된다. 미처리 responsibility는
+조용히 버리지 않는다.
 
 `concur`에서 child failure만 경쟁하면
 가장 작은 lexical `spawn_index`가 primary다.
@@ -1354,8 +1394,12 @@ precommit failure는 old stored owner를 보존한다.
 
 ### 16.4 SharedMutex
 
-current minimum은 lifecycle 또는
-effectful cleanup payload를 받지 않는다.
+current minimum의 공개 identity는
+`SharedMutex<T: SharedMutexPayload>`다. `SharedMutexPayload`는 Trait가 아닌
+sealed compiler-known constraint다. 전용 `SharedMutexPayloadDescriptorR1`을
+통해 cleanup-free Reusable/Affine payload만 받고 Resource, cleanup 책임,
+borrow/inout view, opaque 또는 unbounded generic을 거부한다. 이 판정은
+다른 responsibility evidence를 합성하지 않으며 move commit 전에 끝난다.
 poisoning과 recursive lock은 current가 아니다.
 생성은 ordinary qualified call `SharedMutex::new(move value)`다.
 
@@ -1369,6 +1413,9 @@ unlock은 return, Error, Defect,
 Cancellation의 모든 path에서
 infallible exactly-once cleanup이다.
 body failure가 primary로 남는다.
+MIR의 `SharedMutexWithLockPlan`은 `LOCK_ACQUIRE → LOAN_BEGIN_EXCLUSIVE →
+callback → LOAN_END → LOCK_RELEASE` 순서를 네 terminal outcome에서 동일하게
+검증한다. wrapper unlock은 payload cleanup으로 세지 않는다.
 
 ### 16.5 happens-before
 

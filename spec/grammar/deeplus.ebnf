@@ -678,10 +678,15 @@ FacetType ::= "Facet" "<" "borrow" "any" QualifiedTypeReference AssociatedTypeCo
 OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;
 
 (* One parser owner consumes the shared `(` prefix exactly once. AST normalization
-   selects FunctionType, TupleType or ParenthesizedType after `)` and optional `->`. *)
+   selects FunctionType, TupleType or ParenthesizedType after `)` and optional `->`.
+   A direct item-leading ParameterMode is committed as a function-channel mode
+   only when the same outer owner observes FunctionTypeTail. Inside a function
+   type, an ownership-qualified type whose first token is also a ParameterMode
+   therefore uses one additional grouping layer, for example `((mut T)) -> R`. *)
 ParenTypeSyntax ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail? ;
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","? ;
-ParenTypeItem ::= TypeRef | TypeRef "..." | TypeRef "***" ;
+ParenTypeItem ::= FunctionTypeModeItem | TypeRef | TypeRef "..." | TypeRef "***" ;
+FunctionTypeModeItem ::= ParameterMode TypeRef ;
 FunctionTypeTail ::= "->" ReturnTypeSurface ThrowsClause* EffectsClause* ;
 
 SharpShapeType ::= "#" StaticDimensionList "[" TypeRef "]" ;
@@ -1179,6 +1184,11 @@ CaptureMode ::= "borrow" | "inout" | "move" | "clone" | "deep" | "copy" | "once"
    bare Identifier denotes an explicit borrow capture.  These
    distinctions survive CST/AST/HIR; they do not add another source
    production. *)
+
+(* A present CaptureList is physically attached to the following closure or
+   generator owner.  A line terminator between `]` and the owner hashtags or
+   opening token is rejected as CAPTURE_LIST_NEWLINE_DETACHED; formatting
+   never repairs the detachment by guessing an owner. *)
 
 (* ---------- Quotes, generators, structured concurrency and Facet ---------- *)
 

@@ -898,7 +898,7 @@
     "depends_on": [
       "single_action_defer_msp"
     ],
-    "notes": "A deferred invocation reserves moved/cleanup-owned places until scope exit and forbids hidden clone, rebind, move, or suspension.",
+    "notes": "A deferred invocation reserves only the exact places retained by its loan, move, or pinned-place acquisition; snapshots, owned temporaries, and static evidence do not blanket-reserve their source places. Hidden clone and move, rebind, or owner replacement of a retained place are forbidden. Suspension preserves the sealed plan without executing it until terminal scope exit.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",

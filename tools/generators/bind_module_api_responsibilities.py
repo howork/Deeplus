@@ -17,10 +17,12 @@ CALLABLE_AXIS_NEGATIVE_ID = "MODULE-API-NEG-CALLABLE-AXES-001"
 CALLABLE_CHANNEL_DUPLICATE_NEGATIVE_ID = "MODULE-API-NEG-CALLABLE-CHANNEL-ID-001"
 
 
-def channel(channel_id: str, type_identity: str, ownership: str, cleanup: str) -> dict[str, str]:
+def channel(channel_id: str, type_identity: str, ownership: str, cleanup: str) -> dict[str, Any]:
     return {
         "channel_id": channel_id,
         "type_identity": type_identity,
+        "type_ownership_qualifier": "unqualified",
+        "region_origin_channel_id_or_null": None,
         "ownership": ownership,
         "cleanup": cleanup,
     }

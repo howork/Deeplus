@@ -165,64 +165,72 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "TransferableAcrossIsolation",
     "source_name": "Transferable",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R30 closed deterministic admission algorithm for Transferable; production checker remains NOT_RUN.",
+    "input_descriptor": "ResponsibilityIdentityInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "isolation",
-      "authority",
-      "source_role",
-      "element_types"
+      "normalized_type_id",
+      "owner_id",
+      "source_isolation_domain_id",
+      "destination_isolation_domain_id",
+      "cleanup_token_ids",
+      "authority_delegation_evidence_ids",
+      "ordered_component_type_ids"
     ],
     "feature_refs": [
-      "actor_protocol_family"
+      "actor_protocol_family",
+      "responsibility_identity_registry_r1"
     ],
     "diagnostic_refs": [
-      "UNSAFE_REQUIRES_UNSAFE_BOUNDARY"
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "BORROW_ESCAPE_OWNER_REGION",
+      "SHARED_WRAPPER_DOES_NOT_IMPLY_TRANSFERABLE"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "owned move safety",
-      "no thread-affine raw authority unless boundary permits"
+      "resolve the sealed Transferable ResponsibilityRuleId",
+      "the value is owned and carries no borrow or inout region",
+      "every cleanup, payload, lease, and authority has an exact destination-valid transfer law",
+      "direct source conformance, shared-wrapper inference, and unsafe-boundary substitution are forbidden"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/responsibility-identity-registry-r1.json",
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "isolation",
-      "authority",
-      "source_role",
-      "element_types"
+      "normalized_type_id",
+      "owner_id",
+      "source_isolation_domain_id",
+      "destination_isolation_domain_id",
+      "cleanup_token_ids",
+      "authority_delegation_evidence_ids",
+      "ordered_component_type_ids"
     ],
     "formal_judgment_id": "J-TransferableAcrossIsolation",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
     "preconditions": [
-      "owned move safety",
-      "no thread-affine raw authority unless boundary permits"
+      "resolve the sealed Transferable ResponsibilityRuleId",
+      "the value is owned and carries no borrow or inout region",
+      "every cleanup, payload, lease, and authority has an exact destination-valid transfer law",
+      "direct source conformance, shared-wrapper inference, and unsafe-boundary substitution are forbidden"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "expand transparent type aliases, resolve one exact ResponsibilityRuleId and TypeId, then evaluate the finite owner-closed type graph",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and its native conditional constraints",
-      "evaluate declared dependency predicates left-to-right and propagate their selected diagnostic",
-      "normalize ownership, Sendable/Shareable evidence, borrow region, cleanup, and authority",
-      "reject borrowed/inout escape before value transfer checks",
-      "reject nontransferable cleanup/authority payload",
-      "return one isolation transfer plan",
-      "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
+      "resolve the exact Transferable ResponsibilityRuleId",
+      "bind exact TypeId, OwnerId, source and destination IsolationDomainId",
+      "reject borrowed/inout escape and independently validate authority delegation",
+      "evaluate cleanup, payload and lease policies in stable order",
+      "emit one destination-bound evidence row before the ownership commit"
     ],
-    "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY",
-    "secondary_diagnostics": [],
+    "termination_metric": "finite normalized type graph plus finite registered law table and memoized SCC state",
+    "success_result": "one digest-bound ResponsibilityEvidenceDescriptor",
+    "active_primary_diagnostic": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+    "secondary_diagnostics": [
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "BORROW_ESCAPE_OWNER_REGION",
+      "SHARED_WRAPPER_DOES_NOT_IMPLY_TRANSFERABLE"
+    ],
     "positive_fixture_ids": [
       "PF-TransferableAcrossIsolation-POS",
       "PF-TransferableAcrossIsolation-BOUNDARY"
@@ -230,7 +238,7 @@
     "negative_fixture_ids": [
       "PF-TransferableAcrossIsolation-NEG"
     ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local branches -> one primary diagnostic",
+    "evaluation_order": "identity -> alias normalization -> negative gates -> finite derivation -> evidence digest -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
     "diagnostic_disposition": "active_primary",
@@ -242,10 +250,8 @@
       "disposition": "superseded_by_current_r51a1_row"
     },
     "diagnostic_dispatch": {
-      "branch_01": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY",
-      "branch_02": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY",
-      "branch_03": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY",
-      "branch_04": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY"
+      "unknown_or_stale_identity": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "known_identity_evidence_failure": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"
     }
   },
   {

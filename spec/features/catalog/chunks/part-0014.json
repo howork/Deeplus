@@ -448,7 +448,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Region/lifetime checker model Phase A. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references. Expression context-anchor `&` does not create a LoanId, RegionId, borrow event, or runtime role residue.",
+    "notes": "Current trace-bounded responsibility for Region/lifetime checker model Phase A. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references. Expression context-anchor `&` does not create a LoanId, RegionId, borrow event, or runtime role residue. Ordinary ownership loans use the R34 path-sensitive close-frontier contract and retain product support NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -459,7 +459,9 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "MIR_LOAN_UNBALANCED"
+      ],
       "predicates": [
         "BorrowEscapeAdmitted",
         "TypeParamKindAdmitted"
@@ -472,7 +474,9 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
-      "spec/contracts/borrow-context-anchor-disambiguation.json"
+      "spec/contracts/borrow-context-anchor-disambiguation.json",
+      "spec/contracts/loan-close-operation-r1.json",
+      "tests/fixtures/current/loan-close-operation-r1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -600,15 +604,21 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+        "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT",
+        "CLEANUP_BUDGET_EXCEEDED"
       ],
-      "predicates": [],
+      "predicates": [
+        "CleanupBudgetEnvelopeAdmitted"
+      ],
       "examples": [],
       "productions": [],
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/cleanup-budget-algebra-r1.json",
+      "schemas/language/cleanup-budget-envelope-input-r1.schema.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

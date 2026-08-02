@@ -165,22 +165,25 @@ escape·mutation·capture·effect/error 검사를 완화하지는 않는다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let permit = acquirePermit()
-let submit = [move permit] #once { job =>
+let submit = [once permit] #once { job =>
     sendWithPermit(permit, job)
 }
 ```
 
-closure가 owner가 되었으므로 original binding은 사용할 수 없다.
-정상/오류/취소를 합쳐 permit cleanup path가 정확히 하나여야 한다.
+capture `once`는 permit owner를 one-shot environment field로 옮기고,
+명시적 callable `#once`는 호출권을 한 번으로 제한한다. 두 표면은 별도
+identity여서 하나가 다른 하나를 자동 생성하지 않는다. closure 생성이
+성공한 뒤 original binding은 사용할 수 없고, 정상/오류/취소를 합쳐
+permit cleanup path는 정확히 하나여야 한다.
 
 ## 7. 허용·거부·경계 사례
 
-<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: CLOSURE_BORROW_CAPTURE_ESCAPES; product: NOT_RUN -->
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: BORROW_ESCAPE_OWNER_REGION; product: NOT_RUN -->
 ```deeplus
 private def invalidFactory(borrow prefix: String) -> (() -> String) = {
     return [borrow prefix] { => prefix }
 }
-// CLOSURE_BORROW_CAPTURE_ESCAPES
+// BORROW_ESCAPE_OWNER_REGION
 ```
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: GENERATOR_BORROW_CAPTURE_FORBIDDEN; product: NOT_RUN -->

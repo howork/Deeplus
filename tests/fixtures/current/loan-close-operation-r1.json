@@ -1,0 +1,293 @@
+{
+  "schema": "deeplus.loan-close-operation-fixtures/r1",
+  "contract": "spec/contracts/loan-close-operation-r1.json",
+  "revision": "R34-LOAN-CLOSE-OPERATION-R1",
+  "status": "DESIGN_STATIC_NOT_RUN",
+  "cases": [
+    {
+      "case_id": "R34-LOAN-POS-001",
+      "class": "POSITIVE",
+      "scenario": "one shared loan ends before owner cleanup",
+      "input": {
+        "body_id": "body.pos.001",
+        "loans": [
+          {"loan_id":"loan.shared","kind":"SHARED","region_id":"region.lexical","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.shared","end_operation_ids":["op.end.shared"],"access_token_id":"token.shared"}
+        ],
+        "paths": [
+          {"path_id":"path.normal","events":[
+            {"event_id":"op.begin.shared","kind":"BEGIN_SHARED","loan_id_or_null":"loan.shared","parent_loan_id_or_null":null,"access_token_id_or_null":"token.shared"},
+            {"event_id":"op.use.shared","kind":"USE","loan_id_or_null":"loan.shared"},
+            {"event_id":"op.end.shared","kind":"END","loan_id_or_null":"loan.shared","access_token_id_or_null":"token.shared"},
+            {"event_id":"op.cleanup.owner","kind":"OWNER_CLEANUP","overlapping_loan_ids":["loan.shared"]},
+            {"event_id":"term.normal","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-POS-002",
+      "class": "POSITIVE",
+      "scenario": "one lexical borrow lowers to path-exclusive explicit ends on normal and Error exits",
+      "input": {
+        "body_id": "body.pos.002",
+        "loans": [
+          {"loan_id":"loan.lexical","kind":"SHARED","region_id":"region.lexical","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.lexical","end_operation_ids":["op.end.error","op.end.normal"],"access_token_id":"token.lexical"}
+        ],
+        "paths": [
+          {"path_id":"path.normal","events":[
+            {"event_id":"op.begin.lexical","kind":"BEGIN_SHARED","loan_id_or_null":"loan.lexical","parent_loan_id_or_null":null,"access_token_id_or_null":"token.lexical"},
+            {"event_id":"op.use.normal","kind":"USE","loan_id_or_null":"loan.lexical"},
+            {"event_id":"op.end.normal","kind":"END","loan_id_or_null":"loan.lexical","access_token_id_or_null":"token.lexical"},
+            {"event_id":"term.normal","kind":"TERMINAL"}
+          ]},
+          {"path_id":"path.error","events":[
+            {"event_id":"op.begin.lexical","kind":"BEGIN_SHARED","loan_id_or_null":"loan.lexical","parent_loan_id_or_null":null,"access_token_id_or_null":"token.lexical"},
+            {"event_id":"op.use.error","kind":"USE","loan_id_or_null":"loan.lexical"},
+            {"event_id":"outcome.error","kind":"PRIMARY_ERROR","failure_id_or_null":"failure.body"},
+            {"event_id":"op.end.error","kind":"END","loan_id_or_null":"loan.lexical","access_token_id_or_null":"token.lexical"},
+            {"event_id":"term.error","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":"PATH_DEPENDENT","suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-POS-003",
+      "class": "POSITIVE",
+      "scenario": "a body with no loans has an empty balance",
+      "input": {
+        "body_id": "body.pos.003",
+        "loans": [],
+        "paths": [
+          {"path_id":"path.empty","events":[{"event_id":"term.empty","kind":"TERMINAL"}]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-BND-004",
+      "class": "BOUNDARY",
+      "scenario": "a child reborrow ends before its parent resumes and ends",
+      "input": {
+        "body_id": "body.bnd.004",
+        "loans": [
+          {"loan_id":"loan.outer","kind":"SHARED","region_id":"region.outer","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.outer","end_operation_ids":["op.end.outer"],"access_token_id":"token.outer"},
+          {"loan_id":"loan.inner","kind":"SHARED","region_id":"region.inner","parent_loan_id_or_null":"loan.outer","begin_operation_id":"op.begin.inner","end_operation_ids":["op.end.inner"],"access_token_id":"token.inner"}
+        ],
+        "paths": [
+          {"path_id":"path.nested","events":[
+            {"event_id":"op.begin.outer","kind":"BEGIN_SHARED","loan_id_or_null":"loan.outer","parent_loan_id_or_null":null,"access_token_id_or_null":"token.outer"},
+            {"event_id":"op.begin.inner","kind":"BEGIN_REBORROW","loan_id_or_null":"loan.inner","parent_loan_id_or_null":"loan.outer","access_token_id_or_null":"token.inner"},
+            {"event_id":"op.use.inner","kind":"USE","loan_id_or_null":"loan.inner"},
+            {"event_id":"op.end.inner","kind":"END","loan_id_or_null":"loan.inner","access_token_id_or_null":"token.inner"},
+            {"event_id":"op.use.outer","kind":"USE","loan_id_or_null":"loan.outer"},
+            {"event_id":"op.end.outer","kind":"END","loan_id_or_null":"loan.outer","access_token_id_or_null":"token.outer"},
+            {"event_id":"term.nested","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-BND-005",
+      "class": "BOUNDARY",
+      "scenario": "two branch paths close at distinct static frontier sites and join inactive",
+      "input": {
+        "body_id": "body.bnd.005",
+        "loans": [
+          {"loan_id":"loan.branch","kind":"SHARED","region_id":"region.branch","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.branch","end_operation_ids":["op.end.left","op.end.right"],"access_token_id":"token.branch"}
+        ],
+        "paths": [
+          {"path_id":"path.left","events":[
+            {"event_id":"op.begin.branch","kind":"BEGIN_SHARED","loan_id_or_null":"loan.branch","parent_loan_id_or_null":null,"access_token_id_or_null":"token.branch"},
+            {"event_id":"op.use.left","kind":"USE","loan_id_or_null":"loan.branch"},
+            {"event_id":"op.end.left","kind":"END","loan_id_or_null":"loan.branch","access_token_id_or_null":"token.branch"},
+            {"event_id":"join.branch.left","kind":"JOIN","join_id_or_null":"join.branch"},
+            {"event_id":"term.left","kind":"TERMINAL"}
+          ]},
+          {"path_id":"path.right","events":[
+            {"event_id":"op.begin.branch","kind":"BEGIN_SHARED","loan_id_or_null":"loan.branch","parent_loan_id_or_null":null,"access_token_id_or_null":"token.branch"},
+            {"event_id":"op.use.right","kind":"USE","loan_id_or_null":"loan.branch"},
+            {"event_id":"op.end.right","kind":"END","loan_id_or_null":"loan.branch","access_token_id_or_null":"token.branch"},
+            {"event_id":"join.branch.right","kind":"JOIN","join_id_or_null":"join.branch"},
+            {"event_id":"term.right","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-BND-006",
+      "class": "BOUNDARY",
+      "scenario": "loan close is failure-neutral and cleanup failures append in LIFO execution order",
+      "input": {
+        "body_id": "body.bnd.006",
+        "loans": [
+          {"loan_id":"loan.failure","kind":"SHARED","region_id":"region.failure","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.failure","end_operation_ids":["op.end.failure"],"access_token_id":"token.failure"}
+        ],
+        "paths": [
+          {"path_id":"path.failure","events":[
+            {"event_id":"op.begin.failure","kind":"BEGIN_SHARED","loan_id_or_null":"loan.failure","parent_loan_id_or_null":null,"access_token_id_or_null":"token.failure"},
+            {"event_id":"op.use.failure","kind":"USE","loan_id_or_null":"loan.failure"},
+            {"event_id":"outcome.body","kind":"PRIMARY_ERROR","failure_id_or_null":"failure.body"},
+            {"event_id":"op.end.failure","kind":"END","loan_id_or_null":"loan.failure","access_token_id_or_null":"token.failure"},
+            {"event_id":"cleanup.second","kind":"CLEANUP_FAIL","failure_id_or_null":"failure.cleanup.second","cleanup_acquisition_ordinal_or_null":2},
+            {"event_id":"cleanup.first","kind":"CLEANUP_FAIL","failure_id_or_null":"failure.cleanup.first","cleanup_acquisition_ordinal_or_null":1},
+            {"event_id":"term.failure","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"ACCEPT","diagnostic_or_null":null,"reason_or_null":null,"primary_failure_or_null":"failure.body","suppressed_failures":["failure.cleanup.second","failure.cleanup.first"]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-007",
+      "class": "NEGATIVE",
+      "scenario": "a reachable terminal retains a live loan",
+      "input": {
+        "body_id": "body.neg.007",
+        "loans": [{"loan_id":"loan.live","kind":"SHARED","region_id":"region.live","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.live","end_operation_ids":["op.end.live"],"access_token_id":"token.live"}],
+        "paths": [{"path_id":"path.live","events":[
+          {"event_id":"op.begin.live","kind":"BEGIN_SHARED","loan_id_or_null":"loan.live","parent_loan_id_or_null":null,"access_token_id_or_null":"token.live"},
+          {"event_id":"term.live","kind":"TERMINAL"}
+        ]}],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"TERMINAL_LIVE_LOAN","primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-008",
+      "class": "NEGATIVE",
+      "scenario": "the Cancellation edge omits the end emitted on the normal edge",
+      "input": {
+        "body_id": "body.neg.008",
+        "loans": [{"loan_id":"loan.edge","kind":"SHARED","region_id":"region.edge","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.edge","end_operation_ids":["op.end.normal"],"access_token_id":"token.edge"}],
+        "paths": [
+          {"path_id":"path.normal","events":[
+            {"event_id":"op.begin.edge","kind":"BEGIN_SHARED","loan_id_or_null":"loan.edge","parent_loan_id_or_null":null,"access_token_id_or_null":"token.edge"},
+            {"event_id":"op.end.normal","kind":"END","loan_id_or_null":"loan.edge","access_token_id_or_null":"token.edge"},
+            {"event_id":"term.normal","kind":"TERMINAL"}
+          ]},
+          {"path_id":"path.cancel","events":[
+            {"event_id":"op.begin.edge","kind":"BEGIN_SHARED","loan_id_or_null":"loan.edge","parent_loan_id_or_null":null,"access_token_id_or_null":"token.edge"},
+            {"event_id":"outcome.cancel","kind":"PRIMARY_CANCELLATION","failure_id_or_null":"failure.cancel"},
+            {"event_id":"term.cancel","kind":"TERMINAL"}
+          ]}
+        ],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"TERMINAL_LIVE_LOAN","primary_failure_or_null":"PATH_DEPENDENT","suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-009",
+      "class": "NEGATIVE",
+      "scenario": "the same dynamic activation ends twice",
+      "input": {
+        "body_id": "body.neg.009",
+        "loans": [{"loan_id":"loan.double","kind":"SHARED","region_id":"region.double","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.double","end_operation_ids":["op.end.double.1","op.end.double.2"],"access_token_id":"token.double"}],
+        "paths": [{"path_id":"path.double","events":[
+          {"event_id":"op.begin.double","kind":"BEGIN_SHARED","loan_id_or_null":"loan.double","parent_loan_id_or_null":null,"access_token_id_or_null":"token.double"},
+          {"event_id":"op.end.double.1","kind":"END","loan_id_or_null":"loan.double","access_token_id_or_null":"token.double"},
+          {"event_id":"op.end.double.2","kind":"END","loan_id_or_null":"loan.double","access_token_id_or_null":"token.double"},
+          {"event_id":"term.double","kind":"TERMINAL"}
+        ]}],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"END_STATE_INVALID","primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-010",
+      "class": "NEGATIVE",
+      "scenario": "a parent ends while its child reborrow is active",
+      "input": {
+        "body_id": "body.neg.010",
+        "loans": [
+          {"loan_id":"loan.parent","kind":"SHARED","region_id":"region.parent","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.parent","end_operation_ids":["op.end.parent"],"access_token_id":"token.parent"},
+          {"loan_id":"loan.child","kind":"SHARED","region_id":"region.child","parent_loan_id_or_null":"loan.parent","begin_operation_id":"op.begin.child","end_operation_ids":["op.end.child"],"access_token_id":"token.child"}
+        ],
+        "paths": [{"path_id":"path.wrong-order","events":[
+          {"event_id":"op.begin.parent","kind":"BEGIN_SHARED","loan_id_or_null":"loan.parent","parent_loan_id_or_null":null,"access_token_id_or_null":"token.parent"},
+          {"event_id":"op.begin.child","kind":"BEGIN_REBORROW","loan_id_or_null":"loan.child","parent_loan_id_or_null":"loan.parent","access_token_id_or_null":"token.child"},
+          {"event_id":"op.end.parent","kind":"END","loan_id_or_null":"loan.parent","access_token_id_or_null":"token.parent"},
+          {"event_id":"op.end.child","kind":"END","loan_id_or_null":"loan.child","access_token_id_or_null":"token.child"},
+          {"event_id":"term.wrong-order","kind":"TERMINAL"}
+        ]}],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"ACTIVE_CHILD_BLOCKS_PARENT_END","primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-011",
+      "class": "NEGATIVE",
+      "scenario": "owner cleanup begins before an overlapping loan ends",
+      "input": {
+        "body_id": "body.neg.011",
+        "loans": [{"loan_id":"loan.cleanup","kind":"SHARED","region_id":"region.cleanup","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.cleanup","end_operation_ids":["op.end.cleanup"],"access_token_id":"token.cleanup"}],
+        "paths": [{"path_id":"path.cleanup","events":[
+          {"event_id":"op.begin.cleanup","kind":"BEGIN_SHARED","loan_id_or_null":"loan.cleanup","parent_loan_id_or_null":null,"access_token_id_or_null":"token.cleanup"},
+          {"event_id":"op.cleanup.owner","kind":"OWNER_CLEANUP","overlapping_loan_ids":["loan.cleanup"]},
+          {"event_id":"op.end.cleanup","kind":"END","loan_id_or_null":"loan.cleanup","access_token_id_or_null":"token.cleanup"},
+          {"event_id":"term.cleanup","kind":"TERMINAL"}
+        ]}],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"OWNER_INVALIDATION_WHILE_LIVE","primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "R34-LOAN-NEG-012",
+      "class": "NEGATIVE",
+      "scenario": "the end discharges an ACCESS token bound to another loan",
+      "input": {
+        "body_id": "body.neg.012",
+        "loans": [{"loan_id":"loan.token","kind":"SHARED","region_id":"region.token","parent_loan_id_or_null":null,"begin_operation_id":"op.begin.token","end_operation_ids":["op.end.token"],"access_token_id":"token.expected"}],
+        "paths": [{"path_id":"path.token","events":[
+          {"event_id":"op.begin.token","kind":"BEGIN_SHARED","loan_id_or_null":"loan.token","parent_loan_id_or_null":null,"access_token_id_or_null":"token.expected"},
+          {"event_id":"op.end.token","kind":"END","loan_id_or_null":"loan.token","access_token_id_or_null":"token.other"},
+          {"event_id":"term.token","kind":"TERMINAL"}
+        ]}],
+        "suspension_admitted_loan_ids": []
+      },
+      "expected": {"verdict":"REJECT","diagnostic_or_null":"MIR_LOAN_UNBALANCED","reason_or_null":"TOKEN_BINDING_MISMATCH","primary_failure_or_null":null,"suppressed_failures":[]},
+      "product_support": "NOT_RUN"
+    }
+  ],
+  "mutation_cases": [
+    {"mutation_id":"R34-LOAN-MUT-001","base_case_id":"R34-LOAN-POS-001","mutation":"DROP_END_NORMAL","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"OWNER_INVALIDATION_WHILE_LIVE","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-002","base_case_id":"R34-LOAN-POS-001","mutation":"DROP_END_ERROR","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"OWNER_INVALIDATION_WHILE_LIVE","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-003","base_case_id":"R34-LOAN-POS-001","mutation":"DROP_END_CANCELLATION","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"OWNER_INVALIDATION_WHILE_LIVE","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-004","base_case_id":"R34-LOAN-POS-001","mutation":"DUPLICATE_END","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"END_STATE_INVALID","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-005","base_case_id":"R34-LOAN-POS-001","mutation":"END_UNKNOWN_OR_INACTIVE","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"END_STATE_INVALID","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-006","base_case_id":"R34-LOAN-POS-001","mutation":"END_PARENT_BEFORE_CHILD","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"ACTIVE_CHILD_BLOCKS_PARENT_END","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-007","base_case_id":"R34-LOAN-POS-001","mutation":"OMIT_BEGIN_ACCESS_OUTPUT","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"TOKEN_BINDING_MISMATCH","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-008","base_case_id":"R34-LOAN-POS-001","mutation":"OMIT_END_ACCESS_DISCHARGE","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"TOKEN_BINDING_MISMATCH","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-009","base_case_id":"R34-LOAN-POS-001","mutation":"WRONG_ACCESS_TOKEN_LOAN_BINDING","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"TOKEN_BINDING_MISMATCH","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-010","base_case_id":"R34-LOAN-POS-001","mutation":"OWNER_CLEANUP_BEFORE_END","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"OWNER_INVALIDATION_WHILE_LIVE","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-011","base_case_id":"R34-LOAN-POS-001","mutation":"SUSPEND_WITH_LIVE_LOAN","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"SUSPENSION_WHILE_LIVE","product_support":"NOT_RUN"},
+    {"mutation_id":"R34-LOAN-MUT-012","base_case_id":"R34-LOAN-POS-001","mutation":"CHECK_ONLY_FIRST_TERMINAL_EDGE","expected_diagnostic":"MIR_LOAN_UNBALANCED","expected_reason":"TERMINAL_LIVE_LOAN","product_support":"NOT_RUN"}
+  ],
+  "expected_counts": {"total":12,"POSITIVE":3,"BOUNDARY":3,"NEGATIVE":6,"MUTATION":12},
+  "status_fence": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN"
+  }
+}

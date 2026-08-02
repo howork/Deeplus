@@ -1187,6 +1187,22 @@
       "invalid_operand_diagnostic": "UNIT_EXPONENT_REQUIRES_STATIC_INT"
     }
   ],
+  "paren_function_type_parameter_mode_commitment": {
+    "owner": "ParenTypeSyntax",
+    "source_production": "FunctionTypeModeItem",
+    "mode_tokens": [
+      "borrow",
+      "mut",
+      "move",
+      "inout"
+    ],
+    "commit_condition": "the same outer parenthesis owner observes FunctionTypeTail after its closing parenthesis",
+    "normalized_ast": "FunctionTypeParameter(channel_mode, TypeRef)",
+    "non_function_parenthesized_type": "FunctionTypeModeItem forbidden",
+    "qualified_type_escape_hatch": "one nested parenthesized TypeRef, for example ((mut T)) -> R",
+    "failed_probe_consumes_tokens": false,
+    "type_information_used_for_dispatch": false
+  },
   "normalization_laws": {
     "left_associative": "rbp = lbp + 1",
     "right_associative": "rbp = lbp - 1",

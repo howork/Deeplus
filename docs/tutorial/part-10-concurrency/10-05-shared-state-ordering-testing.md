@@ -30,8 +30,13 @@ owner와 scoped callable 안에서만 관찰·변경하게 한다.
 `withValue`의 `#scoped`는 callback callable profile이고 source binder는
 `borrow`다. invocation이 그 region을 소유하므로 borrow는 callback 밖으로
 escape하지 않는다.
-`SharedMutex<T>`는 receiver-bound non-suspending scoped mutation을 제공한다.
-여기서도 `#scoped`는 callback profile, `inout`은 binder mode다. lock 안에서
+`SharedMutex<T: SharedMutexPayload>`는 receiver-bound non-suspending scoped
+mutation을 제공한다. `SharedMutexPayload`는 Trait가 아닌 sealed public
+constraint이고, cleanup 책임이 없는 Reusable/Affine payload graph만
+허용한다. 따라서 mutable state를 담을 수 있지만 Resource나 `def#cleanup`,
+borrow/inout view, proof가 닫히지 않은 generic을 숨길 수 없다. 이 bound는
+`Plain`이나 `Transferable`을 자동으로 증명하지 않는다. 여기서도
+`#scoped`는 callback profile, `inout`은 binder mode다. lock 안에서
 await하거나 guard를 저장하지 않는다.
 
 최소 ordering:
@@ -68,6 +73,9 @@ mutex ~ withLock {
 ```
 
 callback은 non-suspending이어야 하고 `protected` inout가 escape하지 않는다.
+payload 판정은 constructor의 move commit보다 먼저 끝나므로 거부 시 원래
+`state` owner가 보존된다. lock을 얻은 뒤에는 exclusive loan을 닫고 unlock을
+정확히 한 번 수행한 다음 원래 outcome을 전달한다.
 
 ## 7. 허용·거부·경계 사례
 

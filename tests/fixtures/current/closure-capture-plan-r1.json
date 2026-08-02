@@ -1,0 +1,404 @@
+{
+  "schema": "deeplus.closure-capture-plan-fixtures/r1",
+  "revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
+  "contract": "spec/contracts/closure-capture-plan-r1.json",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "cases": [
+    {
+      "case_id": "R31-CCP-POS-001",
+      "class": "positive",
+      "scenario": "bare identifier normalizes to BORROW",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "BORROW",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-002",
+      "class": "positive",
+      "scenario": "move reserves then commits one owner",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "MOVE",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-003",
+      "class": "positive",
+      "scenario": "copy uses exact CopyValue evidence",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "COPY",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-004",
+      "class": "positive",
+      "scenario": "clone uses one exact witness and visible residue",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "CLONE",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-005",
+      "class": "positive",
+      "scenario": "let initializer creates one immutable field",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "INIT_LET",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-006",
+      "class": "positive",
+      "scenario": "var initializer requires mutable environment",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "INIT_VAR",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-007",
+      "class": "positive",
+      "scenario": "once capture is paired with explicit callable once",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mode": "ONCE",
+        "evaluation_count": 1,
+        "partial_publication_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-008",
+      "class": "positive",
+      "scenario": "explicit capture and a different proven lexical dependency coexist",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "same_place_lexical_residue_count": 0,
+        "different_place_lexical_dependency_count": 1
+      }
+    },
+    {
+      "case_id": "R31-CCP-POS-009",
+      "class": "positive",
+      "scenario": "empty explicit capture list asserts no ancestor dependency",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "capture_list_state": "PRESENT_EMPTY",
+        "capture_item_count": 0
+      }
+    },
+    {
+      "case_id": "R31-CCP-BND-001",
+      "class": "boundary",
+      "scenario": "Clone implementation narrows to Never and no effects",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "declared_max_errors": [
+          "AllocationError"
+        ],
+        "declared_max_effects": [
+          "allocate"
+        ],
+        "implementation_errors": [],
+        "implementation_effects": []
+      }
+    },
+    {
+      "case_id": "R31-CCP-BND-002",
+      "class": "boundary",
+      "scenario": "a failure after move reservation cancels the reservation before source invalidation",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "source_consumed_before_commit": false,
+        "move_reservation_cancelled": true
+      }
+    },
+    {
+      "case_id": "R31-CCP-BND-003",
+      "class": "boundary",
+      "scenario": "concur-local async accepts explicit reusable COPY only",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "owner_kind": "CONCUR_LOCAL_ASYNC",
+        "admitted_modes": [
+          "COPY"
+        ]
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-001",
+      "class": "negative",
+      "scenario": "deep is Preview and nonactivatable",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+      "assertions": {
+        "reason_key": "DEEP"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-002",
+      "class": "negative",
+      "scenario": "borrow capture escapes its owner region",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "BORROW_ESCAPE_OWNER_REGION",
+      "assertions": {
+        "reason_key": "BORROW_ESCAPE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-003",
+      "class": "negative",
+      "scenario": "inout lacks #scoped#mut",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT",
+      "assertions": {
+        "reason_key": "INOUT_PROFILE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-004",
+      "class": "negative",
+      "scenario": "inout overlaps another access",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "INOUT_ALIAS_CONFLICT",
+      "assertions": {
+        "reason_key": "INOUT_ALIAS"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-005",
+      "class": "negative",
+      "scenario": "move source is not LiveOwned",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "assertions": {
+        "reason_key": "MOVED_SOURCE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-006",
+      "class": "negative",
+      "scenario": "CopyValue evidence is missing or stale",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "assertions": {
+        "reason_key": "COPY_EVIDENCE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-007",
+      "class": "negative",
+      "scenario": "Clone witness is missing, stale or ambiguous",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "assertions": {
+        "reason_key": "CLONE_WITNESS"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-008",
+      "class": "negative",
+      "scenario": "capture binder name is duplicated",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "RESOLVER_SCOPE_TREE_INVALID",
+      "assertions": {
+        "reason_key": "DUPLICATE_BINDER"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-009",
+      "class": "negative",
+      "scenario": "one normalized place is acquired twice",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "RESOLVER_SCOPE_TREE_INVALID",
+      "assertions": {
+        "reason_key": "DUPLICATE_PLACE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-010",
+      "class": "negative",
+      "scenario": "initializer references its own or a later capture binder",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "RESOLVER_SCOPE_TREE_INVALID",
+      "assertions": {
+        "reason_key": "INITIALIZER_SCOPE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-011",
+      "class": "negative",
+      "scenario": "concur-local async uses a non-copy mode",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+      "assertions": {
+        "reason_key": "ASYNC_NONCOPY"
+      }
+    },
+    {
+      "case_id": "R31-CCP-NEG-012",
+      "class": "negative",
+      "scenario": "once capture lacks explicit callable #once",
+      "expected_outcome": "REJECT",
+      "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "assertions": {
+        "reason_key": "ONCE_REPEATABLE"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-001",
+      "class": "mutation",
+      "scenario": "validator rejects CAPTURE_REORDER",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "CAPTURE_REORDER",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-002",
+      "class": "mutation",
+      "scenario": "validator rejects EVALUATE_TWICE",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "EVALUATE_TWICE",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-003",
+      "class": "mutation",
+      "scenario": "validator rejects ORDINAL_GAP",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "ORDINAL_GAP",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-004",
+      "class": "mutation",
+      "scenario": "validator rejects SOURCE_PLACE_SWAP",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "SOURCE_PLACE_SWAP",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-005",
+      "class": "mutation",
+      "scenario": "validator rejects RESPONSIBILITY_DOMAIN_SWAP",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "RESPONSIBILITY_DOMAIN_SWAP",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-006",
+      "class": "mutation",
+      "scenario": "validator rejects CLONE_WITNESS_NULL",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "CLONE_WITNESS_NULL",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-007",
+      "class": "mutation",
+      "scenario": "validator rejects ROLLBACK_NOT_REVERSE",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "ROLLBACK_NOT_REVERSE",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-008",
+      "class": "mutation",
+      "scenario": "validator rejects MOVE_RESERVATION_NOT_CANCELLED",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "MOVE_RESERVATION_NOT_CANCELLED",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-009",
+      "class": "mutation",
+      "scenario": "validator rejects PARTIAL_PUBLICATION",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "PARTIAL_PUBLICATION",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-010",
+      "class": "mutation",
+      "scenario": "validator rejects CLEANUP_MISSING_OR_DOUBLE",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "CLEANUP_MISSING_OR_DOUBLE",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-011",
+      "class": "mutation",
+      "scenario": "validator rejects PRODUCT_LANE_FLIP",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "PRODUCT_LANE_FLIP",
+        "validator_result": "REJECT"
+      }
+    }
+  ],
+  "expected_counts": {
+    "positive": 9,
+    "boundary": 3,
+    "negative": 12,
+    "mutation": 11,
+    "total": 35
+  },
+  "product_support": "NOT_RUN"
+}

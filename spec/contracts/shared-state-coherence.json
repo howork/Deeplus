@@ -85,7 +85,22 @@
       "rule_id": "SSC-R006",
       "domain": "shared_mutex_admission",
       "contract": {
+        "public_constraint": "SharedMutexPayload",
+        "internal_predicate": "SharedMutexPayloadAdmitted",
+        "constraint_kind": "sealed context-specific compiler-owned public constraint; not Trait; no user conformance or synthesis",
         "payload": "no lifecycle or effectful cleanup owner",
+        "payload_constraint": {
+          "public_constraint_id": "SharedMutexPayload",
+          "checker_predicate_id": "SharedMutexPayloadAdmitted",
+          "descriptor_schema": "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json#/$defs/payloadDescriptor",
+          "user_conformable": false
+        },
+        "admitted_lifecycle_modes": ["Reusable", "Affine"],
+        "rejected_residue": ["Resource lifecycle", "cleanup token", "cleanup hook", "cleanup ErrorSet", "cleanup EffectRow", "authority", "suspension", "cancellation", "borrow view", "inout view", "opaque component", "unbounded generic"],
+        "generic_bound_required": true,
+        "responsibility_implications": [],
+        "public_api_identity_retains_bound": true,
+        "admission_precedes_move_commit": true,
         "construction_surface": "ordinary qualified call SharedMutex::new(move value)",
         "primary_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
         "poisoning": false,
@@ -137,7 +152,8 @@
         "error_set_erasure": false,
         "cancellation_erasure": false,
         "isolation_erasure": false,
-        "transferability_inference": false
+        "transferability_inference": false,
+        "shared_mutex_payload_implication_count": 0
       }
     },
     {

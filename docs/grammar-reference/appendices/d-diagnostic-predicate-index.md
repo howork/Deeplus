@@ -25,7 +25,7 @@
 | `ACTOR_PROTOCOL_SIGNATURE_MISMATCH` | `checker` | `error` | `active` | The Actor protocol implementation is incompatible with the requirement's normalized channels, result, ErrorSet, or EffectRow. |
 | `ACTOR_PROTOCOL_TARGET_KIND_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conformance target must resolve to an Actor Protocol. |
 | `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
-| `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `checker` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
+| `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `parser` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
 | `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` | `checker` | `error` | `active` | An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress. |
 | `AFFINE_UNIT_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Affine units such as degrees Celsius are not part of the current profile measure profile. |
 | `ALIASABLE_REJECTS_LIFECYCLE_OWNER` | `checker` | `error` | `active` | Aliasable is removed and lifecycle owners cannot be hidden behind alias vocabulary. |
@@ -157,6 +157,9 @@
 | `CLAUSE_LEVEL_WILDCARD_PREFER_OTHERWISE` | `checker` | `warning` | `seed` | Use \`otherwise\` for a clause-level default; \`_\` remains pattern discard and legacy wildcard. |
 | `CLEANUP_BUDGET_BODY_POSITION_REMOVED` | `checker` | `error` | `active` | cleanup budget is a class-level header clause, not an ordinary member. |
 | `CLEANUP_BUDGET_CAMELCASE_REMOVED` | `checker` | `error` | `active` | cleanupBudget spelling is removed; use cleanup budget block spelling. |
+| `CLEANUP_BUDGET_DUPLICATE` | `checker` | `error` | `active` | A cleanup budget repeats an effects/errors axis or a normalized effect/error identity. |
+| `CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET` | `checker` | `error` | `active` | The errors item of a cleanup budget must resolve to an ErrorSet type. |
+| `CLEANUP_BUDGET_EXCEEDED` | `checker` | `error` | `active` | A normalized cleanup obligation or child envelope is not a subset of the selected effective cleanup budget. |
 | `CLEANUP_DECLARATION_DIRECT_CALL_FORBIDDEN` | `checker` | `error` | `active` | A def#cleanup declaration is invoked only by lifecycle semantics and cannot be called or referenced as a method value. |
 | `CLEANUP_LEGACY_SPELLING_REMOVED_USE_DEF_HASH_CLEANUP` | `parser` | `error` | `active` | Legacy destructor/drop spellings are not current; use def#cleanup(). |
 | `CLEANUP_VISIBILITY_SIGIL_FORBIDDEN` | `parser` | `error` | `active` | def#cleanup is a lifecycle hook and cannot carry a member visibility sigil. |
@@ -655,6 +658,7 @@
 | `MEMBER_DISPATCH_MARKER_ORDER_INVALID` | `checker` | `error` | `active` | Member dispatch markers must be ordered as *+. |
 | `MEMBER_EXTENSION_COLLISION` | `checker` | `error` | `active` | A member slot and an active extension candidate both apply to the same message call shape. |
 | `MEMBER_NOT_FOUND` | `checker` | `error` | `active` | No member, extension, or witness selector is available in the active lookup domain. |
+| `MIR_LOAN_UNBALANCED` | `checker` | `error` | `active` | A MIR loan activation is not closed exactly once on every reachable path. |
 | `MISSING_EXPLICIT_RETURN` | `checker` | `error` | `active` | A normal non-Unit named-function path must return a value explicitly; Unit fallthrough is canonical. |
 | `MIXED_STRICT_AND_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Mixing \`and\` with \`and then\` requires parentheses. |
 | `MIXED_STRICT_OR_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Mixing \`or\` with \`otherwise\` requires parentheses. |
@@ -783,7 +787,7 @@
 | `OUTER_MUTATION_REQUIRES_INOUT_CAPTURE` | `checker` | `error` | `active` | Mutating an ancestor place requires an explicit admitted inout route; lexical dependency is read-only. |
 | `OVERRIDE_VISIBILITY_CANNOT_NARROW` | `checker` | `error` | `active` | Overriding/fulfilling member cannot reduce base slot visibility. |
 | `OWNED_DOWNCAST_OWNER_NOT_PRESERVED` | `checker` | `error` | `active` | An owned downcast must return either the matched target owner or the original unmatched source owner. |
-| `OWNERSHIP_MODE_ADMISSION_FAILED` | `checker` | `error` | `active` | The borrow/inout/move mode violates exclusivity, lifetime, escape, suspension, or transfer responsibility. |
+| `OWNERSHIP_MODE_ADMISSION_FAILED` | `checker` | `error` | `active` | The ownership qualifier or borrow/inout/move mode violates composition, context, exclusivity, lifetime, escape, suspension, or transfer responsibility. |
 | `OWN_CAST_REQUIRES_REUSABLE_SOURCE` | `checker` | `error` | `active` | Owning downcast via as? cannot duplicate affine ownership. Use owner-preserving consuming downcast. |
 | `PACKAGE_ARCHIVE_SHA_MISMATCH` | `design_static` | `error` | `active` | PACKAGE_ARCHIVE_SHA_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `PACKAGE_DECLARATION_RENAMED_TO_MODULE` | `checker` | `error` | `active` | \`package\` is not a Deeplus source namespace declaration; use \`module\`. |
@@ -824,7 +828,7 @@
 | `PLACE_REPLACE_NOT_ADMITTED` | `checker` | `error` | `active` | replace requires one stable place, exclusive access, and a transaction that preserves exactly one old and one new owner. |
 | `PLACE_STATE_JOIN_MISMATCH` | `checker` | `error` | `active` | Control-flow predecessors disagree on ownership place, loan, reservation, cleanup-token, or prior join-conflict state. |
 | `PLAIN_HETEROGENEOUS_TOP_FORBIDDEN` | `checker` | `error` | `active` | \`Plain\` is not a heterogeneous dynamic top. Use an explicit union, JsonValue, Dyn, or a typed boundary wrapper. |
-| `PLAIN_IS_NOT_DERIVED_BY_ANNOTATION` | `checker` | `error` | `active` | Annotation cannot create Plain admissibility. Use Plain boundary type or satisfies Plain candidate. |
+| `PLAIN_IS_NOT_DERIVED_BY_ANNOTATION` | `checker` | `error` | `active` | Annotation cannot create Plain admissibility. Use a type admitted by the sealed Plain registry rule. |
 | `PLAIN_IS_NOT_DYNAMIC` | `checker` | `error` | `active` | Plain is not a dynamic invocation boundary; use Dyn for dynamic inspection. |
 | `PLAIN_IS_NOT_JSONVALUE` | `checker` | `error` | `active` | Plain is not external JSON; use JsonValue for JSON data. |
 | `PLAIN_IS_NOT_LAYOUT_SAFE` | `checker` | `error` | `active` | Plain does not imply FFI-safe layout or byte-copy safety. |
@@ -976,6 +980,8 @@
 | `RESOLVER_HIR_SEAL_INCOMPLETE` | `checker` | `error` | `active` | Resolver output is incomplete and cannot be admitted into canonical HIR-H1. |
 | `RESOLVER_SCOPE_TREE_INVALID` | `checker` | `error` | `active` | The resolver scope tree or one of its separated environments violates the closed lexical-frame law. |
 | `RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT` | `checker` | `error` | `active` | Stable Resource inheritance requires a same-module sealed root and explicit cleanup budget. |
+| `RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE` | `checker` | `error` | `active` | The known responsibility identity has no exact admissible compiler derivation or selected Trait witness for this normalized type and context. |
+| `RESPONSIBILITY_IDENTITY_UNRESOLVED` | `checker` | `error` | `active` | The responsibility name is unknown, removed, stale, or used in the wrong identity domain; no compatibility alias or inferred replacement is created. |
 | `RESPONSIBILITY_KIND_NOT_CLOSED` | `checker` | `error` | `active` | The descriptor does not inhabit exactly one admitted responsibility kind or mixes independent kind axes. |
 | `REST_ARGUMENTS_REQUIRE_COMMON_ELEMENT_TYPE` | `checker` | `error` | `active` | Repeated positional arguments must have a common element type unless an explicit union feature is admitted. |
 | `REST_ARGUMENTS_REQUIRE_EXPLICIT_UNION_FEATURE` | `checker` | `error` | `active` | Repeated and named-rest arguments must satisfy the current row type and position rules. |
@@ -1215,7 +1221,7 @@
 | `TYPE_KEY_REQUIRES_COPYABLE_HASHABLE` | `checker` | `error` | `active` | Old Copyable & Hashable key law is removed; use Keyable. |
 | `TYPE_KEY_REQUIRES_KEYABLE` | `checker` | `error` | `active` | Map/Set key requires Keyable admissibility. |
 | `TYPE_KIND_HASH_SURFACE_REMOVED` | `checker` | `error` | `active` | Use public/private/common data/value/resource class, not class#data/class#value/class#resource. |
-| `TYPE_PLAINDATA_REMOVED_USE_PLAIN` | `checker` | `error` | `active` | \`PlainData\` removed spelling; use \`Plain\` or formal \`PlainValue\`. |
+| `TYPE_PLAINDATA_REMOVED_USE_PLAIN` | `checker` | `error` | `active` | \`PlainData\` removed spelling; use the sole public spelling \`Plain\`. |
 | `TYPE_RELATION_SYMBOLIC_ALIAS_FORBIDDEN` | `checker` | `error` | `active` | Use derives/conforms keywords, not symbolic type relation aliases. |
 | `TYPE_RESPONSIBILITY_SCHEMA_VERSION_STALE` | `design_static` | `error` | `active` | TYPE_RESPONSIBILITY_SCHEMA_VERSION_STALE: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `TYPE_SCHEMA_CONSTRUCTION_MUST_BE_SCHEMA_ONLY` | `checker` | `error` | `active` | Type${...} is typed schema construction, not nominal constructor-domain allocation or resource construction. |
@@ -1334,12 +1340,13 @@
 | `CaretPowerAdmitted` | Caret power | Closed static integer, Float, Complex, and Measure power-domain algorithm; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CharScalarAdmitted` | Char Unicode scalar | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ClassDispositionAdmitted` | Class openness disposition | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `CleanupBudgetEnvelopeAdmitted` | Cleanup budget envelope | Normalize the class-header cleanup budget, compose exact base, field and owner cleanup obligations, prove the local subset and sealed-family non-expansion laws, and select one deterministic diagnostic. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CleanupDeclarationAdmitted` | CleanupDeclarationAdmitted | require exact def#cleanup() declaration shape; forbid direct call/value, suspension, dispatch, visibility, and parameters; execute exactly once for initialized nonmoved state while preserving partial construction and primary/suppressed failure order | `DESIGN_STATIC_NOT_RUN` |
 | `ClosedAnonymousUnionAdmitted` | ClosedAnonymousUnionAdmitted | Admits a finite closed tagged union of pairwise-disjoint normalized alternatives. | `DESIGN_STATIC_NOT_RUN` |
 | `ClosedContractIntersectionAdmitted` | ClosedContractIntersectionAdmitted | Admits one payload with at most one concrete nominal base and a finite compatible Trait evidence bundle. | `DESIGN_STATIC_NOT_RUN` |
 | `ClosedUnionTypeTestAdmitted` | ClosedUnionTypeTestAdmitted | Admit is/!is only as a nonconsuming exact alternative identity test over one normalized closed Union and compute bounded complementary Phi facts. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ClosureCaptureDescriptorAdmitted` | CaptureDescriptor closure MSP | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ClosureCaptureDescriptorAdmittedCurrentGate` | CaptureDescriptor closure current gate | R51a1 Stable closure capture descriptor admission design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ClosureCaptureDescriptorAdmitted` | CaptureDescriptor closure MSP | R31 closed deterministic typed closure capture plan algorithm; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ClosureCaptureDescriptorAdmittedCurrentGate` | CaptureDescriptor closure current gate | R31 closed current-profile gate for the typed closure capture plan; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CollectionFreezeAdmitted` | CollectionFreezeAdmitted | require exclusive mutable ownership; transition to a declared immutable/shareable representation; expose copy/allocation/effect residue and do not call this snapshot | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionSnapshotAdmitted` | CollectionSnapshotAdmitted | produce an independent point-in-time value; declare copy or copy-on-write cost; do not freeze or invalidate the source | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionTraversalRoleAdmitted` | CollectionTraversalRoleAdmitted | classify storage/shape/index ownership separately from traversal; retain single-pass/multipass and borrow/consume residue; reject automatic Collection-to-Iterator equivalence | `DESIGN_STATIC_NOT_RUN` |
@@ -1358,6 +1365,7 @@
 | `ContextMarkerNotValue` | ContextMarkerNotValue | R51a1 closed design algorithm for ContextMarkerNotValue; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ContextParameterRoleAdmitted` | ContextParameterRoleAdmitted | R51a1 closed design algorithm for ContextParameterRoleAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ContextValueAdmitted` | ContextValueAdmitted | the argument is supplied through the explicit context channel and never inferred from an ordinary argument or ambient lookup; the context role remains in function type identity and override compatibility; the value is reusable and Shareable, has no drop responsibility, owns no resource, and carries no authority; context use does not relax capture, ownership, lifetime, isolation, or escape laws; the context marker itself is not a first-class storable or returnable value | `DESIGN_STATIC_NOT_RUN` |
+| `CopyValueAdmissible` | internal CopyValue / copy capture | R30 closed deterministic admission algorithm for cleanup-free same-type semantic value duplication; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `DeclarativeClauseDisjointnessProven` | declarative clause overlap checker | Finite Phase-A clause partition decision procedure; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `DeclarativeClauseExhaustive` | clause block coverage checker | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `DeclarativeClausePartitionAdmitted` | declarative clause partition | Finite Phase-A clause partition decision procedure; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1483,7 +1491,7 @@
 | `PatternConditionChainAdmitted` | Pattern condition-chain admission | Admit left-to-right if let and then let and then Bool chains with scoped prior probes and per-term atomic commit. | `` |
 | `PinRangeRelationalPatternAdmitted` | Pin, range and relational Pattern admission | Admit stable-value pins and bounded exact ordered-domain range or relational Patterns. | `` |
 | `PlaceReplaceAdmitted` | PlaceReplaceAdmitted | evaluate place once and require exclusive access; on precommit_failure require transaction_committed=false and original_owner_preserved=true; on success require transaction_committed=true, one new-value write, and one old-owner return | `DESIGN_STATIC_NOT_RUN` |
-| `PlainValueAdmissible` | Plain / PlainValue | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `PlainValueAdmissible` | Plain (internal formal identity PlainValue) | R30 closed deterministic admission algorithm for the sole public source spelling Plain and its internal formal PlainValue identity; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `PreviewFeatureGateAdmitted` | PreviewFeatureGateAdmitted | the external carrier fixes one source_role in library/executable/script and activation_profile=preview before parsing; that pair selects exactly the same-role Preview root without trial parsing and normalizes to HIR EXPLICIT_PREVIEW; one leading PreviewGate verifies but never rewrites the role or profile; gate ids are scanned left-to-right for unknown, nonactivatable and duplicate ids; the explicit id set equals each selected feature's reflexive transitive explicit-gate dependency closure; spec/features/gates.json is an exhaustive feature-id-keyed projection; parser owns grammar_routes, checker owns semantic_reference_routes, and any failure commits zero activated features and zero canonical source-unit AST | `DESIGN_STATIC_NOT_RUN` |
 | `PrimaryCtorPromotedFieldReachable` | PrimaryCtorPromotedFieldReachable | Primary constructor grammar route reaches PromotedFieldDecl including +let/-let/#let/#var visibility. | `DESIGN_STATIC_NOT_RUN` |
 | `PrimaryCtorPromotedFieldVisibilityMemberOnly` | PrimaryCtorPromotedFieldVisibilityMemberOnly | R51a1 design predicate; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1521,9 +1529,10 @@
 | `SelectUnionInjection` | SelectUnionInjection | Select exactly one alternative of an independently fixed union. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SequencePositionalRestAdmitted` | Sequence positional-rest Pattern admission | Admit the three attached positional-rest forms over explicitly witnessed Sequence values and materialize a source-borrowed ListRestView. | `` |
 | `ShapedSemicolonBodyAdmitted` | ShapedSemicolonBodyAdmitted | shape is a nonempty positive dimension vector and rank equals its length; comma advances only the innermost coordinate; a semicolon run of length k closes exactly k completed inner axes and satisfies 1 <= k < rank; a nonfinal run advances the immediately enclosing axis and resets the closed axes; an optional trailing semicolon run has length rank - 1 and all coordinates and total element count equal the declared shape | `DESIGN_STATIC_NOT_RUN` |
-| `ShareableObservationSafe` | Shareable | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ShareableObservationSafe` | Shareable | R30 closed deterministic admission algorithm for Shareable; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `SharedMutexPayloadAdmitted` | SharedMutexPayload | Admit the sealed SharedMutex payload bound only for a closed normalized owned-component graph with no resource lifecycle, cleanup responsibility, borrowed view, or unresolved generic residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SharingTransitionAdmitted` | SharingTransitionAdmitted | admit implicit reuse only for Plain value or explicit Shared handle; reject implicit owner/resource/view-to-Shared promotion | `DESIGN_STATIC_NOT_RUN` |
-| `SingleActionDeferAdmitted` | SingleActionDeferAdmitted | Admits exactly one non-suspending cleanup invocation and reserves captured cleanup places until scope exit. | `DESIGN_STATIC_NOT_RUN` |
+| `SingleActionDeferAdmitted` | SingleActionDeferAdmitted | Admits one statically selected cleanup invocation, constructs its sealed typed plan at registration, and preserves that plan across suspension until terminal scope exit. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SingleGuardClauseAdmitted` | SingleGuardClauseAdmitted | R51f3 owner-specific static design seed for single_guard_clause_unification; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `SliceLogicalDomainPreserved` | SliceLogicalDomainPreserved | Preserves the selected source logical coordinate interval in every view/copy slice. | `DESIGN_STATIC_NOT_RUN` |
 | `SliceRangeAdmitted` | inclusive slice range | two-bound .. or ..< slice; static diagnostics and dynamic IndexError precede view creation | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1553,7 +1562,7 @@
 | `TrailingClosureSuffixAdmitted` | TrailingClosureSuffixAdmitted | a shared ordinary-or-message trailing-closure group is admitted only when every item binds to an exact closure/function-typed formal; without such a formal the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TraitAssociatedStaticSelectionAdmitted` | Trait-qualified associated static selection | Resolve <T as Trait>::item through exactly one static conformance and preserve all identity and responsibility residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TraitVariancePositionAdmitted` | TraitVariancePositionAdmitted | a variance marker is admitted only on a trait type parameter in the current Stable profile; an \`out\` parameter occurs only in producer/covariant positions and an \`in\` parameter only in consumer/contravariant positions after alias expansion; unmarked parameters are invariant; any declaration-role or use-position violation emits VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
-| `TransferableAcrossIsolation` | Transferable | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `TransferableAcrossIsolation` | Transferable | R30 closed deterministic admission algorithm for Transferable; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TransparentNominalPatternAdmitted` | Transparent nominal and named Enum Pattern admission | Open only explicitly Pattern-transparent products and match named Enum payloads by their declared labels. | `` |
 | `TupleOrdinalProjectionAdmitted` | TupleOrdinalProjectionAdmitted | Admits a compile-time one-based tuple ordinal in 1..arity. | `DESIGN_STATIC_NOT_RUN` |
 | `TupleProductSurfaceAdmitted` | Tuple and bare fixed-product surface admission | Admit exact Tuple Pattern and fixed bare two-or-more-value return and binding surfaces without Sequence or ValuePack dual lowering. | `` |

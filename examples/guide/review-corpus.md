@@ -414,7 +414,7 @@ let maybePort: Option<Port> = raw as? Port
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let f = [once token] { value =>
+let f = [once token] #once { value =>
     ret token ~ consumeWith value
 }
 ```
@@ -6142,7 +6142,7 @@ private data class Marker
 ```deeplus
 private data class Tracked
 cleanup budget {
-    effects io
+    effects { io }
 }
 ```
 ## EX-R51a1-044 — value-arm newline separates an open range from the next qualified pattern
@@ -7241,6 +7241,63 @@ defer {
 }
 // DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL
 ```
+## EX-R32-DCP-001 — defer stages runtime arguments before omitted defaults
+
+- **source_feature_ids:** `single_action_defer_msp`, `deferred_cleanup_reservation`, `explicit_context_argument_keyword_spelling`, `explicit_witness_argument_keyword_spelling`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+defer closeWith(
+    acquireHandle(),
+    context currentCleanupContext(),
+    using closeEvidence,
+)
+```
+
+## EX-R32-DCP-002 — continue exits one dynamic iteration cleanup region
+
+- **source_feature_ids:** `single_action_defer_msp`, `deferred_cleanup_reservation`, `deterministic_primary_suppressed_order`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+for item in items {
+    defer release(item)
+    if skip(item) {
+        continue
+    }
+    consume(item)
+}
+```
+
+## EX-R32-DCP-NG-001 — actor transport cannot be deferred
+
+- **source_feature_ids:** `single_action_defer_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **primary_diagnostic:** `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+defer worker :~ stop
+// ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER
+```
+
 ## EX-R51a1-EVIDENCE-NG-001 — named conformance is excluded from automatic search
 
 - **source_feature_ids:** `named_conformance_selector_msp`
@@ -7647,7 +7704,7 @@ let impossible: File & Socket
 
 ```deeplus
 def transmit<T>(value: T) -> Unit
-    where T conforms Printable & Sendable
+    where T conforms Printable & Transferable
 = { print(value) }
 ```
 ## EX-R51a1-LAZY-NG-001 — Lazy initialization cycle is rejected
@@ -11540,7 +11597,7 @@ let previous = cell ~ replace move nextState
 ## EX-R51COH-SHARED-002 — SharedMutex receiver-bound non-suspending scoped mutation
 
 - **source_feature_ids:** `shared_mutex_no_drop_minimum_profile`, `scoped_callable_lifetime_profile`
-- **checker_trace_ids:** `none`
+- **checker_trace_ids:** `SharedMutexPayloadAdmitted`
 - **expected_outcome:** `accept`
 - **source_activation:** `stdlib`
 - **certification_status:** `design_static_product_not_run`
@@ -13007,4 +13064,163 @@ let text = user ~ display
 // unresolved_count = 1 -> RESOLVER_HIR_SEAL_INCOMPLETE
 // product_lanes = 15/15_NOT_RUN
 // open_feature_p1 = 22
+```
+
+## EX-R33-CBA-P-001 — explicit cleanup envelope covers hook responsibility
+
+- **source_feature_ids:** `header_cleanup_budget_surface`, `cleanup_budget_algebra`, `resource_cleanup`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`, `CleanupDeclarationAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private data class Tracked
+cleanup budget {
+    effects { audit, io }
+    errors CloseError | FlushError
+}
+{
+    def#cleanup()
+        throws CloseError
+        effects audit
+        effects io
+    = {
+        auditHandle()
+        closeHandle()
+    }
+}
+// Computed {CloseError}/{audit, io} is a subset of the declared envelope.
+```
+
+## EX-R33-CBA-BND-001 — absent non-inheritance header infers an exact envelope
+
+- **source_feature_ids:** `cleanup_budget_algebra`, `resource_cleanup`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`, `CleanupDeclarationAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public resource class File {
+    def#cleanup()
+        throws CloseError
+        effects io
+    = {
+        closeHandle()
+    }
+}
+// No whole header: exact inferred envelope is {CloseError}/{io}.
+```
+
+## EX-R33-CBA-BND-002 — an explicit sealed child may narrow the root ceiling
+
+- **source_feature_ids:** `cleanup_budget_algebra`, `resource_inheritance`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public resource abstract sealed class ResourceRoot
+cleanup budget {
+    effects { audit, io }
+    errors CloseError | FlushError
+}
+{}
+
+public resource final class ReadOnlyResource
+derives ResourceRoot
+cleanup budget {
+    effects { io }
+    errors CloseError
+}
+{}
+// The child covers its computed rows and remains below the root ceiling.
+```
+
+## EX-R33-CBA-NG-001 — a cleanup budget axis cannot be repeated
+
+- **source_feature_ids:** `header_cleanup_budget_surface`, `cleanup_budget_algebra`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `CLEANUP_BUDGET_DUPLICATE`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private data class DuplicateBudget
+cleanup budget {
+    effects { io }
+    effects { audit }
+}
+{}
+```
+
+## EX-R33-CBA-NG-002 — an explicit empty envelope cannot hide cleanup work
+
+- **source_feature_ids:** `header_cleanup_budget_surface`, `cleanup_budget_algebra`, `resource_cleanup`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`, `CleanupDeclarationAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `CLEANUP_BUDGET_EXCEEDED`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+private data class UnderBudget
+cleanup budget {}
+{
+    def#cleanup()
+        throws CloseError
+        effects io
+    = {
+        closeHandle()
+    }
+}
+// Present empty block means Never/{}; both computed axes exceed it.
+```
+
+## EX-R33-CBA-NG-003 — a child cannot widen the sealed-root envelope
+
+- **source_feature_ids:** `cleanup_budget_algebra`, `resource_inheritance`
+- **checker_trace_ids:** `CleanupBudgetEnvelopeAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `CLEANUP_BUDGET_EXCEEDED`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public resource abstract sealed class NarrowRoot
+cleanup budget {
+    effects { io }
+    errors CloseError
+}
+{}
+
+public resource final class WideningChild
+derives NarrowRoot
+cleanup budget {
+    effects { audit, io }
+    errors CloseError
+}
+{}
+// audit is outside the family-root ceiling.
 ```

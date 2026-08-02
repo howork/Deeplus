@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r33/cleanup-budget-envelope-input-r1.schema.json",
+  "title": "Deeplus CleanupBudgetEnvelopeInputR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "predicate_id",
+    "owner_type_id",
+    "resource_hierarchy_role",
+    "base_owner_type_id_or_null",
+    "same_module_sealed_root_proven",
+    "header",
+    "family_root_envelope_or_null",
+    "contributions_in_trace_order",
+    "claimed_projection",
+    "product_support"
+  ],
+  "properties": {
+    "schema": { "const": "deeplus.cleanup-budget-envelope-input/r1" },
+    "predicate_id": { "const": "CleanupBudgetEnvelopeAdmitted" },
+    "owner_type_id": { "$ref": "#/$defs/id" },
+    "resource_hierarchy_role": {
+      "enum": ["NONE", "SEALED_ROOT", "CHILD"]
+    },
+    "base_owner_type_id_or_null": { "$ref": "#/$defs/nullableId" },
+    "same_module_sealed_root_proven": { "type": "boolean" },
+    "header": { "$ref": "#/$defs/header" },
+    "family_root_envelope_or_null": {
+      "oneOf": [
+        { "$ref": "#/$defs/effectiveEnvelope" },
+        { "type": "null" }
+      ]
+    },
+    "contributions_in_trace_order": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/contribution" }
+    },
+    "claimed_projection": { "$ref": "#/$defs/claimedProjection" },
+    "product_support": { "const": "NOT_RUN" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "resource_hierarchy_role": { "const": "CHILD" } },
+        "required": ["resource_hierarchy_role"]
+      },
+      "then": {
+        "properties": {
+          "base_owner_type_id_or_null": { "$ref": "#/$defs/id" },
+          "family_root_envelope_or_null": { "$ref": "#/$defs/effectiveEnvelope" }
+        }
+      },
+      "else": {
+        "properties": {
+          "base_owner_type_id_or_null": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:/-]*$"
+    },
+    "nullableId": {
+      "oneOf": [
+        { "$ref": "#/$defs/id" },
+        { "type": "null" }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rawIdArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "normalizedIdArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "normalizedEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recoverable_error_ids", "effect_ids"],
+      "properties": {
+        "recoverable_error_ids": { "$ref": "#/$defs/normalizedIdArray" },
+        "effect_ids": { "$ref": "#/$defs/normalizedIdArray" }
+      }
+    },
+    "effectiveEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family_root_type_id",
+        "recoverable_error_ids",
+        "effect_ids",
+        "envelope_digest"
+      ],
+      "properties": {
+        "family_root_type_id": { "$ref": "#/$defs/id" },
+        "recoverable_error_ids": { "$ref": "#/$defs/normalizedIdArray" },
+        "effect_ids": { "$ref": "#/$defs/normalizedIdArray" },
+        "envelope_digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "effects_item_count",
+        "errors_item_count",
+        "raw_effect_ids",
+        "errors_type_kind",
+        "raw_recoverable_error_ids"
+      ],
+      "properties": {
+        "present": { "type": "boolean" },
+        "effects_item_count": { "type": "integer", "minimum": 0 },
+        "errors_item_count": { "type": "integer", "minimum": 0 },
+        "raw_effect_ids": { "$ref": "#/$defs/rawIdArray" },
+        "errors_type_kind": {
+          "oneOf": [
+            { "enum": ["ERROR_SET", "NON_ERROR_SET"] },
+            { "type": "null" }
+          ]
+        },
+        "raw_recoverable_error_ids": { "$ref": "#/$defs/rawIdArray" }
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_ordinal",
+        "source_kind",
+        "source_id",
+        "normalized_envelope"
+      ],
+      "properties": {
+        "source_ordinal": { "type": "integer", "minimum": 0 },
+        "source_kind": {
+          "enum": ["BASE_OWNER", "FIELD_OWNER", "OWNER_DEF_CLEANUP"]
+        },
+        "source_id": { "$ref": "#/$defs/id" },
+        "normalized_envelope": { "$ref": "#/$defs/normalizedEnvelope" }
+      }
+    },
+    "claimedProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanup_budget_id",
+        "declaration_mode",
+        "family_root_type_id",
+        "declared_envelope",
+        "computed_envelope",
+        "effective_envelope",
+        "local_subset_proven",
+        "family_subset_proven",
+        "compatibility",
+        "envelope_digest"
+      ],
+      "properties": {
+        "cleanup_budget_id": { "$ref": "#/$defs/id" },
+        "declaration_mode": {
+          "enum": ["IMPLICIT_EXACT_ROOT", "EXPLICIT_HEADER", "INHERITED_SEALED_ROOT"]
+        },
+        "family_root_type_id": { "$ref": "#/$defs/id" },
+        "declared_envelope": {
+          "oneOf": [
+            { "$ref": "#/$defs/normalizedEnvelope" },
+            { "type": "null" }
+          ]
+        },
+        "computed_envelope": { "$ref": "#/$defs/normalizedEnvelope" },
+        "effective_envelope": { "$ref": "#/$defs/normalizedEnvelope" },
+        "local_subset_proven": { "type": "boolean" },
+        "family_subset_proven": { "type": "boolean" },
+        "compatibility": { "enum": ["COMPATIBLE", "INCOMPATIBLE"] },
+        "envelope_digest": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

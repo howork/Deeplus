@@ -10901,6 +10901,28 @@ R9_DIAGNOSTIC_DISPATCH_CHECK_IDS = (
     "R9_DD_REGISTRY_DISPATCH_EXACT",
     "R9_DD_GOVERNANCE_FENCE",
 )
+R33_CLEANUP_BUDGET_CHECK_IDS = tuple(
+    f"CBA-V{index:02d}_{suffix}"
+    for index, suffix in enumerate(
+        (
+            "SCHEMA_AND_CONTRACT_CLOSED",
+            "SURFACE_AND_CANONICAL_EXAMPLE",
+            "TYPED_DECISION_MATRIX",
+            "NORMALIZATION_ALGEBRA",
+            "ABSENCE_AND_EXPLICIT_DEFAULTS",
+            "TRANSITIVE_COMPOSITION",
+            "INHERITANCE_SUBSTITUTABILITY",
+            "RUNTIME_ORDER_UNCHANGED",
+            "DIAGNOSTIC_AND_PREDICATE_BINDING",
+            "HIR_TYPED_ENVELOPE",
+            "MIR_AND_LOWERING_REUSE",
+            "MODULE_API_RESIDUE",
+            "FIXTURE_AND_MUTATION_MATRIX",
+            "GLOBAL_EVIDENCE_FENCES",
+        ),
+        start=1,
+    )
+)
 R26_PRIMARY_DIAGNOSTIC_CHECK_IDS = (
     "R26_CONTRACT_EXACT",
     "R26_FRONTEND_BINDINGS_EXACT_6",
@@ -11160,6 +11182,81 @@ def r9_diagnostic_dispatch_workspace_checks(
         )
 
 
+def r33_cleanup_budget_workspace_checks(root: Path) -> list[dict[str, Any]]:
+    """Bind the exact R33 static receipt without claiming product support."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R33_CLEANUP_BUDGET_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_cleanup_budget_algebra.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R33 cleanup-budget runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows("R33 cleanup-budget runner emitted unexpected stderr")
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("check_results")
+        expected_ids = list(R33_CLEANUP_BUDGET_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.cleanup-budget-algebra-validation-receipt/r1"
+            or receipt.get("revision") != "R33-CLEANUP-BUDGET-ALGEBRA-R1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("checks") != 14
+            or receipt.get("passed") != 14
+            or receipt.get("failed") != 0
+            or receipt.get("mutation_count") != 12
+            or receipt.get("mutation_rejections") != 12
+            or receipt.get("new_mir_operation_kind_count") != 0
+            or receipt.get("new_active_diagnostic_id_count") != 3
+            or receipt.get("feature_p1") != "22_OPEN_UNCHANGED"
+            or receipt.get("separate_actions") != "4_OPEN_UNCHANGED"
+            or receipt.get("product_lanes") != "15_OF_15_NOT_RUN"
+            or receipt.get("github_mutation") != "NOT_PERFORMED"
+            or not isinstance(rows, list)
+            or len(rows) != len(expected_ids)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "result", "detail"}
+                or row.get("result") != "PASS"
+                for row in rows
+            )
+        ):
+            return failed_rows("R33 cleanup-budget runner receipt-contract drift")
+        return [
+            {
+                "check_id": row["check_id"],
+                "pass": True,
+                "detail": (
+                    row["detail"]
+                    if isinstance(row["detail"], str)
+                    else json.dumps(row["detail"], ensure_ascii=False, sort_keys=True)
+                ),
+            }
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(f"R33 cleanup-budget runner integration failure: {exc}")
+
+
 def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
 
@@ -11361,9 +11458,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
-            and len(grammar_bytes) == 67229
-            and len(production_names) == 643
+            == "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
+            and len(grammar_bytes) == 67902
+            and len(production_names) == 644
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
                 "sha256": grammar_sha,
@@ -11373,9 +11470,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         )
         emit(
             "FRONTEND_R12_DISPOSITION_TOTALITY",
-            len(production_rows) == 643
+            len(production_rows) == 644
             and [row.get("ordinal") for row in production_rows]
-            == list(range(1, 644))
+            == list(range(1, 645))
             and [row.get("production_id") for row in production_rows]
             == production_names
             and all(
@@ -11393,7 +11490,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             == Counter(
                 {
                     "ast_node": 204,
-                    "cst_only": 410,
+                    "cst_only": 411,
                     "external_parser_entry": 19,
                     "normalize_to": 10,
                 }
@@ -11809,13 +11906,13 @@ def r27_grammar_topology_workspace_checks(
             != "R27_GRAMMAR_TOPOLOGY_CLOSURE_EXACT"
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
-            or receipt.get("production_count") != 643
-            or receipt.get("declared_reference_binding_count") != 643
+            or receipt.get("production_count") != 644
+            or receipt.get("declared_reference_binding_count") != 644
             or receipt.get("external_symbol_count") != 40
             or receipt.get("source_root_count") != 6
             or receipt.get("six_root_union_count") != 492
             or receipt.get("six_root_shared_count") != 465
-            or receipt.get("six_root_unreachable_count") != 151
+            or receipt.get("six_root_unreachable_count") != 152
             or receipt.get("aggregate_entry_root_count") != 2
             or receipt.get("unowned_orphan_count") != 0
             or receipt.get("illegal_cross_profile_edge_count") != 0
@@ -11823,6 +11920,9 @@ def r27_grammar_topology_workspace_checks(
             or receipt.get("mutation_count") != 6
             or receipt.get("rejected_mutation_count") != 6
             or receipt.get("grammar_production_change_count") != 0
+            or receipt.get("post_closure_projection_addition_count") != 1
+            or receipt.get("post_closure_projection_gap_id")
+            != "IR-OWN-P1-018"
             or receipt.get("new_source_spelling_count") != 0
             or receipt.get("semantic_change_count") != 0
             or receipt.get("product_execution") != "NOT_RUN"
@@ -11839,7 +11939,7 @@ def r27_grammar_topology_workspace_checks(
             return failed_rows("R27 grammar-topology receipt-contract drift")
         detail = json.dumps(
             {
-                "productions": 643,
+                "productions": 644,
                 "external_symbols": 40,
                 "source_roots": 6,
                 "six_root_union": 492,
@@ -11847,6 +11947,8 @@ def r27_grammar_topology_workspace_checks(
                 "unowned_orphans": 0,
                 "illegal_profile_edges": 0,
                 "mutations_rejected": 6,
+                "post_closure_projection_additions": 1,
+                "post_closure_projection_gap": "IR-OWN-P1-018",
                 "semantic_changes": 0,
                 "product_execution": "NOT_RUN",
             },
@@ -11908,8 +12010,8 @@ def r40_manual_grammar_count_workspace_checks(
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
             or receipt.get("profile_counts")
-            != {"LEXICAL": 91, "STABLE": 539, "PREVIEW": 13}
-            or receipt.get("production_count") != 643
+            != {"LEXICAL": 91, "STABLE": 540, "PREVIEW": 13}
+            or receipt.get("production_count") != 644
             or receipt.get("manual_claim_count") != 3
             or receipt.get("acceptance_case_count") != 3
             or receipt.get("mutation_count") != 1
@@ -11935,8 +12037,8 @@ def r40_manual_grammar_count_workspace_checks(
             )
         detail = json.dumps(
             {
-                "profiles": {"LEXICAL": 91, "STABLE": 539, "PREVIEW": 13},
-                "productions": 643,
+                "profiles": {"LEXICAL": 91, "STABLE": 540, "PREVIEW": 13},
+                "productions": 644,
                 "manual_claims": 3,
                 "mutations_rejected": 1,
                 "semantic_changes": 0,
@@ -12089,6 +12191,9 @@ def main() -> int:
     )
     for row in r9_diagnostic_dispatch_check_results:
         check(row["pass"], row["check_id"], row["detail"])
+    r33_cleanup_budget_check_results = r33_cleanup_budget_workspace_checks(root)
+    for row in r33_cleanup_budget_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
     frontend_readiness_check_results = frontend_readiness_workspace_checks(root)
     for row in frontend_readiness_check_results:
         check(row["pass"], row["check_id"], row["detail"])
@@ -12161,10 +12266,10 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 721
-                and fixed_counts.get("predicates") == 278
-                and fixed_counts.get("predicate_fixtures") == 858
-                and fixed_counts.get("no_go") == 155
+                and fixed_counts.get("features") == 722
+                and fixed_counts.get("predicates") == 281
+                and fixed_counts.get("predicate_fixtures") == 864
+                and fixed_counts.get("no_go") == 156
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
                 "LANGUAGE_COHERENCE_CONTRACT",
@@ -12212,11 +12317,15 @@ def main() -> int:
         "docs/tutorial/coverage-manifest.json",
         "spec/contracts/tutorial-r1.json",
         "spec/contracts/trait-conformance-surface.json",
+        "spec/contracts/ownership-type-qualifier-r1.json",
         "tests/fixtures/current/trait-conformance-surface-r1.json",
+        "tests/fixtures/current/ownership-type-qualifier-r1.json",
+        "schemas/language/ownership-type-qualifier-r1.schema.json",
         "schemas/language/tutorial-coverage.schema.json",
         "tools/generators/generate_tutorial.py",
         "tools/validators/run_tutorial_generator_tests.py",
         "tools/validators/run_r5_ownership_decision_mutation_tests.py",
+        "tools/validators/validate_ownership_type_qualifier.py",
         "schemas/language/diagnostic-dispatch-closure-input-r1.schema.json",
         "schemas/language/diagnostic-dispatch-closure-fixtures-r1.schema.json",
         "spec/contracts/diagnostic-dispatch-closure-r1.json",
@@ -12250,11 +12359,13 @@ def main() -> int:
     if revision in CURRENT_MACHINE_REVISIONS:
         required.extend([
             "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
+            "decisions/language/Design_Deeplus_Closure_Capture_Plan_R1.md",
             "schemas/language/canonical-hir-h1.schema.json",
             "schemas/language/continuation-interface-fixtures-r1.schema.json",
             "schemas/language/continuation-interface-r1.schema.json",
             "schemas/language/continuation-receipt-r1.schema.json",
             "schemas/language/deeplus-mir.schema.json",
+            "schemas/language/deferred-call-plan-input-r1.schema.json",
             "schemas/language/hir-mir-lowering-row.schema.json",
             "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
             "schemas/language/mir-capability-receipt.schema.json",
@@ -12345,6 +12456,63 @@ def main() -> int:
             process.returncode == 0,
             "R37_INTERNAL_RUNTIME_ABI",
             detail[-4000:],
+        )
+
+        r32_validator = root / "tools/validators/validate_deferred_call_plan.py"
+        process = subprocess.run(
+            [sys.executable, str(r32_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R32_DEFERRED_CALL_PLAN",
+            detail[-4000:],
+        )
+
+        r34_validator = root / "tools/validators/validate_loan_close_operation.py"
+        r34_process = subprocess.run(
+            [sys.executable, str(r34_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        r34_detail = (
+            r34_process.stdout.strip()
+            if r34_process.returncode == 0
+            else (r34_process.stderr.strip() or r34_process.stdout.strip())
+        )
+        check(
+            r34_process.returncode == 0,
+            "R34_LOAN_CLOSE_OPERATION",
+            r34_detail[-4000:],
+        )
+
+        r35_validator = (
+            root / "tools/validators/validate_shared_mutex_payload_bound.py"
+        )
+        r35_process = subprocess.run(
+            [sys.executable, str(r35_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        r35_detail = (
+            r35_process.stdout.strip()
+            if r35_process.returncode == 0
+            else (r35_process.stderr.strip() or r35_process.stdout.strip())
+        )
+        check(
+            r35_process.returncode == 0,
+            "R35_SHARED_MUTEX_PAYLOAD_BOUND",
+            r35_detail[-4000:],
         )
 
     generator = root / "tools/generators/generate_example_projections.py"

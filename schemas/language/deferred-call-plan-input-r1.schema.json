@@ -1,0 +1,558 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r32/deferred-call-plan-input-r1.schema.json",
+  "title": "Deeplus DeferredCallPlanInputR1",
+  "oneOf": [
+    { "$ref": "#/$defs/sourceRejectionInput" },
+    { "$ref": "#/$defs/typedPlanInput" }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 1 },
+    "nullableId": {
+      "oneOf": [
+        { "$ref": "#/$defs/id" },
+        { "type": "null" }
+      ]
+    },
+    "idArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "form",
+        "invocation_count",
+        "contains_block",
+        "contains_inline_callable",
+        "contains_trailing_closure",
+        "contains_guard",
+        "contains_await",
+        "contains_spawn",
+        "contains_actor_transport"
+      ],
+      "properties": {
+        "form": {
+          "enum": [
+            "DIRECT_CALL",
+            "MESSAGE_CALL",
+            "BLOCK",
+            "INLINE_CALLABLE",
+            "AWAIT",
+            "SPAWN",
+            "ACTOR_TRANSPORT"
+          ]
+        },
+        "invocation_count": { "type": "integer", "minimum": 0 },
+        "contains_block": { "type": "boolean" },
+        "contains_inline_callable": { "type": "boolean" },
+        "contains_trailing_closure": { "type": "boolean" },
+        "contains_guard": { "type": "boolean" },
+        "contains_await": { "type": "boolean" },
+        "contains_spawn": { "type": "boolean" },
+        "contains_actor_transport": { "type": "boolean" }
+      }
+    },
+    "typedSurface": {
+      "allOf": [
+        { "$ref": "#/$defs/surface" },
+        {
+          "properties": {
+            "form": { "enum": ["DIRECT_CALL", "MESSAGE_CALL"] },
+            "invocation_count": { "const": 1 },
+            "contains_block": { "const": false },
+            "contains_inline_callable": { "const": false },
+            "contains_trailing_closure": { "const": false },
+            "contains_guard": { "const": false },
+            "contains_await": { "const": false },
+            "contains_spawn": { "const": false },
+            "contains_actor_transport": { "const": false }
+          }
+        }
+      ]
+    },
+    "sourceRejectionInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "predicate_id",
+        "variant",
+        "surface",
+        "expected_parser_diagnostic",
+        "product_support"
+      ],
+      "properties": {
+        "schema": { "const": "deeplus.deferred-call-plan-input/r1" },
+        "predicate_id": { "const": "SingleActionDeferAdmitted" },
+        "variant": { "const": "SOURCE_REJECTION" },
+        "surface": { "$ref": "#/$defs/surface" },
+        "expected_parser_diagnostic": {
+          "enum": [
+            "DEFER_REQUIRES_SINGLE_INVOCATION",
+            "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+            "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+          ]
+        },
+        "product_support": { "const": "NOT_RUN" }
+      }
+    },
+    "selectedCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode_target_pair",
+        "call_head_id",
+        "selected_declaration_id",
+        "selected_implementation_id_or_null",
+        "virtual_slot_id_or_null",
+        "canonical_call_shape_id",
+        "formal_binding_ids",
+        "default_value_refs",
+        "selected_evidence_ids",
+        "normalized_result_type_id",
+        "result_responsibility_profile_id",
+        "result_disposition",
+        "result_cleanup_obligation_id_or_null",
+        "execution_error_set_id",
+        "execution_effect_row_id",
+        "execution_responsibility_profile_id",
+        "execution_suspension",
+        "execution_cancellation",
+        "selection_time",
+        "exit_time_selection_count"
+      ],
+      "properties": {
+        "mode_target_pair": {
+          "enum": [
+            "ORDINARY::DIRECT_IMPLEMENTATION",
+            "ORDINARY::VIRTUAL_SLOT",
+            "ORDINARY::TRAIT_WITNESS",
+            "ORDINARY::EXTENSION_STATIC",
+            "MESSAGE::DIRECT_IMPLEMENTATION",
+            "MESSAGE::VIRTUAL_SLOT",
+            "MESSAGE::TRAIT_WITNESS",
+            "MESSAGE::EXTENSION_STATIC",
+            "MESSAGE::RESERVED_OPERATION"
+          ]
+        },
+        "call_head_id": { "$ref": "#/$defs/id" },
+        "selected_declaration_id": { "$ref": "#/$defs/id" },
+        "selected_implementation_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "virtual_slot_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "canonical_call_shape_id": { "$ref": "#/$defs/id" },
+        "formal_binding_ids": { "$ref": "#/$defs/idArray" },
+        "default_value_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/defaultValueRef" }
+        },
+        "selected_evidence_ids": { "$ref": "#/$defs/idArray" },
+        "normalized_result_type_id": { "$ref": "#/$defs/id" },
+        "result_responsibility_profile_id": { "$ref": "#/$defs/id" },
+        "result_disposition": {
+          "enum": [
+            "UNIT_NO_VALUE",
+            "DISCARD_CLEANUP_FREE_VALUE",
+            "CLEAN_OWNED_TEMPORARY"
+          ]
+        },
+        "result_cleanup_obligation_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "execution_error_set_id": { "$ref": "#/$defs/id" },
+        "execution_effect_row_id": { "$ref": "#/$defs/id" },
+        "execution_responsibility_profile_id": { "$ref": "#/$defs/id" },
+        "execution_suspension": { "const": "NONE" },
+        "execution_cancellation": { "const": "FORBIDDEN" },
+        "selection_time": { "const": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION" },
+        "exit_time_selection_count": { "const": 0 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode_target_pair": {
+                "enum": ["ORDINARY::VIRTUAL_SLOT", "MESSAGE::VIRTUAL_SLOT"]
+              }
+            },
+            "required": ["mode_target_pair"]
+          },
+          "then": {
+            "properties": {
+              "virtual_slot_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          },
+          "else": {
+            "properties": {
+              "virtual_slot_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "result_disposition": { "const": "CLEAN_OWNED_TEMPORARY" } },
+            "required": ["result_disposition"]
+          },
+          "then": {
+            "properties": {
+              "result_cleanup_obligation_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          },
+          "else": {
+            "properties": {
+              "result_cleanup_obligation_id_or_null": { "type": "null" }
+            }
+          }
+        }
+      ]
+    },
+    "defaultValueRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formal_binding_id",
+        "default_value_ref_id",
+        "body_semantic_digest"
+      ],
+      "properties": {
+        "formal_binding_id": { "$ref": "#/$defs/id" },
+        "default_value_ref_id": { "$ref": "#/$defs/id" },
+        "body_semantic_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "staticEvidenceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["formal_binding_id", "evidence_id", "responsibility_profile_id"],
+      "properties": {
+        "formal_binding_id": { "$ref": "#/$defs/id" },
+        "evidence_id": { "$ref": "#/$defs/id" },
+        "responsibility_profile_id": { "$ref": "#/$defs/id" }
+      }
+    },
+    "acquisition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "source_place_id_or_null",
+        "owner_id_or_null",
+        "region_id_or_null",
+        "loan_id_or_null",
+        "reservation_id_or_null",
+        "cleanup_obligation_id_or_null"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "SNAPSHOT_VALUE",
+            "SHARED_LOAN",
+            "EXCLUSIVE_LOAN",
+            "MOVE_INTO_PLAN",
+            "OWNED_TEMPORARY",
+            "PINNED_PLACE_RESERVATION"
+          ]
+        },
+        "source_place_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "owner_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "region_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "loan_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "reservation_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "cleanup_obligation_id_or_null": { "$ref": "#/$defs/nullableId" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "kind": { "enum": ["SHARED_LOAN", "EXCLUSIVE_LOAN"] } },
+            "required": ["kind"]
+          },
+          "then": {
+            "properties": {
+              "source_place_id_or_null": { "$ref": "#/$defs/id" },
+              "region_id_or_null": { "$ref": "#/$defs/id" },
+              "loan_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "enum": ["MOVE_INTO_PLAN", "PINNED_PLACE_RESERVATION"] } },
+            "required": ["kind"]
+          },
+          "then": {
+            "properties": {
+              "source_place_id_or_null": { "$ref": "#/$defs/id" },
+              "owner_id_or_null": { "$ref": "#/$defs/id" },
+              "reservation_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      ]
+    },
+    "dynamicOperand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operand_id",
+        "evaluation_ordinal",
+        "role",
+        "argument_kind_or_null",
+        "source_argument_ordinal_or_null",
+        "label_id_or_null",
+        "source_expr_id_or_null",
+        "default_value_ref_id_or_null",
+        "formal_binding_id_or_null",
+        "result_eval_id",
+        "prepared_value_id",
+        "normalized_type_id",
+        "responsibility_profile_id",
+        "evaluation_count",
+        "acquisition",
+        "registration_error_set_id",
+        "registration_effect_row_id"
+      ],
+      "properties": {
+        "operand_id": { "$ref": "#/$defs/id" },
+        "evaluation_ordinal": { "type": "integer", "minimum": 0 },
+        "role": {
+          "enum": ["CALLEE_OR_RECEIVER", "EXPLICIT_ARGUMENT", "DEFAULT_ARGUMENT"]
+        },
+        "argument_kind_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "POSITIONAL",
+                "NAMED",
+                "POSITIONAL_UNFOLD",
+                "NAMED_UNFOLD",
+                "CONTEXT"
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "source_argument_ordinal_or_null": {
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        },
+        "label_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "source_expr_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "default_value_ref_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "formal_binding_id_or_null": { "$ref": "#/$defs/nullableId" },
+        "result_eval_id": { "$ref": "#/$defs/id" },
+        "prepared_value_id": { "$ref": "#/$defs/id" },
+        "normalized_type_id": { "$ref": "#/$defs/id" },
+        "responsibility_profile_id": { "$ref": "#/$defs/id" },
+        "evaluation_count": { "const": 1 },
+        "acquisition": { "$ref": "#/$defs/acquisition" },
+        "registration_error_set_id": { "$ref": "#/$defs/id" },
+        "registration_effect_row_id": { "$ref": "#/$defs/id" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "role": { "const": "CALLEE_OR_RECEIVER" } },
+            "required": ["role"]
+          },
+          "then": {
+            "properties": {
+              "argument_kind_or_null": { "type": "null" },
+              "source_argument_ordinal_or_null": { "type": "null" },
+              "label_id_or_null": { "type": "null" },
+              "default_value_ref_id_or_null": { "type": "null" },
+              "formal_binding_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "role": { "const": "DEFAULT_ARGUMENT" } },
+            "required": ["role"]
+          },
+          "then": {
+            "properties": {
+              "argument_kind_or_null": { "type": "null" },
+              "source_argument_ordinal_or_null": { "type": "null" },
+              "source_expr_id_or_null": { "type": "null" },
+              "default_value_ref_id_or_null": { "$ref": "#/$defs/id" },
+              "formal_binding_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      ]
+    },
+    "registrationTransaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluation_order_ordinals",
+        "rollback_order_ordinals",
+        "registration_responsibility_profile_id",
+        "registration_error_set_id",
+        "registration_effect_row_id",
+        "move_reservations_cancelled_on_failure",
+        "loans_ended_on_failure",
+        "owned_temporaries_cleaned_on_failure",
+        "external_effects_undone",
+        "partial_publication_count",
+        "commit_sequence",
+        "sealed_state"
+      ],
+      "properties": {
+        "evaluation_order_ordinals": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "rollback_order_ordinals": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 }
+        },
+        "registration_responsibility_profile_id": { "$ref": "#/$defs/id" },
+        "registration_error_set_id": { "$ref": "#/$defs/id" },
+        "registration_effect_row_id": { "$ref": "#/$defs/id" },
+        "move_reservations_cancelled_on_failure": { "const": true },
+        "loans_ended_on_failure": { "const": true },
+        "owned_temporaries_cleaned_on_failure": { "const": true },
+        "external_effects_undone": { "const": false },
+        "partial_publication_count": { "const": 0 },
+        "commit_sequence": {
+          "prefixItems": [
+            { "const": "CLEANUP_REGISTER" },
+            { "const": "CLEANUP_PIN" },
+            { "const": "CLEANUP_SEAL" }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "sealed_state": { "const": "SEALED_IMMUTABLE" }
+      }
+    },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_execution_order",
+        "execution_count",
+        "exit_time_operand_evaluation_count",
+        "retry_count",
+        "suspension_disposition",
+        "terminal_paths",
+        "body_failure_precedence",
+        "normal_body_first_cleanup_failure",
+        "later_cleanup_failure_order",
+        "defect_or_cancellation_reclassified_as_error"
+      ],
+      "properties": {
+        "scope_execution_order": { "const": "LIFO" },
+        "execution_count": { "const": 1 },
+        "exit_time_operand_evaluation_count": { "const": 0 },
+        "retry_count": { "const": 0 },
+        "suspension_disposition": { "const": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION" },
+        "terminal_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "enum": [
+              "FALLTHROUGH",
+              "RETURN",
+              "EXITING_BREAK",
+              "EXITING_CONTINUE",
+              "ERROR",
+              "DEFECT",
+              "CANCELLATION"
+            ]
+          }
+        },
+        "body_failure_precedence": { "const": "BODY_FAILURE_REMAINS_PRIMARY" },
+        "normal_body_first_cleanup_failure": { "const": "BECOMES_PRIMARY" },
+        "later_cleanup_failure_order": { "const": "SUPPRESSED_IN_ACTUAL_LIFO_ORDER" },
+        "defect_or_cancellation_reclassified_as_error": { "const": false }
+      }
+    },
+    "scopeProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["may_suspend", "plan_residence", "suspension_action"],
+      "properties": {
+        "may_suspend": { "type": "boolean" },
+        "plan_residence": { "const": "ACTIVE_CLEANUP_SCOPE" },
+        "suspension_action": { "const": "PRESERVE_NO_EXECUTION" }
+      }
+    },
+    "postRegistrationPlaceAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["place_id", "action"],
+      "properties": {
+        "place_id": { "$ref": "#/$defs/id" },
+        "action": {
+          "enum": [
+            "READ_THROUGH_ADMITTED_BORROW",
+            "MUTATE_THROUGH_ADMITTED_EXCLUSIVE_LOAN",
+            "MOVE",
+            "REBIND",
+            "REPLACE_OWNER"
+          ]
+        }
+      }
+    },
+    "typedPlanInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "predicate_id",
+        "variant",
+        "plan_id",
+        "cleanup_scope_id",
+        "registration_site_id",
+        "source_registration_ordinal",
+        "surface",
+        "selected_call",
+        "dynamic_operands_in_evaluation_order",
+        "static_evidence_bindings",
+        "registration_transaction",
+        "execution_policy",
+        "scope_profile",
+        "post_registration_place_actions",
+        "product_support"
+      ],
+      "properties": {
+        "schema": { "const": "deeplus.deferred-call-plan-input/r1" },
+        "predicate_id": { "const": "SingleActionDeferAdmitted" },
+        "variant": { "const": "TYPED_PLAN" },
+        "plan_id": { "$ref": "#/$defs/id" },
+        "cleanup_scope_id": { "$ref": "#/$defs/id" },
+        "registration_site_id": { "$ref": "#/$defs/id" },
+        "source_registration_ordinal": { "type": "integer", "minimum": 0 },
+        "surface": { "$ref": "#/$defs/typedSurface" },
+        "selected_call": { "$ref": "#/$defs/selectedCall" },
+        "dynamic_operands_in_evaluation_order": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/dynamicOperand" }
+        },
+        "static_evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/staticEvidenceBinding" }
+        },
+        "registration_transaction": { "$ref": "#/$defs/registrationTransaction" },
+        "execution_policy": { "$ref": "#/$defs/executionPolicy" },
+        "scope_profile": { "$ref": "#/$defs/scopeProfile" },
+        "post_registration_place_actions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/postRegistrationPlaceAction" }
+        },
+        "product_support": { "const": "NOT_RUN" }
+      }
+    }
+  }
+}

@@ -214,6 +214,428 @@
           "const": "deeplus.checker-predicate-fixture/r51f3"
         }
       }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "canonical_case_id",
+        "decision_input",
+        "expected_decision",
+        "execution_status",
+        "diagnostic_disposition",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "predicate_id": {
+          "enum": [
+            "ClosureCaptureDescriptorAdmitted",
+            "ClosureCaptureDescriptorAdmittedCurrentGate"
+          ]
+        },
+        "fixture_kind": {
+          "enum": [
+            "concrete_positive",
+            "concrete_negative"
+          ]
+        },
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "canonical_case_id": {
+          "type": "string",
+          "pattern": "^R31-CCP-"
+        },
+        "decision_input": {
+          "$ref": "./closure-capture-plan-input-r1.schema.json"
+        },
+        "expected_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "outcome",
+            "diagnostic_id_or_null"
+          ],
+          "properties": {
+            "outcome": {
+              "enum": [
+                "ADMIT",
+                "REJECT"
+              ]
+            },
+            "diagnostic_id_or_null": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "execution_status": {
+          "const": "STATIC_REFERENCE_VALIDATOR_PASS"
+        },
+        "diagnostic_disposition": {
+          "const": "active_primary"
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "canonical_case_id",
+        "decision_input",
+        "expected_decision",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "admitted_condition": {
+          "type": "string"
+        },
+        "violated_condition": {
+          "type": "string"
+        },
+        "diagnostic_disposition": {
+          "type": "string"
+        },
+        "execution_status": {
+          "const": "STATIC_REFERENCE_VALIDATOR_PASS"
+        },
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "expected_primary_diagnostic": {
+          "enum": [
+            "DEFER_REQUIRES_SINGLE_INVOCATION",
+            "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+            "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+            "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
+          ]
+        },
+        "fixture_id": {
+          "enum": [
+            "PF-SingleActionDeferAdmitted-POS",
+            "PF-SingleActionDeferAdmitted-BOUNDARY",
+            "PF-SingleActionDeferAdmitted-NEG"
+          ]
+        },
+        "fixture_kind": {
+          "enum": [
+            "concrete_positive",
+            "concrete_negative"
+          ]
+        },
+        "predicate_id": {
+          "const": "SingleActionDeferAdmitted"
+        },
+        "canonical_case_id": {
+          "type": "string",
+          "pattern": "^R32-DCP-(POS|BND|NEG)-[0-9]{3}$"
+        },
+        "decision_input": {
+          "$ref": "./deferred-call-plan-input-r1.schema.json"
+        },
+        "expected_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "variant",
+            "diagnostic_id_or_null",
+            "emitted_primary_count"
+          ],
+          "properties": {
+            "variant": {
+              "enum": [
+                "ADMIT",
+                "REJECT"
+              ]
+            },
+            "diagnostic_id_or_null": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "DEFER_REQUIRES_SINGLE_INVOCATION",
+                    "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+                    "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+                    "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "emitted_primary_count": {
+              "enum": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        "rule_seed": {
+          "type": "string"
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "expected": {
+                "const": "admitted"
+              }
+            },
+            "required": [
+              "expected"
+            ]
+          },
+          "then": {
+            "properties": {
+              "fixture_kind": {
+                "const": "concrete_positive"
+              },
+              "expected_decision": {
+                "properties": {
+                  "variant": {
+                    "const": "ADMIT"
+                  },
+                  "diagnostic_id_or_null": {
+                    "type": "null"
+                  },
+                  "emitted_primary_count": {
+                    "const": 0
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "expected_primary_diagnostic",
+              "violated_condition"
+            ],
+            "properties": {
+              "fixture_kind": {
+                "const": "concrete_negative"
+              },
+              "expected_decision": {
+                "properties": {
+                  "variant": {
+                    "const": "REJECT"
+                  },
+                  "emitted_primary_count": {
+                    "const": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_id",
+        "predicate_id",
+        "fixture_kind",
+        "expected",
+        "canonical_case_id",
+        "decision_input",
+        "expected_decision",
+        "execution_status",
+        "diagnostic_disposition",
+        "baseline",
+        "row_schema_version"
+      ],
+      "properties": {
+        "fixture_id": {
+          "type": "string",
+          "pattern": "^PF-CleanupBudgetEnvelopeAdmitted-(?:POS|BOUNDARY|NEG)$"
+        },
+        "predicate_id": {
+          "const": "CleanupBudgetEnvelopeAdmitted"
+        },
+        "fixture_kind": {
+          "enum": [
+            "concrete_positive",
+            "concrete_negative"
+          ]
+        },
+        "expected": {
+          "enum": [
+            "admitted",
+            "rejected"
+          ]
+        },
+        "canonical_case_id": {
+          "type": "string",
+          "pattern": "^R33-CBA-(?:POS|BND|NG)-[0-9]{3}$"
+        },
+        "decision_input": {
+          "$ref": "./cleanup-budget-envelope-input-r1.schema.json"
+        },
+        "expected_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "outcome",
+            "diagnostic_or_null",
+            "reason_key_or_null",
+            "first_failure_origin_or_null",
+            "emission_count",
+            "not_evaluated_origin_ids"
+          ],
+          "properties": {
+            "outcome": {
+              "enum": [
+                "ADMIT",
+                "REJECT"
+              ]
+            },
+            "diagnostic_or_null": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "CLEANUP_BUDGET_DUPLICATE",
+                    "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+                    "CLEANUP_BUDGET_EXCEEDED",
+                    "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason_key_or_null": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "first_failure_origin_or_null": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "source_ordinal",
+                    "source_kind",
+                    "source_id",
+                    "axis",
+                    "missing_identity_ids"
+                  ],
+                  "properties": {
+                    "source_ordinal": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "source_kind": {
+                      "enum": [
+                        "BASE_OWNER",
+                        "FIELD_OWNER",
+                        "OWNER_DEF_CLEANUP",
+                        "FAMILY_ENVELOPE",
+                        "HEADER"
+                      ]
+                    },
+                    "source_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "axis": {
+                      "enum": [
+                        "effect_ids",
+                        "recoverable_error_ids",
+                        "shape"
+                      ]
+                    },
+                    "missing_identity_ids": {
+                      "type": "array",
+                      "uniqueItems": true,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "emission_count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "not_evaluated_origin_ids": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "execution_status": {
+          "const": "STATIC_REFERENCE_VALIDATOR_PASS"
+        },
+        "diagnostic_disposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule_seed": {
+          "type": "string"
+        },
+        "baseline": {
+          "const": "0.1.2-baseline.r51f3"
+        },
+        "row_schema_version": {
+          "const": "deeplus.checker-predicate-fixture/r51f3"
+        }
+      }
     }
   ]
 }

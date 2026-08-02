@@ -1,0 +1,349 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r31/closure-capture-plan-input-r1.schema.json",
+  "title": "Deeplus closure capture plan predicate input R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "predicate_id",
+    "capture_plan_id",
+    "closure_owner_id",
+    "creation_point_id",
+    "owner_kind",
+    "capture_list_state",
+    "callable_profile",
+    "escaping",
+    "capture_items",
+    "lexical_dependencies",
+    "r30_dependency_state",
+    "product_support"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.closure-capture-plan-input/r1"
+    },
+    "predicate_id": {
+      "enum": [
+        "ClosureCaptureDescriptorAdmitted",
+        "ClosureCaptureDescriptorAdmittedCurrentGate"
+      ]
+    },
+    "capture_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "closure_owner_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "creation_point_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_kind": {
+      "enum": [
+        "SYNC_CLOSURE",
+        "LOCAL_FUNCTION",
+        "CONCUR_LOCAL_ASYNC",
+        "GENERATOR",
+        "GUARD",
+        "ACTOR_OR_ISOLATION_BOUNDARY"
+      ]
+    },
+    "capture_list_state": {
+      "enum": [
+        "ABSENT",
+        "PRESENT_EMPTY",
+        "PRESENT_NONEMPTY"
+      ]
+    },
+    "callable_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lifetime",
+        "call_right",
+        "environment_receiver",
+        "behavior",
+        "suspension",
+        "isolation"
+      ],
+      "properties": {
+        "lifetime": {
+          "enum": [
+            "ORDINARY",
+            "SCOPED"
+          ]
+        },
+        "call_right": {
+          "enum": [
+            "REPEATABLE",
+            "ONCE"
+          ]
+        },
+        "environment_receiver": {
+          "enum": [
+            "SHARED",
+            "MUT"
+          ]
+        },
+        "behavior": {
+          "enum": [
+            "ORDINARY",
+            "PURE",
+            "GUARD"
+          ]
+        },
+        "suspension": {
+          "enum": [
+            "NONSUSPENDING",
+            "SUSPENDING"
+          ]
+        },
+        "isolation": {
+          "enum": [
+            "SAME_ISOLATION",
+            "CROSSES_ISOLATION"
+          ]
+        }
+      }
+    },
+    "escaping": {
+      "type": "boolean"
+    },
+    "capture_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/captureItem"
+      }
+    },
+    "lexical_dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/lexicalDependency"
+      }
+    },
+    "r30_dependency_state": {
+      "enum": [
+        "CANONICAL_AVAILABLE",
+        "LOCAL_EVIDENCE_ONLY",
+        "MISSING"
+      ]
+    },
+    "product_support": {
+      "const": "NOT_RUN"
+    }
+  },
+  "$defs": {
+    "captureItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_ordinal",
+        "capture_field_id",
+        "binder_name",
+        "syntax_kind",
+        "normalized_mode",
+        "normalized_type_id",
+        "source_resolved_ref_or_null",
+        "source_place_id_or_null",
+        "initializer_expr_id_or_null",
+        "initializer_result_eval_id_or_null",
+        "owner_id_before_or_null",
+        "owner_id_after_or_null",
+        "region_id_or_null",
+        "loan_id_or_null",
+        "move_reservation_id_or_null",
+        "responsibility_rule_id_or_null",
+        "responsibility_evidence_id_or_null",
+        "trait_witness_id_or_null",
+        "construction_error_set",
+        "construction_effect_row",
+        "cleanup_obligation_id_or_null",
+        "cleanup_disposition",
+        "body_access",
+        "evaluation_count"
+      ],
+      "properties": {
+        "source_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "capture_field_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binder_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "syntax_kind": {
+          "enum": [
+            "BARE",
+            "EXPLICIT_MODE",
+            "LET_INITIALIZER",
+            "VAR_INITIALIZER"
+          ]
+        },
+        "normalized_mode": {
+          "enum": [
+            "BORROW",
+            "INOUT",
+            "MOVE",
+            "COPY",
+            "CLONE",
+            "DEEP",
+            "ONCE",
+            "INIT_LET",
+            "INIT_VAR"
+          ]
+        },
+        "normalized_type_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_resolved_ref_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_place_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "initializer_expr_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "initializer_result_eval_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner_id_before_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner_id_after_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "region_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "loan_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "move_reservation_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "responsibility_rule_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "responsibility_evidence_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trait_witness_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "construction_error_set": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "construction_effect_row": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "cleanup_obligation_id_or_null": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cleanup_disposition": {
+          "enum": [
+            "NONE",
+            "END_LOAN",
+            "CANCEL_MOVE_RESERVATION",
+            "DROP_STAGED_VALUE"
+          ]
+        },
+        "body_access": {
+          "enum": [
+            "READ",
+            "WRITE",
+            "CONSUME_ONCE",
+            "UNUSED"
+          ]
+        },
+        "evaluation_count": {
+          "const": 1
+        }
+      }
+    },
+    "lexicalDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ancestor_place_id",
+        "region_id",
+        "access",
+        "required_state"
+      ],
+      "properties": {
+        "ancestor_place_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access": {
+          "const": "READ"
+        },
+        "required_state": {
+          "const": "LiveReadable"
+        }
+      }
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}
