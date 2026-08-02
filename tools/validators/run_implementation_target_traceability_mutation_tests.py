@@ -42,6 +42,31 @@ def main() -> int:
     mutants.append(("TEST_OUTCOME_DELETE", metadata, value))
     value = copy.deepcopy(rows); value[0]["product_execution"] = "PASS"
     mutants.append(("PRODUCT_OVERCLAIM", metadata, value))
+    meta = copy.deepcopy(metadata)
+    pointer = next(
+        item for item in meta["evidence_registry"]
+        if item.get("locator_kind") == "JSON_POINTER"
+        and item.get("path", "").endswith(
+            "scalar-numeric-fixed-operator-evidence-r1.json"
+        )
+    )
+    pointer["locator"] = "/__missing_r54_pointer__"
+    mutants.append(("EVIDENCE_LOCATOR_MISSING", meta, rows))
+    value = copy.deepcopy(rows)
+    overlay_row = next(
+        row for row in value
+        if row["feature_id"] == "numeric_operator_core"
+    )
+    overlay_cell = next(
+        stage for stage in overlay_row["stages"]
+        if stage["stage"] == "AST_FRONTEND"
+    )
+    overlay_cell.update({
+        "disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "blocked_gap_ids": ["IR-XCUT-P1-054"],
+        "not_applicable": None,
+    })
+    mutants.append(("R54_OVERLAY_CELL_REBLOCKED", metadata, value))
 
     results = []
     for mutation_id, meta, candidate_rows in mutants:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the exact R53 implementation-target traceability registry.
+"""Build the exact implementation-target traceability registry.
 
 The generator is intentionally conservative: it binds only structured evidence
 already present in the feature catalog and reports unresolved applicable cells
@@ -17,6 +17,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "spec/traceability/implementation-target-profile-r1"
 CHUNKS = OUT / "chunks"
+OVERLAY = OUT / "scalar-numeric-fixed-operator-evidence-r1.json"
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
     "callable_responsibility_profile_core",
@@ -66,6 +67,19 @@ def evidence_id(evidence_class: str, path: str, locator_kind: str, locator: str,
 
 
 def main() -> None:
+    overlay = read_json(OVERLAY)
+    overlay_evidence = {
+        item["evidence_key"]: item for item in overlay["evidence_entries"]
+    }
+    overlay_bindings = {
+        (item["feature_id"], item["stage"], item["outcome"]): item
+        for item in overlay["bindings"]
+    }
+    if len(overlay_evidence) != len(overlay["evidence_entries"]):
+        raise ValueError("R54_OVERLAY_EVIDENCE_KEYS_NOT_UNIQUE")
+    if len(overlay_bindings) != len(overlay["bindings"]):
+        raise ValueError("R54_OVERLAY_BINDING_CELLS_NOT_UNIQUE")
+
     feature_rows: list[dict[str, Any]] = []
     source_locations: dict[str, tuple[str, int]] = {}
     for path in sorted((ROOT / "spec/features/catalog/chunks").glob("part-*.json")):
@@ -144,6 +158,50 @@ def main() -> None:
     def blocked(refs: list[str]) -> dict[str, Any]:
         return {"disposition": "APPLICABLE_BLOCKED_BY_GAP", "evidence_refs": sorted(set(refs)), "delegate_feature_id": None, "not_applicable": None, "blocked_gap_ids": ["IR-XCUT-P1-054"]}
 
+    def delegated(delegate_feature_id: str, refs: list[str]) -> dict[str, Any]:
+        return {
+            "disposition": "BOUND_DELEGATED",
+            "evidence_refs": sorted(set(refs)),
+            "delegate_feature_id": delegate_feature_id,
+            "not_applicable": None,
+            "blocked_gap_ids": [],
+        }
+
+    def apply_overlay(
+        feature_id: str,
+        stage: str,
+        outcome: str | None,
+        value: dict[str, Any],
+    ) -> dict[str, Any]:
+        binding = overlay_bindings.get((feature_id, stage, outcome))
+        if binding is None:
+            return value
+        if value.get("disposition") != "APPLICABLE_BLOCKED_BY_GAP":
+            raise ValueError(
+                f"R54_OVERLAY_EXPECTED_BLOCKED:{feature_id}:{stage}:{outcome}"
+            )
+        refs = []
+        for key in binding["evidence_keys"]:
+            item = overlay_evidence[key]
+            refs.append(add_evidence(
+                item["class"],
+                item["path"],
+                item["locator_kind"],
+                item["locator"],
+                item["stage_role"],
+            ))
+        if binding["disposition"] == "BOUND_DIRECT":
+            return direct(refs)
+        if binding["disposition"] == "BOUND_DELEGATED":
+            return delegated(binding["delegate_feature_id"], refs)
+        detail = binding["not_applicable"]
+        return not_applicable(
+            detail["reason_code"],
+            detail["authority_boundary"],
+            refs,
+            detail["rationale"],
+        )
+
     rows_out: list[dict[str, Any]] = []
     for feature_id in target_ids:
         row = by_id[feature_id]
@@ -179,6 +237,7 @@ def main() -> None:
             value = not_applicable("NA_SOURCE_INTERNAL_NO_PROGRAMMER_FORM", "PRELUDE_PROVIDER_AUTHORITY", [feature_ref, primary_ref], "The library/provider profile introduces no core-language grammar production.")
         else:
             value = direct([feature_ref, primary_ref] + production_refs)
+        value = apply_overlay(feature_id, "SOURCE_GRAMMAR", None, value)
         stages.append({"stage": "SOURCE_GRAMMAR", **value})
 
         if productions or semantic_productions:
@@ -191,6 +250,7 @@ def main() -> None:
             value = not_applicable("NA_AST_NO_PROGRAMMER_VISIBLE_FORM", "FRONTEND_AUTHORITY", [feature_ref, primary_ref], "The rule reuses an existing surface or provider API and adds no AST identity.")
         else:
             value = blocked([feature_ref, primary_ref])
+        value = apply_overlay(feature_id, "AST_FRONTEND", None, value)
         stages.append({"stage": "AST_FRONTEND", **value})
 
         if predicates:
@@ -205,6 +265,7 @@ def main() -> None:
             value = direct([feature_ref, primary_ref])
         else:
             value = blocked([feature_ref, primary_ref])
+        value = apply_overlay(feature_id, "STATIC_SEMANTICS", None, value)
         stages.append({"stage": "STATIC_SEMANTICS", **value})
 
         if runtime_refs:
@@ -219,6 +280,7 @@ def main() -> None:
             value = direct([feature_ref, primary_ref] + artifact_refs)
         else:
             value = blocked([feature_ref, primary_ref] + artifact_refs)
+        value = apply_overlay(feature_id, "DYNAMIC_LOWERING", None, value)
         stages.append({"stage": "DYNAMIC_LOWERING", **value})
 
         if diagnostics:
@@ -227,6 +289,7 @@ def main() -> None:
             value = blocked([feature_ref, primary_ref])
         else:
             value = not_applicable("NA_DIAGNOSTIC_NO_REJECTION_WARNING_OR_INFO_CONDITION", "DIAGNOSTIC_AUTHORITY", [feature_ref, primary_ref], "The catalog row declares no distinct public rejection, warning, or information condition.")
+        value = apply_overlay(feature_id, "DIAGNOSTICS", None, value)
         stages.append({"stage": "DIAGNOSTICS", **value})
 
         if tooling_refs:
@@ -237,6 +300,7 @@ def main() -> None:
             value = not_applicable("NA_TOOLING_NO_NEW_SOURCE_OR_OBSERVATION_OBLIGATION", "TOOLING_AUTHORITY", [feature_ref, primary_ref], "The provider profile adds no separate source-formatting or LSP observation contract.")
         else:
             value = direct([feature_ref, path_evidence("spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json", "TOOLING_OBLIGATIONS")])
+        value = apply_overlay(feature_id, "TOOLING_OBLIGATIONS", None, value)
         stages.append({"stage": "TOOLING_OBLIGATIONS", **value})
 
         outcomes = []
@@ -247,6 +311,9 @@ def main() -> None:
                 outcome_value = direct([feature_ref] + example_refs)
             else:
                 outcome_value = blocked([feature_ref] + example_refs + artifact_refs)
+            outcome_value = apply_overlay(
+                feature_id, "CONFORMANCE_TESTS", outcome, outcome_value
+            )
             outcomes.append({"outcome": outcome, **outcome_value})
         stages.append({"stage": "CONFORMANCE_TESTS", "outcomes": outcomes, "product_execution": "NOT_RUN"})
 
@@ -276,6 +343,7 @@ def main() -> None:
 
     blocked_cells = 0
     direct_cells = 0
+    delegated_cells = 0
     na_cells = 0
     for row in rows_out:
         for stage in row["stages"]:
@@ -283,14 +351,15 @@ def main() -> None:
             for cell in cells:
                 blocked_cells += cell.get("disposition") == "APPLICABLE_BLOCKED_BY_GAP"
                 direct_cells += cell.get("disposition") == "BOUND_DIRECT"
+                delegated_cells += cell.get("disposition") == "BOUND_DELEGATED"
                 na_cells += cell.get("disposition") == "NOT_APPLICABLE"
 
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r53-local-target-traceability-reconciliation-r1",
+        "revision": "r54-local-scalar-numeric-fixed-operator-trace-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "063ed9ba77b49f6d276e70f558553e941550172d",
+        "local_predecessor_commit": "7f540c2c593911ec19003b43ff48652615becfc6",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
@@ -304,12 +373,18 @@ def main() -> None:
         "stage_order": STAGES,
         "test_outcome_order": OUTCOMES,
         "chunks": chunks,
+        "applied_evidence_overlays": [{
+            "path": OVERLAY.relative_to(ROOT).as_posix(),
+            "feature_count": len(overlay["feature_ids"]),
+            "binding_count": len(overlay["bindings"]),
+        }],
         "evidence_registry": [evidence[key] for key in sorted(evidence)],
         "derived_counts": {
             "feature_rows": len(rows_out),
             "stage_cells": len(rows_out) * len(STAGES),
             "test_outcome_cells": len(rows_out) * len(OUTCOMES),
             "bound_direct_cells": direct_cells,
+            "bound_delegated_cells": delegated_cells,
             "not_applicable_cells": na_cells,
             "applicable_blocked_cells": blocked_cells,
             "missing_cells": 0,

@@ -12624,6 +12624,11 @@ def main() -> int:
         "tools/generators/build_implementation_target_traceability.py",
         "tools/validators/validate_implementation_target_traceability.py",
         "tools/validators/run_implementation_target_traceability_mutation_tests.py",
+        "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+        "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
+        "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
+        "tools/validators/run_scalar_numeric_fixed_operator_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R54_Scalar_Numeric_Fixed_Operator_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
