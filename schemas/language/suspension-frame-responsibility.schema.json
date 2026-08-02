@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r20/suspension-frame-responsibility-r1.schema.json",
+  "title": "Deeplus suspension-frame responsibility contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "status", "gap_id", "source_surface", "identity_domains", "continuation_interface",
+    "frame_states", "epoch_states", "transitions", "frame_slot_contract",
+    "loan_fence", "partition_law", "suspend_commit", "resume_cancel_race",
+    "cleanup", "hir_projection", "mir_projection", "diagnostics",
+    "diagnostic_precedence", "actor_boundary", "status_fence"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.suspension-frame-responsibility/r1"},
+    "status": {"const": "LOCAL_CANONICAL_PROJECTION_NOT_PUBLISHED"},
+    "gap_id": {"const": "IR-OWN-P0-017"},
+    "source_surface": {
+      "type": "object", "additionalProperties": false,
+      "required": ["new_spelling_count", "grammar_change_required", "preserved"],
+      "properties": {
+        "new_spelling_count": {"const": 0},
+        "grammar_change_required": {"const": false},
+        "preserved": {"const": ["await", "yield", "for#await", "async"]}
+      }
+    },
+    "identity_domains": {
+      "type": "object", "additionalProperties": false,
+      "required": ["static", "dynamic", "referenced"],
+      "properties": {
+        "static": {"const": ["ContinuationFramePlanId", "SuspensionPointId", "FrameSlotId"]},
+        "dynamic": {"const": ["ContinuationFrameId", "SuspensionEpochId", "ContinuationReceiptId"]},
+        "referenced": {"type": "array", "minItems": 7, "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "continuation_interface": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authority_contract", "authority_schema", "receipt_schema", "interface_identity", "interface_digest", "canonical_encoding", "bound_artifact_digests", "component_digests", "seam_status"],
+      "properties": {
+        "authority_contract": {"const": "spec/contracts/continuation-interface-r1.json"},
+        "authority_schema": {"const": "schemas/language/continuation-interface-r1.schema.json"},
+        "receipt_schema": {"const": "schemas/language/continuation-receipt-r1.schema.json"},
+        "interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "interface_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "canonical_encoding": {"type": "object"},
+        "bound_artifact_digests": {"type": "object", "minProperties": 5, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "component_digests": {"type": "object", "minProperties": 5, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "seam_status": {"type": "object"}
+      }
+    },
+    "frame_states": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+    "epoch_states": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}},
+    "transitions": {
+      "type": "array", "minItems": 8, "maxItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["operation", "from", "to", "epoch_from", "epoch_to", "winner_witness_or_null", "alternate_epoch_transition_or_null"],
+        "properties": {
+          "operation": {"enum": ["FRAME_CREATE", "FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT", "FRAME_CLEANUP_STEP", "FRAME_TERMINATE"]},
+          "from": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "to": {"type": "string"},
+          "epoch_from": {"type": ["string", "null"]},
+          "epoch_to": {"oneOf": [{"enum": ["COMMITTED", "CANCEL_WON", "DISCHARGED"]}, {"type": "null"}]},
+          "winner_witness_or_null": {"oneOf": [{"enum": ["RESUME_WON", "CANCEL_WON"]}, {"type": "null"}]},
+          "alternate_epoch_transition_or_null": {
+            "oneOf": [
+              {"type": "null"},
+              {
+                "type": "object", "additionalProperties": false,
+                "required": ["from", "to"],
+                "properties": {"from": {"const": "CANCEL_WON"}, "to": {"const": "DISCHARGED"}}
+              }
+            ]
+          }
+        }
+      }
+    },
+    "frame_slot_contract": {"type": "object"},
+    "loan_fence": {"type": "object"},
+    "partition_law": {"type": "object"},
+    "suspend_commit": {"type": "object"},
+    "resume_cancel_race": {"type": "object"},
+    "cleanup": {"type": "object"},
+    "hir_projection": {"type": "object"},
+    "mir_projection": {"type": "object"},
+    "diagnostics": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "stage", "class"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+          "stage": {"enum": ["checker", "hir_mir_verifier"]},
+          "class": {"enum": ["source", "internal"]}
+        }
+      }
+    },
+    "diagnostic_precedence": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+    "actor_boundary": {"type": "object"},
+    "status_fence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["semantic_p0_delta", "canonical_feature_p1", "m13_actions", "product_lanes", "product_execution", "github_publication"],
+      "properties": {
+        "semantic_p0_delta": {"const": 0},
+        "canonical_feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "product_execution": {"const": "NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"}
+      }
+    }
+  }
+}

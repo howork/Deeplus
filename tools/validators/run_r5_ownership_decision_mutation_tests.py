@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "aaa20e2cb7f4135fc6686eeb73d768fe453cab254e0f7be47639a12f92dfcd5e"
+        "75defdb2f1d8dbee001afca432543a7322eab8e278d2cfa02fe9f23109018d6a"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"

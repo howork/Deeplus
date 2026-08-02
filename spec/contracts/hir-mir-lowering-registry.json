@@ -13,38 +13,38 @@
     "hir_schema": {
       "schema_id": "deeplus.canonical-hir-h1/r1",
       "relative_path": "../../schemas/language/canonical-hir-h1.schema.json",
-      "sha256": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07"
+      "sha256": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7"
     },
     "hir_identity_catalog": {
       "schema_id": "deeplus.hir-h1-identity-catalog/r1",
       "relative_path": "hir-h1-identity-catalog.json",
-      "sha256": "c053192d2e225655cd6194da5f409aae0b401d511db66351329140b2c35aa80a"
+      "sha256": "1b37f7fdeb07858042f82757d66350ecc42d4bbd86dc1b926ea9cfbb576018d6"
     },
     "mir_schema": {
       "schema_id": "deeplus.mir/r1",
       "relative_path": "../../schemas/language/deeplus-mir.schema.json",
-      "sha256": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b"
+      "sha256": "68bbf395748a0bbec44bf27057cef88cd5f1a0efa595a9e6e9c92809a3db32fe"
     },
     "mir_machine_registry": {
       "schema_id": "deeplus.mir-machine-registry/r1",
       "relative_path": "mir-machine-registry.json",
-      "sha256": "29d29fdfb767cce37cb4debf52052320c51878439b9f59d378c27b8f1ed1567b"
+      "sha256": "788a4c21aaa5936a3a762b0df30a64d61647bc619ba342c65dd256b7c5ff30e2"
     },
     "lowering_row_schema": {
       "schema_id": "deeplus.hir-mir-lowering-row/r1",
       "relative_path": "../../schemas/language/hir-mir-lowering-row.schema.json",
-      "sha256": "da04af30f7d2fa192a8c99c751fcdc1ce4f7fe553dd2d9614c0636dcaf6a6713"
+      "sha256": "f064567cb7323e4525a296d0d60ac636512cdbacbd210c51dd9ccf43646bb1ae"
     },
     "fixture_binding_table": {
       "schema_id": "deeplus.hir-mir-machine-contract-fixtures/r1",
       "relative_path": "../../tests/fixtures/current/hir-mir-machine-contract-r1.json",
-      "sha256": "59e1d9d0e95c24b50b31c75bd10e78a84d5992a366a22cd2e20f03d492318c06",
+      "sha256": "7e4057021c8c57b8a5654ed99c36a0c94b574372f1e38bd33e89b24a350ef73f",
       "case_count": 43
     },
     "diagnostic_contract": {
       "schema_id": "deeplus.hir-mir-machine-diagnostic-contract/r1",
       "relative_path": "hir-mir-machine-diagnostic-contract.json",
-      "sha256": "b9e1fed6e15b8720605159127262d6a754fd0aec32ebbe36410fb189b6a0a4db"
+      "sha256": "275c6a1a2168dcdbac4e72a34350cc6f9c5898122d004c07a044904939b9f67a"
     }
   },
   "lowering_rules_revision": "R11-INTEGRATED-R1",
@@ -58,7 +58,7 @@
     "nested_profile_override": "FORBIDDEN"
   },
   "coverage_contract": {
-    "hir_identity_catalog_exact_count": 129,
+    "hir_identity_catalog_exact_count": 130,
     "row_count": 111,
     "current_exact_row_count": 102,
     "explicit_preview_additional_row_count": 9,
@@ -209,6 +209,30 @@
       "semantic_operation_id": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"
     },
     {
+      "operation_kind": "FRAME_CREATE",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CREATE-R1"
+    },
+    {
+      "operation_kind": "FRAME_SUSPEND_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1"
+    },
+    {
+      "operation_kind": "FRAME_RESUME_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-RESUME-COMMIT-R1"
+    },
+    {
+      "operation_kind": "FRAME_CANCEL_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1"
+    },
+    {
+      "operation_kind": "FRAME_CLEANUP_STEP",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CLEANUP-STEP-R1"
+    },
+    {
+      "operation_kind": "FRAME_TERMINATE",
+      "semantic_operation_id": "DM-SEMOP-FRAME-TERMINATE-R1"
+    },
+    {
       "operation_kind": "OBJECT_CONSTRUCTION_BEGIN",
       "semantic_operation_id": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1"
     },
@@ -289,6 +313,34 @@
     "publication_count_on_abort": 0,
     "product_support": "NOT_RUN"
   },
+  "continuation_frame_mapping": {
+    "hir_structural_identity_id": "HIR-H1/STRUCT/CONTINUATION_FRAME_PLAN",
+    "contract": "suspension-frame-responsibility-r1.json",
+    "continuation_interface_contract": "continuation-interface-r1.json",
+    "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_interface_digest": "e8b0b6e4b9a888a67c068d56a41a3d9e05bcd4843a6904f8b153a53edee9193b",
+    "continuation_receipt_schema": "../../schemas/language/continuation-receipt-r1.schema.json",
+    "backend_neutral": true,
+    "body_entry_operation": "FRAME_CREATE",
+    "suspension_site_operations": [
+      "FRAME_SUSPEND_COMMIT",
+      "FRAME_RESUME_COMMIT",
+      "FRAME_CANCEL_COMMIT"
+    ],
+    "cancellation_cleanup_operation": "FRAME_CLEANUP_STEP",
+    "body_terminal_operation": "FRAME_TERMINATE",
+    "exact_operation_family_count": 6,
+    "epoch_policy": "FRESH_MONOTONIC_PER_FRAME",
+    "owner_loan_cleanup_authority_partition": "EXACT_DISJOINT_UNION",
+    "root_partition": "BIJECTIVE_STORAGE_LOCATION_REBIND",
+    "target_projection_order": [
+      "Xvm",
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "arbitrary_runtime_to_generated_callback_authority": false,
+    "product_support": "NOT_RUN"
+  },
   "capability_gate_contract": {
     "boundary": "EXECUTABLE_HIR_GATE",
     "lowering_row_disposition_on_missing_capability": "LOWER",
@@ -307,7 +359,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -324,7 +376,48 @@
       "required_capability_ids": [
         "DM-CAP-SUSPEND-CANCEL-R1"
       ],
-      "operation_plan": [],
+      "operation_plan": [
+        {
+          "ordinal": 1,
+          "operation_kind": "FRAME_SUSPEND_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "suspension_point",
+            "exact_live_partition"
+          ],
+          "output_roles": [
+            "committed_epoch"
+          ],
+          "condition": "ON_SUSPEND"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "FRAME_RESUME_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-RESUME-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "committed_epoch"
+          ],
+          "output_roles": [
+            "restored_live_partition"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 3,
+          "operation_kind": "FRAME_CANCEL_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "committed_epoch"
+          ],
+          "output_roles": [
+            "cleaning_frame"
+          ],
+          "condition": "ON_CANCEL"
+        }
+      ],
       "terminator_plan": [
         {
           "ordinal": 1,
@@ -480,7 +573,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -624,7 +717,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -771,7 +864,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -919,7 +1012,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1078,7 +1171,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1283,7 +1376,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1440,7 +1533,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1622,7 +1715,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1839,7 +1932,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -1985,7 +2078,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2129,7 +2222,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2332,7 +2425,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2476,7 +2569,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2620,7 +2713,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2774,7 +2867,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -2977,7 +3070,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -3135,7 +3228,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -3293,7 +3386,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -3464,7 +3557,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -3621,7 +3714,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -3798,7 +3891,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4000,7 +4093,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4144,7 +4237,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4291,7 +4384,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4438,7 +4531,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4582,7 +4675,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4727,7 +4820,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -4871,7 +4964,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5018,7 +5111,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5187,7 +5280,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5204,7 +5297,48 @@
       "required_capability_ids": [
         "DM-CAP-SUSPEND-CANCEL-R1"
       ],
-      "operation_plan": [],
+      "operation_plan": [
+        {
+          "ordinal": 1,
+          "operation_kind": "FRAME_SUSPEND_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "suspension_point",
+            "exact_live_partition"
+          ],
+          "output_roles": [
+            "committed_epoch"
+          ],
+          "condition": "ON_SUSPEND"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "FRAME_RESUME_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-RESUME-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "committed_epoch"
+          ],
+          "output_roles": [
+            "restored_live_partition"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 3,
+          "operation_kind": "FRAME_CANCEL_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1",
+          "input_roles": [
+            "continuation_frame",
+            "committed_epoch"
+          ],
+          "output_roles": [
+            "cleaning_frame"
+          ],
+          "condition": "ON_CANCEL"
+        }
+      ],
       "terminator_plan": [
         {
           "ordinal": 1,
@@ -5360,7 +5494,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5487,7 +5621,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5644,7 +5778,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5771,7 +5905,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -5922,7 +6056,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -6066,7 +6200,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -6222,7 +6356,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -6426,7 +6560,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -6618,7 +6752,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -6811,7 +6945,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7003,7 +7137,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7195,7 +7329,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7388,7 +7522,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7568,7 +7702,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7749,7 +7883,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -7929,7 +8063,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8110,7 +8244,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8255,7 +8389,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8400,7 +8534,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8544,7 +8678,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8689,7 +8823,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8833,7 +8967,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -8978,7 +9112,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9122,7 +9256,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9289,7 +9423,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9456,7 +9590,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9604,7 +9738,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9752,7 +9886,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -9900,7 +10034,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10048,7 +10182,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10196,7 +10330,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10363,7 +10497,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10511,7 +10645,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10678,7 +10812,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -10845,7 +10979,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11011,7 +11145,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11158,7 +11292,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11325,7 +11459,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11473,7 +11607,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11621,7 +11755,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11769,7 +11903,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -11917,7 +12051,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12065,7 +12199,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12224,7 +12358,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12370,7 +12504,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12529,7 +12663,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12688,7 +12822,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -12834,7 +12968,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13007,7 +13141,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13167,7 +13301,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13327,7 +13461,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13500,7 +13634,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13673,7 +13807,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13846,7 +13980,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -13992,7 +14126,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14152,7 +14286,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14325,7 +14459,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14485,7 +14619,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14681,7 +14815,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14841,7 +14975,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -14987,7 +15121,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15147,7 +15281,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15293,7 +15427,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15453,7 +15587,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15599,7 +15733,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15745,7 +15879,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -15903,7 +16037,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16049,7 +16183,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16209,7 +16343,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16382,7 +16516,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16542,7 +16676,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16688,7 +16822,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -16848,7 +16982,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17008,7 +17142,7 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17181,7 +17315,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17340,7 +17474,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17499,7 +17633,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17645,7 +17779,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17805,7 +17939,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {
@@ -17965,7 +18099,7 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "9bfbb9ad02889b0c4c6fcf379e8746626b161488e07d26402d1694067fce5b07",
+      "hir_schema_digest": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
       "mir_schema_digest": "f4058ec7a984e4c413042bd16a3415d15045412a23d42a3de73cad95fcfa794b",
       "lowering_rules_revision": "R11-INTEGRATED-R1",
       "lowering_dispatch_key": {

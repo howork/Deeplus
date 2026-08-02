@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/continuation-receipt-r1.schema.json",
+  "title": "Deeplus continuation commit and winner-claim receipts",
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "typedId": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*Id:[A-Z0-9._:-]+$"},
+    "cleanupTokenBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cleanup_token_id", "owner_id", "cleanup_region_id", "cleanup_region_rank", "registration_rank"],
+      "properties": {
+        "cleanup_token_id": {"type": "string", "pattern": "^CleanupTokenId:[A-Z0-9._:-]+$"},
+        "owner_id": {"type": "string", "pattern": "^OwnerId:[A-Z0-9._:-]+$"},
+        "cleanup_region_id": {"type": "string", "pattern": "^CleanupRegionId:[A-Z0-9._:-]+$"},
+        "cleanup_region_rank": {"type": "integer", "minimum": 0},
+        "registration_rank": {"type": "integer", "minimum": 0}
+      }
+    },
+    "rootRebindPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_root_id", "destination_root_id", "source_owner_id", "source_storage_kind", "source_storage_id", "destination_owner_id", "destination_frame_slot_id", "trace_descriptor_id", "checked_handle_generation", "value_provenance_id"],
+      "properties": {
+        "source_root_id": {"type": "string", "pattern": "^RootId:[A-Z0-9._:-]+$"},
+        "destination_root_id": {"type": "string", "pattern": "^RootId:[A-Z0-9._:-]+$"},
+        "source_owner_id": {"type": "string", "pattern": "^OwnerId:[A-Z0-9._:-]+$"},
+        "source_storage_kind": {"enum": ["ACTIVE_FRAME", "PLACE"]},
+        "source_storage_id": {"$ref": "#/$defs/typedId"},
+        "destination_owner_id": {"type": "string", "pattern": "^OwnerId:[A-Z0-9._:-]+$"},
+        "destination_frame_slot_id": {"type": "string", "pattern": "^FrameSlotId:[A-Z0-9._:-]+$"},
+        "trace_descriptor_id": {"type": "string", "pattern": "^TraceDescriptorId:[A-Z0-9._:-]+$"},
+        "checked_handle_generation": {"type": "integer", "minimum": 0},
+        "value_provenance_id": {"type": "string", "pattern": "^ValueProvenanceId:[A-Z0-9._:-]+$"}
+      }
+    },
+    "actorTurnScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "actor_id", "actor_turn_id", "state_region_id", "mailbox_id", "retained_authority_axes"],
+      "properties": {
+        "kind": {"const": "ACTOR_TURN"},
+        "actor_id": {"type": "string", "pattern": "^ActorId:[A-Z0-9._:-]+$"},
+        "actor_turn_id": {"type": "string", "pattern": "^ActorTurnId:[A-Z0-9._:-]+$"},
+        "state_region_id": {"type": "string", "pattern": "^StateRegionId:[A-Z0-9._:-]+$"},
+        "mailbox_id": {"type": "string", "pattern": "^MailboxId:[A-Z0-9._:-]+$"},
+        "retained_authority_axes": {"const": ["STATE_REGION_MUTATION", "DEQUEUE"]}
+      }
+    },
+    "actorScope": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"const": "NONE"}}},
+        {"$ref": "#/$defs/actorTurnScope"}
+      ]
+    },
+    "commitReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "receipt_kind", "continuation_receipt_id", "continuation_interface_identity", "continuation_interface_digest", "runtime_abi_digest_or_null", "memory_profile_id_or_null", "memory_profile_digest_or_null", "continuation_frame_plan_id", "continuation_frame_plan_digest", "continuation_frame_id", "suspension_point_id", "suspension_epoch_id", "frame_state_before", "frame_state_after", "epoch_state_before", "epoch_state_after", "owner_ids", "active_loan_ids", "cleanup_token_bindings", "root_rebind_pairs", "authority_token_ids", "actor_scope", "cancellation_id_or_null", "source_partition_digest", "destination_partition_digest", "source_root_map_id", "source_root_map_digest", "destination_root_map_id", "destination_root_map_digest", "cleanup_order_digest", "transfer_commit_count", "source_residual_count", "receipt_digest_material", "receipt_digest"],
+      "properties": {
+        "schema": {"const": "deeplus.continuation-receipt/r1"},
+        "receipt_kind": {"const": "SUSPEND_COMMIT"},
+        "continuation_receipt_id": {"type": "string", "pattern": "^ContinuationReceiptId:[A-Z0-9._:-]+$"},
+        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_abi_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "memory_profile_id_or_null": {"oneOf": [{"type": "string", "pattern": "^ManagedReferenceProfileId:[A-Z0-9._:-]+$"}, {"type": "null"}]},
+        "memory_profile_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "continuation_frame_plan_id": {"type": "string", "pattern": "^ContinuationFramePlanId:[A-Z0-9._:-]+$"},
+        "continuation_frame_plan_digest": {"$ref": "#/$defs/sha256"},
+        "continuation_frame_id": {"type": "string", "pattern": "^ContinuationFrameId:[A-Z0-9._:-]+$"},
+        "suspension_point_id": {"type": "string", "pattern": "^SuspensionPointId:[A-Z0-9._:-]+$"},
+        "suspension_epoch_id": {"type": "string", "pattern": "^SuspensionEpochId:[A-Z0-9._:-]+$"},
+        "frame_state_before": {"const": "RUNNING"},
+        "frame_state_after": {"const": "SUSPENDED"},
+        "epoch_state_before": {"const": "PREPARING"},
+        "epoch_state_after": {"const": "COMMITTED"},
+        "owner_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^OwnerId:[A-Z0-9._:-]+$"}},
+        "active_loan_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^LoanId:[A-Z0-9._:-]+$"}},
+        "cleanup_token_bindings": {"type": "array", "items": {"$ref": "#/$defs/cleanupTokenBinding"}},
+        "root_rebind_pairs": {"type": "array", "items": {"$ref": "#/$defs/rootRebindPair"}},
+        "authority_token_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(ActorTurnId|ConcurRunId):[A-Z0-9._:-]+$"}},
+        "actor_scope": {"$ref": "#/$defs/actorScope"},
+        "cancellation_id_or_null": {"oneOf": [{"type": "string", "pattern": "^CancellationId:[A-Z0-9._:-]+$"}, {"type": "null"}]},
+        "source_partition_digest": {"$ref": "#/$defs/sha256"},
+        "destination_partition_digest": {"$ref": "#/$defs/sha256"},
+        "source_root_map_id": {"type": "string", "pattern": "^RootMapId:[A-Z0-9._:-]+$"},
+        "source_root_map_digest": {"$ref": "#/$defs/sha256"},
+        "destination_root_map_id": {"type": "string", "pattern": "^RootMapId:[A-Z0-9._:-]+$"},
+        "destination_root_map_digest": {"$ref": "#/$defs/sha256"},
+        "cleanup_order_digest": {"$ref": "#/$defs/sha256"},
+        "transfer_commit_count": {"const": 1},
+        "source_residual_count": {"const": 0},
+        "receipt_digest_material": {"type": "object"},
+        "receipt_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "claimReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "receipt_kind", "claim_receipt_id", "parent_commit_receipt_id", "continuation_interface_identity", "continuation_interface_digest", "continuation_frame_id", "suspension_epoch_id", "winner", "frame_state_before", "frame_state_after", "epoch_state_before", "epoch_state_after", "loser_effect_count", "partition_result_digest", "receipt_digest_material", "receipt_digest"],
+      "properties": {
+        "schema": {"const": "deeplus.continuation-receipt/r1"},
+        "receipt_kind": {"const": "WINNER_CLAIM"},
+        "claim_receipt_id": {"type": "string", "pattern": "^ContinuationReceiptId:[A-Z0-9._:-]+$"},
+        "parent_commit_receipt_id": {"type": "string", "pattern": "^ContinuationReceiptId:[A-Z0-9._:-]+$"},
+        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
+        "continuation_frame_id": {"type": "string", "pattern": "^ContinuationFrameId:[A-Z0-9._:-]+$"},
+        "suspension_epoch_id": {"type": "string", "pattern": "^SuspensionEpochId:[A-Z0-9._:-]+$"},
+        "winner": {"enum": ["RESUME", "CANCEL"]},
+        "frame_state_before": {"const": "SUSPENDED"},
+        "frame_state_after": {"enum": ["RUNNING", "CLEANING"]},
+        "epoch_state_before": {"const": "COMMITTED"},
+        "epoch_state_after": {"enum": ["DISCHARGED", "CANCEL_WON"]},
+        "loser_effect_count": {"const": 0},
+        "partition_result_digest": {"$ref": "#/$defs/sha256"},
+        "receipt_digest_material": {"type": "object"},
+        "receipt_digest": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {"if": {"properties": {"winner": {"const": "RESUME"}}, "required": ["winner"]}, "then": {"properties": {"frame_state_after": {"const": "RUNNING"}, "epoch_state_after": {"const": "DISCHARGED"}}}},
+        {"if": {"properties": {"winner": {"const": "CANCEL"}}, "required": ["winner"]}, "then": {"properties": {"frame_state_after": {"const": "CLEANING"}, "epoch_state_after": {"const": "CANCEL_WON"}}}}
+      ]
+    }
+  },
+  "oneOf": [
+    {"$ref": "#/$defs/commitReceipt"},
+    {"$ref": "#/$defs/claimReceipt"}
+  ]
+}

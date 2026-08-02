@@ -1,0 +1,454 @@
+{
+  "schema": "deeplus.continuation-interface/r1",
+  "status": "LOCAL_CANONICAL_PROJECTION_NOT_PUBLISHED",
+  "gap_id": "IR-OWN-P0-017",
+  "interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+  "interface_version": 1,
+  "source_surface": {
+    "new_spelling_count": 0,
+    "grammar_change_required": false
+  },
+  "authorities": {
+    "suspension_frame_contract": "spec/contracts/suspension-frame-responsibility-r1.json",
+    "suspension_frame_schema": "schemas/language/suspension-frame-responsibility.schema.json",
+    "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
+    "hir_schema": "schemas/language/canonical-hir-h1.schema.json",
+    "mir_schema": "schemas/language/deeplus-mir.schema.json",
+    "mir_machine_registry": "spec/contracts/mir-machine-registry.json"
+  },
+  "canonical_encoding": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "object_keys": "UTF8_LEXICOGRAPHIC_ASCENDING",
+    "ordered_arrays": "DECLARED_ORDER_PRESERVED",
+    "identity_sets": "TYPED_ID_ASCENDING_UNIQUE",
+    "self_digest_fields_excluded": true,
+    "runtime_addresses_excluded": true
+  },
+  "bound_artifact_digests": {
+    "continuation_receipt_schema": "6b538b765a17a1e27ba80e6662c18e07cde36649ade14e8bacb648ebfbeeec32",
+    "suspension_frame_schema": "1b3d526863de9d9e02ccb79a66f927c0b75adb1faae001aaf6821e9755255e59",
+    "hir_schema": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
+    "mir_schema": "68bbf395748a0bbec44bf27057cef88cd5f1a0efa595a9e6e9c92809a3db32fe",
+    "mir_machine_registry": "788a4c21aaa5936a3a762b0df30a64d61647bc619ba342c65dd256b7c5ff30e2"
+  },
+  "identity_domains": {
+    "static": [
+      "ContinuationFramePlanId",
+      "SuspensionPointId",
+      "FrameSlotId"
+    ],
+    "dynamic": [
+      "ContinuationFrameId",
+      "SuspensionEpochId",
+      "ContinuationReceiptId"
+    ],
+    "referenced": [
+      "PlaceId",
+      "OwnerId",
+      "LoanId",
+      "CleanupTokenId",
+      "CleanupRegionId",
+      "RootId",
+      "RootMapId",
+      "ActorTurnId",
+      "ConcurRunId",
+      "CancellationId"
+    ]
+  },
+  "frame_states": [
+    "RUNNING",
+    "SUSPENDED",
+    "CLEANING",
+    "TERMINAL_COMPLETED",
+    "TERMINAL_FAILED",
+    "TERMINAL_CANCELLED"
+  ],
+  "epoch_states": [
+    "PREPARING",
+    "COMMITTED",
+    "RESUME_WON",
+    "CANCEL_WON",
+    "DISCHARGED"
+  ],
+  "transitions": [
+    {
+      "operation": "FRAME_CREATE",
+      "frame_from": [
+        "ABSENT"
+      ],
+      "frame_to": "RUNNING",
+      "epoch_from": null,
+      "epoch_to": null,
+      "winner_witness_or_null": null,
+      "receipt_effect": "NONE"
+    },
+    {
+      "operation": "FRAME_SUSPEND_COMMIT",
+      "frame_from": [
+        "RUNNING"
+      ],
+      "frame_to": "SUSPENDED",
+      "epoch_from": "PREPARING",
+      "epoch_to": "COMMITTED",
+      "winner_witness_or_null": null,
+      "receipt_effect": "CREATE_ONE_SUSPEND_COMMIT"
+    },
+    {
+      "operation": "FRAME_RESUME_COMMIT",
+      "frame_from": [
+        "SUSPENDED"
+      ],
+      "frame_to": "RUNNING",
+      "epoch_from": "COMMITTED",
+      "epoch_to": "DISCHARGED",
+      "winner_witness_or_null": "RESUME_WON",
+      "receipt_effect": "CONSUME_PARENT_CREATE_ONE_WINNER_CLAIM"
+    },
+    {
+      "operation": "FRAME_CANCEL_COMMIT",
+      "frame_from": [
+        "SUSPENDED"
+      ],
+      "frame_to": "CLEANING",
+      "epoch_from": "COMMITTED",
+      "epoch_to": "CANCEL_WON",
+      "winner_witness_or_null": "CANCEL_WON",
+      "receipt_effect": "CONSUME_PARENT_CREATE_ONE_WINNER_CLAIM"
+    },
+    {
+      "operation": "FRAME_CLEANUP_STEP",
+      "frame_from": [
+        "CLEANING"
+      ],
+      "frame_to": "CLEANING",
+      "epoch_from": "CANCEL_WON",
+      "epoch_to": "CANCEL_WON",
+      "winner_witness_or_null": null,
+      "receipt_effect": "NONE_ONE_TOKEN_DISCHARGE"
+    },
+    {
+      "operation": "FRAME_TERMINATE",
+      "frame_from": [
+        "RUNNING"
+      ],
+      "frame_to": "TERMINAL_COMPLETED",
+      "epoch_from": null,
+      "epoch_to": null,
+      "winner_witness_or_null": null,
+      "receipt_effect": "NONE"
+    },
+    {
+      "operation": "FRAME_TERMINATE",
+      "frame_from": [
+        "RUNNING"
+      ],
+      "frame_to": "TERMINAL_FAILED",
+      "epoch_from": null,
+      "epoch_to": null,
+      "winner_witness_or_null": null,
+      "receipt_effect": "NONE"
+    },
+    {
+      "operation": "FRAME_TERMINATE",
+      "frame_from": [
+        "CLEANING"
+      ],
+      "frame_to": "TERMINAL_CANCELLED",
+      "epoch_from": "CANCEL_WON",
+      "epoch_to": "DISCHARGED",
+      "winner_witness_or_null": null,
+      "receipt_effect": "NONE"
+    }
+  ],
+  "place_dispositions": [
+    {
+      "disposition": "NOT_LIVE_AFTER_SUSPEND",
+      "materializes_frame_slot": false,
+      "owner_count": 0,
+      "admitted_loan_class": "NONE"
+    },
+    {
+      "disposition": "REUSABLE_COPY",
+      "materializes_frame_slot": true,
+      "owner_count": 0,
+      "admitted_loan_class": "NONE"
+    },
+    {
+      "disposition": "OWNED_TRANSFER",
+      "materializes_frame_slot": true,
+      "owner_count": 1,
+      "admitted_loan_class": "NONE"
+    },
+    {
+      "disposition": "STATIC_SHARED_BORROW",
+      "materializes_frame_slot": true,
+      "owner_count": 0,
+      "admitted_loan_class": "STATIC_IMMUTABLE_SHARED"
+    }
+  ],
+  "frame_slot_contract": {
+    "materialized_dispositions": [
+      "REUSABLE_COPY",
+      "OWNED_TRANSFER",
+      "STATIC_SHARED_BORROW"
+    ],
+    "required_fields": [
+      "frame_slot_id",
+      "source_place_id",
+      "normalized_type_id",
+      "disposition",
+      "init_state",
+      "owner_id_or_null",
+      "loan_id_or_null",
+      "cleanup_token_bindings",
+      "root_projection_ids"
+    ],
+    "root_projection_cardinality": "ZERO_OR_MORE_SORTED_UNIQUE",
+    "cleanup_token_binding_order": "CLEANUP_REGION_RANK_ASC_THEN_REGISTRATION_RANK_ASC_FOR_CANONICAL_BYTES",
+    "runtime_address_identity_count": 0
+  },
+  "loan_fence": {
+    "admitted_across_suspension": [
+      "NONE",
+      "STATIC_IMMUTABLE_SHARED"
+    ],
+    "must_end_before_suspension": [
+      "STACK_SHARED",
+      "REGION_SHARED",
+      "INOUT",
+      "EXCLUSIVE",
+      "TEMPORARY_VIEW",
+      "CALLBACK_BORROW",
+      "BORROW_FACET"
+    ],
+    "managed_nonmoving_is_not_static_loan_proof": true,
+    "actor_state_live_loan_count_at_commit": 0
+  },
+  "partition_laws": {
+    "owner": "live_owner_ids = disjoint_union(running_owner_ids, frame_owner_ids)",
+    "loan": "admitted_live_loan_ids = disjoint_union(running_loan_ids, frame_loan_ids)",
+    "cleanup_token": "live_cleanup_token_ids = disjoint_union(running_cleanup_token_ids, frame_cleanup_token_ids)",
+    "opaque_authority": "live_authority_token_ids = disjoint_union(running_authority_token_ids, frame_authority_token_ids)",
+    "root": "active_root_storage_locations_are_rebound_bijectively_not_identity_transferred",
+    "partial_transfer_count": 0,
+    "duplicate_identity_count": 0,
+    "lost_identity_count": 0
+  },
+  "root_rebind_law": {
+    "pair_fields": [
+      "source_root_id",
+      "destination_root_id",
+      "source_owner_id",
+      "source_storage_kind",
+      "source_storage_id",
+      "destination_owner_id",
+      "destination_frame_slot_id",
+      "trace_descriptor_id",
+      "checked_handle_generation",
+      "value_provenance_id"
+    ],
+    "source_root_must_differ_from_destination_root": true,
+    "value_descriptor_generation_provenance_equal": true,
+    "pair_cardinality": "BIJECTION",
+    "commit_order": [
+      "INSTALL_DESTINATION_ROOT",
+      "PUBLISH_RECEIPT",
+      "REMOVE_SOURCE_ROOT"
+    ],
+    "source_residual_count_after_commit": 0,
+    "collector_entry_during_handover_count": 0,
+    "post_transfer_safepoint_uses_destination_map": true
+  },
+  "cleanup_law": {
+    "binding_fields": [
+      "cleanup_token_id",
+      "owner_id",
+      "cleanup_region_id",
+      "cleanup_region_rank",
+      "registration_rank"
+    ],
+    "execution_order": "REVERSE_REGISTRATION_WITHIN_REVERSE_NESTED_CLEANUP_REGION",
+    "token_discharge_count": 1,
+    "continue_after_failure": true,
+    "failure_order": "EXISTING_PRIMARY_SUPPRESSED_LAW"
+  },
+  "actor_scope_law": {
+    "closed_union": [
+      "NONE",
+      "ACTOR_TURN"
+    ],
+    "actor_turn_fields": [
+      "actor_id",
+      "actor_turn_id",
+      "state_region_id",
+      "mailbox_id",
+      "retained_authority_axes"
+    ],
+    "retained_authority_axes": [
+      "STATE_REGION_MUTATION",
+      "DEQUEUE"
+    ],
+    "actor_state_live_loan_count_at_suspend": 0,
+    "second_turn_admission_count": 0,
+    "state_borrow_reacquisition": "FRESH_LOAN_ID_AFTER_RESUME_ONLY",
+    "authority_release_count_at_terminal": 1,
+    "delivery_mailbox_stop_supervision_semantics": "OUT_OF_SCOPE"
+  },
+  "race_and_terminal_law": {
+    "claim_key": [
+      "ContinuationFrameId",
+      "SuspensionEpochId",
+      "COMMITTED"
+    ],
+    "winner_count": 1,
+    "loser_effect_count": 0,
+    "stale_epoch_effect_count": 0,
+    "terminal_states_absorbing": true,
+    "terminal_resume_count": 0,
+    "terminal_balances": {
+      "owners": 0,
+      "loans": 0,
+      "cleanup_tokens": 0,
+      "roots": 0,
+      "frame_slots": 0,
+      "actor_authority": 0
+    }
+  },
+  "projection_entry_maps": [
+    {
+      "target_projection": "Xvm",
+      "entry_kind": "BYTECODE_CONTINUATION_ENTRY",
+      "generated_entry": false,
+      "image_generation_required": false,
+      "continuation_lease_required": false,
+      "address_as_identity": false
+    },
+    {
+      "target_projection": "ObjectAot",
+      "entry_kind": "CRANELIFT_GENERATED_CONTINUATION_ENTRY",
+      "generated_entry": true,
+      "image_generation_required": false,
+      "continuation_lease_required": false,
+      "address_as_identity": false
+    },
+    {
+      "target_projection": "InMemoryJit",
+      "entry_kind": "CRANELIFT_GENERATED_CONTINUATION_ENTRY",
+      "generated_entry": true,
+      "image_generation_required": true,
+      "continuation_lease_required": true,
+      "address_as_identity": false
+    }
+  ],
+  "dispatch_entry_law": {
+    "entry_identity": "ContinuationDispatchEntryId:DEEPLUS_CONTINUATION_DISPATCH_R1",
+    "operations": [
+      "RESUME",
+      "CANCEL"
+    ],
+    "pre_entry_validation": "EXACT_INTERFACE_DIGEST_RECEIPT_EPOCH_AND_OPERATION",
+    "arbitrary_runtime_to_generated_callback_authority": false,
+    "host_function_pointer_is_identity": false,
+    "host_unwind_crosses_entry": false
+  },
+  "seam_status": {
+    "r36_managed_reference_candidate_commit": "4c335bba8f562add27dbc24d636bc43dc52963a9",
+    "r36_digest_binding": "DEFINED_BY_R38_NOT_APPLIED_TO_FROZEN_SIBLING",
+    "r37_internal_runtime_abi_candidate_commit": "3d146bf80ecba79e3d8740da21358c571bd7cf7a",
+    "r37_exact_conditional_helper_count": 6,
+    "r37_helpers_remain_dependency_unbound": true,
+    "silent_candidate_stacking": false,
+    "future_fusion_required": true
+  },
+  "component_digests": {
+    "frame_epoch_transition_digest": "ae0a4022e4d5ad877f04b181693c02278fbc7accfeb26203ca25ee63c7c1dba9",
+    "place_slot_loan_digest": "7f3fe329cf67d13d8a438733893fa83440672b1a63bf73c099e8a3f948f2741f",
+    "partition_root_rebind_digest": "8ed1403170f8543d2134a76fbdf698ece7beab93dff6659144219bad164ca4f6",
+    "cleanup_actor_terminal_digest": "e2ac3eb41f45ba9e3596c027283a12608677755336eba56b7e7741dc7c114a71",
+    "projection_entry_map_digest": "29b0fc9a069bc8d533d2e1a534f6061ff50f4f4e2c557c34240cfd16d0b7dbfb"
+  },
+  "digest_material": {
+    "schema": "deeplus.continuation-interface/r1",
+    "interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "interface_version": 1,
+    "authorities": {
+      "suspension_frame_contract": "spec/contracts/suspension-frame-responsibility-r1.json",
+      "suspension_frame_schema": "schemas/language/suspension-frame-responsibility.schema.json",
+      "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
+      "hir_schema": "schemas/language/canonical-hir-h1.schema.json",
+      "mir_schema": "schemas/language/deeplus-mir.schema.json",
+      "mir_machine_registry": "spec/contracts/mir-machine-registry.json"
+    },
+    "canonical_encoding": {
+      "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+      "object_keys": "UTF8_LEXICOGRAPHIC_ASCENDING",
+      "ordered_arrays": "DECLARED_ORDER_PRESERVED",
+      "identity_sets": "TYPED_ID_ASCENDING_UNIQUE",
+      "self_digest_fields_excluded": true,
+      "runtime_addresses_excluded": true
+    },
+    "bound_artifact_digests": {
+      "continuation_receipt_schema": "6b538b765a17a1e27ba80e6662c18e07cde36649ade14e8bacb648ebfbeeec32",
+      "suspension_frame_schema": "1b3d526863de9d9e02ccb79a66f927c0b75adb1faae001aaf6821e9755255e59",
+      "hir_schema": "894cc0a4624721a28673e4c4bf5d76e15a9a8ad180320514d7ebc0db1c4491a7",
+      "mir_schema": "68bbf395748a0bbec44bf27057cef88cd5f1a0efa595a9e6e9c92809a3db32fe",
+      "mir_machine_registry": "788a4c21aaa5936a3a762b0df30a64d61647bc619ba342c65dd256b7c5ff30e2"
+    },
+    "identity_domains": {
+      "static": [
+        "ContinuationFramePlanId",
+        "SuspensionPointId",
+        "FrameSlotId"
+      ],
+      "dynamic": [
+        "ContinuationFrameId",
+        "SuspensionEpochId",
+        "ContinuationReceiptId"
+      ],
+      "referenced": [
+        "PlaceId",
+        "OwnerId",
+        "LoanId",
+        "CleanupTokenId",
+        "CleanupRegionId",
+        "RootId",
+        "RootMapId",
+        "ActorTurnId",
+        "ConcurRunId",
+        "CancellationId"
+      ]
+    },
+    "frame_states": [
+      "RUNNING",
+      "SUSPENDED",
+      "CLEANING",
+      "TERMINAL_COMPLETED",
+      "TERMINAL_FAILED",
+      "TERMINAL_CANCELLED"
+    ],
+    "epoch_states": [
+      "PREPARING",
+      "COMMITTED",
+      "RESUME_WON",
+      "CANCEL_WON",
+      "DISCHARGED"
+    ],
+    "component_digests": {
+      "frame_epoch_transition_digest": "ae0a4022e4d5ad877f04b181693c02278fbc7accfeb26203ca25ee63c7c1dba9",
+      "place_slot_loan_digest": "7f3fe329cf67d13d8a438733893fa83440672b1a63bf73c099e8a3f948f2741f",
+      "partition_root_rebind_digest": "8ed1403170f8543d2134a76fbdf698ece7beab93dff6659144219bad164ca4f6",
+      "cleanup_actor_terminal_digest": "e2ac3eb41f45ba9e3596c027283a12608677755336eba56b7e7741dc7c114a71",
+      "projection_entry_map_digest": "29b0fc9a069bc8d533d2e1a534f6061ff50f4f4e2c557c34240cfd16d0b7dbfb"
+    }
+  },
+  "continuation_interface_digest": "e8b0b6e4b9a888a67c068d56a41a3d9e05bcd4843a6904f8b153a53edee9193b",
+  "governance": {
+    "semantic_p0_delta": 0,
+    "gap_status": "APPROVED_NOT_INTEGRATED",
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_execution": "NOT_RUN",
+    "github_publication": "SUSPENDED"
+  }
+}

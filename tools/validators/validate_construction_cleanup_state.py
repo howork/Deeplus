@@ -134,12 +134,12 @@ def main() -> int:
     rows = hir_catalog.get("identity_rows", [])
     ids = [row.get("identity_id") for row in rows]
     require(errors, hir_catalog.get("schema_revision") == "R11-INTEGRATED-R1", "R11_HIR_CATALOG", "HIR catalog revision differs")
-    require(errors, hir_catalog.get("identity_count") == len(rows) == len(set(ids)) == 129, "R11_HIR_CATALOG", "HIR catalog is not exact unique 129")
-    require(errors, sum(row.get("family") == "STRUCTURAL_SCHEMA" for row in rows) == 17, "R11_HIR_CATALOG", "structural identity count is not 17")
+    require(errors, hir_catalog.get("identity_count") == len(rows) == len(set(ids)) == 130, "R11_HIR_CATALOG", "HIR catalog is not exact unique 130")
+    require(errors, sum(row.get("family") == "STRUCTURAL_SCHEMA" for row in rows) == 18, "R11_HIR_CATALOG", "structural identity count is not 18")
     require(errors, ids.count(LIFECYCLE_ID) == 1, "R11_HIR_PLAN", "lifecycle structural identity is not unique")
     plan_contracts = hir_catalog.get("structural_plan_contracts", [])
     lifecycle_contracts = [row for row in plan_contracts if row.get("structural_identity_id") == LIFECYCLE_ID]
-    require(errors, hir_catalog.get("structural_plan_contract_count") == len(plan_contracts) == 13, "R11_HIR_PLAN", "structural plan count is not 13")
+    require(errors, hir_catalog.get("structural_plan_contract_count") == len(plan_contracts) == 14, "R11_HIR_PLAN", "structural plan count is not 14")
     require(errors, len(lifecycle_contracts) == 1 and lifecycle_contracts[0].get("required_plan_fields") == PLAN_FIELDS, "R11_HIR_PLAN", "lifecycle catalog contract differs")
     hdefs = hir_schema.get("$defs", {})
     require(errors, LIFECYCLE_ID in hdefs.get("PlanStructuralKind", {}).get("enum", []), "R11_HIR_SCHEMA", "lifecycle plan kind missing")
@@ -150,7 +150,7 @@ def main() -> int:
     operations = mir_registry.get("semantic_operations", [])
     op_map = {row.get("operation_kind"): row.get("semantic_operation_id") for row in operations}
     require(errors, mir_registry.get("draft_revision") == "R11-INTEGRATED-R1", "R11_MIR_REGISTRY", "MIR registry revision differs")
-    require(errors, mir_registry.get("semantic_operation_contract", {}).get("operation_kind_count") == len(operations) == len(op_map) == 42, "R11_MIR_REGISTRY", "MIR operation universe is not exact unique 42")
+    require(errors, mir_registry.get("semantic_operation_contract", {}).get("operation_kind_count") == len(operations) == len(op_map) == 48, "R11_MIR_REGISTRY", "MIR operation universe is not exact unique 48")
     require(errors, all(op_map.get(op) == f"DM-SEMOP-{op.replace('_', '-')}-R1" for op in OPS), "R11_MIR_REGISTRY", "lifecycle operation mapping differs")
     require(errors, all(row.get("payload_contract", {}).get("required_fields") == TRANSITION_FIELDS for row in operations if row.get("operation_kind") in OPS), "R11_MIR_PAYLOAD", "registry lifecycle payload differs")
     mdefs = mir_schema.get("$defs", {})
@@ -160,7 +160,7 @@ def main() -> int:
 
     row_ops = row_schema.get("$defs", {}).get("operationKind", {}).get("enum", [])
     row_semops = row_schema.get("$defs", {}).get("operationPlanStep", {}).get("properties", {}).get("semantic_operation_id", {}).get("enum", [])
-    require(errors, set(row_ops) == set(op_map) and len(row_ops) == 42, "R11_ROW_SCHEMA", "lowering row operation universe differs")
+    require(errors, set(row_ops) == set(op_map) and len(row_ops) == 48, "R11_ROW_SCHEMA", "lowering row operation universe differs")
     require(errors, set(row_semops) == set(op_map.values()), "R11_ROW_SCHEMA", "lowering row semantic IDs differ")
     require(errors, lowering.get("draft_revision") == lowering.get("lowering_rules_revision") == "R11-INTEGRATED-R1", "R11_LOWERING", "lowering revision differs")
     require(errors, lowering.get("semantic_operation_mapping") == [{"operation_kind": kind, "semantic_operation_id": semantic_id} for kind, semantic_id in op_map.items()], "R11_LOWERING", "lowering operation map is not exact ordered registry map")
@@ -209,8 +209,8 @@ def main() -> int:
         return 1
 
     print("R11 CONSTRUCTION CLEANUP STATE: PASS")
-    print("  HIR identities=129; structural plans=13; lifecycle plans=1")
-    print("  MIR operations=42 (29 predecessor + 13 lifecycle); lowering rows=111")
+    print("  HIR identities=130; structural plans=14; lifecycle plans=1")
+    print("  MIR operations=48 (29 predecessor + 13 construction lifecycle + 6 suspension-frame); lowering rows=111")
     print("  diagnostics=10 (6 source + 4 verifier); fixtures=24 (6/8/6/4)")
     print("  semantic P0=0; feature P1=22 OPEN; product lanes=15/15 NOT_RUN")
     return 0

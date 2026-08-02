@@ -5952,7 +5952,7 @@ tooling execution remain `NOT_RUN`.
 
 `deeplus.canonical-hir-h1/r1` is the Current Stable-design canonical HIR
 machine schema. Its closed identity catalog
-`deeplus.hir-h1-identity-catalog/r1` has exactly 128 identities. Recovery,
+`deeplus.hir-h1-identity-catalog/r1` has exactly 130 identities. Recovery,
 missing, unresolved, candidate-set, and analysis-only nodes cannot be sealed
 as canonical HIR. Current source programs reach exactly 102 lowering rows; an
 explicit-Preview module can reach at most 111.
@@ -5970,8 +5970,45 @@ registry rows, transitive capability dependencies, and independently resolved
 provider evidence. Failure preserves `Verified<CanonicalHirH1>` and blocks only
 `ExecutableHirH1`.
 
-This design adds exactly five release-verifier diagnostics and no source
-diagnostic. It adds no RCTS predicate, relation, or generic checker fixture,
-no source syntax or source-profile activation, and no production or product
-support. `ProposedMirX1` remains compatibility-only and nonactivatable; all 15
-product lanes remain `NOT_RUN`.
+The current bridge cumulatively adds nine release-verifier diagnostics and one
+source diagnostic. Its suspension subset contributes the checker predicate
+`BorrowAcrossSuspensionAdmitted`; it adds no source syntax or source-profile
+activation and no production or product support. `ProposedMirX1` remains
+compatibility-only and nonactivatable; all 15 product lanes remain `NOT_RUN`.
+
+### Continuation interface and suspension responsibility
+
+Every async or generator body seals one `ContinuationFramePlanId`. Every
+source suspension point has one `SuspensionPointId`, each runtime invocation
+has one `ContinuationFrameId`, and each visit creates a fresh monotonic
+`SuspensionEpochId`. `ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1`
+binds those identities to the exact HIR schema, MIR schema, MIR operation
+registry and typed receipt schema by digest. A runtime address, CLIF value,
+native symbol or host function pointer is never a continuation identity.
+
+A place is classified before a frame slot is materialized. In particular,
+`NOT_LIVE_AFTER_SUSPEND` has no `FrameSlotId`; the three materialized
+dispositions are `REUSABLE_COPY`, `OWNED_TRANSFER` and
+`STATIC_SHARED_BORROW`. The suspend commit atomically partitions owners,
+admitted static loans, cleanup tokens and retained authority tokens. Managed
+`RootId` values identify storage locations and therefore are not transferred
+unchanged: source roots are bijectively rebound to fresh destination roots,
+the destination root map is installed, one immutable receipt is published,
+and only then are source roots removed. Collector entry during that handover
+is forbidden.
+
+One committed epoch admits exactly one winner: resume or cancel. The loser has
+no effect. Cancellation discharges cleanup tokens exactly once in reverse
+registration order within reverse nested cleanup-region order. An actor turn
+crosses suspension only through an explicit `ACTOR_TURN` authority record with
+the `STATE_REGION_MUTATION` and `DEQUEUE` axes; an actor-state loan must end
+before suspension and is reacquired with a fresh `LoanId` only after resume.
+All terminal paths have zero owner, loan, cleanup-token, root, frame-slot and
+actor-authority balances.
+
+`Xvm`, `ObjectAot` and `InMemoryJit` consume the same logical plan, receipt and
+transition digest. `InMemoryJit` additionally binds an image-generation
+identity and continuation lease. Resume and cancel enter generated code only
+through the typed internal continuation dispatcher after exact interface,
+receipt, epoch and operation validation; this does not grant arbitrary
+runtime-to-generated callback authority.

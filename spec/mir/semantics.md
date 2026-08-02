@@ -332,6 +332,59 @@ rejected before MIR. Its invocation may be consumed only by a local `await`,
 local `spawn`, or an inward nested concur whose owner chain proves the same
 residence. General escaping async-lambda events have no current MIR identity.
 
+### 7.1 Continuation-frame machine
+
+Suspension lowering consumes the verified
+`ContinuationFramePlan` associated with the HIR `SuspendPlan`. The plan carries
+only semantic identities and responsibility partitions; it contains no stack
+offset, object layout, machine address, XBC slot, CLIF value or ABI decision.
+`Xvm`, `ObjectAot` and `InMemoryJit` must consume the same plan, typed
+continuation receipt and transition digest. `InMemoryJit` additionally binds
+the exact image-generation identity and continuation lease; no code address is
+a semantic identity.
+
+The closed frame states are `RUNNING`, `SUSPENDED`, `CLEANING`,
+`TERMINAL_COMPLETED`, `TERMINAL_FAILED` and `TERMINAL_CANCELLED`. A suspension
+visit owns a separate epoch in `PREPARING`, `COMMITTED`, `RESUME_WON`,
+`CANCEL_WON` or `DISCHARGED`. The admitted semantic operation family is:
+
+1. `FRAME_CREATE`: create one running frame for an invocation;
+2. `FRAME_SUSPEND_COMMIT`: atomically install the exact owner, admitted-loan,
+   cleanup-token and retained-authority partition, bijectively rebind managed
+   roots to fresh destination storage locations, publish one receipt and commit
+   a fresh epoch;
+3. `FRAME_RESUME_COMMIT`: win the epoch once, restore the exact partition and
+   discharge the epoch;
+4. `FRAME_CANCEL_COMMIT`: win the epoch once, retain the partition and enter
+   cleanup;
+5. `FRAME_CLEANUP_STEP`: discharge the next exact cleanup token in the
+   prescribed order;
+6. `FRAME_TERMINATE`: enter exactly one terminal state with zero owner, loan,
+   cleanup-token, root, frame-slot and actor-authority balance.
+
+`SUSPEND` and `CANCEL_CHECK` remain control-flow forms; they do not replace the
+six responsibility operations. Each operation has its own closed payload shape;
+nullable fields cannot encode a different operation's transition. The verifier
+rejects a missing, duplicated or partially transferred
+owner/loan/token/authority identity, a non-bijective root rebind, an
+inadmissible state or epoch
+transition, a stale or second race winner, a cleanup-order or balance error,
+and any root-set disagreement. The corresponding verifier diagnostics are
+`CONTINUATION_FRAME_OWNER_PARTITION_INVALID`,
+`CONTINUATION_FRAME_TRANSITION_INVALID`,
+`CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID` and
+`CONTINUATION_FRAME_ROOT_SET_INVALID`.
+
+The generic frame machine treats actor delivery, mailbox, stop and supervision
+state as out of scope. It may retain only the closed `ACTOR_TURN` scope with
+`STATE_REGION_MUTATION` and `DEQUEUE` authority; it creates no actor lifecycle
+authority and carries no actor-state loan. Resume and cancel re-enter generated
+code only through the internal typed dispatcher after exact interface, receipt,
+epoch and operation validation. This is distinct from—and grants no authority
+to—an arbitrary runtime callback. Backend allocation and storage coalescing
+occur only after the semantic partition and transition sequence have been
+verified.
+
 ## 8. Objects, evidence and construction
 
 Nominal dispatch, Trait evidence, extension resolution, construction and materialization lower to explicit MIR identities. Runtime strings and Map keys never become static labels or witnesses. Tooling certificates and provider-derive sidecars are consumed before ordinary source checking and never become execution authority.

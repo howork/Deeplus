@@ -525,6 +525,66 @@ coalesce storage only after preserving this state machine and its failure edges.
 
 Closure capture, async suspension, actor isolation, Facet packaging, defer registration, and return are escape boundaries. The checker must prove every captured borrow outlives its use and every resource has exactly one cleanup path. Borrow Facet packaging is current because it cannot outlive its source region; owned and inout Facet packaging remain Preview-design.
 
+### 15.1 Suspension-frame responsibility
+
+`await` and `yield` do not delegate ownership decisions to a coroutine backend.
+For every async or generator callable, HIR records one static
+`ContinuationFramePlanId`. Every source suspension site has one stable
+`SuspensionPointId`, and every live place admitted across that boundary has a
+deterministic `FrameSlotId`. A runtime invocation owns one non-forgeable
+`ContinuationFrameId`. Each visit to a suspension site, including repeated
+visits from a loop, allocates a fresh monotonically increasing
+`SuspensionEpochId`; a site identity is therefore never reused as a race
+identity.
+
+At suspension commit, all live owners, admitted static loans, cleanup tokens
+and retained authority tokens are partitioned atomically between the running
+scope and the continuation frame. The two sides are disjoint and their union
+is the complete live set. A partial, duplicated or lost transfer is invalid.
+Managed `RootId` values identify storage locations, so a root identity itself
+is never transferred: verified source roots are bijectively rebound to fresh
+destination roots with equal descriptor, generation and provenance. The
+destination root map is installed and the immutable continuation receipt is
+published before source roots are removed; collector entry during that handover
+is forbidden. Preparation may allocate and validate the proposed frame, but it
+changes no owner. Only the commit moves the exact responsibility partition.
+Resume returns it to the running scope; cancel keeps it in the frame and begins
+cleanup.
+
+The first implementation profile admits only four slot dispositions:
+
+- `NOT_LIVE_AFTER_SUSPEND`: no slot and no responsibility crosses;
+- `REUSABLE_COPY`: one reusable value slot, with no owner or cleanup token;
+- `OWNED_TRANSFER`: one owned slot carrying its exact `OwnerId`, deterministic
+  per-token cleanup bindings and zero or more destination root projections;
+- `STATIC_SHARED_BORROW`: one immutable shared borrow whose root is proven
+  static and nonmoving.
+
+Stack- or region-rooted shared borrows, `inout`/exclusive loans, temporary
+views, callback borrows and borrow Facets must end before suspension. An actor
+turn may persist only as the explicit `ACTOR_TURN` scope carrying `ActorTurnId`,
+state region, mailbox, and the retained `STATE_REGION_MUTATION` and `DEQUEUE`
+authority axes. An actor-state borrow may not cross the boundary; state access
+is reacquired with a fresh `LoanId` only after resume.
+The specific `FACET_BORROW_CROSSES_SUSPENSION` diagnostic takes precedence for
+a borrow Facet. Other forbidden loans use `BORROW_CROSSES_SUSPENSION`.
+
+One committed epoch admits exactly one winner between resume and cancel. A
+late or duplicate signal has no ownership effect, and a terminal frame cannot
+resume. Cancellation cleans frame-held responsibilities exactly once in
+reverse registration order within reverse nested cleanup-region order. A
+cleanup failure does not skip later cleanup and is recorded by the existing
+primary/suppressed failure law. A terminal frame retains no owner, loan,
+cleanup token, root, frame slot or actor authority.
+
+The machine-readable contracts are
+`spec/contracts/continuation-interface-r1.json` and
+`spec/contracts/suspension-frame-responsibility-r1.json`, with typed immutable
+commit and winner-claim receipts defined by
+`schemas/language/continuation-receipt-r1.schema.json`. They add no source
+spelling or grammar production; the existing `await`, `yield`, `for#await` and
+async callable surfaces remain unchanged.
+
 A free read of an ancestor local or parameter is classified independently from
 environment capture. It is admitted as a lexical dependency only for a
 synchronous same-isolation callable whose residence is proven region-bounded,

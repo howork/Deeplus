@@ -86,8 +86,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1436, "predicates": 277,
-    "predicate_fixtures": 846, "no_go": 155,
+    "features": 719, "diagnostics": 1448, "predicates": 278,
+    "predicate_fixtures": 849, "no_go": 155,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -572,6 +572,7 @@ R10_SEMANTIC_DELTA_PATHS = {
     "schemas/language/canonical-hir-h1.schema.json",
     "schemas/language/deeplus-mir.schema.json",
     "schemas/language/grammar-reference-coverage.schema.json",
+    "schemas/language/grammar-reference-coverage.schema.json",
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json",
     "schemas/language/hir-mir-lowering-row.schema.json",
     "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
@@ -601,6 +602,54 @@ R10_SEMANTIC_DELTA_PATHS = {
     "tools/generators/refresh_source_tree_manifest.py",
     "tools/validators/run_r5_ownership_decision_mutation_tests.py",
     "tools/validators/validate_hir_mir_machine_contract.py",
+    "tools/validators/validate_workspace.py",
+}
+R38_SEMANTIC_DELTA_PATHS = {
+    "schemas/language/canonical-hir-h1.schema.json",
+    "schemas/language/continuation-interface-fixtures-r1.schema.json",
+    "schemas/language/continuation-interface-r1.schema.json",
+    "schemas/language/continuation-receipt-r1.schema.json",
+    "schemas/language/deeplus-mir.schema.json",
+    "schemas/language/hir-mir-lowering-row.schema.json",
+    "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
+    "schemas/language/suspension-frame-responsibility.schema.json",
+    "spec/contracts/continuation-interface-r1.json",
+    "spec/contracts/diagnostic-dispatch-closure-r1.json",
+    "spec/contracts/grammar-reference-r1.json",
+    "spec/contracts/hir-h1-current-mir-bridge.json",
+    "spec/contracts/hir-h1-identity-catalog.json",
+    "spec/contracts/hir-mir-lowering-registry.json",
+    "spec/contracts/hir-mir-machine-diagnostic-contract.json",
+    "spec/contracts/mir-machine-registry.json",
+    "spec/contracts/language-coherence-current-integrity-r1.json",
+    "spec/contracts/suspension-frame-responsibility-r1.json",
+    "spec/contracts/tutorial-r1.json",
+    "spec/diagnostics/catalog/catalog-metadata.json",
+    "spec/diagnostics/catalog/chunks/part-0030.json",
+    "spec/diagnostics/relations/catalog-metadata.json",
+    "spec/diagnostics/relations/chunks/part-0010.json",
+    "spec/features/catalog/chunks/part-0021.json",
+    "spec/language.md",
+    "spec/mir/semantics.md",
+    "spec/types/predicates/catalog-metadata.json",
+    "spec/types/predicates/chunks/part-0022.json",
+    "spec/types/type-system.md",
+    "tests/conformance/checker-predicates/catalog-metadata.json",
+    "tests/conformance/checker-predicates/chunks/part-0033.json",
+    "tests/fixtures/current/continuation-interface-r1.json",
+    "tests/fixtures/current/hir-mir-machine-contract-r1.json",
+    "tests/fixtures/current/suspension-frame-responsibility-r1.json",
+    "tools/generators/generate_language_coherence_current_integrity.py",
+    "tools/generators/generate_grammar_reference.py",
+    "tools/generators/generate_tutorial.py",
+    "tools/generators/rebind_continuation_interface.py",
+    "tools/generators/rebind_r20_suspension_frame_machine_contract.py",
+    "tools/validators/validate_construction_cleanup_state.py",
+    "tools/validators/run_diagnostic_dispatch_closure_tests.py",
+    "tools/validators/run_r5_ownership_decision_mutation_tests.py",
+    "tools/validators/validate_continuation_interface.py",
+    "tools/validators/validate_hir_mir_machine_contract.py",
+    "tools/validators/validate_suspension_frame_responsibility.py",
     "tools/validators/validate_workspace.py",
 }
 EXPR_AUTHORITY = "governance/policies/management-policy.yaml#EXPR-001"
@@ -12174,20 +12223,30 @@ def main() -> int:
         required.extend([
             "decisions/language/Design_Deeplus_HIR_MIR_Machine_Contract_R1.md",
             "schemas/language/canonical-hir-h1.schema.json",
+            "schemas/language/continuation-interface-fixtures-r1.schema.json",
+            "schemas/language/continuation-interface-r1.schema.json",
+            "schemas/language/continuation-receipt-r1.schema.json",
             "schemas/language/deeplus-mir.schema.json",
             "schemas/language/hir-mir-lowering-row.schema.json",
             "schemas/language/hir-mir-machine-contract-fixtures.schema.json",
             "schemas/language/mir-capability-receipt.schema.json",
+            "schemas/language/suspension-frame-responsibility.schema.json",
             "spec/contracts/hir-h1-current-mir-bridge.json",
+            "spec/contracts/continuation-interface-r1.json",
             "spec/contracts/hir-h1-identity-catalog.json",
             "spec/contracts/hir-mir-lowering-registry.json",
             "spec/contracts/hir-mir-machine-diagnostic-contract.json",
             "spec/contracts/mir-machine-registry.json",
+            "spec/contracts/suspension-frame-responsibility-r1.json",
             "spec/diagnostics/catalog/catalog-metadata.json",
             "spec/diagnostics/catalog/chunks/part-0028.json",
             "tests/fixtures/current/hir-mir-machine-contract-r1.json",
+            "tests/fixtures/current/continuation-interface-r1.json",
+            "tests/fixtures/current/suspension-frame-responsibility-r1.json",
+            "tools/generators/rebind_continuation_interface.py",
             "tools/generators/refresh_source_tree_manifest.py",
             "tools/validators/validate_hir_mir_machine_contract.py",
+            "tools/validators/validate_continuation_interface.py",
         ])
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
@@ -12212,6 +12271,22 @@ def main() -> int:
         check(
             process.returncode == 0,
             "R10_HIR_MIR_MACHINE_CONTRACT",
+            detail[-4000:],
+        )
+        r38_validator = root / "tools/validators/validate_continuation_interface.py"
+        process = subprocess.run(
+            [sys.executable, str(r38_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R38_CONTINUATION_INTERFACE",
             detail[-4000:],
         )
 
@@ -12459,7 +12534,7 @@ def main() -> int:
         if revision == POST_PR16_REVISION:
             return relative in POST_PR16_CANONICAL_DELTA_PATHS
         if revision in CURRENT_MACHINE_REVISIONS:
-            return relative in R10_SEMANTIC_DELTA_PATHS or (
+            return relative in R10_SEMANTIC_DELTA_PATHS or relative in R38_SEMANTIC_DELTA_PATHS or (
                 language_identity_exemptions.get(relative) == current_sha256
             )
         if revision == LANGUAGE_COHERENCE_REVISION:

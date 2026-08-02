@@ -1,0 +1,42 @@
+{
+  "schema": "deeplus.suspension-frame-responsibility-fixtures/r1",
+  "contract": "spec/contracts/suspension-frame-responsibility-r1.json",
+  "status": "SPECIFIED_NOT_RUN",
+  "expected_counts": {"total": 24, "positive": 6, "boundary": 7, "negative": 6, "mutation": 5},
+  "tests": [
+    {"test_id": "R20-SUS-P-001", "class": "positive", "scenario": "one live owned local, its cleanup token, and managed roots cross await", "expected": "atomic owner/token transfer plus bijective source-to-frame RootId rebind, then exact return to RUNNING", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-P-002", "class": "positive", "scenario": "a loop revisits one await site", "expected": "one frame and a fresh monotonic epoch per visit", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-P-003", "class": "positive", "scenario": "a static immutable shared root crosses await", "expected": "STATIC_SHARED_BORROW slot without owner or cleanup token", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-P-004", "class": "positive", "scenario": "yield suspends and later receives one response", "expected": "resume restores the exact partition before response binding", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-P-005", "class": "positive", "scenario": "an actor turn awaits without a live actor-state borrow", "expected": "ActorTurnId retains STATE_REGION_MUTATION and DEQUEUE authority exactly once and a fresh state loan is created only after resume", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-P-006", "class": "positive", "scenario": "nested frame-held cleanup tokens are cancelled", "expected": "exactly-once reverse registration within reverse region order", "diagnostic_or_null": null},
+
+    {"test_id": "R20-SUS-B-001", "class": "boundary", "scenario": "cancel is observed after suspension commit and before resume", "expected": "cancel wins and frame enters CLEANING", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-B-002", "class": "boundary", "scenario": "resume linearizes before cancel", "expected": "resume wins once and later cancel has no effect on the epoch", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-B-003", "class": "boundary", "scenario": "cancel linearizes before resume", "expected": "cancel wins once and later resume restores no owner", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-B-004", "class": "boundary", "scenario": "nothing is live after an await", "expected": "a zero-slot committed epoch remains race-safe", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-B-005", "class": "boundary", "scenario": "one cancellation cleanup fails", "expected": "remaining cleanup continues under the primary/suppressed law", "diagnostic_or_null": null},
+    {"test_id": "R20-SUS-B-006", "class": "boundary", "scenario": "a late signal names the prior visit to one await site", "expected": "reject stale epoch without changing the current partition", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R20-SUS-B-007", "class": "boundary", "scenario": "the resumed body returns with no frame-held slot", "expected": "RUNNING transitions once to TERMINAL_COMPLETED", "diagnostic_or_null": null},
+
+    {"test_id": "R20-SUS-N-001", "class": "negative", "scenario": "caller-stack inout remains live at await", "expected": "reject before HIR sealing", "diagnostic_or_null": "BORROW_CROSSES_SUSPENSION"},
+    {"test_id": "R20-SUS-N-002", "class": "negative", "scenario": "a non-static shared view remains live at yield", "expected": "reject before HIR sealing", "diagnostic_or_null": "BORROW_CROSSES_SUSPENSION"},
+    {"test_id": "R20-SUS-N-003", "class": "negative", "scenario": "a borrow Facet survives to await", "expected": "reject with the existing specific diagnostic", "diagnostic_or_null": "FACET_BORROW_CROSSES_SUSPENSION"},
+    {"test_id": "R20-SUS-N-004", "class": "negative", "scenario": "two resume commits name one epoch", "expected": "reject the second transition", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R20-SUS-N-005", "class": "negative", "scenario": "a resume signal names a terminal frame", "expected": "reject without owner resurrection", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"},
+    {"test_id": "R20-SUS-N-006", "class": "negative", "scenario": "an OWNED_TRANSFER slot has no OwnerId", "expected": "reject the frame plan", "diagnostic_or_null": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID"},
+
+    {"test_id": "R20-SUS-M-001", "class": "mutation", "scenario": "delete one owner-bound cleanup token", "expected": "reject mutation", "diagnostic_or_null": "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID"},
+    {"test_id": "R20-SUS-M-002", "class": "mutation", "scenario": "place one OwnerId in two slots", "expected": "reject mutation", "diagnostic_or_null": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID"},
+    {"test_id": "R20-SUS-M-003", "class": "mutation", "scenario": "reuse one storage-location RootId for both source and destination instead of recording a bijective rebind pair", "expected": "reject mutation", "diagnostic_or_null": "CONTINUATION_FRAME_ROOT_SET_INVALID"},
+    {"test_id": "R20-SUS-M-004", "class": "mutation", "scenario": "swap cleanup ranks while preserving membership", "expected": "reject mutation", "diagnostic_or_null": "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID"},
+    {"test_id": "R20-SUS-M-005", "class": "mutation", "scenario": "mark one epoch RESUME_WON and CANCEL_WON", "expected": "reject mutation", "diagnostic_or_null": "CONTINUATION_FRAME_TRANSITION_INVALID"}
+  ],
+  "metamorphic_properties": [
+    "unrelated slot permutation preserves the projection after sorting by FrameSlotId",
+    "replaying resume or cancel cannot change a discharged epoch",
+    "owner cardinality is preserved only at an admitted atomic transition",
+    "Xvm, ObjectAot, and InMemoryJit consume the same frame-plan, receipt, and transition digest"
+  ],
+  "product_execution": "NOT_RUN"
+}

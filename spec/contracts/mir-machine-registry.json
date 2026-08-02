@@ -315,7 +315,7 @@
     "verifier_rule": "RECOMPUTE_KIND_DISCRIMINATED_CANONICAL_PAYLOAD_AND_REJECT_NONCANONICAL_EQUIVALENTS"
   },
   "semantic_operation_contract": {
-    "operation_kind_count": 42,
+    "operation_kind_count": 48,
     "semantic_operation_id_rule": "DM-SEMOP-<EXACT_OPERATION_KIND_WITH_UNDERSCORES_RENDERED_AS_HYPHENS>-R1",
     "closed_set": true,
     "unknown_operation_or_semantic_operation_id_rejected": true
@@ -580,6 +580,66 @@
         "required_fields": ["actor_envelope_id"],
         "optional_fields": [],
         "additional_fields": false
+      }
+    },
+    {
+      "operation_kind": "FRAME_CREATE",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CREATE-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"receipt": "NULL", "point_epoch": "NULL_NULL", "cleanup_token": "NULL", "terminal": "NULL", "frame_transition": "ABSENT_TO_RUNNING", "epoch_transition": "NONE", "winner": "NULL"}
+      }
+    },
+    {
+      "operation_kind": "FRAME_SUSPEND_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"receipt": "NONNULL_SUSPEND_COMMIT", "point_epoch": "NONNULL_NONNULL", "cleanup_token": "NULL", "terminal": "NULL", "frame_transition": "RUNNING_TO_SUSPENDED", "epoch_transition": "PREPARING_TO_COMMITTED", "winner": "NULL"}
+      }
+    },
+    {
+      "operation_kind": "FRAME_RESUME_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-RESUME-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"receipt": "NONNULL_WINNER_CLAIM", "point_epoch": "NONNULL_NONNULL", "cleanup_token": "NULL", "terminal": "NULL", "frame_transition": "SUSPENDED_TO_RUNNING", "epoch_transition": "COMMITTED_TO_DISCHARGED", "winner": "RESUME_WON"}
+      }
+    },
+    {
+      "operation_kind": "FRAME_CANCEL_COMMIT",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"receipt": "NONNULL_WINNER_CLAIM", "point_epoch": "NONNULL_NONNULL", "cleanup_token": "NULL", "terminal": "NULL", "frame_transition": "SUSPENDED_TO_CLEANING", "epoch_transition": "COMMITTED_TO_CANCEL_WON", "winner": "CANCEL_WON"}
+      }
+    },
+    {
+      "operation_kind": "FRAME_CLEANUP_STEP",
+      "semantic_operation_id": "DM-SEMOP-FRAME-CLEANUP-STEP-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"receipt": "NONNULL_CANCEL_CLAIM", "point_epoch": "NONNULL_NONNULL", "cleanup_token": "NONNULL_EXACT_ONE", "terminal": "NULL", "frame_transition": "CLEANING_TO_CLEANING", "epoch_transition": "CANCEL_WON_TO_CANCEL_WON", "winner": "NULL"}
+      }
+    },
+    {
+      "operation_kind": "FRAME_TERMINATE",
+      "semantic_operation_id": "DM-SEMOP-FRAME-TERMINATE-R1",
+      "payload_contract": {
+        "required_fields": ["continuation_interface_identity", "continuation_interface_digest", "continuation_receipt_id_or_null", "continuation_frame_plan_id", "frame_id", "suspension_point_id_or_null", "epoch_id_or_null", "partition_digest", "cleanup_token_id_or_null", "terminal_state_or_null", "frame_state_before", "frame_state_after", "epoch_state_before_or_null", "epoch_state_after_or_null", "winner_witness_or_null", "hir_provenance"],
+        "optional_fields": [],
+        "additional_fields": false,
+        "value_constraints": {"variants": ["RUNNING_TO_COMPLETED_OR_FAILED_WITHOUT_EPOCH", "CLEANING_TO_CANCELLED_AND_DISCHARGED"]}
       }
     },
     {
@@ -1137,7 +1197,7 @@
     {
       "capability_id": "DM-CAP-SUSPEND-CANCEL-R1",
       "requires": ["DM-CAP-CLEANUP-OUTCOME-R1", "DM-CAP-PLACE-OWNERSHIP-R1"],
-      "operation_kinds": [],
+      "operation_kinds": ["FRAME_CREATE", "FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT", "FRAME_CLEANUP_STEP", "FRAME_TERMINATE"],
       "terminator_kinds": ["SUSPEND", "CANCEL_CHECK", "LEAVE"],
       "token_kinds": ["SUSPENSION", "CANCELLATION", "ACCESS", "CLEANUP", "ACTOR_TURN"]
     },

@@ -1,0 +1,78 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "BorrowAcrossSuspensionAdmitted",
+    "source_name": "BorrowAcrossSuspensionAdmitted",
+    "summary": "Admit a live value across suspension only when its continuation-frame disposition and loan lifetime are statically closed.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "semantic_type",
+      "ownership",
+      "effect",
+      "authority",
+      "evidence",
+      "flow"
+    ],
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "diagnostic_refs": [
+      "BORROW_CROSSES_SUSPENSION",
+      "FACET_BORROW_CROSSES_SUSPENSION"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(frame_slot_disposition) | reject(diagnostic_id)",
+    "requires": [
+      "compute exact liveness after the suspension point",
+      "resolve the originating loan and referent storage duration",
+      "classify one continuation-frame slot disposition",
+      "end every non-static loan before suspension commit"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "ownership",
+      "effect",
+      "authority",
+      "evidence",
+      "flow"
+    ],
+    "formal_judgment_id": "J-BorrowAcrossSuspensionAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "resolve one suspension point and its post-suspension liveness set",
+      "resolve every live place to one owner and at most one active loan"
+    ],
+    "normalization": "normalize aliases, place identity, owner identity, loan kind, referent storage duration, cleanup tokens, and managed roots before classification",
+    "decision_procedure": [
+      "classify a value not live after suspension as NOT_LIVE_AFTER_SUSPEND",
+      "classify a live reusable value as REUSABLE_COPY and a live owned transferable value as OWNED_TRANSFER",
+      "classify a live immutable shared borrow as STATIC_SHARED_BORROW only when its referent has static storage duration",
+      "reject every other live stack, region, inout, exclusive, temporary-view, callback, or borrowed-Facet loan before FRAME_SUSPEND_COMMIT",
+      "prefer FACET_BORROW_CROSSES_SUSPENSION for a borrowed Facet and otherwise emit BORROW_CROSSES_SUSPENSION"
+    ],
+    "termination_metric": "finite live-place set and one finite owner/loan resolution per place",
+    "success_result": "admit with one exact continuation-frame slot disposition per live place",
+    "active_primary_diagnostic": "BORROW_CROSSES_SUSPENSION",
+    "secondary_diagnostics": [
+      "FACET_BORROW_CROSSES_SUSPENSION"
+    ],
+    "positive_fixture_ids": [
+      "PF-BorrowAcrossSuspensionAdmitted-POS",
+      "PF-BorrowAcrossSuspensionAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-BorrowAcrossSuspensionAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> liveness -> owner/loan normalization -> slot classification -> specific-before-generic diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": null
+  }
+]

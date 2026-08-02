@@ -1,0 +1,134 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "BORROW_CROSSES_SUSPENSION",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "End the non-static loan before the suspension point or move/copy an independently owned value into the continuation frame; do not invent a lifetime extension.",
+    "message": "A non-static loan remains live across a suspension point.",
+    "notes": "FACET_BORROW_CROSSES_SUSPENSION has precedence for a borrowed Facet. This diagnostic covers every other stack, region, inout, exclusive, temporary-view, or callback loan that would survive suspension; product checker execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "facet_borrow_pack_msp"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONTINUATION_FRAME_OWNER_PARTITION_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Reject the HIR/MIR artifact and rebuild its exact owner, admitted-loan, cleanup-token, retained-authority and place-disposition partitions from verified checker facts.",
+    "message": "A continuation frame duplicates, loses, partially transfers, or invents a partition identity.",
+    "notes": "Internal HIR/MIR release-verifier invariant; NOT_LIVE places never materialize frame slots, and retained actor authority is explicit. It is not a source-facing compiler diagnostic and product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONTINUATION_FRAME_TRANSITION_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Reject the artifact and restore the closed frame/epoch transition table, including exactly one resume-or-cancel winner.",
+    "message": "A continuation frame or suspension epoch uses an invalid transition.",
+    "notes": "Internal HIR/MIR release-verifier invariant; terminal frames cannot resume and a committed epoch has one winner. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Reject the artifact and reconstruct reverse-order, exactly-once cleanup from the verified cleanup-token plan.",
+    "message": "A continuation-frame terminal path does not discharge cleanup exactly once in the required order.",
+    "notes": "Internal HIR/MIR release-verifier invariant; cleanup continues after failure under the existing primary/suppressed failure law. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONTINUATION_FRAME_ROOT_SET_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Reject the artifact and recompute a bijective source-to-destination storage-location root rebind from verified live owned slots.",
+    "message": "A continuation frame has an invalid managed-root rebind, descriptor, generation, or provenance binding.",
+    "notes": "RootId identifies a storage location and is never transferred unchanged; destination roots are installed before receipt publication and source roots are then removed. Backend-private stack maps cannot infer or repair semantic roots. Product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
+  }
+]
