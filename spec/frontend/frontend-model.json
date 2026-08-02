@@ -2217,6 +2217,94 @@
     "canonical_hir_recovery_node_count": 0,
     "product_execution": "NOT_RUN"
   },
+  "formatter_lsp_incremental_parsing_contract": {
+    "contract": "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+    "schema": "schemas/language/formatter-lsp-incremental-parsing.schema.json",
+    "fixtures": "tests/fixtures/current/formatter-lsp-incremental-parsing-r1.json",
+    "gap_id": "IR-FE-P1-037",
+    "baseline": {
+      "repository": "howork/Deeplus",
+      "branch": "main",
+      "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+      "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+    },
+    "grammar_production_count": 644,
+    "formatting_rule_count": 6,
+    "formatting_rule_counts": {
+      "FD-01": 56,
+      "FD-02": 35,
+      "FD-03": 320,
+      "FD-04": 204,
+      "FD-05": 10,
+      "FD-06": 19
+    },
+    "identity_domain_count": 8,
+    "existing_oracle_case_count": 9,
+    "successor_acceptance_case_count": 34,
+    "mutation_count": 12,
+    "normalized_ast_semantic_identity": "NormalizedAstSemanticDigest",
+    "tooling_identity_separation": {
+      "content": "CstContentId",
+      "occurrence": "CstOccurrenceId",
+      "incremental_handle": "IncrementalNodeHandleId",
+      "content_occurrence_handle_conflation_count": 0
+    },
+    "snapshot_publication_and_lifetime": {
+      "snapshot_identity": "ParseSnapshotId",
+      "publication": "ATOMIC_COMPARE_AND_SWAP_EXPECTED_DOCUMENT_REVISION_AND_PARSE_SNAPSHOT",
+      "read_lease_required": true,
+      "reclamation_gate": "ZERO_CURRENT_DOCUMENT_ACTIVE_REQUEST_OR_REUSE_RECEIPT_LEASES",
+      "late_result_publication": "REVISION_AND_SNAPSHOT_MUST_STILL_BE_CURRENT"
+    },
+    "lsp_coordinate_and_action_fence": {
+      "internal_span_domain": "ZERO_BASED_HALF_OPEN_BYTE_INTERVAL_IN_EXACT_SNAPSHOT",
+      "position_conversion": "NEGOTIATED_POSITION_ENCODING_PLUS_SNAPSHOT_LINE_MAP_DIGEST",
+      "invalid_position": "REJECT_INVALID_POSITION_WITHOUT_CLAMPING",
+      "action_binding": "EXPECTED_DOCUMENT_REVISION_PARSE_SNAPSHOT_INTERVAL_AND_OLD_INTERVAL_SHA256",
+      "stale_action_application": "REJECT_STALE_TOOLING_ACTION"
+    },
+    "diagnostic_parity_and_precedence": {
+      "incremental_equals_full_parse_for_same_snapshot": true,
+      "merge_order": "CANONICAL_RECOVERY_ORDER_NOT_WORKER_COMPLETION_ORDER",
+      "tooling_failure_precedence": [
+        "REQUEST_SCHEMA_AND_DOCUMENT_IDENTITY",
+        "STALE_REVISION_OR_SNAPSHOT",
+        "EDIT_AND_COORDINATE_VALIDITY",
+        "OWNER_AND_RECOVERY_ADMISSION",
+        "AST_EQUIVALENCE_IDEMPOTENCE_SPLICE_AND_REUSE_PROOF"
+      ]
+    },
+    "actor_protocol_five_row_preservation": {
+      "production_ids": [
+        "ActorProtocolConformanceClause",
+        "ActorMemberDecl",
+        "ActorProtocolConformBlock",
+        "ActorProtocolConformanceBody",
+        "ActorProtocolConformanceItem"
+      ],
+      "production_count": 5,
+      "formatting_rule_counts": {
+        "FD-03": 3,
+        "FD-04": 2
+      },
+      "token_rewrite_count": 0,
+      "tooling_identity_in_r23_actor_or_binding_preimage_count": 0
+    },
+    "formatting_fallback": "PRESERVE_EXACT_SOURCE_BYTES",
+    "recovery_taint_clear_owner": "NEW_PARSE_OF_CHANGED_INPUT_ONLY",
+    "incremental_owner_selection": "SMALLEST_ELIGIBLE_OWNER_WITH_DETERMINISTIC_PARENT_ASCENT_AND_SOURCE_ROOT_FALLBACK",
+    "range_format_outside_byte_change_count": 0,
+    "cross_revision_result_merge_count": 0,
+    "source_syntax_change_count": 0,
+    "grammar_production_change_count": 0,
+    "language_semantic_change_count": 0,
+    "new_final_diagnostic_id_count": 0,
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "incremental_parser_execution": "NOT_RUN"
+  },
   "frontend_primary_diagnostic_identity_contract": {
     "contract": "spec/contracts/frontend-primary-diagnostic-identity-r1.json",
     "fixtures": "tests/fixtures/current/frontend-primary-diagnostic-identity-r1.json",

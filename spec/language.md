@@ -1923,6 +1923,141 @@ prints parameter/type `**`.
 
 The LSP shares parser/checker identities. Completion for a final named-rest parameter inserts `***`; signature help displays `Record***`; unfold completion inserts `**`; hover text names the owner rather than calling both forms “spread.” Rename and formatting preserve static labels. Diagnostics expose the primary ID, exact span, owner-sensitive fix, and current profile.
 
+The exact formatter disposition is total over all 643 rows of the current
+grammar-production registry. The six disjoint classes contain exactly
+`56/35/319/204/10/19` rows. Lexical token/trivia leaves preserve their owned
+bytes; inline CST components remain with their scanner or parent owner;
+structural AST and normalization owners may apply only an explicitly declared
+layout rule; external parser entries delegate to their selected owner. A parent
+rule may replace only its declared whitespace/layout slots. It cannot change a
+token spelling, detach or duplicate a comment, or take trivia owned by another
+node. If no unique declared rule applies, exact source bytes win. The formatter
+must not invent a style preference, activate a source profile, or perform a
+semantic rewrite.
+
+The five Actor additions are explicit members of this total function.
+`ActorProtocolConformanceClause` and `ActorProtocolConformBlock` are structural
+FD-04 owners. `ActorMemberDecl`, `ActorProtocolConformanceBody`, and
+`ActorProtocolConformanceItem` are inline FD-03 owners. The default therefore
+preserves the repeated header `conforms QualifiedTypeReference`, body-local
+`conform QualifiedTypeReference { ... }`, `on`/`request` members, and their
+comments exactly. A required `LineBreakBoundary` is never collapsed to
+horizontal trivia, and a comment is never moved across the boundary between an
+Actor header clause and body or between a `conform` header and its body. The two
+contextual words are different production owners and are never normalized into
+one another.
+
+Every accepted rewrite proves equality of `NormalizedAstSemanticDigest`, the
+`DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1` digest over `SourceFileId`, source role,
+activation profile, grammar digest, frontend contract digest set, and the
+ordered normalized AST kinds, semantic payloads and semantic children. Source
+intervals, trivia, recovery artifacts, `CstNodeId`, `AstNodeId`, occurrence IDs,
+and editor handles are excluded. `AstNodeId` remains occurrence-bound and may
+change after formatting; it is not the equivalence proof. A second formatting
+pass produces zero edits. For Actor source, equal semantic digests must also
+recompute equal `ActorId`, `ActorProtocolId`,
+`ActorProtocolConformanceId`, `ActorProtocolRequirementId`,
+`ActorProtocolBindingId`, `ActorProtocolBindingTableId`, `ResponsibilityId`,
+and normalized binding-row/table digests. No CST, offset, occurrence, snapshot,
+or editor handle participates in those semantic preimages.
+
+Recovery is an analysis boundary, not formatter input to repair. Whole-file
+formatting requires empty recovery taint. Range formatting selects one smallest
+recovery-free structural owner that wholly contains the requested range,
+returns one replacement, leaves every byte outside that owner unchanged, and
+rejects a range for which no such owner exists. Neither the formatter nor the
+checker may clear recovery taint; only a new parse of changed input may do so.
+
+Incremental parsing expands edits through a recomputable lexical-state
+envelope, chooses the smallest eligible old CST owner containing the expanded
+edits, and ascends deterministically through eligible parents when scanner
+state, parser boundary, profile, taint, splice, or unique-reuse proof does not
+close. The source root is the final fallback. A splice is accepted only when
+the ordered, nonoverlapping edit set maps the old expanded half-open interval to
+one exact new half-open interval, the new parser consumes exactly that mapped
+interval, its scanner entry/exit states match the surrounding new snapshot,
+its child byte partition is total and nonoverlapping, unchanged siblings have
+one-to-one reuse receipts, and the new subtree has the selected production
+owner. Insertions at a boundary are assigned by this deterministic interval
+transform before owner selection; an implementation may not choose a neighbor
+by traversal or task-completion order. A tainted result remains an analysis CST
+and cannot seal canonical AST/HIR.
+
+Editor identity is deliberately noncanonical. `DocumentSessionId`,
+`DocumentRevisionId`, `ParseSnapshotId`, `CstContentId`, `CstOccurrenceId`,
+`IncrementalNodeHandleId`, and `NodeReuseReceipt` are separate domains. Equal
+content does not imply equal occurrence or handle identity; byte offset alone
+is never a stable node identity; no tooling identity aliases `DeclId`, `HirId`,
+or any Actor Protocol identity. `CstContentId` is the position-independent
+identity of production, profile, ordered child content or token kind/bytes, and
+lossless trivia ownership. Within one `ParseSnapshotId`, the serialized
+`CstNodeId` denotes exactly the same typed occurrence as `CstOccurrenceId` and
+includes its parent occurrence path, child slot, production/kind, content ID,
+and zero-based half-open source byte interval. It is not reusable as the node ID
+of another snapshot. `IncrementalNodeHandleId` is a session-local opaque handle
+whose monotonic generation has no syntax or semantic meaning.
+
+A handle survives a revision only through one `NodeReuseReceipt` that names the
+old and new `DocumentRevisionId` and `ParseSnapshotId`, `SourceFileId`, old
+interval, ordered edit transform, mapped new interval, production and content
+identity, token/trivia partition, taint identity, and unique old-to-new and
+new-to-old cardinality. Missing or ambiguous proof allocates a new handle and
+invalidates lookup through the old one; it never guesses by equal bytes or
+offset.
+
+The document head is an immutable `(DocumentRevisionId, ParseSnapshotId)` pair.
+An edit worker reads it under a snapshot lease, constructs one candidate, and
+publishes only with compare-and-swap from the exact expected old pair. A lease
+keeps the referenced text, CST and diagnostic storage alive but does not make
+the revision current. CAS loss or a different current head makes the candidate
+stale. The worker releases every acquired lease exactly once and returns the
+typed stale result without merging, rebasing, retrying, or publishing a partial
+tree.
+
+The canonical internal coordinate is a zero-based half-open UTF-8 byte interval
+`[start, end)` in the bound snapshot. An LSP session negotiates exactly one of
+its mutually supported position encodings and carries that encoding in every
+request binding. Line/character positions are converted using the exact line
+table and source bytes of that snapshot. Both endpoints must be in range and
+land on boundaries representable by the negotiated encoding and on UTF-8 scalar
+boundaries. A split scalar/surrogate pair, out-of-range coordinate, encoding
+mismatch, stale revision, or stale snapshot is rejected; coordinates are never
+clamped, rounded, or interpreted against the newest document.
+
+Every LSP request and result binds exactly one session, revision, snapshot,
+negotiated encoding, source role/profile, grammar digest, frontend contract
+digest set, and source-bytes digest. A request holds a read lease for that
+snapshot. A result echoes the complete binding and is publishable only while
+the request's revision policy still admits it. Cross-revision result merging is
+forbidden.
+
+For the same source bytes and contract binding, full and incremental parsing
+produce equal `NormalizedAstSemanticDigest` and diagnostic projections. The
+diagnostic projection preserves the canonical primary diagnostic identity,
+arguments, zero-based half-open byte span, related information, owner-sensitive
+fix-it, and cascade-suppression set in the same canonical diagnostic order.
+Parallel task completion is never an ordering authority. An unchanged-region
+diagnostic may be reused only when its CST owner and every declared dependency
+have one-to-one reuse proof; an intersecting edit, changed boundary state, or
+invalidated dependency recomputes the affected diagnostic closure. Incremental
+parsing neither emits an extra cascade nor hides a diagnostic that a full parse
+would retain.
+
+Tooling failure precedence is deterministic. First validate the request,
+session and negotiated-encoding envelope. Next bind the exact expected revision
+and snapshot. Then convert and validate positions and the ordered edit set.
+Only then perform lexical expansion, reparse, owner ascent and splice proofs,
+followed by recovery-taint, semantic-digest, diagnostic-parity, range-containment
+and idempotence gates. Publication CAS is last. An earlier failure suppresses
+later tooling failures; source diagnostic precedence remains the canonical
+frontend diagnostic order. A final CAS loss returns only the stale-result
+outcome and publishes no tree, handles, diagnostics, or edits.
+
+These are `STABLE_DESIGN` tooling obligations only. Formatter, LSP, and
+incremental-parser execution remain `NOT_RUN`; their static contract does not
+claim product support. Semantic P0 remains `0`, the canonical feature P1 set is
+exactly `22 OPEN`, and all 15 product lanes remain `NOT_RUN`.
+
 Language guides, design galleries, examples, Prelude signatures, code actions, snippets, and generated API documentation must follow the same surface. Any role report that proposes named-rest parameter/type `**` conflicts with current law and must be rejected or rewritten before integration.
 
 ## 53. Test corpus and receipt requirements
@@ -6197,3 +6332,45 @@ identity and continuation lease. Resume and cancel enter generated code only
 through the typed internal continuation dispatcher after exact interface,
 receipt, epoch and operation validation; this does not grant arbitrary
 runtime-to-generated callback authority.
+
+## Ownership-aware tooling projection
+
+Formatter, LSP and debugger behavior is a read-only projection of one exact
+R28 `ParseSnapshotId`, extended only by the checker snapshot digest and the
+ownership-contract digest set. `ToolingSnapshotId` does not introduce a second
+document-revision authority. Tooling cannot admit a program, synthesize an
+owner, loan, cleanup token, root, continuation or witness, or feed changed
+responsibility back into HIR or MIR.
+
+An ownership diagnostic has exactly one primary `SourceOriginId`. Its exact
+diagnostic row, and for `OWNERSHIP_MODE_ADMISSION_FAILED` its reason key,
+selects the primary role and complete related-role cardinality. Families group
+diagnostics but do not impose one false cardinality on heterogeneous failures.
+Primary and related candidates are ordered by stable `SourceOriginId` and a
+typed semantic-reference tie-break. Source, fixture, catalog and CFG iteration
+order never chooses the winner. Conflict diagnostics report every conflicting
+access and join diagnostics report every relevant predecessor.
+
+Formatting preserves ownership-bearing spelling and responsibility order,
+round-trips to the same normalized HIR and responsibility digest, and emits no
+edit on a second pass. Rename requires the exact snapshot and symbol graph and
+proves ownership/responsibility graph isomorphism after an authorized spelling
+substitution. Automatic actions may not add `move`, `borrow`, `inout`, clone,
+share, transfer, capture, region, cleanup, conformance or other authority.
+
+Hover and debugger views distinguish proved ownership, loan and cleanup-token
+states. Missing evidence is reported as unavailable; optimized runtime evidence
+is reported as `OPTIMIZED_OUT`, never fabricated. Backend registers, stack
+slots and addresses are ephemeral display-only locations, not semantic
+identity, equality evidence, digest material or persistent residue. Runtime
+rows remain unavailable and `NOT_RUN` without one exact runtime/debug receipt.
+Root and continuation panels remain unavailable until their exact canonical
+dependency digests are bound.
+
+The R47 responsibility and cleanup-budget diagnostics remain source/checker
+diagnostics but have no R48 span-profile claim until separately bound.
+`MIR_LOAN_UNBALANCED` remains an internal release-verifier diagnostic and has
+no fabricated source span. `OWNERSHIP_TOOLING_PROJECTION_DRIFT` diagnoses
+release-verifier projection drift; it is not a source-repair instruction.
+Production formatter, LSP and debugger execution remains `NOT_RUN`, as do all
+15 product lanes.

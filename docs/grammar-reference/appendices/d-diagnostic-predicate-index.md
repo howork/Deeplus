@@ -788,6 +788,7 @@
 | `OVERRIDE_VISIBILITY_CANNOT_NARROW` | `checker` | `error` | `active` | Overriding/fulfilling member cannot reduce base slot visibility. |
 | `OWNED_DOWNCAST_OWNER_NOT_PRESERVED` | `checker` | `error` | `active` | An owned downcast must return either the matched target owner or the original unmatched source owner. |
 | `OWNERSHIP_MODE_ADMISSION_FAILED` | `checker` | `error` | `active` | The ownership qualifier or borrow/inout/move mode violates composition, context, exclusivity, lifetime, escape, suspension, or transfer responsibility. |
+| `OWNERSHIP_TOOLING_PROJECTION_DRIFT` | `design_static` | `error` | `active` | An ownership tooling projection changed semantic identity, responsibility, causal spans, or evidence status. |
 | `OWN_CAST_REQUIRES_REUSABLE_SOURCE` | `checker` | `error` | `active` | Owning downcast via as? cannot duplicate affine ownership. Use owner-preserving consuming downcast. |
 | `PACKAGE_ARCHIVE_SHA_MISMATCH` | `design_static` | `error` | `active` | PACKAGE_ARCHIVE_SHA_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `PACKAGE_DECLARATION_RENAMED_TO_MODULE` | `checker` | `error` | `active` | \`package\` is not a Deeplus source namespace declaration; use \`module\`. |

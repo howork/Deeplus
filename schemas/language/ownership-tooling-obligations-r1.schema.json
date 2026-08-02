@@ -1,0 +1,309 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.invalid/schemas/language/ownership-tooling-obligations-r1.schema.json",
+  "title": "Deeplus Ownership Tooling Obligations R1",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "candidate_class",
+    "baseline",
+    "gap_id",
+    "sibling_dependencies",
+    "inputs",
+    "responsibility_separation",
+    "identity_domains",
+    "snapshot_fence",
+    "dependency_status",
+    "ownership_sidecar_projection",
+    "span_roles",
+    "span_ordering",
+    "diagnostic_family_projections",
+    "diagnostic_span_profiles",
+    "inactive_seed_references",
+    "canonical_unprofiled_diagnostics",
+    "hover_projection",
+    "formatter_projection",
+    "rename_projection",
+    "code_action_policy",
+    "debugger_projection",
+    "actor_transfer_projection",
+    "reason_codes",
+    "diagnostic_policy",
+    "acceptance",
+    "governance"
+  ],
+  "$defs": {
+    "ownershipSpanRole": {
+      "enum": [
+        "PRIMARY_OPERATION",
+        "OWNER_DECLARATION",
+        "PRIOR_TRANSFER",
+        "LOAN_ORIGIN",
+        "CONFLICTING_ACCESS",
+        "REGION_BOUNDARY",
+        "CAPTURE_SITE",
+        "ESCAPE_BOUNDARY",
+        "CLEANUP_REGISTRATION",
+        "SUSPENSION_POINT",
+        "JOIN_PREDECESSOR",
+        "PAYLOAD_CAUSE"
+      ]
+    },
+    "familyId": {
+      "enum": ["OWN_USE_OR_TRANSFER", "OWN_ALIAS_OR_INOUT_CONFLICT", "OWN_BORROW_ESCAPE_OR_SUSPENSION", "OWN_PLACE_STATE_JOIN", "OWN_CAPTURE_RESPONSIBILITY", "OWN_CLEANUP_OR_DEFER", "OWN_SHARED_PAYLOAD", "OWN_MIR_RESPONSIBILITY_VERIFIER"]
+    },
+    "diagnosticId": {
+      "enum": ["OWNERSHIP_MODE_ADMISSION_FAILED", "FACET_MOVE_REQUIRES_OWNER", "INOUT_ALIAS_CONFLICT", "ALIAS_PATTERN_OWNERSHIP_CONFLICT", "BORROW_ESCAPE_OWNER_REGION", "FACET_BORROW_CROSSES_SUSPENSION", "SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN", "PLACE_STATE_JOIN_MISMATCH", "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH", "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE", "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE", "DEFER_CLEANUP_RESERVED_PLACE_MOVED", "CLEANUP_DECLARATION_DIRECT_CALL_FORBIDDEN", "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD", "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH"]
+    },
+    "reasonKey": {
+      "enum": ["EXCLUSIVITY", "LIFETIME", "ESCAPE", "SUSPENSION", "TRANSFER_OR_USE_AFTER_MOVE"]
+    },
+    "relatedSpanRequirement": {
+      "type": "object",
+      "required": ["role", "min_count", "max_count_or_null", "exact_count_source_or_null", "omit_when_zero"],
+      "properties": {
+        "role": {"$ref": "#/$defs/ownershipSpanRole"},
+        "min_count": {"type": "integer", "minimum": 0},
+        "max_count_or_null": {"type": ["integer", "null"], "minimum": 1},
+        "exact_count_source_or_null": {"type": ["string", "null"]},
+        "omit_when_zero": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "schema": {"const": "deeplus.ownership-tooling-obligations/r1"},
+    "status": {"const": "STABLE_DESIGN_IMPLEMENTATION_READINESS_CANDIDATE"},
+    "candidate_class": {"const": "LOCAL_NONCANONICAL_NONACTIVATABLE"},
+    "baseline": {
+      "type": "object",
+      "required": ["repository", "branch", "commit", "tree"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "branch": {"const": "main"},
+        "commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+        "tree": {"const": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"}
+      },
+      "additionalProperties": false
+    },
+    "gap_id": {"const": "IR-OWN-P2-027"},
+    "sibling_dependencies": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true},
+    "inputs": {"type": "object", "minProperties": 12, "maxProperties": 12, "additionalProperties": {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"pattern": "^[0-9a-f]{64}$"}}, "additionalProperties": false}},
+    "responsibility_separation": {"type": "object", "minProperties": 6},
+    "identity_domains": {
+      "type": "object",
+      "required": ["ToolingSnapshotId", "OwnershipObservationId", "semantic_references", "forbidden_conflations"],
+      "properties": {
+        "ToolingSnapshotId": {"const": {"recipe": ["ParseSnapshotId", "checker_snapshot_digest", "ownership_contract_digest_set"], "canonical_residue": false}},
+        "OwnershipObservationId": {"const": {"recipe": ["CompilationReceiptId", "RuntimeInstanceId", "ExecutionId", "ActivationFrameId", "FunctionId", "MirProgramPointId", "pause_epoch", "exact runtime/debug receipt digest"], "canonical_residue": false}},
+        "semantic_references": {"const": ["DeclId", "TypeId", "PlaceId", "MovePathId", "OwnerId", "LoanId", "RegionId", "CleanupTokenId", "JoinConflictId"]},
+        "forbidden_conflations": {"const": ["backend address == semantic identity", "source byte offset == DeclId or PlaceId", "editor handle == HIR or MIR identity", "display name == owner, loan, token, RootId or continuation identity", "backend address == RootId or ContinuationReceiptId"]}
+      },
+      "additionalProperties": false
+    },
+    "snapshot_fence": {
+      "type": "object",
+      "required": ["request_binding", "ownership_binding", "stale_or_mixed_snapshot", "cross_revision_merge_count", "unknown_fact_policy"],
+      "properties": {
+        "request_binding": {"const": ["ToolingSnapshotId", "ParseSnapshotId", "checker_snapshot_digest", "ownership_contract_digest_set"]},
+        "ownership_binding": {"const": ["OwnershipStateId", "MirProgramPointId or source-checker decision point", "ownership contract digest"]},
+        "stale_or_mixed_snapshot": {"const": "REJECT_STALE_OR_MIXED_TOOLING_SNAPSHOT"},
+        "cross_revision_merge_count": {"const": 0},
+        "unknown_fact_policy": {"const": "emit UNKNOWN_NOT_PROVED or NOT_APPLICABLE; never fabricate a proof"}
+      },
+      "additionalProperties": false
+    },
+    "dependency_status": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {"const": {"dependency_id": "MANAGED_REFERENCE_MEMORY_PROFILE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "root_rows", "required_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7", "bound_shape": {"semantic_references": ["RootId"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical managed-reference profile digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"}}},
+        {"const": {"dependency_id": "CONTINUATION_INTERFACE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "continuation_rows", "required_digest_or_null": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271", "bound_shape": {"semantic_references": ["ContinuationReceiptId"], "fields": ["frame state", "winner"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical continuation-interface digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"}}}
+      ],
+      "items": false
+    },
+    "ownership_sidecar_projection": {
+      "type": "object",
+      "required": ["projection_kinds", "projection_availability", "required_binding", "place_row_fields", "owner_row_fields", "owner_binding_states", "loan_row_fields", "cleanup_token_row_fields", "row_set_law", "join_law", "loan_law", "cleanup_law", "tool_to_semantic_feedback_edge_count", "tool_created_semantic_identity_count"],
+      "properties": {
+        "projection_kinds": {"const": ["STATIC_PROGRAM_POINT", "PAUSED_RUNTIME_SNAPSHOT"]},
+        "projection_availability": {"const": {"STATIC_PROGRAM_POINT": "DESIGN_STATIC_AVAILABLE", "PAUSED_RUNTIME_SNAPSHOT": "NOT_RUN_REQUIRES_EXACT_RUNTIME_DEBUG_RECEIPT"}},
+        "owner_binding_states": {"const": ["UNISSUED", "LIVE", "JOIN_CONDITIONAL", "RETIRED"]},
+        "tool_to_semantic_feedback_edge_count": {"const": 0},
+        "tool_created_semantic_identity_count": {"const": 0}
+      }
+    },
+    "span_roles": {"const": ["PRIMARY_OPERATION", "OWNER_DECLARATION", "PRIOR_TRANSFER", "LOAN_ORIGIN", "CONFLICTING_ACCESS", "REGION_BOUNDARY", "CAPTURE_SITE", "ESCAPE_BOUNDARY", "CLEANUP_REGISTRATION", "SUSPENSION_POINT", "JOIN_PREDECESSOR", "PAYLOAD_CAUSE"]},
+    "span_ordering": {
+      "type": "object",
+      "required": ["primary_count", "primary_selection", "related_order", "duplicate_span_role_pair_count", "backend_or_runtime_address_span_count"],
+      "properties": {
+        "primary_count": {"const": 1},
+        "primary_selection": {"const": "semantic diagnostic row primary_role, then least stable SourceOriginId, then typed semantic-reference tie-break"},
+        "related_order": {"const": "stable SourceOriginId then typed semantic-reference tie-break; role is data only; source, fixture, catalog and CFG iteration order never wins"},
+        "duplicate_span_role_pair_count": {"const": 0},
+        "backend_or_runtime_address_span_count": {"const": 0}
+      },
+      "additionalProperties": false
+    },
+    "diagnostic_family_projections": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["family_id", "diagnostic_ids", "allowed_role_union", "normative_cardinality_source"],
+        "properties": {
+          "family_id": {"$ref": "#/$defs/familyId"},
+          "diagnostic_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/diagnosticId"}},
+          "allowed_role_union": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/ownershipSpanRole"}},
+          "normative_cardinality_source": {"const": "diagnostic_span_profiles"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "diagnostic_span_profiles": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "required": ["diagnostic_id", "family_id", "primary_role", "related_span_requirements"],
+        "properties": {
+          "diagnostic_id": {"$ref": "#/$defs/diagnosticId"},
+          "family_id": {"$ref": "#/$defs/familyId"},
+          "primary_role": {"$ref": "#/$defs/ownershipSpanRole"},
+          "related_span_requirements": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/relatedSpanRequirement"}},
+          "reason_variants": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 5,
+            "items": {
+              "type": "object",
+              "required": ["reason_key", "requirements"],
+              "properties": {
+                "reason_key": {"$ref": "#/$defs/reasonKey"},
+                "requirements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/relatedSpanRequirement"}}
+              },
+              "additionalProperties": false
+            }
+          },
+          "cardinality_law": {"const": "PRIOR_TRANSFER count + LOAN_ORIGIN count >= 1"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "inactive_seed_references": {
+      "const": [
+        {"diagnostic_id": "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+        {"diagnostic_id": "CLOSURE_BORROW_CAPTURE_ESCAPES", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+        {"diagnostic_id": "CLOSURE_CAPTURE_ESCAPES_REGION", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+        {"diagnostic_id": "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"}
+      ]
+    },
+    "canonical_unprofiled_diagnostics": {
+      "const": [
+        {"diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "CLEANUP_BUDGET_DUPLICATE", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "CLEANUP_BUDGET_EXCEEDED", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+        {"diagnostic_id": "MIR_LOAN_UNBALANCED", "tooling_projection_status": "INTERNAL_RELEASE_VERIFIER_NO_SOURCE_SPAN"}
+      ]
+    },
+    "hover_projection": {
+      "type": "object",
+      "required": ["required_fields", "initialization_states", "loan_states", "cleanup_token_states", "fact_certainty", "hidden_identity_invention_count", "flow_fact_changes_declared_type"],
+      "properties": {
+        "required_fields": {"const": ["ToolingSnapshotId", "source_span", "DeclId or PlaceId", "normalized_type", "parameter_mode_or_null", "ownership_qualifier_or_null", "initialization_state", "owner_binding", "active_loan_summary", "cleanup_responsibility_summary", "escape_or_suspension_obligation", "fact_certainty"]},
+        "initialization_states": {"const": ["Uninitialized", "Live", "Moved", "MaybeMoved"]},
+        "loan_states": {"const": ["Active", "Suspended", "Ended"]},
+        "cleanup_token_states": {"const": ["Unbound", "Available", "Consumed"]},
+        "fact_certainty": {"const": ["PROVED", "DISPROVED", "UNKNOWN_NOT_PROVED", "NOT_APPLICABLE"]},
+        "hidden_identity_invention_count": {"const": 0},
+        "flow_fact_changes_declared_type": {"const": false}
+      }
+    },
+    "formatter_projection": {
+      "type": "object",
+      "required": ["protected_spellings", "protected_orders", "parse_format_parse_normalized_hir_equal", "responsibility_digest_equal", "second_pass_edit_count", "ownership_semantic_rewrite_count"],
+      "properties": {
+        "protected_spellings": {"const": ["move", "borrow", "inout", "owned", "borrowed", "mut", "capture", "defer"]},
+        "protected_orders": {"const": ["capture item source order", "cleanup registration source order", "call argument source order", "diagnostic related-span semantic order"]},
+        "parse_format_parse_normalized_hir_equal": {"const": true},
+        "responsibility_digest_equal": {"const": true},
+        "second_pass_edit_count": {"const": 0},
+        "ownership_semantic_rewrite_count": {"const": 0}
+      }
+    },
+    "rename_projection": {
+      "type": "object",
+      "required": ["binding", "preserve", "cross_snapshot_proof", "public_identity_change", "ambiguous_or_tainted_reference", "implicit_ownership_change_count"],
+      "properties": {
+        "binding": {"const": ["ToolingSnapshotId", "target DeclId", "exact reference graph digest"]},
+        "preserve": {"const": ["PlaceId topology", "ownership mode", "capture mode", "loan and region relations", "cleanup plan", "witness and authority set"]},
+        "implicit_ownership_change_count": {"const": 0}
+      }
+    },
+    "code_action_policy": {
+      "type": "object",
+      "required": ["classes", "automatic_classes", "automatic_source_gate", "default_for_ownership_change", "forbidden_transformations", "automatic_authority_manufacturing_count"],
+      "properties": {
+        "classes": {"const": ["PRESENTATION_ONLY", "RESPONSIBILITY_NEUTRAL_SOURCE", "MANUAL_RESPONSIBILITY_CHANGE", "PROHIBITED_AUTHORITY_MANUFACTURING"]},
+        "automatic_classes": {"const": ["PRESENTATION_ONLY", "RESPONSIBILITY_NEUTRAL_SOURCE"]},
+        "automatic_source_gate": {"const": ["normalized HIR digest equal", "ownership responsibility digest equal", "diagnostic predicate result preserved", "parse-format-parse identity equal"]},
+        "default_for_ownership_change": {"const": "MANUAL_RESPONSIBILITY_CHANGE"},
+        "forbidden_transformations": {"const": ["INSERT_MOVE", "INSERT_CLONE", "INSERT_SHARE_OR_TRANSFER", "CHANGE_CAPTURE_MODE", "WIDEN_REGION_OR_LIFETIME", "REORDER_OR_REMOVE_CLEANUP", "SUPPRESS_OWNERSHIP_DIAGNOSTIC", "MATERIALIZE_OWNER_LOAN_TOKEN_ROOT_OR_WITNESS"]},
+        "automatic_authority_manufacturing_count": {"const": 0}
+      }
+    },
+    "debugger_projection": {
+      "type": "object",
+      "required": ["binding", "place_fields", "loan_fields", "cleanup_fields", "value_availability", "paused_runtime_rows", "root_rows", "continuation_rows", "backend_location_sidecar", "backend_address", "missing_runtime_evidence", "invented_owner_loan_token_or_continuation_count"],
+      "properties": {
+        "binding": {"const": ["OwnershipObservationId", "CompilationReceiptId", "RuntimeInstanceId", "ExecutionId", "ActivationFrameId", "FunctionId", "MirProgramPointId", "pause_epoch", "ownership contract digest", "exact runtime/debug receipt digest"]},
+        "value_availability": {"const": ["MATERIALIZED", "OPTIMIZED_OUT", "UNAVAILABLE_NOT_MATERIALIZED", "REDACTED"]},
+        "paused_runtime_rows": {"const": "NOT_RUN and UNAVAILABLE until an exact runtime/debug receipt digest is supplied"},
+        "root_rows": {"const": "canonical managed-reference digest bound; runtime rows remain empty and UNAVAILABLE_RUNTIME_NOT_RUN until an exact runtime/debug receipt is supplied"},
+        "continuation_rows": {"const": "canonical continuation-interface digest bound; runtime rows remain empty and UNAVAILABLE_RUNTIME_NOT_RUN until an exact runtime/debug receipt is supplied"},
+        "invented_owner_loan_token_or_continuation_count": {"const": 0}
+      }
+    },
+    "actor_transfer_projection": {"const": {"authority_anchors": ["schemas/language/mir-responsibility.schema.json#actor_transfer", "spec/contracts/actor-concurrency-coherence.json#ACT-G7-02"], "precommit_or_rejected": "sender_retained; receiver owner absent; channel_sequence null; ownership_commit_count 0", "commit_event": "actor_enqueue with admission_result enqueue_committed", "commit_transition": "exactly one ownership commit changes sender-owned to receiver-owned or shared-evidence", "dual_owner_count": 0, "channel_sequence_rule": "assigned exactly at enqueue commit; orders only one channel; no cross-channel or global order", "tooling_authority": "read-only receipt projection; no ownership or ordering feedback edge", "runtime_debugger_execution": "NOT_RUN"}},
+    "reason_codes": {"const": ["TOOLING_SNAPSHOT_STALE_OR_MIXED", "TOOLING_REQUIRED_RELATED_SPAN_MISSING", "TOOLING_RELATED_SPAN_ORDER_DRIFT", "TOOLING_FIXIT_MANUFACTURES_AUTHORITY", "TOOLING_FORMATTER_RESPONSIBILITY_DRIFT", "TOOLING_RENAME_RESPONSIBILITY_DRIFT", "TOOLING_DEBUGGER_IDENTITY_CONFLATION", "TOOLING_DEBUGGER_STATE_FABRICATED"]},
+    "diagnostic_policy": {
+      "type": "object",
+      "required": ["reason_codes_are_final_registry_ids", "final_registry_id", "new_final_diagnostic_id_count", "existing_source_diagnostic_identity_preserved", "tooling_protocol_failure_result"],
+      "properties": {
+        "reason_codes_are_final_registry_ids": {"const": false},
+        "final_registry_id": {"const": "OWNERSHIP_TOOLING_PROJECTION_DRIFT"},
+        "new_final_diagnostic_id_count": {"const": 1},
+        "existing_source_diagnostic_identity_preserved": {"const": true}
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["schema", "fixture_schema", "fixture", "case_counts", "mutation_count"],
+      "properties": {"mutation_count": {"const": 10}}
+    },
+    "governance": {
+      "type": "object",
+      "required": ["semantic_p0", "canonical_feature_p1", "separate_m13_actions", "product_lanes", "source_syntax_change_count", "grammar_production_change_count", "language_semantic_change_count", "production_formatter_lsp_debugger", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "canonical_feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "separate_m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "source_syntax_change_count": {"const": 0},
+        "grammar_production_change_count": {"const": 0},
+        "language_semantic_change_count": {"const": 0},
+        "production_formatter_lsp_debugger": {"const": "NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

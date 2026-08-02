@@ -100,8 +100,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1448, "predicates": 278,
-    "predicate_fixtures": 849, "no_go": 155,
+    "features": 722, "diagnostics": 1483, "predicates": 281,
+    "predicate_fixtures": 864, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -10980,6 +10980,22 @@ R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
     "R27_MUTATIONS_EXACT_6",
     "R27_GOVERNANCE_FENCE",
 )
+R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS = (
+    "R28_CONTRACT_IDENTITY",
+    "R28_SCHEMA_BINDING",
+    "R28_FORMATTING_TOTAL_644",
+    "R28_FORMATTING_DISJOINT_COUNTS",
+    "R28_ACTOR_ROWS_EXACT_5",
+    "R28_RECOVERY_RANGE_FENCE",
+    "R28_IDENTITY_DOMAIN_SEPARATION",
+    "R28_EDIT_SNAPSHOT_CONCURRENCY",
+    "R28_LSP_COORDINATE_ACTION_FENCE",
+    "R28_DIAGNOSTIC_PARITY_PRECEDENCE",
+    "R28_ORACLE_CASES_9",
+    "R28_ACCEPTANCE_MATRIX_34",
+    "R28_MUTATIONS_12",
+    "R28_GOVERNANCE_FENCE",
+)
 R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS = (
     "R40_CONTRACT_EXACT",
     "R40_AUTHORITATIVE_PROJECTION_EXACT",
@@ -11999,6 +12015,117 @@ def r27_grammar_topology_workspace_checks(
         )
 
 
+def r28_formatter_lsp_incremental_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact-main R28 tooling contract without product claims."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_formatter_lsp_incremental_parsing.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R28 formatter/LSP/incremental runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R28 formatter/LSP/incremental runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.r28-formatter-lsp-incremental-validation-receipt/r1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("mode") != "VALIDATE"
+            or receipt.get("evidence_level") != "E2_STATIC_CLOSURE"
+            or receipt.get("check_scope")
+            != "R28_FORMATTER_LSP_INCREMENTAL_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(expected_ids)
+            or receipt.get("grammar_production_count") != 644
+            or receipt.get("formatting_rule_count") != 6
+            or receipt.get("formatting_rule_counts")
+            != {
+                "FD-01": 56,
+                "FD-02": 35,
+                "FD-03": 320,
+                "FD-04": 204,
+                "FD-05": 10,
+                "FD-06": 19,
+            }
+            or receipt.get("unclassified_production_count") != 0
+            or receipt.get("multiply_classified_production_count") != 0
+            or receipt.get("identity_domain_count") != 8
+            or receipt.get("forbidden_identity_conflation_count") != 6
+            or receipt.get("acceptance_case_count") != 9
+            or receipt.get("acceptance_class_counts")
+            != {"boundary": 3, "negative": 3, "positive": 3}
+            or receipt.get("successor_acceptance_case_count") != 34
+            or receipt.get("mutation_count") != 12
+            or receipt.get("rejected_mutation_count") != 12
+            or receipt.get("source_syntax_change_count") != 0
+            or receipt.get("grammar_production_change_count") != 0
+            or receipt.get("language_semantic_change_count") != 0
+            or receipt.get("new_final_diagnostic_id_count") != 0
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("github_publication")
+            != "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+            or receipt.get("errors") != []
+            or not isinstance(rows, list)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass"}
+                or row.get("pass") is not True
+                for row in rows
+            )
+        ):
+            return failed_rows(
+                "R28 formatter/LSP/incremental receipt-contract drift"
+            )
+        detail = json.dumps(
+            {
+                "grammar_productions": 644,
+                "formatting_rules": 6,
+                "identity_domains": 8,
+                "oracle_cases": 9,
+                "successor_acceptance_cases": 34,
+                "mutations_rejected": 12,
+                "source_syntax_changes": 0,
+                "semantic_changes": 0,
+                "product_execution": "NOT_RUN",
+            },
+            sort_keys=True,
+        )
+        return [
+            {"check_id": row["check_id"], "pass": True, "detail": detail}
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R28 formatter/LSP/incremental runner integration failure: {exc}"
+        )
+
+
 def r40_manual_grammar_count_workspace_checks(
     root: Path,
 ) -> list[dict[str, Any]]:
@@ -12242,6 +12369,11 @@ def main() -> int:
     )
     for row in r27_grammar_topology_check_results:
         check(row["pass"], row["check_id"], row["detail"])
+    r28_formatter_lsp_incremental_check_results = (
+        r28_formatter_lsp_incremental_workspace_checks(root)
+    )
+    for row in r28_formatter_lsp_incremental_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
     r40_manual_grammar_count_check_results = (
         r40_manual_grammar_count_workspace_checks(root)
     )
@@ -12377,6 +12509,13 @@ def main() -> int:
         "release/evidence/current-publication-m1.3-predecessor-receipt.json",
         "release/evidence/current-publication-m1.3-git-binding-receipt.json",
         "release/evidence/current-publication-m1.3-role-review-index.json",
+        "decisions/language/Design_Deeplus_Ownership_Tooling_Projection_R1.md",
+        "spec/contracts/ownership-tooling-obligations-r1.json",
+        "schemas/language/ownership-tooling-obligations-r1.schema.json",
+        "schemas/language/ownership-tooling-obligations-fixtures-r1.schema.json",
+        "tests/fixtures/current/ownership-tooling-obligations-r1.json",
+        "spec/diagnostics/catalog/chunks/part-0033.json",
+        "tools/validators/validate_ownership_tooling_obligations.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -12548,6 +12687,56 @@ def main() -> int:
             r35_process.returncode == 0,
             "R35_SHARED_MUTEX_PAYLOAD_BOUND",
             r35_detail[-4000:],
+        )
+
+    ownership_tooling_validator = (
+        root / "tools/validators/validate_ownership_tooling_obligations.py"
+    )
+    if ownership_tooling_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(ownership_tooling_validator),
+                "--root",
+                str(root),
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        try:
+            receipt = json.loads(process.stdout)
+        except (json.JSONDecodeError, TypeError):
+            receipt = {}
+        receipt_ok = (
+            process.returncode == 0
+            and not process.stderr
+            and receipt.get("schema")
+            == "deeplus.r39-ownership-tooling-validation/r1"
+            and receipt.get("result") == "PASS"
+            and receipt.get("evidence_level") == "E2_STATIC_CLOSURE"
+            and receipt.get("check_scope")
+            == "R39_OWNERSHIP_TOOLING_OBLIGATIONS_EXACT"
+            and receipt.get("check_count") == 37
+            and receipt.get("passed_check_count") == 37
+            and receipt.get("failed") == 0
+            and receipt.get("mutation_count") == 10
+            and receipt.get("rejected_mutation_count") == 10
+            and receipt.get("semantic_change_count") == 0
+            and receipt.get("product_execution") == "NOT_RUN"
+            and receipt.get("errors") == []
+        )
+        check(
+            receipt_ok,
+            "R39_OWNERSHIP_TOOLING_OBLIGATIONS",
+            detail[-4000:],
         )
 
     generator = root / "tools/generators/generate_example_projections.py"
@@ -19785,6 +19974,17 @@ def main() -> int:
         ],
         "r27_grammar_topology_check_results":
             r27_grammar_topology_check_results,
+        "r28_formatter_lsp_incremental_check_scope":
+            "R28_FORMATTER_LSP_INCREMENTAL_EXACT",
+        "r28_formatter_lsp_incremental_check_count":
+            len(R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS),
+        "r28_formatter_lsp_incremental_passed_check_ids": [
+            row["check_id"]
+            for row in r28_formatter_lsp_incremental_check_results
+            if row["pass"]
+        ],
+        "r28_formatter_lsp_incremental_check_results":
+            r28_formatter_lsp_incremental_check_results,
         "r40_manual_grammar_count_check_scope":
             "R40_MANUAL_GRAMMAR_COUNT_AUTHORITY_EXACT",
         "r40_manual_grammar_count_check_count":

@@ -12,7 +12,7 @@
 |---|---:|---:|---|
 | `grammar_productions` | 644 | 644 | `통과` |
 | `features` | 722 | 722 | `통과` |
-| `diagnostics` | 1482 | 1482 | `통과` |
+| `diagnostics` | 1483 | 1483 | `통과` |
 | `predicates` | 281 | 281 | `통과` |
 | `prelude_entries` | 77 | 77 | `통과` |
 | `examples` | 752 | 752 | `통과` |
@@ -31,12 +31,12 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `87e0110bedcad86729513702c9a45e6cc886d72bb2bff9dba032be76720303eb` |
+| `human_language` | `spec/language.md` | `1cffe6bd5a8650aeb09afabb8c1fc5c96a5f6953b646fb7fc89285ea0f9f54bf` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc` |
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `ede53c31dfba0084d8e00645efaa5265707b4d968999c3d6ac306d1c4b634c64` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `06bf70203e4ff9354c8aef924bdb56db824628638640392bd0b84cabb3611232` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `66d33c8b09031178d1ce81f69c99c48b248b777f48737340c58e1f8114f7a710` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `90502d60be8affbadcefb466c412f3c6baa3eab12ffb4942a492e6475d794b08` |
 | `type_system` | `spec/types/type-system.md` | `701fdb5ea79847199fd8cf56d844c4335ea685f5ea33521b06973f7ac571ccc4` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `411304e57841d3be70538f9219cd746d1e11ff452b39a20cbc24d9bfddc85d28` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `92fd16dc3bc87f43521e6066159015adcde128300dfe9f1bab866a4d04401370` |
@@ -49,4 +49,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `a83467df9ae86922569a90388c69c44443c5d2f0142cb9ea32fd2e31c8aafdad` |
 | `prelude` | `library/prelude/prelude.md` | `94175d3dd153cb9759cb6b3f4f1d858f8defbab82b5c1431bb57f2d771cf8673` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `2755c192b6ca458da511ec67d976e43e865b0b125b530ecb2d9931e85f15f3ae` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `d6709b2208903ad8d3cd5898bdcecb14603b8502bf0938e751e9225c34a54d8c` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `d90c940c28ca88149b56095304b41b282d4790b0b62184d8efde6dc2dabd4431` |

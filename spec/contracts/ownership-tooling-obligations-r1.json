@@ -1,0 +1,386 @@
+{
+  "schema": "deeplus.ownership-tooling-obligations/r1",
+  "status": "STABLE_DESIGN_IMPLEMENTATION_READINESS_CANDIDATE",
+  "candidate_class": "LOCAL_NONCANONICAL_NONACTIVATABLE",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+    "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+  },
+  "gap_id": "IR-OWN-P2-027",
+  "sibling_dependencies": [
+    {
+      "identity": "R28_FORMATTER_LSP_INCREMENTAL_CONTRACT_R1",
+      "status": "LOCAL_FUSION_INCLUDED",
+      "future_action": "NONE_SAME_CANDIDATE"
+    },
+    {
+      "identity": "R38_CONTINUATION_INTERFACE_REBASE_R1",
+      "status": "CANONICAL_CURRENT",
+      "future_action": "NONE"
+    }
+  ],
+  "inputs": {
+    "ownership_state": {"path": "spec/contracts/ownership-decision-input-r1.json", "sha256": "397527eb0423b3219e46daab3ec66a13a37ad2c11bfb4863e83eff63ee17ad76"},
+    "ownership_schema": {"path": "schemas/language/ownership-decision-input-r1.schema.json", "sha256": "36669316d2902deff62987586f2d9090764c834a01ae42b7ecd5a3c51db37234"},
+    "hir_bridge": {"path": "spec/contracts/hir-h1-current-mir-bridge.json", "sha256": "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"},
+    "diagnostic_metadata": {"path": "spec/diagnostics/catalog/catalog-metadata.json", "sha256": "6b981a6d1f30aecd1e7380b1649dfaf1a57783bf5dc2203feca83bb198c5bb3c"},
+    "grammar": {"path": "spec/grammar/deeplus.ebnf", "sha256": "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"},
+    "borrow_context": {"path": "spec/contracts/borrow-context-anchor-disambiguation.json", "sha256": "84919d36fc1843bce749d1341d8364936d42ccc551d7a7c9046291f356326a2c"},
+    "recovery_fence": {"path": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json", "sha256": "11de9fe31c17eed025e6aa480647dc4110c8a0c92da007f04db71a44d290cd96"},
+    "canonical_hir_schema": {"path": "schemas/language/canonical-hir-h1.schema.json", "sha256": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796"},
+    "mir_schema": {"path": "schemas/language/deeplus-mir.schema.json", "sha256": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899"},
+    "mir_responsibility_schema": {"path": "schemas/language/mir-responsibility.schema.json", "sha256": "a2e29bae70af1a787538fb3264692725b8beb348112813d7040b4f1a4c035e63"},
+    "cranelift_backend": {"path": "spec/contracts/cranelift-backend-current.json", "sha256": "d47fb562bf5fd20b69191b8714bf2ef0f8dc40c65c4463ee2fc720a2e0df0690"},
+    "actor_concurrency": {"path": "spec/contracts/actor-concurrency-coherence.json", "sha256": "dead650e9307bbd51c3cb70916ce26ef31a995f54ab3e537fb33cb625b83a2b2"}
+  },
+  "responsibility_separation": {
+    "checker": "owns every place, owner, loan, region, cleanup, capture and continuation judgment; tooling may only project sealed evidence",
+    "formatter": "preserves ownership-bearing spelling, source order and normalized responsibility identity and never repairs a semantic ownership failure",
+    "lsp": "binds hover, rename, diagnostic and code-action results to one exact source and checker snapshot",
+    "debugger": "observes receipt-bound semantic identities and availability but never derives semantic identity from a backend address",
+    "runtime_backend": "may report receipt-bound materialization and ephemeral address observations but cannot create or reinterpret ownership identities or any dependency-bound RootId or ContinuationReceiptId",
+    "canonical_ast_hir_mir": "exclude editor handles, UI grouping, debugger addresses and presentation order from canonical language identity"
+  },
+  "identity_domains": {
+    "ToolingSnapshotId": {
+      "recipe": [
+        "ParseSnapshotId",
+        "checker_snapshot_digest",
+        "ownership_contract_digest_set"
+      ],
+      "canonical_residue": false
+    },
+    "OwnershipObservationId": {
+      "recipe": [
+        "CompilationReceiptId",
+        "RuntimeInstanceId",
+        "ExecutionId",
+        "ActivationFrameId",
+        "FunctionId",
+        "MirProgramPointId",
+        "pause_epoch",
+        "exact runtime/debug receipt digest"
+      ],
+      "canonical_residue": false
+    },
+    "semantic_references": [
+      "DeclId",
+      "TypeId",
+      "PlaceId",
+      "MovePathId",
+      "OwnerId",
+      "LoanId",
+      "RegionId",
+      "CleanupTokenId",
+      "JoinConflictId"
+    ],
+    "forbidden_conflations": [
+      "backend address == semantic identity",
+      "source byte offset == DeclId or PlaceId",
+      "editor handle == HIR or MIR identity",
+      "display name == owner, loan, token, RootId or continuation identity",
+      "backend address == RootId or ContinuationReceiptId"
+    ]
+  },
+  "snapshot_fence": {
+    "request_binding": [
+      "ToolingSnapshotId",
+      "ParseSnapshotId",
+      "checker_snapshot_digest",
+      "ownership_contract_digest_set"
+    ],
+    "ownership_binding": [
+      "OwnershipStateId",
+      "MirProgramPointId or source-checker decision point",
+      "ownership contract digest"
+    ],
+    "stale_or_mixed_snapshot": "REJECT_STALE_OR_MIXED_TOOLING_SNAPSHOT",
+    "cross_revision_merge_count": 0,
+    "unknown_fact_policy": "emit UNKNOWN_NOT_PROVED or NOT_APPLICABLE; never fabricate a proof"
+  },
+  "dependency_status": [
+    {
+      "dependency_id": "MANAGED_REFERENCE_MEMORY_PROFILE",
+      "status": "CANONICALLY_BOUND_DESIGN_STATIC",
+      "panel": "root_rows",
+      "required_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
+      "bound_shape": {
+        "semantic_references": ["RootId"],
+        "required_receipt": "exact runtime/debug receipt additionally bound to the canonical managed-reference profile digest",
+        "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"
+      }
+    },
+    {
+      "dependency_id": "CONTINUATION_INTERFACE",
+      "status": "CANONICALLY_BOUND_DESIGN_STATIC",
+      "panel": "continuation_rows",
+      "required_digest_or_null": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+      "bound_shape": {
+        "semantic_references": ["ContinuationReceiptId"],
+        "fields": ["frame state", "winner"],
+        "required_receipt": "exact runtime/debug receipt additionally bound to the canonical continuation-interface digest",
+        "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"
+      }
+    }
+  ],
+  "ownership_sidecar_projection": {
+    "projection_kinds": ["STATIC_PROGRAM_POINT", "PAUSED_RUNTIME_SNAPSHOT"],
+    "projection_availability": {
+      "STATIC_PROGRAM_POINT": "DESIGN_STATIC_AVAILABLE",
+      "PAUSED_RUNTIME_SNAPSHOT": "NOT_RUN_REQUIRES_EXACT_RUNTIME_DEBUG_RECEIPT"
+    },
+    "required_binding": ["ToolingSnapshotId", "ownership contract digest", "OwnershipStateId", "program point identity", "debug digest"],
+    "place_row_fields": ["PlaceId", "TypeId", "MovePathId", "mutability", "initialization", "OwnerId or null", "ReservationId or null", "CleanupTokenId or null", "JoinConflictId or null", "RegionId", "IsolationDomainId", "SourceOriginId"],
+    "owner_row_fields": ["OwnerId", "origin PlaceId", "origin RegionId", "binding state", "holder PlaceId or null", "JoinConflictId or null", "current RegionId or null", "CleanupPlanId or null"],
+    "owner_binding_states": ["UNISSUED", "LIVE", "JOIN_CONDITIONAL", "RETIRED"],
+    "loan_row_fields": ["LoanId", "kind", "status", "owner PlaceId", "view PlaceId", "RegionId", "parent LoanId or null", "start point", "end points", "SourceOriginId"],
+    "cleanup_token_row_fields": ["CleanupTokenId", "CleanupPlanId", "OwnerId", "status", "holder OwnerId or null", "acquisition ordinal", "SourceOriginId"],
+    "row_set_law": "lossless exact read-only projection; canonical-sort by typed identity; no extra, missing, duplicate or unresolved row",
+    "join_law": "MaybeMoved preserves one JoinConflictId and every relevant predecessor; tooling chooses no predecessor winner",
+    "loan_law": "only Active authorizes view access; Suspended and Ended remain visible but authorize none; the one-active-leaf law is preserved",
+    "cleanup_law": "Available has one exact holder; Consumed is terminal and never reappears",
+    "tool_to_semantic_feedback_edge_count": 0,
+    "tool_created_semantic_identity_count": 0
+  },
+  "span_roles": [
+    "PRIMARY_OPERATION",
+    "OWNER_DECLARATION",
+    "PRIOR_TRANSFER",
+    "LOAN_ORIGIN",
+    "CONFLICTING_ACCESS",
+    "REGION_BOUNDARY",
+    "CAPTURE_SITE",
+    "ESCAPE_BOUNDARY",
+    "CLEANUP_REGISTRATION",
+    "SUSPENSION_POINT",
+    "JOIN_PREDECESSOR",
+    "PAYLOAD_CAUSE"
+  ],
+  "span_ordering": {
+    "primary_count": 1,
+    "primary_selection": "semantic diagnostic row primary_role, then least stable SourceOriginId, then typed semantic-reference tie-break",
+    "related_order": "stable SourceOriginId then typed semantic-reference tie-break; role is data only; source, fixture, catalog and CFG iteration order never wins",
+    "duplicate_span_role_pair_count": 0,
+    "backend_or_runtime_address_span_count": 0
+  },
+  "diagnostic_family_projections": [
+    {
+      "family_id": "OWN_USE_OR_TRANSFER",
+      "diagnostic_ids": ["OWNERSHIP_MODE_ADMISSION_FAILED", "FACET_MOVE_REQUIRES_OWNER"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "OWNER_DECLARATION", "PRIOR_TRANSFER", "LOAN_ORIGIN", "CONFLICTING_ACCESS", "REGION_BOUNDARY", "ESCAPE_BOUNDARY", "SUSPENSION_POINT", "PAYLOAD_CAUSE"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_ALIAS_OR_INOUT_CONFLICT",
+      "diagnostic_ids": ["INOUT_ALIAS_CONFLICT", "ALIAS_PATTERN_OWNERSHIP_CONFLICT"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "PRIOR_TRANSFER", "LOAN_ORIGIN", "CONFLICTING_ACCESS"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_BORROW_ESCAPE_OR_SUSPENSION",
+      "diagnostic_ids": ["BORROW_ESCAPE_OWNER_REGION", "FACET_BORROW_CROSSES_SUSPENSION", "SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN"],
+      "allowed_role_union": ["LOAN_ORIGIN", "REGION_BOUNDARY", "ESCAPE_BOUNDARY", "SUSPENSION_POINT"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_PLACE_STATE_JOIN",
+      "diagnostic_ids": ["PLACE_STATE_JOIN_MISMATCH", "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "JOIN_PREDECESSOR"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_CAPTURE_RESPONSIBILITY",
+      "diagnostic_ids": ["OUTER_MUTATION_REQUIRES_INOUT_CAPTURE", "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "OWNER_DECLARATION", "CAPTURE_SITE"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_CLEANUP_OR_DEFER",
+      "diagnostic_ids": ["DEFER_CLEANUP_RESERVED_PLACE_MOVED", "CLEANUP_DECLARATION_DIRECT_CALL_FORBIDDEN"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "CLEANUP_REGISTRATION"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_SHARED_PAYLOAD",
+      "diagnostic_ids": ["SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "PAYLOAD_CAUSE"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    },
+    {
+      "family_id": "OWN_MIR_RESPONSIBILITY_VERIFIER",
+      "diagnostic_ids": ["HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH"],
+      "allowed_role_union": ["PRIMARY_OPERATION", "PAYLOAD_CAUSE"],
+      "normative_cardinality_source": "diagnostic_span_profiles"
+    }
+  ],
+  "diagnostic_span_profiles": [
+    {
+      "diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "family_id": "OWN_USE_OR_TRANSFER",
+      "primary_role": "PRIMARY_OPERATION",
+      "related_span_requirements": [{"role": "OWNER_DECLARATION", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}],
+      "reason_variants": [
+        {"reason_key": "EXCLUSIVITY", "requirements": [{"role": "CONFLICTING_ACCESS", "min_count": 1, "max_count_or_null": null, "exact_count_source_or_null": "exact conflict-witness participant count", "omit_when_zero": false}, {"role": "LOAN_ORIGIN", "min_count": 0, "max_count_or_null": null, "exact_count_source_or_null": "exact active-loan culprit count", "omit_when_zero": true}]},
+        {"reason_key": "LIFETIME", "requirements": [{"role": "REGION_BOUNDARY", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+        {"reason_key": "ESCAPE", "requirements": [{"role": "ESCAPE_BOUNDARY", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "LOAN_ORIGIN", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+        {"reason_key": "SUSPENSION", "requirements": [{"role": "SUSPENSION_POINT", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "LOAN_ORIGIN", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+        {"reason_key": "TRANSFER_OR_USE_AFTER_MOVE", "requirements": [{"role": "PRIOR_TRANSFER", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]}
+      ]
+    },
+    {"diagnostic_id": "FACET_MOVE_REQUIRES_OWNER", "family_id": "OWN_USE_OR_TRANSFER", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "PAYLOAD_CAUSE", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "OWNER_DECLARATION", "min_count": 0, "max_count_or_null": null, "exact_count_source_or_null": "exact payload-owner candidate count; diagnostic requires count != 1", "omit_when_zero": true}]},
+    {"diagnostic_id": "INOUT_ALIAS_CONFLICT", "family_id": "OWN_ALIAS_OR_INOUT_CONFLICT", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "CONFLICTING_ACCESS", "min_count": 2, "max_count_or_null": null, "exact_count_source_or_null": "exact conflict-witness participant count", "omit_when_zero": false}, {"role": "LOAN_ORIGIN", "min_count": 0, "max_count_or_null": null, "exact_count_source_or_null": "exact active-loan culprit count", "omit_when_zero": true}]},
+    {"diagnostic_id": "ALIAS_PATTERN_OWNERSHIP_CONFLICT", "family_id": "OWN_ALIAS_OR_INOUT_CONFLICT", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "PRIOR_TRANSFER", "min_count": 0, "max_count_or_null": null, "exact_count_source_or_null": "exact moved-descendant count", "omit_when_zero": true}, {"role": "LOAN_ORIGIN", "min_count": 0, "max_count_or_null": null, "exact_count_source_or_null": "exact exclusively-borrowed-descendant count", "omit_when_zero": true}], "cardinality_law": "PRIOR_TRANSFER count + LOAN_ORIGIN count >= 1"},
+    {"diagnostic_id": "BORROW_ESCAPE_OWNER_REGION", "family_id": "OWN_BORROW_ESCAPE_OR_SUSPENSION", "primary_role": "ESCAPE_BOUNDARY", "related_span_requirements": [{"role": "LOAN_ORIGIN", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "REGION_BOUNDARY", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "FACET_BORROW_CROSSES_SUSPENSION", "family_id": "OWN_BORROW_ESCAPE_OR_SUSPENSION", "primary_role": "SUSPENSION_POINT", "related_span_requirements": [{"role": "LOAN_ORIGIN", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "SCOPED_CALLBACK_BORROW_ESCAPE_FORBIDDEN", "family_id": "OWN_BORROW_ESCAPE_OR_SUSPENSION", "primary_role": "ESCAPE_BOUNDARY", "related_span_requirements": [{"role": "LOAN_ORIGIN", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "REGION_BOUNDARY", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "PLACE_STATE_JOIN_MISMATCH", "family_id": "OWN_PLACE_STATE_JOIN", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "JOIN_PREDECESSOR", "min_count": 2, "max_count_or_null": null, "exact_count_source_or_null": "exact JoinConflict predecessor count", "omit_when_zero": false}]},
+    {"diagnostic_id": "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH", "family_id": "OWN_PLACE_STATE_JOIN", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "JOIN_PREDECESSOR", "min_count": 2, "max_count_or_null": null, "exact_count_source_or_null": "exact normally-returning incompatible-arm count", "omit_when_zero": false}]},
+    {"diagnostic_id": "OUTER_MUTATION_REQUIRES_INOUT_CAPTURE", "family_id": "OWN_CAPTURE_RESPONSIBILITY", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "OWNER_DECLARATION", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "CAPTURE_SITE", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE", "family_id": "OWN_CAPTURE_RESPONSIBILITY", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "OWNER_DECLARATION", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}, {"role": "CAPTURE_SITE", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "DEFER_CLEANUP_RESERVED_PLACE_MOVED", "family_id": "OWN_CLEANUP_OR_DEFER", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "CLEANUP_REGISTRATION", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": null, "omit_when_zero": false}]},
+    {"diagnostic_id": "CLEANUP_DECLARATION_DIRECT_CALL_FORBIDDEN", "family_id": "OWN_CLEANUP_OR_DEFER", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "CLEANUP_REGISTRATION", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": "referenced def#cleanup declaration origin", "omit_when_zero": false}]},
+    {"diagnostic_id": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD", "family_id": "OWN_SHARED_PAYLOAD", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "PAYLOAD_CAUSE", "min_count": 1, "max_count_or_null": null, "exact_count_source_or_null": "exact lifecycle or effectful-cleanup payload culprit count", "omit_when_zero": false}]},
+    {"diagnostic_id": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH", "family_id": "OWN_MIR_RESPONSIBILITY_VERIFIER", "primary_role": "PRIMARY_OPERATION", "related_span_requirements": [{"role": "PAYLOAD_CAUSE", "min_count": 1, "max_count_or_null": 1, "exact_count_source_or_null": "retained HIR responsibility producer SourceOriginId", "omit_when_zero": false}]}
+  ],
+  "inactive_seed_references": [
+    {"diagnostic_id": "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+    {"diagnostic_id": "CLOSURE_BORROW_CAPTURE_ESCAPES", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+    {"diagnostic_id": "CLOSURE_CAPTURE_ESCAPES_REGION", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"},
+    {"diagnostic_id": "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED", "tooling_projection_status": "INACTIVE_NOT_PROJECTED"}
+  ],
+  "canonical_unprofiled_diagnostics": [
+    {"diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "CLEANUP_BUDGET_DUPLICATE", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "CLEANUP_BUDGET_EXCEEDED", "tooling_projection_status": "CANONICAL_ACTIVE_UNPROFILED_R48"},
+    {"diagnostic_id": "MIR_LOAN_UNBALANCED", "tooling_projection_status": "INTERNAL_RELEASE_VERIFIER_NO_SOURCE_SPAN"}
+  ],
+  "hover_projection": {
+    "required_fields": [
+      "ToolingSnapshotId",
+      "source_span",
+      "DeclId or PlaceId",
+      "normalized_type",
+      "parameter_mode_or_null",
+      "ownership_qualifier_or_null",
+      "initialization_state",
+      "owner_binding",
+      "active_loan_summary",
+      "cleanup_responsibility_summary",
+      "escape_or_suspension_obligation",
+      "fact_certainty"
+    ],
+    "initialization_states": ["Uninitialized", "Live", "Moved", "MaybeMoved"],
+    "loan_states": ["Active", "Suspended", "Ended"],
+    "cleanup_token_states": ["Unbound", "Available", "Consumed"],
+    "fact_certainty": ["PROVED", "DISPROVED", "UNKNOWN_NOT_PROVED", "NOT_APPLICABLE"],
+    "hidden_identity_invention_count": 0,
+    "flow_fact_changes_declared_type": false
+  },
+  "formatter_projection": {
+    "protected_spellings": ["move", "borrow", "inout", "owned", "borrowed", "mut", "capture", "defer"],
+    "protected_orders": ["capture item source order", "cleanup registration source order", "call argument source order", "diagnostic related-span semantic order"],
+    "parse_format_parse_normalized_hir_equal": true,
+    "responsibility_digest_equal": true,
+    "second_pass_edit_count": 0,
+    "ownership_semantic_rewrite_count": 0
+  },
+  "rename_projection": {
+    "binding": ["ToolingSnapshotId", "target DeclId", "exact reference graph digest"],
+    "preserve": ["PlaceId topology", "ownership mode", "capture mode", "loan and region relations", "cleanup plan", "witness and authority set"],
+    "cross_snapshot_proof": "old and new ownership/responsibility graphs are isomorphic after the authorized spelling substitution; byte-identical derived IDs are not required when their canonical recipe includes spelling",
+    "public_identity_change": "REQUIRE_EXPLICIT_API_RENAME_AUTHORITY",
+    "ambiguous_or_tainted_reference": "REJECT_RENAME_TARGET_NOT_SEALED",
+    "implicit_ownership_change_count": 0
+  },
+  "code_action_policy": {
+    "classes": ["PRESENTATION_ONLY", "RESPONSIBILITY_NEUTRAL_SOURCE", "MANUAL_RESPONSIBILITY_CHANGE", "PROHIBITED_AUTHORITY_MANUFACTURING"],
+    "automatic_classes": ["PRESENTATION_ONLY", "RESPONSIBILITY_NEUTRAL_SOURCE"],
+    "automatic_source_gate": ["normalized HIR digest equal", "ownership responsibility digest equal", "diagnostic predicate result preserved", "parse-format-parse identity equal"],
+    "default_for_ownership_change": "MANUAL_RESPONSIBILITY_CHANGE",
+    "forbidden_transformations": [
+      "INSERT_MOVE",
+      "INSERT_CLONE",
+      "INSERT_SHARE_OR_TRANSFER",
+      "CHANGE_CAPTURE_MODE",
+      "WIDEN_REGION_OR_LIFETIME",
+      "REORDER_OR_REMOVE_CLEANUP",
+      "SUPPRESS_OWNERSHIP_DIAGNOSTIC",
+      "MATERIALIZE_OWNER_LOAN_TOKEN_ROOT_OR_WITNESS"
+    ],
+    "automatic_authority_manufacturing_count": 0
+  },
+  "debugger_projection": {
+    "binding": ["OwnershipObservationId", "CompilationReceiptId", "RuntimeInstanceId", "ExecutionId", "ActivationFrameId", "FunctionId", "MirProgramPointId", "pause_epoch", "ownership contract digest", "exact runtime/debug receipt digest"],
+    "place_fields": ["PlaceId", "initialization_state", "OwnerId_or_null", "MovePathId", "RegionId", "value_availability"],
+    "loan_fields": ["LoanId", "kind", "status", "owner PlaceId", "view PlaceId", "RegionId", "parent LoanId or null"],
+    "cleanup_fields": ["CleanupTokenId", "status", "holder OwnerId or null", "acquisition ordinal"],
+    "value_availability": ["MATERIALIZED", "OPTIMIZED_OUT", "UNAVAILABLE_NOT_MATERIALIZED", "REDACTED"],
+    "paused_runtime_rows": "NOT_RUN and UNAVAILABLE until an exact runtime/debug receipt digest is supplied",
+    "root_rows": "canonical managed-reference digest bound; runtime rows remain empty and UNAVAILABLE_RUNTIME_NOT_RUN until an exact runtime/debug receipt is supplied",
+    "continuation_rows": "canonical continuation-interface digest bound; runtime rows remain empty and UNAVAILABLE_RUNTIME_NOT_RUN until an exact runtime/debug receipt is supplied",
+    "backend_location_sidecar": {
+      "fields": ["runtime snapshot identity", "subject kind", "subject semantic identity", "location kind", "opaque location token"],
+      "location_kinds": ["XVM_SLOT", "CLIF_VALUE", "STACK_SLOT", "REGISTER", "MACHINE_ADDRESS"],
+      "display_only": true,
+      "semantic_identity": false,
+      "equality_authority": false,
+      "persistent": false,
+      "included_in_projection_digest": false,
+      "expires_at_resume": true,
+      "instance_status": "NOT_RUN_UNAVAILABLE_WITHOUT_EXACT_RUNTIME_DEBUG_RECEIPT"
+    },
+    "backend_address": "optional ephemeral observation; never canonical, stable, serializable or semantic identity",
+    "missing_runtime_evidence": "UNAVAILABLE_NOT_MATERIALIZED",
+    "invented_owner_loan_token_or_continuation_count": 0
+  },
+  "actor_transfer_projection": {
+    "authority_anchors": ["schemas/language/mir-responsibility.schema.json#actor_transfer", "spec/contracts/actor-concurrency-coherence.json#ACT-G7-02"],
+    "precommit_or_rejected": "sender_retained; receiver owner absent; channel_sequence null; ownership_commit_count 0",
+    "commit_event": "actor_enqueue with admission_result enqueue_committed",
+    "commit_transition": "exactly one ownership commit changes sender-owned to receiver-owned or shared-evidence",
+    "dual_owner_count": 0,
+    "channel_sequence_rule": "assigned exactly at enqueue commit; orders only one channel; no cross-channel or global order",
+    "tooling_authority": "read-only receipt projection; no ownership or ordering feedback edge",
+    "runtime_debugger_execution": "NOT_RUN"
+  },
+  "reason_codes": [
+    "TOOLING_SNAPSHOT_STALE_OR_MIXED",
+    "TOOLING_REQUIRED_RELATED_SPAN_MISSING",
+    "TOOLING_RELATED_SPAN_ORDER_DRIFT",
+    "TOOLING_FIXIT_MANUFACTURES_AUTHORITY",
+    "TOOLING_FORMATTER_RESPONSIBILITY_DRIFT",
+    "TOOLING_RENAME_RESPONSIBILITY_DRIFT",
+    "TOOLING_DEBUGGER_IDENTITY_CONFLATION",
+    "TOOLING_DEBUGGER_STATE_FABRICATED"
+  ],
+  "diagnostic_policy": {
+    "reason_codes_are_final_registry_ids": false,
+    "final_registry_id": "OWNERSHIP_TOOLING_PROJECTION_DRIFT",
+    "new_final_diagnostic_id_count": 1,
+    "existing_source_diagnostic_identity_preserved": true,
+    "tooling_protocol_failure_result": "typed tooling failure until separate diagnostic authority"
+  },
+  "acceptance": {
+    "schema": "schemas/language/ownership-tooling-obligations-r1.schema.json",
+    "fixture_schema": "schemas/language/ownership-tooling-obligations-fixtures-r1.schema.json",
+    "fixture": "tests/fixtures/current/ownership-tooling-obligations-r1.json",
+    "case_counts": {"positive": 1, "boundary": 1, "negative": 1, "mutation_suite": 1, "total": 4},
+    "mutation_count": 10
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "source_syntax_change_count": 0,
+    "grammar_production_change_count": 0,
+    "language_semantic_change_count": 0,
+    "production_formatter_lsp_debugger": "NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

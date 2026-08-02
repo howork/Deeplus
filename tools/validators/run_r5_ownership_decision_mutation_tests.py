@@ -3701,7 +3701,7 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1482
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1483
             and relation_metadata_doc.value.get("relation_count") == 597,
             "diagnostic/relation canonical counts are not exact R47 fusion",
         ),
